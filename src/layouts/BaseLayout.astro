@@ -20,30 +20,83 @@ const siteUrl = 'https://henriklmadsen-alt.github.io/calculator-thailand';
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <title>{title}</title>
 
     <!-- AdSense placeholder -->
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXX" crossorigin="anonymous"></script> -->
+
+    <style>
+      /* Smooth gradient background */
+      body {
+        background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 50%, #f0fdf4 100%);
+        min-height: 100vh;
+      }
+
+      /* Smooth animations */
+      .calc-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .calc-card:hover {
+        transform: translateY(-2px);
+      }
+
+      /* Focus styles */
+      input:focus, select:focus, button:focus-visible {
+        outline: 2px solid #0ea5e9;
+        outline-offset: 2px;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
   </head>
-  <body class="font-thai bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-    <header class="bg-white shadow-sm border-b border-gray-200">
-      <nav class="max-w-4xl mx-auto px-4 py-3">
-        <a href="/" class="text-xl font-bold text-primary-600 hover:text-primary-700">
-          เครื่องคำนวณไทย
+  <body class="font-thai text-gray-900 flex flex-col">
+    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
+      <nav class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+        <a href="/calculator-thailand/" class="flex items-center gap-2 group">
+          <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors">เครื่องคำนวณไทย</span>
+            <span class="hidden sm:block text-xs text-gray-400 -mt-0.5">Calculator Thailand</span>
+          </div>
         </a>
+        <div class="flex items-center gap-1 text-sm">
+          <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium text-xs">
+            ฟรี 100%
+          </span>
+        </div>
       </nav>
     </header>
 
-    <main class="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
+    <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
       <slot />
     </main>
 
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-      <div class="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
-        <p>© {new Date().getFullYear()} เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น ไม่ใช่คำแนะนำทางการเงินหรือกฎหมาย</p>
+    <footer class="bg-white border-t border-gray-100 mt-auto">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="text-sm font-medium text-gray-600">เครื่องคำนวณไทย</span>
+          </div>
+          <p class="text-xs text-gray-400 text-center sm:text-right max-w-md">
+            © {new Date().getFullYear()} เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น ไม่ใช่คำแนะนำทางการเงินหรือกฎหมาย
+          </p>
+        </div>
       </div>
     </footer>
   </body>
