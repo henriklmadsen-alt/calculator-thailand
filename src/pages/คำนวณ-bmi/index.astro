@@ -1,0 +1,390 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณ BMI — เครื่องคำนวณดัชนีมวลกาย ออนไลน์ฟรี';
+const pageDescription = 'คำนวณค่า BMI (ดัชนีมวลกาย) ออนไลน์ฟรี ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย พร้อมคำแนะนำสุขภาพ';
+const siteUrl = 'https://calculator-thailand.up.railway.app';
+const canonical = `${siteUrl}/คำนวณ-bmi/`;
+
+const faqData = [
+  {
+    question: 'BMI คืออะไร?',
+    answer: 'BMI (Body Mass Index) หรือ ดัชนีมวลกาย คือค่าที่ใช้ประเมินว่าน้ำหนักตัวอยู่ในเกณฑ์ที่เหมาะสมกับส่วนสูงหรือไม่ คำนวณจาก น้ำหนัก (กก.) หาร ส่วนสูง (เมตร) ยกกำลังสอง',
+  },
+  {
+    question: 'ทำไมคนเอเชียใช้เกณฑ์ BMI ต่างจากฝรั่ง?',
+    answer: 'องค์การอนามัยโลกภูมิภาคเอเชีย-แปซิฟิก (WHO Asia-Pacific) กำหนดเกณฑ์ BMI สำหรับคนเอเชียต่ำกว่าสากล เนื่องจากคนเอเชียมีแนวโน้มเกิดโรคเรื้อรังที่ BMI ต่ำกว่าคนตะวันตก เช่น เบาหวานและโรคหัวใจ',
+  },
+  {
+    question: 'เกณฑ์ BMI สำหรับคนเอเชียเป็นอย่างไร?',
+    answer: 'น้ำหนักน้อย: BMI ต่ำกว่า 18.5, ปกติ: 18.5-22.9, น้ำหนักเกิน: 23.0-24.9, อ้วน: 25.0 ขึ้นไป ซึ่งต่างจากเกณฑ์สากลที่ถือว่าน้ำหนักเกินเริ่มที่ 25 และอ้วนเริ่มที่ 30',
+  },
+  {
+    question: 'BMI มีข้อจำกัดอะไรบ้าง?',
+    answer: 'BMI ไม่สามารถแยกแยะระหว่างมวลกล้ามเนื้อกับไขมันได้ นักกีฬาหรือผู้ที่ออกกำลังกายเป็นประจำอาจมี BMI สูงแต่ไม่ได้อ้วน ควรใช้ BMI ร่วมกับตัวชี้วัดอื่นเช่น เส้นรอบเอว และปรึกษาแพทย์',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ BMI ดัชนีมวลกาย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'HealthApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ BMI (ดัชนีมวลกาย)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่า BMI ออนไลน์ฟรี ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย พร้อมคำแนะนำสุขภาพ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">
+            น้ำหนัก (กิโลกรัม)
+          </label>
+          <input
+            type="text"
+            id="weight"
+            inputmode="decimal"
+            placeholder="เช่น 65"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="height" class="block text-sm font-medium text-gray-700 mb-1">
+            ส่วนสูง (เซนติเมตร)
+          </label>
+          <input
+            type="text"
+            id="height"
+            inputmode="decimal"
+            placeholder="เช่น 170"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณ BMI
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <!-- BMI Value -->
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ค่า BMI ของคุณ</div>
+          <div id="bmi-value" class="text-5xl font-bold mb-2">-</div>
+          <div id="bmi-category" class="text-lg font-semibold px-4 py-1 rounded-full inline-block">-</div>
+        </div>
+
+        <!-- BMI Gauge -->
+        <div class="mb-6">
+          <div class="relative h-6 rounded-full overflow-hidden flex">
+            <div class="bg-blue-400 flex-1" title="น้ำหนักน้อย"></div>
+            <div class="bg-green-400 flex-1" title="ปกติ"></div>
+            <div class="bg-yellow-400 flex-1" title="น้ำหนักเกิน"></div>
+            <div class="bg-red-400 flex-1" title="อ้วน"></div>
+          </div>
+          <div class="relative h-4">
+            <div id="bmi-pointer" class="absolute transition-all duration-500 -translate-x-1/2" style="left: 0%;">
+              <div class="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[8px] border-l-transparent border-r-transparent border-b-gray-800"></div>
+            </div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span>15</span>
+            <span>18.5</span>
+            <span>23</span>
+            <span>25</span>
+            <span>35+</span>
+          </div>
+          <div class="flex text-xs text-gray-500 mt-1">
+            <div class="flex-1 text-center">น้ำหนักน้อย</div>
+            <div class="flex-1 text-center">ปกติ</div>
+            <div class="flex-1 text-center">เกิน</div>
+            <div class="flex-1 text-center">อ้วน</div>
+          </div>
+        </div>
+
+        <!-- Health Tips -->
+        <div id="health-tips" class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-2">คำแนะนำ</h3>
+          <p id="tips-text" class="text-sm text-gray-600"></p>
+        </div>
+
+        <!-- Healthy Weight Range -->
+        <div class="mt-4 bg-green-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-2">น้ำหนักที่เหมาะสม</h3>
+          <p id="healthy-range" class="text-sm text-gray-600"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ดัชนีมวลกาย (BMI) คืออะไร?</h2>
+
+      <p>
+        ดัชนีมวลกาย (Body Mass Index หรือ BMI) เป็นค่าที่ใช้ประเมินภาวะโภชนาการ
+        โดยคำนวณจากน้ำหนักตัว (กิโลกรัม) หารด้วยส่วนสูง (เมตร) ยกกำลังสอง
+        ค่า BMI ช่วยบอกว่าน้ำหนักตัวอยู่ในเกณฑ์ที่เหมาะสมกับส่วนสูงหรือไม่
+        และเป็นตัวชี้วัดเบื้องต้นของความเสี่ยงต่อโรคเรื้อรัง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ BMI</h3>
+
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-lg font-semibold">BMI = น้ำหนัก (กก.) ÷ ส่วนสูง (ม.)<sup>2</sup></p>
+        <p class="text-sm text-gray-500 mt-1">ตัวอย่าง: น้ำหนัก 65 กก. ส่วนสูง 170 ซม. → BMI = 65 ÷ 1.70² = 22.49</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เกณฑ์ BMI สำหรับคนเอเชีย (WHO Asia-Pacific)</h3>
+
+      <p>
+        องค์การอนามัยโลกภูมิภาคเอเชีย-แปซิฟิก กำหนดเกณฑ์ BMI สำหรับคนเอเชียไว้ต่ำกว่าเกณฑ์สากล
+        เนื่องจากงานวิจัยพบว่าคนเอเชียมีความเสี่ยงต่อโรคเบาหวาน โรคหัวใจ และความดันโลหิตสูง
+        ที่ค่า BMI ต่ำกว่าคนตะวันตก
+      </p>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-gray-300">
+              <th class="py-2 pr-4">ระดับ</th>
+              <th class="py-2 pr-4">ค่า BMI</th>
+              <th class="py-2">ความเสี่ยงต่อสุขภาพ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 text-blue-600 font-medium">น้ำหนักน้อย</td>
+              <td class="py-2 pr-4">ต่ำกว่า 18.5</td>
+              <td class="py-2">เสี่ยงภาวะขาดสารอาหาร ภูมิคุ้มกันต่ำ</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 text-green-600 font-medium">ปกติ</td>
+              <td class="py-2 pr-4">18.5 — 22.9</td>
+              <td class="py-2">ต่ำ — น้ำหนักเหมาะสม</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 text-yellow-600 font-medium">น้ำหนักเกิน</td>
+              <td class="py-2 pr-4">23.0 — 24.9</td>
+              <td class="py-2">ปานกลาง — ควรควบคุมน้ำหนัก</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4 text-red-600 font-medium">อ้วน</td>
+              <td class="py-2 pr-4">25.0 ขึ้นไป</td>
+              <td class="py-2">สูง — เสี่ยงเบาหวาน โรคหัวใจ ความดัน</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ข้อจำกัดของ BMI</h3>
+
+      <p>
+        BMI เป็นเพียงตัวชี้วัดเบื้องต้น มีข้อจำกัดหลายประการ:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ไม่สามารถแยกแยะระหว่างมวลกล้ามเนื้อกับไขมัน — นักกีฬาอาจมี BMI สูงแต่ไม่อ้วน</li>
+        <li>ไม่ได้คำนึงถึงการกระจายตัวของไขมัน — ไขมันหน้าท้องอันตรายกว่าไขมันส่วนอื่น</li>
+        <li>ไม่เหมาะกับเด็ก ผู้สูงอายุ และหญิงตั้งครรภ์</li>
+        <li>ควรใช้ร่วมกับการวัดเส้นรอบเอวและการตรวจสุขภาพ</li>
+      </ul>
+
+      <p class="mt-4">
+        เครื่องคำนวณ BMI นี้ใช้เกณฑ์ WHO Asia-Pacific ซึ่งเหมาะกับคนไทยและคนเอเชีย
+        ให้ผลลัพธ์แม่นยำกว่าเกณฑ์สากลสำหรับการประเมินความเสี่ยงต่อสุขภาพ
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
+          <span class="text-gray-400 text-sm block">ภาษีเงินได้ตามขั้นบันได 2567</span>
+        </a>
+        <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณ VAT 7%</span>
+          <span class="text-gray-400 text-sm block">บวก VAT หรือแยก VAT จากราคารวม</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางการแพทย์ กรุณาปรึกษาแพทย์สำหรับการประเมินสุขภาพที่แม่นยำ
+    </div>
+  </article>
+
+  <script>
+    // BMI Categories (WHO Asia-Pacific)
+    // Underweight: < 18.5
+    // Normal: 18.5 - 22.9
+    // Overweight: 23.0 - 24.9
+    // Obese: >= 25.0
+
+    function calculateBMI(weightKg: number, heightCm: number): number {
+      const heightM = heightCm / 100;
+      return weightKg / (heightM * heightM);
+    }
+
+    interface BMIResult {
+      category: string;
+      colorClass: string;
+      bgClass: string;
+      tips: string;
+    }
+
+    function getBMICategory(bmi: number): BMIResult {
+      if (bmi < 18.5) {
+        return {
+          category: 'น้ำหนักน้อย',
+          colorClass: 'text-blue-700 bg-blue-100',
+          bgClass: 'bg-blue-50',
+          tips: 'ค่า BMI ของคุณต่ำกว่าเกณฑ์ปกติ ควรรับประทานอาหารที่มีประโยชน์ให้ครบ 5 หมู่ เพิ่มปริมาณโปรตีนและคาร์โบไฮเดรตเชิงซ้อน ออกกำลังกายแบบเสริมสร้างกล้ามเนื้อ และปรึกษาแพทย์หากน้ำหนักลดลงผิดปกติ',
+        };
+      }
+      if (bmi < 23) {
+        return {
+          category: 'ปกติ',
+          colorClass: 'text-green-700 bg-green-100',
+          bgClass: 'bg-green-50',
+          tips: 'น้ำหนักอยู่ในเกณฑ์ปกติ ควรรักษาน้ำหนักให้คงที่โดยรับประทานอาหารที่มีประโยชน์ ออกกำลังกายอย่างน้อย 150 นาทีต่อสัปดาห์ และตรวจสุขภาพประจำปี',
+        };
+      }
+      if (bmi < 25) {
+        return {
+          category: 'น้ำหนักเกิน',
+          colorClass: 'text-yellow-700 bg-yellow-100',
+          bgClass: 'bg-yellow-50',
+          tips: 'น้ำหนักเกินเกณฑ์เล็กน้อย ควรลดอาหารที่มีไขมันและน้ำตาลสูง เพิ่มผักและผลไม้ ออกกำลังกายสม่ำเสมอ และควบคุมปริมาณอาหารในแต่ละมื้อ',
+        };
+      }
+      return {
+        category: 'อ้วน',
+        colorClass: 'text-red-700 bg-red-100',
+        bgClass: 'bg-red-50',
+        tips: 'น้ำหนักเกินเกณฑ์มาก เพิ่มความเสี่ยงต่อโรคเบาหวาน ความดันโลหิตสูง และโรคหัวใจ ควรปรึกษาแพทย์เพื่อวางแผนลดน้ำหนักอย่างปลอดภัย ปรับพฤติกรรมการกิน และออกกำลังกายอย่างสม่ำเสมอ',
+      };
+    }
+
+    function getGaugePosition(bmi: number): number {
+      // Map BMI 15-35+ to 0-100%
+      const min = 15;
+      const max = 35;
+      const clamped = Math.max(min, Math.min(max, bmi));
+      return ((clamped - min) / (max - min)) * 100;
+    }
+
+    function getHealthyWeightRange(heightCm: number): { min: number; max: number } {
+      const heightM = heightCm / 100;
+      return {
+        min: Math.round(18.5 * heightM * heightM * 10) / 10,
+        max: Math.round(22.9 * heightM * heightM * 10) / 10,
+      };
+    }
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    const weightInput = document.getElementById('weight') as HTMLInputElement;
+    const heightInput = document.getElementById('height') as HTMLInputElement;
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const weight = parseNum(weightInput.value);
+      const height = parseNum(heightInput.value);
+
+      if (weight <= 0) { weightInput.focus(); return; }
+      if (height <= 0) { heightInput.focus(); return; }
+
+      const bmi = calculateBMI(weight, height);
+      const result = getBMICategory(bmi);
+      const range = getHealthyWeightRange(height);
+
+      (document.getElementById('bmi-value') as HTMLElement).textContent = bmi.toFixed(1);
+      (document.getElementById('bmi-value') as HTMLElement).className = `text-5xl font-bold mb-2 ${result.colorClass.split(' ')[0]}`;
+
+      const categoryEl = document.getElementById('bmi-category') as HTMLElement;
+      categoryEl.textContent = result.category;
+      categoryEl.className = `text-lg font-semibold px-4 py-1 rounded-full inline-block ${result.colorClass}`;
+
+      const pointer = document.getElementById('bmi-pointer') as HTMLElement;
+      pointer.style.left = `${getGaugePosition(bmi)}%`;
+
+      (document.getElementById('tips-text') as HTMLElement).textContent = result.tips;
+
+      const fmt = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+      (document.getElementById('healthy-range') as HTMLElement).textContent =
+        `สำหรับส่วนสูง ${height} ซม. น้ำหนักที่เหมาะสม (BMI 18.5–22.9) คือ ${fmt.format(range.min)} – ${fmt.format(range.max)} กก.`;
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+
+    // Allow Enter key
+    [weightInput, heightInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>
