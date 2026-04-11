@@ -3,10 +3,13 @@ interface Props {
   title: string;
   description: string;
   canonical?: string;
+  ogImage?: string;
 }
 
-const { title, description, canonical } = Astro.props;
+const { title, description, canonical, ogImage } = Astro.props;
 const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const pageUrl = canonical || siteUrl + Astro.url.pathname;
+const imageUrl = ogImage || `${siteUrl}/og-image.png`;
 ---
 
 <!doctype html>
@@ -16,7 +19,30 @@ const siteUrl = 'https://calculator-thailand-production.up.railway.app';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
-    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="canonical" href={pageUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="เครื่องคำนวณไทย" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="th_TH" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <!-- Favicon (SVG inline as data URI - calculator icon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><rect x='20' y='15' width='60' height='25' rx='5' fill='white'/><rect x='20' y='50' width='17' height='17' rx='3' fill='white'/><rect x='41' y='50' width='17' height='17' rx='3' fill='white'/><rect x='62' y='50' width='17' height='17' rx='3' fill='white'/><rect x='20' y='72' width='17' height='17' rx='3' fill='white'/><rect x='41' y='72' width='17' height='17' rx='3' fill='white'/><rect x='62' y='72' width='38' height='17' rx='3' fill='%2360a5fa'/></svg>" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/></svg>" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,7 +52,7 @@ const siteUrl = 'https://calculator-thailand-production.up.railway.app';
     <title>{title}</title>
 
     <!-- AdSense placeholder -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXX" crossorigin="anonymous"></script> -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
     <style>
       /* Smooth gradient background */
@@ -60,9 +86,9 @@ const siteUrl = 'https://calculator-thailand-production.up.railway.app';
     <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
       <nav class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         <a href="/" class="flex items-center gap-2 group">
-          <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+          <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
           <div>
@@ -71,7 +97,7 @@ const siteUrl = 'https://calculator-thailand-production.up.railway.app';
           </div>
         </a>
         <div class="flex items-center gap-1 text-sm">
-          <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium text-xs">
+          <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium">
             ฟรี 100%
           </span>
         </div>
@@ -82,20 +108,26 @@ const siteUrl = 'https://calculator-thailand-production.up.railway.app';
       <slot />
     </main>
 
-    <footer class="bg-white border-t border-gray-100 mt-auto">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    <footer class="mt-auto border-t border-gray-100 bg-white/60">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-primary-700 rounded-md flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <span class="text-sm font-medium text-gray-600">เครื่องคำนวณไทย</span>
+            <span class="text-sm font-semibold text-gray-700">เครื่องคำนวณไทย</span>
           </div>
-          <p class="text-xs text-gray-400 text-center sm:text-right max-w-md">
-            © {new Date().getFullYear()} เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น ไม่ใช่คำแนะนำทางการเงินหรือกฎหมาย
-          </p>
+          <nav class="flex flex-wrap gap-4 text-sm text-gray-500">
+            <a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a>
+            <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="hover:text-primary-600 transition-colors">คำนวณภาษี</a>
+            <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="hover:text-primary-600 transition-colors">VAT 7%</a>
+            <a href="/คำนวณผ่อนกู้/" class="hover:text-primary-600 transition-colors">ผ่อนกู้</a>
+            <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
+            <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
+          </nav>
+          <p class="text-xs text-gray-400">© 2026 เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
         </div>
       </div>
     </footer>
