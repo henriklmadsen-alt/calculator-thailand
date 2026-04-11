@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const siteUrl = 'https://calculator-thailand.up.railway.app';
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+
+    <!-- AdSense placeholder -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXX" crossorigin="anonymous"></script> -->
+  </head>
+  <body class="font-thai bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+      <nav class="max-w-4xl mx-auto px-4 py-3">
+        <a href="/" class="text-xl font-bold text-primary-600 hover:text-primary-700">
+          เครื่องคำนวณไทย
+        </a>
+      </nav>
+    </header>
+
+    <main class="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
+      <slot />
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+      <div class="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
+        <p>© {new Date().getFullYear()} เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น ไม่ใช่คำแนะนำทางการเงินหรือกฎหมาย</p>
+      </div>
+    </footer>
+  </body>
+</html>
