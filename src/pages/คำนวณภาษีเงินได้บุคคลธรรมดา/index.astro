@@ -1,0 +1,573 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณภาษีเงินได้บุคคลธรรมดา 2567 — เครื่องคำนวณภาษีออนไลน์ฟรี';
+const pageDescription = 'คำนวณภาษีเงินได้บุคคลธรรมดาปี 2567 (2024) ตามขั้นบันไดภาษี พร้อมค่าลดหย่อนครบถ้วน คำนวณภาษีรายเดือน อัตราภาษีที่แท้จริง ใช้งานฟรี';
+const siteUrl = 'https://calculator-thailand.up.railway.app';
+const canonical = `${siteUrl}/คำนวณภาษีเงินได้บุคคลธรรมดา/`;
+
+const faqData = [
+  {
+    question: 'ภาษีเงินได้บุคคลธรรมดาคำนวณอย่างไร?',
+    answer: 'ภาษีเงินได้บุคคลธรรมดาคำนวณจากรายได้สุทธิ (รายได้ - ค่าใช้จ่าย - ค่าลดหย่อน) แล้วนำไปคำนวณตามอัตราภาษีแบบขั้นบันได ตั้งแต่ 0% ถึง 35% ตามช่วงรายได้สุทธิ',
+  },
+  {
+    question: 'ค่าลดหย่อนส่วนตัวปี 2567 เป็นเท่าไร?',
+    answer: 'ค่าลดหย่อนส่วนตัวปี 2567 คือ 60,000 บาท สำหรับผู้มีเงินได้ทุกคน นอกจากนี้ยังมีค่าลดหย่อนคู่สมรส 60,000 บาท และค่าลดหย่อนบุตร 30,000 บาทต่อคน',
+  },
+  {
+    question: 'รายได้เท่าไรจึงต้องเสียภาษี?',
+    answer: 'หลังหักค่าใช้จ่ายและค่าลดหย่อนแล้ว หากรายได้สุทธิไม่เกิน 150,000 บาทต่อปี จะได้รับการยกเว้นภาษี (อัตรา 0%) รายได้สุทธิส่วนที่เกิน 150,000 บาท จึงเริ่มเสียภาษีในอัตรา 5%',
+  },
+  {
+    question: 'ประกันสังคมลดหย่อนภาษีได้สูงสุดเท่าไร?',
+    answer: 'เงินสมทบประกันสังคมสามารถนำมาลดหย่อนภาษีได้ตามจริง สูงสุดไม่เกิน 9,000 บาทต่อปี',
+  },
+  {
+    question: 'ค่าใช้จ่ายหักเหมาเป็นเท่าไร?',
+    answer: 'ผู้มีเงินได้ประเภทเงินเดือน (40(1)) สามารถหักค่าใช้จ่ายเหมาได้ 50% ของรายได้ แต่ไม่เกิน 100,000 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีเงินได้บุคคลธรรมดา 2567',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'THB',
+  },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณภาษีเงินได้บุคคลธรรมดา 2567
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณภาษีเงินได้ตามอัตราขั้นบันไดปี 2567 (2024) พร้อมค่าลดหย่อนครบถ้วน
+      ดูผลลัพธ์ทันที ใช้งานฟรี ไม่ต้องสมัครสมาชิก
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรายได้และค่าลดหย่อน</h2>
+
+      <form id="tax-form" class="space-y-6">
+        <!-- Income Section -->
+        <div>
+          <label for="monthly-salary" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินเดือน (บาท/เดือน)
+          </label>
+          <input
+            type="text"
+            id="monthly-salary"
+            inputmode="numeric"
+            placeholder="เช่น 35,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="other-income" class="block text-sm font-medium text-gray-700 mb-1">
+            รายได้อื่นๆ ต่อปี (บาท) <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+          </label>
+          <input
+            type="text"
+            id="other-income"
+            inputmode="numeric"
+            placeholder="เช่น 50,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <!-- Allowances Section -->
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-3">ค่าลดหย่อน</legend>
+          <div class="space-y-3">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" id="personal-allowance" checked class="w-4 h-4 text-primary-600 rounded" />
+              <span class="text-sm text-gray-700">ค่าลดหย่อนส่วนตัว 60,000 บาท</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" id="spouse-allowance" class="w-4 h-4 text-primary-600 rounded" />
+              <span class="text-sm text-gray-700">ค่าลดหย่อนคู่สมรส 60,000 บาท</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <label for="child-count" class="text-sm text-gray-700">จำนวนบุตร (30,000 บาท/คน)</label>
+              <input
+                type="number"
+                id="child-count"
+                min="0"
+                max="10"
+                value="0"
+                class="w-16 px-2 py-1 border border-gray-300 rounded-md text-center text-base"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Insurance & Funds -->
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-3">ประกัน & กองทุน</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="social-security" class="block text-sm text-gray-700 mb-1">
+                ประกันสังคม (สูงสุด 9,000)
+              </label>
+              <input
+                type="text"
+                id="social-security"
+                inputmode="numeric"
+                placeholder="เช่น 9,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="life-insurance" class="block text-sm text-gray-700 mb-1">
+                ประกันชีวิต (สูงสุด 100,000)
+              </label>
+              <input
+                type="text"
+                id="life-insurance"
+                inputmode="numeric"
+                placeholder="เช่น 50,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="health-insurance" class="block text-sm text-gray-700 mb-1">
+                ประกันสุขภาพ (สูงสุด 25,000)
+              </label>
+              <input
+                type="text"
+                id="health-insurance"
+                inputmode="numeric"
+                placeholder="เช่น 15,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="provident-fund" class="block text-sm text-gray-700 mb-1">
+                กองทุนสำรองเลี้ยงชีพ (สูงสุด 10,000)
+              </label>
+              <input
+                type="text"
+                id="provident-fund"
+                inputmode="numeric"
+                placeholder="เช่น 10,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Other Deductions -->
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-3">ค่าลดหย่อนอื่นๆ</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="home-loan" class="block text-sm text-gray-700 mb-1">
+                ดอกเบี้ยบ้าน (สูงสุด 100,000)
+              </label>
+              <input
+                type="text"
+                id="home-loan"
+                inputmode="numeric"
+                placeholder="เช่น 80,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="donation" class="block text-sm text-gray-700 mb-1">
+                เงินบริจาค
+              </label>
+              <input
+                type="text"
+                id="donation"
+                inputmode="numeric"
+                placeholder="เช่น 5,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณภาษี
+        </button>
+      </form>
+    </div>
+
+    <!-- Results (hidden until calculation) -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณภาษี</h2>
+
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีต่อปี</div>
+            <div id="result-annual-tax" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีต่อเดือน</div>
+            <div id="result-monthly-tax" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินสุทธิต่อเดือน</div>
+            <div id="result-monthly-take-home" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราภาษีที่แท้จริง</div>
+            <div id="result-effective-rate" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Detail Breakdown -->
+        <div class="space-y-2 text-sm mb-6">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">รายได้ต่อปี</span>
+            <span id="result-annual-income" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">หักค่าใช้จ่าย (50% สูงสุด 100,000)</span>
+            <span id="result-expense" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">หักค่าลดหย่อน</span>
+            <span id="result-allowances" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-200 font-semibold">
+            <span class="text-gray-900">รายได้สุทธิ</span>
+            <span id="result-net-income">-</span>
+          </div>
+        </div>
+
+        <!-- Tax Bracket Table -->
+        <h3 class="text-sm font-semibold text-gray-900 mb-2">รายละเอียดขั้นบันไดภาษี</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-2">ช่วงรายได้สุทธิ</th>
+                <th class="py-2 pr-2 text-right">อัตรา</th>
+                <th class="py-2 pr-2 text-right">เงินได้ในช่วง</th>
+                <th class="py-2 text-right">ภาษี</th>
+              </tr>
+            </thead>
+            <tbody id="bracket-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณภาษีเงินได้บุคคลธรรมดา ปี 2567</h2>
+
+      <p>
+        ภาษีเงินได้บุคคลธรรมดา เป็นภาษีที่จัดเก็บจากบุคคลที่มีรายได้ถึงเกณฑ์ที่กำหนด โดยกรมสรรพากร
+        กำหนดให้ใช้ระบบภาษีแบบขั้นบันได (Progressive Tax) ซึ่งหมายความว่ายิ่งมีรายได้สุทธิสูง
+        อัตราภาษีก็จะสูงขึ้นตามลำดับ ตั้งแต่ 0% สำหรับรายได้สุทธิไม่เกิน 150,000 บาท ไปจนถึง 35%
+        สำหรับรายได้สุทธิที่เกิน 5,000,000 บาท
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ขั้นตอนการคำนวณภาษี</h3>
+
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>
+          <strong>คำนวณรายได้ต่อปี</strong> — นำเงินเดือนคูณ 12 เดือน รวมกับโบนัสและรายได้อื่นๆ
+        </li>
+        <li>
+          <strong>หักค่าใช้จ่าย</strong> — สำหรับผู้มีเงินเดือน หักได้ 50% ของรายได้ แต่ไม่เกิน 100,000 บาท
+        </li>
+        <li>
+          <strong>หักค่าลดหย่อน</strong> — ค่าลดหย่อนส่วนตัว คู่สมรส บุตร ประกันสังคม ประกันชีวิต กองทุนสำรอง
+          ดอกเบี้ยบ้าน เงินบริจาค ฯลฯ
+        </li>
+        <li>
+          <strong>ได้รายได้สุทธิ</strong> — นำรายได้ลบค่าใช้จ่ายและค่าลดหย่อนทั้งหมด
+        </li>
+        <li>
+          <strong>คำนวณภาษีตามขั้นบันได</strong> — นำรายได้สุทธิไปคำนวณตามอัตราภาษีแต่ละช่วง
+        </li>
+      </ol>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราภาษีเงินได้บุคคลธรรมดา ปี 2567</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left border-b">รายได้สุทธิ (บาท)</th>
+              <th class="px-3 py-2 text-right border-b">อัตราภาษี</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="px-3 py-2 border-b">0 — 150,000</td><td class="px-3 py-2 text-right border-b">ยกเว้น</td></tr>
+            <tr><td class="px-3 py-2 border-b">150,001 — 300,000</td><td class="px-3 py-2 text-right border-b">5%</td></tr>
+            <tr><td class="px-3 py-2 border-b">300,001 — 500,000</td><td class="px-3 py-2 text-right border-b">10%</td></tr>
+            <tr><td class="px-3 py-2 border-b">500,001 — 750,000</td><td class="px-3 py-2 text-right border-b">15%</td></tr>
+            <tr><td class="px-3 py-2 border-b">750,001 — 1,000,000</td><td class="px-3 py-2 text-right border-b">20%</td></tr>
+            <tr><td class="px-3 py-2 border-b">1,000,001 — 2,000,000</td><td class="px-3 py-2 text-right border-b">25%</td></tr>
+            <tr><td class="px-3 py-2 border-b">2,000,001 — 5,000,000</td><td class="px-3 py-2 text-right border-b">30%</td></tr>
+            <tr><td class="px-3 py-2">5,000,001 ขึ้นไป</td><td class="px-3 py-2 text-right">35%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าลดหย่อนที่นิยมใช้ ปี 2567</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าลดหย่อนส่วนตัว: 60,000 บาท</li>
+        <li>คู่สมรส (ไม่มีรายได้): 60,000 บาท</li>
+        <li>บุตร: 30,000 บาทต่อคน</li>
+        <li>ประกันสังคม: ตามจริง สูงสุด 9,000 บาท</li>
+        <li>ประกันชีวิต: ตามจริง สูงสุด 100,000 บาท</li>
+        <li>ประกันสุขภาพ: ตามจริง สูงสุด 25,000 บาท</li>
+        <li>กองทุนสำรองเลี้ยงชีพ: ตามจริง สูงสุด 10,000 บาท</li>
+        <li>ดอกเบี้ยบ้าน: ตามจริง สูงสุด 100,000 บาท</li>
+      </ul>
+
+      <p class="mt-4">
+        เครื่องคำนวณภาษีนี้ช่วยให้คุณวางแผนภาษีได้ง่ายขึ้น เพียงกรอกข้อมูลรายได้และค่าลดหย่อน
+        ระบบจะคำนวณภาษีที่ต้องชำระ อัตราภาษีที่แท้จริง และเงินสุทธิหลังหักภาษีให้ทันที
+        ผลลัพธ์เป็นเพียงการประมาณการเท่านั้น ควรปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+      </p>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Calculators -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณ VAT</span>
+          <span class="text-gray-400 text-sm block">เร็วๆ นี้</span>
+        </a>
+        <a href="/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณเงินเดือนสุทธิ</span>
+          <span class="text-gray-400 text-sm block">เร็วๆ นี้</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย ข้อมูลอัตราภาษีอ้างอิงจากกรมสรรพากรปีภาษี 2567
+      กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับการวางแผนภาษีจริง
+    </div>
+  </article>
+
+  <!-- Calculator Script -->
+  <script>
+    interface TaxInput {
+      annualIncome: number;
+      personalAllowance: boolean;
+      spouseAllowance: boolean;
+      childCount: number;
+      socialSecurity: number;
+      lifeInsurance: number;
+      healthInsurance: number;
+      providentFund: number;
+      homeLoanInterest: number;
+      socialEnterprise: number;
+      otherDeductions: number;
+    }
+
+    interface BracketBreakdown {
+      min: number;
+      max: number;
+      rate: number;
+      taxableInBracket: number;
+      taxInBracket: number;
+    }
+
+    const TAX_BRACKETS = [
+      { min: 0, max: 150_000, rate: 0 },
+      { min: 150_000, max: 300_000, rate: 0.05 },
+      { min: 300_000, max: 500_000, rate: 0.10 },
+      { min: 500_000, max: 750_000, rate: 0.15 },
+      { min: 750_000, max: 1_000_000, rate: 0.20 },
+      { min: 1_000_000, max: 2_000_000, rate: 0.25 },
+      { min: 2_000_000, max: 5_000_000, rate: 0.30 },
+      { min: 5_000_000, max: Infinity, rate: 0.35 },
+    ];
+
+    function parseNumber(value: string): number {
+      return Math.max(0, parseFloat(value.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number, decimals = 2): string {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      }).format(num);
+    }
+
+    function formatThaiCompact(num: number): string {
+      if (num === Infinity) return '∞';
+      if (num >= 1_000_000) return formatThai(num / 1_000_000, 0) + ' ล้าน';
+      if (num >= 1_000) return formatThai(num / 1_000, 0) + ' พัน';
+      return formatThai(num, 0);
+    }
+
+    function calculateTax(input: TaxInput) {
+      const annualIncome = input.annualIncome;
+      const expenseDeduction = Math.min(annualIncome * 0.5, 100_000);
+
+      let allowances = 0;
+      if (input.personalAllowance) allowances += 60_000;
+      if (input.spouseAllowance) allowances += 60_000;
+      allowances += input.childCount * 30_000;
+      allowances += Math.min(input.socialSecurity, 9_000);
+      allowances += Math.min(input.lifeInsurance, 100_000);
+      allowances += Math.min(input.healthInsurance, 25_000);
+      allowances += Math.min(input.providentFund, 10_000);
+      allowances += Math.min(input.homeLoanInterest, 100_000);
+      allowances += input.socialEnterprise;
+      allowances += input.otherDeductions;
+
+      const netIncome = Math.max(0, annualIncome - expenseDeduction - allowances);
+
+      let remaining = netIncome;
+      let totalTax = 0;
+      const breakdown: BracketBreakdown[] = [];
+
+      for (const bracket of TAX_BRACKETS) {
+        const width = bracket.max === Infinity ? Infinity : bracket.max - bracket.min;
+        const taxable = Math.min(remaining, width);
+        const tax = taxable * bracket.rate;
+        breakdown.push({ ...bracket, taxableInBracket: taxable, taxInBracket: tax });
+        totalTax += tax;
+        remaining -= taxable;
+        if (remaining <= 0) break;
+      }
+
+      return {
+        annualIncome,
+        expenseDeduction,
+        allowances,
+        netIncome,
+        annualTax: totalTax,
+        monthlyTax: totalTax / 12,
+        effectiveRate: annualIncome > 0 ? (totalTax / annualIncome) * 100 : 0,
+        takeHomePay: annualIncome - totalTax,
+        monthlyTakeHome: (annualIncome - totalTax) / 12,
+        breakdown,
+      };
+    }
+
+    const form = document.getElementById('tax-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const monthlySalary = parseNumber((document.getElementById('monthly-salary') as HTMLInputElement).value);
+      const otherIncome = parseNumber((document.getElementById('other-income') as HTMLInputElement).value);
+
+      if (monthlySalary <= 0) {
+        (document.getElementById('monthly-salary') as HTMLInputElement).focus();
+        return;
+      }
+
+      const input: TaxInput = {
+        annualIncome: monthlySalary * 12 + otherIncome,
+        personalAllowance: (document.getElementById('personal-allowance') as HTMLInputElement).checked,
+        spouseAllowance: (document.getElementById('spouse-allowance') as HTMLInputElement).checked,
+        childCount: parseInt((document.getElementById('child-count') as HTMLInputElement).value) || 0,
+        socialSecurity: parseNumber((document.getElementById('social-security') as HTMLInputElement).value),
+        lifeInsurance: parseNumber((document.getElementById('life-insurance') as HTMLInputElement).value),
+        healthInsurance: parseNumber((document.getElementById('health-insurance') as HTMLInputElement).value),
+        providentFund: parseNumber((document.getElementById('provident-fund') as HTMLInputElement).value),
+        homeLoanInterest: parseNumber((document.getElementById('home-loan') as HTMLInputElement).value),
+        socialEnterprise: parseNumber((document.getElementById('donation') as HTMLInputElement).value),
+        otherDeductions: 0,
+      };
+
+      const result = calculateTax(input);
+
+      // Update summary cards
+      (document.getElementById('result-annual-tax') as HTMLElement).textContent = formatThai(result.annualTax) + ' บาท';
+      (document.getElementById('result-monthly-tax') as HTMLElement).textContent = formatThai(result.monthlyTax) + ' บาท';
+      (document.getElementById('result-monthly-take-home') as HTMLElement).textContent = formatThai(result.monthlyTakeHome) + ' บาท';
+      (document.getElementById('result-effective-rate') as HTMLElement).textContent = formatThai(result.effectiveRate) + '%';
+
+      // Update detail breakdown
+      (document.getElementById('result-annual-income') as HTMLElement).textContent = formatThai(result.annualIncome) + ' บาท';
+      (document.getElementById('result-expense') as HTMLElement).textContent = '-' + formatThai(result.expenseDeduction) + ' บาท';
+      (document.getElementById('result-allowances') as HTMLElement).textContent = '-' + formatThai(result.allowances) + ' บาท';
+      (document.getElementById('result-net-income') as HTMLElement).textContent = formatThai(result.netIncome) + ' บาท';
+
+      // Update bracket table
+      const tbody = document.getElementById('bracket-table-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      for (const b of result.breakdown) {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-100';
+        const maxLabel = b.max === Infinity ? '5,000,001+' : formatThai(b.min, 0) + ' — ' + formatThai(b.max, 0);
+        row.innerHTML = `
+          <td class="py-2 pr-2 text-gray-700">${b.max === Infinity ? '5,000,001 ขึ้นไป' : formatThai(b.min, 0) + ' — ' + formatThai(b.max, 0)}</td>
+          <td class="py-2 pr-2 text-right">${b.rate === 0 ? 'ยกเว้น' : (b.rate * 100) + '%'}</td>
+          <td class="py-2 pr-2 text-right">${formatThai(b.taxableInBracket, 0)}</td>
+          <td class="py-2 text-right font-medium">${formatThai(b.taxInBracket)}</td>
+        `;
+        tbody.appendChild(row);
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>
