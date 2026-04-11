@@ -4,5 +4,6 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   output: 'static',
   integrations: [tailwind()],
-  site: 'https://calculator-thailand.up.railway.app',
+  site: 'https://henriklmadsen-alt.github.io',
+  base: '/calculator-thailand',
 });
