@@ -4,12 +4,31 @@ interface Props {
   description: string;
   canonical?: string;
   ogImage?: string;
+  pageName?: string;
 }
 
-const { title, description, canonical, ogImage } = Astro.props;
+const { title, description, canonical, ogImage, pageName } = Astro.props;
 const siteUrl = 'https://calculator-thailand-production.up.railway.app';
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
+
+const breadcrumbJsonLd = pageName ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "หน้าแรก",
+      "item": siteUrl + "/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": pageName
+    }
+  ]
+}) : null;
 ---
 
 <!doctype html>
@@ -51,6 +70,7 @@ const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
       rel="stylesheet"
     />
     <title>{title}</title>
+    {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
 
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -142,7 +162,10 @@ const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
             <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="hover:text-primary-600 transition-colors">คำนวณภาษี</a>
             <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="hover:text-primary-600 transition-colors">VAT 7%</a>
             <a href="/คำนวณผ่อนกู้/" class="hover:text-primary-600 transition-colors">ผ่อนกู้</a>
+            <a href="/คำนวณผ่อนรถ/" class="hover:text-primary-600 transition-colors">ผ่อนรถ</a>
+            <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="hover:text-primary-600 transition-colors">ดอกเบี้ยเงินฝาก</a>
             <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
+            <a href="/คำนวณอายุ/" class="hover:text-primary-600 transition-colors">คำนวณอายุ</a>
             <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
           </nav>
           <p class="text-xs text-gray-400">© 2026 เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น</p>

@@ -1,6 +1,6 @@
 /**
  * Thai Personal Income Tax Calculator (ภาษีเงินได้บุคคลธรรมดา)
- * Tax year 2024/2567 progressive brackets
+ * Tax year 2026/2569 progressive brackets
  */
 
 export interface TaxInput {
@@ -38,7 +38,7 @@ export interface BracketBreakdown {
   taxInBracket: number;
 }
 
-// 2024/2567 Thai personal income tax brackets
+// 2026/2569 Thai personal income tax brackets
 const TAX_BRACKETS: { min: number; max: number; rate: number }[] = [
   { min: 0, max: 150_000, rate: 0 },
   { min: 150_000, max: 300_000, rate: 0.05 },
