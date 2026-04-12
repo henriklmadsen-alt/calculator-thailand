@@ -401,6 +401,7 @@ const jsonLdFaq = {
       (document.getElementById('res-effective-rate') as HTMLElement).textContent = r.effectiveRate.toFixed(2) + '%';
 
       (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('net_salary');
     });
 
     // Allow Enter key
@@ -410,5 +411,16 @@ const jsonLdFaq = {
         document.getElementById('btn-calculate')!.click();
       }
     });
+
+    // Track when result section enters viewport
+    const salaryResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('net_salary');
+          salaryResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    salaryResultObserver.observe(document.getElementById('result')!);
   </script>
 </BaseLayout>

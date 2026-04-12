@@ -52,6 +52,23 @@ const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
     />
     <title>{title}</title>
 
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+
+      // Shared GA4 custom event helpers
+      function trackCalculatorUsed(calculatorType) {
+        gtag('event', 'calculator_used', { calculator_type: calculatorType });
+      }
+      function trackResultViewed(calculatorType) {
+        gtag('event', 'result_viewed', { calculator_type: calculatorType });
+      }
+    </script>
+
     <!-- AdSense placeholder -->
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 

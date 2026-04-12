@@ -329,6 +329,7 @@ const jsonLdFaq = {
       (document.getElementById('res-vat') as HTMLElement).textContent = fmt(r.vat) + ' บาท';
       (document.getElementById('res-total') as HTMLElement).textContent = fmt(r.total) + ' บาท';
       (document.getElementById('single-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('vat');
     });
 
     // Allow Enter key on single input
@@ -379,6 +380,19 @@ const jsonLdFaq = {
       `;
 
       (document.getElementById('batch-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('vat');
     });
+
+    // Track when result sections enter viewport
+    const vatResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('vat');
+          vatResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    vatResultObserver.observe(document.getElementById('single-result')!);
+    vatResultObserver.observe(document.getElementById('batch-result')!);
   </script>
 </BaseLayout>

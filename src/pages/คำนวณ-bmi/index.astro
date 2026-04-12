@@ -375,6 +375,7 @@ const jsonLdFaq = {
         `สำหรับส่วนสูง ${height} ซม. น้ำหนักที่เหมาะสม (BMI 18.5–22.9) คือ ${fmt.format(range.min)} – ${fmt.format(range.max)} กก.`;
 
       (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('bmi');
     });
 
     // Allow Enter key
@@ -386,5 +387,16 @@ const jsonLdFaq = {
         }
       });
     });
+
+    // Track when result section enters viewport
+    const bmiResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('bmi');
+          bmiResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    bmiResultObserver.observe(document.getElementById('result')!);
   </script>
 </BaseLayout>
