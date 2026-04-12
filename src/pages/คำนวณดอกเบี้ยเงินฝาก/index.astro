@@ -1,0 +1,460 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณดอกเบี้ยเงินฝาก — เครื่องคำนวณดอกเบี้ยออนไลน์ฟรี';
+const pageDescription = 'คำนวณดอกเบี้ยเงินฝากประจำและเงินฝากออมทรัพย์ พร้อมหักภาษี ณ ที่จ่าย 15% แสดงผลตอบแทนสุทธิ ตารางดอกเบี้ยรายเดือน';
+const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const canonical = `${siteUrl}/คำนวณดอกเบี้ยเงินฝาก/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ยเงินฝากถูกหักภาษีกี่เปอร์เซ็นต์?',
+    answer: 'ดอกเบี้ยเงินฝากในไทยถูกหักภาษี ณ ที่จ่าย 15% ยกเว้นเงินฝากออมทรัพย์ที่ดอกเบี้ยรวมไม่เกิน 20,000 บาทต่อปี จะได้รับยกเว้นภาษี เครื่องคำนวณนี้คิดภาษี 15% ในทุกกรณีเพื่อแสดงผลตอบแทนขั้นต่ำ',
+  },
+  {
+    question: 'ฝากประจำกับออมทรัพย์ต่างกันอย่างไร?',
+    answer: 'เงินฝากประจำมีอัตราดอกเบี้ยสูงกว่าแต่ต้องฝากตามระยะเวลาที่กำหนด (3, 6, 12 เดือน) หากถอนก่อนครบกำหนดจะเสียดอกเบี้ย ส่วนออมทรัพย์ดอกเบี้ยต่ำกว่าแต่ถอนได้ตลอดเวลา',
+  },
+  {
+    question: 'ดอกเบี้ยเงินฝากประจำปี 2567 กี่เปอร์เซ็นต์?',
+    answer: 'ดอกเบี้ยเงินฝากประจำ 12 เดือนในไทยปี 2567 อยู่ที่ประมาณ 1.5-2.5% ต่อปี ขึ้นอยู่กับธนาคารและจำนวนเงิน บางธนาคารมีโปรโมชันพิเศษสำหรับยอดฝากสูง',
+  },
+  {
+    question: 'ดอกเบี้ยทบต้นคืออะไร?',
+    answer: 'ดอกเบี้ยทบต้น (compound interest) คือการนำดอกเบี้ยที่ได้รับกลับไปรวมเป็นเงินต้นเพื่อคำนวณดอกเบี้ยในงวดถัดไป ทำให้เงินเติบโตเร็วขึ้นเมื่อเวลาผ่านไป เงินฝากออมทรัพย์มักใช้วิธีทบต้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณดอกเบี้ยเงินฝาก',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณดอกเบี้ยเงินฝาก — ฝากประจำ ออมทรัพย์ ดอกเบี้ยสุทธิ
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณดอกเบี้ยเงินฝากประจำและออมทรัพย์ หักภาษี ณ ที่จ่าย 15% อัตโนมัติ พร้อมตารางดอกเบี้ยรายเดือน
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="deposit-form" class="space-y-5">
+        <!-- Deposit Type Toggle -->
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-2">ประเภทเงินฝาก</legend>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="deposit-type" value="fixed" checked class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">ฝากประจำ</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="deposit-type" value="savings" class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">ออมทรัพย์ (ฝากเพิ่มรายเดือน)</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนเงินฝากเริ่มต้น (บาท)
+          </label>
+          <input
+            type="text"
+            id="principal"
+            inputmode="numeric"
+            placeholder="เช่น 100,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div id="monthly-deposit-group" class="hidden">
+          <label for="monthly-deposit" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินฝากเพิ่มรายเดือน (บาท)
+          </label>
+          <input
+            type="text"
+            id="monthly-deposit"
+            inputmode="numeric"
+            placeholder="เช่น 5,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="interest-rate"
+              inputmode="decimal"
+              placeholder="เช่น 2.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="term-months" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาฝาก (เดือน)
+            </label>
+            <select
+              id="term-months"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="3">3 เดือน</option>
+              <option value="6">6 เดือน</option>
+              <option value="12" selected>12 เดือน (1 ปี)</option>
+              <option value="24">24 เดือน (2 ปี)</option>
+              <option value="36">36 เดือน (3 ปี)</option>
+              <option value="60">60 เดือน (5 ปี)</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณดอกเบี้ย
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยสุทธิ</div>
+            <div id="res-net-interest" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดเงินรวม</div>
+            <div id="res-total" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีหัก ณ ที่จ่าย (15%)</div>
+            <div id="res-tax" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนสุทธิ</div>
+            <div id="res-effective-rate" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Summary Details -->
+        <div class="space-y-2 text-sm mb-6">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินฝากเริ่มต้น</span>
+            <span id="res-principal" class="font-medium">-</span>
+          </div>
+          <div id="res-monthly-row" class="flex justify-between py-1 border-b border-gray-100 hidden">
+            <span class="text-gray-600">ฝากเพิ่มรายเดือน</span>
+            <span id="res-monthly-deposit" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินฝากรวม</span>
+            <span id="res-total-deposited" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราดอกเบี้ย</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ระยะเวลา</span>
+            <span id="res-term" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ดอกเบี้ยก่อนหักภาษี</span>
+            <span id="res-gross-interest" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <!-- Interest Schedule -->
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางดอกเบี้ยรายเดือน (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">เดือนที่</th>
+                  <th class="py-2 pr-2 text-right">เงินฝาก</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ยสะสม</th>
+                  <th class="py-2 text-right">ยอมรวม</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณดอกเบี้ยเงินฝาก</h2>
+
+      <p>
+        การฝากเงินเป็นวิธีออมเงินที่ปลอดภัยที่สุด ดอกเบี้ยเงินฝากถูกค้ำประกันโดยสถาบันคุ้มครองเงินฝาก (สคฝ.)
+        เครื่องคำนวณนี้ช่วยให้คุณเปรียบเทียบผลตอบแทนจากเงินฝากประจำและออมทรัพย์
+        โดยหักภาษี ณ ที่จ่าย 15% อัตโนมัติเพื่อแสดงดอกเบี้ยสุทธิที่ได้รับจริง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เงินฝากประจำ</h3>
+
+      <p>
+        เงินฝากประจำคำนวณดอกเบี้ยจากเงินต้นที่ฝาก ดอกเบี้ยจ่ายเมื่อครบกำหนด
+        สูตร: ดอกเบี้ย = เงินต้น × อัตราดอกเบี้ย × (จำนวนเดือน ÷ 12)
+        ดอกเบี้ยสุทธิ = ดอกเบี้ย × (1 − 0.15)
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เงินฝากออมทรัพย์ (ทบต้น)</h3>
+
+      <p>
+        เงินฝากออมทรัพย์คำนวณดอกเบี้ยทบต้นรายเดือน ดอกเบี้ยที่ได้รับจะถูกนำกลับมารวมเป็นเงินต้น
+        หากฝากเพิ่มทุกเดือน ยอมรวมจะเติบโตเร็วขึ้นจากทั้งเงินฝากใหม่และดอกเบี้ยทบต้น
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ภาษีหัก ณ ที่จ่าย 15%</h3>
+
+      <p>
+        ดอกเบี้ยเงินฝากทุกประเภทถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้น:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เงินฝากออมทรัพย์ดอกเบี้ยรวมไม่เกิน 20,000 บาท/ปี ได้รับยกเว้น</li>
+        <li>เงินฝากประจำบางประเภทที่มีเงื่อนไขพิเศษ</li>
+      </ul>
+      <p>
+        เครื่องคำนวณนี้คิดภาษี 15% ทุกกรณีเพื่อแสดงผลตอบแทนขั้นต่ำที่คุณจะได้รับ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>ฝากประจำ 100,000 บาท ดอกเบี้ย 2% ต่อปี ระยะเวลา 12 เดือน:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ดอกเบี้ยก่อนหักภาษี: 100,000 × 2% × 1 = <strong>2,000 บาท</strong></li>
+        <li>ภาษีหัก ณ ที่จ่าย: 2,000 × 15% = <strong>300 บาท</strong></li>
+        <li>ดอกเบี้ยสุทธิ: 2,000 − 300 = <strong>1,700 บาท</strong></li>
+        <li>ยอดรวมเมื่อครบกำหนด: <strong>101,700 บาท</strong></li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณผ่อนกู้/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณผ่อนกู้</span>
+          <span class="text-gray-400 text-sm block">สินเชื่อบ้าน รถ ส่วนบุคคล</span>
+        </a>
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้</span>
+          <span class="text-gray-400 text-sm block">ภาษีเงินได้ตามขั้นบันได 2567</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      อัตราดอกเบี้ยจริงอาจแตกต่างตามเงื่อนไขของธนาคาร ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const WITHHOLDING_TAX = 0.15;
+
+    // Toggle monthly deposit field
+    const depositTypeRadios = document.querySelectorAll('input[name="deposit-type"]');
+    const monthlyGroup = document.getElementById('monthly-deposit-group') as HTMLElement;
+
+    depositTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        const val = (document.querySelector('input[name="deposit-type"]:checked') as HTMLInputElement).value;
+        if (val === 'savings') {
+          monthlyGroup.classList.remove('hidden');
+        } else {
+          monthlyGroup.classList.add('hidden');
+        }
+      });
+    });
+
+    const form = document.getElementById('deposit-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const principal = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const annualRate = parseFloat((document.getElementById('interest-rate') as HTMLInputElement).value.replace(/,/g, '')) || 0;
+      const termMonths = parseInt((document.getElementById('term-months') as HTMLSelectElement).value) || 12;
+      const depositType = (document.querySelector('input[name="deposit-type"]:checked') as HTMLInputElement).value;
+      const monthlyDeposit = depositType === 'savings' ? parseNum((document.getElementById('monthly-deposit') as HTMLInputElement).value) : 0;
+
+      if (principal <= 0) { (document.getElementById('principal') as HTMLInputElement).focus(); return; }
+
+      const monthlyRate = annualRate / 100 / 12;
+      let balance = principal;
+      let cumulativeDeposit = principal;
+      let cumulativeInterest = 0;
+
+      interface ScheduleRow {
+        month: number;
+        deposit: number;
+        interest: number;
+        cumInterest: number;
+        balance: number;
+      }
+
+      const schedule: ScheduleRow[] = [];
+
+      if (depositType === 'fixed') {
+        for (let m = 1; m <= termMonths; m++) {
+          const interest = principal * monthlyRate;
+          cumulativeInterest += interest;
+          schedule.push({
+            month: m,
+            deposit: m === 1 ? principal : 0,
+            interest,
+            cumInterest: cumulativeInterest,
+            balance: principal + cumulativeInterest,
+          });
+        }
+      } else {
+        for (let m = 1; m <= termMonths; m++) {
+          const interest = balance * monthlyRate;
+          cumulativeInterest += interest;
+          balance += interest;
+          if (m > 1 && monthlyDeposit > 0) {
+            balance += monthlyDeposit;
+            cumulativeDeposit += monthlyDeposit;
+          }
+          schedule.push({
+            month: m,
+            deposit: m === 1 ? principal : monthlyDeposit,
+            interest,
+            cumInterest: cumulativeInterest,
+            balance,
+          });
+        }
+      }
+
+      const grossInterest = cumulativeInterest;
+      const tax = grossInterest * WITHHOLDING_TAX;
+      const netInterest = grossInterest - tax;
+      const totalAmount = cumulativeDeposit + netInterest;
+      const effectiveRate = cumulativeDeposit > 0 ? (netInterest / cumulativeDeposit) / (termMonths / 12) * 100 : 0;
+
+      // Update UI
+      (document.getElementById('res-net-interest') as HTMLElement).textContent = fmt(netInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalAmount) + ' บาท';
+      (document.getElementById('res-tax') as HTMLElement).textContent = fmt(tax) + ' บาท';
+      (document.getElementById('res-effective-rate') as HTMLElement).textContent = effectiveRate.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-principal') as HTMLElement).textContent = fmt(principal) + ' บาท';
+      (document.getElementById('res-total-deposited') as HTMLElement).textContent = fmt(cumulativeDeposit) + ' บาท';
+      (document.getElementById('res-rate') as HTMLElement).textContent = annualRate.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-term') as HTMLElement).textContent = termMonths + ' เดือน';
+      (document.getElementById('res-gross-interest') as HTMLElement).textContent = fmt(grossInterest) + ' บาท';
+
+      const monthlyRow = document.getElementById('res-monthly-row') as HTMLElement;
+      if (depositType === 'savings' && monthlyDeposit > 0) {
+        (document.getElementById('res-monthly-deposit') as HTMLElement).textContent = fmt(monthlyDeposit) + ' บาท';
+        monthlyRow.classList.remove('hidden');
+      } else {
+        monthlyRow.classList.add('hidden');
+      }
+
+      // Schedule table
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      schedule.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${row.month}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.deposit)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.interest)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.cumInterest)}</td>
+          <td class="py-2 text-right">${fmt(row.balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('deposit');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('deposit');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

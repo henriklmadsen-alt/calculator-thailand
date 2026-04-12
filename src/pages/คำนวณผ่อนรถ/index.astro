@@ -1,0 +1,421 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณผ่อนรถ — เครื่องคำนวณค่างวดรถยนต์ออนไลน์ฟรี';
+const pageDescription = 'คำนวณค่าผ่อนรถยนต์ ค่างวดรถ เงินดาวน์ ดอกเบี้ยแบบคงที่ (flat rate) สำหรับสินเชื่อรถใหม่และรถมือสอง พร้อมตารางผ่อนชำระ';
+const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const canonical = `${siteUrl}/คำนวณผ่อนรถ/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ยรถยนต์ในไทยปี 2567 กี่เปอร์เซ็นต์?',
+    answer: 'ดอกเบี้ยสินเชื่อรถยนต์ใหม่ในไทยปี 2567 อยู่ที่ประมาณ 2.5-4% ต่อปี (flat rate) สำหรับรถใหม่ และ 4-7% สำหรับรถมือสอง ขึ้นอยู่กับยี่ห้อ รุ่น อายุรถ และเครดิตของผู้กู้',
+  },
+  {
+    question: 'เงินดาวน์รถควรจ่ายกี่เปอร์เซ็นต์?',
+    answer: 'โดยทั่วไปเงินดาวน์ขั้นต่ำอยู่ที่ 10-20% ของราคารถ แนะนำให้ดาวน์ 20-25% เพื่อลดภาระค่างวดและดอกเบี้ยรวม ดาวน์มากยิ่งจ่ายดอกเบี้ยน้อย',
+  },
+  {
+    question: 'ผ่อนรถกี่ปีดีที่สุด?',
+    answer: 'สินเชื่อรถยนต์ในไทยผ่อนได้ 4-7 ปี (48-84 งวด) ผ่อนสั้น 4 ปี ค่างวดสูงแต่ดอกเบี้ยน้อย ผ่อนยาว 6-7 ปี ค่างวดต่ำแต่ดอกเบี้ยรวมสูง แนะนำเลือกระยะเวลาที่ค่างวดไม่เกิน 30% ของรายได้',
+  },
+  {
+    question: 'ดอกเบี้ยแบบ flat rate กับ effective rate ต่างกันอย่างไร?',
+    answer: 'Flat rate คำนวณดอกเบี้ยจากเงินต้นเต็มจำนวนตลอดสัญญา ส่วน effective rate คือดอกเบี้ยที่แท้จริงเมื่อคิดจากยอดหนี้คงเหลือ Flat rate 3% เทียบเท่า effective rate ประมาณ 5.5-6% สินเชื่อรถยนต์ไทยใช้ flat rate เป็นหลัก',
+  },
+  {
+    question: 'ค่างวดรถไม่ควรเกินกี่เปอร์เซ็นต์ของเงินเดือน?',
+    answer: 'ค่างวดรถไม่ควรเกิน 15-20% ของรายได้ต่อเดือน และภาระหนี้ทั้งหมด (รถ + บ้าน + อื่นๆ) ไม่ควรเกิน 40% ของรายได้ เพื่อให้มีเงินเหลือใช้จ่ายและออมเพียงพอ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผ่อนรถ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณผ่อนรถ — คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าผ่อนรถยนต์รายเดือน เงินดาวน์ ดอกเบี้ยรวม ด้วยอัตราดอกเบี้ยแบบคงที่ (flat rate) ที่ใช้กับสินเชื่อรถยนต์ในไทย
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="vehicle-form" class="space-y-5">
+        <div>
+          <label for="car-price" class="block text-sm font-medium text-gray-700 mb-1">
+            ราคารถ (บาท)
+          </label>
+          <input
+            type="text"
+            id="car-price"
+            inputmode="numeric"
+            placeholder="เช่น 900,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="down-payment" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินดาวน์ (%)
+            </label>
+            <input
+              type="text"
+              id="down-payment"
+              inputmode="decimal"
+              placeholder="เช่น 20"
+              value="20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="interest-rate"
+              inputmode="decimal"
+              placeholder="เช่น 3.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="term-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาผ่อน (ปี)
+            </label>
+            <select
+              id="term-years"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="4">4 ปี (48 งวด)</option>
+              <option value="5" selected>5 ปี (60 งวด)</option>
+              <option value="6">6 ปี (72 งวด)</option>
+              <option value="7">7 ปี (84 งวด)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Down payment amount display -->
+        <div id="down-amount-display" class="text-sm text-gray-500 hidden">
+          เงินดาวน์: <span id="down-amount-text" class="font-medium text-gray-700"></span> บาท | ยอดจัด: <span id="finance-amount-text" class="font-medium text-gray-700"></span> บาท
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณค่างวด
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์</div>
+            <div id="res-down" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายทั้งหมด</div>
+            <div id="res-total-cost" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Summary Details -->
+        <div class="space-y-2 text-sm mb-6">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ราคารถ</span>
+            <span id="res-car-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินดาวน์</span>
+            <span id="res-down-detail" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดจัดไฟแนนซ์</span>
+            <span id="res-finance" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราดอกเบี้ย (flat rate)</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนงวด</span>
+            <span id="res-term" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดผ่อนรวม (เงินต้น+ดอกเบี้ย)</span>
+            <span id="res-total-paid" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <!-- Amortization Schedule -->
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางผ่อนชำระ (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">งวดที่</th>
+                  <th class="py-2 pr-2 text-right">ค่างวด</th>
+                  <th class="py-2 pr-2 text-right">เงินต้น</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
+                  <th class="py-2 text-right">ยอมคงเหลือ</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณค่าผ่อนรถยนต์</h2>
+
+      <p>
+        การซื้อรถยนต์เป็นการตัดสินใจทางการเงินครั้งใหญ่ เครื่องคำนวณผ่อนรถนี้ช่วยให้คุณวางแผนค่าใช้จ่ายก่อนตัดสินใจ
+        รองรับทั้งรถใหม่และรถมือสอง คำนวณด้วยอัตราดอกเบี้ยแบบคงที่ (flat rate) ซึ่งเป็นวิธีที่ไฟแนนซ์รถยนต์ในไทยใช้เป็นมาตรฐาน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่างวดรถ</h3>
+
+      <p>
+        สินเชื่อรถยนต์ในไทยใช้ดอกเบี้ยแบบ flat rate ซึ่งคำนวณดังนี้:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ยอดจัดไฟแนนซ์</strong> = ราคารถ − เงินดาวน์</li>
+        <li><strong>ดอกเบี้ยรวม</strong> = ยอดจัด × อัตราดอกเบี้ย × จำนวนปี</li>
+        <li><strong>ค่างวด</strong> = (ยอดจัด + ดอกเบี้ยรวม) ÷ จำนวนงวด</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        ซื้อรถราคา 900,000 บาท ดาวน์ 20% ดอกเบี้ย 3.5% ผ่อน 5 ปี:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เงินดาวน์: 900,000 × 20% = <strong>180,000 บาท</strong></li>
+        <li>ยอดจัด: 900,000 − 180,000 = <strong>720,000 บาท</strong></li>
+        <li>ดอกเบี้ยรวม: 720,000 × 3.5% × 5 = <strong>126,000 บาท</strong></li>
+        <li>ยอดผ่อนรวม: 720,000 + 126,000 = <strong>846,000 บาท</strong></li>
+        <li>ค่างวด: 846,000 ÷ 60 = <strong>14,100 บาท/เดือน</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราดอกเบี้ยรถยนต์ในไทย 2567</h3>
+
+      <p>อัตราดอกเบี้ย flat rate เฉลี่ยในไทยปี 2567:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>รถใหม่:</strong> 2.5-4% ต่อปี</li>
+        <li><strong>รถมือสอง:</strong> 4-7% ต่อปี</li>
+        <li><strong>รถ EV:</strong> 1.99-3% ต่อปี (โปรโมชันพิเศษ)</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับการผ่อนรถ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่างวดรถไม่ควรเกิน 15-20% ของรายได้</li>
+        <li>ดาวน์ 20% ขึ้นไปช่วยลดภาระดอกเบี้ยอย่างมีนัยสำคัญ</li>
+        <li>เปรียบเทียบข้อเสนอจากหลายไฟแนนซ์ก่อนตัดสินใจ</li>
+        <li>อย่าลืมรวมค่าประกันภัย พ.ร.บ. และค่าบำรุงรักษาในการวางแผน</li>
+        <li>หากมีเงินก้อน การผ่อนสั้นจ่ายดอกเบี้ยน้อยกว่ามาก</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณผ่อนกู้/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณผ่อนกู้</span>
+          <span class="text-gray-400 text-sm block">สินเชื่อบ้าน สินเชื่อส่วนบุคคล</span>
+        </a>
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้</span>
+          <span class="text-gray-400 text-sm block">ภาษีเงินได้ตามขั้นบันได 2567</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ค่างวดจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงินและไฟแนนซ์ ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('vehicle-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const carPriceInput = document.getElementById('car-price') as HTMLInputElement;
+    const downPaymentInput = document.getElementById('down-payment') as HTMLInputElement;
+
+    // Live preview of down payment amount
+    function updateDownPreview() {
+      const price = parseNum(carPriceInput.value);
+      const pct = parseFloat(downPaymentInput.value) || 0;
+      const display = document.getElementById('down-amount-display') as HTMLElement;
+      if (price > 0 && pct > 0) {
+        const down = price * pct / 100;
+        const finance = price - down;
+        (document.getElementById('down-amount-text') as HTMLElement).textContent = fmt(down);
+        (document.getElementById('finance-amount-text') as HTMLElement).textContent = fmt(finance);
+        display.classList.remove('hidden');
+      } else {
+        display.classList.add('hidden');
+      }
+    }
+
+    carPriceInput.addEventListener('input', updateDownPreview);
+    downPaymentInput.addEventListener('input', updateDownPreview);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const carPrice = parseNum(carPriceInput.value);
+      const downPct = parseFloat(downPaymentInput.value) || 0;
+      const annualRate = parseFloat((document.getElementById('interest-rate') as HTMLInputElement).value.replace(/,/g, '')) || 0;
+      const termYears = parseInt((document.getElementById('term-years') as HTMLSelectElement).value) || 5;
+      const termMonths = termYears * 12;
+
+      if (carPrice <= 0) { carPriceInput.focus(); return; }
+
+      const downPayment = carPrice * (downPct / 100);
+      const financeAmount = carPrice - downPayment;
+      const totalInterest = financeAmount * (annualRate / 100) * termYears;
+      const totalPaid = financeAmount + totalInterest;
+      const monthlyPayment = termMonths > 0 ? totalPaid / termMonths : 0;
+      const totalCost = downPayment + totalPaid;
+
+      // Update summary
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPayment) + ' บาท';
+      (document.getElementById('res-down') as HTMLElement).textContent = fmt(downPayment) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+      (document.getElementById('res-car-price') as HTMLElement).textContent = fmt(carPrice) + ' บาท';
+      (document.getElementById('res-down-detail') as HTMLElement).textContent = fmt(downPayment) + ' บาท (' + downPct.toFixed(0) + '%)';
+      (document.getElementById('res-finance') as HTMLElement).textContent = fmt(financeAmount) + ' บาท';
+      (document.getElementById('res-rate') as HTMLElement).textContent = annualRate.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-term') as HTMLElement).textContent = termMonths + ' งวด (' + termYears + ' ปี)';
+      (document.getElementById('res-total-paid') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+
+      // Amortization table
+      const monthlyPrincipal = financeAmount / termMonths;
+      const monthlyInterest = totalInterest / termMonths;
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      let balance = financeAmount;
+      for (let m = 1; m <= termMonths; m++) {
+        balance = Math.max(0, balance - monthlyPrincipal);
+        const show = m <= 12 || m % 12 === 0 || m === termMonths;
+        if (!show) continue;
+
+        if (m > 13 && (m - 1) % 12 !== 0) {
+          const sep = document.createElement('tr');
+          sep.innerHTML = '<td colspan="5" class="py-1 text-center text-gray-400 text-xs">⋮</td>';
+          tbody.appendChild(sep);
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${m}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyPayment)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyPrincipal)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyInterest)}</td>
+          <td class="py-2 text-right">${fmt(balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('vehicle');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('vehicle');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>
