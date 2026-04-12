@@ -2,33 +2,96 @@
 interface Props {
   title: string;
   description: string;
+  publishDate: string;
+  modifiedDate?: string;
   canonical?: string;
   ogImage?: string;
-  pageName?: string;
+  author?: string;
+  faqData?: Array<{ question: string; answer: string }>;
 }
 
-const { title, description, canonical, ogImage, pageName } = Astro.props;
+const {
+  title,
+  description,
+  publishDate,
+  modifiedDate,
+  canonical,
+  ogImage,
+  author = 'เครื่องคำนวณไทย',
+  faqData,
+} = Astro.props;
+
 const siteUrl = 'https://calculator-thailand-production.up.railway.app';
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
 
-const breadcrumbJsonLd = pageName ? JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: description,
+  image: imageUrl,
+  datePublished: publishDate,
+  dateModified: modifiedDate || publishDate,
+  author: {
+    '@type': 'Organization',
+    name: author,
+    url: siteUrl,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'เครื่องคำนวณไทย',
+    url: siteUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteUrl}/og-image.svg`,
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': pageUrl,
+  },
+  inLanguage: 'th',
+};
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "หน้าแรก",
-      "item": siteUrl + "/"
+      '@type': 'ListItem',
+      position: 1,
+      name: 'หน้าแรก',
+      item: siteUrl + '/',
     },
     {
-      "@type": "ListItem",
-      "position": 2,
-      "name": pageName
+      '@type': 'ListItem',
+      position: 2,
+      name: 'บทความ',
+      item: siteUrl + '/บทความ/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title.replace(/ \|.*$/, ''),
+    },
+  ],
+};
+
+const jsonLdFaq = faqData
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqData.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
     }
-  ]
-}) : null;
+  : null;
 ---
 
 <!doctype html>
@@ -39,10 +102,10 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={pageUrl} />
-        <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
+    <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="article" />
     <meta property="og:site_name" content="เครื่องคำนวณไทย" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -51,6 +114,8 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="th_TH" />
+    <meta property="article:published_time" content={publishDate} />
+    {modifiedDate && <meta property="article:modified_time" content={modifiedDate} />}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -58,9 +123,8 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
 
-    <!-- Favicon (SVG inline as data URI - calculator icon) -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><rect x='20' y='15' width='60' height='25' rx='5' fill='white'/><rect x='20' y='50' width='17' height='17' rx='3' fill='white'/><rect x='41' y='50' width='17' height='17' rx='3' fill='white'/><rect x='62' y='50' width='17' height='17' rx='3' fill='white'/><rect x='20' y='72' width='17' height='17' rx='3' fill='white'/><rect x='41' y='72' width='17' height='17' rx='3' fill='white'/><rect x='62' y='72' width='38' height='17' rx='3' fill='%2360a5fa'/></svg>" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/></svg>" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -70,7 +134,10 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       rel="stylesheet"
     />
     <title>{title}</title>
-    {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+    {jsonLdFaq && <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />}
 
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -79,45 +146,32 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-XXXXXXXXXX');
-
-      // Shared GA4 custom event helpers
-      function trackCalculatorUsed(calculatorType) {
-        gtag('event', 'calculator_used', { calculator_type: calculatorType });
-      }
-      function trackResultViewed(calculatorType) {
-        gtag('event', 'result_viewed', { calculator_type: calculatorType });
-      }
     </script>
 
     <!-- AdSense placeholder -->
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
     <style>
-      /* Smooth gradient background */
       body {
         background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 50%, #f0fdf4 100%);
         min-height: 100vh;
       }
-
-      /* Smooth animations */
-      .calc-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      .calc-card:hover {
-        transform: translateY(-2px);
-      }
-
-      /* Focus styles */
       input:focus, select:focus, button:focus-visible {
         outline: 2px solid #0ea5e9;
         outline-offset: 2px;
       }
-
-      /* Custom scrollbar */
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+      .prose h2 { margin-top: 2rem; margin-bottom: 0.75rem; font-size: 1.25rem; font-weight: 700; color: #1e293b; }
+      .prose h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600; color: #334155; }
+      .prose p { margin-bottom: 1rem; line-height: 1.8; color: #475569; }
+      .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #475569; }
+      .prose li { margin-bottom: 0.25rem; line-height: 1.7; }
+      .prose strong { color: #1e293b; }
+      .prose a { color: #0284c7; text-decoration: underline; }
+      .prose a:hover { color: #0369a1; }
     </style>
   </head>
   <body class="font-thai text-gray-900 flex flex-col">
@@ -143,8 +197,44 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       </nav>
     </header>
 
-    <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
-      <slot />
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-8 w-full">
+      <!-- Breadcrumb -->
+      <nav class="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-1.5 flex-wrap">
+          <li><a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a></li>
+          <li class="text-gray-300">/</li>
+          <li><a href="/บทความ/" class="hover:text-primary-600 transition-colors">บทความ</a></li>
+          <li class="text-gray-300">/</li>
+          <li class="text-gray-700 font-medium truncate max-w-[200px] sm:max-w-none">{title.replace(/ \|.*$/, '')}</li>
+        </ol>
+      </nav>
+
+      <article class="prose">
+        <slot />
+      </article>
+
+      <!-- AdSense placeholder -->
+      <div class="my-8 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200 text-center text-sm text-gray-400">
+        <!-- AdSense ad unit will go here -->
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+        <strong>ข้อจำกัดความรับผิดชอบ:</strong> บทความนี้จัดทำขึ้นเพื่อให้ความรู้ทั่วไปเท่านั้น ไม่ถือเป็นคำแนะนำทางการเงินหรือภาษี กรุณาปรึกษาผู้เชี่ยวชาญก่อนตัดสินใจทางการเงิน
+      </div>
+
+      <!-- Related calculators -->
+      <div class="mt-8">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">คำนวณภาษี</a>
+          <a href="/คำนวณเงินเดือนสุทธิ/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">เงินเดือนสุทธิ</a>
+          <a href="/คำนวณผ่อนรถ/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">ผ่อนรถ</a>
+          <a href="/คำนวณ-bmi/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">คำนวณ BMI</a>
+          <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">ดอกเบี้ยเงินฝาก</a>
+          <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">VAT 7%</a>
+        </div>
+      </div>
     </main>
 
     <footer class="mt-auto border-t border-gray-100 bg-white/60">
@@ -165,12 +255,8 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
             <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="hover:text-primary-600 transition-colors">VAT 7%</a>
             <a href="/คำนวณผ่อนกู้/" class="hover:text-primary-600 transition-colors">ผ่อนกู้</a>
             <a href="/คำนวณผ่อนรถ/" class="hover:text-primary-600 transition-colors">ผ่อนรถ</a>
-            <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="hover:text-primary-600 transition-colors">ดอกเบี้ยเงินฝาก</a>
-            <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
-            <a href="/คำนวณอายุ/" class="hover:text-primary-600 transition-colors">คำนวณอายุ</a>
-            <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
           </nav>
-          <p class="text-xs text-gray-400">© 2026 เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+          <p class="text-xs text-gray-400">&copy; 2026 เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
         </div>
       </div>
     </footer>
