@@ -1,0 +1,98 @@
+---
+/**
+ * Google AdSense ad unit with lazy-loading to protect Core Web Vitals.
+ *
+ * Usage:
+ *   <AdUnit slot="below-calculator" />
+ *   <AdUnit slot="in-content" />
+ *   <AdUnit slot="sidebar" />
+ *
+ * To activate: Replace ADSENSE_CLIENT_ID and ADSENSE_SLOT_ID with real values
+ * after AdSense approval.
+ */
+interface Props {
+  slot?: 'below-calculator' | 'in-content' | 'sidebar';
+  className?: string;
+}
+
+const { slot = 'in-content', className = '' } = Astro.props;
+
+// TODO: Replace with real AdSense publisher ID after approval
+const ADSENSE_CLIENT_ID = 'ca-pub-XXXXXXXXXXXXXXXX';
+
+// Slot IDs for different ad placements (create in AdSense dashboard)
+const SLOT_MAP: Record<string, string> = {
+  'below-calculator': '1234567890', // TODO: Replace after creating ad unit
+  'in-content': '2345678901',       // TODO: Replace after creating ad unit
+  'sidebar': '3456789012',          // TODO: Replace after creating ad unit
+};
+
+const adSlot = SLOT_MAP[slot] || SLOT_MAP['in-content'];
+
+// Responsive ad formats per slot type
+const formatMap: Record<string, string> = {
+  'below-calculator': 'horizontal',
+  'in-content': 'rectangle',
+  'sidebar': 'vertical',
+};
+const adFormat = formatMap[slot] || 'auto';
+---
+
+<div
+  class:list={['ad-unit', `ad-unit--${slot}`, className]}
+  data-ad-slot={slot}
+>
+  <div class="ad-placeholder" aria-hidden="true">
+    <!-- Placeholder shown until ad loads. Prevents CLS. -->
+  </div>
+
+  <!--
+    AdSense auto-ad code (lazy-loaded via IntersectionObserver).
+    Uncomment the <ins> block below once AdSense is approved and
+    replace the data-ad-client and data-ad-slot values.
+  -->
+  <!--
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client={ADSENSE_CLIENT_ID}
+    data-ad-slot={adSlot}
+    data-ad-format={adFormat}
+    data-full-width-responsive="true"
+  ></ins>
+  -->
+</div>
+
+<style>
+  .ad-unit {
+    margin: 1.5rem 0;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-unit--below-calculator {
+    min-height: 90px;
+  }
+
+  .ad-unit--in-content {
+    min-height: 250px;
+  }
+
+  .ad-unit--sidebar {
+    min-height: 600px;
+  }
+
+  .ad-placeholder {
+    width: 100%;
+    background: #f8fafc;
+    border: 1px dashed #e2e8f0;
+    border-radius: 0.5rem;
+    min-height: inherit;
+  }
+
+  /* Hide placeholder once real ad loads */
+  .ad-unit:has(.adsbygoogle[data-ad-status="filled"]) .ad-placeholder {
+    display: none;
+  }
+</style>

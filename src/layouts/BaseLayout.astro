@@ -89,8 +89,26 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       }
     </script>
 
-    <!-- AdSense placeholder -->
+    <!-- AdSense: Uncomment after approval. Lazy-loaded via IntersectionObserver to protect CWV. -->
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script is:inline>
+      // Lazy-load AdSense when ad units scroll into viewport
+      if (typeof IntersectionObserver !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', function() {
+          var adUnits = document.querySelectorAll('.adsbygoogle');
+          if (adUnits.length === 0) return;
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { rootMargin: '200px' });
+          adUnits.forEach(function(ad) { observer.observe(ad); });
+        });
+      }
+    </script>
 
     <style>
       /* Smooth gradient background */

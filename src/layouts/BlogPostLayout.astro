@@ -1,4 +1,6 @@
 ---
+import AdUnit from '../components/AdUnit.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -148,8 +150,25 @@ const jsonLdFaq = faqData
       gtag('config', 'G-XXXXXXXXXX');
     </script>
 
-    <!-- AdSense placeholder -->
+    <!-- AdSense: Uncomment after approval. Lazy-loaded via IntersectionObserver to protect CWV. -->
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    <script is:inline>
+      if (typeof IntersectionObserver !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', function() {
+          var adUnits = document.querySelectorAll('.adsbygoogle');
+          if (adUnits.length === 0) return;
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { rootMargin: '200px' });
+          adUnits.forEach(function(ad) { observer.observe(ad); });
+        });
+      }
+    </script>
 
     <style>
       body {
@@ -213,10 +232,8 @@ const jsonLdFaq = faqData
         <slot />
       </article>
 
-      <!-- AdSense placeholder -->
-      <div class="my-8 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200 text-center text-sm text-gray-400">
-        <!-- AdSense ad unit will go here -->
-      </div>
+      <!-- AdSense: in-content ad unit (lazy-loaded) -->
+      <AdUnit slot="in-content" />
 
       <!-- Disclaimer -->
       <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
