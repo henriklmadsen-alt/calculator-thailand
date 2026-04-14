@@ -159,7 +159,58 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       window.trackCalculatorUsed = trackCalculatorUsed;
       window.trackResultViewed = trackResultViewed;
 
+      function preserveAttributionParamsOnLinks() {
+        const source = new URLSearchParams(window.location.search);
+        const passthroughKeys = [
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'utm_content',
+          'utm_term',
+          'utm_id',
+          'gclid',
+          'fbclid',
+        ];
+
+        const passthrough = new URLSearchParams();
+        passthroughKeys.forEach((key) => {
+          const value = source.get(key);
+          if (value) passthrough.set(key, value);
+        });
+
+        if ([...passthrough.keys()].length === 0) return;
+
+        document.querySelectorAll('a[data-preserve-utm]').forEach((link) => {
+          const href = link.getAttribute('href');
+          if (!href) return;
+
+          let targetUrl;
+          try {
+            targetUrl = new URL(href, window.location.origin);
+          } catch {
+            return;
+          }
+
+          if (targetUrl.origin !== window.location.origin) return;
+
+          passthrough.forEach((value, key) => {
+            if (!targetUrl.searchParams.has(key)) {
+              targetUrl.searchParams.set(key, value);
+            }
+          });
+
+          const nextHref = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+          link.setAttribute('href', nextHref);
+        });
+      }
+
       emitSessionStartOnce();
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', preserveAttributionParamsOnLinks);
+      } else {
+        preserveAttributionParamsOnLinks();
+      }
     </script>
 
     <!-- AdSense: Uncomment after approval. Lazy-loaded via IntersectionObserver to protect CWV. -->
