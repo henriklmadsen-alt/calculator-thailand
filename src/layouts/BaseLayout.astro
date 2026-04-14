@@ -80,13 +80,86 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       gtag('js', new Date());
       gtag('config', 'G-EY67HJ8NDD');
 
+      function getReferrerHost() {
+        if (!document.referrer) return '';
+        try {
+          return new URL(document.referrer).hostname || '';
+        } catch {
+          return '';
+        }
+      }
+
+      function getTrafficAttribution() {
+        const params = new URLSearchParams(window.location.search);
+        const utmSource = params.get('utm_source') || '';
+        const utmMedium = params.get('utm_medium') || '';
+        const utmCampaign = params.get('utm_campaign') || '';
+        const referrerHost = getReferrerHost();
+
+        return {
+          traffic_source: utmSource || referrerHost || '(direct)',
+          traffic_medium: utmMedium || (referrerHost ? 'referral' : '(none)'),
+          traffic_campaign: utmCampaign || '(not set)',
+          referrer_host: referrerHost || '(direct)',
+        };
+      }
+
+      function emitSessionStartOnce() {
+        if (typeof window.gtag !== 'function') return;
+
+        const storageKey = 'ct.session_start.v1';
+        try {
+          if (window.sessionStorage.getItem(storageKey) === '1') {
+            return;
+          }
+          window.gtag('event', 'session_start', {
+            ...getTrafficAttribution(),
+            landing_path: window.location.pathname,
+          });
+          window.sessionStorage.setItem(storageKey, '1');
+        } catch {
+          // Session storage can be unavailable in strict privacy modes.
+          window.gtag('event', 'session_start', {
+            ...getTrafficAttribution(),
+            landing_path: window.location.pathname,
+          });
+        }
+      }
+
       // Shared GA4 custom event helpers
+      function trackCalculatorStart(calculatorType) {
+        if (typeof window.gtag !== 'function') return;
+        window.gtag('event', 'calculator_start', {
+          calculator_type: calculatorType,
+          ...getTrafficAttribution(),
+        });
+      }
+      function trackCalculatorComplete(calculatorType, resultValue) {
+        if (typeof window.gtag !== 'function') return;
+        const payload = {
+          calculator_type: calculatorType,
+          ...getTrafficAttribution(),
+        };
+        if (typeof resultValue === 'number' && Number.isFinite(resultValue)) {
+          payload.result_value = resultValue;
+        }
+        window.gtag('event', 'calculator_complete', payload);
+      }
       function trackCalculatorUsed(calculatorType) {
-        gtag('event', 'calculator_used', { calculator_type: calculatorType });
+        if (typeof window.gtag !== 'function') return;
+        window.gtag('event', 'calculator_used', { calculator_type: calculatorType });
       }
       function trackResultViewed(calculatorType) {
-        gtag('event', 'result_viewed', { calculator_type: calculatorType });
+        if (typeof window.gtag !== 'function') return;
+        window.gtag('event', 'result_viewed', { calculator_type: calculatorType });
       }
+
+      window.trackCalculatorStart = trackCalculatorStart;
+      window.trackCalculatorComplete = trackCalculatorComplete;
+      window.trackCalculatorUsed = trackCalculatorUsed;
+      window.trackResultViewed = trackResultViewed;
+
+      emitSessionStartOnce();
     </script>
 
     <!-- AdSense: Uncomment after approval. Lazy-loaded via IntersectionObserver to protect CWV. -->

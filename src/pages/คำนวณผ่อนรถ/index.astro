@@ -361,6 +361,7 @@ const jsonLdFaq = {
     const carPriceInput = document.getElementById('car-price') as HTMLInputElement;
     const downPaymentInput = document.getElementById('down-payment') as HTMLInputElement;
     const interestRateInput = document.getElementById('interest-rate') as HTMLInputElement;
+    let hasTrackedStart = false;
 
     function setFieldError(elementId: string, message: string) {
       const el = document.getElementById(elementId);
@@ -420,6 +421,13 @@ const jsonLdFaq = {
     });
     updateSubmitState();
 
+    form.addEventListener('input', () => {
+      if (!hasTrackedStart) {
+        trackCalculatorStart('vehicle');
+        hasTrackedStart = true;
+      }
+    });
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       clearValidation();
@@ -456,7 +464,10 @@ const jsonLdFaq = {
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'กำลังคำนวณ...';
-      trackCalculatorStart('vehicle');
+      if (!hasTrackedStart) {
+        trackCalculatorStart('vehicle');
+        hasTrackedStart = true;
+      }
 
       const downPayment = carPrice * (downPct / 100);
       const financeAmount = carPrice - downPayment;
