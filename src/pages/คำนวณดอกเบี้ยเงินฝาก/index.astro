@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณดอกเบี้ยเงินฝาก 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณดอกเบี้ยเงินฝากประจำและเงินฝากออมทรัพย์ พร้อมหักภาษี ณ ที่จ่าย 15% แสดงผลตอบแทนสุทธิ ตารางดอกเบี้ยรายเดือน';
-const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const pageTitle = 'คำนวณดอกเบี้ยเงินฝาก เปรียบเทียบผลตอบแทน 2569 (2026) | Calculator Thailand';
+const pageDescription = 'คำนวณดอกเบี้ยเงินฝาก อัปเดตปี 2569 (2026) ฟรี เปรียบเทียบฝากประจำและออมทรัพย์ พร้อมตารางดอกเบี้ยรายเดือนและผลตอบแทนสุทธิหลังหักภาษี 15% เพื่อวางแผนออมเงิน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://calculator-thailand-production.up.railway.app').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณดอกเบี้ยเงินฝาก/`;
 
 const faqData = [
@@ -53,8 +54,14 @@ const jsonLdFaq = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-      คำนวณดอกเบี้ยเงินฝาก — ฝากประจำ ออมทรัพย์ ดอกเบี้ยสุทธิ
+      คำนวณดอกเบี้ยเงินฝาก เปรียบเทียบผลตอบแทน 2569 (2026) — ฝากประจำและออมทรัพย์
     </h1>
 
     <p class="text-gray-600 mb-6">
@@ -64,6 +71,9 @@ const jsonLdFaq = {
     <!-- Calculator Form -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
       <form id="deposit-form" class="space-y-5">
+        <p id="deposit-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
         <!-- Deposit Type Toggle -->
         <fieldset>
           <legend class="text-sm font-semibold text-gray-900 mb-2">ประเภทเงินฝาก</legend>
@@ -90,6 +100,7 @@ const jsonLdFaq = {
             placeholder="เช่น 100,000"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
           />
+          <p id="principal-error" class="mt-1 hidden text-sm text-red-600"></p>
         </div>
 
         <div id="monthly-deposit-group" class="hidden">
@@ -117,6 +128,8 @@ const jsonLdFaq = {
               placeholder="เช่น 2.0"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
             />
+            <p class="mt-1 text-xs text-gray-500">ใส่อัตราดอกเบี้ยต่อปีของบัญชีที่คุณใช้งานจริง</p>
+            <p id="deposit-interest-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
           </div>
           <div>
             <label for="term-months" class="block text-sm font-medium text-gray-700 mb-1">
@@ -138,9 +151,10 @@ const jsonLdFaq = {
 
         <button
           type="submit"
+          id="deposit-submit-btn"
           class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
         >
-          คำนวณดอกเบี้ย
+          คำนวณทันที
         </button>
       </form>
     </div>
@@ -220,13 +234,20 @@ const jsonLdFaq = {
         </details>
       </div>
     </div>
-
-    <!-- AdSense placeholder -->
-    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
-      [โฆษณา — AdSense]
+    <div id="deposit-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณภาษีเงินได้บุคคลธรรมดา</p>
+      <p class="mt-1 text-sm text-primary-700">นำดอกเบี้ยไปดูผลภาษีรวมทั้งปีและวางแผนกระแสเงินสดให้ครบ</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณภาษีเงินได้บุคคลธรรมดา</a>
+        <a data-next-action-link href="/บทความ/เงินฝาก-vs-กองทุน-เปรียบเทียบ-2569/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: เงินฝาก vs กองทุน</a>
+      </div>
     </div>
-
-    <!-- SEO Content -->
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+<!-- SEO Content -->
     <section class="prose prose-gray max-w-none mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณดอกเบี้ยเงินฝาก</h2>
 
@@ -327,6 +348,11 @@ const jsonLdFaq = {
       return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
     }
 
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
     function fmt(n: number): string {
       return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
     }
@@ -349,18 +375,87 @@ const jsonLdFaq = {
     });
 
     const form = document.getElementById('deposit-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('deposit-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('deposit-form-error') as HTMLElement;
+    const principalInput = document.getElementById('principal') as HTMLInputElement;
+    const interestRateInput = document.getElementById('interest-rate') as HTMLInputElement;
+    const nextActionCard = document.getElementById('deposit-next-action') as HTMLElement;
     const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const monthlyDepositInput = document.getElementById('monthly-deposit') as HTMLInputElement;
+
+    function setFieldError(elementId: string, message: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(elementId: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError('principal-error');
+      clearFieldError('deposit-interest-rate-error');
+    }
+
+    function updateSubmitState() {
+      const ready = parseNum(principalInput.value) > 0 && parseNum(interestRateInput.value) > 0;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    [principalInput, interestRateInput, monthlyDepositInput].forEach((input) => {
+      input.addEventListener('input', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+    });
+    updateSubmitState();
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      clearValidation();
 
-      const principal = parseNum((document.getElementById('principal') as HTMLInputElement).value);
-      const annualRate = parseFloat((document.getElementById('interest-rate') as HTMLInputElement).value.replace(/,/g, '')) || 0;
+      const principal = parseNum(principalInput.value);
+      const annualRate = parseFloat(interestRateInput.value.replace(/,/g, '')) || 0;
       const termMonths = parseInt((document.getElementById('term-months') as HTMLSelectElement).value) || 12;
       const depositType = (document.querySelector('input[name="deposit-type"]:checked') as HTMLInputElement).value;
       const monthlyDeposit = depositType === 'savings' ? parseNum((document.getElementById('monthly-deposit') as HTMLInputElement).value) : 0;
 
-      if (principal <= 0) { (document.getElementById('principal') as HTMLInputElement).focus(); return; }
+      if (hasInvalidNumber(principalInput.value) || hasInvalidNumber(interestRateInput.value)) {
+        formError.classList.remove('hidden');
+        if (hasInvalidNumber(principalInput.value)) {
+          setFieldError('principal-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          principalInput.focus();
+        }
+        if (hasInvalidNumber(interestRateInput.value)) {
+          setFieldError('deposit-interest-rate-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          if (!hasInvalidNumber(principalInput.value)) {
+            interestRateInput.focus();
+          }
+        }
+        updateSubmitState();
+        return;
+      }
+
+      if (principal <= 0) {
+        formError.classList.remove('hidden');
+        setFieldError('principal-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
+        principalInput.focus();
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('deposit');
 
       const monthlyRate = annualRate / 100 / 12;
       let balance = principal;
@@ -451,8 +546,24 @@ const jsonLdFaq = {
       });
 
       resultsDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('deposit');
       trackCalculatorUsed('deposit');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'deposit',
+            target_href: href,
+          });
+        }
+      });
     });
 
     const resultObserver = new IntersectionObserver((entries) => {
@@ -466,3 +577,4 @@ const jsonLdFaq = {
     resultObserver.observe(resultsDiv);
   </script>
 </BaseLayout>
+

@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณเงินเดือนสุทธิ 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณเงินเดือนสุทธิออนไลน์ฟรี หักภาษีเงินได้ ณ ที่จ่าย และประกันสังคม แสดงรายละเอียดทุกรายการหัก';
-const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const pageTitle = 'คำนวณเงินเดือนสุทธิ เช็กเงินรับจริง 2569 (2026) | Calculator Thailand';
+const pageDescription = 'คำนวณเงินเดือนสุทธิ อัปเดตปี 2569 (2026) ฟรี เช็กเงินรับจริงหลังหักภาษี ณ ที่จ่ายและประกันสังคม พร้อมตารางสรุปรายเดือนและรายปีเพื่อเปรียบเทียบรายได้ก่อนเปลี่ยนงาน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://calculator-thailand-production.up.railway.app').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเงินเดือนสุทธิ/`;
 
 const faqData = [
@@ -53,8 +54,14 @@ const jsonLdFaq = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-      คำนวณเงินเดือนสุทธิ
+      คำนวณเงินเดือนสุทธิ เช็กเงินรับจริง 2569 (2026)
     </h1>
 
     <p class="text-gray-600 mb-6">
@@ -63,6 +70,9 @@ const jsonLdFaq = {
 
     <!-- Calculator -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <p id="net-salary-form-error" class="mb-4 hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+        กรอกข้อมูลให้ครบก่อนคำนวณ
+      </p>
       <div class="space-y-4 mb-6">
         <div>
           <label for="gross-salary" class="block text-sm font-medium text-gray-700 mb-1">
@@ -75,6 +85,7 @@ const jsonLdFaq = {
             placeholder="เช่น 35,000"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
           />
+          <p id="gross-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
         </div>
 
         <details class="text-sm">
@@ -116,7 +127,7 @@ const jsonLdFaq = {
         id="btn-calculate"
         class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
       >
-        คำนวณ
+        คำนวณทันที
       </button>
 
       <!-- Result -->
@@ -185,13 +196,20 @@ const jsonLdFaq = {
         </div>
       </div>
     </div>
-
-    <!-- AdSense placeholder -->
-    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
-      [โฆษณา — AdSense]
+    <div id="net-salary-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณภาษีเงินได้บุคคลธรรมดา</p>
+      <p class="mt-1 text-sm text-primary-700">ขยายการคำนวณด้วยค่าลดหย่อนละเอียดเพื่อวางแผนภาษีทั้งปี</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณภาษีเงินได้บุคคลธรรมดา</a>
+        <a data-next-action-link href="/บทความ/ภาษีเงินได้-2569-คำนวณ-วิธีลดหย่อน/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: วิธีลดหย่อนภาษี</a>
+      </div>
     </div>
-
-    <!-- SEO Content -->
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#result"
+    />
+<!-- SEO Content -->
     <section class="prose prose-gray max-w-none mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณเงินเดือนสุทธิ</h2>
 
@@ -335,6 +353,11 @@ const jsonLdFaq = {
       return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
     }
 
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
     function fmt(n: number): string {
       return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
     }
@@ -386,10 +409,57 @@ const jsonLdFaq = {
     }
 
     const grossInput = document.getElementById('gross-salary') as HTMLInputElement;
+    const submitBtn = document.getElementById('btn-calculate') as HTMLButtonElement;
+    const formError = document.getElementById('net-salary-form-error') as HTMLElement;
+    const grossError = document.getElementById('gross-salary-error') as HTMLElement;
+    const nextActionCard = document.getElementById('net-salary-next-action') as HTMLElement;
+    const resultDiv = document.getElementById('result') as HTMLElement;
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      grossError.textContent = '';
+      grossError.classList.add('hidden');
+    }
+
+    function updateSubmitState() {
+      const ready = parseNum(grossInput.value) > 0;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    grossInput.addEventListener('input', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+    updateSubmitState();
 
     document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      clearValidation();
+
+      if (hasInvalidNumber(grossInput.value)) {
+        formError.classList.remove('hidden');
+        grossError.textContent = 'รูปแบบข้อมูลไม่ถูกต้อง';
+        grossError.classList.remove('hidden');
+        grossInput.focus();
+        updateSubmitState();
+        return;
+      }
+
       const gross = parseNum(grossInput.value);
-      if (gross <= 0) { grossInput.focus(); return; }
+      if (gross <= 0) {
+        formError.classList.remove('hidden');
+        grossError.textContent = 'กรุณากรอกจำนวนเงินมากกว่า 0';
+        grossError.classList.remove('hidden');
+        grossInput.focus();
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('net_salary');
 
       const hasSpouse = (document.getElementById('has-spouse') as HTMLInputElement).checked;
       const childCount = parseInt((document.getElementById('child-count') as HTMLInputElement).value) || 0;
@@ -408,8 +478,24 @@ const jsonLdFaq = {
       (document.getElementById('res-annual-ss') as HTMLElement).textContent = fmt(r.ssAnnual) + ' บาท';
       (document.getElementById('res-effective-rate') as HTMLElement).textContent = r.effectiveRate.toFixed(2) + '%';
 
-      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      resultDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('net_salary');
       trackCalculatorUsed('net_salary');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'net_salary',
+            target_href: href,
+          });
+        }
+      });
     });
 
     // Allow Enter key
@@ -432,3 +518,4 @@ const jsonLdFaq = {
     salaryResultObserver.observe(document.getElementById('result')!);
   </script>
 </BaseLayout>
+
