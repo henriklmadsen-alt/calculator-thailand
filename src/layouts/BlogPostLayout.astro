@@ -10,6 +10,7 @@ interface Props {
   ogImage?: string;
   author?: string;
   faqData?: Array<{ question: string; answer: string }>;
+  alternateLocales?: Array<{ hreflang: string; href: string }>;
 }
 
 const {
@@ -21,11 +22,21 @@ const {
   ogImage,
   author = 'เครื่องคำนวณไทย',
   faqData,
+  alternateLocales = [],
 } = Astro.props;
 
 const siteUrl = 'https://calculator-thailand-production.up.railway.app';
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
+const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
+const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').trim().toLowerCase();
+const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
+const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
+const localeAlternates = [
+  { hreflang: 'th-TH', href: pageUrl },
+  { hreflang: 'x-default', href: pageUrl },
+  ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
+];
 
 const jsonLdArticle = {
   '@context': 'https://schema.org',
@@ -48,6 +59,11 @@ const jsonLdArticle = {
       '@type': 'ImageObject',
       url: `${siteUrl}/og-image.svg`,
     },
+  },
+  sourceOrganization: {
+    '@type': 'Organization',
+    name: 'Calculator Thailand',
+    url: siteUrl,
   },
   mainEntityOfPage: {
     '@type': 'WebPage',
@@ -104,6 +120,7 @@ const jsonLdFaq = faqData
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={pageUrl} />
+    {localeAlternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
 
     <!-- Open Graph -->
@@ -142,33 +159,247 @@ const jsonLdFaq = faqData
     {jsonLdFaq && <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />}
 
     <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
+      gtag('config', 'G-EY67HJ8NDD');
 
-    <!-- AdSense: Uncomment after approval. Lazy-loaded via IntersectionObserver to protect CWV. -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
-    <script is:inline>
-      if (typeof IntersectionObserver !== 'undefined') {
+      const LANG_MODE_STORAGE_KEY = 'ct.lang_mode';
+      const SUPPORTED_LANG_MODES = new Set(['th', 'th-en']);
+
+      function getLangModeFromQuery() {
+        const langParam = new URLSearchParams(window.location.search).get('lang');
+        if (langParam === 'en') return 'th-en';
+        if (langParam === 'th') return 'th';
+        return '';
+      }
+
+      function getStoredLangMode() {
+        try {
+          const saved = window.localStorage.getItem(LANG_MODE_STORAGE_KEY);
+          return SUPPORTED_LANG_MODES.has(saved || '') ? saved : '';
+        } catch {
+          return '';
+        }
+      }
+
+      function getCurrentLangMode() {
+        const active = document.documentElement.dataset.langMode || '';
+        if (SUPPORTED_LANG_MODES.has(active)) return active;
+        return 'th';
+      }
+
+      function getLanguageContext() {
+        const langMode = getCurrentLangMode();
+        return {
+          lang_mode: langMode,
+          content_locale: window.location.pathname.startsWith('/en/') ? 'en' : 'th',
+          ui_language: langMode === 'th-en' ? 'en' : 'th',
+        };
+      }
+
+      function updateLangButtons(langMode) {
+        document.querySelectorAll('[data-lang-mode-btn]').forEach((button) => {
+          const nextMode = button.getAttribute('data-lang-mode-btn');
+          const isActive = nextMode === langMode;
+          button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          button.classList.toggle('bg-primary-600', isActive);
+          button.classList.toggle('text-white', isActive);
+          button.classList.toggle('text-slate-600', !isActive);
+        });
+      }
+
+      function applyLangMode(nextMode, options = {}) {
+        const normalized = SUPPORTED_LANG_MODES.has(nextMode) ? nextMode : 'th';
+        const previous = getCurrentLangMode();
+        document.documentElement.dataset.langMode = normalized;
+        try {
+          window.localStorage.setItem(LANG_MODE_STORAGE_KEY, normalized);
+        } catch {
+          // no-op
+        }
+        updateLangButtons(normalized);
+        window.dispatchEvent(new CustomEvent('ct:lang-mode-changed', { detail: { langMode: normalized } }));
+
+        if (options.emitToggle && previous !== normalized && typeof window.gtag === 'function') {
+          window.gtag('event', 'language_mode_toggle', {
+            from_lang_mode: previous,
+            to_lang_mode: normalized,
+            page_type: 'article',
+            ...getLanguageContext(),
+          });
+        }
+      }
+
+      function initLangMode() {
+        const queryMode = getLangModeFromQuery();
+        const initialMode = queryMode || getStoredLangMode() || 'th';
+        applyLangMode(initialMode, { emitToggle: false });
+      }
+
+      function getReferrerHost() {
+        if (!document.referrer) return '';
+        try {
+          return (new URL(document.referrer).hostname || '').toLowerCase();
+        } catch {
+          return '';
+        }
+      }
+
+      function classifyAiReferrer(referrerHost) {
+        if (!referrerHost || referrerHost === '(direct)') return 'none';
+
+        const aiReferrerRules = [
+          ['chat.openai.com', 'chatgpt'],
+          ['chatgpt.com', 'chatgpt'],
+          ['openai.com', 'chatgpt'],
+          ['perplexity.ai', 'perplexity'],
+          ['claude.ai', 'claude'],
+          ['poe.com', 'poe'],
+          ['gemini.google.com', 'gemini'],
+          ['copilot.microsoft.com', 'copilot'],
+        ];
+
+        for (const [hostFragment, label] of aiReferrerRules) {
+          if (referrerHost.includes(hostFragment)) {
+            return label;
+          }
+        }
+
+        return 'none';
+      }
+
+      function getTrafficAttribution() {
+        const params = new URLSearchParams(window.location.search);
+        const utmSource = params.get('utm_source') || '';
+        const utmMedium = params.get('utm_medium') || '';
+        const utmCampaign = params.get('utm_campaign') || '';
+        const referrerHost = getReferrerHost();
+        const aiReferrerSource = classifyAiReferrer(referrerHost);
+        const trafficChannel = aiReferrerSource !== 'none'
+          ? 'ai_referral'
+          : (utmSource ? 'campaign' : (referrerHost ? 'referral' : 'direct'));
+
+        return {
+          traffic_source: utmSource || referrerHost || '(direct)',
+          traffic_medium: utmMedium || (referrerHost ? 'referral' : '(none)'),
+          traffic_campaign: utmCampaign || '(not set)',
+          referrer_host: referrerHost || '(direct)',
+          ai_referrer_source: aiReferrerSource,
+          traffic_channel: trafficChannel,
+        };
+      }
+
+      function withLanguageContext(payload) {
+        return {
+          ...payload,
+          ...getTrafficAttribution(),
+          ...getLanguageContext(),
+        };
+      }
+
+      function emitSessionStartOnce() {
+        if (typeof window.gtag !== 'function') return;
+
+        const storageKey = 'ct.session_start.v1';
+        try {
+          if (window.sessionStorage.getItem(storageKey) === '1') {
+            return;
+          }
+          window.gtag('event', 'session_start', withLanguageContext({
+            landing_path: window.location.pathname,
+            page_type: 'article',
+          }));
+          window.sessionStorage.setItem(storageKey, '1');
+        } catch {
+          window.gtag('event', 'session_start', withLanguageContext({
+            landing_path: window.location.pathname,
+            page_type: 'article',
+          }));
+        }
+      }
+
+      function trackLanguageAwareEvent(eventName, payload = {}) {
+        if (typeof window.gtag !== 'function') return;
+        window.gtag('event', eventName, withLanguageContext(payload));
+      }
+
+      function bindEntryClickTracking() {
+        document.querySelectorAll('[data-entry-event]').forEach((element) => {
+          if (element.getAttribute('data-entry-bound') === '1') return;
+          element.setAttribute('data-entry-bound', '1');
+          element.addEventListener('click', () => {
+            const eventName = element.getAttribute('data-entry-event');
+            if (!eventName) return;
+
+            const routeTo = element.getAttribute('data-route-to')
+              || element.getAttribute('href')
+              || '';
+
+            const payload = {
+              route_from: window.location.pathname,
+              route_to: routeTo,
+            };
+
+            const targetCalculator = element.getAttribute('data-target-calculator');
+            const entrySurface = element.getAttribute('data-entry-surface');
+            const placement = element.getAttribute('data-placement');
+
+            if (targetCalculator) payload.target_calculator = targetCalculator;
+            if (entrySurface) payload.entry_surface = entrySurface;
+            if (placement) payload.placement = placement;
+
+            trackLanguageAwareEvent(eventName, payload);
+          });
+        });
+      }
+
+      window.trackLanguageAwareEvent = trackLanguageAwareEvent;
+      window.getLanguageContext = getLanguageContext;
+      window.getLangMode = getCurrentLangMode;
+      window.setLangMode = function(nextMode) {
+        applyLangMode(nextMode, { emitToggle: true });
+      };
+
+      initLangMode();
+      emitSessionStartOnce();
+
+      if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-          var adUnits = document.querySelectorAll('.adsbygoogle');
-          if (adUnits.length === 0) return;
-          var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (entry.isIntersecting) {
-                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-                observer.unobserve(entry.target);
-              }
+          bindEntryClickTracking();
+          updateLangButtons(getCurrentLangMode());
+          document.querySelectorAll('[data-lang-mode-btn]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const nextMode = button.getAttribute('data-lang-mode-btn');
+              if (!nextMode) return;
+              applyLangMode(nextMode, { emitToggle: true });
             });
-          }, { rootMargin: '200px' });
-          adUnits.forEach(function(ad) { observer.observe(ad); });
+          });
+        });
+      } else {
+        bindEntryClickTracking();
+        updateLangButtons(getCurrentLangMode());
+        document.querySelectorAll('[data-lang-mode-btn]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const nextMode = button.getAttribute('data-lang-mode-btn');
+            if (!nextMode) return;
+            applyLangMode(nextMode, { emitToggle: true });
+          });
         });
       }
     </script>
+
+    {
+      shouldLoadAdsenseScript && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          crossorigin="anonymous"
+        ></script>
+      )
+    }
 
     <style>
       body {
@@ -191,6 +422,19 @@ const jsonLdFaq = faqData
       .prose strong { color: #1e293b; }
       .prose a { color: #0284c7; text-decoration: underline; }
       .prose a:hover { color: #0369a1; }
+
+      .lang-assist,
+      .lang-assist-inline {
+        display: none;
+      }
+
+      html[data-lang-mode='th-en'] .lang-assist {
+        display: block;
+      }
+
+      html[data-lang-mode='th-en'] .lang-assist-inline {
+        display: inline;
+      }
     </style>
   </head>
   <body class="font-thai text-gray-900 flex flex-col">
@@ -209,6 +453,24 @@ const jsonLdFaq = faqData
         </a>
         <div class="flex items-center gap-3 text-sm">
           <a href="/บทความ/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">บทความ</a>
+          <div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group" aria-label="Language assist mode">
+            <button
+              type="button"
+              data-lang-mode-btn="th"
+              aria-pressed="true"
+              class="min-h-11 rounded-md px-3 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0 sm:px-2.5 sm:py-1.5"
+            >
+              ไทย
+            </button>
+            <button
+              type="button"
+              data-lang-mode-btn="th-en"
+              aria-pressed="false"
+              class="min-h-11 rounded-md px-3 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0 sm:px-2.5 sm:py-1.5"
+            >
+              EN
+            </button>
+          </div>
           <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium">
             ฟรี 100%
           </span>
@@ -228,12 +490,17 @@ const jsonLdFaq = faqData
         </ol>
       </nav>
 
+      <section class="mb-6 rounded-xl border border-sky-100 bg-sky-50 p-4">
+        <p class="text-sm font-semibold text-sky-800">สรุปสั้น: บทความนี้ช่วยอะไร</p>
+        <p class="mt-1 text-sm text-sky-700 lang-assist">Quick summary: what this article helps you calculate</p>
+      </section>
+
       <article class="prose">
         <slot />
       </article>
 
       <!-- AdSense: in-content ad unit (lazy-loaded) -->
-      <AdUnit slot="in-content" />
+      <AdUnit slot="in-content" slotId="A1" templateType="article" />
 
       <!-- Disclaimer -->
       <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">

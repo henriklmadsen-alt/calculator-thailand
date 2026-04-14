@@ -5,12 +5,41 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   pageName?: string;
+  alternateLocales?: Array<{ hreflang: string; href: string }>;
 }
 
-const { title, description, canonical, ogImage, pageName } = Astro.props;
+const { title, description, canonical, ogImage, pageName, alternateLocales = [] } = Astro.props;
 const siteUrl = 'https://calculator-thailand-production.up.railway.app';
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
+const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
+const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').trim().toLowerCase();
+const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
+const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
+const localeAlternates = [
+  { hreflang: 'th-TH', href: pageUrl },
+  { hreflang: 'x-default', href: pageUrl },
+  ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
+];
+
+const jsonLdWebPage = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  url: pageUrl,
+  name: title,
+  description,
+  inLanguage: 'th-TH',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Calculator Thailand',
+    url: siteUrl,
+  },
+  sourceOrganization: {
+    '@type': 'Organization',
+    name: 'Calculator Thailand',
+    url: siteUrl,
+  },
+});
 
 const breadcrumbJsonLd = pageName ? JSON.stringify({
   "@context": "https://schema.org",
@@ -39,7 +68,8 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={pageUrl} />
-        <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
+    {localeAlternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -70,6 +100,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       rel="stylesheet"
     />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
 
     <!-- Google Analytics 4 -->
@@ -80,13 +111,153 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       gtag('js', new Date());
       gtag('config', 'G-EY67HJ8NDD');
 
-      function getReferrerHost() {
-        if (!document.referrer) return '';
+      const LANG_MODE_STORAGE_KEY = 'ct.lang_mode';
+      const SUPPORTED_LANG_MODES = new Set(['th', 'th-en']);
+
+      function decodePathname(pathname) {
         try {
-          return new URL(document.referrer).hostname || '';
+          return decodeURIComponent(pathname);
+        } catch {
+          return pathname;
+        }
+      }
+
+      function getContentLocale() {
+        return window.location.pathname.startsWith('/en/') ? 'en' : 'th';
+      }
+
+      function getPageType() {
+        const decodedPath = decodePathname(window.location.pathname);
+        if (decodedPath.startsWith('/บทความ/')) return 'article';
+        return decodedPath === '/' ? 'home' : 'calculator';
+      }
+
+      function getDefaultCalculatorType() {
+        const decodedPath = decodePathname(window.location.pathname);
+        const calculatorMap = {
+          '/คำนวณภาษีเงินได้บุคคลธรรมดา/': 'personal_income_tax',
+          '/คำนวณผ่อนรถ/': 'vehicle',
+          '/คำนวณผ่อนบ้าน/': 'mortgage_refinance',
+          '/คำนวณเงินเดือนสุทธิ/': 'net_salary',
+          '/คำนวณผ่อนกู้/': 'loan',
+          '/คำนวณภาษีมูลค่าเพิ่ม/': 'vat',
+          '/คำนวณดอกเบี้ยเงินฝาก/': 'deposit',
+          '/คำนวณ-bmi/': 'bmi',
+          '/คำนวณอายุ/': 'age',
+        };
+        return calculatorMap[decodedPath] || '';
+      }
+
+      function getLangModeFromQuery() {
+        const langParam = new URLSearchParams(window.location.search).get('lang');
+        if (langParam === 'en') return 'th-en';
+        if (langParam === 'th') return 'th';
+        return '';
+      }
+
+      function getStoredLangMode() {
+        try {
+          const saved = window.localStorage.getItem(LANG_MODE_STORAGE_KEY);
+          return SUPPORTED_LANG_MODES.has(saved || '') ? saved : '';
         } catch {
           return '';
         }
+      }
+
+      function getCurrentLangMode() {
+        const active = document.documentElement.dataset.langMode || '';
+        if (SUPPORTED_LANG_MODES.has(active)) return active;
+        return 'th';
+      }
+
+      function getLanguageContext() {
+        const langMode = getCurrentLangMode();
+        return {
+          lang_mode: langMode,
+          content_locale: getContentLocale(),
+          ui_language: langMode === 'th-en' ? 'en' : 'th',
+        };
+      }
+
+      function updateLangButtons(langMode) {
+        document.querySelectorAll('[data-lang-mode-btn]').forEach((button) => {
+          const nextMode = button.getAttribute('data-lang-mode-btn');
+          const isActive = nextMode === langMode;
+          button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          button.classList.toggle('bg-primary-600', isActive);
+          button.classList.toggle('text-white', isActive);
+          button.classList.toggle('text-slate-600', !isActive);
+        });
+      }
+
+      function persistLangMode(langMode) {
+        try {
+          window.localStorage.setItem(LANG_MODE_STORAGE_KEY, langMode);
+        } catch {
+          // no-op
+        }
+      }
+
+      function applyLangMode(nextMode, options = {}) {
+        const normalized = SUPPORTED_LANG_MODES.has(nextMode) ? nextMode : 'th';
+        const previous = getCurrentLangMode();
+        document.documentElement.dataset.langMode = normalized;
+        persistLangMode(normalized);
+        updateLangButtons(normalized);
+        window.dispatchEvent(new CustomEvent('ct:lang-mode-changed', { detail: { langMode: normalized } }));
+
+        if (options.emitToggle && previous !== normalized && typeof window.gtag === 'function') {
+          const pageType = getPageType();
+          const payload = {
+            from_lang_mode: previous,
+            to_lang_mode: normalized,
+            page_type: pageType,
+            ...getLanguageContext(),
+          };
+          const calculatorType = window.__ctCalculatorType || getDefaultCalculatorType();
+          if (pageType === 'calculator' && calculatorType) {
+            payload.calculator_type = calculatorType;
+          }
+          window.gtag('event', 'language_mode_toggle', payload);
+        }
+      }
+
+      function initLangMode() {
+        const queryMode = getLangModeFromQuery();
+        const initialMode = queryMode || getStoredLangMode() || 'th';
+        applyLangMode(initialMode, { emitToggle: false });
+      }
+
+      function getReferrerHost() {
+        if (!document.referrer) return '';
+        try {
+          return (new URL(document.referrer).hostname || '').toLowerCase();
+        } catch {
+          return '';
+        }
+      }
+
+      function classifyAiReferrer(referrerHost) {
+        if (!referrerHost || referrerHost === '(direct)') return 'none';
+
+        const aiReferrerRules = [
+          ['chat.openai.com', 'chatgpt'],
+          ['chatgpt.com', 'chatgpt'],
+          ['openai.com', 'chatgpt'],
+          ['perplexity.ai', 'perplexity'],
+          ['claude.ai', 'claude'],
+          ['poe.com', 'poe'],
+          ['gemini.google.com', 'gemini'],
+          ['copilot.microsoft.com', 'copilot'],
+        ];
+
+        for (const [hostFragment, label] of aiReferrerRules) {
+          if (referrerHost.includes(hostFragment)) {
+            return label;
+          }
+        }
+
+        return 'none';
       }
 
       function getTrafficAttribution() {
@@ -95,12 +266,25 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         const utmMedium = params.get('utm_medium') || '';
         const utmCampaign = params.get('utm_campaign') || '';
         const referrerHost = getReferrerHost();
+        const aiReferrerSource = classifyAiReferrer(referrerHost);
+        const trafficChannel = aiReferrerSource !== 'none'
+          ? 'ai_referral'
+          : (utmSource ? 'campaign' : (referrerHost ? 'referral' : 'direct'));
 
         return {
           traffic_source: utmSource || referrerHost || '(direct)',
           traffic_medium: utmMedium || (referrerHost ? 'referral' : '(none)'),
           traffic_campaign: utmCampaign || '(not set)',
           referrer_host: referrerHost || '(direct)',
+          ai_referrer_source: aiReferrerSource,
+          traffic_channel: trafficChannel,
+        };
+      }
+
+      function withLanguageContext(payload) {
+        return {
+          ...payload,
+          ...getLanguageContext(),
         };
       }
 
@@ -115,6 +299,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
           window.gtag('event', 'session_start', {
             ...getTrafficAttribution(),
             landing_path: window.location.pathname,
+            ...getLanguageContext(),
           });
           window.sessionStorage.setItem(storageKey, '1');
         } catch {
@@ -122,6 +307,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
           window.gtag('event', 'session_start', {
             ...getTrafficAttribution(),
             landing_path: window.location.pathname,
+            ...getLanguageContext(),
           });
         }
       }
@@ -129,13 +315,15 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       // Shared GA4 custom event helpers
       function trackCalculatorStart(calculatorType) {
         if (typeof window.gtag !== 'function') return;
-        window.gtag('event', 'calculator_start', {
+        window.__ctCalculatorType = calculatorType;
+        window.gtag('event', 'calculator_start', withLanguageContext({
           calculator_type: calculatorType,
           ...getTrafficAttribution(),
-        });
+        }));
       }
       function trackCalculatorComplete(calculatorType, resultValue) {
         if (typeof window.gtag !== 'function') return;
+        window.__ctCalculatorType = calculatorType;
         const payload = {
           calculator_type: calculatorType,
           ...getTrafficAttribution(),
@@ -143,21 +331,33 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         if (typeof resultValue === 'number' && Number.isFinite(resultValue)) {
           payload.result_value = resultValue;
         }
-        window.gtag('event', 'calculator_complete', payload);
+        window.gtag('event', 'calculator_complete', withLanguageContext(payload));
       }
       function trackCalculatorUsed(calculatorType) {
         if (typeof window.gtag !== 'function') return;
-        window.gtag('event', 'calculator_used', { calculator_type: calculatorType });
+        window.__ctCalculatorType = calculatorType;
+        window.gtag('event', 'calculator_used', withLanguageContext({ calculator_type: calculatorType }));
       }
       function trackResultViewed(calculatorType) {
         if (typeof window.gtag !== 'function') return;
-        window.gtag('event', 'result_viewed', { calculator_type: calculatorType });
+        window.__ctCalculatorType = calculatorType;
+        window.gtag('event', 'result_viewed', withLanguageContext({ calculator_type: calculatorType }));
+      }
+      function trackLanguageAwareEvent(eventName, payload = {}) {
+        if (typeof window.gtag !== 'function') return;
+        window.gtag('event', eventName, withLanguageContext(payload));
       }
 
       window.trackCalculatorStart = trackCalculatorStart;
       window.trackCalculatorComplete = trackCalculatorComplete;
       window.trackCalculatorUsed = trackCalculatorUsed;
       window.trackResultViewed = trackResultViewed;
+      window.trackLanguageAwareEvent = trackLanguageAwareEvent;
+      window.getLanguageContext = getLanguageContext;
+      window.getLangMode = getCurrentLangMode;
+      window.setLangMode = function(nextMode) {
+        applyLangMode(nextMode, { emitToggle: true });
+      };
 
       function preserveAttributionParamsOnLinks() {
         const source = new URLSearchParams(window.location.search);
@@ -170,6 +370,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
           'utm_id',
           'gclid',
           'fbclid',
+          'lang',
         ];
 
         const passthrough = new URLSearchParams();
@@ -204,35 +405,75 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         });
       }
 
+      function bindEntryClickTracking() {
+        document.querySelectorAll('[data-entry-event]').forEach((element) => {
+          if (element.getAttribute('data-entry-bound') === '1') return;
+          element.setAttribute('data-entry-bound', '1');
+          element.addEventListener('click', () => {
+            const eventName = element.getAttribute('data-entry-event');
+            if (!eventName) return;
+
+            const routeTo = element.getAttribute('data-route-to')
+              || element.getAttribute('href')
+              || '';
+
+            const payload = {
+              route_from: window.location.pathname,
+              route_to: routeTo,
+            };
+
+            const targetCalculator = element.getAttribute('data-target-calculator');
+            const entrySurface = element.getAttribute('data-entry-surface');
+            const placement = element.getAttribute('data-placement');
+
+            if (targetCalculator) payload.target_calculator = targetCalculator;
+            if (entrySurface) payload.entry_surface = entrySurface;
+            if (placement) payload.placement = placement;
+
+            trackLanguageAwareEvent(eventName, payload);
+          });
+        });
+      }
+
+      initLangMode();
       emitSessionStartOnce();
 
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', preserveAttributionParamsOnLinks);
+        document.addEventListener('DOMContentLoaded', function() {
+          preserveAttributionParamsOnLinks();
+          bindEntryClickTracking();
+          updateLangButtons(getCurrentLangMode());
+          document.querySelectorAll('[data-lang-mode-btn]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const nextMode = button.getAttribute('data-lang-mode-btn');
+              if (!nextMode) return;
+              applyLangMode(nextMode, { emitToggle: true });
+            });
+          });
+        });
       } else {
         preserveAttributionParamsOnLinks();
-      }
-    </script>
-
-    <!-- AdSense: Uncomment after approval. Lazy-loaded via IntersectionObserver to protect CWV. -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
-    <script is:inline>
-      // Lazy-load AdSense when ad units scroll into viewport
-      if (typeof IntersectionObserver !== 'undefined') {
-        document.addEventListener('DOMContentLoaded', function() {
-          var adUnits = document.querySelectorAll('.adsbygoogle');
-          if (adUnits.length === 0) return;
-          var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (entry.isIntersecting) {
-                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-                observer.unobserve(entry.target);
-              }
-            });
-          }, { rootMargin: '200px' });
-          adUnits.forEach(function(ad) { observer.observe(ad); });
+        bindEntryClickTracking();
+        updateLangButtons(getCurrentLangMode());
+        document.querySelectorAll('[data-lang-mode-btn]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const nextMode = button.getAttribute('data-lang-mode-btn');
+            if (!nextMode) return;
+            applyLangMode(nextMode, { emitToggle: true });
+          });
         });
       }
     </script>
+
+    {
+      shouldLoadAdsenseScript && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          crossorigin="anonymous"
+        ></script>
+      )
+    }
 
     <style>
       /* Smooth gradient background */
@@ -260,6 +501,19 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+      .lang-assist,
+      .lang-assist-inline {
+        display: none;
+      }
+
+      html[data-lang-mode='th-en'] .lang-assist {
+        display: block;
+      }
+
+      html[data-lang-mode='th-en'] .lang-assist-inline {
+        display: inline;
+      }
     </style>
   </head>
   <body class="font-thai text-gray-900 flex flex-col">
@@ -278,6 +532,24 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         </a>
         <div class="flex items-center gap-3 text-sm">
           <a href="/บทความ/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">บทความ</a>
+          <div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group" aria-label="Language assist mode">
+            <button
+              type="button"
+              data-lang-mode-btn="th"
+              aria-pressed="true"
+              class="min-h-11 rounded-md px-3 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0 sm:px-2.5 sm:py-1.5"
+            >
+              ไทย
+            </button>
+            <button
+              type="button"
+              data-lang-mode-btn="th-en"
+              aria-pressed="false"
+              class="min-h-11 rounded-md px-3 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0 sm:px-2.5 sm:py-1.5"
+            >
+              EN
+            </button>
+          </div>
           <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium">
             ฟรี 100%
           </span>
