@@ -1,5 +1,5 @@
 param(
-  [string]$BaseUrl = "https://calculator-thailand-production.up.railway.app"
+  [string]$BaseUrl = "https://www.kamnuanlek.com"
 )
 
 Set-StrictMode -Version Latest

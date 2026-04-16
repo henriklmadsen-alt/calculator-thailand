@@ -6,6 +6,25 @@ import { fileURLToPath } from 'node:url';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
 const port = parseInt(process.env.PORT || '3000', 10);
+const defaultPrimarySiteUrl = 'https://www.kamnuanlek.com';
+let primarySiteUrl;
+try {
+  primarySiteUrl = new URL(process.env.PUBLIC_SITE_URL || defaultPrimarySiteUrl);
+} catch {
+  primarySiteUrl = new URL(defaultPrimarySiteUrl);
+}
+const primaryHost = primarySiteUrl.hostname.toLowerCase();
+const apexHost = primaryHost.startsWith('www.') ? primaryHost.slice(4) : primaryHost;
+const redirectHosts = new Set(
+  [
+    apexHost,
+    'calculator-thailand-production.up.railway.app',
+    process.env.RAILWAY_PUBLIC_DOMAIN,
+    process.env.RAILWAY_STATIC_URL,
+  ]
+    .filter(Boolean)
+    .map((host) => String(host).toLowerCase())
+);
 const releaseMetadata = Object.freeze({
   gitCommit:
     process.env.RAILWAY_GIT_COMMIT_SHA ||
@@ -30,19 +49,64 @@ const mimeTypes = {
   '.txt': 'text/plain',
 };
 
+const noIndexTag = 'noindex, nofollow, noarchive';
+const blockedPathPatterns = [
+  /^\/(?:plans|reports|memory|scripts|node_modules|\.git|\.astro)(?:\/|$)/i,
+  /^\/\.tmp(?:\/|$)/i,
+  /^\/.*internal-note.*$/i,
+];
+
+function isBlockedPath(pathname) {
+  return blockedPathPatterns.some((pattern) => pattern.test(pathname));
+}
+
+function getRequestHost(req) {
+  const hostHeader = String(req.headers.host || '').trim().toLowerCase();
+  if (!hostHeader) return '';
+  return hostHeader.split(':', 1)[0];
+}
+
 async function serve(req, res) {
-  // Decode the URL to handle Thai characters and other non-ASCII paths
+  let incomingUrl;
+  try {
+    incomingUrl = new URL(req.url, `http://localhost:${port}`);
+  } catch {
+    incomingUrl = new URL('/', `http://localhost:${port}`);
+  }
+
+  const requestHost = getRequestHost(req);
+  if (requestHost && requestHost !== primaryHost && redirectHosts.has(requestHost)) {
+    res.writeHead(301, {
+      Location: `${primarySiteUrl.origin}${incomingUrl.pathname}${incomingUrl.search}`,
+      'Cache-Control': 'no-store, max-age=0',
+    });
+    res.end();
+    return;
+  }
+
+  // Decode the URL to handle Thai characters and other non-ASCII paths.
   let url;
   try {
-    url = decodeURIComponent(new URL(req.url, `http://localhost:${port}`).pathname);
+    url = decodeURIComponent(incomingUrl.pathname);
   } catch {
-    url = new URL(req.url, `http://localhost:${port}`).pathname;
+    url = incomingUrl.pathname;
+  }
+
+  if (isBlockedPath(url)) {
+    res.writeHead(410, {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-store, max-age=0',
+      'X-Robots-Tag': noIndexTag,
+    });
+    res.end('Gone');
+    return;
   }
 
   if (url === '/__release' || url === '/__release/') {
     res.writeHead(200, {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store, max-age=0',
+      'X-Robots-Tag': noIndexTag,
     });
     res.end(JSON.stringify(releaseMetadata));
     return;
@@ -63,15 +127,23 @@ async function serve(req, res) {
   } catch {
     try {
       const notFound = await readFile(join(distDir, '404.html'));
-      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.writeHead(404, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store, max-age=0',
+        'X-Robots-Tag': noIndexTag,
+      });
       res.end(notFound);
     } catch {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.writeHead(404, {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store, max-age=0',
+        'X-Robots-Tag': noIndexTag,
+      });
       res.end('Not Found');
     }
   }
 }
 
 createServer(serve).listen(port, () => {
-  // Server running
+  // Server running.
 });
