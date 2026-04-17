@@ -1,0 +1,483 @@
+﻿---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าไฟฟ้า ปี 2569 | รู้ค่าไฟรวม Ft และ VAT ทันที | เครื่องคำนวณไทย';
+const pageDescription = 'เครื่องคำนวณค่าไฟฟ้า 2569 สำหรับ MEA และ PEA คำนวณค่าไฟฟ้าฐาน ค่า Ft ค่าบริการ และ VAT 7% พร้อมแสดงรายละเอียดรายขั้นบันได';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าไฟฟ้า/`;
+
+const faqData = [
+  {
+    question: 'ค่า Ft ปี 2569 ต้องกรอกเท่าไร?',
+    answer:
+      'ค่า Ft มีการประกาศเป็นรอบ เช่น ม.ค.-เม.ย. 2569 = 0.0972 บาท/หน่วย และ พ.ค.-ส.ค. 2569 = 0.1623 บาท/หน่วย โดยหน้านี้ตั้งค่าเริ่มต้นเป็นรอบ ม.ค.-เม.ย. 2569 และสามารถแก้ไขค่า Ft ได้',
+  },
+  {
+    question: 'ค่าไฟ MEA และ PEA คิดต่างกันไหม?',
+    answer:
+      'สำหรับประเภทผู้ใช้ตามหน้านี้ โครงสร้างอัตราค่าไฟฐานและวิธีคิด Ft ใช้หลักเดียวกัน แต่ควรตรวจสอบประกาศล่าสุดของหน่วยงานผู้ให้บริการทุกครั้ง',
+  },
+  {
+    question: 'ค่าบริการรายเดือนคิดอย่างไร?',
+    answer:
+      'บ้านอยู่อาศัยที่ใช้ไฟไม่เกิน 150 หน่วย ใช้ค่าบริการ 8.19 บาท/เดือน, บ้านอยู่อาศัยที่ใช้เกิน 150 หน่วย ใช้ 24.62 บาท/เดือน และกลุ่มธุรกิจขนาดเล็ก ใช้ 33.29 บาท/เดือน',
+  },
+  {
+    question: 'คำนวณ VAT จากอะไร?',
+    answer:
+      'VAT 7% คิดจากผลรวมก่อนภาษี ได้แก่ ค่าไฟฟ้าฐาน + ค่า Ft + ค่าบริการรายเดือน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าไฟฟ้า',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าไฟฟ้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อ้างอิงอัตราปี 2569</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณตามโครงสร้างค่าไฟฟ้าฐาน กกพ., ค่า Ft งวด ม.ค.-เม.ย. 2569 (แก้ได้) และ VAT 7%</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ผลลัพธ์นี้เป็นการประมาณการเพื่อวางแผนค่าใช้จ่าย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าไฟฟ้า ปี 2569 (MEA/PEA)</h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกจำนวนหน่วยไฟ ประเภทผู้ใช้ และประเภทมิเตอร์ เพื่อคำนวณค่าไฟฟ้าฐาน ค่า Ft ค่าบริการ และ VAT ในใบแจ้งค่าไฟ
+      พร้อมดู breakdown รายขั้นบันได
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="electricity-form" class="space-y-5">
+        <p id="electricity-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลที่กรอกให้ครบถ้วน
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="units" class="mb-1 block text-sm font-medium text-gray-700">หน่วยไฟฟ้าที่ใช้ (kWh/เดือน)</label>
+            <input
+              type="text"
+              id="units"
+              inputmode="numeric"
+              placeholder="เช่น 250"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="units-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="provider" class="mb-1 block text-sm font-medium text-gray-700">ประเภทผู้ให้บริการไฟฟ้า</label>
+            <select
+              id="provider"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">เลือกผู้ให้บริการ</option>
+              <option value="mea">MEA (การไฟฟ้านครหลวง)</option>
+              <option value="pea">PEA (การไฟฟ้าส่วนภูมิภาค)</option>
+            </select>
+            <p id="provider-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="customer-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทผู้ใช้ / ประเภทมิเตอร์</label>
+            <select
+              id="customer-type"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">เลือกประเภทผู้ใช้</option>
+              <option value="residential">บ้านอยู่อาศัย</option>
+              <option value="small_business">ธุรกิจขนาดเล็ก</option>
+            </select>
+            <p id="customer-type-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="ft-rate" class="mb-1 block text-sm font-medium text-gray-700">ค่า Ft (บาท/หน่วย) - ไม่กรอกใช้ค่าเริ่มต้น</label>
+            <input
+              type="text"
+              id="ft-rate"
+              inputmode="decimal"
+              placeholder="เช่น 0.0972"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p class="mt-1 text-xs text-gray-500">ค่าเริ่มต้น Ft = 0.0972 (ม.ค.-เม.ย. 2569) และงวด พ.ค.-ส.ค. 2569 ใช้ 0.1623 บาท/หน่วย</p>
+            <p id="ft-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="electricity-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          กรอกข้อมูลให้ครบ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าไฟฟ้าฐาน</div>
+            <div id="res-energy-charge" class="text-lg font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่า Ft</div>
+            <div id="res-ft-charge" class="text-lg font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าบริการ</div>
+            <div id="res-service-charge" class="text-lg font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">VAT 7%</div>
+            <div id="res-vat" class="text-lg font-bold text-purple-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมทั้งหมด</div>
+            <div id="res-total" class="text-lg font-bold text-red-600">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ผู้ให้บริการ</span>
+            <span id="res-provider" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ประเภทผู้ใช้</span>
+            <span id="res-customer-type" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รหัสอัตรา</span>
+            <span id="res-tariff-code" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">หน่วยไฟที่ใช้</span>
+            <span id="res-units" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่า Ft ที่ใช้</span>
+            <span id="res-ft-rate" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รวมก่อน VAT</span>
+            <span id="res-subtotal" class="font-medium text-gray-900">-</span>
+          </div>
+        </div>
+
+        <h3 class="mb-2 text-base font-semibold text-gray-900">ตารางคำนวณค่าไฟฟ้าฐานรายขั้น</h3>
+        <div class="overflow-x-auto rounded-md border border-gray-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50 text-gray-700">
+              <tr>
+                <th class="px-3 py-2 text-left font-medium">ช่วงหน่วย</th>
+                <th class="px-3 py-2 text-right font-medium">หน่วยที่ใช้</th>
+                <th class="px-3 py-2 text-right font-medium">อัตรา (บาท/หน่วย)</th>
+                <th class="px-3 py-2 text-right font-medium">เป็นเงิน</th>
+              </tr>
+            </thead>
+            <tbody id="tier-breakdown-body" class="divide-y divide-gray-100 bg-white"></tbody>
+          </table>
+        </div>
+
+        <p id="result-note" class="mt-4 rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800"></p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าไฟฟ้าฐาน = ผลรวมค่าไฟตามอัตราขั้นบันไดของประเภทผู้ใช้</li>
+        <li>ค่า Ft = จำนวนหน่วยไฟ x ค่า Ft (บาท/หน่วย)</li>
+        <li>รวมก่อน VAT = ค่าไฟฟ้าฐาน + ค่า Ft + ค่าบริการรายเดือน</li>
+        <li>VAT = รวมก่อน VAT x 7%</li>
+        <li>รวมทั้งหมด = รวมก่อน VAT + VAT</li>
+      </ul>
+      <p>
+        โครงสร้างอัตราค่าไฟฟ้าฐานยึดตามประกาศ กกพ. กลุ่มบ้านอยู่อาศัย (ประเภท 1.1 และ 1.2)
+        และกลุ่มกิจการขนาดเล็ก (ประเภท 2.1.2) พร้อมค่า Ft ล่าสุดตามรอบประกาศ
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8 rounded-lg border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">อ่านวิธีคิดแบบละเอียด</p>
+      <p class="mt-1 text-sm text-primary-700">ดูตัวอย่างคำนวณ 200/300/400 หน่วย พร้อมวิธีตรวจสอบบิลจริงจากสูตร กกพ.</p>
+      <div class="mt-3">
+        <a href="/บทความ/คำนวณค่าไฟฟ้า-2569-สูตร-pea-mea/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">
+          ไปที่บทความคำนวณค่าไฟฟ้า 2569
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">เครื่องมือที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">หน้าเครื่องมือทั้งหมด</span>
+          <span class="block text-sm text-gray-400">รวมเครื่องมือคำนวณการเงินจาก Calculator Thailand</span>
+        </a>
+        <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณ VAT 7%</span>
+          <span class="block text-sm text-gray-400">คำนวณภาษีมูลค่าเพิ่มแบบบวกภาษีและถอดภาษี</span>
+        </a>
+        <a href="/คำนวณดอกเบี้ยบัตรเครดิต/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณดอกเบี้ยบัตรเครดิต</span>
+          <span class="block text-sm text-gray-400">วางแผนภาระรายจ่ายรายเดือนควบคู่กับค่าไฟบ้าน</span>
+        </a>
+        <a href="/คำนวณผ่อนกู้/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณผ่อนกู้</span>
+          <span class="block text-sm text-gray-400">ดูค่างวดรายเดือนเพื่อวางแผนเงินคงเหลือ</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
+      <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h2>
+      <ul class="list-disc space-y-1 pl-5">
+        <li><a href="https://www.erc.or.th/th/tariff/1288" target="_blank" rel="noopener noreferrer">กกพ. ตารางอัตราค่าไฟฟ้าฐาน (ประเภท 1 และ 2)</a></li>
+        <li><a href="https://www.pea.co.th/our-services/tariff/ft" target="_blank" rel="noopener noreferrer">PEA หน้ารวมประกาศค่า Ft (ทุกงวดล่าสุด)</a></li>
+        <li><a href="https://www.erc.or.th/web-upload/200xf869baf82be74c18cc110e974eea8d5c/filecenter/admin_ercbat/document-Ft-jan-apr.69__Final.pdf" target="_blank" rel="noopener noreferrer">ประกาศค่า Ft งวดมกราคม-เมษายน 2569 (9.72 สตางค์/หน่วย)</a></li>
+        <li><a href="https://www.rd.go.th/region/08/chiangrai/265/3664.html" target="_blank" rel="noopener noreferrer">กรมสรรพากร: ขยายเวลาภาษีมูลค่าเพิ่ม 7% ถึง 30 กันยายน 2569</a></li>
+      </ul>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>หมายเหตุสำคัญ:</strong> เครื่องมือนี้เป็นการคำนวณเบื้องต้นเพื่อช่วยประมาณค่าใช้จ่ายจริง รายการในใบแจ้งค่าไฟอาจต่างออกไป
+      ตามเงื่อนไขสัญญา ประเภทกิจการ และประกาศล่าสุดของหน่วยงานรัฐ
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculateElectricityBill, DEFAULT_ELECTRICITY_FT_RATE } from '../../lib/electricity-bill';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function fmtMoney(amount) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)} บาท`;
+    }
+
+    function fmtUnits(units) {
+      return `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 }).format(units)} หน่วย`;
+    }
+
+    function fmtRate(rate) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(rate)} บาท/หน่วย`;
+    }
+
+    const form = document.getElementById('electricity-form');
+    const submitBtn = document.getElementById('electricity-submit-btn');
+    const formError = document.getElementById('electricity-form-error');
+    const resultsDiv = document.getElementById('results');
+    const breakdownBody = document.getElementById('tier-breakdown-body');
+
+    const fields = {
+      units: document.getElementById('units'),
+      provider: document.getElementById('provider'),
+      customerType: document.getElementById('customer-type'),
+      ftRate: document.getElementById('ft-rate'),
+    };
+
+    function setFieldError(id, message) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    function clearFieldError(id) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = '';
+      element.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError('units-error');
+      clearFieldError('provider-error');
+      clearFieldError('customer-type-error');
+      clearFieldError('ft-rate-error');
+    }
+
+    function updateSubmitState() {
+      const requiredFilled = [
+        fields.units.value,
+        fields.provider.value,
+        fields.customerType.value,
+      ].every((value) => String(value).trim() !== '');
+
+      const unitsValue = parseNum(fields.units.value);
+      const ftInput = String(fields.ftRate.value).trim();
+      const ftValue = ftInput === '' ? DEFAULT_ELECTRICITY_FT_RATE : parseNum(ftInput);
+
+      const hasInvalidRequired = !Number.isFinite(unitsValue) || unitsValue <= 0;
+      const hasInvalidFt = !Number.isFinite(ftValue) || ftValue < 0;
+
+      const ready = requiredFilled && !hasInvalidRequired && !hasInvalidFt;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณค่าไฟ' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+      submitBtn.classList.toggle('opacity-70', !ready);
+    }
+
+    Object.values(fields).forEach((field) => {
+      field.addEventListener('input', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+      field.addEventListener('change', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+    });
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    updateSubmitState();
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearValidation();
+
+      const units = parseNum(fields.units.value);
+      const provider = String(fields.provider.value || '');
+      const customerType = String(fields.customerType.value || '');
+      const ftInput = String(fields.ftRate.value).trim();
+      const ftRate = ftInput === '' ? DEFAULT_ELECTRICITY_FT_RATE : parseNum(ftInput);
+
+      const validity = {
+        units: Number.isFinite(units) && units > 0,
+        provider: provider === 'mea' || provider === 'pea',
+        customerType: customerType === 'residential' || customerType === 'small_business',
+        ftRate: Number.isFinite(ftRate) && ftRate >= 0,
+      };
+
+      if (!validity.units) setFieldError('units-error', 'กรุณากรอกหน่วยไฟเป็นตัวเลขมากกว่า 0');
+      if (!validity.provider) setFieldError('provider-error', 'กรุณาเลือกผู้ให้บริการไฟฟ้า');
+      if (!validity.customerType) setFieldError('customer-type-error', 'กรุณาเลือกประเภทผู้ใช้ไฟฟ้า');
+      if (!validity.ftRate) setFieldError('ft-rate-error', 'ค่า Ft ต้องเป็นตัวเลขที่ไม่น้อยกว่า 0');
+
+      if (!Object.values(validity).every(Boolean)) {
+        formError.classList.remove('hidden');
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('electricity_bill');
+
+      const result = calculateElectricityBill({
+        units,
+        provider,
+        customerType,
+        ftRate,
+      });
+
+      setText('res-energy-charge', fmtMoney(result.energyCharge));
+      setText('res-ft-charge', fmtMoney(result.ftCharge));
+      setText('res-service-charge', fmtMoney(result.serviceCharge));
+      setText('res-vat', fmtMoney(result.vatAmount));
+      setText('res-total', fmtMoney(result.totalBill));
+
+      setText('res-provider', result.provider === 'mea' ? 'MEA (การไฟฟ้านครหลวง)' : 'PEA (การไฟฟ้าส่วนภูมิภาค)');
+      setText('res-customer-type', result.customerType === 'residential' ? 'บ้านอยู่อาศัย' : 'ธุรกิจขนาดเล็ก');
+      setText('res-tariff-code', result.tariffCode);
+      setText('res-units', fmtUnits(result.units));
+      setText('res-ft-rate', fmtRate(result.appliedFtRate));
+      setText('res-subtotal', fmtMoney(result.subtotalBeforeVat));
+
+      breakdownBody.innerHTML = '';
+      result.tierBreakdown.forEach((tier) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-3 py-2 text-gray-700">${tier.label}</td>
+          <td class="px-3 py-2 text-right text-gray-700">${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 }).format(tier.units)}</td>
+          <td class="px-3 py-2 text-right text-gray-700">${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(tier.rate)}</td>
+          <td class="px-3 py-2 text-right font-medium text-gray-900">${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tier.amount)}</td>
+        `;
+        breakdownBody.appendChild(row);
+      });
+
+      const noteParts = [
+        `ใช้อัตรา ${result.tariffCode} ตามประเภทผู้ใช้ที่เลือก`,
+        `ค่า Ft ที่ใช้ ${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(result.appliedFtRate)} บาท/หน่วย`,
+        'ผลลัพธ์นี้เป็นการประเมินเบื้องต้น โปรดตรวจสอบใบแจ้งค่าไฟจริงจาก MEA/PEA อีกครั้ง',
+      ];
+      setText('result-note', noteParts.join(' | '));
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณค่าไฟ';
+      trackCalculatorComplete('electricity_bill', result.totalBill);
+      trackCalculatorUsed('electricity_bill');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('electricity_bill');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>
