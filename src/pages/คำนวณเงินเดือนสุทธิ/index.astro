@@ -185,6 +185,10 @@ const jsonLdFaq = {
               <span class="text-gray-600">อัตราภาษีที่แท้จริง</span>
               <span id="res-effective-rate" class="font-medium">-</span>
             </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">สัดส่วนรายได้สุทธิ</span>
+              <span id="res-income-ratio" class="font-medium">-</span>
+            </div>
           </div>
         </div>
 
@@ -404,8 +408,9 @@ const jsonLdFaq = {
       const netMonthly = grossMonthly - ssMonthly - monthlyTax;
       const totalDeductions = ssMonthly + monthlyTax;
       const effectiveRate = annualGross > 0 ? (annualTax / annualGross) * 100 : 0;
+      const incomeRatio = grossMonthly > 0 ? (netMonthly / grossMonthly) * 100 : 0;
 
-      return { grossMonthly, ssMonthly, monthlyTax, netMonthly, totalDeductions, annualGross, annualTax, ssAnnual, effectiveRate };
+      return { grossMonthly, ssMonthly, monthlyTax, netMonthly, totalDeductions, annualGross, annualTax, ssAnnual, effectiveRate, incomeRatio };
     }
 
     const grossInput = document.getElementById('gross-salary') as HTMLInputElement;
@@ -477,6 +482,7 @@ const jsonLdFaq = {
       (document.getElementById('res-annual-tax') as HTMLElement).textContent = fmt(r.annualTax) + ' บาท';
       (document.getElementById('res-annual-ss') as HTMLElement).textContent = fmt(r.ssAnnual) + ' บาท';
       (document.getElementById('res-effective-rate') as HTMLElement).textContent = r.effectiveRate.toFixed(2) + '%';
+      (document.getElementById('res-income-ratio') as HTMLElement).textContent = r.incomeRatio.toFixed(2) + '%';
 
       resultDiv.classList.remove('hidden');
       nextActionCard.classList.remove('hidden');

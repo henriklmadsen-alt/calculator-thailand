@@ -1,4 +1,5 @@
 ---
+import '../styles/theme.css';
 import AdUnit from '../components/AdUnit.astro';
 
 interface Props {
@@ -401,32 +402,41 @@ const jsonLdFaq = faqData
       )
     }
 
-    <style>
-      body {
-        background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 50%, #f0fdf4 100%);
-        min-height: 100vh;
-      }
-      input:focus, select:focus, button:focus-visible {
-        outline: 2px solid #0ea5e9;
-        outline-offset: 2px;
-      }
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-      .prose h2 { margin-top: 2rem; margin-bottom: 0.75rem; font-size: 1.25rem; font-weight: 700; color: #1e293b; }
-      .prose h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600; color: #334155; }
-      .prose p { margin-bottom: 1rem; line-height: 1.8; color: #475569; }
-      .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #475569; }
-      .prose li { margin-bottom: 0.25rem; line-height: 1.7; }
-      .prose strong { color: #1e293b; }
-      .prose a { color: #0284c7; text-decoration: underline; }
-      .prose a:hover { color: #0369a1; }
+    <script is:inline>
+      (function initializeThemeBeforePaint() {
+        const STORAGE_KEY = 'ct.theme-preference.v1';
+        const allowed = ['light', 'dark', 'system'];
+        const root = document.documentElement;
 
-      .lang-assist,
-      .lang-assist-inline {
-        display: none;
-      }
+        function getSavedPreference() {
+          try {
+            const stored = window.localStorage.getItem(STORAGE_KEY);
+            return allowed.includes(stored || '') ? stored : 'system';
+          } catch {
+            return 'system';
+          }
+        }
+
+        const preference = getSavedPreference();
+        const systemPrefersDark = typeof window.matchMedia === 'function'
+          && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const effectiveTheme = preference === 'system'
+          ? (systemPrefersDark ? 'dark' : 'light')
+          : preference;
+
+        root.dataset.themePreference = preference;
+        root.dataset.theme = effectiveTheme;
+        root.style.colorScheme = effectiveTheme;
+      })();
+    </script>
+
+    <style>
+      .prose h2 { margin-top: 2rem; margin-bottom: 0.75rem; font-size: 1.25rem; font-weight: 700; }
+      .prose h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 600; }
+      .prose p { margin-bottom: 1rem; line-height: 1.8; }
+      .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+      .prose li { margin-bottom: 0.25rem; line-height: 1.7; }
+      .prose a { text-decoration: underline; }
 
       html[data-lang-mode='th-en'] .lang-assist {
         display: block;
@@ -471,6 +481,15 @@ const jsonLdFaq = faqData
               EN
             </button>
           </div>
+          <button
+            type="button"
+            aria-label="สลับโหมดสี"
+            data-theme-toggle
+            class="min-h-11 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0"
+          >
+            <span aria-hidden="true" data-theme-icon>🌗</span>
+            <span class="hidden sm:inline" data-theme-label>อัตโนมัติ</span>
+          </button>
           <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium">
             ฟรี 100%
           </span>

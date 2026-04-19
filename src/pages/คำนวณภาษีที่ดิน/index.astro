@@ -1,0 +1,342 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณภาษีที่ดิน 2569 | อัตราและวิธีคิด | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณภาษีที่ดินและสิ่งปลูกสร้างปี 2569 แบบขั้นมูลค่า แยกที่อยู่อาศัย เกษตร พาณิชย์ และที่ดินว่างเปล่า พร้อมตัวอย่างเป็นเงินบาท';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณภาษีที่ดิน/`;
+
+const faqData = [
+  {
+    question: 'ภาษีที่ดินปี 2569 ใช้อัตราเดียวทุกทรัพย์สินไหม?',
+    answer: 'ไม่ใช่ อัตราภาษีขึ้นกับประเภทการใช้ประโยชน์ เช่น เกษตร ที่อยู่อาศัย พาณิชย์ และที่ดินว่างเปล่า รวมถึงคิดแบบขั้นมูลค่าตามกรอบกฎหมาย',
+  },
+  {
+    question: 'บ้านหลังหลักได้ยกเว้นเท่าไร?',
+    answer: 'โดยทั่วไปกรณีเข้าเงื่อนไขบ้านหลังหลักจะมีวงเงินยกเว้นสูงกว่าทรัพย์สินประเภทอื่น เครื่องมือนี้ตั้งค่าเริ่มต้นที่ 50 ล้านบาทสำหรับกรณีบ้านหลังหลัก และปรับได้ตามข้อมูลจริงของคุณ',
+  },
+  {
+    question: 'ผลคำนวณในเครื่องมือทำไมอาจไม่ตรงใบแจ้งจริง?',
+    answer: 'ยอดจริงขึ้นกับข้อมูลทะเบียน สิทธิยกเว้นรายทรัพย์ ประเภทการใช้ประโยชน์ที่ท้องถิ่นจัดกลุ่ม และมาตรการลดภาษีเฉพาะปี จึงควรใช้ผลลัพธ์นี้เป็นการประมาณการก่อนยื่นจ่ายจริง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีที่ดินและสิ่งปลูกสร้าง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีที่ดิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณภาษีที่ดิน 2569 จากมูลค่าประเมินจริง</p>
+      <p class="mt-1 text-sm text-slate-700">รองรับการคำนวณแบบขั้นมูลค่าตามประเภทการใช้ประโยชน์ พร้อมตัวเลือกสิทธิยกเว้นและมาตรการลดภาษี</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับวางงบก่อนรับใบแจ้งภาษีจากท้องถิ่น</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณภาษีที่ดิน 2569 (ที่อยู่อาศัย/พาณิชย์/ที่ดินว่างเปล่า)
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกมูลค่าประเมินทรัพย์สิน เลือกประเภทการใช้ประโยชน์ และกำหนดสิทธิยกเว้นที่ใช้ได้
+      ระบบจะคำนวณภาษีแบบขั้นมูลค่าให้ทันที พร้อมแจกแจงช่วงอัตราที่ใช้คิดภาษีเป็นเงินบาท
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="19 เม.ย. 2569"
+      sources={[
+        'พระราชบัญญัติภาษีที่ดินและสิ่งปลูกสร้าง พ.ศ. 2562',
+        'พระราชกฤษฎีกากำหนดอัตราภาษีที่ดินและสิ่งปลูกสร้าง พ.ศ. 2564',
+        'LTAX e-service: คำถามที่พบบ่อยเรื่องสิทธิยกเว้น',
+      ]}
+      assumptions={[
+        'ผลลัพธ์เป็นการประมาณเพื่อวางแผนเบื้องต้น ไม่ใช่ใบประเมินทางราชการ',
+        'ยอดจริงขึ้นกับการจำแนกประเภทการใช้ประโยชน์และประกาศลดภาษีของปีนั้น',
+      ]}
+      references={[
+        {
+          label: 'FPO: กฎหมายภาษีที่ดินและสิ่งปลูกสร้าง',
+          href: 'https://www.fpo.go.th/main/The-law-in-charge-of-FPO/Law-of-Finance-and-Taxation/17122.aspx',
+        },
+        {
+          label: 'พ.ร.ฎ. อัตราภาษีที่ดินและสิ่งปลูกสร้าง พ.ศ. 2564',
+          href: 'https://www.fpo.go.th/main/getattachment/General-information-public-service/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%8A%E0%B8%B2%E0%B8%8A%E0%B8%99%E0%B8%84%E0%B8%A7%E0%B8%A3%E0%B8%A3%E0%B8%B9%E0%B9%89/%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%94%E0%B8%B4%E0%B8%99%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B9%88%E0%B8%87%E0%B8%9B%E0%B8%A5%E0%B8%B9%E0%B8%81%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87/%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%99%E0%B8%9A-2-%E0%B8%9E-%E0%B8%A3-%E0%B8%8E-2564.PDF.aspx?lang=th-TH',
+        },
+        {
+          label: 'LTAX e-service',
+          href: 'https://ltaxsvt.dla.go.th/',
+        },
+      ]}
+    />
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="land-tax-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="appraised-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าประเมิน (บาท)</label>
+            <input id="appraised-value" type="text" inputmode="decimal" placeholder="เช่น 8000000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+
+          <div>
+            <label for="usage" class="mb-1 block text-sm font-medium text-gray-700">ประเภทการใช้ประโยชน์</label>
+            <select id="usage" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="residential_primary">ที่อยู่อาศัย (บ้านหลังหลัก)</option>
+              <option value="residential_secondary">ที่อยู่อาศัย (ไม่ใช่บ้านหลังหลัก)</option>
+              <option value="agriculture">เกษตรกรรม</option>
+              <option value="commercial">พาณิชยกรรม/อุตสาหกรรม</option>
+              <option value="vacant">ที่ดินว่างเปล่า</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="exemption-value" class="mb-1 block text-sm font-medium text-gray-700">สิทธิยกเว้น (บาท)</label>
+            <input id="exemption-value" type="text" inputmode="decimal" value="50000000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+
+          <div>
+            <label for="relief-percent" class="mb-1 block text-sm font-medium text-gray-700">มาตรการลดภาษี (%)</label>
+            <input id="relief-percent" type="text" inputmode="decimal" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณภาษีที่ดิน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณภาษีที่ดิน</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ภาษีก่อนลดหย่อน</div>
+            <div id="res-gross-tax" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-indigo-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าลดภาษี</div>
+            <div id="res-relief-amount" class="text-xl font-bold text-indigo-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ภาษีสุทธิที่ต้องชำระ</div>
+            <div id="res-net-tax" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ประเภทการใช้ประโยชน์</span>
+            <span id="res-usage-label" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">มูลค่าประเมิน</span>
+            <span id="res-appraised" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">สิทธิยกเว้นที่ใช้</span>
+            <span id="res-exemption" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ฐานภาษีหลังหักยกเว้น</span>
+            <span id="res-taxable-base" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราภาษีที่แท้จริง</span>
+            <span id="res-effective-rate" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <h3 class="mb-2 text-base font-semibold text-gray-900">รายละเอียดการคิดภาษีแบบขั้นมูลค่า</h3>
+        <ul id="tier-breakdown" class="space-y-2 text-sm text-gray-700"></ul>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีคิดในหน้านี้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ฐานภาษี = มูลค่าประเมิน - สิทธิยกเว้นที่ใช้ได้</li>
+        <li>ภาษีก่อนลดหย่อน = ผลรวมภาษีแต่ละช่วงมูลค่าตามอัตราของประเภททรัพย์สิน</li>
+        <li>ภาษีสุทธิ = ภาษีก่อนลดหย่อน - มาตรการลดภาษี (%)</li>
+      </ul>
+      <p>ต้องการหลักกฎหมายและตัวอย่างละเอียด อ่านต่อที่บทความประกอบด้านล่าง</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">อ่านต่อและเครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/บทความ/ภาษีที่ดิน-2569-อัตราและวิธีคำนวณ/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">บทความ: ภาษีที่ดิน 2569 อัตราและวิธีคำนวณ</span>
+          <span class="block text-sm text-gray-400">สรุปกฎหมายและตัวอย่างคำนวณทีละขั้น</span>
+        </a>
+        <a href="/คำนวณค่าธรรมเนียมโอนบ้าน/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณค่าธรรมเนียมโอนบ้าน</span>
+          <span class="block text-sm text-gray-400">วางงบวันโอนให้ครบทั้งค่าโอนและจดจำนอง</span>
+        </a>
+        <a href="/คำนวณผ่อนบ้าน/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณผ่อนบ้าน</span>
+          <span class="block text-sm text-gray-400">เทียบภาระค่างวดก่อนตัดสินใจซื้อ</span>
+        </a>
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
+          <span class="block text-sm text-gray-400">เช็กภาพรวมภาษีรายปีของทั้งครัวเรือน</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้เป็นการคำนวณเพื่อวางแผนเบื้องต้นตามข้อมูลที่กรอก
+      ยอดภาษีที่ต้องชำระจริงให้ยึดใบแจ้งจากหน่วยงานท้องถิ่นและประกาศที่มีผลใช้ในปีภาษีนั้น
+    </div>
+  </article>
+
+  <script>
+    import { calculateLandBuildingTax } from '../../lib/land-building-tax';
+
+    const usageLabels = {
+      agriculture: 'เกษตรกรรม',
+      residential_primary: 'ที่อยู่อาศัย (บ้านหลังหลัก)',
+      residential_secondary: 'ที่อยู่อาศัย (ไม่ใช่บ้านหลังหลัก)',
+      commercial: 'พาณิชยกรรม/อุตสาหกรรม',
+      vacant: 'ที่ดินว่างเปล่า',
+    };
+
+    const form = document.getElementById('land-tax-form');
+    const formError = document.getElementById('form-error');
+    const results = document.getElementById('results');
+    const usageInput = document.getElementById('usage');
+    const exemptionInput = document.getElementById('exemption-value');
+
+    const show = (el) => el?.classList.remove('hidden');
+    const hide = (el) => el?.classList.add('hidden');
+
+    const parseNumber = (value) => {
+      const normalized = String(value ?? '').replace(/,/g, '').trim();
+      if (!normalized) return NaN;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    };
+
+    const formatMoney = (value) => `${new Intl.NumberFormat('th-TH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)} บาท`;
+
+    const formatPercent = (value) => `${new Intl.NumberFormat('th-TH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)}%`;
+
+    usageInput?.addEventListener('change', () => {
+      if (!exemptionInput) return;
+      exemptionInput.value = usageInput.value === 'residential_primary' ? '50000000' : '0';
+    });
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hide(formError);
+
+      const appraisedValue = parseNumber(document.getElementById('appraised-value')?.value);
+      const usage = usageInput?.value;
+      const exemptionValue = parseNumber(exemptionInput?.value);
+      const reliefPercent = parseNumber(document.getElementById('relief-percent')?.value);
+
+      if (!usage || !Number.isFinite(appraisedValue) || appraisedValue < 0 || !Number.isFinite(exemptionValue) || exemptionValue < 0 || !Number.isFinite(reliefPercent) || reliefPercent < 0) {
+        show(formError);
+        hide(results);
+        return;
+      }
+
+      const result = calculateLandBuildingTax({
+        appraisedValue,
+        usage,
+        exemptionValue,
+        reliefPercent,
+      });
+
+      document.getElementById('res-gross-tax').textContent = formatMoney(result.grossTax);
+      document.getElementById('res-relief-amount').textContent = formatMoney(result.reliefAmount);
+      document.getElementById('res-net-tax').textContent = formatMoney(result.netTax);
+      document.getElementById('res-usage-label').textContent = usageLabels[result.usage] || result.usage;
+      document.getElementById('res-appraised').textContent = formatMoney(result.appraisedValue);
+      document.getElementById('res-exemption').textContent = formatMoney(result.exemptionValue);
+      document.getElementById('res-taxable-base').textContent = formatMoney(result.taxableBase);
+      document.getElementById('res-effective-rate').textContent = formatPercent(result.effectiveRatePercent);
+
+      const breakdown = document.getElementById('tier-breakdown');
+      if (breakdown) {
+        breakdown.innerHTML = '';
+        if (result.breakdown.length === 0) {
+          const li = document.createElement('li');
+          li.textContent = 'ไม่มีภาษีที่ต้องชำระในช่วงมูลค่านี้';
+          breakdown.appendChild(li);
+        } else {
+          result.breakdown.forEach((tier) => {
+            const li = document.createElement('li');
+            const from = new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(tier.fromValue);
+            const to = tier.toValue === null
+              ? 'ขึ้นไป'
+              : new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(tier.toValue);
+            li.textContent = `ช่วง ${from} - ${to} บาท: ${formatMoney(tier.taxableAmount)} x ${formatPercent(tier.ratePercent)} = ${formatMoney(tier.taxAmount)}`;
+            breakdown.appendChild(li);
+          });
+        }
+      }
+
+      show(results);
+
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('land_building_tax');
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('land_building_tax', result.netTax);
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('land_building_tax');
+    });
+  </script>
+</BaseLayout>

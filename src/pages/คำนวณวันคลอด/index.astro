@@ -1,0 +1,401 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณวันคลอด 2569 | คำนวณอายุครรภ์ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณวันคลอดและอายุครรภ์จากวันแรกของประจำเดือนหรือวันปฏิสนธิ พร้อมผลลัพธ์เป็นสัปดาห์+วัน และแผนติดตามก่อนฝากครรภ์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณวันคลอด/`;
+
+const faqData = [
+  {
+    question: 'คำนวณวันคลอดจากวันแรกของประจำเดือนยังไง?',
+    answer: 'โดยทั่วไปใช้หลัก 280 วัน (40 สัปดาห์) จากวันแรกของประจำเดือนครั้งสุดท้าย หรือใช้กฎ Naegele ในการคำนวณวันกำหนดคลอดโดยประมาณ',
+  },
+  {
+    question: 'ถ้ารู้วันปฏิสนธิแล้วต้องคำนวณต่างกันไหม?',
+    answer: 'ถ้ารู้วันปฏิสนธิสามารถใช้ 266 วันจากวันปฏิสนธิเป็นวันกำหนดคลอดโดยประมาณ และคำนวณอายุครรภ์โดยแปลงเทียบกลับใกล้เคียง LMP',
+  },
+  {
+    question: 'ผลคำนวณตรงกับวันที่แพทย์ให้เสมอหรือไม่?',
+    answer: 'ไม่เสมอ ผลจากเครื่องมือเป็นค่าประมาณเบื้องต้นเท่านั้น การยืนยันวันกำหนดคลอดควรยึดการประเมินของแพทย์และผลอัลตราซาวด์ตามระยะครรภ์',
+  },
+  {
+    question: 'คำนวณอายุครรภ์ได้ถึงระดับวันหรือไม่?',
+    answer: 'ได้ เครื่องมือนี้แสดงเป็นจำนวนสัปดาห์และวัน เพื่อช่วยวางแผนนัดตรวจและติดตามพัฒนาการครรภ์อย่างเป็นขั้นตอน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณวันคลอดและอายุครรภ์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'HealthApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวันคลอด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณวันคลอดและอายุครรภ์ใน 1 หน้า</p>
+      <p class="mt-1 text-sm text-slate-700">เลือกคำนวณจาก LMP หรือวันปฏิสนธิ แล้วดูผลเป็นวันที่กำหนดคลอด + อายุครรภ์ปัจจุบัน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ผลลัพธ์เป็นค่าประมาณเพื่อวางแผนเบื้องต้น</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณวันคลอด 2569 และคำนวณอายุครรภ์ (สัปดาห์ + วัน)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ใช้เครื่องมือนี้เพื่อคาดวันกำหนดคลอดจากวันแรกของประจำเดือนครั้งสุดท้าย (LMP) หรือจากวันปฏิสนธิ
+      จากนั้นระบบจะแสดงอายุครรภ์ปัจจุบันโดยประมาณ ช่วยวางแผนฝากครรภ์และติดตามพัฒนาการได้เป็นระบบ
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="19 เม.ย. 2569"
+      sources={[
+        'NHS Due Date Calculator Guidance',
+        'Johns Hopkins Medicine: Calculating a Due Date',
+        'CDC/NCHS Facility Worksheet Guide (EDD/LMP guidance)',
+      ]}
+      assumptions={[
+        'ใช้เป็นการประเมินเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์',
+        'วันกำหนดคลอดจริงอาจเปลี่ยนได้จากผลอัลตราซาวด์และการประเมินของแพทย์',
+      ]}
+      references={[
+        {
+          label: 'NHS: Due Date Calculator',
+          href: 'https://www.nhs.uk/pregnancy/finding-out/due-date-calculator/',
+        },
+        {
+          label: 'Johns Hopkins: Calculating a Due Date',
+          href: 'https://www.hopkinsmedicine.org/health/wellness-and-prevention/calculating-a-due-date',
+        },
+        {
+          label: 'CDC/NCHS Guide to Complete Facility Worksheet',
+          href: 'https://www.cdc.gov/nchs/data/dvs/GuidetoCompleteFacilityWks.pdf',
+        },
+      ]}
+    />
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="due-date-form" class="space-y-5">
+        <p id="due-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลให้ครบและถูกต้อง
+        </p>
+
+        <div>
+          <p class="block text-sm font-medium text-gray-700 mb-2">วิธีคำนวณ</p>
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+              <input type="radio" name="calc-mode" value="lmp" checked class="h-4 w-4 text-primary-600" />
+              คำนวณจากวันแรกของประจำเดือน (LMP)
+            </label>
+            <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+              <input type="radio" name="calc-mode" value="conception" class="h-4 w-4 text-primary-600" />
+              คำนวณจากวันปฏิสนธิ
+            </label>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="input-date" class="block text-sm font-medium text-gray-700 mb-1">วันที่อ้างอิง</label>
+            <input id="input-date" type="date" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="input-date-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div id="cycle-wrap">
+            <label for="cycle-length" class="block text-sm font-medium text-gray-700 mb-1">ความยาวรอบเดือน (วัน)</label>
+            <input id="cycle-length" type="text" inputmode="numeric" value="28" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ใช้ 28 วันเป็นค่ามาตรฐาน หากรอบเดือนสั้น/ยาวกว่านี้ให้ปรับได้</p>
+            <p id="cycle-length-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+          คำนวณวันคลอดและอายุครรภ์
+        </button>
+      </form>
+    </div>
+
+    <div id="due-results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">วันกำหนดคลอด (EDD)</div>
+            <div id="res-edd" class="text-lg font-bold text-emerald-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อายุครรภ์ปัจจุบัน</div>
+            <div id="res-gestational-age" class="text-lg font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ไตรมาสโดยประมาณ</div>
+            <div id="res-trimester" class="text-lg font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-violet-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อายุครรภ์ (วันรวม)</div>
+            <div id="res-total-days" class="text-lg font-bold text-violet-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">โหมดการคำนวณ</span>
+            <span id="res-mode" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">วันที่อ้างอิง</span>
+            <span id="res-reference-date" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">วันที่เริ่มนับอายุครรภ์ (LMP-equivalent)</span>
+            <span id="res-lmp-equivalent" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="due-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: อ่านวิธีนับอายุครรภ์และเตรียมแผนค่าใช้จ่าย</p>
+      <p class="mt-1 text-sm text-primary-700">หลังได้วันกำหนดคลอดแล้ว ให้ต่อด้วยคู่มือการนับอายุครรภ์และเครื่องมือวางแผนตัวเลขที่เกี่ยวข้อง</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/บทความ/คำนวณวันคลอด-คำนวณอายุครรภ์/" data-preserve-utm class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">อ่านต่อ: คำนวณวันคลอด/อายุครรภ์</a>
+        <a data-next-action-link href="/คำนวณอายุ/" data-preserve-utm class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">ทำต่อ: คำนวณอายุ</a>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#due-next-action" />
+
+    <section class="mb-8 bg-white rounded-lg border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้ในเครื่องคำนวณนี้</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>กรณี LMP: วันกำหนดคลอด = LMP + 280 วัน (40 สัปดาห์)</li>
+        <li>ปรับตามรอบเดือน: EDD = LMP + 280 + (รอบเดือน - 28) วัน</li>
+        <li>กรณีรู้วันปฏิสนธิ: วันกำหนดคลอด = วันปฏิสนธิ + 266 วัน</li>
+        <li>อายุครรภ์ปัจจุบัน = วันที่วันนี้ - วันที่เริ่มนับครรภ์ (LMP หรือ LMP-equivalent)</li>
+      </ul>
+      <p class="mt-3 text-xs text-gray-500">
+        อ้างอิงสูตรมาตรฐานจาก NHS และ Johns Hopkins Medicine (LMP + 280 วัน / ปฏิสนธิ + 266 วัน)
+      </p>
+      <p>
+        เครื่องมือนี้ใช้เพื่อการวางแผนเบื้องต้นเท่านั้น การติดตามการตั้งครรภ์ควรอยู่ภายใต้การดูแลของบุคลากรทางการแพทย์
+        โดยเฉพาะกรณีมีประจำเดือนไม่สม่ำเสมอ การตั้งครรภ์จากเทคโนโลยีช่วยการเจริญพันธุ์ หรือมีภาวะแทรกซ้อน
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">อ่านต่อและเครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/บทความ/คำนวณวันคลอด-คำนวณอายุครรภ์/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">บทความ: คำนวณวันคลอดและอายุครรภ์แบบละเอียด</span>
+          <span class="mt-1 block text-sm text-gray-400">ดูตัวอย่างจริงและข้อควรรู้ก่อนฝากครรภ์</span>
+        </a>
+        <a href="/คำนวณอายุ/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณอายุ</span>
+          <span class="mt-1 block text-sm text-gray-400">ใช้เช็กวันครบอายุและระยะเวลาแบบวัน/เดือน/ปี</span>
+        </a>
+        <a href="/คำนวณเงินเดือนสุทธิ/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณเงินเดือนสุทธิ</span>
+          <span class="mt-1 block text-sm text-gray-400">วางแผนงบค่าใช้จ่ายช่วงตั้งครรภ์และเตรียมคลอด</span>
+        </a>
+        <a href="/คำนวณเปอร์เซ็นต์/" data-preserve-utm class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณเปอร์เซ็นต์</span>
+          <span class="mt-1 block text-sm text-gray-400">คำนวณสัดส่วนค่าใช้จ่ายก่อน-หลังคลอดเป็นเปอร์เซ็นต์</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg border border-gray-200 shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นค่าประมาณเพื่อการวางแผนเท่านั้น ไม่ใช่ข้อสรุปทางการแพทย์
+      หากมีอาการผิดปกติหรือข้อกังวล ควรปรึกษาแพทย์ทันที
+    </div>
+  </article>
+
+  <script>
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+    const form = document.getElementById('due-date-form');
+    const formError = document.getElementById('due-form-error');
+    const results = document.getElementById('due-results');
+    const dueNextAction = document.getElementById('due-next-action');
+    const cycleWrap = document.getElementById('cycle-wrap');
+
+    const modeInputs = Array.from(document.querySelectorAll('input[name="calc-mode"]'));
+    const inputDateEl = document.getElementById('input-date');
+    const cycleLengthEl = document.getElementById('cycle-length');
+
+    const show = (el) => el?.classList.remove('hidden');
+    const hide = (el) => el?.classList.add('hidden');
+
+    const today = new Date();
+
+    const toDate = (value) => {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return null;
+      d.setHours(0, 0, 0, 0);
+      return d;
+    };
+
+    const addDays = (date, days) => {
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+    };
+
+    const diffDays = (start, end) => Math.floor((end.getTime() - start.getTime()) / MS_PER_DAY);
+
+    const formatThaiDate = (date) =>
+      new Intl.DateTimeFormat('th-TH', { dateStyle: 'long' }).format(date);
+
+    const formatGestationalAge = (days) => {
+      if (days < 0) return 'ยังไม่เริ่มนับ';
+      const weeks = Math.floor(days / 7);
+      const remainDays = days % 7;
+      return `${weeks} สัปดาห์ ${remainDays} วัน`;
+    };
+
+    const getTrimester = (weeks) => {
+      if (weeks < 14) return 'ไตรมาสที่ 1';
+      if (weeks < 28) return 'ไตรมาสที่ 2';
+      return 'ไตรมาสที่ 3';
+    };
+
+    const activeMode = () => modeInputs.find((el) => el.checked)?.value || 'lmp';
+
+    const updateModeUi = () => {
+      const mode = activeMode();
+      if (mode === 'conception') {
+        hide(cycleWrap);
+      } else {
+        show(cycleWrap);
+      }
+    };
+
+    modeInputs.forEach((el) => el.addEventListener('change', updateModeUi));
+    updateModeUi();
+
+    const setFieldError = (id, message) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!message) {
+        hide(el);
+        el.textContent = '';
+        return;
+      }
+      el.textContent = message;
+      show(el);
+    };
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      hide(formError);
+      setFieldError('input-date-error', '');
+      setFieldError('cycle-length-error', '');
+
+      const mode = activeMode();
+      const inputDate = toDate(inputDateEl?.value);
+
+      if (!inputDate) {
+        setFieldError('input-date-error', 'กรุณาเลือกวันที่อ้างอิง');
+        return;
+      }
+
+      if (inputDate > today) {
+        setFieldError('input-date-error', 'วันที่อ้างอิงต้องไม่เกินวันปัจจุบัน');
+        return;
+      }
+
+      let lmpEquivalent = inputDate;
+      let dueDate;
+
+      if (mode === 'lmp') {
+        const cycleLength = Number(String(cycleLengthEl?.value || '').replace(/,/g, '').trim());
+        if (!Number.isFinite(cycleLength) || cycleLength < 21 || cycleLength > 45) {
+          setFieldError('cycle-length-error', 'ความยาวรอบเดือนควรอยู่ในช่วง 21-45 วัน');
+          return;
+        }
+        dueDate = addDays(inputDate, 280 + (cycleLength - 28));
+      } else {
+        lmpEquivalent = addDays(inputDate, -14);
+        dueDate = addDays(inputDate, 266);
+      }
+
+      const ageDays = diffDays(lmpEquivalent, today);
+      const ageWeeks = Math.max(0, Math.floor(ageDays / 7));
+
+      document.getElementById('res-edd').textContent = formatThaiDate(dueDate);
+      document.getElementById('res-gestational-age').textContent = formatGestationalAge(ageDays);
+      document.getElementById('res-trimester').textContent = getTrimester(ageWeeks);
+      document.getElementById('res-total-days').textContent = `${Math.max(0, ageDays)} วัน`;
+
+      document.getElementById('res-mode').textContent = mode === 'lmp' ? 'จากวันแรกของประจำเดือน (LMP)' : 'จากวันปฏิสนธิ';
+      document.getElementById('res-reference-date').textContent = formatThaiDate(inputDate);
+      document.getElementById('res-lmp-equivalent').textContent = formatThaiDate(lmpEquivalent);
+
+      show(results);
+      show(dueNextAction);
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('pregnancy_due_date');
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('pregnancy_due_date');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('pregnancy_due_date');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        const href = link.getAttribute('href') || '';
+        const payload = {
+          calculator_type: 'pregnancy_due_date',
+          route_from: window.location.pathname,
+          route_to: href,
+          placement: 'post_result',
+        };
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('next_action_click', payload);
+          return;
+        }
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'next_action_click', payload);
+        }
+      });
+    });
+  </script>
+</BaseLayout>
