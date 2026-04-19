@@ -1,0 +1,491 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import { PROVINCE_RATES } from '../../lib/minimum-wage-calculator.ts';
+
+const pageTitle = 'คำนวณค่าแรงขั้นต่ำ ปี 2569 | รายวัน รายเดือน ค่าโอที ทุกจังหวัด | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าแรงขั้นต่ำปี 2568-2569 ครบ 77 จังหวัด แสดงค่าจ้างรายวัน รายเดือน รายชั่วโมง พร้อมคำนวณค่าโอทีตามกฎหมายแรงงาน และเปรียบเทียบอัตราแต่ละจังหวัด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าแรงขั้นต่ำ/`;
+
+const faqData = [
+  {
+    question: 'ค่าแรงขั้นต่ำปี 2568-2569 สูงสุดกี่บาท?',
+    answer: 'อัตราค่าจ้างขั้นต่ำสูงสุดคือ 400 บาท/วัน ใช้ในกรุงเทพฯ ชลบุรี ระยอง ฉะเชิงเทรา ภูเก็ต และ อ.เกาะสมุย จ.สุราษฎร์ธานี ตามประกาศฉบับที่ 14 มีผลตั้งแต่ 1 กรกฎาคม 2568',
+  },
+  {
+    question: 'ค่าแรงขั้นต่ำต่ำสุดเท่าไร?',
+    answer: 'อัตราต่ำสุดคือ 337 บาท/วัน ใช้ใน 3 จังหวัดชายแดนภาคใต้ ได้แก่ นราธิวาส ปัตตานี และยะลา',
+  },
+  {
+    question: 'คำนวณค่าแรงขั้นต่ำรายเดือนอย่างไร?',
+    answer: 'ค่าแรงรายเดือน = ค่าแรงขั้นต่ำต่อวัน × จำนวนวันทำงานต่อเดือน เช่น กรุงเทพฯ 400 บาท × 26 วัน = 10,400 บาท/เดือน',
+  },
+  {
+    question: 'ค่าแรงรายชั่วโมงคิดอย่างไร?',
+    answer: 'ค่าแรงรายชั่วโมง = ค่าแรงขั้นต่ำต่อวัน ÷ 8 ชั่วโมง เช่น 400 ÷ 8 = 50 บาท/ชั่วโมง',
+  },
+  {
+    question: 'ทำไมบางจังหวัดมี 2 อัตรา?',
+    answer: 'บางจังหวัดมีอัตราแยกตามอำเภอ เช่น เชียงใหม่ อ.เมือง 380 บาท แต่อำเภออื่นๆ 357 บาท, สงขลา อ.หาดใหญ่ 380 บาท แต่อำเภออื่น 352 บาท, สุราษฎร์ธานี อ.เกาะสมุย 400 บาท แต่อำเภออื่น 352 บาท',
+  },
+  {
+    question: 'ค่า OT คิดจากค่าแรงขั้นต่ำอย่างไร?',
+    answer: 'OT วันธรรมดาคิด 1.5 เท่า, ทำงานวันหยุดคิด 2 เท่า, OT วันหยุดคิด 3 เท่า ของค่าแรงรายชั่วโมง ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541 มาตรา 61-63',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าแรงขั้นต่ำ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const uniqueRates = [...new Set(PROVINCE_RATES.map((p) => p.dailyRate))].sort((a, b) => b - a);
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าแรงขั้นต่ำ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อัปเดตอัตราค่าจ้างขั้นต่ำ ฉบับที่ 14 — มีผล 1 ก.ค. 2568</p>
+      <p class="mt-1 text-sm text-slate-700">ครอบคลุมทุก 77 จังหวัด 17 อัตรา ตั้งแต่ 337-400 บาท/วัน พร้อมคำนวณรายเดือนและค่าโอที</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิง: ประกาศคณะกรรมการค่าจ้าง กระทรวงแรงงาน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าแรงขั้นต่ำ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกจังหวัดเพื่อดูอัตราค่าจ้างขั้นต่ำรายวัน รายเดือน และรายชั่วโมง
+      สามารถเพิ่มชั่วโมง OT เพื่อคำนวณรายได้รวมต่อเดือน พร้อมเปรียบเทียบอัตราทุกจังหวัด
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="mw-form" class="space-y-5">
+        <p id="mw-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="province-select" class="mb-1 block text-sm font-medium text-gray-700">
+              เลือกจังหวัด
+            </label>
+            <select
+              id="province-select"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              {PROVINCE_RATES.map((p, i) => (
+                <option value={i} selected={i === 0}>
+                  {p.name} — {p.dailyRate} บาท/วัน
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="working-days" class="mb-1 block text-sm font-medium text-gray-700">
+              วันทำงานต่อเดือน (วัน)
+            </label>
+            <input
+              type="text"
+              id="working-days"
+              inputmode="decimal"
+              placeholder="เช่น 26"
+              value="26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="working-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <!-- OT Toggle -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="include-ot" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm font-medium text-gray-700">รวมค่าล่วงเวลา (OT) ในการคำนวณ</span>
+          </label>
+
+          <div id="ot-fields" class="mt-4 hidden space-y-4">
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div>
+                <label for="weekday-ot-hours" class="mb-1 block text-sm font-medium text-gray-700">
+                  OT วันธรรมดา (1.5 เท่า)
+                </label>
+                <input
+                  type="text"
+                  id="weekday-ot-hours"
+                  inputmode="decimal"
+                  placeholder="ชั่วโมง"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p id="weekday-ot-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+              <div>
+                <label for="holiday-work-hours" class="mb-1 block text-sm font-medium text-gray-700">
+                  ทำงานวันหยุด (2 เท่า)
+                </label>
+                <input
+                  type="text"
+                  id="holiday-work-hours"
+                  inputmode="decimal"
+                  placeholder="ชั่วโมง"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p id="holiday-work-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+              <div>
+                <label for="holiday-ot-hours" class="mb-1 block text-sm font-medium text-gray-700">
+                  OT วันหยุด (3 เท่า)
+                </label>
+                <input
+                  type="text"
+                  id="holiday-ot-hours"
+                  inputmode="decimal"
+                  placeholder="ชั่วโมง"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p id="holiday-ot-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="mw-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าแรงขั้นต่ำ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="mw-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้รวมต่อเดือน</div>
+            <div id="res-total-income" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงรายวัน</div>
+            <div id="res-daily-wage" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงรายเดือน</div>
+            <div id="res-monthly-wage" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงรายชั่วโมง</div>
+            <div id="res-hourly-rate" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+
+        <div id="ot-breakdown" class="hidden">
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">รายละเอียดค่าโอที</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">OT วันธรรมดา (1.5 เท่า)</span>
+              <span id="res-weekday-ot" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">ทำงานวันหยุด (2 เท่า)</span>
+              <span id="res-holiday-work" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">OT วันหยุด (3 เท่า)</span>
+              <span id="res-holiday-ot" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-t-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">ค่าโอทีรวม</span>
+              <span id="res-total-ot" class="font-bold text-green-700">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#mw-results" />
+
+    <!-- Province Comparison Table -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">ตารางเปรียบเทียบค่าแรงขั้นต่ำทุกจังหวัด ปี 2568-2569</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50">
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">อัตรา (บาท/วัน)</th>
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">จังหวัด</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รายเดือน (26 วัน)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รายชั่วโมง</th>
+            </tr>
+          </thead>
+          <tbody>
+            {uniqueRates.map((rate) => {
+              const provinces = PROVINCE_RATES.filter((p) => p.dailyRate === rate);
+              return (
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                  <td class="px-4 py-3 font-bold text-primary-700">{rate}</td>
+                  <td class="px-4 py-3 text-gray-700">
+                    {provinces.map((p) => p.name).join(', ')}
+                  </td>
+                  <td class="px-4 py-3 text-right text-gray-700">
+                    {new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0 }).format(rate * 26)}
+                  </td>
+                  <td class="px-4 py-3 text-right text-gray-700">
+                    {new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(rate / 8)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#mw-results" />
+
+    <!-- Formula Section -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่เครื่องมือนี้ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าแรงรายเดือน = ค่าแรงขั้นต่ำต่อวัน × จำนวนวันทำงานต่อเดือน</li>
+        <li>ค่าแรงรายชั่วโมง = ค่าแรงขั้นต่ำต่อวัน ÷ 8 ชั่วโมง</li>
+        <li>OT วันธรรมดา = ค่าแรงรายชั่วโมง × 1.5 × ชั่วโมง OT วันธรรมดา</li>
+        <li>ทำงานวันหยุด = ค่าแรงรายชั่วโมง × 2 × ชั่วโมงทำงานวันหยุด</li>
+        <li>OT วันหยุด = ค่าแรงรายชั่วโมง × 3 × ชั่วโมง OT วันหยุด</li>
+        <li>รายได้รวมต่อเดือน = ค่าแรงรายเดือน + ค่า OT ทั้งหมด</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่าง</h3>
+      <p>
+        พนักงานในกรุงเทพฯ ค่าแรงขั้นต่ำ 400 บาท/วัน ทำงาน 26 วัน/เดือน
+        มี OT วันธรรมดา 10 ชั่วโมง และทำงานวันหยุด 8 ชั่วโมง
+      </p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าแรงรายเดือน = 400 × 26 = 10,400 บาท</li>
+        <li>ค่าแรงรายชั่วโมง = 400 ÷ 8 = 50 บาท</li>
+        <li>OT วันธรรมดา = 50 × 1.5 × 10 = 750 บาท</li>
+        <li>ทำงานวันหยุด = 50 × 2 × 8 = 800 บาท</li>
+        <li>รายได้รวม = 10,400 + 750 + 800 = 11,950 บาท</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.mol.go.th/%E0%B8%AD%E0%B8%B1%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B8%82%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B8%95%E0%B9%88%E0%B8%B3" target="_blank" rel="noopener noreferrer">กระทรวงแรงงาน: อัตราค่าจ้างขั้นต่ำ</a></li>
+        <li><a href="https://www.mol.go.th/wp-content/uploads/sites/2/2018/07/183.pdf" target="_blank" rel="noopener noreferrer">พระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541 (มาตรา 61-63 ค่า OT)</a></li>
+        <li><a href="https://www.doe.go.th/prd/chiangmai/news/param/site/111/cat/7/sub/0/pull/detail/view/detail/object_id/88006" target="_blank" rel="noopener noreferrer">กรมการจัดหางาน: ประกาศค่าจ้างขั้นต่ำ ฉบับที่ 13-14</a></li>
+      </ul>
+    </section>
+
+    <!-- Related Calculators -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณค่าโอที/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณค่าโอที</span>
+          <span class="block text-sm text-gray-400">คำนวณ OT จากเงินเดือนจริง 1.5/2/3 เท่า</span>
+        </a>
+        <a href="/คำนวณเงินเดือนสุทธิ/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณเงินเดือนสุทธิ</span>
+          <span class="block text-sm text-gray-400">เงินเดือนหลังหักภาษีและประกันสังคม</span>
+        </a>
+        <a href="/คำนวณประกันสังคม/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณประกันสังคม</span>
+          <span class="block text-sm text-gray-400">เงินสมทบ มาตรา 33 39 40</span>
+        </a>
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณภาษีเงินได้</span>
+          <span class="block text-sm text-gray-400">ภาษีเงินได้บุคคลธรรมดาตามขั้นบันได</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณเบื้องต้นตามอัตราค่าจ้างขั้นต่ำที่ประกาศในราชกิจจานุเบกษา
+      อัตราจริงอาจแตกต่างตามเขตพื้นที่ ประเภทกิจการ และข้อตกลงเฉพาะของนายจ้าง กรุณาตรวจสอบกับสำนักงานสวัสดิการและคุ้มครองแรงงานในพื้นที่
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculateMinimumWage, PROVINCE_RATES } from '../../lib/minimum-wage-calculator.ts';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const num = Number(normalized);
+      return Number.isFinite(num) ? num : NaN;
+    }
+
+    function formatMoney(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num)} บาท`;
+    }
+
+    const form = document.getElementById('mw-form');
+    const formError = document.getElementById('mw-form-error');
+    const resultBox = document.getElementById('mw-results');
+    const otBreakdown = document.getElementById('ot-breakdown');
+    const includeOtCheckbox = document.getElementById('include-ot');
+    const otFields = document.getElementById('ot-fields');
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.textContent = '';
+    }
+
+    function setFieldError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearErrors() {
+      formError?.classList.add('hidden');
+      clearFieldError('working-days-error');
+      clearFieldError('weekday-ot-hours-error');
+      clearFieldError('holiday-work-hours-error');
+      clearFieldError('holiday-ot-hours-error');
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    includeOtCheckbox?.addEventListener('change', () => {
+      if (includeOtCheckbox.checked) {
+        otFields?.classList.remove('hidden');
+      } else {
+        otFields?.classList.add('hidden');
+      }
+    });
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors();
+
+      if (typeof window.trackCalculatorStart === 'function') {
+        window.trackCalculatorStart('minimum_wage');
+      }
+
+      const provinceIndex = Number(document.getElementById('province-select')?.value || '0');
+      const workingDays = parseNum(document.getElementById('working-days')?.value || '');
+      const includeOt = includeOtCheckbox?.checked || false;
+      const weekdayOtHours = parseNum(document.getElementById('weekday-ot-hours')?.value || '0');
+      const holidayWorkHours = parseNum(document.getElementById('holiday-work-hours')?.value || '0');
+      const holidayOtHours = parseNum(document.getElementById('holiday-ot-hours')?.value || '0');
+
+      let hasError = false;
+
+      if (!Number.isFinite(workingDays) || workingDays <= 0 || workingDays > 31) {
+        setFieldError('working-days-error', 'กรอกวันทำงานต่อเดือนระหว่าง 1 - 31 วัน');
+        hasError = true;
+      }
+
+      if (includeOt) {
+        if (!Number.isFinite(weekdayOtHours) || weekdayOtHours < 0 || weekdayOtHours > 300) {
+          setFieldError('weekday-ot-hours-error', 'กรอกชั่วโมง OT ระหว่าง 0 - 300');
+          hasError = true;
+        }
+        if (!Number.isFinite(holidayWorkHours) || holidayWorkHours < 0 || holidayWorkHours > 300) {
+          setFieldError('holiday-work-hours-error', 'กรอกชั่วโมงทำงานวันหยุดระหว่าง 0 - 300');
+          hasError = true;
+        }
+        if (!Number.isFinite(holidayOtHours) || holidayOtHours < 0 || holidayOtHours > 300) {
+          setFieldError('holiday-ot-hours-error', 'กรอกชั่วโมง OT วันหยุดระหว่าง 0 - 300');
+          hasError = true;
+        }
+      }
+
+      if (hasError) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const result = calculateMinimumWage({
+          provinceIndex,
+          workingDaysPerMonth: workingDays,
+          includeOt,
+          weekdayOtHours: includeOt ? weekdayOtHours : 0,
+          holidayWorkHours: includeOt ? holidayWorkHours : 0,
+          holidayOtHours: includeOt ? holidayOtHours : 0,
+        });
+
+        setText('res-total-income', formatMoney(result.totalMonthlyIncome));
+        setText('res-daily-wage', formatMoney(result.dailyWage));
+        setText('res-monthly-wage', formatMoney(result.monthlyWage));
+        setText('res-hourly-rate', formatMoney(result.hourlyRate));
+
+        if (includeOt) {
+          setText('res-weekday-ot', formatMoney(result.weekdayOtPay));
+          setText('res-holiday-work', formatMoney(result.holidayWorkPay));
+          setText('res-holiday-ot', formatMoney(result.holidayOtPay));
+          setText('res-total-ot', formatMoney(result.totalOtPay));
+          otBreakdown?.classList.remove('hidden');
+        } else {
+          otBreakdown?.classList.add('hidden');
+        }
+
+        resultBox?.classList.remove('hidden');
+        resultBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (typeof window.trackCalculatorComplete === 'function') {
+          window.trackCalculatorComplete('minimum_wage', result.totalMonthlyIncome);
+        }
+      } catch (_error) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+      }
+    });
+  </script>
+</BaseLayout>
