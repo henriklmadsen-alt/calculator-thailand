@@ -1,0 +1,460 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าโอที ปี 2569 | OT วันธรรมดา วันหยุด ตามกฎหมายแรงงาน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าโอทีจากเงินเดือนรายเดือน แยก OT วันธรรมดา 1.5 เท่า ทำงานวันหยุด 2 เท่า และ OT วันหยุด 3 เท่า พร้อมสรุปวิธีคิดแบบตรวจสอบได้';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าโอที/`;
+
+const faqData = [
+  {
+    question: 'OT วันธรรมดาคิดกี่เท่า?',
+    answer: 'ค่าล่วงเวลาในวันทำงานต้องจ่ายไม่น้อยกว่า 1.5 เท่าของอัตราค่าจ้างต่อชั่วโมง ตามหลักมาตรา 61',
+  },
+  {
+    question: 'ทำงานในวันหยุดกับ OT วันหยุดต่างกันอย่างไร?',
+    answer: 'ชั่วโมงทำงานในวันหยุดคิด 2 เท่า (มาตรา 62) ส่วนชั่วโมงล่วงเวลาในวันหยุดคิด 3 เท่า (มาตรา 63)',
+  },
+  {
+    question: 'สูตรหาค่าแรงต่อชั่วโมงจากเงินเดือนทำอย่างไร?',
+    answer: 'นำเงินเดือนหารด้วย (วันทำงานต่อเดือน × ชั่วโมงทำงานต่อวัน) แล้วใช้ฐานนี้คูณตัวคูณ 1.5/2/3 ตามประเภทชั่วโมง',
+  },
+  {
+    question: 'ถ้าเดือนนี้ไม่มี OT บางประเภท ต้องกรอกไหม?',
+    answer: 'กรอกได้เป็น 0 ชั่วโมง ระบบจะแยกคิดเฉพาะประเภทที่มีชั่วโมงจริง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าโอที',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโอที">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อัปเดตเกณฑ์ปี 2569</p>
+      <p class="mt-1 text-sm text-slate-700">คิดตามหลักกฎหมายแรงงานไทย: OT วันธรรมดา 1.5 เท่า, ทำงานวันหยุด 2 เท่า, OT วันหยุด 3 เท่า</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับตรวจสลิปเงินเดือนและวางแผนรายรับล่วงเวลา</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าโอที ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน วันทำงานต่อเดือน ชั่วโมงทำงานต่อวัน และชั่วโมงล่วงเวลาแต่ละประเภท ระบบจะคำนวณค่าแรงต่อชั่วโมง
+      พร้อมสรุปยอด OT แยกตามตัวคูณอย่างชัดเจน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="ot-form" class="space-y-5">
+        <p id="ot-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="monthly-salary" class="mb-1 block text-sm font-medium text-gray-700">
+              เงินเดือน (บาท/เดือน)
+            </label>
+            <input
+              type="text"
+              id="monthly-salary"
+              inputmode="numeric"
+              placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="monthly-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="working-days" class="mb-1 block text-sm font-medium text-gray-700">
+              วันทำงานต่อเดือน (วัน)
+            </label>
+            <input
+              type="text"
+              id="working-days"
+              inputmode="decimal"
+              placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="working-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="working-hours-per-day" class="mb-1 block text-sm font-medium text-gray-700">
+              ชั่วโมงทำงานต่อวัน (ชั่วโมง)
+            </label>
+            <input
+              type="text"
+              id="working-hours-per-day"
+              inputmode="decimal"
+              placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="working-hours-per-day-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="weekday-ot-hours" class="mb-1 block text-sm font-medium text-gray-700">
+              ชั่วโมง OT วันธรรมดา (1.5 เท่า)
+            </label>
+            <input
+              type="text"
+              id="weekday-ot-hours"
+              inputmode="decimal"
+              placeholder="เช่น 12"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="weekday-ot-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="holiday-work-hours" class="mb-1 block text-sm font-medium text-gray-700">
+              ชั่วโมงทำงานวันหยุด (2 เท่า)
+            </label>
+            <input
+              type="text"
+              id="holiday-work-hours"
+              inputmode="decimal"
+              placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="holiday-work-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="holiday-ot-hours" class="mb-1 block text-sm font-medium text-gray-700">
+              ชั่วโมง OT วันหยุด (3 เท่า)
+            </label>
+            <input
+              type="text"
+              id="holiday-ot-hours"
+              inputmode="decimal"
+              placeholder="เช่น 4"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="holiday-ot-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="ot-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าโอที
+        </button>
+      </form>
+    </div>
+
+    <div id="ot-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าโอทีรวมทั้งเดือน</div>
+            <div id="res-total-pay" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงต่อชั่วโมง</div>
+            <div id="res-hourly-wage" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ฐานชั่วโมงต่อเดือน</div>
+            <div id="res-base-hours" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">OT วันธรรมดา (1.5 เท่า)</span>
+            <span id="res-weekday-pay" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ทำงานวันหยุด (2 เท่า)</span>
+            <span id="res-holiday-work-pay" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">OT วันหยุด (3 เท่า)</span>
+            <span id="res-holiday-ot-pay" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ชั่วโมงรวมที่นำมาคิด</span>
+            <span id="res-total-hours" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">อ่านวิธีคิดละเอียด + กฎหมายที่เกี่ยวข้อง</p>
+      <p class="mt-1 text-sm text-primary-700">มีตัวอย่างคำนวณแยก 1.5 เท่า 2 เท่า 3 เท่า และแนวทางตรวจสลิปค่าจ้าง</p>
+      <div class="mt-3">
+        <a href="/บทความ/คำนวณค่าโอที-2569-กฎหมายแรงงาน/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">
+          อ่านบทความคำนวณค่าโอที ปี 2569
+        </a>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#ot-results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่เครื่องมือนี้ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าแรงต่อชั่วโมง = เงินเดือน ÷ (วันทำงานต่อเดือน × ชั่วโมงทำงานต่อวัน)</li>
+        <li>OT วันธรรมดา = ค่าแรงต่อชั่วโมง × 1.5 × ชั่วโมง OT วันธรรมดา</li>
+        <li>ทำงานวันหยุด = ค่าแรงต่อชั่วโมง × 2 × ชั่วโมงทำงานวันหยุด</li>
+        <li>OT วันหยุด = ค่าแรงต่อชั่วโมง × 3 × ชั่วโมง OT วันหยุด</li>
+        <li>ค่าโอทีรวม = ผลรวมของทั้ง 3 ประเภท</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่าง</h3>
+      <p>
+        เงินเดือน 35,000 บาท, วันทำงาน 26 วัน/เดือน, ชั่วโมงทำงาน 8 ชั่วโมง/วัน,
+        OT วันธรรมดา 12 ชั่วโมง, ทำงานวันหยุด 8 ชั่วโมง, OT วันหยุด 4 ชั่วโมง
+      </p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าแรงต่อชั่วโมง = 35,000 ÷ (26 × 8) = 168.27 บาท</li>
+        <li>OT วันธรรมดา = 168.27 × 1.5 × 12 = 3,028.86 บาท</li>
+        <li>ทำงานวันหยุด = 168.27 × 2 × 8 = 2,692.32 บาท</li>
+        <li>OT วันหยุด = 168.27 × 3 × 4 = 2,019.24 บาท</li>
+        <li>รวมค่าโอที = 7,740.42 บาท</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.mol.go.th/laws/หน้า/47" target="_blank" rel="noopener noreferrer">กระทรวงแรงงาน: หน้ารวบรวมกฎหมายแรงงาน (หน้าเอกสาร พ.ร.บ.คุ้มครองแรงงาน พ.ศ. 2541)</a></li>
+        <li><a href="https://www.mol.go.th/wp-content/uploads/sites/2/2018/07/183.pdf" target="_blank" rel="noopener noreferrer">กระทรวงแรงงาน: พระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541 (ไฟล์ 183.pdf)</a></li>
+        <li><a href="https://webboard.mol.go.th/node/29" target="_blank" rel="noopener noreferrer">กระทรวงแรงงาน (ตอบข้อกฎหมาย): สรุปอัตรา 1.5 เท่า และ 3 เท่า (มาตรา 61, 63)</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ot-results" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณเงินเดือนสุทธิ/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณเงินเดือนสุทธิ</span>
+          <span class="block text-sm text-gray-400">ดูรายรับสุทธิหลังหักประกันสังคมและภาษี</span>
+        </a>
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
+          <span class="block text-sm text-gray-400">ประเมินภาษีทั้งปีเมื่อมีรายได้ OT เพิ่ม</span>
+        </a>
+        <a href="/คำนวณดอกเบี้ยบัตรเครดิต/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณดอกเบี้ยบัตรเครดิต</span>
+          <span class="block text-sm text-gray-400">วางแผนปิดหนี้ด้วยรายได้เพิ่มจาก OT</span>
+        </a>
+        <a href="/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">กลับหน้าแรก Calculator Thailand</span>
+          <span class="block text-sm text-gray-400">เลือกเครื่องคำนวณอื่นที่ต้องใช้ในเดือนนี้</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณเพื่อวางแผนเบื้องต้นโดยยึดสูตรตามกฎหมายแรงงาน
+      การจ่ายจริงอาจต่างจากผลคำนวณตามประเภทลูกจ้าง ข้อบังคับการทำงาน และเงื่อนไขในสัญญาจ้างของแต่ละองค์กร
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculateOvertimePay } from '../../lib/overtime-calculator.ts';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const num = Number(normalized);
+      return Number.isFinite(num) ? num : NaN;
+    }
+
+    function formatMoney(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num)} บาท`;
+    }
+
+    function formatHours(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num)} ชั่วโมง`;
+    }
+
+    const form = document.getElementById('ot-form');
+    const formError = document.getElementById('ot-form-error');
+    const resultBox = document.getElementById('ot-results');
+
+    const monthlySalaryInput = document.getElementById('monthly-salary');
+    const workingDaysInput = document.getElementById('working-days');
+    const workingHoursPerDayInput = document.getElementById('working-hours-per-day');
+    const weekdayOtHoursInput = document.getElementById('weekday-ot-hours');
+    const holidayWorkHoursInput = document.getElementById('holiday-work-hours');
+    const holidayOtHoursInput = document.getElementById('holiday-ot-hours');
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.textContent = '';
+    }
+
+    function setFieldError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearErrors() {
+      formError.classList.add('hidden');
+      clearFieldError('monthly-salary-error');
+      clearFieldError('working-days-error');
+      clearFieldError('working-hours-per-day-error');
+      clearFieldError('weekday-ot-hours-error');
+      clearFieldError('holiday-work-hours-error');
+      clearFieldError('holiday-ot-hours-error');
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors();
+
+      const monthlySalary = parseNum(monthlySalaryInput?.value || '');
+      const workingDaysPerMonth = parseNum(workingDaysInput?.value || '');
+      const workingHoursPerDay = parseNum(workingHoursPerDayInput?.value || '');
+      const weekdayOtHours = parseNum(weekdayOtHoursInput?.value || '');
+      const holidayWorkHours = parseNum(holidayWorkHoursInput?.value || '');
+      const holidayOtHours = parseNum(holidayOtHoursInput?.value || '');
+
+      let hasError = false;
+
+      if (!Number.isFinite(monthlySalary) || monthlySalary <= 0) {
+        setFieldError('monthly-salary-error', 'กรอกเงินเดือนเป็นตัวเลขมากกว่า 0');
+        hasError = true;
+      }
+      if (!Number.isFinite(workingDaysPerMonth) || workingDaysPerMonth <= 0 || workingDaysPerMonth > 31) {
+        setFieldError('working-days-error', 'กรอกวันทำงานต่อเดือนระหว่าง 1 - 31 วัน');
+        hasError = true;
+      }
+      if (!Number.isFinite(workingHoursPerDay) || workingHoursPerDay <= 0 || workingHoursPerDay > 24) {
+        setFieldError('working-hours-per-day-error', 'กรอกชั่วโมงทำงานต่อวันระหว่าง 0.01 - 24 ชั่วโมง');
+        hasError = true;
+      }
+      if (!Number.isFinite(weekdayOtHours) || weekdayOtHours < 0 || weekdayOtHours > 300) {
+        setFieldError('weekday-ot-hours-error', 'กรอกชั่วโมง OT วันธรรมดาระหว่าง 0 - 300 ชั่วโมง');
+        hasError = true;
+      }
+      if (!Number.isFinite(holidayWorkHours) || holidayWorkHours < 0 || holidayWorkHours > 300) {
+        setFieldError('holiday-work-hours-error', 'กรอกชั่วโมงทำงานวันหยุดระหว่าง 0 - 300 ชั่วโมง');
+        hasError = true;
+      }
+      if (!Number.isFinite(holidayOtHours) || holidayOtHours < 0 || holidayOtHours > 300) {
+        setFieldError('holiday-ot-hours-error', 'กรอกชั่วโมง OT วันหยุดระหว่าง 0 - 300 ชั่วโมง');
+        hasError = true;
+      }
+
+      const totalInputHours = (Number.isFinite(weekdayOtHours) ? weekdayOtHours : 0)
+        + (Number.isFinite(holidayWorkHours) ? holidayWorkHours : 0)
+        + (Number.isFinite(holidayOtHours) ? holidayOtHours : 0);
+
+      if (!hasError && totalInputHours <= 0) {
+        setFieldError('weekday-ot-hours-error', 'อย่างน้อยต้องมีชั่วโมงล่วงเวลา/ชั่วโมงวันหยุดมากกว่า 0');
+        formError.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+        return;
+      }
+
+      if (hasError) {
+        formError.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const baseInput = {
+          monthlySalary,
+          workingDaysPerMonth,
+          workingHoursPerDay,
+        };
+
+        const weekdayOtResult = calculateOvertimePay({
+          ...baseInput,
+          overtimeHours: weekdayOtHours,
+          overtimeType: 'weekday_ot',
+        });
+
+        const holidayWorkResult = calculateOvertimePay({
+          ...baseInput,
+          overtimeHours: holidayWorkHours,
+          overtimeType: 'holiday_work_daily',
+        });
+
+        const holidayOtResult = calculateOvertimePay({
+          ...baseInput,
+          overtimeHours: holidayOtHours,
+          overtimeType: 'holiday_ot',
+        });
+
+        const totalPay = weekdayOtResult.overtimePay + holidayWorkResult.overtimePay + holidayOtResult.overtimePay;
+
+        setText('res-total-pay', formatMoney(totalPay));
+        setText('res-hourly-wage', formatMoney(weekdayOtResult.hourlyRate));
+        setText('res-base-hours', formatHours(weekdayOtResult.formulaBaseHours));
+        setText('res-weekday-pay', formatMoney(weekdayOtResult.overtimePay));
+        setText('res-holiday-work-pay', formatMoney(holidayWorkResult.overtimePay));
+        setText('res-holiday-ot-pay', formatMoney(holidayOtResult.overtimePay));
+        setText('res-total-hours', formatHours(totalInputHours));
+
+        resultBox?.classList.remove('hidden');
+        resultBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (_error) {
+        formError.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+      }
+    });
+  </script>
+</BaseLayout>

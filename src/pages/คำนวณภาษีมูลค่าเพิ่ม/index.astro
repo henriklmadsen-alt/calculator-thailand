@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const pageTitle = 'คำนวณภาษีมูลค่าเพิ่ม VAT 7% 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณภาษีมูลค่าเพิ่ม VAT 7% ออนไลน์ฟรี บวก VAT จากราคาสินค้า หรือแยก VAT จากราคารวม คำนวณทีละหลายรายการ ผลลัพธ์แม่นยำ';
-const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const pageTitle = 'คำนวณ VAT 7% 2569 (บวกภาษี/ถอดภาษี) พร้อมสูตร | เครื่องคำนวณไทย';
+const pageDescription = 'เครื่องคำนวณภาษีมูลค่าเพิ่ม VAT 7% ออนไลน์ฟรี คิดราคารวมภาษีหรือถอด VAT จากราคารวม รองรับหลายรายการ พร้อมสูตรและแหล่งอ้างอิงกรมสรรพากร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`;
 
 const faqData = [
@@ -13,7 +13,7 @@ const faqData = [
   },
   {
     question: 'สินค้าและบริการอะไรบ้างที่ต้องเสีย VAT?',
-    answer: 'สินค้าและบริการส่วนใหญ่ในประเทศไทยต้องเสียภาษีมูลค่าเพิ่ม 7% ยกเว้นสินค้าเกษตรที่ยังไม่แปรรูป หนังสือพิมพ์ นิตยสาร การขนส่งระหว่างประเทศ และบริการทางการแพทย์ เป็นต้น',
+    answer: 'สินค้าและบริการส่วนใหญ่ในประเทศไทยอยู่ในบังคับ VAT โดยข้อยกเว้นให้ดูตามมาตรา 81(1) แห่งประมวลรัษฎากรและประกาศที่เกี่ยวข้องของกรมสรรพากร',
   },
   {
     question: 'ผู้ประกอบการรายได้เท่าไรต้องจดทะเบียน VAT?',
@@ -21,7 +21,7 @@ const faqData = [
   },
   {
     question: 'VAT 7% หรือ 10% กันแน่?',
-    answer: 'อัตราภาษีมูลค่าเพิ่มตามกฎหมายคือ 10% แต่มีพระราชกฤษฎีกาลดอัตราเหลือ 7% (รวมภาษีท้องถิ่น) ซึ่งได้รับการต่ออายุเรื่อยมาจนถึงปัจจุบัน',
+    answer: 'อัตราตามกฎหมายเป็น 10% แต่มีมาตรการลดเหลือ 7% (รวมภาษีท้องถิ่น) โดยประกาศล่าสุดขยายถึงวันที่ 30 กันยายน 2569 และควรตรวจประกาศใหม่ของกรมสรรพากรก่อนใช้งานจริง',
   },
 ];
 
@@ -58,7 +58,8 @@ const jsonLdFaq = {
     </h1>
 
     <p class="text-gray-600 mb-6">
-      คำนวณ VAT 7% ออนไลน์ฟรี บวก VAT หรือแยก VAT จากราคารวม รองรับหลายรายการ ผลลัพธ์ทันที
+      คำนวณ VAT 7% ออนไลน์ฟรีสำหรับงานขายและบัญชี: บวก VAT จากราคาก่อนภาษี หรือถอด VAT จากราคารวม
+      รองรับทั้งรายการเดียวและหลายรายการ พร้อมผลลัพธ์ทันที
     </p>
 
     <!-- Calculator -->
@@ -175,31 +176,40 @@ const jsonLdFaq = {
 
     <!-- SEO Content -->
     <section class="prose prose-gray max-w-none mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">ภาษีมูลค่าเพิ่ม (VAT) คืออะไร?</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">VAT 7% ในไทยตอนนี้ใช้อัตราเท่าไร?</h2>
 
       <p>
-        ภาษีมูลค่าเพิ่ม (Value Added Tax หรือ VAT) เป็นภาษีทางอ้อมที่เรียกเก็บจากการขายสินค้าและบริการ
-        ในประเทศไทย อัตราภาษีมูลค่าเพิ่มที่ใช้ในปัจจุบันคือ 7% (รวมภาษีท้องถิ่น)
-        ซึ่งลดลงจากอัตราตามกฎหมาย 10% ตามพระราชกฤษฎีกา
+        ภาษีมูลค่าเพิ่ม (Value Added Tax: VAT) เป็นภาษีทางอ้อมจากการขายสินค้าและบริการ
+        อัตราตามกฎหมายเป็น 10% แต่ปัจจุบันลดลงเหลือ 7% (รวมภาษีท้องถิ่น) ตามมาตรการที่ขยายถึง
+        วันที่ 30 กันยายน 2569
+        หากคุณต้องคำนวณใบเสนอราคา/ใบกำกับภาษีในช่วงหลังจากวันดังกล่าว ควรตรวจประกาศล่าสุดของกรมสรรพากรอีกครั้งก่อนใช้งานจริง
       </p>
 
-      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีคำนวณ VAT 7%</h3>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรที่เครื่องคำนวณนี้ใช้ (ตรงกับผลลัพธ์หน้าเครื่องมือ)</h3>
 
-      <p>การคำนวณภาษีมูลค่าเพิ่มมี 2 กรณีหลัก:</p>
+      <p>
+        หน้านี้ใช้สูตรเดียวกับตรรกะคำนวณในเครื่องมือ: แยกเป็นโหมดบวก VAT และโหมดถอด VAT เพื่อให้ยอดก่อนภาษี ภาษี และยอดรวมสอดคล้องกันทุกบรรทัด
+      </p>
 
-      <h4 class="font-semibold mt-4 mb-1">1. บวก VAT (คำนวณจากราคาก่อน VAT)</h4>
+      <h4 class="font-semibold mt-4 mb-1">1. บวก VAT (จากราคาก่อนภาษี)</h4>
       <ul class="list-disc pl-6 space-y-1 text-gray-700">
         <li>จำนวน VAT = ราคาก่อน VAT × 0.07</li>
         <li>ราคารวม VAT = ราคาก่อน VAT × 1.07</li>
         <li>ตัวอย่าง: สินค้าราคา 1,000 บาท → VAT = 70 บาท → ราคารวม = 1,070 บาท</li>
       </ul>
 
-      <h4 class="font-semibold mt-4 mb-1">2. แยก VAT (คำนวณจากราคารวม VAT)</h4>
+      <h4 class="font-semibold mt-4 mb-1">2. ถอด VAT (จากราคารวมภาษี)</h4>
       <ul class="list-disc pl-6 space-y-1 text-gray-700">
         <li>ราคาก่อน VAT = ราคารวม VAT ÷ 1.07</li>
         <li>จำนวน VAT = ราคารวม VAT − ราคาก่อน VAT</li>
         <li>ตัวอย่าง: ราคารวม 1,070 บาท → ราคาก่อน VAT = 1,000 บาท → VAT = 70 บาท</li>
       </ul>
+
+      <p>
+        ถ้าต้องเทียบอัตรากำไรหรือมาร์จินหลังคำนวณ VAT แล้ว ให้ต่อด้วย
+        <a href="/คำนวณเปอร์เซ็นต์/" data-preserve-utm>เครื่องคำนวณเปอร์เซ็นต์</a>
+        เพื่อไม่ให้เกิดการคูณภาษีซ้ำในขั้นตั้งราคา
+      </p>
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ใครต้องจดทะเบียน VAT?</h3>
 
@@ -209,21 +219,35 @@ const jsonLdFaq = {
         ผู้จดทะเบียนต้องออกใบกำกับภาษีและยื่นแบบ ภ.พ.30 ทุกเดือน
       </p>
 
-      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สินค้าและบริการที่ได้รับยกเว้น VAT</h3>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">กิจการที่ได้รับยกเว้น VAT ควรเช็กจากที่ไหน?</h3>
+
+      <p>
+        รายละเอียดกิจการที่ได้รับยกเว้นให้ตรวจจากบทบัญญัติในมาตรา 81(1) แห่งประมวลรัษฎากรและประกาศของกรมสรรพากรในช่วงเวลานั้น
+        เพราะเงื่อนไขของกิจการบางประเภทมีรายละเอียดเฉพาะทางเอกสารภาษีและการออกใบกำกับภาษี
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">แหล่งอ้างอิงทางการ</h3>
 
       <ul class="list-disc pl-6 space-y-1 text-gray-700">
-        <li>สินค้าเกษตรที่ยังไม่แปรรูป (ผัก ผลไม้ ข้าว)</li>
-        <li>หนังสือพิมพ์ นิตยสาร ตำราเรียน</li>
-        <li>บริการขนส่งระหว่างประเทศ</li>
-        <li>บริการทางการแพทย์ในโรงพยาบาลของรัฐ</li>
-        <li>บริการให้เช่าอสังหาริมทรัพย์</li>
-        <li>บริการทางการศึกษาของสถาบันของรัฐ</li>
+        <li>
+          กรมสรรพากร: ข่าว ปชส. 34/2568 (ขยาย VAT 7% ถึงวันที่ 30 กันยายน 2569)
+          <a href="https://www.rd.go.th/fileadmin/user_upload/news/2568thai/news34_2568.pdf" target="_blank" rel="noopener noreferrer"> ลิงก์เอกสาร</a>
+        </li>
+        <li>
+          กรมสรรพากร: ประมวลรัษฎากร ภาษีมูลค่าเพิ่ม (มาตรา 80-82 และมาตรา 81/1)
+          <a href="https://www.rd.go.th/5206.html" target="_blank" rel="noopener noreferrer"> ลิงก์บทกฎหมาย</a>
+        </li>
+        <li>
+          กรมสรรพากร: แนววินิจฉัยกรณีเกณฑ์จดทะเบียน VAT 1,800,000 บาทต่อปี
+          <a href="https://www.rd.go.th/27801.html" target="_blank" rel="noopener noreferrer"> ลิงก์แนววินิจฉัย</a>
+        </li>
       </ul>
 
       <p class="mt-4">
-        เครื่องคำนวณ VAT นี้ช่วยให้คุณคำนวณภาษีมูลค่าเพิ่ม 7% ได้สะดวกรวดเร็ว
-        ทั้งการบวก VAT จากราคาสินค้า และการแยก VAT จากราคารวม รองรับการคำนวณหลายรายการพร้อมกัน
-        เหมาะสำหรับผู้ประกอบการ นักบัญชี และบุคคลทั่วไป
+        หากต้องการชุดตัวอย่างการตั้งราคาแบบไม่เสียมาร์จิน ให้ไปที่
+        <a href="/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/" data-preserve-utm>บทความ VAT 7% แบบละเอียด</a>
+        และหากต้องคำนวณภาษีเงินได้ต่อในขั้นวางแผนปลายปี ให้ต่อที่
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" data-preserve-utm>คำนวณภาษีเงินได้บุคคลธรรมดา</a>
       </p>
     </section>
 
@@ -260,7 +284,7 @@ const jsonLdFaq = {
 
     <!-- Related -->
     <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องมือและบทความที่เกี่ยวข้อง</h2>
       <div class="grid gap-3 sm:grid-cols-2">
         <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
           <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
@@ -270,13 +294,22 @@ const jsonLdFaq = {
           <span class="text-primary-600 font-medium">คำนวณเงินเดือนสุทธิ</span>
           <span class="text-gray-400 text-sm block">เงินเดือนหลังหักภาษีและประกันสังคม</span>
         </a>
-        <a href="/คำนวณผ่อนรถ/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">คำนวณผ่อนรถ</span>
-          <span class="text-gray-400 text-sm block">ค่างวดรถยนต์ ดอกเบี้ย เงินดาวน์</span>
+        <a href="/คำนวณเปอร์เซ็นต์/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณเปอร์เซ็นต์</span>
+          <span class="text-gray-400 text-sm block">เทียบมาร์จิน ส่วนลด และเปอร์เซ็นต์กำไรหลังถอด VAT</span>
         </a>
-        <a href="/คำนวณดอกเบี้ยเงินฝาก/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยเงินฝาก</span>
-          <span class="text-gray-400 text-sm block">ดอกเบี้ยเงินฝากประจำและออมทรัพย์</span>
+        <a href="/คำนวณค่าไฟฟ้า/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณค่าไฟฟ้า</span>
+          <span class="text-gray-400 text-sm block">เช็กบิลค่าไฟที่มี VAT 7% จากยอดก่อนภาษี</span>
+        </a>
+
+        <a href="/คำนวณดอกเบี้ยบัตรเครดิต/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยบัตรเครดิต ปี 2569</span>
+          <span class="text-gray-400 text-sm block">เช็กค่าธรรมเนียมและ VAT ที่กระทบต้นทุนหนี้บัตร</span>
+        </a>
+        <a href="/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">บทความ VAT 7% แบบละเอียด</span>
+          <span class="text-gray-400 text-sm block">รวมสูตร ตารางตัวอย่าง และจุดพลาดที่ทำให้กำไรหาย</span>
         </a>
       </div>
     </section>

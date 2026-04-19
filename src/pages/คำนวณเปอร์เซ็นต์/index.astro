@@ -1,0 +1,645 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ เปอร์เซ็นต์ ปี 2569 | รู้ผลทันทีพร้อมวิธีคิดทีละขั้น | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเปอร์เซ็นต์ปี 2569 ครบ 4 โหมด: X% ของ Y, X เป็นกี่% ของ Y, เพิ่ม/ลดตาม %, และ % เปลี่ยนแปลง พร้อมวิธีคำนวณทีละขั้นภาษาไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเปอร์เซ็นต์/`;
+
+const faqData = [
+  {
+    question: 'เปอร์เซ็นต์กับร้อยละต่างกันไหม?',
+    answer: 'ไม่ต่างกันในทางคณิตศาสตร์ โดย 1% เท่ากับ 1 ใน 100 หรือร้อยละ 1 เหมือนกัน',
+  },
+  {
+    question: 'ถ้าต้องการหา X เป็นกี่% ของ Y ใช้สูตรอะไร?',
+    answer: 'ใช้สูตร (X ÷ Y) × 100 โดย Y ต้องไม่เป็นศูนย์ เช่น 8,400 เป็นกี่% ของ 35,000 = (8,400 ÷ 35,000) × 100 = 24%',
+  },
+  {
+    question: 'เปอร์เซ็นต์การเปลี่ยนแปลงคำนวณอย่างไร?',
+    answer: 'ใช้สูตร ((ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม) × 100 ถ้าผลเป็นบวกคือเพิ่มขึ้น ถ้าผลเป็นลบคือลดลง',
+  },
+  {
+    question: 'โหมดเพิ่ม/ลด X ด้วย Y% ต่างจากโหมด % เปลี่ยนแปลงไหม?',
+    answer: 'ต่างกัน โหมดเพิ่ม/ลดคือปรับค่าจากฐานเดิมด้วยเปอร์เซ็นต์ที่กำหนด ส่วนโหมด % เปลี่ยนแปลงคือคำนวณว่าค่าใหม่ต่างจากค่าเดิมกี่เปอร์เซ็นต์',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเปอร์เซ็นต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเปอร์เซ็นต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อัปเดตปี 2569</p>
+      <p class="mt-1 text-sm text-slate-700">รองรับการคำนวณร้อยละ 4 รูปแบบที่ใช้จริงในชีวิตประจำวัน การขาย และการวิเคราะห์ผลเปลี่ยนแปลง</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">แสดงผลพร้อมสูตรและขั้นตอนคำนวณภาษาไทย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณเปอร์เซ็นต์ ปี 2569</h1>
+
+    <p class="mb-6 text-gray-600">
+      ใช้ได้ทั้ง 4 โหมด: <strong>X% ของ Y</strong>, <strong>X เป็นกี่% ของ Y</strong>, <strong>เพิ่ม/ลด X ด้วย Y%</strong>,
+      และ <strong>% การเปลี่ยนแปลงระหว่างค่าเดิมกับค่าใหม่</strong> เหมาะสำหรับคำนวณส่วนลด กำไร การเติบโต และการเปรียบเทียบตัวเลขรายเดือน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="percentage-form" class="space-y-5">
+        <p id="percentage-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label for="calc-mode" class="mb-1 block text-sm font-medium text-gray-700">โหมดการคำนวณ</label>
+          <select
+            id="calc-mode"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">เลือกโหมด</option>
+            <option value="percent_of">X% ของ Y เท่ากับเท่าไร</option>
+            <option value="what_percent">X คิดเป็นกี่% ของ Y</option>
+            <option value="increase_decrease">เพิ่ม/ลด X ด้วย Y%</option>
+            <option value="percent_change">% การเปลี่ยนแปลงระหว่าง X และ Y</option>
+          </select>
+          <p id="calc-mode-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div id="mode-percent-of" data-mode-panel="percent_of" class="hidden grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="percent-of-percent" class="mb-1 block text-sm font-medium text-gray-700">ค่า X (%)</label>
+            <input
+              type="text"
+              id="percent-of-percent"
+              inputmode="decimal"
+              placeholder="เช่น 15"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="percent-of-percent-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="percent-of-base" class="mb-1 block text-sm font-medium text-gray-700">ค่า Y (จำนวนฐาน)</label>
+            <input
+              type="text"
+              id="percent-of-base"
+              inputmode="decimal"
+              placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="percent-of-base-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div id="mode-what-percent" data-mode-panel="what_percent" class="hidden grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="what-percent-part" class="mb-1 block text-sm font-medium text-gray-700">ค่า X (ส่วนที่สนใจ)</label>
+            <input
+              type="text"
+              id="what-percent-part"
+              inputmode="decimal"
+              placeholder="เช่น 8,400"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="what-percent-part-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="what-percent-total" class="mb-1 block text-sm font-medium text-gray-700">ค่า Y (จำนวนทั้งหมด)</label>
+            <input
+              type="text"
+              id="what-percent-total"
+              inputmode="decimal"
+              placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="what-percent-total-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div id="mode-increase-decrease" data-mode-panel="increase_decrease" class="hidden space-y-4">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="adjust-base" class="mb-1 block text-sm font-medium text-gray-700">ค่า X (ค่าตั้งต้น)</label>
+              <input
+                type="text"
+                id="adjust-base"
+                inputmode="decimal"
+                placeholder="เช่น 12,500"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <p id="adjust-base-error" class="mt-1 hidden text-sm text-red-600"></p>
+            </div>
+            <div>
+              <label for="adjust-percent" class="mb-1 block text-sm font-medium text-gray-700">ค่า Y (%)</label>
+              <input
+                type="text"
+                id="adjust-percent"
+                inputmode="decimal"
+                placeholder="เช่น 7.5"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <p id="adjust-percent-error" class="mt-1 hidden text-sm text-red-600"></p>
+            </div>
+          </div>
+          <div>
+            <label for="adjust-direction" class="mb-1 block text-sm font-medium text-gray-700">ต้องการเพิ่มหรือลด</label>
+            <select
+              id="adjust-direction"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">เลือกประเภท</option>
+              <option value="increase">เพิ่มขึ้น</option>
+              <option value="decrease">ลดลง</option>
+            </select>
+            <p id="adjust-direction-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div id="mode-percent-change" data-mode-panel="percent_change" class="hidden grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="change-old" class="mb-1 block text-sm font-medium text-gray-700">ค่าเดิม (X)</label>
+            <input
+              type="text"
+              id="change-old"
+              inputmode="decimal"
+              placeholder="เช่น 25,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="change-old-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="change-new" class="mb-1 block text-sm font-medium text-gray-700">ค่าใหม่ (Y)</label>
+            <input
+              type="text"
+              id="change-new"
+              inputmode="decimal"
+              placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="change-new-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="percentage-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณเปอร์เซ็นต์
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div id="res-headline" class="mb-1 text-sm text-gray-600">-</div>
+            <div id="res-primary" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">จำนวนที่เปลี่ยนแปลง</div>
+            <div id="res-delta" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">สรุป</div>
+            <div id="res-secondary" class="text-base font-semibold text-sky-700">-</div>
+          </div>
+        </div>
+
+        <h3 class="mb-2 text-base font-semibold text-gray-900">วิธีคำนวณ</h3>
+        <div class="space-y-2 text-sm">
+          <div class="rounded-md bg-gray-50 px-3 py-2 text-gray-700">
+            <span class="font-medium text-gray-900">สูตร:</span>
+            <span id="res-formula">-</span>
+          </div>
+          <div class="rounded-md bg-gray-50 px-3 py-2 text-gray-700" id="res-step-1">-</div>
+          <div class="rounded-md bg-gray-50 px-3 py-2 text-gray-700" id="res-step-2">-</div>
+          <div class="rounded-md bg-gray-50 px-3 py-2 text-gray-700" id="res-step-3">-</div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้ในเครื่องคำนวณเปอร์เซ็นต์</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>X% ของ Y = (X ÷ 100) × Y</li>
+        <li>X เป็นกี่% ของ Y = (X ÷ Y) × 100</li>
+        <li>เพิ่ม X ด้วย Y% = X + (X × Y ÷ 100) และลด X ด้วย Y% = X - (X × Y ÷ 100)</li>
+        <li>% การเปลี่ยนแปลง = ((ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม) × 100</li>
+      </ul>
+      <p>
+        โหมดที่ 1 และ 2 อ้างอิงนิยามร้อยละจากเอกสารการสอนของ DLTV/สสวท. ส่วนโหมดที่ 3 และ 4
+        เป็นการประยุกต์จากนิยามร้อยละและรูปแบบอัตราการเปลี่ยนแปลงที่ใช้ในเอกสารราชการไทย
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8 rounded-lg border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">บทความอธิบายสูตรละเอียด</p>
+      <p class="mt-1 text-sm text-primary-700">สรุปตัวอย่างส่วนลด กำไร และเปอร์เซ็นต์การเติบโต พร้อมสูตรลัดที่ใช้กับงานจริง</p>
+      <div class="mt-3">
+        <a href="/บทความ/คำนวณเปอร์เซ็นต์-2569-สูตรลัด-ส่วนลด-กำไร/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">
+          อ่านบทความคำนวณเปอร์เซ็นต์ 2569
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">กลับหน้าแรก</span>
+          <span class="block text-sm text-gray-400">ดูเครื่องคำนวณทั้งหมดของ Calculator Thailand</span>
+        </a>
+        <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณ VAT 7%</span>
+          <span class="block text-sm text-gray-400">ใช้เปอร์เซ็นต์คำนวณภาษีเพิ่ม/ถอดจากราคารวม</span>
+        </a>
+        <a href="/คำนวณดอกเบี้ยบัตรเครดิต/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณดอกเบี้ยบัตรเครดิต</span>
+          <span class="block text-sm text-gray-400">ดูผลของอัตราดอกเบี้ย % ต่อปีต่อยอดคงค้าง</span>
+        </a>
+        <a href="/คำนวณค่าไฟฟ้า/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณค่าไฟฟ้า</span>
+          <span class="block text-sm text-gray-400">วิเคราะห์การเพิ่ม/ลดค่าใช้จ่ายรายเดือนเป็นเปอร์เซ็นต์</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
+      <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งข้อมูลทางการ</h2>
+      <ul class="list-disc space-y-1 pl-5">
+        <li><a href="https://dltv.ac.th/utils/files/download/137473" target="_blank" rel="noopener noreferrer">DLTV (สพฐ./กระทรวงศึกษาธิการ): บทเรียนรายวิชาคณิตศาสตร์เรื่องร้อยละ พร้อมตัวอย่างสูตร (ไฟล์ 137473)</a></li>
+        <li><a href="https://proj14.ipst.ac.th/p6/p6-math-book1/math-p6b1-044/" target="_blank" rel="noopener noreferrer">Project 14 สสวท.: บทเรียนร้อยละและอัตราส่วน (คณิตศาสตร์ ป.6)</a></li>
+        <li><a href="https://phetchabun.mol.go.th/wp-content/uploads/sites/24/2022/02/สถานการณ์แรงงานไตรมาส-4-ปี-64-ปรับปรุง-2.pdf" target="_blank" rel="noopener noreferrer">สำนักงานแรงงานจังหวัดเพชรบูรณ์ (กระทรวงแรงงาน): ตัวอย่างสูตรอัตราการเปลี่ยนแปลงร้อยละ (YoY)</a></li>
+      </ul>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อช่วยคำนวณเชิงตัวเลขทั่วไป ไม่ใช่คำแนะนำด้านภาษี การลงทุน หรือกฎหมายเฉพาะกรณี
+    </div>
+  </article>
+
+  <script>
+    import {
+      calculateIncreaseDecrease,
+      calculatePercentChange,
+      calculatePercentOf,
+      calculateWhatPercent,
+    } from '../../lib/percentage-calculator';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function formatNumber(value, digits = 2) {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(value);
+    }
+
+    function formatPercent(value, digits = 2) {
+      return `${formatNumber(value, digits)}%`;
+    }
+
+    const form = document.getElementById('percentage-form');
+    const modeSelect = document.getElementById('calc-mode');
+    const submitBtn = document.getElementById('percentage-submit-btn');
+    const formError = document.getElementById('percentage-form-error');
+    const resultsDiv = document.getElementById('results');
+
+    const fields = {
+      percentOfPercent: document.getElementById('percent-of-percent'),
+      percentOfBase: document.getElementById('percent-of-base'),
+      whatPercentPart: document.getElementById('what-percent-part'),
+      whatPercentTotal: document.getElementById('what-percent-total'),
+      adjustBase: document.getElementById('adjust-base'),
+      adjustPercent: document.getElementById('adjust-percent'),
+      adjustDirection: document.getElementById('adjust-direction'),
+      changeOld: document.getElementById('change-old'),
+      changeNew: document.getElementById('change-new'),
+    };
+
+    const modePanels = Array.from(document.querySelectorAll('[data-mode-panel]'));
+
+    function setFieldError(id, message) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    function clearFieldError(id) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = '';
+      element.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError('calc-mode-error');
+      clearFieldError('percent-of-percent-error');
+      clearFieldError('percent-of-base-error');
+      clearFieldError('what-percent-part-error');
+      clearFieldError('what-percent-total-error');
+      clearFieldError('adjust-base-error');
+      clearFieldError('adjust-percent-error');
+      clearFieldError('adjust-direction-error');
+      clearFieldError('change-old-error');
+      clearFieldError('change-new-error');
+    }
+
+    function showModePanel(mode) {
+      modePanels.forEach((panel) => {
+        panel.classList.toggle('hidden', panel.dataset.modePanel !== mode);
+      });
+    }
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    function getMode() {
+      return String(modeSelect.value || '');
+    }
+
+    function hasModeInput(mode) {
+      if (mode === 'percent_of') {
+        const p = parseNum(fields.percentOfPercent.value);
+        const b = parseNum(fields.percentOfBase.value);
+        return Number.isFinite(p) && Number.isFinite(b);
+      }
+      if (mode === 'what_percent') {
+        const part = parseNum(fields.whatPercentPart.value);
+        const total = parseNum(fields.whatPercentTotal.value);
+        return Number.isFinite(part) && Number.isFinite(total) && total > 0;
+      }
+      if (mode === 'increase_decrease') {
+        const base = parseNum(fields.adjustBase.value);
+        const percent = parseNum(fields.adjustPercent.value);
+        const direction = String(fields.adjustDirection.value || '');
+        return Number.isFinite(base) && Number.isFinite(percent) && (direction === 'increase' || direction === 'decrease');
+      }
+      if (mode === 'percent_change') {
+        const oldValue = parseNum(fields.changeOld.value);
+        const newValue = parseNum(fields.changeNew.value);
+        return Number.isFinite(oldValue) && oldValue !== 0 && Number.isFinite(newValue);
+      }
+      return false;
+    }
+
+    function updateSubmitState() {
+      const mode = getMode();
+      const ready = mode !== '' && hasModeInput(mode);
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณเปอร์เซ็นต์' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    function setResult(headline, primary, delta, secondary, formula, step1, step2, step3) {
+      setText('res-headline', headline);
+      setText('res-primary', primary);
+      setText('res-delta', delta);
+      setText('res-secondary', secondary);
+      setText('res-formula', formula);
+      setText('res-step-1', step1);
+      setText('res-step-2', step2);
+      setText('res-step-3', step3);
+    }
+
+    modeSelect.addEventListener('change', () => {
+      clearValidation();
+      showModePanel(getMode());
+      resultsDiv.classList.add('hidden');
+      updateSubmitState();
+    });
+
+    Object.values(fields).forEach((field) => {
+      field.addEventListener('input', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+      field.addEventListener('change', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+    });
+
+    updateSubmitState();
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearValidation();
+
+      const mode = getMode();
+      if (!mode) {
+        setFieldError('calc-mode-error', 'เลือกโหมดการคำนวณก่อน');
+        formError.classList.remove('hidden');
+        updateSubmitState();
+        return;
+      }
+
+      if (mode === 'percent_of') {
+        const percent = parseNum(fields.percentOfPercent.value);
+        const base = parseNum(fields.percentOfBase.value);
+
+        if (!Number.isFinite(percent)) setFieldError('percent-of-percent-error', 'กรอกค่า X เป็นตัวเลข');
+        if (!Number.isFinite(base)) setFieldError('percent-of-base-error', 'กรอกค่า Y เป็นตัวเลข');
+
+        if (!Number.isFinite(percent) || !Number.isFinite(base)) {
+          formError.classList.remove('hidden');
+          updateSubmitState();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังคำนวณ...';
+        trackCalculatorStart('percentage_calculator');
+
+        const result = calculatePercentOf(percent, base);
+        const finalValue = formatNumber(result.resultValue);
+        const delta = formatNumber(result.resultValue);
+
+        setResult(
+          `${formatPercent(result.percent, 2)} ของ ${formatNumber(result.baseValue)}`,
+          `${finalValue}`,
+          `${delta}`,
+          `เท่ากับ ${finalValue}`,
+          '(X ÷ 100) × Y',
+          `แปลงเปอร์เซ็นต์เป็นทศนิยม: ${formatPercent(result.percent, 2)} = ${formatNumber(result.decimalPercent, 4)}`,
+          `คูณจำนวนฐาน: ${formatNumber(result.decimalPercent, 4)} × ${formatNumber(result.baseValue)} = ${finalValue}`,
+          `คำตอบ: ${formatPercent(result.percent, 2)} ของ ${formatNumber(result.baseValue)} คือ ${finalValue}`,
+        );
+      }
+
+      if (mode === 'what_percent') {
+        const part = parseNum(fields.whatPercentPart.value);
+        const total = parseNum(fields.whatPercentTotal.value);
+
+        if (!Number.isFinite(part)) setFieldError('what-percent-part-error', 'กรอกค่า X เป็นตัวเลข');
+        if (!Number.isFinite(total)) setFieldError('what-percent-total-error', 'กรอกค่า Y เป็นตัวเลข');
+        if (Number.isFinite(total) && total <= 0) setFieldError('what-percent-total-error', 'ค่า Y ต้องมากกว่า 0');
+
+        if (!Number.isFinite(part) || !Number.isFinite(total) || total <= 0) {
+          formError.classList.remove('hidden');
+          updateSubmitState();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังคำนวณ...';
+        trackCalculatorStart('percentage_calculator');
+
+        const result = calculateWhatPercent(part, total);
+        const finalPercent = formatPercent(result.percentValue, 2);
+
+        setResult(
+          `${formatNumber(result.partValue)} เป็นกี่% ของ ${formatNumber(result.totalValue)}`,
+          finalPercent,
+          formatNumber(result.partValue),
+          `คิดเป็น ${finalPercent}`,
+          '(X ÷ Y) × 100',
+          `หารส่วนที่สนใจด้วยจำนวนทั้งหมด: ${formatNumber(result.partValue)} ÷ ${formatNumber(result.totalValue)} = ${formatNumber(result.ratio, 6)}`,
+          `คูณ 100 เพื่อแปลงเป็นเปอร์เซ็นต์: ${formatNumber(result.ratio, 6)} × 100 = ${finalPercent}`,
+          `คำตอบ: ${formatNumber(result.partValue)} คิดเป็น ${finalPercent} ของ ${formatNumber(result.totalValue)}`,
+        );
+      }
+
+      if (mode === 'increase_decrease') {
+        const base = parseNum(fields.adjustBase.value);
+        const percent = parseNum(fields.adjustPercent.value);
+        const direction = String(fields.adjustDirection.value || '');
+
+        if (!Number.isFinite(base)) setFieldError('adjust-base-error', 'กรอกค่า X เป็นตัวเลข');
+        if (!Number.isFinite(percent)) setFieldError('adjust-percent-error', 'กรอกค่า Y เป็นตัวเลข');
+        if (!direction) setFieldError('adjust-direction-error', 'เลือกว่าจะเพิ่มขึ้นหรือลดลง');
+
+        if (!Number.isFinite(base) || !Number.isFinite(percent) || !direction) {
+          formError.classList.remove('hidden');
+          updateSubmitState();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังคำนวณ...';
+        trackCalculatorStart('percentage_calculator');
+
+        const result = calculateIncreaseDecrease(base, percent, direction);
+        const finalValue = formatNumber(result.resultValue);
+        const deltaValue = formatNumber(result.deltaValue);
+        const actionWord = result.direction === 'increase' ? 'เพิ่มขึ้น' : 'ลดลง';
+        const operator = result.direction === 'increase' ? '+' : '-';
+
+        setResult(
+          `${actionWord} ${formatNumber(result.baseValue)} ด้วย ${formatPercent(result.percent, 2)}`,
+          `${finalValue}`,
+          `${deltaValue}`,
+          `ผลลัพธ์หลัง${actionWord}: ${finalValue}`,
+          result.direction === 'increase' ? 'X + (X × Y ÷ 100)' : 'X - (X × Y ÷ 100)',
+          `หาค่าที่เปลี่ยนแปลง: ${formatNumber(result.baseValue)} × ${formatPercent(result.percent, 2)} = ${deltaValue}`,
+          `นำไปปรับกับค่าตั้งต้น: ${formatNumber(result.baseValue)} ${operator} ${deltaValue} = ${finalValue}`,
+          `คำตอบ: ${actionWord}แล้วได้ ${finalValue}`,
+        );
+      }
+
+      if (mode === 'percent_change') {
+        const oldValue = parseNum(fields.changeOld.value);
+        const newValue = parseNum(fields.changeNew.value);
+
+        if (!Number.isFinite(oldValue)) setFieldError('change-old-error', 'กรอกค่าเดิมเป็นตัวเลข');
+        if (!Number.isFinite(newValue)) setFieldError('change-new-error', 'กรอกค่าใหม่เป็นตัวเลข');
+        if (Number.isFinite(oldValue) && oldValue === 0) setFieldError('change-old-error', 'ค่าเดิมต้องไม่เป็น 0');
+
+        if (!Number.isFinite(oldValue) || !Number.isFinite(newValue) || oldValue === 0) {
+          formError.classList.remove('hidden');
+          updateSubmitState();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังคำนวณ...';
+        trackCalculatorStart('percentage_calculator');
+
+        const result = calculatePercentChange(oldValue, newValue);
+        const finalPercent = formatPercent(result.percentChangeValue, 2);
+        const deltaValue = formatNumber(result.deltaValue);
+        const directionText = result.percentChangeValue >= 0 ? 'เพิ่มขึ้น' : 'ลดลง';
+
+        setResult(
+          `% การเปลี่ยนแปลงจาก ${formatNumber(result.oldValue)} เป็น ${formatNumber(result.newValue)}`,
+          finalPercent,
+          deltaValue,
+          `${directionText} ${formatPercent(Math.abs(result.percentChangeValue), 2)}`,
+          '((ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม) × 100',
+          `หาผลต่าง: ${formatNumber(result.newValue)} - ${formatNumber(result.oldValue)} = ${deltaValue}`,
+          `หารด้วยค่าเดิม: ${deltaValue} ÷ ${formatNumber(result.oldValue)} = ${formatNumber(result.deltaValue / result.oldValue, 6)}`,
+          `คูณ 100: ได้เปอร์เซ็นต์การเปลี่ยนแปลง ${finalPercent}`,
+        );
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณเปอร์เซ็นต์';
+      trackCalculatorComplete('percentage_calculator');
+      trackCalculatorUsed('percentage_calculator');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('percentage_calculator');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

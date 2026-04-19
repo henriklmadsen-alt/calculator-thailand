@@ -25,7 +25,7 @@ const {
   alternateLocales = [],
 } = Astro.props;
 
-const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
 const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
@@ -401,7 +401,7 @@ const jsonLdFaq = faqData
       )
     }
 
-    <style>
+    <style is:global>
       body {
         background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 50%, #f0fdf4 100%);
         min-height: 100vh;
@@ -422,6 +422,168 @@ const jsonLdFaq = faqData
       .prose strong { color: #1e293b; }
       .prose a { color: #0284c7; text-decoration: underline; }
       .prose a:hover { color: #0369a1; }
+
+      /* Contrast remediation for shared utility classes */
+      [data-lang-mode-btn].bg-primary-600 {
+        background-color: #0369a1;
+      }
+      main .bg-primary-600 {
+        background-color: #0369a1;
+      }
+      main .hover\:bg-primary-700:hover {
+        background-color: #075985;
+      }
+      main .text-primary-600 {
+        color: #0369a1;
+      }
+      main .text-gray-400 {
+        color: #64748b;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+
+        body {
+          background: linear-gradient(135deg, #020617 0%, #0f172a 55%, #111827 100%);
+          color: #e2e8f0;
+        }
+
+        header {
+          background: rgba(15, 23, 42, 0.84);
+          border-color: #334155;
+        }
+
+        footer {
+          background: rgba(15, 23, 42, 0.7);
+          border-color: #334155;
+        }
+
+        header .text-gray-900,
+        footer .text-gray-900 {
+          color: #f8fafc;
+        }
+
+        header .text-gray-700,
+        footer .text-gray-700 {
+          color: #e2e8f0;
+        }
+
+        header .text-gray-600,
+        footer .text-gray-500,
+        footer .text-gray-400 {
+          color: #cbd5e1;
+        }
+
+        header .border-gray-100,
+        footer .border-gray-100 {
+          border-color: #334155;
+        }
+
+        header [role='group'] {
+          border-color: #475569;
+          background-color: #1e293b;
+        }
+
+        header [data-lang-mode-btn].text-slate-600 {
+          color: #e2e8f0;
+        }
+
+        main .bg-white,
+        main .bg-amber-50,
+        main .bg-sky-50 {
+          background-color: #0f172a;
+        }
+
+        main .border-gray-100,
+        main .border-gray-200,
+        main .border-gray-300,
+        main .border-amber-200,
+        main .border-sky-100 {
+          border-color: #334155;
+        }
+
+        main .text-gray-900 {
+          color: #f8fafc;
+        }
+
+        main .text-gray-800,
+        main .text-gray-700,
+        main .text-gray-600,
+        main .text-gray-500 {
+          color: #cbd5e1;
+        }
+
+        main .text-gray-400 {
+          color: #cbd5e1;
+        }
+
+        main .text-primary-600 {
+          color: #7dd3fc;
+        }
+
+        main .text-amber-800,
+        main .text-sky-800,
+        main .text-sky-700 {
+          color: #bae6fd;
+        }
+
+        main .bg-primary-50 {
+          background-color: #082f49;
+        }
+
+        main .bg-primary-600 {
+          background-color: #0369a1;
+        }
+
+        main .hover\:text-primary-600:hover {
+          color: #bae6fd;
+        }
+
+        main .hover\:border-primary-300:hover {
+          border-color: #38bdf8;
+        }
+
+        main .hover\:bg-primary-700:hover {
+          background-color: #075985;
+        }
+
+        main input,
+        main select,
+        main textarea,
+        main details {
+          background-color: #0f172a;
+          color: #e2e8f0;
+          border-color: #334155;
+        }
+
+        main input::placeholder,
+        main textarea::placeholder {
+          color: #94a3b8;
+        }
+
+        .prose h2,
+        .prose h3,
+        .prose strong {
+          color: #f8fafc;
+        }
+
+        .prose p,
+        .prose ul,
+        .prose ol,
+        .prose li {
+          color: #cbd5e1;
+        }
+
+        .prose a {
+          color: #7dd3fc;
+        }
+
+        .prose a:hover {
+          color: #bae6fd;
+        }
+      }
 
       .lang-assist,
       .lang-assist-inline {

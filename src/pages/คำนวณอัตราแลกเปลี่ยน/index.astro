@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณอัตราแลกเปลี่ยน 2569 (2026) | บาท-สกุลเงินต่างประเทศ';
+const pageDescription = 'คำนวณแลกเงินบาทกับสกุลเงินต่างประเทศปี 2569 แบบไป-กลับ ใส่ค่าธรรมเนียมได้ พร้อมคำเตือนหน่วยเรท JPY 100 YEN จาก BOT ก่อนตัดสินใจโอนหรือแลกเงินจริง.';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณอัตราแลกเปลี่ยน/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอัตราแลกเปลี่ยน">
+  <section class="mb-6 rounded-xl border border-sky-100 bg-sky-50 p-4">
+    <p class="text-sm font-semibold text-sky-800">อัปเดตสำหรับปี 2569 (2026)</p>
+    <p class="mt-1 text-sm text-sky-700">
+      เครื่องมือนี้ใช้สูตรคูณ/หารเรทบาทต่อสกุลเงิน พร้อมบวกหักค่าธรรมเนียม เพื่อช่วยคาดการณ์ยอดก่อนทำธุรกรรมจริง
+    </p>
+  </section>
+
+  <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณอัตราแลกเปลี่ยน บาท-สกุลเงินต่างประเทศ</h1>
+  <p class="mb-6 text-gray-600">
+    กรอกจำนวนเงิน เรท (บาทต่อ 1 หน่วยเงินต่างประเทศ) และค่าธรรมเนียม เพื่อดูยอดประมาณการทันที
+    ใช้ได้ทั้งกรณีซื้อเงินต่างประเทศและแปลงกลับเป็นเงินบาท
+  </p>
+
+  <section class="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label for="direction" class="mb-1 block text-sm font-medium text-gray-700">รูปแบบการคำนวณ</label>
+        <select id="direction" class="w-full rounded-lg border border-gray-300 px-3 py-2">
+          <option value="foreign_to_thb">เงินต่างประเทศ -> บาท</option>
+          <option value="thb_to_foreign">บาท -> เงินต่างประเทศ</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="amount" id="amount-label" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเงินต่างประเทศ</label>
+        <input id="amount" type="number" min="0" step="0.01" value="500" class="w-full rounded-lg border border-gray-300 px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราแลกเปลี่ยน (บาทต่อ 1 หน่วยเงินต่างประเทศ)</label>
+        <input id="rate" type="number" min="0" step="0.0001" value="36.2" class="w-full rounded-lg border border-gray-300 px-3 py-2" />
+        <p class="mt-1 text-xs text-amber-700">หมายเหตุ JPY: ถ้าแหล่งข้อมูลแสดงเรทแบบ 100 YEN ให้หาร 100 ก่อนกรอกช่องนี้</p>
+      </div>
+
+      <div>
+        <label for="fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียม (บาท)</label>
+        <input id="fee" type="number" min="0" step="0.01" value="0" class="w-full rounded-lg border border-gray-300 px-3 py-2" />
+      </div>
+    </div>
+
+    <button id="calculate-btn" class="mt-4 inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">
+      คำนวณทันที
+    </button>
+  </section>
+
+  <section class="mb-8 rounded-2xl border border-primary-100 bg-primary-50 p-4 sm:p-5">
+    <p class="text-sm text-primary-800">ผลลัพธ์โดยประมาณ</p>
+    <p id="primary-result" class="mt-1 text-2xl font-bold text-primary-900">-</p>
+    <p id="secondary-result" class="mt-1 text-sm text-primary-700">กรอกข้อมูลแล้วกดคำนวณ</p>
+  </section>
+
+  <section class="prose max-w-none">
+    <h2>สูตรที่ใช้ในเครื่องคำนวณ</h2>
+    <ul>
+      <li><strong>เงินต่างประเทศ -> บาท</strong>: บาทสุทธิ = (เงินต่างประเทศ x เรท) + ค่าธรรมเนียม</li>
+      <li><strong>บาท -> เงินต่างประเทศ</strong>: เงินต่างประเทศสุทธิ = (เงินบาท - ค่าธรรมเนียม) / เรท</li>
+    </ul>
+    <p>
+      ควรยืนยันเรทที่ผู้ให้บริการใช้งานจริงก่อนยืนยันรายการทุกครั้ง เพราะเรทอาจเปลี่ยนตามเวลาและช่องทางทำธุรกรรม
+    </p>
+    <p>
+      สำหรับข้อมูลจาก BOT และผู้ให้บริการบางราย สกุล JPY อาจระบุเป็น <strong>บาทต่อ 100 YEN</strong>:
+      ให้แปลงเรทเป็นบาทต่อ 1 เยนก่อนใช้งาน โดยนำค่าที่เห็นหาร 100 เพื่อให้สูตรในเครื่องคำนวณนี้ทำงานตรงหน่วย
+    </p>
+
+    <h2>แหล่งข้อมูลอ้างอิงเรท</h2>
+    <ul>
+      <li><a href="https://www.bot.or.th/en/statistics/exchange-rate.html" target="_blank" rel="noopener noreferrer">BOT Daily Foreign Exchange Rates</a></li>
+      <li><a href="https://app.bot.or.th/BTWS_STAT/statistics/BOTWEBSTAT.aspx?language=ENG&reportID=123" target="_blank" rel="noopener noreferrer">BOT FM_FX_001_S3 (2002-present)</a></li>
+      <li><a href="https://www.bot.or.th/content/dam/bot/documents/en/statistics/exchange%20rate%20description_en.pdf" target="_blank" rel="noopener noreferrer">BOT Exchange Rate Description</a></li>
+    </ul>
+
+    <h2>ลิงก์ที่เกี่ยวข้อง</h2>
+    <h3>เครื่องคำนวณที่เกี่ยวข้อง</h3>
+    <ul>
+      <li><a href="/คำนวณเปอร์เซ็นต์/">คำนวณเปอร์เซ็นต์</a> สำหรับเทียบส่วนต่างเรทระหว่างผู้ให้บริการ</li>
+      <li><a href="/คำนวณดอกเบี้ยเงินฝาก/">คำนวณดอกเบี้ยเงินฝาก</a> สำหรับคำนวณผลตอบแทนจากเงินที่ยังไม่แลกทันที</li>
+    </ul>
+
+    <h3>บทความที่เกี่ยวข้อง</h3>
+    <ul>
+      <li><a href="/บทความ/คำนวณอัตราแลกเปลี่ยน-บาท-สกุลเงิน-2569/">คำนวณอัตราแลกเปลี่ยน บาท-สกุลเงิน 2569 (2026): สูตรคิดเรท + ค่าธรรมเนียม</a></li>
+      <li><a href="/บทความ/คำนวณเปอร์เซ็นต์-2569-สูตรลัด-ส่วนลด-กำไร/">คำนวณเปอร์เซ็นต์ 2569 สูตรลัดส่วนลด กำไร และ % การเปลี่ยนแปลง</a></li>
+      <li><a href="/บทความ/เงินฝาก-vs-กองทุน-เปรียบเทียบ-2569/">เงินฝาก vs กองทุน เปรียบเทียบ 2569</a></li>
+    </ul>
+  </section>
+
+  <script is:inline>
+    const directionEl = document.getElementById('direction');
+    const amountEl = document.getElementById('amount');
+    const rateEl = document.getElementById('rate');
+    const feeEl = document.getElementById('fee');
+    const amountLabelEl = document.getElementById('amount-label');
+    const primaryResultEl = document.getElementById('primary-result');
+    const secondaryResultEl = document.getElementById('secondary-result');
+    const calculateBtn = document.getElementById('calculate-btn');
+
+    const format = (value, digits = 2) =>
+      new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(value);
+
+    const updateAmountLabel = () => {
+      amountLabelEl.textContent = directionEl.value === 'foreign_to_thb'
+        ? 'จำนวนเงินต่างประเทศ'
+        : 'จำนวนเงินบาท';
+    };
+
+    const calculate = () => {
+      const direction = directionEl.value;
+      const amount = Number(amountEl.value);
+      const rate = Number(rateEl.value);
+      const fee = Number(feeEl.value);
+
+      if (!Number.isFinite(amount) || !Number.isFinite(rate) || !Number.isFinite(fee) || amount < 0 || rate <= 0 || fee < 0) {
+        primaryResultEl.textContent = '-';
+        secondaryResultEl.textContent = 'กรุณากรอกตัวเลขให้ถูกต้อง (จำนวนเงิน >= 0, เรท > 0, ค่าธรรมเนียม >= 0)';
+        return;
+      }
+
+      if (direction === 'foreign_to_thb') {
+        const converted = amount * rate;
+        const total = converted + fee;
+        primaryResultEl.textContent = `${format(total)} บาท`;
+        secondaryResultEl.textContent = `มูลค่าแลกเงิน ${format(converted)} บาท + ค่าธรรมเนียม ${format(fee)} บาท`;
+      } else {
+        const netThb = Math.max(amount - fee, 0);
+        const foreign = netThb / rate;
+        primaryResultEl.textContent = `${format(foreign, 4)} หน่วยเงินต่างประเทศ`;
+        secondaryResultEl.textContent = `ยอดเงินบาทสุทธิหลังหักค่าธรรมเนียม ${format(netThb)} บาท`;
+      }
+    };
+
+    directionEl?.addEventListener('change', () => {
+      updateAmountLabel();
+      calculate();
+    });
+    calculateBtn?.addEventListener('click', calculate);
+    amountEl?.addEventListener('input', calculate);
+    rateEl?.addEventListener('input', calculate);
+    feeEl?.addEventListener('input', calculate);
+
+    updateAmountLabel();
+    calculate();
+  </script>
+</BaseLayout>

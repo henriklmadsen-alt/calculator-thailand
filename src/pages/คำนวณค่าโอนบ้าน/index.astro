@@ -1,0 +1,519 @@
+﻿---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าโอนบ้าน 2569 | ค่าธรรมเนียม ภาษีธุรกิจเฉพาะ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าธรรมเนียมโอนบ้าน พร้อมแยกค่าโอน 2% ภาษีธุรกิจเฉพาะ 3.3% อากรแสตมป์ 0.5% และภาษีหัก ณ ที่จ่ายตามปีถือครอง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าโอนบ้าน/`;
+
+const faqData = [
+  {
+    question: 'ค่าโอนบ้าน 2% คิดจากราคาประเมินหรือราคาซื้อขาย?',
+    answer: 'ค่าธรรมเนียมโอนคิด 2% จากราคาประเมินทุนทรัพย์ของกรมที่ดิน ไม่ได้คิดจากราคาซื้อขาย',
+  },
+  {
+    question: 'ภาษีธุรกิจเฉพาะ 3.3% ใช้กรณีไหน?',
+    answer: 'โดยทั่วไปใช้กรณีขายอสังหาริมทรัพย์ที่ถือครองน้อยกว่า 5 ปี เมื่อเสียภาษีธุรกิจเฉพาะแล้วจะยกเว้นอากรแสตมป์',
+  },
+  {
+    question: 'ภาษีหัก ณ ที่จ่ายคำนวณอย่างไร?',
+    answer: 'กรณีผู้โอนเป็นบุคคลธรรมดา ระบบคำนวณจากราคาประเมิน หักค่าใช้จ่ายตามปีถือครอง แล้วคำนวณภาษีแบบขั้นบันไดตามแนวทางกรมที่ดิน',
+  },
+  {
+    question: 'ผลคำนวณนี้ใช้แทนยอดจริงที่สำนักงานที่ดินได้หรือไม่?',
+    answer: 'ใช้เพื่อประมาณงบเบื้องต้นเท่านั้น ยอดจริงขึ้นกับเอกสาร สิทธิประโยชน์ และดุลพินิจของเจ้าหน้าที่ในวันจดทะเบียน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าโอนบ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโอนบ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อัปเดตเกณฑ์ปี 2569</p>
+      <p class="mt-1 text-sm text-slate-700">
+        คำนวณค่าโอนบ้านจากราคาประเมิน ราคาซื้อขาย ประเภทผู้โอน ประเภทการโอน และระยะเวลาถือครอง
+        เพื่อวางงบก่อนเข้ากรมที่ดิน
+      </p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิงหลักเกณฑ์กรมที่ดินและภาษีเงินได้บุคคลธรรมดาแบบขั้นบันได</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าโอนบ้าน 2569</h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกข้อมูลเพื่อดูประมาณการค่าโอน ภาษีธุรกิจเฉพาะ อากรแสตมป์ และภาษีหัก ณ ที่จ่ายแบบแยกรายการ
+      เพื่อเตรียมค่าใช้จ่ายก่อนวันโอนกรรมสิทธิ์
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="property-transfer-form" class="space-y-5" novalidate>
+        <p id="property-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="appraised-value" class="mb-1 block text-sm font-medium text-gray-700">ราคาประเมินทุนทรัพย์ (บาท)</label>
+            <input
+              type="text"
+              id="appraised-value"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="เช่น 3,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="appraised-value-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="sale-price" class="mb-1 block text-sm font-medium text-gray-700">ราคาซื้อขาย (บาท)</label>
+            <input
+              type="text"
+              id="sale-price"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="เช่น 3,200,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="sale-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="seller-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทผู้โอน (ผู้ขาย)</label>
+            <select
+              id="seller-type"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">เลือกประเภทผู้โอน</option>
+              <option value="individual">บุคคลธรรมดา</option>
+              <option value="company">นิติบุคคล</option>
+            </select>
+            <p class="mt-1 text-xs text-gray-500">ใช้กำหนดเงื่อนไขภาษีธุรกิจเฉพาะและภาษีหัก ณ ที่จ่าย</p>
+            <p id="seller-type-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="ownership-years" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลาถือครอง (ปี)</label>
+            <input
+              type="text"
+              id="ownership-years"
+              inputmode="decimal"
+              autocomplete="off"
+              placeholder="เช่น 3.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p class="mt-1 text-xs text-gray-500">ระบบปัดเศษปีขึ้นเป็นจำนวนเต็มเพื่อคำนวณภาษีหัก ณ ที่จ่าย</p>
+            <p id="ownership-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="transfer-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทการโอน</label>
+          <select
+            id="transfer-type"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">เลือกประเภทการโอน</option>
+            <option value="sale">ซื้อขาย</option>
+            <option value="gift">ให้เป็นของขวัญ</option>
+            <option value="inheritance">มรดก</option>
+          </select>
+          <p id="transfer-type-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <button
+          type="submit"
+          id="property-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าโอนบ้าน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรวมประมาณการ</div>
+            <div id="res-total-fee" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียมโอน</div>
+            <div id="res-transfer-fee" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ภาษีธุรกิจเฉพาะ</div>
+            <div id="res-sbt" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-gray-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ภาษีหัก ณ ที่จ่าย</div>
+            <div id="res-withholding" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ราคาประเมินทุนทรัพย์</span>
+            <span id="res-appraised" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ราคาซื้อขาย</span>
+            <span id="res-sale" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ฐานภาษี SBT/อากรแสตมป์ (ราคาสูงกว่า)</span>
+            <span id="res-tax-base" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อากรแสตมป์</span>
+            <span id="res-stamp-duty" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ปีถือครองที่ใช้คำนวณภาษี</span>
+            <span id="res-holding-years" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราหักค่าใช้จ่าย</span>
+            <span id="res-expense-rate" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินได้เฉลี่ยต่อปี (ฐานคำนวณภาษี)</span>
+            <span id="res-annual-taxable" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ภาษีเฉลี่ยต่อปี</span>
+            <span id="res-annual-tax" class="font-medium text-gray-900">-</span>
+          </div>
+        </div>
+
+        <p id="result-note" class="rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800"></p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณค่าโอนบ้าน</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าธรรมเนียมโอน = ราคาประเมินทุนทรัพย์ × 2%</li>
+        <li>ภาษีธุรกิจเฉพาะ = ฐานราคาสูงกว่า (ราคาประเมิน/ราคาซื้อขาย) × 3.3% (กรณีผู้โอนนิติบุคคล หรือผู้โอนบุคคลธรรมดาที่ถือครองน้อยกว่า 5 ปี)</li>
+        <li>อากรแสตมป์ = ฐานราคาสูงกว่า × 0.5% (กรณีไม่เสียภาษีธุรกิจเฉพาะ)</li>
+        <li>ภาษีหัก ณ ที่จ่าย = กรณีผู้โอนนิติบุคคลใช้อัตรา 1% ของฐานราคาสูงกว่า ส่วนบุคคลธรรมดาคำนวณภาษีขั้นบันไดจากเงินได้เฉลี่ยต่อปี</li>
+      </ul>
+      <p>
+        แหล่งอ้างอิง:
+        <a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/fees-taxes-duties/" target="_blank" rel="noopener noreferrer">กรมที่ดิน: ค่าธรรมเนียม ภาษี และอากร</a>
+        ,
+        <a href="https://www.dol.go.th/media/716929789247754240/migration/2025/10/dxtE3FP9oCjV4ThN86z5Jm0n.pdf" target="_blank" rel="noopener noreferrer">ตัวอย่างคำนวณภาษีหัก ณ ที่จ่าย</a>
+        ,
+        <a href="https://www.dol.go.th/media/813280203299229696/migration/2025/10/tTJRbqDE5jo7rNC2LdcGUWFn.pdf" target="_blank" rel="noopener noreferrer">คู่มือจดทะเบียนโอนอสังหาริมทรัพย์</a>
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">อ่านต่อและเครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/บทความ/ค่าโอนบ้าน-2569-มีอะไรบ้าง-คำนวณอย่างไร/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">บทความ: ค่าโอนบ้าน 2569 มีอะไรบ้าง</span>
+          <span class="block text-sm text-gray-400">สรุปรายการค่าใช้จ่ายวันโอนแบบอ่านง่าย</span>
+        </a>
+        <a href="/คำนวณผ่อนบ้าน/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณผ่อนบ้าน</span>
+          <span class="block text-sm text-gray-400">วางแผนค่างวดและดอกเบี้ยก่อนตัดสินใจกู้</span>
+        </a>
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
+          <span class="block text-sm text-gray-400">เช็กภาษีขั้นบันไดและวางแผนภาษีทั้งปี</span>
+        </a>
+        <a href="/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">กลับหน้ารวมเครื่องคำนวณ</span>
+          <span class="block text-sm text-gray-400">เลือกเครื่องคำนวณอื่นที่เกี่ยวกับภาษีและอสังหาฯ</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลคำนวณเป็นการประมาณการเพื่อช่วยวางแผนเท่านั้น
+      ยอดจริงอาจแตกต่างตามประเภทสิทธิ เอกสารประกอบ และการพิจารณาของสำนักงานที่ดิน
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculatePropertyTransferFee } from '../../lib/property-transfer-fee';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return 0;
+      const n = Number(normalized);
+      return Number.isFinite(n) ? Math.max(0, n) : NaN;
+    }
+
+    function hasInvalidNumber(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function formatInputNumber(value, allowDecimal = false) {
+      const cleaned = String(value).replace(allowDecimal ? /[^\d.]/g : /[^\d]/g, '');
+      const [integerPart, decimalPart = ''] = cleaned.split('.');
+      const normalizedInteger = integerPart.replace(/^0+(?=\d)/, '') || '0';
+      const formattedInteger = new Intl.NumberFormat('th-TH').format(Number(normalizedInteger));
+
+      if (!allowDecimal) return formattedInteger;
+      if (cleaned.endsWith('.')) return `${formattedInteger}.`;
+      return decimalPart ? `${formattedInteger}.${decimalPart.slice(0, 2)}` : formattedInteger;
+    }
+
+    function fmtMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+
+    function safeTrack(name, ...args) {
+      const tracker = window[name];
+      if (typeof tracker === 'function') {
+        tracker(...args);
+      }
+    }
+
+    const form = document.getElementById('property-transfer-form');
+    const submitBtn = document.getElementById('property-submit-btn');
+    const formError = document.getElementById('property-form-error');
+    const resultsDiv = document.getElementById('results');
+
+    const fields = {
+      appraisedValue: document.getElementById('appraised-value'),
+      salePrice: document.getElementById('sale-price'),
+      sellerType: document.getElementById('seller-type'),
+      ownershipYears: document.getElementById('ownership-years'),
+      transferType: document.getElementById('transfer-type'),
+    };
+
+    function setFieldError(id, message) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    function clearFieldError(id) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = '';
+      element.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError('appraised-value-error');
+      clearFieldError('sale-price-error');
+      clearFieldError('seller-type-error');
+      clearFieldError('ownership-years-error');
+      clearFieldError('transfer-type-error');
+    }
+
+    function updateSubmitState() {
+      const requiredFilled = [
+        fields.appraisedValue.value,
+        fields.salePrice.value,
+        fields.sellerType.value,
+        fields.ownershipYears.value,
+        fields.transferType.value,
+      ].every((value) => String(value).trim() !== '');
+
+      const hasInvalid = [
+        hasInvalidNumber(fields.appraisedValue.value),
+        hasInvalidNumber(fields.salePrice.value),
+        hasInvalidNumber(fields.ownershipYears.value),
+      ].some(Boolean);
+
+      const ready = requiredFilled && !hasInvalid;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณค่าโอนบ้าน' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+      submitBtn.classList.toggle('opacity-70', !ready);
+    }
+
+    fields.appraisedValue.addEventListener('input', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+
+    fields.salePrice.addEventListener('input', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+
+    fields.ownershipYears.addEventListener('input', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+
+    fields.sellerType.addEventListener('change', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+
+    fields.transferType.addEventListener('change', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+
+    fields.appraisedValue.addEventListener('blur', () => {
+      if (fields.appraisedValue.value.trim() === '') return;
+      fields.appraisedValue.value = formatInputNumber(fields.appraisedValue.value);
+    });
+
+    fields.salePrice.addEventListener('blur', () => {
+      if (fields.salePrice.value.trim() === '') return;
+      fields.salePrice.value = formatInputNumber(fields.salePrice.value);
+    });
+
+    fields.ownershipYears.addEventListener('blur', () => {
+      if (fields.ownershipYears.value.trim() === '') return;
+      fields.ownershipYears.value = formatInputNumber(fields.ownershipYears.value, true);
+    });
+
+    updateSubmitState();
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearValidation();
+
+      const appraisedValue = parseNum(fields.appraisedValue.value);
+      const salePrice = parseNum(fields.salePrice.value);
+      const ownershipYears = parseNum(fields.ownershipYears.value);
+      const sellerType = String(fields.sellerType.value || '');
+      const transferType = String(fields.transferType.value || '');
+      const isCompanySeller = sellerType === 'company';
+      const isAllowedTransferType = isCompanySeller
+        ? transferType === 'sale'
+        : transferType === 'sale' || transferType === 'gift' || transferType === 'inheritance';
+
+      const validity = {
+        appraisedValue: !hasInvalidNumber(fields.appraisedValue.value) && appraisedValue > 0,
+        salePrice: !hasInvalidNumber(fields.salePrice.value) && salePrice > 0,
+        sellerType: sellerType === 'individual' || sellerType === 'company',
+        ownershipYears: !hasInvalidNumber(fields.ownershipYears.value) && ownershipYears > 0,
+        transferType: isAllowedTransferType,
+      };
+
+      if (!validity.appraisedValue) setFieldError('appraised-value-error', 'กรอกราคาประเมินมากกว่า 0 บาท');
+      if (!validity.salePrice) setFieldError('sale-price-error', 'กรอกราคาซื้อขายมากกว่า 0 บาท');
+      if (!validity.sellerType) setFieldError('seller-type-error', 'เลือกประเภทผู้โอน');
+      if (!validity.ownershipYears) setFieldError('ownership-years-error', 'กรอกปีถือครองมากกว่า 0 ปี');
+      if (!validity.transferType) setFieldError('transfer-type-error', isCompanySeller ? 'ผู้โอนนิติบุคคลให้เลือกการโอนแบบซื้อขาย' : 'เลือกประเภทการโอน');
+
+      if (!Object.values(validity).every(Boolean)) {
+        formError.classList.remove('hidden');
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      safeTrack('trackCalculatorStart', 'property_transfer_fee');
+
+      const result = calculatePropertyTransferFee({
+        appraisedValue,
+        salePrice,
+        sellerType,
+        ownershipYears,
+        transferType,
+      });
+
+      document.getElementById('res-total-fee').textContent = fmtMoney(result.totalFee);
+      document.getElementById('res-transfer-fee').textContent = fmtMoney(result.transferFee);
+      document.getElementById('res-sbt').textContent = fmtMoney(result.specificBusinessTax);
+      document.getElementById('res-stamp-duty').textContent = fmtMoney(result.stampDuty);
+      document.getElementById('res-withholding').textContent = fmtMoney(result.withholdingTax);
+      document.getElementById('res-appraised').textContent = fmtMoney(appraisedValue);
+      document.getElementById('res-sale').textContent = fmtMoney(salePrice);
+      document.getElementById('res-tax-base').textContent = fmtMoney(result.taxBaseForSbtAndStamp);
+      document.getElementById('res-holding-years').textContent = `${result.holdingYearsForTax} ปี`;
+      document.getElementById('res-expense-rate').textContent = `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 }).format(result.expenseDeductionRate)}%`;
+      document.getElementById('res-annual-taxable').textContent = fmtMoney(result.annualTaxableIncome);
+      document.getElementById('res-annual-tax').textContent = fmtMoney(result.annualWithholdingTax);
+
+      const notes = [];
+      if (result.isSpecificBusinessTaxApplied) {
+        notes.push('กรณีนี้เข้าเงื่อนไขภาษีธุรกิจเฉพาะ 3.3% จึงยกเว้นอากรแสตมป์');
+      } else if (transferType === 'sale') {
+        notes.push('กรณีนี้ไม่เข้าเงื่อนไขภาษีธุรกิจเฉพาะ จึงใช้อากรแสตมป์ 0.5% ตามหลักเกณฑ์');
+      }
+
+      if (transferType !== 'sale') {
+        notes.push('การโอนแบบให้หรือมรดกอาจมีเงื่อนไขเพิ่มเติม ควรตรวจสอบเอกสารกับสำนักงานที่ดินก่อนวันโอน');
+      }
+
+      if (sellerType === 'company') {
+        notes.push('กรณีผู้โอนนิติบุคคล ระบบใช้อัตราภาษีหัก ณ ที่จ่าย 1% และภาษีธุรกิจเฉพาะ 3.3% ตามเกณฑ์กรมที่ดิน');
+      }
+
+      document.getElementById('result-note').textContent = notes.join(' | ');
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณค่าโอนบ้าน';
+
+      safeTrack('trackCalculatorComplete', 'property_transfer_fee', result.totalFee);
+      safeTrack('trackCalculatorUsed', 'property_transfer_fee');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          safeTrack('trackResultViewed', 'property_transfer_fee');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

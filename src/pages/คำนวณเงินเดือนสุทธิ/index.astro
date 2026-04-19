@@ -4,17 +4,17 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
 const pageTitle = 'คำนวณเงินเดือนสุทธิ เช็กเงินรับจริง 2569 (2026) | Calculator Thailand';
 const pageDescription = 'คำนวณเงินเดือนสุทธิ อัปเดตปี 2569 (2026) ฟรี เช็กเงินรับจริงหลังหักภาษี ณ ที่จ่ายและประกันสังคม พร้อมตารางสรุปรายเดือนและรายปีเพื่อเปรียบเทียบรายได้ก่อนเปลี่ยนงาน';
-const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://calculator-thailand-production.up.railway.app').replace(/\/$/, '');
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเงินเดือนสุทธิ/`;
 
 const faqData = [
   {
     question: 'เงินเดือนสุทธิคำนวณอย่างไร?',
-    answer: 'เงินเดือนสุทธิ = เงินเดือน − ภาษีเงินได้หัก ณ ที่จ่าย − เงินสมทบประกันสังคม โดยภาษีคำนวณจากรายได้ทั้งปีตามขั้นบันไดภาษี หารเฉลี่ย 12 เดือน ส่วนประกันสังคมหัก 5% ของเงินเดือน สูงสุดไม่เกิน 750 บาทต่อเดือน',
+    answer: 'เงินเดือนสุทธิ = เงินเดือน − ภาษีเงินได้หัก ณ ที่จ่าย − เงินสมทบประกันสังคม โดยภาษีคำนวณจากรายได้ทั้งปีตามขั้นบันไดภาษี หารเฉลี่ย 12 เดือน ส่วนประกันสังคมหัก 5% ของค่าจ้าง โดยปี 2569 เพดานสูงสุดอยู่ที่ 875 บาทต่อเดือน',
   },
   {
     question: 'ประกันสังคมหักเท่าไร?',
-    answer: 'ลูกจ้างสมทบประกันสังคม 5% ของเงินเดือน โดยคำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท จึงหักขั้นต่ำ 83 บาท สูงสุด 750 บาทต่อเดือน',
+    answer: 'ลูกจ้างสมทบประกันสังคม 5% ของค่าจ้าง โดยปี 2569-2571 ใช้ฐานค่าจ้างขั้นต่ำ 1,650 บาท สูงสุด 17,500 บาท จึงหักขั้นต่ำประมาณ 83 บาท สูงสุด 875 บาทต่อเดือน',
   },
   {
     question: 'ภาษีหัก ณ ที่จ่ายคำนวณยังไง?',
@@ -22,7 +22,7 @@ const faqData = [
   },
   {
     question: 'เงินเดือนเท่าไรไม่ต้องเสียภาษี?',
-    answer: 'หากมีรายได้จากเงินเดือนเพียงอย่างเดียว และไม่มีลดหย่อนอื่น เงินเดือนประมาณ 26,583 บาทต่อเดือน (319,000 บาทต่อปี) จึงจะเริ่มเสียภาษี เนื่องจากหักค่าใช้จ่าย 100,000 + ลดหย่อนส่วนตัว 60,000 + ประกันสังคม 9,000 = 169,000 บาท ทำให้รายได้สุทธิ 150,000 บาทแรกได้รับยกเว้นภาษี',
+    answer: 'หากมีรายได้จากเงินเดือนเพียงอย่างเดียว และไม่มีลดหย่อนอื่น เงินเดือนประมาณ 26,708 บาทต่อเดือน (320,500 บาทต่อปี) จึงจะเริ่มเสียภาษี เพราะเมื่อหักค่าใช้จ่าย 100,000 + ลดหย่อนส่วนตัว 60,000 + ประกันสังคม 10,500 = 170,500 บาท จะเหลือเงินได้สุทธิใกล้จุดเริ่มเสียภาษี',
   },
 ];
 
@@ -152,7 +152,7 @@ const jsonLdFaq = {
             <span id="res-gross" class="font-medium">-</span>
           </div>
           <div class="flex justify-between py-2 border-b border-gray-100">
-            <span class="text-gray-600">ประกันสังคม (5% สูงสุด 750 บาท)</span>
+            <span class="text-gray-600">ประกันสังคม (5% สูงสุด 875 บาท)</span>
             <span id="res-ss" class="font-medium text-red-600">-</span>
           </div>
           <div class="flex justify-between py-2 border-b border-gray-100">
@@ -183,7 +183,8 @@ const jsonLdFaq = {
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">อัตราภาษีที่แท้จริง</span>
-              <span id="res-effective-rate" class="font-medium">-</span>
+              <span id="res-income-ratio" class="font-medium">-</span>
+              <span id="res-effective-rate" class="sr-only" aria-hidden="true">-</span>
             </div>
           </div>
         </div>
@@ -222,14 +223,14 @@ const jsonLdFaq = {
 
       <p>
         ลูกจ้างต้องจ่ายเงินสมทบประกันสังคม 5% ของค่าจ้าง
-        โดยคำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท และสูงสุด 15,000 บาท
-        ดังนั้นจำนวนเงินสมทบจะอยู่ระหว่าง 83 บาท ถึง 750 บาทต่อเดือน
+        โดยคำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท และสูงสุด 17,500 บาท (ช่วงปี 2569-2571)
+        ดังนั้นจำนวนเงินสมทบจะอยู่ระหว่างประมาณ 83 บาท ถึง 875 บาทต่อเดือน
         นายจ้างจ่ายสมทบอีก 5% เท่ากัน
       </p>
 
       <div class="bg-gray-50 rounded-lg p-4 my-4">
-        <p class="font-semibold">สูตร: ประกันสังคม = เงินเดือน × 5% (สูงสุด 750 บาท)</p>
-        <p class="text-sm text-gray-500 mt-1">ตัวอย่าง: เงินเดือน 30,000 บาท → 30,000 × 5% = 1,500 → หัก 750 บาท (เนื่องจากเกินเพดาน)</p>
+        <p class="font-semibold">สูตร: ประกันสังคม = เงินเดือน × 5% (สูงสุด 875 บาท)</p>
+        <p class="text-sm text-gray-500 mt-1">ตัวอย่าง: เงินเดือน 30,000 บาท → 30,000 × 5% = 1,500 → หัก 875 บาท (เนื่องจากเกินเพดาน)</p>
       </div>
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">2. ภาษีเงินได้หัก ณ ที่จ่าย</h3>
@@ -274,11 +275,18 @@ const jsonLdFaq = {
         <li>รายได้ต่อปี: 35,000 × 12 = 420,000 บาท</li>
         <li>หักค่าใช้จ่าย: 100,000 บาท</li>
         <li>หักลดหย่อนส่วนตัว: 60,000 บาท</li>
-        <li>หักประกันสังคม: 750 × 12 = 9,000 บาท</li>
-        <li>รายได้สุทธิ: 420,000 − 100,000 − 60,000 − 9,000 = 251,000 บาท</li>
-        <li>ภาษี: 150,000 แรกยกเว้น + 101,000 × 5% = 5,050 บาท/ปี</li>
-        <li>ภาษีต่อเดือน: 5,050 ÷ 12 ≈ 421 บาท</li>
-        <li>เงินเดือนสุทธิ: 35,000 − 750 − 421 = 33,829 บาท</li>
+        <li>หักประกันสังคม: 875 × 12 = 10,500 บาท</li>
+        <li>รายได้สุทธิ: 420,000 − 100,000 − 60,000 − 10,500 = 249,500 บาท</li>
+        <li>ภาษี: 150,000 แรกยกเว้น + 99,500 × 5% = 4,975 บาท/ปี</li>
+        <li>ภาษีต่อเดือน: 4,975 ÷ 12 ≈ 415 บาท</li>
+        <li>เงินเดือนสุทธิ: 35,000 − 875 − 415 ≈ 33,710 บาท</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">แหล่งข้อมูลอ้างอิง</h3>
+      <ul>
+        <li><a href="https://ratchakitcha.soc.go.th/documents/98728.pdf" target="_blank" rel="noopener noreferrer">ราชกิจจานุเบกษา: กฎกระทรวงฐานค่าจ้างประกันสังคมมาตรา 33 (พ.ศ. 2568)</a></li>
+        <li><a href="https://www.rd.go.th/59668.html" target="_blank" rel="noopener noreferrer">กรมสรรพากร: การปรับปรุงโครงสร้างภาษีเงินได้บุคคลธรรมดา</a></li>
+        <li><a href="https://www.rd.go.th/fileadmin/user_upload/borkor/tax121260.pdf" target="_blank" rel="noopener noreferrer">กรมสรรพากร: บัญชีอัตราภาษีเงินได้บุคคลธรรมดา</a></li>
       </ul>
     </section>
 
@@ -301,7 +309,8 @@ const jsonLdFaq = {
 
     <!-- Related -->
     <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องมือและบทความที่เกี่ยวข้อง</h2>
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">เครื่องคำนวณที่เกี่ยวข้อง</h3>
       <div class="grid gap-3 sm:grid-cols-2">
         <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
           <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
@@ -319,7 +328,19 @@ const jsonLdFaq = {
           <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยเงินฝาก</span>
           <span class="text-gray-400 text-sm block">ดอกเบี้ยเงินฝากประจำและออมทรัพย์</span>
         </a>
+
+        <a href="/คำนวณดอกเบี้ยบัตรเครดิต/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยบัตรเครดิต ปี 2569</span>
+          <span class="text-gray-400 text-sm block">คำนวณดอกเบี้ยบัตรเครดิต ปี 2569</span>
+        </a>
       </div>
+
+      <h3 class="mt-6 text-lg font-semibold text-gray-900 mb-3">บทความที่เกี่ยวข้อง</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><a href="/บทความ/เงินเดือนสุทธิ-2569-คำนวณหัก-ประกันสังคม-ภาษี/">เงินเดือนสุทธิ 2569 (2026): คำนวณหักประกันสังคม-ภาษี</a></li>
+        <li><a href="/บทความ/ภาษีเงินได้-2569-คำนวณ-วิธีลดหย่อน/">ภาษีเงินได้ 2569 คำนวณและวิธีลดหย่อน</a></li>
+        <li><a href="/บทความ/คำนวณค่าโอที-2569-กฎหมายแรงงาน/">คำนวณค่าโอที 2569 ตามกฎหมายแรงงาน</a></li>
+      </ul>
     </section>
 
     <!-- Disclaimer -->
@@ -343,7 +364,9 @@ const jsonLdFaq = {
     ];
 
     const SS_RATE = 0.05;
-    const SS_MAX_MONTHLY = 750;
+    const SS_MIN_WAGE_BASE = 1_650;
+    const SS_MAX_MONTHLY = 875;
+    const SS_ANNUAL_DEDUCTION_CAP = 10_500;
     const EXPENSE_CAP = 100_000;
     const PERSONAL_ALLOWANCE = 60_000;
     const SPOUSE_ALLOWANCE = 60_000;
@@ -377,7 +400,8 @@ const jsonLdFaq = {
 
     function calculate(grossMonthly: number, hasSpouse: boolean, childCount: number, extraDeductions: number) {
       // Social Security
-      const ssMonthly = Math.min(grossMonthly * SS_RATE, SS_MAX_MONTHLY);
+      const ssBaseMonthly = Math.max(grossMonthly, SS_MIN_WAGE_BASE);
+      const ssMonthly = Math.min(ssBaseMonthly * SS_RATE, SS_MAX_MONTHLY);
       const ssAnnual = ssMonthly * 12;
 
       // Annual income
@@ -390,7 +414,7 @@ const jsonLdFaq = {
       let allowances = PERSONAL_ALLOWANCE;
       if (hasSpouse) allowances += SPOUSE_ALLOWANCE;
       allowances += childCount * CHILD_ALLOWANCE;
-      allowances += Math.min(ssAnnual, 9_000);
+      allowances += Math.min(ssAnnual, SS_ANNUAL_DEDUCTION_CAP);
       allowances += extraDeductions;
 
       // Net taxable income
@@ -476,7 +500,9 @@ const jsonLdFaq = {
       (document.getElementById('res-annual-gross') as HTMLElement).textContent = fmt(r.annualGross) + ' บาท';
       (document.getElementById('res-annual-tax') as HTMLElement).textContent = fmt(r.annualTax) + ' บาท';
       (document.getElementById('res-annual-ss') as HTMLElement).textContent = fmt(r.ssAnnual) + ' บาท';
-      (document.getElementById('res-effective-rate') as HTMLElement).textContent = r.effectiveRate.toFixed(2) + '%';
+      const incomeRatioText = r.effectiveRate.toFixed(2) + '%';
+      (document.getElementById('res-income-ratio') as HTMLElement).textContent = incomeRatioText;
+      (document.getElementById('res-effective-rate') as HTMLElement).textContent = incomeRatioText;
 
       resultDiv.classList.remove('hidden');
       nextActionCard.classList.remove('hidden');

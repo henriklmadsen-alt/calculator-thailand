@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { title, description, canonical, ogImage, pageName, alternateLocales = [] } = Astro.props;
-const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
 const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
@@ -96,9 +96,22 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
+      />
+    </noscript>
     <title>{title}</title>
     <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
@@ -135,6 +148,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       function getDefaultCalculatorType() {
         const decodedPath = decodePathname(window.location.pathname);
         const calculatorMap = {
+          '/คำนวณค่าไฟฟ้า/': 'electricity_bill',
           '/คำนวณภาษีเงินได้บุคคลธรรมดา/': 'personal_income_tax',
           '/คำนวณผ่อนรถ/': 'vehicle',
           '/คำนวณผ่อนบ้าน/': 'mortgage_refinance',
@@ -144,6 +158,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
           '/คำนวณดอกเบี้ยเงินฝาก/': 'deposit',
           '/คำนวณ-bmi/': 'bmi',
           '/คำนวณอายุ/': 'age',
+          '/คำนวณค่าโอนบ้าน/': 'property_transfer_fee',
         };
         return calculatorMap[decodedPath] || '';
       }
@@ -475,7 +490,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       )
     }
 
-    <style>
+    <style is:global>
       /* Smooth gradient background */
       body {
         background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 50%, #f0fdf4 100%);
@@ -501,6 +516,142 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+      /* Contrast remediation for shared utility classes */
+      [data-lang-mode-btn].bg-primary-600 {
+        background-color: #0369a1;
+      }
+      main .bg-primary-600 {
+        background-color: #0369a1;
+      }
+      main .hover\:bg-primary-700:hover {
+        background-color: #075985;
+      }
+      main .text-primary-600 {
+        color: #0369a1;
+      }
+      main .text-gray-400 {
+        color: #64748b;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+        }
+
+        body {
+          background: linear-gradient(135deg, #020617 0%, #0f172a 55%, #111827 100%);
+          color: #e2e8f0;
+        }
+
+        header {
+          background: rgba(15, 23, 42, 0.84);
+          border-color: #334155;
+        }
+
+        footer {
+          background: rgba(15, 23, 42, 0.7);
+          border-color: #334155;
+        }
+
+        header .text-gray-900,
+        footer .text-gray-900 {
+          color: #f8fafc;
+        }
+
+        header .text-gray-700,
+        footer .text-gray-700 {
+          color: #e2e8f0;
+        }
+
+        header .text-gray-600,
+        footer .text-gray-500,
+        footer .text-gray-400 {
+          color: #cbd5e1;
+        }
+
+        header .border-gray-100,
+        footer .border-gray-100 {
+          border-color: #334155;
+        }
+
+        header [role='group'] {
+          border-color: #475569;
+          background-color: #1e293b;
+        }
+
+        header [data-lang-mode-btn].text-slate-600 {
+          color: #e2e8f0;
+        }
+
+        main .bg-white {
+          background-color: #0f172a;
+        }
+
+        main .bg-gray-50 {
+          background-color: #111827;
+        }
+
+        main .border-gray-100,
+        main .border-gray-200,
+        main .border-gray-300 {
+          border-color: #334155;
+        }
+
+        main .text-gray-900 {
+          color: #f8fafc;
+        }
+
+        main .text-gray-800,
+        main .text-gray-700,
+        main .text-gray-600,
+        main .text-gray-500 {
+          color: #cbd5e1;
+        }
+
+        main .text-gray-400 {
+          color: #cbd5e1;
+        }
+
+        main .text-primary-600 {
+          color: #7dd3fc;
+        }
+
+        main .bg-primary-50 {
+          background-color: #082f49;
+        }
+
+        main .bg-primary-600 {
+          background-color: #0369a1;
+        }
+
+        main .hover\:text-primary-600:hover {
+          color: #bae6fd;
+        }
+
+        main .hover\:border-primary-500:hover,
+        main .hover\:border-primary-300:hover {
+          border-color: #38bdf8;
+        }
+
+        main .hover\:bg-primary-700:hover {
+          background-color: #075985;
+        }
+
+        main input,
+        main select,
+        main textarea,
+        main details {
+          background-color: #0f172a;
+          color: #e2e8f0;
+          border-color: #334155;
+        }
+
+        main input::placeholder,
+        main textarea::placeholder {
+          color: #94a3b8;
+        }
+      }
 
       .lang-assist,
       .lang-assist-inline {
@@ -579,9 +730,11 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
             <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="hover:text-primary-600 transition-colors">VAT 7%</a>
             <a href="/คำนวณผ่อนกู้/" class="hover:text-primary-600 transition-colors">ผ่อนกู้</a>
             <a href="/คำนวณผ่อนรถ/" class="hover:text-primary-600 transition-colors">ผ่อนรถ</a>
+            <a href="/คำนวณค่าไฟฟ้า/" class="hover:text-primary-600 transition-colors">ค่าไฟฟ้า</a>
             <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="hover:text-primary-600 transition-colors">ดอกเบี้ยเงินฝาก</a>
             <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
             <a href="/คำนวณอายุ/" class="hover:text-primary-600 transition-colors">คำนวณอายุ</a>
+            <a href="/คำนวณค่าโอนบ้าน/" class="hover:text-primary-600 transition-colors">ค่าโอนบ้าน</a>
             <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
           </nav>
           <p class="text-xs text-gray-400">© 2026 เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
