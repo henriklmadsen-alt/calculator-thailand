@@ -50,11 +50,45 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณดอกเบี้ยเงินฝากประจำ',
+  description: 'ขั้นตอนการคำนวณดอกเบี้ยเงินฝาก ทั้งดอกเบี้ยธรรมดา (Simple Interest) และดอกเบี้ยทบต้น (Compound Interest) ตามอัตราธนาคาร',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุจำนวนเงินฝากเบื้องต้น (Principal)',
+      text: 'กำหนดจำนวนเงินที่ต้องการฝากในบัญชีเงินฝากประจำ เช่น 100,000 บาท (ดูจากสัญญาเปิดบัญชี)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบอัตราดอกเบี้ยต่อปี (Annual Interest Rate)',
+      text: 'ดูเงื่อนไขจากธนาคาร เอกสารเปิดบัญชี หรือเว็บไซต์ธนาคาร ว่าบัญชีฝากประจำนี้ให้ดอกเบี้ยเท่าไรต่อปี เช่น 1.5% ต่อปี',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุระยะเวลาฝาก (Term)',
+      text: 'กำหนดระยะเวลาที่จะฝากไว้ เช่น 1 ปี, 3 ปี, 5 ปี หรือเป็นจำนวนเดือน (ดูจากสัญญาฝาก)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณดอกเบี้ย (Simple Interest)',
+      text: 'สูตร: ดอกเบี้ย = เงินต้น × อัตราดอกเบี้ย × ระยะเวลา ÷ 100 ตัวอย่าง: 100,000 × 1.5 × 1 ÷ 100 = 1,500 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักภาษีดอกเบี้ย 15%',
+      text: 'ดอกเบี้ยรับจริง = ดอกเบี้ยก่อนหักภาษี × (1 - 15%) ตัวอย่าง: 1,500 × 85% = 1,275 บาท เงินรวม = 100,000 + 1,275 = 101,275 บาท',
+    },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยเงินฝาก">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -321,6 +355,61 @@ const jsonLdFaq = {
       <p class="text-gray-600 text-sm mt-3">
         <strong>เคล็ดลับ:</strong> หากต้องการผลตอบแทนสูงขึ้น ลองเปรียบเทียบอัตราดอกเบี้ยจากธนาคารต่างๆ
         บางธนาคารมีโปรโมชันพิเศษสำหรับยอดฝากสูง หรือลองฝากออมทรัพย์เพื่อใช้ดอกเบี้ยทบต้น หากยินดีไม่ถอนตรงกำหนด
+      </p>
+    </section>
+
+
+    <!-- CAL-654 Content Block -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณดอกเบี้ยเงินฝาก</h2>
+      <div class="bg-gray-50 rounded-lg p-4 my-4">
+        <p class="font-semibold mb-1">ดอกเบี้ยธรรมดา (Simple Interest):</p>
+        <p class="text-sm">ดอกเบี้ย = เงินต้น × อัตราดอกเบี้ย × ระยะเวลา</p>
+        <p class="font-semibold mt-3 mb-1">ดอกเบี้ยทบต้น (Compound Interest):</p>
+        <p class="text-sm">เงินรวม = เงินต้น × (1 + r)^n | ดอกเบี้ยหลังภาษี = ดอกเบี้ย × (1 − 15%)</p>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณดอกเบี้ยเงินฝาก</h2>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 1: ฝาก 100,000 บาท อัตรา 1.5% ต่อปี ฝาก 1 ปี</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ดอกเบี้ยก่อนหักภาษี = 100,000 × 1.5% × 1 = 1,500 บาท</li>
+          <li>ภาษีเงินได้ (15%) = 1,500 × 15% = 225 บาท</li>
+          <li><strong>ดอกเบี้ยรับจริง = 1,275 บาท | เงินรวม = 101,275 บาท</strong></li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 2: ฝากทบต้นรายไตรมาส 100,000 บาท อัตรา 1.5%</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>อัตราต่อไตรมาส = 1.5% ÷ 4 = 0.375%</li>
+          <li>เงินรวม = 100,000 × (1.00375)^4 = 101,508 บาท</li>
+          <li>ดอกเบี้ย = 1,508 บาท → หักภาษี 15% = <strong>1,281.80 บาท</strong></li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 3: ฝากประจำ 5 ปี ปรับอัตราปีที่ 3</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ปีที่ 1–2 @ 1.5%: ดอกเบี้ย = 3,000 บาท</li>
+          <li>ปีที่ 3–5 @ 1.75%: ดอกเบี้ย ≈ 5,413 บาท</li>
+          <li>ดอกเบี้ยรวม = 8,413 บาท → หักภาษี 15% = <strong>7,151 บาท</strong></li>
+        </ul>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">วิธีคำนวณดอกเบี้ยเงินฝาก</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>เลือกประเภทบัญชีและตรวจสอบอัตราดอกเบี้ยปัจจุบันจากธนาคาร</li>
+        <li>ป้อนจำนวนเงินฝากและระยะเวลา</li>
+        <li>เลือกประเภทดอกเบี้ย: ธรรมดาหรือทบต้น</li>
+        <li>คำนวณดอกเบี้ยก่อนหักภาษี จากนั้นหัก 15% ภาษี ณ ที่จ่าย</li>
+        <li>ตรวจสอบค่าธรรมเนียมและข้อจำกัดการถอนก่อนครบกำหนด</li>
+      </ol>
+
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.bot.or.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">ธนาคารแห่งประเทศไทย: ประกาศอัตราดอกเบี้ยเงินฝากประจำ</a> [อัปเดต 2569]
       </p>
     </section>
 

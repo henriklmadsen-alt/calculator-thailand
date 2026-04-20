@@ -49,11 +49,45 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณ BMI (ดัชนีมวลกาย) ตามมาตรฐาน WHO',
+  description: 'ขั้นตอนการคำนวณค่า BMI โดยใช้ส่วนสูง (เมตร) และน้ำหนัก (กิโลกรัม) พร้อมการแปลความหมายผลลัพธ์ตามมาตรฐาน WHO',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'วัดส่วนสูงให้แม่นยำ',
+      text: 'วัดส่วนสูงของคุณ ยืนตรง หลังชิดกำแพง บันทึกเป็นหน่วยเมตร (ม.) ด้วยความแม่นยำทศนิยม 2 ตำแหน่ง เช่น 1.70 เมตร (170 ซม.)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ชั่งน้ำหนักด้วยเครื่องชั่งที่แม่นยำ',
+      text: 'ใช้เครื่องชั่งน้ำหนักที่ถูกต้อง บันทึกน้ำหนักเป็นกิโลกรัม (กก.) ด้วยความแม่นยำ 0.5 กก. เช่น 65 กก. (ชั่งโดยสวมเสื้อผ้าน้อยที่สุด)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณกำลังสองของส่วนสูง',
+      text: 'นำส่วนสูง (เมตร) มายกกำลังสอง เช่น 1.70 × 1.70 = 2.89 ตารางเมตร',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หารน้ำหนักด้วยกำลังสองของส่วนสูง',
+      text: 'BMI = น้ำหนัก (กก.) ÷ ส่วนสูง² (ตร.ม.) = 65 ÷ 2.89 = 22.49',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'แปลความหมาย BMI ตามมาตรฐาน WHO Asia-Pacific',
+      text: 'ตารางแปลผล: BMI < 18.5 = น้ำหนักน้อย, BMI 18.5–22.9 = ปกติ, BMI 23–24.9 = น้ำหนักเกิน, BMI ≥ 25 = อ้วน ในตัวอย่าง BMI 22.49 = ปกติ',
+    },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ BMI ดัชนีมวลกาย">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
@@ -265,6 +299,67 @@ const jsonLdFaq = {
       <p class="text-gray-600 text-sm mt-3">
         <strong>ผลลัพธ์:</strong> BMI = 22.86 ซึ่งอยู่ในช่วง 18.5 — 22.9 (ปกติ) ตามเกณฑ์ WHO Asia-Pacific
         หมายความว่าบุคคลนี้มีน้ำหนักเหมาะสมกับส่วนสูง และมีความเสี่ยงต่อโรคเรื้อรังต่ำ ควรรักษาน้ำหนักให้คงที่โดยออกกำลังกายสม่ำเสมอและรับประทานอาหารที่มีประโยชน์
+      </p>
+    </section>
+
+
+    <!-- CAL-654 Content Block -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ BMI และเกณฑ์มาตรฐาน</h2>
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-base font-semibold">BMI = น้ำหนัก (กก.) ÷ [ส่วนสูง (ม.)]²</p>
+      </div>
+      <p><strong>เกณฑ์มาตรฐาน WHO &amp; กรมอนามัย ประเทศไทย:</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>น้อยเกินไป (Underweight) = BMI &lt; 18.5</li>
+        <li>ปกติ (Normal) = BMI 18.5–22.9</li>
+        <li>น้ำหนักเกิน (Overweight) = BMI 23.0–24.9</li>
+        <li>โรคอ้วน (Obese) = BMI ≥ 25.0</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณ BMI</h2>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 1: BMI ปกติ</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ส่วนสูง = 170 ซม. = 1.70 เมตร</li>
+          <li>น้ำหนัก = 65 กก.</li>
+          <li>BMI = 65 ÷ (1.70)² = 65 ÷ 2.89 = <strong>22.5 (ปกติ)</strong></li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 2: น้ำหนักเกิน</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ส่วนสูง = 165 ซม. = 1.65 เมตร</li>
+          <li>น้ำหนัก = 70 กก.</li>
+          <li>BMI = 70 ÷ (1.65)² = 70 ÷ 2.7225 = <strong>25.7 (น้ำหนักเกิน)</strong></li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 3: น้ำหนักน้อยเกินไป</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ส่วนสูง = 160 ซม. = 1.60 เมตร</li>
+          <li>น้ำหนัก = 48 กก.</li>
+          <li>BMI = 48 ÷ (1.60)² = 48 ÷ 2.56 = <strong>18.75 (ปกติ แต่ใกล้ขีดต่ำ)</strong></li>
+        </ul>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">วิธีคำนวณ BMI ด้วยตนเอง</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>วัดส่วนสูง: ยืนตรง ถอดรองเท้า บันทึกเป็นเมตร (เช่น 170 ซม. = 1.70 ม.)</li>
+        <li>ชั่งน้ำหนัก: ตอนเช้าหลังเข้าห้องน้ำ ก่อนรับประทานอาหาร</li>
+        <li>ยกกำลังสองของส่วนสูง: เช่น 1.70² = 2.89</li>
+        <li>หารน้ำหนักด้วยกำลังสองของส่วนสูง: 65 ÷ 2.89 = 22.5</li>
+        <li>เทียบเกณฑ์มาตรฐาน WHO Asia-Pacific สำหรับคนไทย</li>
+        <li>ติดตาม BMI ทุก 1 เดือน และปรึกษาแพทย์หากต้องการบริหารน้ำหนัก</li>
+      </ol>
+
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.anamai.moph.go.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">กรมอนามัย: เกณฑ์ BMI และการประเมินสุขภาพ 2569</a> [อัปเดต 2569] ·
+        <a href="https://www.who.int/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">WHO: Global BMI Classification Guidelines</a>
       </p>
     </section>
 

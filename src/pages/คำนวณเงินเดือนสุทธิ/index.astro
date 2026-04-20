@@ -50,11 +50,45 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเงินเดือนสุทธิ 2569',
+  description: 'ขั้นตอนการคำนวณเงินเดือนสุทธิ โดยหักภาษีเงินได้และเงินสมทบประกันสังคม ตามอัตราที่กำหนดในปี 2569',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ป้อนเงินเดือนเต็มจำนวน (Gross Salary)',
+      text: 'ระบุเงินเดือนรายเดือนที่ได้รับจากนายจ้างฉบับเต็ม ก่อนหักภาษีและประกันสังคม เช่น 50,000 บาท/เดือน (ดูจากใบสลิปเงินเดือน)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักเงินสมทบประกันสังคม (SSO) 5%',
+      text: 'หักเงินสมทบประกันสังคมในอัตรา 5% ของเงินเดือน สูงสุดไม่เกิน 750 บาท/เดือน (สำหรับเงินเดือน 15,000 บาท ขึ้นไป) ตัวอย่าง: 50,000 × 5% = 2,500 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณรายได้สุทธิรายเดือน',
+      text: 'นำเงินเดือนเต็ม - เงินสมทบประกันสังคม = เงินเดือนสุทธิสำหรับคำนวณภาษี ตัวอย่าง: 50,000 - 2,500 = 47,500 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณภาษีเงินได้ต่อปี (เมื่อ > 150,000 บาท/ปี)',
+      text: 'นำรายได้สุทธิรายเดือน × 12 = รายได้สุทธิรายปี จากนั้นลบค่าลดหย่อน (ส่วนตัว 60,000 + คู่สมรส 60,000 + บุตรคนละ 30,000 + ประกันสังคม 9,000) แล้วคำนวณภาษีตามอัตราขั้นบันได (0% ถึง 35%)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณเงินเดือนสุทธิสุดท้าย',
+      text: 'เงินเดือนสุทธิ = เงินเดือนเต็ม - เงินสมทบประกันสังคม - ภาษีเงินได้ - การหักอื่นๆ (ถ้ามี เช่น กองทุนสำรองเลี้ยงชีพ) ตัวอย่าง: 50,000 - 2,500 - 375 = 47,125 บาท/เดือน',
+    },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือนสุทธิ">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -309,6 +343,56 @@ const jsonLdFaq = {
         <li>เงินเดือนสุทธิ: 40,000 − 750 − 717 = 38,533 บาท/เดือน</li>
         <li>อัตราภาษีที่แท้จริง: 8,600 ÷ 480,000 = 1.79%</li>
       </ul>
+    </section>
+
+
+    <!-- CAL-654 Content Block -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณเงินเดือนสุทธิ</h2>
+      <p><strong>เงินเดือนสุทธิ = เงินเดือนรวม − ประกันสังคม − ภาษีเงินได้ − ตัดเงิน (ถ้ามี)</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700 mt-2">
+        <li>ประกันสังคม = เงินเดือน × 5% (สูงสุด 750 บาท/เดือน สำหรับเงินเดือน ≥ 15,000 บาท)</li>
+        <li>ภาษีเงินได้ = คำนวณจากรายได้สุทธิรายปี ตามอัตราขั้นบันได 0%–35%</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณเงินเดือนสุทธิ</h2>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 1: เงินเดือน 50,000 บาท (แต่งงาน)</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ประกันสังคม = 50,000 × 5% = 2,500 บาท</li>
+          <li>รายได้รวมต่อปี = 600,000 บาท → ลบค่าใช้จ่าย 300,000 = 300,000 บาท</li>
+          <li>ลดหย่อนส่วนตัว + คู่สมรส = 120,000 บาท → รายได้สุทธิ = 180,000 บาท</li>
+          <li>ภาษี = (180,000 - 150,000) × 5% = 1,500 บาท/ปี = 125 บาท/เดือน</li>
+          <li><strong>เงินเดือนสุทธิ = 50,000 - 2,500 - 125 = 47,375 บาท/เดือน</strong></li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 2: เงินเดือน 50,000 บาท (โสด)</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ประกันสังคม = 50,000 × 5% = 2,500 บาท</li>
+          <li>รายได้สุทธิ = 300,000 - 60,000 = 240,000 บาท</li>
+          <li>ภาษี = (240,000 - 150,000) × 5% = 4,500 บาท/ปี = 375 บาท/เดือน</li>
+          <li><strong>เงินเดือนสุทธิ = 50,000 - 2,500 - 375 = 47,125 บาท/เดือน</strong></li>
+        </ul>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">วิธีคำนวณเงินเดือนสุทธิ</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>เตรียมข้อมูลใบสลิปเงินเดือนล่าสุด</li>
+        <li>หักประกันสังคม: เงินเดือน × 5% (สูงสุด 750 บาท/เดือน)</li>
+        <li>คำนวณภาษีเงินได้รายปี → หารด้วย 12 เพื่อได้ภาษีต่อเดือน</li>
+        <li>หักตัดเงินอื่นๆ (กองทุนสำรองเลี้ยงชีพ เบี้ยประกัน ฯลฯ)</li>
+        <li>คำนวณเงินเดือนสุทธิ = เงินเดือนรวม - ทุกรายการหัก</li>
+        <li>ตรวจสอบเทียบกับเงินโอนเข้าบัญชีจริงแต่ละเดือน</li>
+      </ol>
+
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.sso.go.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">สำนักงานประกันสังคม: อัตราการสมทบ 2569</a> [อัปเดต 2569] ·
+        <a href="https://www.rd.go.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">กรมสรรพากร: ภาษีเงินได้บุคคลธรรมดา</a> [อัปเดต 2569]
+      </p>
     </section>
 
     <!-- FAQ -->
