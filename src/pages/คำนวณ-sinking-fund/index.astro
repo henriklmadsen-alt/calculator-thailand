@@ -1,0 +1,250 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ Sinking Fund ปี 2569 ออมเงินรายเดือนสำหรับเป้าหมาย รถ ท่องเที่ยว เฟอร์นิเจอร์ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณ Sinking Fund เงินออมรายเดือนที่ต้องมีเพื่อถึงเป้าหมายในเวลาที่กำหนด รถ ท่องเที่ยว เฟอร์นิเจอร์ ค่าเรียน พร้อมคาดการณ์เงินออมสะสม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-sinking-fund/`;
+
+const faqData = [
+  {
+    question: 'Sinking Fund คืออะไร?',
+    answer: 'Sinking Fund คือเงินออมที่สะสมเพื่อค่าใช้จ่ายขนาดใหญ่ที่รู้ล่วงหน้า เช่น ค่าเที่ยว ค่าของขวัญเทศกาล ค่าซ่อมรถ ค่าเฟอร์นิเจอร์ แตกต่างจากเงินสำรองฉุกเฉินที่ไว้สำหรับเหตุการณ์ไม่คาดฝัน',
+  },
+  {
+    question: 'ควรมี Sinking Fund กี่กองทุน?',
+    answer: 'แนะนำให้มีหลายกองทุนตามเป้าหมาย เช่น กองทุนเที่ยว กองทุนของขวัญ กองทุนซ่อมรถ กองทุนค่ารักษา แต่ละกองทุนออมตามระยะเวลาและจำนวนที่ต้องการ บัญชีออมทรัพย์แยกสำหรับแต่ละเป้าหมายช่วยให้ติดตามง่ายขึ้น',
+  },
+  {
+    question: 'Sinking Fund ต่างจากการออมทั่วไปอย่างไร?',
+    answer: 'การออมทั่วไปมักไม่มีเป้าหมายชัดเจน ส่วน Sinking Fund มีเป้าหมายเฉพาะ วันที่จะใช้ และจำนวนที่ต้องการ ทำให้วางแผนและติดตามได้แม่นยำกว่า และลดโอกาสใช้เงินก่อนถึงเป้าหมาย',
+  },
+  {
+    question: 'ถ้าออมไม่ถึงเป้าหมายทุกเดือนควรทำอย่างไร?',
+    answer: 'มีสองทางเลือก: (1) ขยายเวลาออมนานขึ้น เพื่อให้จำนวนต่อเดือนลดลง หรือ (2) ลดเป้าหมายให้สมเหตุสมผลกับรายได้ เช่น เปลี่ยนจากทัวร์ต่างประเทศเป็นท่องเที่ยวในประเทศแทน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ Sinking Fund',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-sinking-fund">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณ Sinking Fund — ออมรายเดือนเพื่อเป้าหมายที่วางไว้</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ออม/เดือน = (เป้าหมาย - ออมปัจจุบัน) ÷ จำนวนเดือน</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">เหมาะสำหรับ: ท่องเที่ยว รถ เฟอร์นิเจอร์ ค่าเรียน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณ Sinking Fund ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเป้าหมายเงินที่ต้องการ ระยะเวลา (เดือน) และเงินออมปัจจุบัน เพื่อดูว่าต้องออมเดือนละเท่าไร
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="sf-form" class="space-y-5">
+        <p id="sf-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="sf-target" class="mb-1 block text-sm font-medium text-gray-700">เป้าหมายเงิน (บาท)</label>
+            <input type="text" id="sf-target" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="sf-target-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="sf-months" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลา (เดือน)</label>
+            <input type="number" id="sf-months" min="1" max="360" placeholder="เช่น 12"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="sf-months-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="sf-current" class="mb-1 block text-sm font-medium text-gray-700">เงินออมสำหรับเป้าหมายนี้ที่มีอยู่ (บาท)</label>
+            <input type="text" id="sf-current" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="sf-current-monthly" class="mb-1 block text-sm font-medium text-gray-700">ออมได้ต่อเดือนขณะนี้ (บาท) — ไม่บังคับ</label>
+            <input type="text" id="sf-current-monthly" inputmode="numeric" placeholder="เพื่อเปรียบเทียบ"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ Sinking Fund
+        </button>
+      </form>
+    </div>
+
+    <div id="sf-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เป้าหมาย</div>
+            <div id="res-sf-target" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้องออมต่อเดือน</div>
+            <div id="res-sf-monthly" class="text-2xl font-bold text-emerald-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยังต้องออมอีก</div>
+            <div id="res-sf-gap" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ระยะเวลา</span>
+            <span id="res-sf-months" class="font-medium">-</span>
+          </div>
+          <div id="sf-compare-row" class="hidden flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ผลต่างจากออมปัจจุบัน</span>
+            <span id="res-sf-diff" class="font-medium">-</span>
+          </div>
+        </div>
+        <p id="sf-status" class="mt-4 rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>จำนวนที่ยังต้องออม = เป้าหมาย - ออมปัจจุบัน</li>
+        <li>ต้องออมต่อเดือน = จำนวนที่ยังต้องออม ÷ จำนวนเดือน</li>
+        <li>ผลต่าง = ออมต่อเดือนที่ต้องการ - ออมได้จริง (ถ้าออมได้น้อยกว่าให้ขยายระยะเวลา)</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณเงินสำรองฉุกเฉิน/">คำนวณเงินสำรองฉุกเฉิน</a></li>
+        <li><a href="/คำนวณ-cash-runway/">คำนวณ Cash Runway</a></li>
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#sf-results" />
+    <RelatedArticles currentHref="/คำนวณ-sinking-fund/" />
+    <RelatedCalculators currentHref="/คำนวณ-sinking-fund/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ไม่รวมดอกเบี้ยจากบัญชีออมทรัพย์ ตัวเลขจริงอาจน้อยกว่าเล็กน้อยหากนำเงินฝากให้ได้ดอกเบี้ย
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('sf-form');
+    const formError = document.getElementById('sf-error');
+    const resultBox = document.getElementById('sf-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['sf-target-error','sf-months-error'].forEach(id => setErr(id, ''));
+
+      const target = parseNum(document.getElementById('sf-target').value);
+      const months = parseInt(document.getElementById('sf-months').value, 10);
+      const current = parseNum(document.getElementById('sf-current').value);
+      const currentMonthly = parseNum(document.getElementById('sf-current-monthly').value);
+
+      let hasError = false;
+      if (!target || target <= 0) { setErr('sf-target-error', 'กรอกเป้าหมายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(months) || months < 1) { setErr('sf-months-error', 'กรอกระยะเวลาอย่างน้อย 1 เดือน'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const gap = Math.max(0, target - current);
+      const monthlyNeeded = gap / months;
+
+      setText('res-sf-target', formatMoney(target));
+      setText('res-sf-monthly', formatMoney(monthlyNeeded));
+      setText('res-sf-gap', formatMoney(gap));
+      setText('res-sf-months', `${months} เดือน`);
+
+      const compareRow = document.getElementById('sf-compare-row');
+      const statusEl = document.getElementById('sf-status');
+
+      if (currentMonthly > 0) {
+        compareRow.classList.remove('hidden');
+        const diff = monthlyNeeded - currentMonthly;
+        if (diff > 0) {
+          setText('res-sf-diff', `ต้องเพิ่มอีก ${formatMoney(diff)}/เดือน`);
+        } else {
+          setText('res-sf-diff', `ออมเกินที่ต้องการ ${formatMoney(Math.abs(diff))}/เดือน`);
+        }
+      }
+
+      if (gap === 0) {
+        statusEl.className = 'mt-4 rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = 'ยอดเยี่ยม! คุณมีเงินครบเป้าหมายแล้ว';
+      } else if (currentMonthly > 0 && currentMonthly >= monthlyNeeded) {
+        statusEl.className = 'mt-4 rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = `เงินออมปัจจุบัน ${formatMoney(currentMonthly)}/เดือน เพียงพอ! จะถึงเป้าหมายตามแผน`;
+      } else {
+        statusEl.className = 'mt-4 rounded-lg bg-blue-50 p-3 text-sm font-medium text-blue-800 border border-blue-200';
+        statusEl.textContent = `ออมเดือนละ ${formatMoney(monthlyNeeded)} ใน ${months} เดือน จะถึงเป้าหมาย`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

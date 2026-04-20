@@ -1,0 +1,185 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณภาระผู้ค้ำประกัน 2569 — ความเสี่ยงและผลกระทบ | Calculator Thailand';
+const pageDescription = 'คำนวณภาระและความเสี่ยงของผู้ค้ำประกันสินเชื่อ หากผู้กู้ผิดนัดชำระ ผู้ค้ำต้องรับผิดชอบเท่าไร ประเมินก่อนตัดสินใจค้ำประกันให้ผู้อื่น';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณภาระผู้ค้ำประกัน/`;
+
+const faqData = [
+  {
+    question: 'ผู้ค้ำประกันมีความรับผิดชอบอะไรบ้าง?',
+    answer: 'ผู้ค้ำประกันรับผิดชอบหนี้ทั้งหมดหากผู้กู้ผิดนัดชำระ รวมถึงเงินต้น ดอกเบี้ย ดอกเบี้ยผิดนัด และค่าธรรมเนียม ธนาคารสามารถฟ้องผู้ค้ำได้โดยตรง และหนี้นี้จะกระทบเครดิตสกอร์ของผู้ค้ำด้วย',
+  },
+  {
+    question: 'จะถอนตัวออกจากการค้ำประกันได้หรือไม่?',
+    answer: 'การถอนค้ำประกันทำได้ยาก ต้องได้รับความยินยอมจากธนาคารและต้องมีผู้ค้ำรายอื่นทดแทน หรือผู้กู้ต้องพิสูจน์ว่าสามารถชำระหนี้ได้ด้วยตนเอง ดังนั้นควรพิจารณาให้รอบคอบก่อนตกลงค้ำประกัน',
+  },
+  {
+    question: 'ค้ำประกันแล้วกระทบการขอสินเชื่อของตัวเองหรือไม่?',
+    answer: 'ใช่ ธนาคารจะนับหนี้ที่ค้ำประกันเป็นภาระผูกพันทางการเงินของผู้ค้ำ อาจทำให้ DTI สูงขึ้น และมีผลต่อการอนุมัติสินเชื่อส่วนตัวในอนาคต',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาระผู้ค้ำประกัน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาระผู้ค้ำประกัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณภาระผู้ค้ำประกัน — ประเมินความเสี่ยงก่อนค้ำ
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณยอดหนี้ที่อาจต้องรับผิดชอบหากผู้กู้ผิดนัดชำระ</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="guarantor-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="loan-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วงเงินกู้ที่ค้ำ (บาท)</label>
+            <input type="text" id="loan-amount" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="interest-rate" inputmode="decimal" placeholder="เช่น 7"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="term-years" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลากู้ (ปี)</label>
+            <input type="text" id="term-years" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="paid-months" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ผ่อนไปแล้ว (เดือน)</label>
+            <input type="text" id="paid-months" inputmode="numeric" placeholder="0"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div>
+          <label for="penalty-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ยผิดนัด (%/ปี เพิ่มจากปกติ)</label>
+          <input type="text" id="penalty-rate" inputmode="decimal" placeholder="เช่น 3"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ — ภาระหากผู้กู้ผิดนัด</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+          <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ยอดหนี้คงเหลือ ณ ปัจจุบัน</div>
+            <div id="res-balance" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ยที่เหลือ</div>
+            <div id="res-remaining-interest" class="text-xl font-bold text-orange-700 dark:text-orange-300">-</div>
+          </div>
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ภาระรวมสูงสุด</div>
+            <div id="res-total-liability" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+        </div>
+        <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-800 dark:text-red-300">
+          ⚠️ ก่อนค้ำประกัน ควรมั่นใจว่าผู้กู้มีความสามารถในการชำระหนี้ และคุณมีความสามารถรับภาระนี้ได้หากจำเป็น
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">สิ่งที่ผู้ค้ำประกันควรรู้</h2>
+      <p>ผู้ค้ำประกันในสัญญากู้ยืมมีภาระผูกพันตามกฎหมาย ตาม ป.พ.พ. มาตรา 680-701 ผู้ค้ำรับผิดชอบหนี้ทั้งหมดหากผู้กู้ผิดนัด ก่อนค้ำควรตรวจสอบความสามารถทางการเงินของผู้กู้ วางแผนรับมือหากต้องชำระแทน และทำความเข้าใจเงื่อนไขสัญญาทั้งหมด</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณภาระผู้ค้ำประกัน/" />
+    <RelatedCalculators currentHref="/คำนวณภาระผู้ค้ำประกัน/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ ภาระจริงขึ้นอยู่กับเงื่อนไขสัญญาและคำพิพากษา
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('guarantor-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const loanAmt = parseNum((document.getElementById('loan-amount') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('interest-rate') as HTMLInputElement).value) || 7;
+      const years = parseNum((document.getElementById('term-years') as HTMLInputElement).value) || 10;
+      const paidMonths = parseNum((document.getElementById('paid-months') as HTMLInputElement).value);
+      const penaltyRate = parseNum((document.getElementById('penalty-rate') as HTMLInputElement).value);
+      if (!loanAmt) return;
+
+      const n = years * 12;
+      const r = rate / 100 / 12;
+      const monthly = r === 0 ? loanAmt / n : loanAmt * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+
+      // Calculate remaining balance after paidMonths
+      let balance = loanAmt;
+      for (let i = 0; i < paidMonths && i < n; i++) {
+        const interest = balance * r;
+        const principal = monthly - interest;
+        balance = Math.max(0, balance - principal);
+      }
+      const remainingMonths = n - paidMonths;
+      const remainingInterest = monthly * remainingMonths - balance;
+      const penaltyInterest = balance * penaltyRate / 100 * 1; // 1 year of penalty
+      const totalLiability = balance + remainingInterest + penaltyInterest;
+
+      (document.getElementById('res-balance') as HTMLElement).textContent = fmt(balance) + ' บาท';
+      (document.getElementById('res-remaining-interest') as HTMLElement).textContent = fmt(remainingInterest) + ' บาท';
+      (document.getElementById('res-total-liability') as HTMLElement).textContent = fmt(totalLiability) + ' บาท';
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('guarantor');
+    });
+  </script>
+</BaseLayout>

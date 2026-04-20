@@ -1,0 +1,299 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณส่วนต่างรายได้รายจ่าย ปี 2569 อัตราการออม สุขภาพทางการเงิน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณส่วนต่างรายได้และรายจ่าย อัตราการออม บ่งชี้สุขภาพทางการเงิน ติดลบ = ขาดดุล 0-10% = ตึง 10-20% = โอเค มากกว่า 20% = แข็งแกร่ง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณส่วนต่างรายได้รายจ่าย/`;
+
+const faqData = [
+  {
+    question: 'อัตราการออมที่ดีควรเป็นเท่าไร?',
+    answer: 'อัตราการออมขั้นต่ำที่นักการเงินแนะนำคือ 10% ของรายได้ ระดับดีคือ 15-20% และระดับยอดเยี่ยมคือมากกว่า 20% หากออมน้อยกว่า 10% ควรทบทวนรายจ่ายและหาทางเพิ่มส่วนต่าง',
+  },
+  {
+    question: 'รายได้รวมควรนับอะไรบ้าง?',
+    answer: 'รายได้รวม = เงินเดือนสุทธิ + รายได้เสริม + ค่าเช่า + ดอกเบี้ย + เงินปันผล + รายได้อื่นๆ ที่เข้าบัญชีจริงในเดือนนั้น ไม่ควรนับรายได้ที่ยังไม่ได้รับ',
+  },
+  {
+    question: 'รายจ่ายรวมควรนับอะไรบ้าง?',
+    answer: 'รายจ่ายรวม = รายจ่ายคงที่ (เช่า ผ่อนหนี้ ประกัน) + รายจ่ายแปรผัน (อาหาร เดินทาง บันเทิง) + เงินออม/ลงทุน ควรนับรายจ่ายที่เกิดขึ้นจริงในเดือนนั้น',
+  },
+  {
+    question: 'ถ้าส่วนต่างติดลบต่อเนื่องหลายเดือนควรทำอย่างไร?',
+    answer: 'ส่วนต่างติดลบต่อเนื่องหมายความว่าคุณใช้เงินสะสมหรือกู้เพิ่ม ต้องตัดรายจ่ายที่ไม่จำเป็นอย่างเร่งด่วน เช่น ยกเลิก subscription ที่ไม่ใช้ ลดความถี่บันเทิง และพิจารณาหารายได้เพิ่ม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณส่วนต่างรายได้รายจ่าย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณส่วนต่างรายได้รายจ่าย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณส่วนต่างรายได้ vs รายจ่าย + สุขภาพทางการเงิน</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ส่วนต่าง = รายได้รวม - รายจ่ายรวม | อัตราออม = (ส่วนต่าง ÷ รายได้) × 100%</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">น้อยกว่า 0 = ขาดดุล | 10-20% = โอเค | มากกว่า 20% = แข็งแกร่ง</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณส่วนต่างรายได้รายจ่าย ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้รวมและรายจ่ายรวมต่อเดือน เพื่อดูส่วนต่าง อัตราการออม และสุขภาพทางการเงินของคุณ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="gap-form" class="space-y-5">
+        <p id="gap-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <p class="text-sm font-semibold text-gray-700">รายได้ต่อเดือน</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="gap-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน / รายได้หลัก (บาท)</label>
+            <input type="text" id="gap-salary" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="gap-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="gap-side" class="mb-1 block text-sm font-medium text-gray-700">รายได้เสริม / อื่นๆ (บาท)</label>
+            <input type="text" id="gap-side" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-gray-700">รายจ่ายต่อเดือน</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="gap-fixed" class="mb-1 block text-sm font-medium text-gray-700">รายจ่ายคงที่รวม (เช่า ผ่อนหนี้ ประกัน)</label>
+            <input type="text" id="gap-fixed" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="gap-variable" class="mb-1 block text-sm font-medium text-gray-700">รายจ่ายแปรผันรวม (อาหาร เดินทาง บันเทิง)</label>
+            <input type="text" id="gap-variable" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณส่วนต่าง
+        </button>
+      </form>
+    </div>
+
+    <div id="gap-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้รวม</div>
+            <div id="res-gap-income" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายจ่ายรวม</div>
+            <div id="res-gap-expense" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div id="gap-diff-box" class="rounded-lg p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ส่วนต่าง</div>
+            <div id="res-gap-diff" class="text-xl font-bold">-</div>
+          </div>
+          <div id="gap-rate-box" class="rounded-lg p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราการออม</div>
+            <div id="res-gap-rate" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+
+        <div id="gap-health-indicator" class="mb-4 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold" id="gap-health-emoji"></div>
+          <div class="mt-1 text-lg font-semibold" id="gap-health-label"></div>
+          <div class="mt-1 text-sm" id="gap-health-desc"></div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายได้หลัก</span>
+            <span id="res-gap-salary" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายได้เสริม</span>
+            <span id="res-gap-side" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายจ่ายคงที่</span>
+            <span id="res-gap-fixed" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายจ่ายแปรผัน</span>
+            <span id="res-gap-variable" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้รวม = รายได้หลัก + รายได้เสริม</li>
+        <li>รายจ่ายรวม = รายจ่ายคงที่ + รายจ่ายแปรผัน</li>
+        <li>ส่วนต่าง = รายได้รวม - รายจ่ายรวม</li>
+        <li>อัตราการออม = (ส่วนต่าง ÷ รายได้รวม) × 100%</li>
+        <li>เกณฑ์: ติดลบ = ขาดดุล | 0-10% = ตึง | 10-20% = โอเค | มากกว่า 20% = แข็งแกร่ง</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+        <li><a href="/คำนวณแยกความต้องการ/">คำนวณแยกความต้องการ Needs vs Wants</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#gap-results" />
+    <RelatedArticles currentHref="/คำนวณส่วนต่างรายได้รายจ่าย/" />
+    <RelatedCalculators currentHref="/คำนวณส่วนต่างรายได้รายจ่าย/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประเมินสุขภาพทางการเงินเบื้องต้น เกณฑ์อาจแตกต่างตามสถานการณ์ส่วนบุคคลและเป้าหมายทางการเงิน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('gap-form');
+    const formError = document.getElementById('gap-error');
+    const resultBox = document.getElementById('gap-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('gap-salary-error', '');
+
+      const salary = parseNum(document.getElementById('gap-salary').value);
+      let hasError = false;
+      if (!salary || salary <= 0) { setErr('gap-salary-error', 'กรอกรายได้หลักมากกว่า 0'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const side = parseNum(document.getElementById('gap-side').value);
+      const fixed = parseNum(document.getElementById('gap-fixed').value);
+      const variable = parseNum(document.getElementById('gap-variable').value);
+
+      const totalIncome = salary + side;
+      const totalExpense = fixed + variable;
+      const gap = totalIncome - totalExpense;
+      const saveRate = totalIncome > 0 ? (gap / totalIncome) * 100 : 0;
+
+      setText('res-gap-income', formatMoney(totalIncome));
+      setText('res-gap-expense', formatMoney(totalExpense));
+      setText('res-gap-diff', gap >= 0 ? `+${formatMoney(gap)}` : formatMoney(gap));
+      setText('res-gap-rate', `${saveRate.toFixed(1)}%`);
+      setText('res-gap-salary', formatMoney(salary));
+      setText('res-gap-side', formatMoney(side));
+      setText('res-gap-fixed', formatMoney(fixed));
+      setText('res-gap-variable', formatMoney(variable));
+
+      const diffBox = document.getElementById('gap-diff-box');
+      const diffEl = document.getElementById('res-gap-diff');
+      const rateBox = document.getElementById('gap-rate-box');
+      const rateEl = document.getElementById('res-gap-rate');
+      const healthIndicator = document.getElementById('gap-health-indicator');
+      const healthEmoji = document.getElementById('gap-health-emoji');
+      const healthLabel = document.getElementById('gap-health-label');
+      const healthDesc = document.getElementById('gap-health-desc');
+
+      if (saveRate < 0) {
+        diffBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+        diffEl.className = 'text-xl font-bold text-red-700';
+        rateBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+        rateEl.className = 'text-xl font-bold text-red-700';
+        healthIndicator.className = 'mb-4 rounded-xl bg-red-50 border border-red-200 p-4 text-center text-red-800';
+        healthEmoji.textContent = '🔴';
+        healthLabel.textContent = 'วิกฤต — รายจ่ายเกินรายได้';
+        healthDesc.textContent = 'ต้องลดรายจ่ายหรือเพิ่มรายได้ทันที เพราะกำลังใช้เงินสะสมหรือก่อหนี้เพิ่มขึ้น';
+      } else if (saveRate < 10) {
+        diffBox.className = 'rounded-lg bg-amber-50 p-4 text-center';
+        diffEl.className = 'text-xl font-bold text-amber-700';
+        rateBox.className = 'rounded-lg bg-amber-50 p-4 text-center';
+        rateEl.className = 'text-xl font-bold text-amber-700';
+        healthIndicator.className = 'mb-4 rounded-xl bg-amber-50 border border-amber-200 p-4 text-center text-amber-800';
+        healthEmoji.textContent = '🟡';
+        healthLabel.textContent = 'ตึง — ออมได้น้อย';
+        healthDesc.textContent = `อัตราการออม ${saveRate.toFixed(1)}% น้อยกว่าเป้า 10% ควรหาทางลดรายจ่ายแปรผัน`;
+      } else if (saveRate < 20) {
+        diffBox.className = 'rounded-lg bg-blue-50 p-4 text-center';
+        diffEl.className = 'text-xl font-bold text-blue-700';
+        rateBox.className = 'rounded-lg bg-blue-50 p-4 text-center';
+        rateEl.className = 'text-xl font-bold text-blue-700';
+        healthIndicator.className = 'mb-4 rounded-xl bg-blue-50 border border-blue-200 p-4 text-center text-blue-800';
+        healthEmoji.textContent = '🔵';
+        healthLabel.textContent = 'ดี — กำลังออมได้';
+        healthDesc.textContent = `อัตราการออม ${saveRate.toFixed(1)}% ดี ลองเพิ่มให้ถึง 20% เพื่อเป้าหมายระยะยาว`;
+      } else {
+        diffBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+        diffEl.className = 'text-xl font-bold text-green-700';
+        rateBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+        rateEl.className = 'text-xl font-bold text-green-700';
+        healthIndicator.className = 'mb-4 rounded-xl bg-green-50 border border-green-200 p-4 text-center text-green-800';
+        healthEmoji.textContent = '🟢';
+        healthLabel.textContent = 'แข็งแกร่ง — สุขภาพการเงินดีเยี่ยม';
+        healthDesc.textContent = `อัตราการออม ${saveRate.toFixed(1)}% ยอดเยี่ยม! พิจารณาลงทุนเพิ่มเติมเพื่อเป้าหมายระยะยาว`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,236 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเวลาฟื้นฟูเครดิตสกอร์ 2569 | Calculator Thailand';
+const pageDescription = 'ประมาณเวลาที่ต้องใช้ในการฟื้นฟูเครดิตสกอร์หลังมีประวัติค้างชำระ ล้มละลาย หรือถูกฟ้อง พร้อมแผนการปรับปรุงเครดิตตามสถานการณ์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเวลาฟื้นฟูเครดิต/`;
+
+const faqData = [
+  {
+    question: 'ประวัติค้างชำระอยู่ในเครดิตบูโรนานแค่ไหน?',
+    answer: 'ข้อมูลเครดิตในระบบเครดิตบูโร (NCB) ของไทยเก็บไว้ 3 ปีสำหรับข้อมูลการชำระปกติ และ 5 ปีสำหรับข้อมูลการผิดนัด NPL เมื่อพ้นระยะเวลาแล้วข้อมูลจะถูกลบออก',
+  },
+  {
+    question: 'ทำอย่างไรให้เครดิตสกอร์ฟื้นตัวเร็วขึ้น?',
+    answer: 'วิธีเร่งฟื้นฟูเครดิต: (1) ชำระหนี้ค้างทั้งหมดหรือปรับโครงสร้างหนี้ (2) รักษาการชำระตรงเวลาทุกงวด (3) ลด Credit Utilization ให้ต่ำกว่า 30% (4) ไม่ยื่นขอสินเชื่อใหม่มากในช่วงสั้น (5) ตรวจสอบและแก้ไขข้อมูลผิดพลาดในเครดิตบูโร',
+  },
+  {
+    question: 'ตรวจสอบเครดิตสกอร์ตนเองได้อย่างไร?',
+    answer: 'ตรวจสอบเครดิตสกอร์ได้ที่เครดิตบูโร (NCB) ผ่านเว็บไซต์หรือศูนย์บริการ ค่าใช้จ่าย 150 บาท/ครั้ง หรือผ่านแอปของธนาคารพาณิชย์บางแห่งที่ให้บริการฟรี ควรตรวจสอบปีละ 1-2 ครั้ง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเวลาฟื้นฟูเครดิต',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเวลาฟื้นฟูเครดิต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณเวลาฟื้นฟูเครดิตสกอร์ — ต้องรอนานแค่ไหน?
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">ประมาณระยะเวลาฟื้นฟูเครดิตสกอร์ตามประเภทของปัญหาเครดิต พร้อมแผนการแก้ไข</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="credit-form" class="space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">ประเภทปัญหาเครดิตที่มี</label>
+          <div class="space-y-2">
+            <label class="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+              <input type="radio" name="issue-type" value="late30" class="mt-1 w-4 h-4 text-primary-600" />
+              <div>
+                <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">ค้างชำระ 1-30 วัน</div>
+                <div class="text-xs text-gray-500">ลืมจ่าย หรือจ่ายช้าไม่กี่วัน</div>
+              </div>
+            </label>
+            <label class="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+              <input type="radio" name="issue-type" value="late90" class="mt-1 w-4 h-4 text-primary-600" />
+              <div>
+                <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">ค้างชำระ 31-90 วัน</div>
+                <div class="text-xs text-gray-500">ผิดนัดชำระ 1-3 เดือน</div>
+              </div>
+            </label>
+            <label class="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+              <input type="radio" name="issue-type" value="npl" class="mt-1 w-4 h-4 text-primary-600" />
+              <div>
+                <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">NPL / ค้างชำระ >90 วัน</div>
+                <div class="text-xs text-gray-500">หนี้เสีย ถูกฟ้อง หรือส่งให้บริษัทติดตามหนี้</div>
+              </div>
+            </label>
+            <label class="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+              <input type="radio" name="issue-type" value="settlement" class="mt-1 w-4 h-4 text-primary-600" />
+              <div>
+                <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">ตัดหนี้สูญ / ปรับโครงสร้างหนี้</div>
+                <div class="text-xs text-gray-500">ยอมรับการตัดหนี้หรือต่อรองชำระบางส่วน</div>
+              </div>
+            </label>
+            <label class="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+              <input type="radio" name="issue-type" value="bankruptcy" class="mt-1 w-4 h-4 text-primary-600" />
+              <div>
+                <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">ล้มละลาย / ฟ้องบังคับคดี</div>
+                <div class="text-xs text-gray-500">ถูกฟ้องล้มละลายหรือบังคับคดีสำเร็จ</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label for="months-since" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">เกิดขึ้นนานแค่ไหนแล้ว (เดือน)</label>
+          <input type="text" id="months-since" inputmode="numeric" placeholder="เช่น 12"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">มาตรการที่ทำแล้ว</label>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="paid-off" class="w-4 h-4 text-primary-600" /> ชำระหนี้ค้างครบแล้ว / ปรับโครงสร้างหนี้แล้ว</label>
+            <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="on-time" class="w-4 h-4 text-primary-600" /> ชำระตรงเวลาทุกงวดหลังจากนั้น</label>
+            <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="low-util" class="w-4 h-4 text-primary-600" /> ลด Credit Utilization ต่ำกว่า 30%</label>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          ประเมิน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการประเมิน</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">เวลาฟื้นฟูโดยประมาณ</div>
+            <div id="res-time" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ผ่านไปแล้ว</div>
+            <div id="res-elapsed" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+          <div id="res-status-card" class="rounded-lg p-4 text-center">
+            <div class="text-sm mb-1">สถานะ</div>
+            <div id="res-status" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+        <div id="plan" class="p-4 rounded-lg text-sm space-y-2"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">ระยะเวลาฟื้นฟูเครดิตในไทย</h2>
+      <p>ระยะเวลาฟื้นฟูเครดิตขึ้นอยู่กับความรุนแรงของปัญหา ค้างชำระ 1-30 วันอาจฟื้นตัวใน 6-12 เดือน NPL ใช้เวลา 2-5 ปี การล้มละลายอาจใช้เวลา 5-7 ปี นอกจากเวลาแล้ว พฤติกรรมการชำระหนี้ที่ดีในอนาคตเป็นปัจจัยสำคัญที่สุด</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณเวลาฟื้นฟูเครดิต/" />
+    <RelatedCalculators currentHref="/คำนวณเวลาฟื้นฟูเครดิต/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> การประเมินเป็นเพียงแนวทางอ้างอิง ระยะเวลาจริงขึ้นอยู่กับข้อมูลในเครดิตบูโรและนโยบายของสถาบันการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+
+    const recoveryTimes: Record<string, { base: number; label: string }> = {
+      late30: { base: 12, label: 'ค้างชำระ 1-30 วัน' },
+      late90: { base: 24, label: 'ค้างชำระ 31-90 วัน' },
+      npl: { base: 48, label: 'NPL/หนี้เสีย' },
+      settlement: { base: 60, label: 'ตัดหนี้สูญ/ปรับโครงสร้าง' },
+      bankruptcy: { base: 84, label: 'ล้มละลาย/บังคับคดี' },
+    };
+
+    document.getElementById('credit-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const issueType = (document.querySelector('input[name="issue-type"]:checked') as HTMLInputElement)?.value;
+      if (!issueType) return;
+
+      const monthsSince = parseNum((document.getElementById('months-since') as HTMLInputElement).value);
+      const paidOff = (document.getElementById('paid-off') as HTMLInputElement).checked;
+      const onTime = (document.getElementById('on-time') as HTMLInputElement).checked;
+      const lowUtil = (document.getElementById('low-util') as HTMLInputElement).checked;
+
+      const info = recoveryTimes[issueType];
+      let recoveryMonths = info.base;
+
+      // Reduce time based on actions taken
+      if (paidOff) recoveryMonths = Math.round(recoveryMonths * 0.8);
+      if (onTime) recoveryMonths = Math.round(recoveryMonths * 0.85);
+      if (lowUtil) recoveryMonths = Math.round(recoveryMonths * 0.9);
+
+      const remaining = Math.max(0, recoveryMonths - monthsSince);
+      const progressPct = Math.min(100, Math.round((monthsSince / recoveryMonths) * 100));
+
+      (document.getElementById('res-time') as HTMLElement).textContent = recoveryMonths + ' เดือน';
+      (document.getElementById('res-elapsed') as HTMLElement).textContent = monthsSince + ' เดือน';
+
+      const statusCard = document.getElementById('res-status-card') as HTMLElement;
+      const statusEl = document.getElementById('res-status') as HTMLElement;
+      if (remaining === 0) {
+        statusCard.className = 'bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center text-green-700 dark:text-green-300';
+        statusEl.textContent = 'ฟื้นตัวแล้ว';
+      } else if (progressPct >= 50) {
+        statusCard.className = 'bg-yellow-50 dark:bg-yellow-900/30 rounded-lg p-4 text-center text-yellow-700 dark:text-yellow-300';
+        statusEl.textContent = `อีก ${remaining} เดือน`;
+      } else {
+        statusCard.className = 'bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center text-orange-700 dark:text-orange-300';
+        statusEl.textContent = `อีก ${remaining} เดือน`;
+      }
+
+      const plan = document.getElementById('plan') as HTMLElement;
+      const steps = [];
+      if (!paidOff) steps.push('• ชำระหนี้ค้างทั้งหมดหรือเจรจาปรับโครงสร้างหนี้');
+      if (!onTime) steps.push('• ชำระหนี้ตรงเวลาทุกงวดโดยไม่มีข้อยกเว้น');
+      if (!lowUtil) steps.push('• ลด Credit Utilization ให้ต่ำกว่า 30% ของวงเงินรวม');
+      steps.push('• ตรวจสอบข้อมูลในเครดิตบูโรทุก 6 เดือน');
+      steps.push('• หลีกเลี่ยงการยื่นขอสินเชื่อใหม่หลายรายการในช่วงนี้');
+
+      plan.className = 'p-4 rounded-lg text-sm space-y-1 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300';
+      plan.innerHTML = `<strong>แผนการฟื้นฟูเครดิต:</strong>` + steps.map(s => `<div>${s}</div>`).join('');
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('credit-recovery');
+    });
+  </script>
+</BaseLayout>

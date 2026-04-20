@@ -1,0 +1,237 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณอัตราการใช้วงเงินบัตรเครดิต (Credit Utilization) 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณ Credit Utilization Ratio อัตราการใช้วงเงินบัตรเครดิต เพื่อรักษาเครดิตสกอร์ที่ดี ควรไม่เกิน 30% ของวงเงินทั้งหมด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณอัตราการใช้วงเงินบัตรเครดิต/`;
+
+const faqData = [
+  {
+    question: 'Credit Utilization คืออะไร?',
+    answer: 'Credit Utilization หรืออัตราการใช้วงเงินบัตรเครดิต คือสัดส่วนระหว่างยอดหนี้บัตรเครดิตที่ใช้ต่อวงเงินรวมทั้งหมด เช่น มีวงเงินรวม 100,000 บาท ใช้ไป 30,000 บาท = 30% Utilization ตัวเลขนี้มีผลต่อเครดิตสกอร์อย่างมาก',
+  },
+  {
+    question: 'Credit Utilization ควรอยู่ที่เท่าไร?',
+    answer: 'ผู้เชี่ยวชาญแนะนำให้รักษา Credit Utilization ไว้ที่ไม่เกิน 30% ของวงเงินรวม ถ้าต่ำกว่า 10% จะดีมาก ช่วยรักษาเครดิตสกอร์ให้สูง ถ้าเกิน 50% อาจส่งผลเสียต่อเครดิตสกอร์อย่างมาก',
+  },
+  {
+    question: 'วิธีลด Credit Utilization ทำอย่างไร?',
+    answer: '(1) ชำระหนี้บัตรเครดิตให้มากกว่าขั้นต่ำ (2) ขอเพิ่มวงเงินบัตรเครดิต (3) กระจายการใช้บัตรหลายใบ (4) ชำระหนี้ก่อนรอบบัญชีเพื่อลดยอดที่รายงาน (5) หลีกเลี่ยงการปิดบัตรที่ไม่ใช้เพราะจะลดวงเงินรวม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณอัตราการใช้วงเงินบัตรเครดิต',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอัตราการใช้วงเงินบัตรเครดิต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณอัตราการใช้วงเงินบัตรเครดิต (Credit Utilization)
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณ Credit Utilization Ratio รักษาเครดิตสกอร์ด้วยการใช้วงเงินไม่เกิน 30%</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="util-form" class="space-y-5">
+        <div id="cards-container" class="space-y-3">
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">ข้อมูลบัตรเครดิต</p>
+          <div class="card-row grid gap-3 sm:grid-cols-2" data-index="1">
+            <div>
+              <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">บัตรใบที่ 1 — ยอดใช้ (บาท)</label>
+              <input type="text" name="balance" inputmode="numeric" placeholder="เช่น 15,000"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">วงเงินบัตร (บาท)</label>
+              <input type="text" name="limit" inputmode="numeric" placeholder="เช่น 50,000"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+            </div>
+          </div>
+          <div class="card-row grid gap-3 sm:grid-cols-2" data-index="2">
+            <div>
+              <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">บัตรใบที่ 2 — ยอดใช้ (บาท)</label>
+              <input type="text" name="balance" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">วงเงินบัตร (บาท)</label>
+              <input type="text" name="limit" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+            </div>
+          </div>
+          <div class="card-row grid gap-3 sm:grid-cols-2 hidden" data-index="3">
+            <div>
+              <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">บัตรใบที่ 3 — ยอดใช้ (บาท)</label>
+              <input type="text" name="balance" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">วงเงินบัตร (บาท)</label>
+              <input type="text" name="limit" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+            </div>
+          </div>
+        </div>
+        <button type="button" id="add-card-btn" class="text-sm text-primary-600 hover:text-primary-700 underline">+ เพิ่มบัตร</button>
+        <button type="submit" class="block w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div id="util-card" class="rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">Credit Utilization</div>
+            <div id="res-util" class="text-2xl font-bold">-</div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ยอดใช้รวม</div>
+            <div id="res-balance" class="text-xl font-bold text-gray-700 dark:text-gray-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">วงเงินรวม</div>
+            <div id="res-limit" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm mb-4">
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">วงเงินที่ควรใช้สูงสุด (30%)</span>
+            <span id="res-safe-limit" class="font-medium text-green-600">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">ต้องลดยอดอีก (ถ้า >30%)</span>
+            <span id="res-reduce" class="font-medium text-red-600">-</span>
+          </div>
+        </div>
+        <div id="advice" class="p-3 rounded-lg text-sm"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Credit Utilization กับเครดิตสกอร์</h2>
+      <p>ในระบบ FICO Score ที่ใช้กันทั่วโลก Credit Utilization มีน้ำหนักประมาณ 30% ของคะแนน ในไทย เครดิตบูโร (NCB) ใช้หลักการคล้ายกัน ยิ่ง Utilization ต่ำยิ่งแสดงถึงการบริหารหนี้ที่ดี ส่งผลให้เครดิตสกอร์สูงและมีโอกาสได้รับสินเชื่อมากขึ้น</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณอัตราการใช้วงเงินบัตรเครดิต/" />
+    <RelatedCalculators currentHref="/คำนวณอัตราการใช้วงเงินบัตรเครดิต/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครดิตสกอร์ขึ้นอยู่กับปัจจัยหลายอย่าง ผลการคำนวณนี้เป็นแนวทางเท่านั้น
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    let cardCount = 2;
+    document.getElementById('add-card-btn')!.addEventListener('click', () => {
+      cardCount++;
+      const container = document.getElementById('cards-container')!;
+      const rows = container.querySelectorAll('.card-row');
+      if (cardCount <= rows.length) {
+        (rows[cardCount - 1] as HTMLElement).classList.remove('hidden');
+      } else {
+        const div = document.createElement('div');
+        div.className = 'card-row grid gap-3 sm:grid-cols-2';
+        div.innerHTML = `<div><label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">บัตรใบที่ ${cardCount} — ยอดใช้ (บาท)</label><input type="text" name="balance" inputmode="numeric" placeholder="0" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" /></div><div><label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">วงเงินบัตร (บาท)</label><input type="text" name="limit" inputmode="numeric" placeholder="0" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" /></div>`;
+        container.insertBefore(div, document.getElementById('add-card-btn')!);
+      }
+    });
+
+    document.getElementById('util-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const balances = Array.from(document.querySelectorAll('[name="balance"]')).map(el => parseNum((el as HTMLInputElement).value));
+      const limits = Array.from(document.querySelectorAll('[name="limit"]')).map(el => parseNum((el as HTMLInputElement).value));
+
+      const totalBalance = balances.reduce((a, b) => a + b, 0);
+      const totalLimit = limits.reduce((a, b) => a + b, 0);
+      if (!totalLimit) return;
+
+      const util = (totalBalance / totalLimit) * 100;
+      const safeLimit = totalLimit * 0.30;
+      const reduce = Math.max(0, totalBalance - safeLimit);
+
+      const utilCard = document.getElementById('util-card') as HTMLElement;
+      const utilEl = document.getElementById('res-util') as HTMLElement;
+      utilEl.textContent = util.toFixed(1) + '%';
+
+      if (util <= 10) {
+        utilCard.className = 'bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center text-green-700 dark:text-green-300';
+      } else if (util <= 30) {
+        utilCard.className = 'bg-yellow-50 dark:bg-yellow-900/30 rounded-lg p-4 text-center text-yellow-700 dark:text-yellow-300';
+      } else if (util <= 50) {
+        utilCard.className = 'bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center text-orange-700 dark:text-orange-300';
+      } else {
+        utilCard.className = 'bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center text-red-700 dark:text-red-300';
+      }
+
+      (document.getElementById('res-balance') as HTMLElement).textContent = fmt(totalBalance) + ' บาท';
+      (document.getElementById('res-limit') as HTMLElement).textContent = fmt(totalLimit) + ' บาท';
+      (document.getElementById('res-safe-limit') as HTMLElement).textContent = fmt(safeLimit) + ' บาท';
+      (document.getElementById('res-reduce') as HTMLElement).textContent = reduce > 0 ? fmt(reduce) + ' บาท' : 'ไม่ต้องลด';
+
+      const advice = document.getElementById('advice') as HTMLElement;
+      if (util <= 10) {
+        advice.className = 'p-3 rounded-lg text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300';
+        advice.textContent = 'ยอดเยี่ยม! Credit Utilization ต่ำมาก ส่งผลดีต่อเครดิตสกอร์อย่างมาก';
+      } else if (util <= 30) {
+        advice.className = 'p-3 rounded-lg text-sm bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300';
+        advice.textContent = 'ดี! Credit Utilization อยู่ในเกณฑ์ที่แนะนำ ≤ 30%';
+      } else if (util <= 50) {
+        advice.className = 'p-3 rounded-lg text-sm bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-300';
+        advice.textContent = `Credit Utilization สูงกว่าแนะนำ ควรลดยอดหนี้ ${fmt(reduce)} บาท เพื่อให้อยู่ที่ 30%`;
+      } else {
+        advice.className = 'p-3 rounded-lg text-sm bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300';
+        advice.textContent = `Credit Utilization สูงมาก อาจส่งผลเสียต่อเครดิตสกอร์ ควรเร่งชำระลด ${fmt(reduce)} บาท`;
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('credit-utilization');
+    });
+  </script>
+</BaseLayout>

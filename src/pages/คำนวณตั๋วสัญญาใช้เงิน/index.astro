@@ -1,0 +1,177 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณตั๋วสัญญาใช้เงิน (Promissory Note) 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณดอกเบี้ยและยอดชำระตั๋วสัญญาใช้เงิน ทั้งแบบจ่ายครั้งเดียวเมื่อครบกำหนดและแบบผ่อนชำระ สำหรับธุรกิจและบุคคลทั่วไปในไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณตั๋วสัญญาใช้เงิน/`;
+
+const faqData = [
+  {
+    question: 'ตั๋วสัญญาใช้เงินคืออะไร?',
+    answer: 'ตั๋วสัญญาใช้เงิน (Promissory Note) คือเอกสารที่ผู้กู้สัญญาจะชำระเงินคืนพร้อมดอกเบี้ยตามจำนวนและเวลาที่กำหนด เป็นตราสารทางการเงินที่สามารถโอนให้ผู้อื่นได้ ใช้กันมากในธุรกิจ สหกรณ์ และการกู้ระหว่างบุคคล',
+  },
+  {
+    question: 'ตั๋วสัญญาใช้เงินต่างจากสัญญากู้ยืมอย่างไร?',
+    answer: 'สัญญากู้ยืมทำขึ้นระหว่างสองฝ่าย ส่วนตั๋วสัญญาใช้เงินเป็นคำมั่นสัญญาจากฝ่ายเดียว (ผู้ออกตั๋ว) และสามารถโอนให้บุคคลที่สามได้ ทำให้ผู้ถือตั๋วสามารถนำไปใช้เป็นหลักประกันหรือขายต่อได้',
+  },
+  {
+    question: 'อัตราดอกเบี้ยตั๋วสัญญาใช้เงินกำหนดได้สูงสุดเท่าไร?',
+    answer: 'ตาม ป.พ.พ. มาตรา 654 ดอกเบี้ยในสัญญาสูงสุด 15% ต่อปี สำหรับเอกชนทั่วไป สถาบันการเงินที่ได้รับอนุญาตอาจคิดสูงกว่าได้ตามกฎหมายเฉพาะ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณตั๋วสัญญาใช้เงิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณตั๋วสัญญาใช้เงิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณตั๋วสัญญาใช้เงิน (Promissory Note)
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณดอกเบี้ยและยอดชำระตั๋วสัญญาใช้เงิน แบบจ่ายครั้งเดียวหรือผ่อนชำระ</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="pn-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="face-value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">มูลค่าตั๋ว (บาท)</label>
+            <input type="text" id="face-value" inputmode="numeric" placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="pn-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="pn-rate" inputmode="decimal" placeholder="เช่น 7.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pn-days" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลา (วัน)</label>
+            <input type="text" id="pn-days" inputmode="numeric" placeholder="เช่น 90"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="pn-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ประเภท</label>
+            <select id="pn-type" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base">
+              <option value="bullet">จ่ายครั้งเดียวเมื่อครบกำหนด</option>
+              <option value="monthly">ผ่อนรายเดือน</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1" id="res-pay-label">ยอดชำระเมื่อครบกำหนด</div>
+            <div id="res-payment" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ย/วัน</div>
+            <div id="res-daily" class="text-xl font-bold text-gray-700 dark:text-gray-300">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">หลักการคำนวณดอกเบี้ยตั๋วสัญญาใช้เงิน</h2>
+      <p>ดอกเบี้ยตั๋วสัญญาใช้เงินมักคำนวณแบบ Simple Interest: ดอกเบี้ย = มูลค่าตั๋ว × อัตราดอกเบี้ย × (จำนวนวัน ÷ 365) สูตรนี้ใช้กันทั่วไปในตลาดเงิน สหกรณ์ และการกู้ยืมระหว่างบุคคล</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณตั๋วสัญญาใช้เงิน/" />
+    <RelatedCalculators currentHref="/คำนวณตั๋วสัญญาใช้เงิน/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ ควรปรึกษาผู้เชี่ยวชาญด้านกฎหมายและการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('pn-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const faceValue = parseNum((document.getElementById('face-value') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('pn-rate') as HTMLInputElement).value) || 7.5;
+      const days = parseNum((document.getElementById('pn-days') as HTMLInputElement).value) || 90;
+      const type = (document.getElementById('pn-type') as HTMLSelectElement).value;
+      if (!faceValue) return;
+
+      const interest = faceValue * (rate / 100) * (days / 365);
+      const dailyInterest = faceValue * (rate / 100) / 365;
+
+      const payLabel = document.getElementById('res-pay-label') as HTMLElement;
+      const payEl = document.getElementById('res-payment') as HTMLElement;
+
+      if (type === 'bullet') {
+        payLabel.textContent = 'ยอดชำระเมื่อครบกำหนด';
+        payEl.textContent = fmt(faceValue + interest) + ' บาท';
+      } else {
+        const months = Math.ceil(days / 30);
+        const monthlyPay = (faceValue + interest) / months;
+        payLabel.textContent = 'ค่างวด/เดือน (ประมาณ)';
+        payEl.textContent = fmt(monthlyPay) + ' บาท';
+      }
+
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(interest) + ' บาท';
+      (document.getElementById('res-daily') as HTMLElement).textContent = fmt(dailyInterest) + ' บาท';
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('promissory-note');
+    });
+  </script>
+</BaseLayout>

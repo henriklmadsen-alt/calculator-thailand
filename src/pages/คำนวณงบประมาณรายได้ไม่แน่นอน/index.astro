@@ -1,0 +1,292 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณงบประมาณรายได้ไม่แน่นอน ปี 2569 ฟรีแลนซ์ ค้าขาย งานคอมมิชชั่น | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณงบประมาณสำหรับผู้มีรายได้ไม่แน่นอน ฟรีแลนซ์ ค้าขาย คอมมิชชั่น ใช้รายได้ต่ำสุดเป็นฐาน คำนวณรายได้เฉลี่ย บัฟเฟอร์ และอัตราการออมแนะนำ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณรายได้ไม่แน่นอน/`;
+
+const faqData = [
+  {
+    question: 'ผู้มีรายได้ไม่แน่นอนควรวางแผนงบประมาณอย่างไร?',
+    answer: 'หลักการสำคัญคือใช้รายได้ต่ำสุดในช่วง 3-6 เดือนที่ผ่านมาเป็นฐานงบประมาณ ไม่ใช่รายได้เฉลี่ย เพื่อให้มั่นใจว่าเดือนรายได้น้อยก็ยังอยู่ได้ ส่วนที่เกินจากรายได้ต่ำสุดให้เก็บเป็นบัฟเฟอร์',
+  },
+  {
+    question: 'บัฟเฟอร์รายได้คืออะไร?',
+    answer: 'บัฟเฟอร์รายได้คือเงินที่สำรองไว้สำหรับเดือนที่รายได้น้อยกว่าปกติ คำนวณจาก (รายได้เฉลี่ย - รายได้ต่ำสุด) × จำนวนเดือนที่ต้องการรองรับ สำหรับฟรีแลนซ์แนะนำให้มีบัฟเฟอร์ 3-6 เดือน',
+  },
+  {
+    question: 'ฟรีแลนซ์ควรออมเงินสัดส่วนเท่าไร?',
+    answer: 'ฟรีแลนซ์และผู้มีรายได้ไม่แน่นอนควรออมมากกว่าพนักงานประจำ แนะนำ 25-30% ของรายได้เฉลี่ย เพื่อรองรับเดือนรายได้น้อย ค่าประกันสังคมภาคสมัครใจ และภาษีประจำปี',
+  },
+  {
+    question: 'เดือนรายได้มากควรทำอะไรกับเงินส่วนเกิน?',
+    answer: 'เดือนที่รายได้สูงกว่าปกติ แนะนำให้: (1) เติมบัฟเฟอร์ให้เต็ม (2) ชำระหนี้ (3) เก็บออมเพิ่มพิเศษ (4) เพิ่มเงินสำรองฉุกเฉิน ไม่ควรเพิ่มค่าใช้จ่ายทันทีเพราะเดือนหน้าอาจรายได้น้อยกว่า',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณรายได้ไม่แน่นอน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณรายได้ไม่แน่นอน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณงบประมาณสำหรับรายได้ไม่แน่นอน ฟรีแลนซ์ ค้าขาย คอมมิชชั่น</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: งบประมาณอนุรักษ์นิยม = รายได้ต่ำสุด | บัฟเฟอร์ = (เฉลี่ย - ต่ำสุด) × 0.5</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">ใช้รายได้ต่ำสุดเป็นฐาน ไม่ใช่รายได้เฉลี่ย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณรายได้ไม่แน่นอน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้ 3 เดือนล่าสุด (หรือ 6 เดือน) และค่าใช้จ่าย เพื่อคำนวณงบประมาณที่ปลอดภัยและบัฟเฟอร์ที่แนะนำ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="vi-form" class="space-y-5">
+        <p id="vi-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <p class="text-sm font-semibold text-gray-700">รายได้ย้อนหลัง (กรอกอย่างน้อย 3 เดือน)</p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="vi-m1" class="mb-1 block text-sm font-medium text-gray-700">เดือนล่าสุด (บาท)</label>
+            <input type="text" id="vi-m1" inputmode="numeric" placeholder="เช่น 40,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="vi-m1-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="vi-m2" class="mb-1 block text-sm font-medium text-gray-700">เดือนที่แล้ว (บาท)</label>
+            <input type="text" id="vi-m2" inputmode="numeric" placeholder="เช่น 25,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="vi-m2-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="vi-m3" class="mb-1 block text-sm font-medium text-gray-700">2 เดือนที่แล้ว (บาท)</label>
+            <input type="text" id="vi-m3" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="vi-m3-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="vi-m4" class="mb-1 block text-sm font-medium text-gray-700">3 เดือนที่แล้ว (ไม่บังคับ)</label>
+            <input type="text" id="vi-m4" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="vi-m5" class="mb-1 block text-sm font-medium text-gray-700">4 เดือนที่แล้ว (ไม่บังคับ)</label>
+            <input type="text" id="vi-m5" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="vi-m6" class="mb-1 block text-sm font-medium text-gray-700">5 เดือนที่แล้ว (ไม่บังคับ)</label>
+            <input type="text" id="vi-m6" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="vi-fixed" class="mb-1 block text-sm font-medium text-gray-700">รายจ่ายคงที่ต่อเดือน (บาท)</label>
+            <input type="text" id="vi-fixed" inputmode="numeric" placeholder="เช่น 12,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="vi-fixed-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="vi-variable" class="mb-1 block text-sm font-medium text-gray-700">เป้ารายจ่ายแปรผันต่อเดือน (บาท)</label>
+            <input type="text" id="vi-variable" inputmode="numeric" placeholder="เช่น 8,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณงบประมาณ
+        </button>
+      </form>
+    </div>
+
+    <div id="vi-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้เฉลี่ย</div>
+            <div id="res-vi-avg" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้ต่ำสุด</div>
+            <div id="res-vi-min" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">งบประมาณปลอดภัย</div>
+            <div id="res-vi-budget" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">บัฟเฟอร์แนะนำ</div>
+            <div id="res-vi-buffer" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายจ่ายรวมต่อเดือน (คงที่ + แปรผัน)</span>
+            <span id="res-vi-total-expense" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราการออมแนะนำ</span>
+            <span id="res-vi-saverate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินออมแนะนำต่อเดือน</span>
+            <span id="res-vi-save-amt" class="font-medium">-</span>
+          </div>
+        </div>
+        <p id="vi-status" class="mt-4 rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้เฉลี่ย = ผลรวมรายได้ทุกเดือน ÷ จำนวนเดือน</li>
+        <li>รายได้ต่ำสุด = ค่าน้อยที่สุดจากเดือนที่กรอก</li>
+        <li>งบประมาณอนุรักษ์นิยม = รายได้ต่ำสุด</li>
+        <li>บัฟเฟอร์แนะนำ = (รายได้เฉลี่ย - รายได้ต่ำสุด) × 0.5</li>
+        <li>อัตราออมแนะนำ = 25-30% ของรายได้เฉลี่ย</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-cash-runway/">คำนวณ Cash Runway</a></li>
+        <li><a href="/คำนวณเงินสำรองฉุกเฉิน/">คำนวณเงินสำรองฉุกเฉิน</a></li>
+        <li><a href="/คำนวณ-sinking-fund/">คำนวณ Sinking Fund</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#vi-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณรายได้ไม่แน่นอน/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณรายได้ไม่แน่นอน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นแนวทาง รายได้ในอนาคตอาจแตกต่างจากรูปแบบที่ผ่านมา ควรทบทวนและปรับแผนทุก 3 เดือน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '' || s === '0') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function parseRequired(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) && n > 0 ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('vi-form');
+    const formError = document.getElementById('vi-error');
+    const resultBox = document.getElementById('vi-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['vi-m1-error','vi-m2-error','vi-m3-error','vi-fixed-error'].forEach(id => setErr(id, ''));
+
+      const m1 = parseRequired(document.getElementById('vi-m1').value);
+      const m2 = parseRequired(document.getElementById('vi-m2').value);
+      const m3 = parseRequired(document.getElementById('vi-m3').value);
+      const fixed = parseRequired(document.getElementById('vi-fixed').value);
+
+      let hasError = false;
+      if (!Number.isFinite(m1)) { setErr('vi-m1-error', 'กรอกรายได้เดือนล่าสุด'); hasError = true; }
+      if (!Number.isFinite(m2)) { setErr('vi-m2-error', 'กรอกรายได้เดือนที่แล้ว'); hasError = true; }
+      if (!Number.isFinite(m3)) { setErr('vi-m3-error', 'กรอกรายได้ 2 เดือนที่แล้ว'); hasError = true; }
+      if (!Number.isFinite(fixed)) { setErr('vi-fixed-error', 'กรอกรายจ่ายคงที่ต่อเดือน'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const m4 = parseNum(document.getElementById('vi-m4').value);
+      const m5 = parseNum(document.getElementById('vi-m5').value);
+      const m6 = parseNum(document.getElementById('vi-m6').value);
+      const variable = parseNum(document.getElementById('vi-variable').value);
+
+      const incomes = [m1, m2, m3, m4, m5, m6].filter(v => v > 0);
+      const avg = incomes.reduce((s, v) => s + v, 0) / incomes.length;
+      const min = Math.min(...incomes);
+
+      const conservativeBudget = min;
+      const buffer = (avg - min) * 0.5;
+      const totalExpense = fixed + variable;
+      const saveRate = 25; // recommended 25%
+      const saveAmt = avg * 0.25;
+
+      setText('res-vi-avg', formatMoney(avg));
+      setText('res-vi-min', formatMoney(min));
+      setText('res-vi-budget', formatMoney(conservativeBudget));
+      setText('res-vi-buffer', formatMoney(buffer));
+      setText('res-vi-total-expense', formatMoney(totalExpense));
+      setText('res-vi-saverate', `${saveRate}% ของรายได้เฉลี่ย`);
+      setText('res-vi-save-amt', formatMoney(saveAmt));
+
+      const statusEl = document.getElementById('vi-status');
+      if (conservativeBudget >= totalExpense) {
+        statusEl.className = 'mt-4 rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = `แม้ในเดือนรายได้น้อยที่สุด (${formatMoney(min)}) ก็ยังครอบคลุมรายจ่าย ${formatMoney(totalExpense)} ได้ สุขภาพทางการเงินดี`;
+      } else {
+        const shortfall = totalExpense - conservativeBudget;
+        statusEl.className = 'mt-4 rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 border border-amber-200';
+        statusEl.textContent = `เดือนรายได้น้อยขาด ${formatMoney(shortfall)} ต้องมีบัฟเฟอร์อย่างน้อย ${formatMoney(shortfall)} พิเศษ หรือลดค่าใช้จ่ายแปรผันในเดือนนั้น`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

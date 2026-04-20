@@ -1,0 +1,264 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณหักเงินวันขาดงาน ฐาน 30 วัน หรือวันทำงานจริง เงินเดือนสุทธิ ปี 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณยอดหักเงินวันขาดงานสำหรับพนักงานรายวันและรายเดือน เลือกฐานคำนวณ 30 วัน หรือวันทำงานจริง คำนวณอัตราค่าจ้างรายวัน ยอดหัก และเงินสุทธิ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณหักเงินวันขาดงาน/`;
+
+const faqData = [
+  {
+    question: 'ฐานคำนวณ 30 วันกับวันทำงานจริงต่างกันอย่างไร?',
+    answer: 'ฐาน 30 วัน: อัตราวัน = เงินเดือน ÷ 30 ใช้สำหรับพนักงานรายวันหรือฐานเดือนคงที่ / ฐานวันทำงานจริง: อัตราวัน = เงินเดือน ÷ วันทำงานจริงในเดือนนั้น ซึ่งจะทำให้อัตราต่อวันสูงกว่า',
+  },
+  {
+    question: 'บริษัทต้องใช้ฐานคำนวณแบบใด?',
+    answer: 'ขึ้นอยู่กับนโยบายบริษัทและสัญญาจ้าง บางบริษัทกำหนดฐาน 30 วันเพื่อความสม่ำเสมอ บางบริษัทใช้วันทำงานจริงในแต่ละเดือน กฎหมายแรงงานไม่ได้กำหนดว่าต้องใช้ฐานใด',
+  },
+  {
+    question: 'ค่าจ้างรายวันต่างจากเงินเดือนหารด้วยวันทำงานอย่างไร?',
+    answer: 'พนักงานรายวันมักได้รับค่าจ้างตามวันที่มาทำงานจริง ส่วนพนักงานเงินเดือนได้รับค่าจ้างคงที่ต่อเดือน การหักจึงใช้สูตรย้อนกลับ คือเงินเดือน ÷ วัน เพื่อหาอัตรารายวันสำหรับคำนวณยอดหัก',
+  },
+  {
+    question: 'ขาดงานมีใบลาถูกหักเงินหรือไม่?',
+    answer: 'ขึ้นอยู่กับประเภทการลา ลาป่วยไม่เกิน 30 วัน/ปี และลาคลอด ได้รับค่าจ้างตามกฎหมาย ส่วนลากิจ ลาพักร้อน และการขาดงานโดยไม่มีเหตุผล ขึ้นอยู่กับสัญญาจ้างและนโยบายบริษัท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณหักเงินวันขาดงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณหักเงินวันขาดงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">🗓️ คำนวณหักเงินวันขาดงาน เลือกฐานคำนวณ 30 วัน หรือวันทำงานจริง</p>
+      <p class="mt-1 text-sm text-slate-700">เหมาะสำหรับพนักงานรายวันและรายเดือน คำนวณอัตราค่าจ้างรายวันและยอดหักตามฐานที่เลือก</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">รองรับฐานคำนวณ 30 วัน (คงที่) หรือวันทำงานจริงในเดือน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณหักเงินวันขาดงาน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน เลือกฐานคำนวณ และจำนวนวันขาดงาน ระบบจะคำนวณอัตราค่าจ้างรายวัน ยอดหัก และเงินสุทธิ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="abday-form" class="space-y-5">
+        <p id="abday-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="abd-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน / ค่าจ้างรายเดือน (บาท)</label>
+            <input type="text" id="abd-salary" inputmode="numeric" placeholder="เช่น 15,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="abd-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-gray-700">ฐานคำนวณ</label>
+            <div class="flex gap-3">
+              <label class="flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm hover:border-primary-400">
+                <input type="radio" name="abd-basis" id="abd-basis-30" value="30" checked class="accent-primary-600" />
+                <span>30 วัน (คงที่)</span>
+              </label>
+              <label class="flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm hover:border-primary-400">
+                <input type="radio" name="abd-basis" id="abd-basis-actual" value="actual" class="accent-primary-600" />
+                <span>วันทำงานจริง</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div id="abd-actual-days-wrapper" class="hidden">
+          <label for="abd-work-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานจริงในเดือนนี้ (วัน)</label>
+          <input type="text" id="abd-work-days" inputmode="numeric" placeholder="เช่น 26"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:max-w-xs" />
+          <p id="abd-work-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div>
+          <label for="abd-absent-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันขาดงาน (วัน)</label>
+          <input type="text" id="abd-absent-days" inputmode="numeric" placeholder="เช่น 3"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:max-w-xs" />
+          <p id="abd-absent-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณยอดหัก
+        </button>
+      </form>
+    </div>
+
+    <div id="abday-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราค่าจ้างรายวัน</div>
+            <div id="res-abd-daily-rate" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดหักวันขาดงาน</div>
+            <div id="res-abd-deduction" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินสุทธิที่ได้รับ</div>
+            <div id="res-abd-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ฐานที่ใช้คำนวณ</span>
+            <span id="res-abd-basis-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">วันขาดงาน</span>
+            <span id="res-abd-absent-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินเดือน / ค่าจ้างเดือน</span>
+            <span id="res-abd-salary-display" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><strong>ฐาน 30 วัน:</strong> อัตราวัน = เงินเดือน ÷ 30</li>
+        <li><strong>ฐานวันทำงานจริง:</strong> อัตราวัน = เงินเดือน ÷ วันทำงานจริงในเดือน</li>
+        <li>ยอดหัก = อัตราค่าจ้างรายวัน × จำนวนวันขาดงาน</li>
+        <li>เงินสุทธิ = เงินเดือน - ยอดหัก</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณหักเงินเดือนขาดงาน/">คำนวณหักเงินเดือนขาดงาน</a></li>
+        <li><a href="/คำนวณหักเงินเดือนมาสาย/">คำนวณหักเงินเดือนมาสาย</a></li>
+        <li><a href="/คำนวณสลิปเงินเดือน/">คำนวณสลิปเงินเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#abday-results" />
+    <RelatedArticles currentHref="/คำนวณหักเงินวันขาดงาน/" />
+    <RelatedCalculators currentHref="/คำนวณหักเงินวันขาดงาน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเบื้องต้น ฐานคำนวณจริงขึ้นอยู่กับสัญญาจ้างและนโยบายบริษัท กรุณาตรวจสอบกับฝ่ายบุคคลหรือผู้เชี่ยวชาญด้านกฎหมายแรงงาน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    // Toggle actual days input
+    const radios = document.querySelectorAll('input[name="abd-basis"]');
+    const actualWrapper = document.getElementById('abd-actual-days-wrapper');
+    radios.forEach((r) => {
+      r.addEventListener('change', () => {
+        const isActual = document.getElementById('abd-basis-actual').checked;
+        actualWrapper.classList.toggle('hidden', !isActual);
+      });
+    });
+
+    const form = document.getElementById('abday-form');
+    const formError = document.getElementById('abday-form-error');
+    const resultBox = document.getElementById('abday-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['abd-salary-error', 'abd-work-days-error', 'abd-absent-days-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('abd-salary').value);
+      const isActual = document.getElementById('abd-basis-actual').checked;
+      const workDaysInput = parseNum(document.getElementById('abd-work-days').value);
+      const absentDays = parseNum(document.getElementById('abd-absent-days').value);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('abd-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (isActual && (!Number.isFinite(workDaysInput) || workDaysInput < 1 || workDaysInput > 31)) {
+        setErr('abd-work-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true;
+      }
+      if (!Number.isFinite(absentDays) || absentDays < 1) { setErr('abd-absent-days-error', 'กรอกวันขาดงานมากกว่า 0'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const basis = isActual ? workDaysInput : 30;
+      const dailyRate = salary / basis;
+      const deduction = dailyRate * absentDays;
+      const net = salary - deduction;
+
+      setText('res-abd-daily-rate', formatMoney(dailyRate));
+      setText('res-abd-deduction', formatMoney(deduction));
+      setText('res-abd-net', formatMoney(net));
+      setText('res-abd-basis-display', isActual ? `${basis} วันทำงานจริง` : '30 วัน (คงที่)');
+      setText('res-abd-absent-display', `${absentDays} วัน`);
+      setText('res-abd-salary-display', formatMoney(salary));
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>
