@@ -4122,6 +4122,53 @@ export const calculators: Calculator[] = [
     tagColor: 'bg-orange-50 text-orange-600',
   },
 
+  // WAVE3 BATCH Z — E-Commerce & Digital Business (KLC-0526-0550)
+  {
+    title: 'คำนวณค่าธรรมเนียม Shopee/Lazada',
+    desc: 'คำนวณค่าธรรมเนียมขายสินค้าบน Shopee และ Lazada ป้อนมูลค่าออเดอร์และอัตราธรรมเนียม',
+    href: '/คำนวณ-shopee-lazada-seller-fee/',
+    icon: '🛍️',
+    categoryId: 'business',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าจัดส่ง',
+    desc: 'ประมาณการค่าจัดส่งสินค้าออนไลน์ ตามน้ำหนักและระยะทาง',
+    href: '/คำนวณ-ค่าจัดส่ง-shipping-cost/',
+    icon: '📦',
+    categoryId: 'business',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณราคาสินค้าหลังหักค่าแพลตฟอร์ม',
+    desc: 'คำนวณราคาขายสินค้าหลังหักค่าธรรมเนียมแพลตฟอร์ม',
+    href: '/คำนวณ-ราคาสินค้า-platform-fee/',
+    icon: '💵',
+    categoryId: 'business',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณ ROI โฆษณา Facebook/Instagram',
+    desc: 'คำนวณผลตอบแทนจากการโฆษณา Facebook และ Instagram',
+    href: '/คำนวณ-roi-facebook-instagram/',
+    icon: '📱',
+    categoryId: 'business',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่า LINE Official Account',
+    desc: 'ประมาณการค่าใช้จ่ายรายเดือน LINE Official Account',
+    href: '/คำนวณ-ค่า-line-official-account/',
+    icon: '💬',
+    categoryId: 'business',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
   // ── Government Fees & Legal (KLC-0501–0525) ──
   {
     title: 'คำนวณค่าพาสปอร์ต',
@@ -4130,6 +4177,24 @@ export const calculators: Calculator[] = [
     icon: '📕',
     categoryId: 'government',
     tag: 'KLC-0501',
+    tagColor: 'bg-indigo-50 text-indigo-600',
+  },
+  {
+    title: 'คำนวณค่าต่อใบขับขี่',
+    desc: 'คำนวณค่าธรรมเนียมต่อใบขับขี่ (รถยนต์ จักรยานยนต์ รถบรรทุก) 5 ปี 10 ปี บริการด่วน ตามอัตรา 2569',
+    href: '/คำนวณ-ค่าต่อใบขับขี่/',
+    icon: '🚗',
+    categoryId: 'government',
+    tag: 'KLC-0502',
+    tagColor: 'bg-indigo-50 text-indigo-600',
+  },
+  {
+    title: 'คำนวณค่าโอนที่ดิน',
+    desc: 'คำนวณค่าโอนที่ดิน ค่าแสตมป์ ภาษี สำหรับโอนขาย โอนให้ โอนมรดก ตามอัตรา 2569',
+    href: '/คำนวณ-ค่าโอนที่ดิน/',
+    icon: '🏠',
+    categoryId: 'government',
+    tag: 'KLC-0503',
     tagColor: 'bg-indigo-50 text-indigo-600',
   },
 ];

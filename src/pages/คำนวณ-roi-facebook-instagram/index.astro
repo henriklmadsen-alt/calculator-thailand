@@ -1,0 +1,179 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ ROI โฆษณา Facebook/Instagram ปี 2569 — ผลตอบแทนการโฆษณา';
+const pageDescription = 'คำนวณผลตอบแทนจากการโฆษณา Facebook และ Instagram ป้อนค่าโฆษณาและรายได้ ทราบ ROI ทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-roi-facebook-instagram/`;
+
+const faqData = [
+  {
+    question: 'ROI โฆษณา Facebook/Instagram คืออะไร?',
+    answer: 'ROI (Return on Investment) คือผลตอบแทนจากการลงทุนโฆษณา โดยคำนวณจาก (รายได้ − ค่าโฆษณา) ÷ ค่าโฆษณา × 100%',
+  },
+  {
+    question: 'ROI เท่าไหร่ถือว่าดี?',
+    answer: 'โดยทั่วไป ROI ขึ้นอยู่กับอุตสาหกรรม แต่ ROI 200–300% ถือว่าดี ROI 100% หมายความว่าได้เงินกลับเท่ากับที่ลงทุน',
+  },
+  {
+    question: 'ต้องคำนึงถึงอะไรอื่นบ้างในการโฆษณา?',
+    answer: 'นอกจาก ROI ยังต้องดู: Cost Per Click (CPC) Cost Per Acquisition (CPA) การแปลง (Conversion Rate) และค่าใช้จ่ายอื่นๆ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ ROI โฆษณา Facebook/Instagram',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-roi-facebook-instagram">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+      <p class="text-sm font-semibold text-blue-700">คำนวณ ROI โฆษณา — ผลตอบแทนการโฆษณา Facebook/Instagram</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ROI = (รายได้ − ค่าโฆษณา) ÷ ค่าโฆษณา × 100%</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณ ROI โฆษณา Facebook/Instagram ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนค่าใช้จ่ายโฆษณาและรายได้ที่ได้จากโฆษณา เพื่อทราบ ROI และผลตอบแทนของการลงทุน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="fb-roi-form" class="space-y-5">
+        <p id="fb-roi-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ad-spend" class="mb-1 block text-sm font-medium text-gray-700">ค่าใช้จ่ายโฆษณา (บาท)</label>
+            <input type="text" id="ad-spend" inputmode="numeric" placeholder="เช่น 5,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="revenue" class="mb-1 block text-sm font-medium text-gray-700">รายได้จากโฆษณา (บาท)</label>
+            <input type="text" id="revenue" inputmode="numeric" placeholder="เช่น 20,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">รายได้ที่ได้จากการขายจากโฆษณาน</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ ROI
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="fb-roi-results" class="mb-8 hidden rounded-lg border border-green-200 bg-green-50 p-6">
+      <h2 class="mb-4 text-lg font-bold text-gray-900">ผลการคำนวณ</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between border-b border-green-200 pb-2">
+          <span class="text-gray-700">ค่าโฆษณา</span>
+          <span id="result-spend" class="font-semibold text-gray-900">0 บาท</span>
+        </div>
+        <div class="flex justify-between border-b border-green-200 pb-2">
+          <span class="text-gray-700">รายได้</span>
+          <span id="result-revenue" class="font-semibold text-gray-900">0 บาท</span>
+        </div>
+        <div class="flex justify-between bg-green-100 p-2 rounded font-bold">
+          <span class="text-green-700">ROI</span>
+          <span id="result-roi" class="text-green-700">0 %</span>
+        </div>
+        <div class="flex justify-between border-t border-green-200 pt-2">
+          <span class="text-gray-700">กำไรสุทธิ</span>
+          <span id="result-profit" class="font-semibold text-gray-900">0 บาท</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+      <h2 class="mb-4 text-lg font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="border-b border-gray-200 pb-4">
+            <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <p class="mt-2 text-sm text-gray-600">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </article>
+
+  <GuardedAdSlot position="after-content" class="my-8" />
+  <RelatedCalculators currentPath="/คำนวณ-roi-facebook-instagram/" limit={3} />
+  <RelatedArticles limit={3} />
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('fb-roi-form') as HTMLFormElement;
+  const resultsDiv = document.getElementById('fb-roi-results') as HTMLDivElement;
+  const errorDiv = document.getElementById('fb-roi-error') as HTMLDivElement;
+
+  const adSpendInput = document.getElementById('ad-spend') as HTMLInputElement;
+  const revenueInput = document.getElementById('revenue') as HTMLInputElement;
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const adSpend = parseFloat(adSpendInput.value.replace(/,/g, '').trim());
+      const revenue = parseFloat(revenueInput.value.replace(/,/g, '').trim());
+
+      if (!adSpend || adSpend <= 0 || !revenue || revenue < 0) {
+        errorDiv.classList.remove('hidden');
+        resultsDiv.classList.add('hidden');
+        return;
+      }
+
+      const profit = revenue - adSpend;
+      const roi = Math.round((profit / adSpend * 100) * 100) / 100;
+
+      document.getElementById('result-spend')!.textContent = adSpend.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+      document.getElementById('result-revenue')!.textContent = revenue.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+      document.getElementById('result-roi')!.textContent = roi.toFixed(2) + ' %';
+      document.getElementById('result-profit')!.textContent = profit.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+    });
+  }
+</script>
