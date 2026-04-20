@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณกำไรขาดทุนโอนที่ดิน 2569 | kamnuanlek.com';
+const pageDescription = 'คำนวณกำไรขาดทุนจากการโอนที่ดิน หักต้นทุนและค่าใช้จ่าย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกำไรขาดทุนโอนที่ดิน/`;
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไรขาดทุนโอนที่ดิน">
+  <article>
+    <h1 class="text-2xl font-bold mb-4">คำนวณกำไรขาดทุนโอนที่ดิน</h1>
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <form id="form">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="block text-sm font-medium mb-1">ราคาซื้อ (บาท)</label>
+            <input type="text" id="buy" inputmode="numeric" value="2000000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ราคาขาย (บาท)</label>
+            <input type="text" id="sell" inputmode="numeric" value="2500000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ค่าใช้จ่ายซื้อ (บาท)</label>
+            <input type="text" id="buy-cost" inputmode="numeric" value="40000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ค่าใช้จ่ายขาย (บาท)</label>
+            <input type="text" id="sell-cost" inputmode="numeric" value="100000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+        </div>
+        <button type="submit" class="mt-6 px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700">คำนวณ</button>
+      </form>
+    </div>
+    <div id="result" class="hidden bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">ผลการคำนวณ</h2>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between"><span>ราคาซื้อ</span><span id="r-buy">-</span></div>
+        <div class="flex justify-between"><span>ราคาขาย</span><span id="r-sell">-</span></div>
+        <div class="flex justify-between"><span>ส่วนต่างราคา</span><span id="r-diff">-</span></div>
+        <div class="flex justify-between"><span>หักค่าใช้จ่ายซื้อ</span><span id="r-bcost">-</span></div>
+        <div class="flex justify-between"><span>หักค่าใช้จ่ายขาย</span><span id="r-scost">-</span></div>
+        <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>กำไร/ขาดทุนสุทธิ</span><span id="r-net">-</span></div>
+      </div>
+    </div>
+  </article>
+  <script>
+    const form = document.getElementById('form');
+    const result = document.getElementById('result');
+
+    function fmt(n) {
+      return new Intl.NumberFormat('th-TH').format(Math.round(n));
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const buy = parseFloat(document.getElementById('buy').value.replace(/,/g, '')) || 0;
+      const sell = parseFloat(document.getElementById('sell').value.replace(/,/g, '')) || 0;
+      const bcost = parseFloat(document.getElementById('buy-cost').value.replace(/,/g, '')) || 0;
+      const scost = parseFloat(document.getElementById('sell-cost').value.replace(/,/g, '')) || 0;
+
+      const diff = sell - buy;
+      const net = diff - bcost - scost;
+
+      document.getElementById('r-buy').textContent = fmt(buy) + ' บาท';
+      document.getElementById('r-sell').textContent = fmt(sell) + ' บาท';
+      document.getElementById('r-diff').textContent = fmt(diff) + ' บาท';
+      document.getElementById('r-bcost').textContent = fmt(bcost) + ' บาท';
+      document.getElementById('r-scost').textContent = fmt(scost) + ' บาท';
+      document.getElementById('r-net').textContent = fmt(net) + ' บาท';
+
+      result.classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>

@@ -3642,6 +3642,33 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'คำนวณกำไรขาดทุนโอนที่ดิน',
+    desc: 'คำนวณกำไรสุทธิจากการขายที่ดิน หักต้นทุนและค่าใช้จ่าย',
+    href: '/คำนวณกำไรขาดทุนโอนที่ดิน/',
+    icon: '📊',
+    categoryId: 'realestate',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณผลตอบแทนค่าเช่าที่ดิน',
+    desc: 'คำนวณ Cash-on-Cash Return จากการให้เช่าที่ดิน',
+    href: '/คำนวณผลตอบแทนค่าเช่าที่ดิน/',
+    icon: '📈',
+    categoryId: 'realestate',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณข้อพิจารณา Exchange ที่ดิน',
+    desc: 'ประเมินค่าสินทรัพย์และกำไรในการแลกเปลี่ยนที่ดิน',
+    href: '/คำนวณข้อพิจารณา-exchange-ที่ดิน/',
+    icon: '🔄',
+    categoryId: 'realestate',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 
   // WAVE2 BATCH S — Home Utilities + Vehicles (KLC-0351-0380)
   {

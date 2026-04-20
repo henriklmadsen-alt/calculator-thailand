@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณข้อพิจารณา Exchange ที่ดิน 2569 | 1031 Deferral | kamnuanlek.com';
+const pageDescription = 'คำนวณประเมินค่าสินทรัพย์ในการแลกเปลี่ยนที่ดิน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณข้อพิจารณา-exchange-ที่ดิน/`;
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณข้อพิจารณา Exchange ที่ดิน">
+  <article>
+    <h1 class="text-2xl font-bold mb-4">คำนวณข้อพิจารณา Exchange ที่ดิน</h1>
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <form id="form">
+        <div class="grid gap-4">
+          <div><label class="block text-sm font-medium mb-1">มูลค่าที่ดินเดิม (บาท)</label>
+            <input type="text" id="old" inputmode="numeric" value="2000000" class="w-full px-3 py-2 border rounded"/></div>
+          <div><label class="block text-sm font-medium mb-1">มูลค่าที่ดินใหม่ (บาท)</label>
+            <input type="text" id="new" inputmode="numeric" value="2300000" class="w-full px-3 py-2 border rounded"/></div>
+          <div><label class="block text-sm font-medium mb-1">เงินสดเพิ่มเติมที่ต้องเสียบกรรมสิทธิ์ (บาท)</label>
+            <input type="text" id="boot" inputmode="numeric" value="200000" class="w-full px-3 py-2 border rounded"/></div>
+        </div>
+        <button type="submit" class="mt-6 px-8 py-3 bg-blue-600 text-white rounded">คำนวณ</button>
+      </form>
+    </div>
+    <div id="result" class="hidden bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">การวิเคราะห์ Exchange</h2>
+      <div class="space-y-2 text-sm"><div class="flex justify-between"><span>ส่วนต่างมูลค่า</span><span id="r-diff">-</span></div>
+        <div class="flex justify-between"><span>เงินสดเพิ่มเติม</span><span id="r-boot">-</span></div>
+        <div class="flex justify-between font-bold border-t pt-2"><span>กำไรจากการแลกเปลี่ยน</span><span id="r-gain">-</span></div></div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const old = parseFloat(document.getElementById('old').value.replace(/,/g, '')) || 0;
+      const newv = parseFloat(document.getElementById('new').value.replace(/,/g, '')) || 0;
+      const boot = parseFloat(document.getElementById('boot').value.replace(/,/g, '')) || 0;
+      const diff = newv - old;
+      const gain = Math.max(0, diff - boot);
+      const fmt = (n) => new Intl.NumberFormat('th-TH').format(Math.round(n));
+      document.getElementById('r-diff').textContent = fmt(diff) + ' บาท';
+      document.getElementById('r-boot').textContent = fmt(boot) + ' บาท';
+      document.getElementById('r-gain').textContent = fmt(gain) + ' บาท';
+      document.getElementById('result').classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>

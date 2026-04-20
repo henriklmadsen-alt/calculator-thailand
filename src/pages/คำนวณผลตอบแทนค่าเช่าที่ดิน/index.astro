@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณผลตอบแทนค่าเช่าที่ดิน 2569 | Cash-on-Cash Return | kamnuanlek.com';
+const pageDescription = 'คำนวณผลตอบแทนการลงทุนที่ดินให้เช่า Cash-on-Cash ROI ออนไลน์ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณผลตอบแทนค่าเช่าที่ดิน/`;
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผลตอบแทนค่าเช่าที่ดิน">
+  <article>
+    <h1 class="text-2xl font-bold mb-4">คำนวณผลตอบแทนค่าเช่าที่ดิน (Cash-on-Cash Return)</h1>
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <form id="form">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div><label class="block text-sm font-medium mb-1">ลงทุนเงินสด (บาท)</label>
+            <input type="text" id="cash" inputmode="numeric" value="1000000" class="w-full px-3 py-2 border rounded"/></div>
+          <div><label class="block text-sm font-medium mb-1">รายได้ค่าเช่าต่อปี (บาท)</label>
+            <input type="text" id="income" inputmode="numeric" value="150000" class="w-full px-3 py-2 border rounded"/></div>
+          <div><label class="block text-sm font-medium mb-1">ค่าใช้จ่ายต่อปี (บาท)</label>
+            <input type="text" id="expense" inputmode="numeric" value="30000" class="w-full px-3 py-2 border rounded"/></div>
+        </div>
+        <button type="submit" class="mt-6 px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700">คำนวณ</button>
+      </form>
+    </div>
+    <div id="result" class="hidden bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">ผลตอบแทน</h2>
+      <div class="space-y-2"><div class="flex justify-between"><span>รายได้สุทธิต่อปี</span><span id="r-net">-</span></div>
+        <div class="flex justify-between font-bold text-lg border-t pt-2"><span>Cash-on-Cash Return (%)</span><span id="r-pct">-</span></div></div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cash = parseFloat(document.getElementById('cash').value.replace(/,/g, '')) || 0;
+      const income = parseFloat(document.getElementById('income').value.replace(/,/g, '')) || 0;
+      const expense = parseFloat(document.getElementById('expense').value.replace(/,/g, '')) || 0;
+      const net = income - expense;
+      const pct = cash > 0 ? ((net / cash) * 100).toFixed(2) : 0;
+      document.getElementById('r-net').textContent = new Intl.NumberFormat('th-TH').format(Math.round(net)) + ' บาท';
+      document.getElementById('r-pct').textContent = pct + '%';
+      document.getElementById('result').classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>
