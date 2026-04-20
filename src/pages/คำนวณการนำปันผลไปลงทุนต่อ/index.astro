@@ -1,0 +1,310 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณการนำปันผลไปลงทุนต่อ (DRIP) 2569 | Dividend Reinvestment | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณ DRIP การนำเงินปันผลกลับลงทุนซ้ำอัตโนมัติ เปรียบเทียบมูลค่าพอร์ตระหว่างการถอนปันผลกับการนำไปลงทุนต่อในระยะยาว อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณการนำปันผลไปลงทุนต่อ/`;
+
+const faqData = [
+  {
+    question: 'DRIP คืออะไร และมีประโยชน์อย่างไร?',
+    answer: 'DRIP (Dividend Reinvestment Plan) คือการนำเงินปันผลที่ได้รับกลับไปซื้อหุ้นหรือกองทุนเพิ่มโดยอัตโนมัติ แทนที่จะถอนออกมาใช้ ทำให้พอร์ตเติบโตเร็วขึ้นจากพลัง compound interest ในระยะยาว',
+  },
+  {
+    question: 'ความแตกต่างระหว่าง DRIP กับการรับปันผลเป็นเงินสดคืออะไร?',
+    answer: 'การรับปันผลเป็นเงินสดทำให้คุณมีรายได้สม่ำเสมอแต่พอร์ตเติบโตช้ากว่า ส่วน DRIP จะทบต้นเงินปันผลกลับเข้าพอร์ต ทำให้มูลค่าพอร์ตโตเร็วกว่าในระยะยาว โดยเฉพาะเมื่อระยะเวลาลงทุนยาวนานกว่า 10 ปี',
+  },
+  {
+    question: 'อัตรา dividend yield ที่ดีสำหรับหุ้นไทยคือเท่าไร?',
+    answer: 'หุ้นไทยในตลาด SET โดยเฉลี่ยมี dividend yield ประมาณ 3-5% ต่อปี หุ้นกลุ่มธนาคารและพลังงานมักให้ yield สูงกว่า 4-6% ขณะที่หุ้นเติบโตสูงมักให้ yield ต่ำกว่า 2%',
+  },
+  {
+    question: 'ควรเลือก DRIP หรือถอนปันผลออกมา?',
+    answer: 'หากคุณยังไม่ต้องการรายได้จากพอร์ต และมีระยะเวลาลงทุนยาวนานกว่า 10 ปี DRIP เหมาะกว่าเพราะใช้พลังทบต้นได้เต็มที่ แต่หากต้องการรายได้สม่ำเสมอหรือใกล้เกษียณ การรับปันผลเป็นเงินสดเหมาะสมกว่า',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณการนำปันผลไปลงทุนต่อ (DRIP)',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการนำปันผลไปลงทุนต่อ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณการนำปันผลไปลงทุนต่อ (DRIP) 2569 — เปรียบเทียบพอร์ตแบบ DRIP กับถอนปันผล
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณและเปรียบเทียบมูลค่าพอร์ตลงทุนระหว่างการนำเงินปันผลกลับลงทุนซ้ำ (DRIP) กับการถอนปันผลออกมาใช้ ดูผลต่างสะสมรายปีในระยะยาว
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="drip-form" class="space-y-5">
+        <p id="drip-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="drip-initial" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนเริ่มต้น (บาท)
+            </label>
+            <input
+              type="text"
+              id="drip-initial"
+              inputmode="numeric"
+              placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="drip-yield" class="block text-sm font-medium text-gray-700 mb-1">
+              Dividend Yield (%/ปี)
+            </label>
+            <input
+              type="text"
+              id="drip-yield"
+              inputmode="decimal"
+              placeholder="เช่น 4.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="drip-growth" class="block text-sm font-medium text-gray-700 mb-1">
+              ผลตอบแทนราคาหุ้นต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="drip-growth"
+              inputmode="decimal"
+              placeholder="เช่น 5.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="drip-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <input
+              type="number"
+              id="drip-years"
+              min="1"
+              max="30"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าพอร์ตแบบ DRIP</div>
+            <div id="drip-res-with" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าพอร์ตแบบไม่ DRIP</div>
+            <div id="drip-res-without" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลต่าง (DRIP ได้มากกว่า)</div>
+            <div id="drip-res-diff" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-yellow-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ปันผลสะสม (ไม่ DRIP)</div>
+            <div id="drip-res-cumDiv" class="text-xl font-bold text-yellow-700">-</div>
+          </div>
+        </div>
+
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางเปรียบเทียบรายปี (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-3">ปีที่</th>
+                  <th class="py-2 pr-3 text-right">พอร์ต DRIP</th>
+                  <th class="py-2 pr-3 text-right">พอร์ตไม่ DRIP</th>
+                  <th class="py-2 pr-3 text-right">ปันผลสะสม</th>
+                  <th class="py-2 text-right">ผลต่าง</th>
+                </tr>
+              </thead>
+              <tbody id="drip-table-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณ DRIP การนำปันผลไปลงทุนต่อ</h2>
+      <p>
+        การนำเงินปันผลกลับลงทุนซ้ำ (DRIP) คือกลยุทธ์ที่ใช้พลังทบต้นเต็มประสิทธิภาพ เมื่อคุณนำปันผลกลับซื้อหุ้นเพิ่ม จำนวนหุ้นเพิ่มขึ้น ปันผลในปีถัดไปก็มากขึ้น เกิดเป็นวงจรสะสมความมั่งคั่งในระยะยาว
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ DRIP</h3>
+      <p>
+        แบบ DRIP: มูลค่าพอร์ต = เงินลงทุน × (1 + yield + growth)^ปี<br />
+        แบบไม่ DRIP: มูลค่าพอร์ต = เงินลงทุน × (1 + growth)^ปี + ปันผลสะสม (ไม่ทบต้น)
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง DRIP 20 ปี</h3>
+      <p>
+        ลงทุน 100,000 บาท dividend yield 4%/ปี ราคาหุ้นโต 5%/ปี ใน 20 ปี:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>แบบ DRIP: มูลค่าพอร์ตประมาณ <strong>520,000+ บาท</strong></li>
+        <li>แบบไม่ DRIP: มูลค่าพอร์ต ~265,000 บาท + ปันผลสะสม ~80,000 บาท = <strong>345,000 บาท</strong></li>
+        <li>DRIP ได้มากกว่า: <strong>175,000+ บาท</strong></li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณการนำปันผลไปลงทุนต่อ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ผลตอบแทนจริงอาจแตกต่างตามสภาวะตลาด ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('drip-form') as HTMLFormElement;
+    const formError = document.getElementById('drip-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const initial = parseNum((document.getElementById('drip-initial') as HTMLInputElement).value);
+      const divYield = parseNum((document.getElementById('drip-yield') as HTMLInputElement).value);
+      const priceGrowth = parseNum((document.getElementById('drip-growth') as HTMLInputElement).value);
+      const years = parseInt((document.getElementById('drip-years') as HTMLInputElement).value) || 0;
+
+      if (initial <= 0 || years <= 0 || years > 30) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorStart('drip');
+
+      const yieldRate = divYield / 100;
+      const growthRate = priceGrowth / 100;
+
+      let withDrip = initial;
+      let withoutDrip = initial;
+      let cumDiv = 0;
+
+      const rows: { year: number; withD: number; withoutD: number; cumDivV: number; diff: number }[] = [];
+
+      for (let y = 1; y <= years; y++) {
+        // DRIP: reinvest dividend then apply price growth
+        withDrip = withDrip * (1 + yieldRate) * (1 + growthRate);
+        // No DRIP: apply price growth, collect dividend separately
+        const div = withoutDrip * yieldRate;
+        cumDiv += div;
+        withoutDrip = withoutDrip * (1 + growthRate);
+        rows.push({ year: y, withD: withDrip, withoutD: withoutDrip, cumDivV: cumDiv, diff: withDrip - (withoutDrip + cumDiv) });
+      }
+
+      (document.getElementById('drip-res-with') as HTMLElement).textContent = fmt(withDrip) + ' บาท';
+      (document.getElementById('drip-res-without') as HTMLElement).textContent = fmt(withoutDrip + cumDiv) + ' บาท';
+      (document.getElementById('drip-res-diff') as HTMLElement).textContent = fmt(withDrip - (withoutDrip + cumDiv)) + ' บาท';
+      (document.getElementById('drip-res-cumDiv') as HTMLElement).textContent = fmt(cumDiv) + ' บาท';
+
+      const tbody = document.getElementById('drip-table-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      rows.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        const diffClass = row.diff >= 0 ? 'text-green-600' : 'text-red-600';
+        tr.innerHTML = `
+          <td class="py-2 pr-3">${row.year}</td>
+          <td class="py-2 pr-3 text-right font-medium">${fmt(row.withD)}</td>
+          <td class="py-2 pr-3 text-right">${fmt(row.withoutD)}</td>
+          <td class="py-2 pr-3 text-right">${fmt(row.cumDivV)}</td>
+          <td class="py-2 text-right ${diffClass}">${fmt(row.diff)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('drip');
+      trackCalculatorUsed('drip');
+    });
+  </script>
+</BaseLayout>

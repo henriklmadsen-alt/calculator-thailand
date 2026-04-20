@@ -1,0 +1,362 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ FIRE Number 2569 | เป้าหมายเกษียณเร็วด้วยกฎ 4% | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเป้าหมาย FIRE Number เงินก้อนที่ต้องมีเพื่อเกษียณเร็วโดยใช้กฎ 4% Safe Withdrawal Rate พร้อมคำนวณระยะเวลาถึง FIRE จากอัตราออมปัจจุบัน อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-fire-number/`;
+
+const faqData = [
+  {
+    question: 'FIRE Number คืออะไร?',
+    answer: 'FIRE Number คือเงินก้อนเป้าหมายที่ต้องสะสมให้ได้เพื่อเกษียณอายุก่อนกำหนด โดยอ้างอิงจากกฎ 4% (Safe Withdrawal Rate) ซึ่งระบุว่าคุณสามารถถอนเงิน 4% จากพอร์ตต่อปีโดยไม่หมดพอร์ตตลอดชีวิต คำนวณจาก: FIRE Number = ค่าใช้จ่ายรายปี ÷ 0.04',
+  },
+  {
+    question: 'กฎ 4% มาจากไหน?',
+    answer: 'กฎ 4% มาจากการศึกษา Trinity Study ในปี 1998 ซึ่งพบว่าการถอนเงิน 4% ต่อปีจากพอร์ตที่ลงทุนใน หุ้น 60%/ตราสารหนี้ 40% จะทำให้เงินอยู่ได้อย่างน้อย 30 ปีในกรณีส่วนใหญ่ สำหรับ FIRE ที่เกษียณเร็วกว่า บางคนใช้อัตรา 3-3.5% เพื่อความปลอดภัยมากขึ้น',
+  },
+  {
+    question: 'อัตราออมเงินต้องเท่าไรถึง FIRE เร็ว?',
+    answer: 'ยิ่งออมมากยิ่งถึง FIRE เร็ว หากออม 10% จะใช้เวลาประมาณ 40 ปี ออม 25% ใช้เวลา 32 ปี ออม 50% ใช้เวลา 17 ปี และออม 75% ใช้เวลาเพียง 7 ปี กุญแจสำคัญคือทั้งการลดค่าใช้จ่ายและเพิ่มรายได้พร้อมกัน',
+  },
+  {
+    question: 'ควรลงทุนอะไรเพื่อสะสม FIRE Number?',
+    answer: 'สำหรับ FIRE ในไทย นิยมลงทุนใน กองทุนรวมดัชนี (Index Fund) ทั้งไทยและต่างประเทศ กองทุน LTF/RMF เพื่อลดหย่อนภาษี และ SSF ผลตอบแทนเฉลี่ยระยะยาวอยู่ที่ 6-8% ต่อปี แนะนำให้กระจายความเสี่ยงและลงทุนระยะยาว',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ FIRE Number',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-fire-number">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ FIRE Number 2569 — เป้าหมายเกษียณเร็วด้วยกฎ 4%
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณ FIRE Number เงินก้อนเป้าหมายที่ต้องสะสมเพื่อเกษียณอายุก่อนกำหนด ด้วยกฎ 4% Safe Withdrawal Rate พร้อมประมาณการระยะเวลาถึง FIRE จากอัตราออมและผลตอบแทนปัจจุบัน
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="fire-form" class="space-y-5">
+        <p id="fire-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fire-monthly-expense" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าใช้จ่ายรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="fire-monthly-expense"
+              inputmode="numeric"
+              placeholder="เช่น 30,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="fire-monthly-expense-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="fire-withdrawal-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราถอนเงินที่ปลอดภัย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="fire-withdrawal-rate"
+              inputmode="decimal"
+              placeholder="เช่น 4"
+              value="4"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">กฎ 4% คือค่ามาตรฐาน</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fire-net-worth" class="block text-sm font-medium text-gray-700 mb-1">
+              Net Worth ปัจจุบัน (บาท)
+            </label>
+            <input
+              type="text"
+              id="fire-net-worth"
+              inputmode="numeric"
+              placeholder="เช่น 500,000"
+              value="0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="fire-monthly-savings" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินออมรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="fire-monthly-savings"
+              inputmode="numeric"
+              placeholder="เช่น 10,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="fire-monthly-savings-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="fire-investment-return" class="block text-sm font-medium text-gray-700 mb-1">
+            ผลตอบแทนการลงทุน (% ต่อปี)
+          </label>
+          <input
+            type="text"
+            id="fire-investment-return"
+            inputmode="decimal"
+            placeholder="เช่น 7"
+            value="7"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">ผลตอบแทนเฉลี่ยระยะยาวตลาดหุ้นประมาณ 7% ต่อปี</p>
+        </div>
+
+        <button
+          type="submit"
+          id="fire-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ FIRE Number</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">FIRE Number</div>
+            <div id="res-fire-number" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยังขาดอีก</div>
+            <div id="res-fire-gap" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ระยะเวลาถึง FIRE</div>
+            <div id="res-fire-years" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-yellow-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราออม</div>
+            <div id="res-savings-rate" class="text-xl font-bold text-yellow-700">-</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-6">
+          <div class="flex justify-between text-sm text-gray-600 mb-1">
+            <span>ความคืบหน้าสู่ FIRE</span>
+            <span id="res-fire-progress-pct">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-4">
+            <div id="res-fire-progress-bar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ค่าใช้จ่ายรายปี</span>
+            <span id="res-annual-expense" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราถอนเงิน</span>
+            <span id="res-withdrawal-rate-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Net Worth ปัจจุบัน</span>
+            <span id="res-current-net-worth" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินออมรายเดือน</span>
+            <span id="res-monthly-savings-display" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">FIRE Number คืออะไร และคำนวณอย่างไร</h2>
+      <p>
+        FIRE ย่อมาจาก Financial Independence, Retire Early หรือ อิสรภาพทางการเงิน เกษียณเร็ว แนวคิดนี้มุ่งสะสมเงินให้ถึงระดับที่ผลตอบแทนจากการลงทุนสามารถครอบคลุมค่าใช้จ่ายทั้งชีวิตได้โดยไม่ต้องทำงาน
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ FIRE Number</h3>
+      <p>
+        FIRE Number = ค่าใช้จ่ายรายปี ÷ อัตราถอนเงิน (%) × 100<br/>
+        ตัวอย่าง: ค่าใช้จ่าย 30,000 บาท/เดือน = 360,000 บาท/ปี<br/>
+        FIRE Number = 360,000 ÷ 4% = 9,000,000 บาท
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ระยะเวลาถึง FIRE</h3>
+      <p>
+        คำนวณจากมูลค่าอนาคตของเงินออม (Future Value) เมื่อเงินสะสมเท่ากับ FIRE Number ซึ่งขึ้นอยู่กับเงินต้นปัจจุบัน อัตราออมรายเดือน และผลตอบแทนการลงทุน ยิ่งออมมากและลงทุนได้ผลตอบแทนสูง ระยะเวลาถึง FIRE ยิ่งสั้นลง
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณ-fire-number/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ผลตอบแทนการลงทุนจริงอาจแตกต่างกัน ไม่ถือเป็นคำแนะนำทางการเงิน ควรปรึกษาผู้เชี่ยวชาญก่อนตัดสินใจลงทุน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('fire-form') as HTMLFormElement;
+    const formError = document.getElementById('fire-form-error') as HTMLElement;
+    const submitBtn = document.getElementById('fire-submit-btn') as HTMLButtonElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const monthlyExpense = parseNum((document.getElementById('fire-monthly-expense') as HTMLInputElement).value);
+      const withdrawalRate = parseNum((document.getElementById('fire-withdrawal-rate') as HTMLInputElement).value) || 4;
+      const netWorth = parseNum((document.getElementById('fire-net-worth') as HTMLInputElement).value);
+      const monthlySavings = parseNum((document.getElementById('fire-monthly-savings') as HTMLInputElement).value);
+      const annualReturn = parseNum((document.getElementById('fire-investment-return') as HTMLInputElement).value) || 7;
+
+      if (monthlyExpense <= 0) {
+        formError.classList.remove('hidden');
+        (document.getElementById('fire-monthly-expense') as HTMLInputElement).focus();
+        return;
+      }
+      if (monthlySavings <= 0) {
+        formError.classList.remove('hidden');
+        (document.getElementById('fire-monthly-savings') as HTMLInputElement).focus();
+        return;
+      }
+
+      trackCalculatorStart('fire-number');
+
+      const annualExpense = monthlyExpense * 12;
+      const fireNumber = annualExpense / (withdrawalRate / 100);
+      const gap = Math.max(0, fireNumber - netWorth);
+
+      // Calculate years to FIRE using FV formula
+      // FV = PV*(1+r)^n + PMT*((1+r)^n - 1)/r = fireNumber
+      const monthlyRate = annualReturn / 100 / 12;
+      let yearsToFire = 0;
+      let monthsToFire = 0;
+
+      if (netWorth >= fireNumber) {
+        yearsToFire = 0;
+        monthsToFire = 0;
+      } else if (monthlySavings > 0 || netWorth > 0) {
+        // Iterate month by month
+        let balance = netWorth;
+        let months = 0;
+        const maxMonths = 600; // 50 years cap
+        while (balance < fireNumber && months < maxMonths) {
+          balance = balance * (1 + monthlyRate) + monthlySavings;
+          months++;
+        }
+        if (months >= maxMonths) {
+          yearsToFire = 50;
+          monthsToFire = 0;
+        } else {
+          yearsToFire = Math.floor(months / 12);
+          monthsToFire = months % 12;
+        }
+      }
+
+      const progressPct = fireNumber > 0 ? Math.min(100, (netWorth / fireNumber) * 100) : 0;
+      // Savings rate (rough: savings / (savings + expense))
+      const totalIncome = monthlySavings + monthlyExpense;
+      const savingsRate = totalIncome > 0 ? (monthlySavings / totalIncome) * 100 : 0;
+
+      (document.getElementById('res-fire-number') as HTMLElement).textContent = fmt(fireNumber) + ' บาท';
+      (document.getElementById('res-fire-gap') as HTMLElement).textContent = fmt(gap) + ' บาท';
+      const yearsText = yearsToFire === 50 && monthsToFire === 0
+        ? 'มากกว่า 50 ปี'
+        : yearsToFire === 0 && monthsToFire === 0
+          ? 'ถึง FIRE แล้ว!'
+          : `${yearsToFire} ปี ${monthsToFire > 0 ? monthsToFire + ' เดือน' : ''}`;
+      (document.getElementById('res-fire-years') as HTMLElement).textContent = yearsText;
+      (document.getElementById('res-savings-rate') as HTMLElement).textContent = savingsRate.toFixed(1) + '%';
+      (document.getElementById('res-fire-progress-pct') as HTMLElement).textContent = progressPct.toFixed(1) + '%';
+      (document.getElementById('res-fire-progress-bar') as HTMLElement).style.width = progressPct.toFixed(1) + '%';
+      (document.getElementById('res-annual-expense') as HTMLElement).textContent = fmt(annualExpense) + ' บาท';
+      (document.getElementById('res-withdrawal-rate-display') as HTMLElement).textContent = withdrawalRate.toFixed(1) + '%';
+      (document.getElementById('res-current-net-worth') as HTMLElement).textContent = fmt(netWorth) + ' บาท';
+      (document.getElementById('res-monthly-savings-display') as HTMLElement).textContent = fmt(monthlySavings) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('fire-number');
+      trackCalculatorUsed('fire-number');
+    });
+  </script>
+</BaseLayout>

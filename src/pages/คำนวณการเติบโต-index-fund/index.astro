@@ -1,0 +1,288 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณการเติบโต Index Fund 2569 | ผลตอบแทนตลาดระยะยาว SET50 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่า index fund ในอนาคตจากผลตอบแทนตลาด SET50 หรือ S&P500 เฉลี่ย เปรียบเทียบ 3 สมมติฐาน ต่ำ/กลาง/สูง พร้อมตารางมูลค่าทุกปี อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณการเติบโต-index-fund/`;
+
+const faqData = [
+  {
+    question: 'Index Fund คืออะไร และทำไมถึงนิยม?',
+    answer: 'Index Fund คือกองทุนที่ลงทุนตามดัชนีตลาดหลักทรัพย์ เช่น SET50 หรือ S&P500 โดยไม่มีผู้จัดการกองทุนคัดเลือกหุ้น ค่าธรรมเนียมต่ำกว่ากองทุนแอคทีฟ และในระยะยาวส่วนใหญ่ให้ผลตอบแทนดีกว่ากองทุนที่มีผู้จัดการ',
+  },
+  {
+    question: 'ผลตอบแทน SET50 Index ระยะยาวอยู่ที่เท่าไร?',
+    answer: 'ผลตอบแทน SET50 Index ในระยะยาว 10-20 ปี เฉลี่ยอยู่ที่ประมาณ 7-10% ต่อปี รวมเงินปันผล แต่มีความผันผวนสูงในแต่ละปี บางปีอาจติดลบ 20-30% และบางปีอาจบวก 30-40%',
+  },
+  {
+    question: 'ควรเลือกสมมติฐานผลตอบแทนระดับไหนในการวางแผน?',
+    answer: 'สำหรับการวางแผนอนุรักษ์นิยมใช้ 5%/ปี สำหรับแผนกลางๆ ใช้ 8%/ปี และสำหรับสถานการณ์เชิงบวกใช้ 12%/ปี ผู้เชี่ยวชาญส่วนใหญ่แนะนำให้วางแผนด้วยสมมติฐานต่ำ-กลาง เพื่อความปลอดภัย',
+  },
+  {
+    question: 'Index Fund ต่างจาก ETF อย่างไร?',
+    answer: 'Index Fund และ ETF ลงทุนในสินทรัพย์คล้ายกัน แต่ ETF ซื้อขายได้ตลอดวันเหมือนหุ้น ส่วน Index Fund ซื้อขายได้ ณ ราคาปิดสิ้นวัน ETF มักมีค่าธรรมเนียมต่ำกว่าเล็กน้อย แต่ต้องเสียค่าคอมมิชชั่นในการซื้อขาย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณการเติบโต Index Fund',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการเติบโต-index-fund">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณการเติบโต Index Fund 2569 — เปรียบเทียบ 3 สมมติฐานผลตอบแทน SET50 / S&P500
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณมูลค่า Index Fund ในอนาคตด้วย 3 สมมติฐาน ต่ำ (5%) / กลาง (8%) / สูง (12%) พร้อมตารางเปรียบเทียบทุก 5 ปี
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="index-form" class="space-y-5">
+        <p id="index-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="index-initial" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนเริ่มต้น (บาท)
+            </label>
+            <input
+              type="text"
+              id="index-initial"
+              inputmode="numeric"
+              placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="index-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="index-monthly"
+              inputmode="numeric"
+              placeholder="เช่น 3,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="index-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาลงทุน (ปี)
+            </label>
+            <input
+              type="number"
+              id="index-years"
+              min="1"
+              max="50"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ ณ สิ้นสุดระยะเวลา</h2>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สมมติฐานต่ำ (5%/ปี)</div>
+            <div id="index-res-low" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สมมติฐานกลาง (8%/ปี)</div>
+            <div id="index-res-mid" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สมมติฐานสูง (12%/ปี)</div>
+            <div id="index-res-high" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="text-sm text-gray-600">ต้นทุนรวม: </span>
+          <span id="index-res-cost" class="text-sm font-semibold text-gray-900">-</span>
+        </div>
+
+        <h3 class="font-semibold text-gray-900 mb-3">ตารางเปรียบเทียบทุก 5 ปี</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-4">ปีที่</th>
+                <th class="py-2 pr-4 text-right">ต้นทุนสะสม</th>
+                <th class="py-2 pr-4 text-right">ต่ำ (5%)</th>
+                <th class="py-2 pr-4 text-right">กลาง (8%)</th>
+                <th class="py-2 text-right">สูง (12%)</th>
+              </tr>
+            </thead>
+            <tbody id="index-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณการเติบโตของ Index Fund</h2>
+      <p>
+        เครื่องคำนวณนี้ใช้สูตร Future Value ทบต้นรายเดือน คำนวณมูลค่าเงินลงทุนใน Index Fund โดยแสดง 3 สถานการณ์พร้อมกัน ช่วยให้วางแผนด้วยช่วงผลตอบแทนที่เป็นไปได้จริง
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สมมติฐานผลตอบแทน</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ต่ำ 5%/ปี</strong> — สำหรับการวางแผนอนุรักษ์นิยม เหมาะกับช่วงที่ตลาดเติบโตช้า</li>
+        <li><strong>กลาง 8%/ปี</strong> — ใกล้เคียงค่าเฉลี่ยระยะยาวของ SET50 รวมปันผล</li>
+        <li><strong>สูง 12%/ปี</strong> — สำหรับช่วงที่ตลาดเติบโตดี หรือ S&P500 ในระยะยาว</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณการเติบโต-index-fund/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ผลตอบแทนในอดีตไม่ได้การันตีผลตอบแทนในอนาคต ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function calcFV(monthly: number, initial: number, annualRate: number, months: number): number {
+      const r = annualRate / 100 / 12;
+      if (r === 0) return initial + monthly * months;
+      return monthly * ((Math.pow(1 + r, months) - 1) / r) + initial * Math.pow(1 + r, months);
+    }
+
+    const form = document.getElementById('index-form') as HTMLFormElement;
+    const formError = document.getElementById('index-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const initial = parseNum((document.getElementById('index-initial') as HTMLInputElement).value);
+      const monthly = parseNum((document.getElementById('index-monthly') as HTMLInputElement).value);
+      const years = parseInt((document.getElementById('index-years') as HTMLInputElement).value) || 0;
+
+      if ((initial <= 0 && monthly <= 0) || years <= 0) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorStart('index-fund');
+
+      const totalMonths = years * 12;
+      const totalCost = initial + monthly * totalMonths;
+
+      const fvLow = calcFV(monthly, initial, 5, totalMonths);
+      const fvMid = calcFV(monthly, initial, 8, totalMonths);
+      const fvHigh = calcFV(monthly, initial, 12, totalMonths);
+
+      (document.getElementById('index-res-low') as HTMLElement).textContent = fmt(fvLow) + ' บาท';
+      (document.getElementById('index-res-mid') as HTMLElement).textContent = fmt(fvMid) + ' บาท';
+      (document.getElementById('index-res-high') as HTMLElement).textContent = fmt(fvHigh) + ' บาท';
+      (document.getElementById('index-res-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+
+      const milestones: number[] = [];
+      for (let y = 5; y <= years; y += 5) milestones.push(y);
+      if (milestones[milestones.length - 1] !== years) milestones.push(years);
+
+      const tbody = document.getElementById('index-table-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      milestones.forEach((y) => {
+        const m = y * 12;
+        const cost = initial + monthly * m;
+        const low = calcFV(monthly, initial, 5, m);
+        const mid = calcFV(monthly, initial, 8, m);
+        const high = calcFV(monthly, initial, 12, m);
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-4">${y} ปี</td>
+          <td class="py-2 pr-4 text-right text-gray-600">${fmt(cost)}</td>
+          <td class="py-2 pr-4 text-right text-blue-700">${fmt(low)}</td>
+          <td class="py-2 pr-4 text-right text-green-700 font-medium">${fmt(mid)}</td>
+          <td class="py-2 text-right text-primary-700">${fmt(high)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('index-fund');
+      trackCalculatorUsed('index-fund');
+    });
+  </script>
+</BaseLayout>

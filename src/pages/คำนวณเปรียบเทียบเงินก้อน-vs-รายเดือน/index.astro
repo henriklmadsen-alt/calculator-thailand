@@ -1,0 +1,326 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเปรียบเทียบรับเงินก้อน vs รายเดือน 2569 | ตัวเลือกไหนคุ้มกว่า | เครื่องคำนวณไทย';
+const pageDescription = 'เปรียบเทียบมูลค่าปัจจุบันของการรับเงินก้อนครั้งเดียวกับการรับรายเดือนตลอดระยะเวลา ช่วยตัดสินใจว่าตัวเลือกไหนคุ้มค่ากว่าตามอัตราดอกเบี้ย อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเปรียบเทียบเงินก้อน-vs-รายเดือน/`;
+
+const faqData = [
+  {
+    question: 'ควรเลือกรับเงินก้อนหรือรายเดือน?',
+    answer: 'ขึ้นอยู่กับอัตราคิดลด (Discount Rate) ที่คุณสามารถทำได้หากนำเงินก้อนไปลงทุน หากคุณลงทุนได้ผลตอบแทนสูงกว่าอัตราในสัญญา รับเงินก้อนและลงทุนเองจะคุ้มกว่า แต่หากผลตอบแทนต่ำกว่า รับรายเดือนจากสัญญาดีกว่า',
+  },
+  {
+    question: 'มูลค่าปัจจุบัน (Present Value) คืออะไร?',
+    answer: 'มูลค่าปัจจุบันคือมูลค่าของเงินในอนาคตเมื่อคิดลดกลับมาวันนี้ ตามหลักการที่ว่าเงิน 100 บาทวันนี้มีค่ามากกว่า 100 บาทในอนาคต เพราะสามารถนำไปลงทุนให้ได้ผลตอบแทน PV ใช้เปรียบเทียบตัวเลือกที่มีระยะเวลาต่างกัน',
+  },
+  {
+    question: 'จำนวนเดือนคุ้มทุนคืออะไร?',
+    answer: 'จำนวนเดือนคุ้มทุนคือจำนวนเดือนที่ต้องรับเงินรายเดือนเพื่อให้เงินรายเดือนรวมกัน (ในมูลค่าปัจจุบัน) เท่ากับเงินก้อน หากมีชีวิตหรือได้รับเงินนานกว่าจำนวนเดือนคุ้มทุน การรับรายเดือนจะคุ้มค่ากว่า',
+  },
+  {
+    question: 'ตัวอย่างการเปรียบเทียบเงินบำเหน็จ vs บำนาญ?',
+    answer: 'เช่น บำเหน็จ 2,000,000 บาท vs บำนาญ 12,000 บาท/เดือน เป็นเวลา 25 ปี ที่อัตราคิดลด 5%: PV ของบำนาญ = 12,000 × [1-(1.004167)^(-300)] / 0.004167 ≈ 2,028,000 บาท ซึ่งมากกว่าบำเหน็จเล็กน้อย ควรรับบำนาญ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเปรียบเทียบเงินก้อน vs รายเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเปรียบเทียบเงินก้อน-vs-รายเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเปรียบเทียบรับเงินก้อน vs รายเดือน 2569 — ตัวเลือกไหนคุ้มกว่า
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      เปรียบเทียบมูลค่าปัจจุบัน (Present Value) ของการรับเงินก้อนครั้งเดียวกับการรับรายเดือนตลอดระยะเวลา ช่วยตัดสินใจในกรณีบำเหน็จ-บำนาญ หรือการรับผลประโยชน์จากประกัน
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="lumpsum-vs-monthly-form" class="space-y-5">
+        <p id="lumpsum-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="lumpsum-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนเงินก้อน (บาท)
+            </label>
+            <input
+              type="text"
+              id="lumpsum-amount"
+              inputmode="numeric"
+              placeholder="เช่น 2,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="lumpsum-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="monthly-payment" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนเงินรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="monthly-payment"
+              inputmode="numeric"
+              placeholder="เช่น 12,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="monthly-payment-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="compare-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <input
+              type="number"
+              id="compare-years"
+              min="1"
+              max="60"
+              value="20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="discount-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราคิดลด/ผลตอบแทน (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="discount-rate"
+              inputmode="decimal"
+              placeholder="เช่น 5"
+              value="5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ผลตอบแทนที่คาดหวังหากนำเงินก้อนไปลงทุน</p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="lumpsum-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการเปรียบเทียบ</h2>
+
+        <!-- Recommendation Banner -->
+        <div id="res-recommendation" class="mb-6 rounded-xl p-4 text-center">
+          <div class="text-lg font-bold" id="res-recommendation-text">-</div>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าปัจจุบัน (รับรายเดือน)</div>
+            <div id="res-pv-monthly" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าเงินก้อน</div>
+            <div id="res-lumpsum-value" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ผลต่าง (มูลค่าปัจจุบัน)</span>
+            <span id="res-pv-diff" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">รับรายเดือนรวม (ยังไม่คิดลด)</span>
+            <span id="res-total-monthly-nominal" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนเดือนคุ้มทุน</span>
+            <span id="res-breakeven-months" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีเปรียบเทียบเงินก้อนกับรายเดือน</h2>
+      <p>
+        การเปรียบเทียบที่ถูกต้องต้องแปลงทุกอย่างเป็นมูลค่า ณ จุดเดียวกัน โดยใช้ Present Value (PV) ซึ่งคิดลดเงินในอนาคตกลับมาเป็นมูลค่าวันนี้
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรมูลค่าปัจจุบันของเงินรายเดือน</h3>
+      <p>
+        PV = PMT × [1 - (1 + r)^(-n)] ÷ r<br/>
+        โดย PMT = เงินรายเดือน, r = อัตราคิดลดรายเดือน, n = จำนวนเดือน<br/>
+        หาก PV ของรายเดือน > เงินก้อน: รับรายเดือนคุ้มกว่า
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เมื่อไรควรเลือกเงินก้อน</h3>
+      <p>
+        เลือกเงินก้อนเมื่อ: มีความสามารถลงทุนที่ผลตอบแทนสูงกว่าอัตราคิดลดในสัญญา มีความต้องการเงินทุนทันที หรืออาจมีอายุขัยที่สั้นกว่าระยะเวลาในสัญญา
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณเปรียบเทียบเงินก้อน-vs-รายเดือน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางการเงิน ควรพิจารณาปัจจัยส่วนตัวและปรึกษาผู้เชี่ยวชาญก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('lumpsum-vs-monthly-form') as HTMLFormElement;
+    const formError = document.getElementById('lumpsum-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const lumpsumAmount = parseNum((document.getElementById('lumpsum-amount') as HTMLInputElement).value);
+      const monthlyPayment = parseNum((document.getElementById('monthly-payment') as HTMLInputElement).value);
+      const years = parseInt((document.getElementById('compare-years') as HTMLInputElement).value) || 20;
+      const annualDiscount = parseNum((document.getElementById('discount-rate') as HTMLInputElement).value) || 5;
+
+      if (lumpsumAmount <= 0) {
+        formError.classList.remove('hidden');
+        (document.getElementById('lumpsum-amount') as HTMLInputElement).focus();
+        return;
+      }
+      if (monthlyPayment <= 0) {
+        formError.classList.remove('hidden');
+        (document.getElementById('monthly-payment') as HTMLInputElement).focus();
+        return;
+      }
+
+      trackCalculatorStart('lumpsum-vs-monthly');
+
+      const monthlyRate = annualDiscount / 100 / 12;
+      const n = years * 12;
+
+      // PV of monthly payments
+      let pvMonthly: number;
+      if (Math.abs(monthlyRate) < 0.0000001) {
+        pvMonthly = monthlyPayment * n;
+      } else {
+        pvMonthly = monthlyPayment * (1 - Math.pow(1 + monthlyRate, -n)) / monthlyRate;
+      }
+
+      const diff = pvMonthly - lumpsumAmount;
+      const monthlyWins = pvMonthly >= lumpsumAmount;
+      const totalMonthlyNominal = monthlyPayment * n;
+
+      // Breakeven: find m such that PMT * [1-(1+r)^(-m)]/r = lumpsum
+      // Approximate by iterating
+      let breakevenMonths = 0;
+      if (!monthlyWins) {
+        breakevenMonths = n + 1; // monthly never catches up in given period
+      } else {
+        let cumPV = 0;
+        for (let m = 1; m <= n; m++) {
+          cumPV += monthlyPayment / Math.pow(1 + monthlyRate, m);
+          if (cumPV >= lumpsumAmount) {
+            breakevenMonths = m;
+            break;
+          }
+        }
+      }
+
+      (document.getElementById('res-pv-monthly') as HTMLElement).textContent = fmt(pvMonthly) + ' บาท';
+      (document.getElementById('res-lumpsum-value') as HTMLElement).textContent = fmt(lumpsumAmount) + ' บาท';
+      (document.getElementById('res-pv-diff') as HTMLElement).textContent = (diff >= 0 ? '+' : '') + fmt(diff) + ' บาท';
+      (document.getElementById('res-total-monthly-nominal') as HTMLElement).textContent = fmt(totalMonthlyNominal) + ' บาท';
+      (document.getElementById('res-breakeven-months') as HTMLElement).textContent = breakevenMonths > n
+        ? 'เกินระยะเวลาที่กำหนด'
+        : breakevenMonths + ' เดือน (' + (breakevenMonths / 12).toFixed(1) + ' ปี)';
+
+      const recEl = document.getElementById('res-recommendation') as HTMLElement;
+      const recText = document.getElementById('res-recommendation-text') as HTMLElement;
+      if (monthlyWins) {
+        recEl.className = 'mb-6 rounded-xl p-4 text-center bg-green-50 border border-green-200';
+        recText.className = 'text-lg font-bold text-green-800';
+        recText.textContent = 'แนะนำ: รับรายเดือน — มูลค่าปัจจุบันสูงกว่าเงินก้อน ' + fmt(Math.abs(diff)) + ' บาท';
+      } else {
+        recEl.className = 'mb-6 rounded-xl p-4 text-center bg-blue-50 border border-blue-200';
+        recText.className = 'text-lg font-bold text-blue-800';
+        recText.textContent = 'แนะนำ: รับเงินก้อน — มูลค่าสูงกว่า PV ของรายเดือน ' + fmt(Math.abs(diff)) + ' บาท';
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('lumpsum-vs-monthly');
+      trackCalculatorUsed('lumpsum-vs-monthly');
+    });
+  </script>
+</BaseLayout>

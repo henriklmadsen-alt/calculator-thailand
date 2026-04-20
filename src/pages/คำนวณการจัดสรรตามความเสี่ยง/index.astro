@@ -1,0 +1,305 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณการจัดสรรพอร์ตตามความเสี่ยง 2569 | Risk Profile หุ้น vs ตราสารหนี้ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณสัดส่วนหุ้นและตราสารหนี้ที่เหมาะสมตาม risk profile อายุ และระยะเวลาลงทุน พร้อมแนะนำสัดส่วนสำหรับนักลงทุนระมัดระวัง กลาง และก้าวร้าว อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณการจัดสรรตามความเสี่ยง/`;
+
+const faqData = [
+  {
+    question: 'Risk Profile คืออะไร และมีกี่ประเภท?',
+    answer: 'Risk Profile คือระดับความสามารถและความเต็มใจที่จะรับความเสี่ยงในการลงทุน แบ่งเป็น 3 ประเภทหลัก: ระมัดระวัง (Conservative) — รับการขาดทุนได้น้อย เน้นรักษาเงินต้น; กลาง (Moderate) — ยอมรับความผันผวนพอสมควรเพื่อผลตอบแทนที่ดีขึ้น; ก้าวร้าว (Aggressive) — รับความผันผวนสูงเพื่อผลตอบแทนสูงสุดในระยะยาว',
+  },
+  {
+    question: 'กฎ 100 ลบอายุ (Rule of 100) คืออะไร?',
+    answer: 'กฎ 100 ลบอายุเป็น heuristic ง่ายๆ ในการหาสัดส่วนหุ้น เช่น อายุ 30 ปี: หุ้น 70%, ตราสารหนี้ 30% บางคนปรับเป็น 110 หรือ 120 ลบอายุ เพราะอายุคาดเฉลี่ยยาวขึ้นและเงินเฟ้อทำให้ต้องการผลตอบแทนสูงขึ้น',
+  },
+  {
+    question: 'ระยะเวลาลงทุนส่งผลต่อการจัดสรรพอร์ตอย่างไร?',
+    answer: 'ยิ่งระยะเวลาลงทุนนานขึ้น ยิ่งรับความเสี่ยงจากหุ้นได้มากขึ้น เพราะมีเวลาฟื้นตัวจากช่วงตลาดตก ผู้ที่ลงทุนระยะสั้น (ต่ำกว่า 3 ปี) ควรลดสัดส่วนหุ้นลง ส่วนผู้ที่ลงทุนระยะยาว (มากกว่า 10 ปี) สามารถถือหุ้นสัดส่วนสูงได้',
+  },
+  {
+    question: 'ตราสารหนี้ในพอร์ตลงทุนหมายถึงอะไร?',
+    answer: 'ตราสารหนี้ในพอร์ตลงทุนหมายถึงสินทรัพย์ที่ให้ดอกเบี้ยคงที่ เช่น พันธบัตรรัฐบาล หุ้นกู้บริษัท กองทุนตราสารหนี้ และเงินฝากประจำ ให้ผลตอบแทนต่ำกว่าหุ้นแต่ความผันผวนน้อยกว่า เหมาะสำหรับสร้างความมั่นคงให้พอร์ต',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณการจัดสรรพอร์ตตามความเสี่ยง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการจัดสรรตามความเสี่ยง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณการจัดสรรพอร์ตตามความเสี่ยง 2569 — Risk Profile หุ้น vs ตราสารหนี้
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณสัดส่วนหุ้นและตราสารหนี้ที่เหมาะสมตามอายุและ Risk Profile ของคุณ พร้อมแนะนำ 3 ระดับ ระมัดระวัง / กลาง / ก้าวร้าว
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="risk-form" class="space-y-5">
+        <p id="risk-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="risk-age" class="block text-sm font-medium text-gray-700 mb-1">
+              อายุปัจจุบัน (ปี)
+            </label>
+            <input
+              type="number"
+              id="risk-age"
+              min="18"
+              max="80"
+              placeholder="เช่น 35"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="risk-horizon" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาลงทุน (ปี)
+            </label>
+            <input
+              type="number"
+              id="risk-horizon"
+              min="1"
+              max="40"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="risk-profile" class="block text-sm font-medium text-gray-700 mb-1">
+              Risk Profile
+            </label>
+            <select
+              id="risk-profile"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="conservative">ระมัดระวัง (Conservative)</option>
+              <option value="moderate" selected>กลาง (Moderate)</option>
+              <option value="aggressive">ก้าวร้าว (Aggressive)</option>
+            </select>
+          </div>
+          <div>
+            <label for="risk-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนทั้งหมด (บาท)
+            </label>
+            <input
+              type="text"
+              id="risk-amount"
+              inputmode="numeric"
+              placeholder="เช่น 500,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">ผลการคำนวณ</h2>
+        <p id="risk-res-profile-label" class="text-sm text-gray-600 mb-4"></p>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สัดส่วนหุ้นที่แนะนำ</div>
+            <div id="risk-res-equity-pct" class="text-2xl font-bold text-green-700">-</div>
+            <div id="risk-res-equity-amt" class="text-sm text-green-600 mt-1">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สัดส่วนตราสารหนี้ที่แนะนำ</div>
+            <div id="risk-res-bond-pct" class="text-2xl font-bold text-blue-700">-</div>
+            <div id="risk-res-bond-amt" class="text-sm text-blue-600 mt-1">-</div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">เปรียบเทียบทั้ง 3 ระดับ Risk Profile</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-4">Risk Profile</th>
+                  <th class="py-2 pr-4 text-right">หุ้น (%)</th>
+                  <th class="py-2 pr-4 text-right">ตราสารหนี้ (%)</th>
+                  <th class="py-2 text-right">จำนวนเงินหุ้น</th>
+                </tr>
+              </thead>
+              <tbody id="risk-compare-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณการจัดสรรพอร์ตตามความเสี่ยง</h2>
+      <p>
+        เครื่องคำนวณนี้ใช้สูตรที่ปรับจากกฎ "100 ลบอายุ" โดยแบ่งตาม Risk Profile ดังนี้:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ระมัดระวัง:</strong> หุ้น = max(20, 100 − อายุ − 10)% สูงสุด 90%</li>
+        <li><strong>กลาง:</strong> หุ้น = max(30, 110 − อายุ)% สูงสุด 90%</li>
+        <li><strong>ก้าวร้าว:</strong> หุ้น = max(50, 120 − อายุ)% สูงสุด 90%</li>
+        <li>ตราสารหนี้ = 100% − สัดส่วนหุ้น</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณการจัดสรรตามความเสี่ยง/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงแนวทางเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางการเงิน ควรพิจารณาปัจจัยส่วนตัวและปรึกษาที่ปรึกษาทางการเงินก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function calcEquityPct(profile: string, age: number): number {
+      let eq: number;
+      if (profile === 'conservative') {
+        eq = Math.max(20, 100 - age - 10);
+      } else if (profile === 'moderate') {
+        eq = Math.max(30, 110 - age);
+      } else {
+        eq = Math.max(50, 120 - age);
+      }
+      return Math.min(90, eq);
+    }
+
+    const profileLabels: Record<string, string> = {
+      conservative: 'ระมัดระวัง (Conservative)',
+      moderate: 'กลาง (Moderate)',
+      aggressive: 'ก้าวร้าว (Aggressive)',
+    };
+
+    const form = document.getElementById('risk-form') as HTMLFormElement;
+    const formError = document.getElementById('risk-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const age = parseInt((document.getElementById('risk-age') as HTMLInputElement).value) || 0;
+      const horizon = parseInt((document.getElementById('risk-horizon') as HTMLInputElement).value) || 0;
+      const profile = (document.getElementById('risk-profile') as HTMLSelectElement).value;
+      const amount = parseNum((document.getElementById('risk-amount') as HTMLInputElement).value);
+
+      if (age < 18 || age > 80 || horizon <= 0 || amount <= 0) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorStart('risk-alloc');
+
+      const equityPct = calcEquityPct(profile, age);
+      const bondPct = 100 - equityPct;
+      const equityAmt = amount * equityPct / 100;
+      const bondAmt = amount * bondPct / 100;
+
+      (document.getElementById('risk-res-profile-label') as HTMLElement).textContent =
+        `ผลลัพธ์สำหรับนักลงทุน ${profileLabels[profile]} อายุ ${age} ปี ระยะเวลาลงทุน ${horizon} ปี`;
+
+      (document.getElementById('risk-res-equity-pct') as HTMLElement).textContent = equityPct.toFixed(0) + '%';
+      (document.getElementById('risk-res-equity-amt') as HTMLElement).textContent = fmt(equityAmt) + ' บาท';
+      (document.getElementById('risk-res-bond-pct') as HTMLElement).textContent = bondPct.toFixed(0) + '%';
+      (document.getElementById('risk-res-bond-amt') as HTMLElement).textContent = fmt(bondAmt) + ' บาท';
+
+      const profiles = ['conservative', 'moderate', 'aggressive'];
+      const tbody = document.getElementById('risk-compare-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      profiles.forEach((p) => {
+        const eq = calcEquityPct(p, age);
+        const bd = 100 - eq;
+        const eqAmt = amount * eq / 100;
+        const tr = document.createElement('tr');
+        tr.className = p === profile ? 'border-b border-gray-100 bg-primary-50 font-semibold' : 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-4">${profileLabels[p]}${p === profile ? ' ✓' : ''}</td>
+          <td class="py-2 pr-4 text-right text-green-700">${eq}%</td>
+          <td class="py-2 pr-4 text-right text-blue-700">${bd}%</td>
+          <td class="py-2 text-right">${fmt(eqAmt)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('risk-alloc');
+      trackCalculatorUsed('risk-alloc');
+    });
+  </script>
+</BaseLayout>
