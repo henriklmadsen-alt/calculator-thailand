@@ -192,6 +192,15 @@ export const calculators: Calculator[] = [
     tagColor: 'bg-orange-50 text-orange-600',
   },
   {
+    title: 'คำนวณผ่อนมอเตอร์ไซค์',
+    desc: 'คำนวณค่างวดมอเตอร์ไซค์ เงินดาวน์ ดอกเบี้ย flat rate พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนมอเตอร์ไซค์/',
+    icon: '🏍️',
+    categoryId: 'loan',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
     title: 'คำนวณดอกเบี้ยเงินฝาก',
     desc: 'ดอกเบี้ยฝากประจำและออมทรัพย์ หักภาษี 15% แสดงผลตอบแทนสุทธิ',
     href: '/คำนวณดอกเบี้ยเงินฝาก/',
@@ -437,8 +446,38 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'คำนวณค่าจ้างพนักงาน',
+    desc: 'คำนวณต้นทุนรวมค่าจ้างพนักงาน เงินเดือน ประกันสังคม กองทุนสำรอง ประกันกลุ่ม สวัสดิการ สำหรับนายจ้าง',
+    href: '/คำนวณค่าจ้างพนักงาน/',
+    icon: '🏢',
+    categoryId: 'salary',
+    secondaryCategories: ['bills'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 
   // ── Real Estate ──
+  {
+    title: 'คำนวณค่าคอนโด',
+    desc: 'คำนวณค่าใช้จ่ายคอนโดรายเดือน ค่าผ่อน ส่วนกลาง เงินกองทุน ประกัน สาธารณูปโภค รวมทุกรายการ',
+    href: '/คำนวณค่าคอนโด/',
+    icon: '🏢',
+    categoryId: 'realestate',
+    secondaryCategories: ['bills', 'loan'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าเช่าคอนโด',
+    desc: 'คำนวณผลตอบแทนค่าเช่าคอนโด Gross/Net Yield, Cash-on-Cash ROI กระแสเงินสด ระยะคืนทุน วิเคราะห์การลงทุน',
+    href: '/คำนวณค่าเช่าคอนโด/',
+    icon: '🏙️',
+    categoryId: 'realestate',
+    secondaryCategories: ['loan'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
   {
     title: 'คำนวณค่าตกแต่งบ้าน',
     desc: 'ประมาณค่าตกแต่งบ้านแต่ละห้อง เลือกสไตล์ วัสดุ พร้อมค่าเฟอร์นิเจอร์และค่าแรงช่างตามราคาตลาดไทย',
@@ -481,6 +520,15 @@ export const calculators: Calculator[] = [
     href: '/คำนวณวันคลอด/',
     icon: '👶',
     categoryId: 'health',
+  },
+  {
+    title: 'คำนวณวันตกไข่',
+    desc: 'คำนวณวันตกไข่และช่วงเวลาเจริญพันธุ์ วางแผนครอบครัว',
+    href: '/คำนวณวันตกไข่/',
+    icon: '🥚',
+    categoryId: 'health',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
   },
   {
     title: 'คำนวณเงินเกษียณ',
@@ -568,6 +616,30 @@ export const calculators: Calculator[] = [
     icon: '📚',
     categoryId: 'bills',
     secondaryCategories: ['health'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // ── Business/Advertising ──
+  {
+    title: 'คำนวณค่าโฆษณา',
+    desc: 'คำนวณค่าโฆษณา Facebook Google LINE CPC CPM คอนเวอร์ชัน ROAS ต้นทุนต่อลูกค้า วางแผนงบโฆษณา',
+    href: '/คำนวณค่าโฆษณา/',
+    icon: '📢',
+    categoryId: 'bills',
+    secondaryCategories: ['tax'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // ── Banking ──
+  {
+    title: 'คำนวณค่าธรรมเนียมโอนเงิน',
+    desc: 'เปรียบเทียบค่าโอนเงินทุกช่องทาง พร้อมเพย์ ATM เคาน์เตอร์ BAHTNET ดูช่องทางที่ถูกที่สุด',
+    href: '/คำนวณค่าธรรมเนียมโอนเงิน/',
+    icon: '🏧',
+    categoryId: 'bills',
+    secondaryCategories: ['loan'],
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
