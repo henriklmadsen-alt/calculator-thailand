@@ -1,0 +1,206 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณประมาณการชดเชยประกัน 2569 | Claim Payout Estimate ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณประมาณการเงินชดเชยจากประกันภัย 2569 หักค่า deductible ค่าร่วมจ่าย และวงเงินสูงสุด รู้ก่อนว่าจะได้รับเงินชดเชยเท่าไรก่อนยื่นเคลม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประมาณการชดเชยประกัน/`;
+
+const faqData = [
+  {
+    question: 'เงินชดเชยจากประกันคำนวณอย่างไร?',
+    answer: 'เงินชดเชย = ค่าความเสียหายจริง - deductible - ค่าร่วมจ่าย (co-pay) แต่ต้องไม่เกินวงเงินสูงสุดของกรมธรรม์ หากค่าเสียหายต่ำกว่า deductible จะไม่ได้รับชดเชย',
+  },
+  {
+    question: 'Deductible ต่างจาก Co-pay อย่างไร?',
+    answer: 'Deductible คือจำนวนเงินคงที่ที่ต้องจ่ายก่อนประกันเริ่มจ่าย (เช่น 5,000 บาทแรก) ส่วน Co-pay คือสัดส่วนที่ต้องจ่ายร่วมตลอด (เช่น 20% ของค่ารักษา) บางกรมธรรม์มีทั้งสองอย่าง',
+  },
+  {
+    question: 'วงเงินสูงสุดมีผลอย่างไร?',
+    answer: 'วงเงินสูงสุด (Maximum Benefit) คือเพดานที่ประกันจ่ายสูงสุดต่อครั้งหรือต่อปี หากค่ารักษาหรือความเสียหายสูงกว่าวงเงิน ส่วนที่เกินต้องจ่ายเอง',
+  },
+  {
+    question: 'ควรเตรียมเอกสารอะไรบ้างสำหรับการเคลม?',
+    answer: 'เอกสารทั่วไปสำหรับการเคลม: (1) ใบแจ้งการเคลม (Claim Form) (2) ใบเสร็จและใบรับรองแพทย์ (3) สำเนาบัตรประชาชน (4) สำเนากรมธรรม์ (5) รายงานตำรวจ (กรณีอุบัติเหตุหรือโจรกรรม)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประมาณการชดเชยประกัน 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประมาณการชดเชยประกัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประมาณการเงินชดเชยที่จะได้รับจากประกัน</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณก่อนยื่นเคลมจริง ผลลัพธ์เป็นการประมาณการ</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประมาณการชดเชยประกัน 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">คำนวณเงินชดเชยจากประกันภัยหลังหัก deductible co-pay และเทียบกับวงเงินสูงสุด</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลการเคลม</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+
+        <div>
+          <label for="loss-amount" class="block text-sm font-medium text-gray-700 mb-1">ค่าความเสียหาย/ค่ารักษาจริง (บาท)</label>
+          <input type="text" id="loss-amount" inputmode="numeric" placeholder="เช่น 80,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <div>
+          <label for="deductible" class="block text-sm font-medium text-gray-700 mb-1">Deductible (บาท)</label>
+          <input type="text" id="deductible" inputmode="numeric" placeholder="เช่น 5,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">จำนวนที่ต้องจ่ายเองก่อนประกันเริ่มจ่าย (ใส่ 0 ถ้าไม่มี)</p>
+        </div>
+
+        <div>
+          <label for="copay" class="block text-sm font-medium text-gray-700 mb-1">Co-pay (%)</label>
+          <input type="text" id="copay" inputmode="numeric" placeholder="เช่น 20"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">สัดส่วนที่ต้องจ่ายร่วม (ใส่ 0 ถ้าไม่มี)</p>
+        </div>
+
+        <div>
+          <label for="max-benefit" class="block text-sm font-medium text-gray-700 mb-1">วงเงินสูงสุดต่อครั้ง (บาท)</label>
+          <input type="text" id="max-benefit" inputmode="numeric" placeholder="เช่น 500,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">วงเงินสูงสุดตามกรมธรรม์ (ใส่ 0 ถ้าไม่จำกัด)</p>
+        </div>
+
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+          คำนวณเงินชดเชย
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center">
+          <p class="text-sm text-primary-700 mb-1">ประกันจ่ายประมาณ</p>
+          <p class="text-3xl font-bold text-primary-700" id="insurance-pays">-</p>
+          <p class="text-xs text-primary-600">บาท</p>
+        </div>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+          <p class="text-sm text-red-700 mb-1">คุณจ่ายเอง</p>
+          <p class="text-3xl font-bold text-red-700" id="you-pay">-</p>
+          <p class="text-xs text-red-600">บาท</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ขั้นตอนการคำนวณเงินชดเชย</h2>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>นำค่าความเสียหายจริงตั้งต้น</li>
+        <li>หัก Deductible (ถ้ามี) — จำนวนคงที่</li>
+        <li>คำนวณ Co-pay จากยอดหลังหัก deductible</li>
+        <li>หัก Co-pay ออก</li>
+        <li>เปรียบเทียบกับวงเงินสูงสุด ใช้ค่าที่น้อยกว่า</li>
+      </ol>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณประมาณการชดเชยประกัน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เงินชดเชยจริงขึ้นกับเงื่อนไขกรมธรรม์และการพิจารณาของบริษัทประกัน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const loss = parseNum((document.getElementById('loss-amount') as HTMLInputElement).value);
+      const deductible = parseNum((document.getElementById('deductible') as HTMLInputElement).value);
+      const copayPct = parseNum((document.getElementById('copay') as HTMLInputElement).value);
+      const maxBenefit = parseNum((document.getElementById('max-benefit') as HTMLInputElement).value);
+      const err = document.getElementById('form-error')!;
+
+      if (loss < 100) {
+        err.textContent = 'กรุณากรอกค่าความเสียหาย';
+        err.classList.remove('hidden'); return;
+      }
+      err.classList.add('hidden');
+
+      const afterDeductible = Math.max(0, loss - deductible);
+      const copayAmount = afterDeductible * (copayPct / 100);
+      const afterCopay = afterDeductible - copayAmount;
+      const insurancePays = maxBenefit > 0 ? Math.min(afterCopay, maxBenefit) : afterCopay;
+      const youPay = loss - insurancePays;
+
+      const rows = [
+        ['ค่าความเสียหายจริง', '', `${fmt(loss)} บาท`],
+        ['หัก Deductible', deductible > 0 ? `${fmt(deductible)} บาท` : 'ไม่มี', deductible > 0 ? `-${fmt(deductible)} บาท` : '-'],
+        ['ยอดหลังหัก Deductible', '', `${fmt(afterDeductible)} บาท`],
+        ['Co-pay ที่คุณจ่าย', `${copayPct}%`, copayPct > 0 ? `-${fmt(copayAmount)} บาท` : '-'],
+        ['ยอดที่ประกันพิจารณา', '', `${fmt(afterCopay)} บาท`],
+        maxBenefit > 0 && afterCopay > maxBenefit ? ['เกินวงเงินสูงสุด', `จำกัดที่ ${fmt(maxBenefit)} บาท`, `${fmt(afterCopay - maxBenefit)} บาท (จ่ายเอง)`] : null,
+        ['ประกันจ่าย', '', `<strong>${fmt(insurancePays)} บาท</strong>`],
+        ['คุณจ่ายเอง', 'deductible + copay + ส่วนเกินวงเงิน', `<strong>${fmt(youPay)} บาท</strong>`],
+      ].filter(Boolean) as string[][];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td>
+        </tr>`).join('');
+
+      (document.getElementById('insurance-pays') as HTMLElement).textContent = fmt(insurancePays) + ' บาท';
+      (document.getElementById('you-pay') as HTMLElement).textContent = fmt(youPay) + ' บาท';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

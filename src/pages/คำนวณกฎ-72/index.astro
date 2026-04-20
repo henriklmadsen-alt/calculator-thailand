@@ -1,0 +1,231 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณกฎ 72 ปี 2569 เงินเท่าตัวในกี่ปีที่ดอกเบี้ยเท่านี้ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณด้วยกฎ 72 ว่าเงินจะเพิ่มเป็น 2 เท่าในกี่ปี หรือต้องดอกเบี้ยเท่าไหร่ถึงเท่าตัวในเวลาที่กำหนด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกฎ-72/`;
+
+const faqData = [
+  {
+    question: 'กฎ 72 คืออะไร?',
+    answer: 'กฎ 72 เป็นหลักการง่ายๆ ในการประมาณเวลาที่เงินจะเพิ่มเป็น 2 เท่า โดยหาร 72 ด้วยอัตราดอกเบี้ยต่อปี เช่น ดอกเบี้ย 8% ต่อปี เงินจะเท่าตัวในประมาณ 72÷8 = 9 ปี',
+  },
+  {
+    question: 'กฎ 72 แม่นยำแค่ไหน?',
+    answer: 'กฎ 72 เป็นการประมาณการที่แม่นยำพอใช้ได้สำหรับอัตราดอกเบี้ย 5–15% ต่อปี ที่อัตราต่ำกว่า 5% ควรใช้ 69.3 และที่สูงกว่า 15% ควรใช้ 78 แทน',
+  },
+  {
+    question: 'สามารถใช้กฎ 72 กับเงินเฟ้อได้หรือไม่?',
+    answer: 'ได้ กฎ 72 ใช้ได้กับทุกอย่างที่เติบโตแบบทบต้น เช่น ที่อัตราเงินเฟ้อ 3% ต่อปี ราคาสินค้าจะเพิ่มเป็น 2 เท่าใน 72÷3 = 24 ปี',
+  },
+  {
+    question: 'กฎ 72 ต่างจากกฎ 114 และ 144 อย่างไร?',
+    answer: 'กฎ 72 = เพิ่มเป็น 2 เท่า, กฎ 114 = เพิ่มเป็น 3 เท่า, กฎ 144 = เพิ่มเป็น 4 เท่า ใช้หลักการเดียวกันคือหารตัวเลขด้วยอัตราดอกเบี้ยเพื่อได้จำนวนปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกฎ 72',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกฎ-72">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
+      <p class="text-sm font-semibold text-amber-700">✖️ คำนวณกฎ 72 (Rule of 72)</p>
+      <p class="mt-1 text-sm text-slate-700">กฎ 72: ปีที่เงินเท่าตัว = 72 ÷ ดอกเบี้ย% | ดอกเบี้ยที่ต้องการ = 72 ÷ จำนวนปี</p>
+      <p class="mt-1 text-xs font-medium text-amber-800">เครื่องมือง่ายๆ สำหรับประมาณการเติบโตของเงิน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณกฎ 72 ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกว่าจะหาว่าต้องกี่ปีเงินจะเท่าตัว หรือต้องดอกเบี้ยเท่าไหร่ให้เงินเท่าตัวในเวลาที่กำหนด
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="r72-form" class="space-y-5">
+        <div class="mb-2">
+          <label class="mb-1 block text-sm font-medium text-gray-700">ต้องการคำนวณ</label>
+          <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="r72-mode" value="years" checked class="text-primary-600" />
+              หาจำนวนปีที่เงินเท่าตัว (รู้ดอกเบี้ย)
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="r72-mode" value="rate" class="text-primary-600" />
+              หาดอกเบี้ยที่ต้องการ (รู้จำนวนปี)
+            </label>
+          </div>
+        </div>
+
+        <div id="r72-rate-input" class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="r72-interest" class="mb-1 block text-sm font-medium text-gray-700">อัตราดอกเบี้ย/ผลตอบแทน (% ต่อปี)</label>
+            <input type="text" id="r72-interest" inputmode="numeric" placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="r72-interest-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="r72-amount" class="mb-1 block text-sm font-medium text-gray-700">เงินต้น (บาท, ไม่บังคับ)</label>
+            <input type="text" id="r72-amount" inputmode="numeric" placeholder="เช่น 100,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div id="r72-years-input" class="hidden grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="r72-target-years" class="mb-1 block text-sm font-medium text-gray-700">จำนวนปีที่ต้องการให้เงินเท่าตัว</label>
+            <input type="text" id="r72-target-years" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="r72-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณกฎ 72
+        </button>
+      </form>
+    </div>
+
+    <div id="r72-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600" id="r72-label-1">เงินเท่าตัวใน</div>
+            <div id="res-r72-main" class="text-2xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินต้น</div>
+            <div id="res-r72-principal" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าหลังเท่าตัว</div>
+            <div id="res-r72-doubled" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="r72-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">กฎ 72 และตัวอย่างการใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>จำนวนปีเงินเท่าตัว = 72 ÷ ดอกเบี้ย%</li>
+        <li>ดอกเบี้ยที่ต้องการ = 72 ÷ จำนวนปี</li>
+        <li>ดอกเบี้ย 6%: เงินเท่าตัวใน 12 ปี</li>
+        <li>ดอกเบี้ย 9%: เงินเท่าตัวใน 8 ปี</li>
+        <li>ดอกเบี้ย 12%: เงินเท่าตัวใน 6 ปี</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#r72-results" />
+    <RelatedArticles currentHref="/คำนวณกฎ-72/" />
+    <RelatedCalculators currentHref="/คำนวณกฎ-72/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> กฎ 72 เป็นการประมาณการ ไม่ใช่ผลลัพธ์ที่แน่นอน ผลตอบแทนจริงอาจแตกต่างตามสภาวะตลาด
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const modeRadios = document.querySelectorAll('input[name="r72-mode"]');
+    modeRadios.forEach(r => r.addEventListener('change', () => {
+      const isYears = document.querySelector('input[name="r72-mode"]:checked').value === 'years';
+      document.getElementById('r72-rate-input').classList.toggle('hidden', isYears);
+      document.getElementById('r72-years-input').classList.toggle('hidden', !isYears);
+    }));
+
+    document.getElementById('r72-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      ['r72-interest-error','r72-years-error'].forEach(id => setErr(id, ''));
+
+      const mode = document.querySelector('input[name="r72-mode"]:checked').value;
+      const principal = parseNum(document.getElementById('r72-amount').value) || 100000;
+
+      let yearsToDouble, requiredRate;
+
+      if (mode === 'years') {
+        const rate = parseNum(document.getElementById('r72-interest').value);
+        if (!rate) { setErr('r72-interest-error', 'กรอกอัตราดอกเบี้ย'); document.getElementById('r72-results').classList.add('hidden'); return; }
+        yearsToDouble = 72 / rate;
+        requiredRate = rate;
+        setText('r72-label-1', 'เงินเท่าตัวใน');
+        setText('res-r72-main', `${yearsToDouble.toFixed(1)} ปี`);
+        const statusEl = document.getElementById('r72-status');
+        statusEl.className = 'rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 border border-amber-200';
+        statusEl.textContent = `ที่ดอกเบี้ย ${rate}%/ปี เงิน ${formatMoney(principal)} จะเพิ่มเป็น ${formatMoney(principal * 2)} ใน ${yearsToDouble.toFixed(1)} ปี`;
+      } else {
+        const targetYears = parseNum(document.getElementById('r72-target-years').value);
+        if (!targetYears) { setErr('r72-years-error', 'กรอกจำนวนปี'); document.getElementById('r72-results').classList.add('hidden'); return; }
+        requiredRate = 72 / targetYears;
+        yearsToDouble = targetYears;
+        setText('r72-label-1', 'ดอกเบี้ยที่ต้องการ');
+        setText('res-r72-main', `${requiredRate.toFixed(2)}%/ปี`);
+        const statusEl = document.getElementById('r72-status');
+        statusEl.className = 'rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 border border-amber-200';
+        statusEl.textContent = `ต้องการดอกเบี้ย ${requiredRate.toFixed(2)}%/ปี จึงจะทำให้เงิน ${formatMoney(principal)} เพิ่มเป็น ${formatMoney(principal * 2)} ใน ${targetYears} ปี`;
+      }
+
+      setText('res-r72-principal', formatMoney(principal));
+      setText('res-r72-doubled', formatMoney(principal * 2));
+
+      document.getElementById('r72-results').classList.remove('hidden');
+      document.getElementById('r72-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

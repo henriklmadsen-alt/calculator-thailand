@@ -1,0 +1,197 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณประกันความรับผิดทางวิชาชีพ 2569 | Professional Indemnity ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณเบี้ยประกันความรับผิดทางวิชาชีพ (Professional Indemnity) 2569 สำหรับแพทย์ ทนาย วิศวกร นักบัญชี ที่ปรึกษา ประมาณการเบี้ยตามวงเงินคุ้มครองและอาชีพ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันความรับผิดทางวิชาชีพ/`;
+
+const faqData = [
+  {
+    question: 'ประกันความรับผิดทางวิชาชีพคืออะไร?',
+    answer: 'Professional Indemnity Insurance คือประกันที่คุ้มครองผู้ประกอบวิชาชีพเมื่อถูกเรียกร้องค่าเสียหายจากลูกค้าเนื่องจากความผิดพลาดหรือความบกพร่องในการให้บริการทางวิชาชีพ เช่น แพทย์วินิจฉัยผิด ทนายแพ้คดีจากข้อผิดพลาด วิศวกรออกแบบผิด',
+  },
+  {
+    question: 'วิชาชีพใดควรทำประกันนี้บ้าง?',
+    answer: 'ทุกวิชาชีพที่ให้คำแนะนำหรือบริการทางวิชาชีพ เช่น แพทย์และทันตแพทย์ ทนายความ วิศวกรและสถาปนิก นักบัญชีและผู้สอบบัญชี ที่ปรึกษาทางการเงิน นักออกแบบ และ IT Consultant',
+  },
+  {
+    question: 'เบี้ยประกัน PI คำนวณอย่างไร?',
+    answer: 'เบี้ยขึ้นกับ: (1) วงเงินคุ้มครองที่เลือก (Limit of Indemnity) (2) ประเภทวิชาชีพ (ความเสี่ยงแต่ละอาชีพต่างกัน) (3) รายได้ต่อปีของผู้เอาประกัน (4) ประสบการณ์และประวัติการเคลม โดยทั่วไปเบี้ยอยู่ที่ 0.5-2% ของวงเงินคุ้มครอง',
+  },
+  {
+    question: 'ประกัน PI ครอบคลุมอะไรบ้าง?',
+    answer: 'ครอบคลุมค่าใช้จ่ายในการต่อสู้คดี ค่าเสียหายที่ต้องชดใช้แก่ผู้เสียหาย ค่าธรรมเนียมทนายความ และค่าใช้จ่ายในการสอบสวน แต่ไม่ครอบคลุมการกระทำโดยเจตนาหรือการทุจริต',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกันความรับผิดทางวิชาชีพ 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันความรับผิดทางวิชาชีพ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประมาณการเบี้ย Professional Indemnity Insurance</p>
+      <p class="mt-1 text-sm text-slate-700">ผลลัพธ์เป็นการประมาณการ อัตราจริงขึ้นกับบริษัทประกันและปัจจัยเฉพาะบุคคล</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประกันความรับผิดทางวิชาชีพ 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">ประมาณเบี้ยประกัน Professional Indemnity สำหรับผู้ประกอบวิชาชีพทุกประเภท</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+
+        <div>
+          <label for="profession" class="block text-sm font-medium text-gray-700 mb-1">ประเภทวิชาชีพ</label>
+          <select id="profession" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="0.005">แพทย์/ทันตแพทย์ (0.5%)</option>
+            <option value="0.008">ทนายความ (0.8%)</option>
+            <option value="0.006">วิศวกร/สถาปนิก (0.6%)</option>
+            <option value="0.005">นักบัญชี/ผู้สอบบัญชี (0.5%)</option>
+            <option value="0.007">ที่ปรึกษาการเงิน (0.7%)</option>
+            <option value="0.004">IT Consultant (0.4%)</option>
+            <option value="0.006">อื่นๆ (0.6%)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="indemnity-limit" class="block text-sm font-medium text-gray-700 mb-1">วงเงินคุ้มครอง (บาท)</label>
+          <select id="indemnity-limit" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="1000000">1,000,000 บาท</option>
+            <option value="2000000">2,000,000 บาท</option>
+            <option value="5000000" selected>5,000,000 บาท</option>
+            <option value="10000000">10,000,000 บาท</option>
+            <option value="20000000">20,000,000 บาท</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="annual-revenue" class="block text-sm font-medium text-gray-700 mb-1">รายได้ต่อปีโดยประมาณ (บาท)</label>
+          <input type="text" id="annual-revenue" inputmode="numeric" placeholder="เช่น 1,200,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+          คำนวณเบี้ยประกัน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="bg-primary-50 border border-primary-200 rounded-lg p-5 mb-4 text-center">
+        <p class="text-sm text-primary-700 mb-1">เบี้ยประกันประมาณการรายปี</p>
+        <p class="text-4xl font-bold text-primary-700" id="total-premium">-</p>
+        <p class="text-sm text-primary-600 mt-1" id="monthly-premium">-</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ความรับผิดทางวิชาชีพคืออะไร?</h2>
+      <p>ผู้ประกอบวิชาชีพมีหน้าที่ตามกฎหมายที่ต้องปฏิบัติงานด้วยมาตรฐานวิชาชีพ หากเกิดความเสียหายจากความผิดพลาด ลูกค้าสามารถเรียกร้องค่าชดเชยได้ ประกัน PI จึงเป็นหลักประกันสำคัญสำหรับวิชาชีพทุกประเภท</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างสถานการณ์ที่ใช้ประกัน PI</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>แพทย์วินิจฉัยโรคผิดพลาด ผู้ป่วยได้รับความเสียหาย</li>
+        <li>ทนายยื่นเอกสารผิดพลาดทำให้แพ้คดี</li>
+        <li>วิศวกรออกแบบโครงสร้างผิดพลาด</li>
+        <li>นักบัญชีคำนวณภาษีผิด ลูกค้าถูกปรับ</li>
+        <li>ที่ปรึกษาให้คำแนะนำผิดพลาด ลูกค้าขาดทุน</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณประกันความรับผิดทางวิชาชีพ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงขึ้นกับบริษัทประกันและลักษณะการประกอบวิชาชีพ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const rate = parseFloat((document.getElementById('profession') as HTMLSelectElement).value);
+      const limit = parseFloat((document.getElementById('indemnity-limit') as HTMLSelectElement).value);
+      const revenue = parseNum((document.getElementById('annual-revenue') as HTMLInputElement).value);
+      const err = document.getElementById('form-error')!;
+
+      if (revenue < 120000) {
+        err.textContent = 'กรุณากรอกรายได้ต่อปีอย่างน้อย 120,000 บาท';
+        err.classList.remove('hidden'); return;
+      }
+      err.classList.add('hidden');
+
+      const basePremium = limit * rate;
+      const minPremium = 5000;
+      const total = Math.max(basePremium, minPremium);
+
+      const rows = [
+        ['วงเงินคุ้มครอง', '', `${fmt(limit)} บาท`],
+        ['อัตราเบี้ย', `${(rate*100).toFixed(1)}% ของวงเงิน`, `${fmt(limit * rate)} บาท`],
+        ['เบี้ยขั้นต่ำ', '', `${fmt(minPremium)} บาท`],
+        ['เบี้ยรวมประมาณการ/ปี', '(ใช้ค่าสูงกว่า)', `<strong>${fmt(total)} บาท</strong>`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td>
+        </tr>`).join('');
+
+      (document.getElementById('total-premium') as HTMLElement).textContent = fmt(total) + ' บาท/ปี';
+      (document.getElementById('monthly-premium') as HTMLElement).textContent = `≈ ${fmt(total/12)} บาท/เดือน`;
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

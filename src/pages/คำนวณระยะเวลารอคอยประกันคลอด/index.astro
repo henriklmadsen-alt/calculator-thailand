@@ -1,0 +1,135 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณระยะเวลารอคอยประกันคลอด 2569 | Maternity Waiting Period ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณระยะเวลารอคอยประกันคลอด (Maternity Waiting Period) 2569 วางแผนซื้อประกันก่อนตั้งครรภ์ให้ทันครอบคลุมค่าคลอด พร้อมวันที่เริ่มได้สิทธิ์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณระยะเวลารอคอยประกันคลอด/`;
+
+const faqData = [
+  { question: 'ระยะเวลารอคอยประกันคลอดคือกี่เดือน?', answer: 'โดยทั่วไป 280-310 วัน (9-10 เดือน) แต่บางบริษัทกำหนด 12 เดือน ต้องตรวจสอบกับบริษัทประกันโดยตรง ระยะรอคอยนับจากวันที่กรมธรรม์มีผลบังคับ' },
+  { question: 'ถ้าตั้งครรภ์ก่อนซื้อประกันได้รับความคุ้มครองไหม?', answer: 'ไม่ได้ ประกันสุขภาพส่วนใหญ่ถือว่าการตั้งครรภ์ที่มีอยู่ก่อนซื้อประกันเป็น "โรคที่เป็นมาก่อน" (Pre-existing condition) ซึ่งไม่คุ้มครอง ดังนั้นควรซื้อก่อนตั้งครรภ์อย่างน้อย 10-12 เดือน' },
+  { question: 'ค่าคลอดที่ประกันครอบคลุมมีอะไรบ้าง?', answer: 'ส่วนใหญ่ครอบคลุม: ค่าห้องและอาหาร ค่าผ่าตัดคลอด ค่าฉีดยา ค่าตรวจก่อนคลอด (บางแผน) และค่ารักษาทารกแรกเกิด บางแผนจ่ายเป็นเงินก้อน บางแผนจ่ายจริงตามใบเสร็จ' },
+  { question: 'ควรซื้อประกันคลอดก่อนตั้งครรภ์กี่เดือน?', answer: 'ควรซื้อล่วงหน้าอย่างน้อย 12 เดือนก่อนวางแผนตั้งครรภ์ เผื่อช่วงเวลาที่อาจตั้งครรภ์เร็วกว่าคาด และให้กรมธรรม์ผ่านระยะรอคอยก่อนการคลอด' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณระยะเวลารอคอยประกันคลอด 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณระยะเวลารอคอยประกันคลอด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">วางแผนซื้อประกันก่อนตั้งครรภ์</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณวันที่เริ่มได้รับสิทธิ์ความคุ้มครองคลอดบุตร</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณระยะเวลารอคอยประกันคลอด 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">คำนวณวันที่ประกันจะเริ่มคุ้มครองค่าคลอดบุตร และวางแผนว่าต้องซื้อประกันก่อนตั้งครรภ์กี่เดือน</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="policy-start" class="block text-sm font-medium text-gray-700 mb-1">วันที่กรมธรรม์เริ่มมีผล</label>
+          <input type="date" id="policy-start" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="waiting-months" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลารอคอยคลอด (เดือน)</label>
+          <select id="waiting-months" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="9">9 เดือน (ประมาณ 270 วัน)</option>
+            <option value="10" selected>10 เดือน (ประมาณ 300 วัน)</option>
+            <option value="12">12 เดือน (บางบริษัท)</option>
+          </select>
+        </div>
+        <div>
+          <label for="planned-conception" class="block text-sm font-medium text-gray-700 mb-1">วางแผนตั้งครรภ์เมื่อไร (ประมาณ)</label>
+          <input type="date" id="planned-conception" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณ</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียด</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+      <div class="mt-4 rounded-lg p-4 border" id="verdict-box">
+        <p class="font-semibold" id="verdict-title">-</p>
+        <p class="text-sm mt-1" id="verdict-detail">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ทำไมต้องวางแผนล่วงหน้า?</h2>
+      <p>ระยะเวลารอคอยเป็นกลไกป้องกันการซื้อประกันหลังจากทราบว่าตั้งครรภ์แล้ว ดังนั้นคู่รักที่วางแผนมีบุตรควรซื้อประกันสุขภาพที่ครอบคลุมค่าคลอดล่วงหน้าอย่างน้อย 10-12 เดือนก่อนแผนตั้งครรภ์</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
+      </div>
+    </section>
+    <RelatedCalculators currentHref="/คำนวณระยะเวลารอคอยประกันคลอด/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ระยะเวลารอคอยจริงอาจต่างกันตามบริษัทประกัน กรุณาตรวจสอบกรมธรรม์โดยตรง</div>
+  </article>
+
+  <script>
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const policyStart = (document.getElementById('policy-start') as HTMLInputElement).value;
+      const waitMonths = parseInt((document.getElementById('waiting-months') as HTMLSelectElement).value);
+      const plannedConception = (document.getElementById('planned-conception') as HTMLInputElement).value;
+      const err = document.getElementById('form-error')!;
+      if (!policyStart) { err.textContent = 'กรุณาเลือกวันที่กรมธรรม์เริ่มมีผล'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const startDate = new Date(policyStart);
+      const coverageDate = new Date(startDate);
+      coverageDate.setMonth(coverageDate.getMonth() + waitMonths);
+
+      const deliveryDate = new Date(coverageDate);
+      deliveryDate.setMonth(deliveryDate.getMonth() + 9); // approximate delivery 9 months after coverage starts
+
+      const conceptBuyBefore = new Date(coverageDate);
+      conceptBuyBefore.setMonth(conceptBuyBefore.getMonth() - 9);
+
+      const formatDate = (d: Date) => d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      const rows = [
+        ['วันที่กรมธรรม์เริ่มมีผล', '', formatDate(startDate)],
+        ['ระยะเวลารอคอย', `${waitMonths} เดือน`, ''],
+        ['วันที่เริ่มคุ้มครองคลอด', '', formatDate(coverageDate)],
+        ['ตั้งครรภ์ได้ตั้งแต่', '(เพื่อให้คลอดหลังได้สิทธิ์)', formatDate(conceptBuyBefore)],
+      ];
+
+      if (plannedConception) {
+        const concDate = new Date(plannedConception);
+        const concDelivery = new Date(concDate);
+        concDelivery.setMonth(concDelivery.getMonth() + 9);
+        rows.push(['วันคลอดโดยประมาณ (แผน)', '', formatDate(concDelivery)]);
+        rows.push(['สิทธิ์คลอดครอบคลุม?', '', concDelivery >= coverageDate ? '✅ ได้รับความคุ้มครอง' : '❌ ยังไม่ครอบคลุม']);
+      }
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      const verdictBox = document.getElementById('verdict-box')!;
+      verdictBox.className = 'mt-4 rounded-lg p-4 border bg-blue-50 border-blue-200 text-blue-800';
+      (document.getElementById('verdict-title') as HTMLElement).textContent = `เริ่มได้รับสิทธิ์คลอดบุตรตั้งแต่ ${formatDate(coverageDate)}`;
+      (document.getElementById('verdict-detail') as HTMLElement).textContent = `ควรวางแผนตั้งครรภ์หลัง ${formatDate(conceptBuyBefore)} เพื่อให้การคลอดอยู่ในช่วงที่ได้รับความคุ้มครอง`;
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,150 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมโอนเงินต่างประเทศ 2569 | ค่าส่งเงินระหว่างประเทศ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าธรรมเนียมโอนเงินต่างประเทศผ่านธนาคาร Wire Transfer SWIFT เปรียบเทียบต้นทุนจริง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมโอนต่างประเทศ/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียมโอนเงินต่างประเทศผ่านธนาคารไทยเป็นเท่าไร?',
+    answer: 'โดยทั่วไปธนาคารไทยเรียกเก็บค่าธรรมเนียมโอนเงินต่างประเทศ 0.25% ของยอดโอน บวกค่าธรรมเนียมคงที่ 200-500 บาท โดยมีเพดานสูงสุดประมาณ 500 บาท ขึ้นอยู่กับแต่ละธนาคาร',
+  },
+  {
+    question: 'Wire Transfer และ SWIFT คืออะไร?',
+    answer: 'Wire Transfer คือการโอนเงินระหว่างประเทศผ่านระบบธนาคาร ส่วน SWIFT คือระบบข้อความมาตรฐานที่ธนาคารทั่วโลกใช้สื่อสารกัน การโอนผ่าน SWIFT ใช้เวลา 1-5 วันทำการขึ้นอยู่กับประเทศปลายทาง',
+  },
+  {
+    question: 'มีทางเลือกอื่นที่ถูกกว่าการโอนผ่านธนาคารไหม?',
+    answer: 'ใช่ บริการออนไลน์เช่น Wise (TransferWise), Remitly, หรือ Western Union มักมีค่าธรรมเนียมต่ำกว่าและอัตราแลกเปลี่ยนดีกว่าธนาคารพาณิชย์ทั่วไป แต่ต้องตรวจสอบว่าได้รับอนุญาตในไทยด้วย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมโอนเงินต่างประเทศ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมโอนต่างประเทศ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าธรรมเนียมโอนเงินต่างประเทศ 2569</h1>
+    <p class="mb-4 text-gray-600">คำนวณค่าธรรมเนียมโอนเงินต่างประเทศผ่าน Wire Transfer / SWIFT</p>
+    <div class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+      ℹ️ ค่าธรรมเนียมตามกำหนดของธนาคารแห่งประเทศไทย — ค่าธรรมเนียมจริงขึ้นอยู่กับธนาคาร
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div>
+          <label for="transfer-amount" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเงินโอน (บาท)</label>
+          <input id="transfer-amount" type="text" inputmode="numeric" placeholder="เช่น 100000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="fixed-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมคงที่ (บาท)</label>
+          <input id="fixed-fee" type="text" inputmode="numeric" value="500"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="pct-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียม % (ของยอดโอน)</label>
+          <input id="pct-fee" type="text" inputmode="decimal" value="0.25"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="max-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมสูงสุด (บาท)</label>
+          <input id="max-fee" type="text" inputmode="numeric" value="500"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียมโอน</div>
+            <div id="res-fee" class="text-3xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ผู้รับได้รับจริง (บาท)</div>
+            <div id="res-received" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ค่าธรรมเนียมต่อยอดโอน</div>
+            <div id="res-pct" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมโอนต่างประเทศ/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const amount = parseNum((document.getElementById('transfer-amount') as HTMLInputElement).value);
+    const fixed = parseNum((document.getElementById('fixed-fee') as HTMLInputElement).value);
+    const pct = parseNum((document.getElementById('pct-fee') as HTMLInputElement).value);
+    const maxFee = parseNum((document.getElementById('max-fee') as HTMLInputElement).value);
+    if (!amount) return;
+
+    const pctFee = amount * (pct / 100);
+    const varFee = Math.min(pctFee, maxFee);
+    const totalFee = fixed + varFee;
+    const received = amount - totalFee;
+    const feePct = (totalFee / amount) * 100;
+
+    document.getElementById('res-fee')!.textContent = fmt(totalFee);
+    document.getElementById('res-received')!.textContent = fmt(Math.max(0, received));
+    document.getElementById('res-pct')!.textContent = feePct.toFixed(2) + '%';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

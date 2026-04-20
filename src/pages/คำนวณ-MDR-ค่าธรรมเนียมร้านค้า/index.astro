@@ -1,0 +1,222 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ MDR ค่าธรรมเนียมร้านค้า ปี 2569 — Merchant Discount Rate | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณ MDR หรือค่าธรรมเนียมร้านค้าที่ธนาคารหักจากยอดขายบัตรเครดิต/เดบิต ป้อนอัตรา MDR และยอดขาย ทราบค่าธรรมเนียมและยอดรับจริงทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/`;
+
+const faqData = [
+  {
+    question: 'MDR คืออะไร?',
+    answer: 'MDR (Merchant Discount Rate) คืออัตราค่าธรรมเนียมที่ธนาคารหักจากยอดขายทุกครั้งที่ลูกค้าชำระด้วยบัตรเครดิตหรือเดบิต โดยทั่วไปอยู่ที่ 1.5–2.5% ของยอดขาย',
+  },
+  {
+    question: 'MDR คิดอย่างไร?',
+    answer: 'ค่าธรรมเนียม MDR = ยอดขาย × อัตรา MDR (%) ÷ 100 และยอดรับจริง = ยอดขาย − ค่าธรรมเนียม MDR',
+  },
+  {
+    question: 'อัตรา MDR ของร้านค้าทั่วไปเท่าไหร่?',
+    answer: 'อัตรา MDR ขึ้นอยู่กับประเภทธุรกิจและธนาคาร โดยทั่วไปอาหาร/เครื่องดื่ม 1.5–2% ค้าปลีก 1.5–2.5% โรงแรม 2–3% และออนไลน์ 2–3.5%',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ MDR ค่าธรรมเนียมร้านค้า',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-MDR-ค่าธรรมเนียมร้านค้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-purple-100 bg-purple-50 p-4">
+      <p class="text-sm font-semibold text-purple-700">คำนวณ MDR — ค่าธรรมเนียมร้านค้าจากการรับบัตร</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ค่าธรรมเนียม = ยอดขาย × MDR% | ยอดรับจริง = ยอดขาย − ค่าธรรมเนียม</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณ MDR ค่าธรรมเนียมร้านค้า ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกยอดขายและอัตรา MDR ของธนาคาร เพื่อดูค่าธรรมเนียมที่ถูกหักและยอดเงินที่ร้านได้รับจริง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="mdr-form" class="space-y-5">
+        <p id="mdr-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="mdr-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดขายต่อครั้ง (บาท)</label>
+            <input type="text" id="mdr-amount" inputmode="numeric" placeholder="เช่น 1,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="mdr-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="mdr-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตรา MDR (%)</label>
+            <input type="text" id="mdr-rate" inputmode="decimal" placeholder="เช่น 1.75"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="mdr-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 1.5–2.5%</p>
+          </div>
+        </div>
+
+        <div>
+          <label for="mdr-txns" class="mb-1 block text-sm font-medium text-gray-700">จำนวนธุรกรรมต่อเดือน (ครั้ง) — ไม่บังคับ</label>
+          <input type="text" id="mdr-txns" inputmode="numeric" placeholder="เช่น 200"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าธรรมเนียม MDR
+        </button>
+      </form>
+    </div>
+
+    <div id="mdr-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียม MDR/ครั้ง</div>
+            <div id="res-mdr-fee" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรับจริง/ครั้ง</div>
+            <div id="res-mdr-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดขาย</div>
+            <div id="res-mdr-gross" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <div id="mdr-monthly-section" class="hidden space-y-2 text-sm">
+          <h3 class="font-medium text-gray-800">สรุปรายเดือน</h3>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดขายรวม/เดือน</span>
+            <span id="res-mdr-m-gross" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียมรวม/เดือน</span>
+            <span id="res-mdr-m-fee" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดรับจริงรวม/เดือน</span>
+            <span id="res-mdr-m-net" class="font-medium text-green-600">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าธรรมเนียม MDR = ยอดขาย × (MDR% ÷ 100)</li>
+        <li>ยอดรับจริง = ยอดขาย − ค่าธรรมเนียม MDR</li>
+        <li>ยอดรายเดือน = ต่อครั้ง × จำนวนธุรกรรม/เดือน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-QR-payment/">คำนวณค่าธรรมเนียม QR Payment</a></li>
+        <li><a href="/คำนวณ-POS-fee/">คำนวณค่าธรรมเนียม POS</a></li>
+        <li><a href="/คำนวณ-payment-gateway/">คำนวณค่าธรรมเนียม Payment Gateway</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#mdr-results" />
+    <RelatedArticles currentHref="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/" />
+    <RelatedCalculators currentHref="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตรา MDR อาจแตกต่างตามธนาคารและประเภทบัตร ควรยืนยันอัตราจริงกับธนาคารที่ใช้บริการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('mdr-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('mdr-error').classList.add('hidden');
+      ['mdr-amount-error','mdr-rate-error'].forEach(id => setErr(id, ''));
+
+      const amount = parseNum(document.getElementById('mdr-amount').value);
+      const rate = parseNum(document.getElementById('mdr-rate').value);
+      const txns = parseNum(document.getElementById('mdr-txns').value);
+      let hasError = false;
+      if (!Number.isFinite(amount) || amount <= 0) { setErr('mdr-amount-error', 'กรอกยอดขายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(rate) || rate <= 0 || rate >= 100) { setErr('mdr-rate-error', 'กรอกอัตรา MDR 0.01–99.99%'); hasError = true; }
+      if (hasError) { document.getElementById('mdr-error').classList.remove('hidden'); document.getElementById('mdr-results').classList.add('hidden'); return; }
+
+      const fee = amount * rate / 100;
+      const net = amount - fee;
+
+      setText('res-mdr-fee', fmt(fee));
+      setText('res-mdr-net', fmt(net));
+      setText('res-mdr-gross', fmt(amount));
+
+      const monthlySection = document.getElementById('mdr-monthly-section');
+      if (Number.isFinite(txns) && txns > 0) {
+        setText('res-mdr-m-gross', fmt(amount * txns));
+        setText('res-mdr-m-fee', fmt(fee * txns));
+        setText('res-mdr-m-net', fmt(net * txns));
+        monthlySection.classList.remove('hidden');
+      } else {
+        monthlySection.classList.add('hidden');
+      }
+
+      document.getElementById('mdr-results').classList.remove('hidden');
+      document.getElementById('mdr-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

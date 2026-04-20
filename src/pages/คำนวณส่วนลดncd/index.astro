@@ -1,0 +1,177 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณส่วนลด NCD (No-Claim Discount) 2569 | ประกันรถยนต์ ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณส่วนลดประกันรถยนต์จาก NCD (No-Claim Discount) 2569 ส่วนลดสะสม 5-20% ตามจำนวนปีที่ไม่มีการเคลม ช่วยลดเบี้ยประกันรถปีถัดไป';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณส่วนลดncd/`;
+
+const faqData = [
+  { question: 'NCD คืออะไร?', answer: 'NCD (No-Claim Discount) คือส่วนลดเบี้ยประกันรถยนต์สำหรับผู้ที่ไม่เคลมในปีที่ผ่านมา ยิ่งไม่เคลมนาน ส่วนลดยิ่งมาก สูงสุดถึง 20-50% ขึ้นกับบริษัทประกันและประเทศ' },
+  { question: 'NCD ในไทยมีส่วนลดเท่าไร?', answer: 'ในไทย NCD มักอยู่ที่: ปีที่ 1 ไม่เคลม: 20% ส่วนลด, ปีที่ 2: 25%, ปีที่ 3: 30%, ปีที่ 4: 35%, ปีที่ 5 ขึ้นไป: 50% (อาจแตกต่างตามบริษัทประกัน)' },
+  { question: 'NCD จะหายถ้าเคลมไหม?', answer: 'ใช่ การเคลมมักทำให้ NCD ลดลงหรือหายไป บางบริษัทให้ลดลง 1 ขั้น บางบริษัทให้เริ่มนับใหม่ ควรคำนวณว่าการเคลมคุ้มกว่าเสีย NCD หรือไม่' },
+  { question: 'NCD สามารถโอนระหว่างบริษัทประกันได้ไหม?', answer: 'ในไทยโดยทั่วไป NCD ไม่สามารถโอนข้ามบริษัทได้โดยตรง แต่บางบริษัทอาจรับพิจารณาหลักฐานประวัติการไม่เคลมจากบริษัทเดิม ควรสอบถามบริษัทใหม่โดยตรง' },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณส่วนลด NCD 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณส่วนลด NCD">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณส่วนลด NCD ประกันรถยนต์</p>
+      <p class="mt-1 text-sm text-slate-700">อ้างอิงโครงสร้าง NCD ตลาดประกันภัยไทยปี 2569</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณส่วนลด NCD ประกันรถยนต์ 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">คำนวณส่วนลดเบี้ยประกันรถยนต์จากประวัติไม่เคลม (NCD) และผลกระทบหากเคลมปีนี้</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="base-premium" class="block text-sm font-medium text-gray-700 mb-1">เบี้ยประกันก่อนส่วนลด (บาท)</label>
+          <input type="text" id="base-premium" inputmode="numeric" placeholder="เช่น 20,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="claim-free-years" class="block text-sm font-medium text-gray-700 mb-1">จำนวนปีที่ไม่มีการเคลมติดต่อกัน</label>
+          <select id="claim-free-years" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="0">0 ปี (ไม่มี NCD)</option>
+            <option value="1">1 ปี (ส่วนลด 20%)</option>
+            <option value="2">2 ปี (ส่วนลด 25%)</option>
+            <option value="3">3 ปี (ส่วนลด 30%)</option>
+            <option value="4">4 ปี (ส่วนลด 35%)</option>
+            <option value="5">5 ปีขึ้นไป (ส่วนลด 50%)</option>
+          </select>
+        </div>
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+          คำนวณส่วนลด NCD
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-3 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center">
+          <p class="text-xs text-primary-700 mb-1">ส่วนลด NCD</p>
+          <p class="text-2xl font-bold text-primary-700" id="ncd-discount">-</p>
+        </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+          <p class="text-xs text-green-700 mb-1">เบี้ยหลังส่วนลด</p>
+          <p class="text-2xl font-bold text-green-700" id="premium-after">-</p>
+        </div>
+        <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+          <p class="text-xs text-orange-700 mb-1">ปีหน้าถ้าเคลมปีนี้</p>
+          <p class="text-2xl font-bold text-orange-700" id="premium-if-claim">-</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ตาราง NCD ประกันรถยนต์ไทย</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead><tr class="bg-gray-50"><th class="px-4 py-2 text-left border-b">ปีที่ไม่เคลม</th><th class="px-4 py-2 text-left border-b">ส่วนลด NCD</th></tr></thead>
+          <tbody>
+            <tr class="border-b"><td class="px-4 py-2">0 ปี</td><td class="px-4 py-2">0%</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">1 ปี</td><td class="px-4 py-2">20%</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">2 ปี</td><td class="px-4 py-2">25%</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">3 ปี</td><td class="px-4 py-2">30%</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">4 ปี</td><td class="px-4 py-2">35%</td></tr>
+            <tr><td class="px-4 py-2">5 ปีขึ้นไป</td><td class="px-4 py-2">50%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณส่วนลดncd/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตรา NCD อาจแตกต่างกันตามบริษัทประกัน กรุณาตรวจสอบกับบริษัทประกันโดยตรง
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    const ncdRates: Record<string, number> = { '0': 0, '1': 0.20, '2': 0.25, '3': 0.30, '4': 0.35, '5': 0.50 };
+    const ncdNextYear: Record<string, number> = { '0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0.35 }; // after claim
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const base = parseNum((document.getElementById('base-premium') as HTMLInputElement).value);
+      const years = (document.getElementById('claim-free-years') as HTMLSelectElement).value;
+      const err = document.getElementById('form-error')!;
+      if (base < 1000) { err.textContent = 'กรุณากรอกเบี้ยประกันก่อนส่วนลด'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const discount = ncdRates[years] || 0;
+      const discountAmt = base * discount;
+      const afterDiscount = base - discountAmt;
+      const claimNextYearDiscount = ncdNextYear[years] || 0;
+      const premiumIfClaim = base * (1 - claimNextYearDiscount);
+
+      const rows = [
+        ['เบี้ยก่อนส่วนลด', '', `${fmt(base)} บาท`],
+        ['ส่วนลด NCD ปัจจุบัน', `${(discount*100).toFixed(0)}%`, `-${fmt(discountAmt)} บาท`],
+        ['เบี้ยปีนี้หลัง NCD', '', `${fmt(afterDiscount)} บาท`],
+        ['NCD ปีหน้าถ้าเคลมปีนี้', `${(claimNextYearDiscount*100).toFixed(0)}%`, ''],
+        ['เบี้ยปีหน้าถ้าเคลม', '', `${fmt(premiumIfClaim)} บาท`],
+        ['ส่วนต่างจากการเคลม', '', `<strong>+${fmt(premiumIfClaim - afterDiscount)} บาท</strong>`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('ncd-discount') as HTMLElement).textContent = `${(discount*100).toFixed(0)}% / ${fmt(discountAmt)} บาท`;
+      (document.getElementById('premium-after') as HTMLElement).textContent = fmt(afterDiscount) + ' บาท/ปี';
+      (document.getElementById('premium-if-claim') as HTMLElement).textContent = fmt(premiumIfClaim) + ' บาท/ปี';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

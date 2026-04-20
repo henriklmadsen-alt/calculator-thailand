@@ -1,0 +1,229 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณระยะเวลาถึงเป้าหมาย ปี 2569 ออมเดือนละเท่าไหร่ถึงเป้า | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณระยะเวลาที่ต้องใช้ในการออมเพื่อถึงเป้าหมายการเงิน กรอกเป้าหมาย เงินออมปัจจุบัน และออมต่อเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณระยะเวลาถึงเป้าหมาย/`;
+
+const faqData = [
+  {
+    question: 'จะคำนวณระยะเวลาออมถึงเป้าหมายได้อย่างไร?',
+    answer: 'ใช้สูตร n = log(FV/PV) / log(1+r) สำหรับดอกเบี้ยทบต้น หรือ n = (เป้าหมาย − ปัจจุบัน) / ออมต่อเดือน สำหรับการออมแบบง่าย โดยคำนวณในหน่วยเดือน',
+  },
+  {
+    question: 'ดอกเบี้ยส่งผลต่อระยะเวลาออมอย่างไร?',
+    answer: 'ดอกเบี้ยทบต้นช่วยลดระยะเวลาในการออมถึงเป้าหมายได้มาก เช่น ออม 5,000 บาท/เดือน ถึงเป้า 600,000 บาท โดยไม่มีดอกเบี้ยใช้ 120 เดือน แต่ถ้ามีดอกเบี้ย 5%/ปี จะใช้เวลาเพียง ~105 เดือน',
+  },
+  {
+    question: 'จะเร่งถึงเป้าหมายเร็วขึ้นได้อย่างไร?',
+    answer: 'เพิ่มเงินออมต่อเดือน ลดค่าใช้จ่ายที่ไม่จำเป็น หาแหล่งรายได้เพิ่มเติม และเลือกลงทุนในสินทรัพย์ที่ให้ผลตอบแทนสูงขึ้น ทั้งหมดนี้ช่วยลดระยะเวลาถึงเป้าหมายได้',
+  },
+  {
+    question: 'ควรตั้งเป้าหมายการออมอย่างไร?',
+    answer: 'ตั้งเป้าหมายที่ SMART: Specific (ชัดเจน) Measurable (วัดได้) Achievable (ทำได้จริง) Relevant (สอดคล้อง) Time-bound (มีกำหนดเวลา) เช่น ออมเงินดาวน์บ้าน 600,000 บาทใน 3 ปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณระยะเวลาถึงเป้าหมาย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณระยะเวลาถึงเป้าหมาย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-violet-100 bg-violet-50 p-4">
+      <p class="text-sm font-semibold text-violet-700">🎯 คำนวณระยะเวลาถึงเป้าหมายการออม</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: n = log[(FV×r + PMT)/(PV×r + PMT)] ÷ log(1+r) | r = อัตราดอกเบี้ยรายเดือน</p>
+      <p class="mt-1 text-xs font-medium text-violet-800">รู้เวลาที่แน่นอนว่าจะถึงเป้าหมายการเงินเมื่อไหร่</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณระยะเวลาถึงเป้าหมาย ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเป้าหมายการเงิน เงินออมปัจจุบัน เงินออมต่อเดือน และอัตราดอกเบี้ย เพื่อดูว่าจะถึงเป้าหมายเมื่อไหร่
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="goal-form" class="space-y-5">
+        <p id="goal-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="goal-target" class="mb-1 block text-sm font-medium text-gray-700">เป้าหมายการออม (บาท)</label>
+            <input type="text" id="goal-target" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="goal-target-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="goal-current" class="mb-1 block text-sm font-medium text-gray-700">เงินออมปัจจุบัน (บาท)</label>
+            <input type="text" id="goal-current" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="goal-monthly" class="mb-1 block text-sm font-medium text-gray-700">ออมต่อเดือน (บาท)</label>
+            <input type="text" id="goal-monthly" inputmode="numeric" placeholder="เช่น 10,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="goal-monthly-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="goal-rate" class="mb-1 block text-sm font-medium text-gray-700">ดอกเบี้ย (% ต่อปี, ใส่ 0 ถ้าไม่นับ)</label>
+            <input type="text" id="goal-rate" inputmode="numeric" placeholder="เช่น 5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณระยะเวลา
+        </button>
+      </form>
+    </div>
+
+    <div id="goal-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-violet-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ระยะเวลาถึงเป้า</div>
+            <div id="res-goal-months" class="text-xl font-bold text-violet-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">คิดเป็นกี่ปี</div>
+            <div id="res-goal-years" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ดอกเบี้ยสะสม</div>
+            <div id="res-goal-interest" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="goal-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>กรณีไม่มีดอกเบี้ย: n = (เป้าหมาย − ปัจจุบัน) ÷ ออมต่อเดือน</li>
+        <li>กรณีมีดอกเบี้ย: n = log[(FV×r + PMT)/(PV×r + PMT)] ÷ log(1+r)</li>
+        <li>โดย FV = เป้าหมาย, PV = ปัจจุบัน, PMT = ออมต่อเดือน, r = ดอกเบี้ยรายเดือน</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#goal-results" />
+    <RelatedArticles currentHref="/คำนวณระยะเวลาถึงเป้าหมาย/" />
+    <RelatedCalculators currentHref="/คำนวณระยะเวลาถึงเป้าหมาย/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ อัตราดอกเบี้ยจริงอาจเปลี่ยนแปลงตามนโยบายธนาคาร
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('goal-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('goal-error').classList.add('hidden');
+      ['goal-target-error','goal-monthly-error'].forEach(id => setErr(id, ''));
+
+      const target = parseNum(document.getElementById('goal-target').value);
+      const current = parseNum(document.getElementById('goal-current').value);
+      const monthly = parseNum(document.getElementById('goal-monthly').value);
+      const annualRate = parseNum(document.getElementById('goal-rate').value);
+
+      let hasError = false;
+      if (!target || target <= 0) { setErr('goal-target-error', 'กรอกเป้าหมายการออม'); hasError = true; }
+      if (!monthly || monthly <= 0) { setErr('goal-monthly-error', 'กรอกเงินออมต่อเดือน'); hasError = true; }
+      if (hasError) { document.getElementById('goal-error').classList.remove('hidden'); document.getElementById('goal-results').classList.add('hidden'); return; }
+
+      if (current >= target) {
+        setText('res-goal-months', 'ถึงแล้ว!');
+        setText('res-goal-years', '0 ปี');
+        setText('res-goal-interest', formatMoney(0));
+        const statusEl = document.getElementById('goal-status');
+        statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = 'ยอดเยี่ยม! คุณถึงเป้าหมายแล้ว';
+        document.getElementById('goal-results').classList.remove('hidden');
+        return;
+      }
+
+      let n;
+      if (annualRate <= 0) {
+        n = Math.ceil((target - current) / monthly);
+      } else {
+        const r = annualRate / 100 / 12;
+        n = Math.ceil(Math.log((target * r + monthly) / (current * r + monthly)) / Math.log(1 + r));
+      }
+
+      const totalSaved = current + monthly * n;
+      const interest = target - totalSaved;
+      const years = (n / 12).toFixed(1);
+
+      setText('res-goal-months', `${n} เดือน`);
+      setText('res-goal-years', `${years} ปี`);
+      setText('res-goal-interest', formatMoney(Math.max(0, interest)));
+
+      const statusEl = document.getElementById('goal-status');
+      statusEl.className = 'rounded-lg bg-violet-50 p-3 text-sm font-medium text-violet-800 border border-violet-200';
+      statusEl.textContent = `ออมเดือนละ ${formatMoney(monthly)} จะถึงเป้าหมาย ${formatMoney(target)} ใน ${n} เดือน (${years} ปี)`;
+
+      document.getElementById('goal-results').classList.remove('hidden');
+      document.getElementById('goal-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

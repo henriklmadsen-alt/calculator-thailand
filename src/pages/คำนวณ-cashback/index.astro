@@ -1,0 +1,208 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณมูลค่า Cashback ปี 2569 — บัตรเครดิต คืนเงิน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่า Cashback จากบัตรเครดิตหรือบัตรเดบิต ป้อนยอดใช้จ่ายและอัตราคืนเงิน ทราบเงินคืนต่อเดือนและต่อปี เปรียบเทียบได้ทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-cashback/`;
+
+const faqData = [
+  {
+    question: 'Cashback คืออะไร?',
+    answer: 'Cashback คือเงินที่ธนาคารคืนให้เมื่อใช้จ่ายผ่านบัตร คิดเป็น % ของยอดใช้จ่าย เช่น Cashback 1% ยอดใช้ 10,000 บาท = ได้คืน 100 บาท',
+  },
+  {
+    question: 'อัตรา Cashback บัตรเครดิตทั่วไปเท่าไหร่?',
+    answer: 'บัตรเครดิตทั่วไปให้ Cashback 0.5–2% บัตรพรีเมียมอาจให้ 3–5% ในหมวดเฉพาะ เช่น ร้านอาหารหรือออนไลน์ มักมีเพดานต่อเดือน',
+  },
+  {
+    question: 'Cashback มีเพดานไหม?',
+    answer: 'บัตรส่วนใหญ่มีเพดาน Cashback ต่อเดือน เช่น สูงสุด 300 บาท/เดือน หากใช้จ่ายมากกว่าเกณฑ์ Cashback จะถูกจำกัดตามเพดานที่กำหนด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณมูลค่า Cashback',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-cashback">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
+      <p class="text-sm font-semibold text-green-700">คำนวณมูลค่า Cashback — เงินคืนจากบัตรเครดิต</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: Cashback = ยอดใช้จ่าย × อัตรา% (ไม่เกินเพดาน)</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณมูลค่า Cashback ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดใช้จ่าย อัตราคืนเงิน และเพดาน Cashback เพื่อดูเงินที่ได้คืนต่อเดือนและต่อปี
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="cb-form" class="space-y-5">
+        <p id="cb-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cb-spend" class="mb-1 block text-sm font-medium text-gray-700">ยอดใช้จ่าย/เดือน (บาท)</label>
+            <input type="text" id="cb-spend" inputmode="numeric" placeholder="เช่น 20,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cb-spend-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="cb-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตรา Cashback (%)</label>
+            <input type="text" id="cb-rate" inputmode="decimal" placeholder="เช่น 1.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cb-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="cb-cap" class="mb-1 block text-sm font-medium text-gray-700">เพดาน Cashback/เดือน (บาท) — ไม่บังคับ</label>
+          <input type="text" id="cb-cap" inputmode="numeric" placeholder="เช่น 300 (ถ้าไม่มีเพดานเว้นว่าง)"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ Cashback
+        </button>
+      </form>
+    </div>
+
+    <div id="cb-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Cashback/เดือน</div>
+            <div id="res-cb-month" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Cashback/ปี</div>
+            <div id="res-cb-year" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Cashback จริง (%)</div>
+            <div id="res-cb-eff" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <p id="cb-cap-note" class="hidden mt-2 text-sm text-orange-600 font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>Cashback ก่อนเพดาน = ยอดใช้จ่าย × (อัตรา% ÷ 100)</li>
+        <li>Cashback จริง = min(Cashback ก่อนเพดาน, เพดาน)</li>
+        <li>Cashback ปี = Cashback/เดือน × 12</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณแต้มสะสม/">คำนวณมูลค่าแต้มสะสม</a></li>
+        <li><a href="/คำนวณไมล์สะสม/">คำนวณมูลค่าไมล์สะสม</a></li>
+        <li><a href="/คำนวณเปรียบเทียบจ่ายสดกับบัตร/">เปรียบเทียบจ่ายสดกับบัตร</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#cb-results" />
+    <RelatedArticles currentHref="/คำนวณ-cashback/" />
+    <RelatedCalculators currentHref="/คำนวณ-cashback/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราและเพดาน Cashback อาจแตกต่างตามบัตรและโปรโมชัน ควรตรวจสอบเงื่อนไขจริงกับธนาคาร
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('cb-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('cb-error').classList.add('hidden');
+      ['cb-spend-error','cb-rate-error'].forEach(id => setErr(id, ''));
+
+      const spend = parseNum(document.getElementById('cb-spend').value);
+      const rate = parseNum(document.getElementById('cb-rate').value);
+      const cap = parseNum(document.getElementById('cb-cap').value);
+
+      let hasError = false;
+      if (!Number.isFinite(spend) || spend <= 0) { setErr('cb-spend-error', 'กรอกยอดใช้จ่ายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(rate) || rate <= 0 || rate >= 100) { setErr('cb-rate-error', 'กรอกอัตรา Cashback 0.01–99.99%'); hasError = true; }
+      if (hasError) { document.getElementById('cb-error').classList.remove('hidden'); document.getElementById('cb-results').classList.add('hidden'); return; }
+
+      const rawCb = spend * rate / 100;
+      const hasCap = Number.isFinite(cap) && cap > 0;
+      const cb = hasCap ? Math.min(rawCb, cap) : rawCb;
+      const effRate = (cb / spend) * 100;
+
+      setText('res-cb-month', fmt(cb));
+      setText('res-cb-year', fmt(cb * 12));
+      setText('res-cb-eff', `${effRate.toFixed(2)}%`);
+
+      const capNote = document.getElementById('cb-cap-note');
+      if (hasCap && rawCb > cap) {
+        capNote.textContent = `หมายเหตุ: Cashback ที่คำนวณได้ ${fmt(rawCb)} แต่ถูกจำกัดที่เพดาน ${fmt(cap)}/เดือน`;
+        capNote.classList.remove('hidden');
+      } else {
+        capNote.classList.add('hidden');
+      }
+
+      document.getElementById('cb-results').classList.remove('hidden');
+      document.getElementById('cb-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

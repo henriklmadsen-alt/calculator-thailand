@@ -1,0 +1,180 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณงบซองเงินสด 2569 | วิธีงบซองอย่างง่าย | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณงบซองเงินสด (Envelope Method) แบ่งเงินเดือนออกเป็นหมวดหมู่ค่าใช้จ่ายต่างๆ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบซองเงินสด/`;
+
+const faqData = [
+  {
+    question: 'วิธีงบซองเงินสด (Envelope Method) คืออะไร?',
+    answer: 'วิธีงบซองเงินสดคือการแบ่งเงินออกเป็นซองตามหมวดค่าใช้จ่าย เช่น ซองค่าอาหาร ซองค่าเดินทาง ซองออม เมื่อเงินในซองหมดก็หยุดใช้ในหมวดนั้น ช่วยควบคุมการใช้จ่ายได้อย่างเป็นรูปธรรม',
+  },
+  {
+    question: 'ควรแบ่งเงินกี่ซองและแต่ละซองเท่าไร?',
+    answer: 'ทั่วไปแนะนำ 5-8 ซอง ได้แก่ อาหาร ค่าเช่า เดินทาง สุขภาพ บันเทิง ออม และฉุกเฉิน สัดส่วนขึ้นอยู่กับไลฟ์สไตล์ แต่ควรออมอย่างน้อย 20% ตามกฎ 50-30-20',
+  },
+  {
+    question: 'วิธีงบซองเหมาะกับใคร?',
+    answer: 'วิธีงบซองเหมาะกับคนที่ควบคุมการใช้จ่ายด้วยบัตรเครดิตไม่ได้ หรือเพิ่งเริ่มวางแผนการเงิน เพราะการจับต้องเงินสดทำให้รู้สึกถึงมูลค่าจริง แต่ในยุคดิจิทัลอาจใช้แอปจำลองซองแทนได้',
+  },
+];
+
+const envelopes = [
+  { id: 'env-food', label: 'อาหาร', defaultPct: 20 },
+  { id: 'env-rent', label: 'ค่าเช่า/ที่พัก', defaultPct: 30 },
+  { id: 'env-travel', label: 'เดินทาง', defaultPct: 10 },
+  { id: 'env-health', label: 'สุขภาพ', defaultPct: 5 },
+  { id: 'env-entertain', label: 'บันเทิง', defaultPct: 5 },
+  { id: 'env-save', label: 'ออม', defaultPct: 20 },
+  { id: 'env-other', label: 'อื่นๆ', defaultPct: 10 },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบซองเงินสด',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบซองเงินสด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบซองเงินสด 2569</h1>
+    <p class="mb-6 text-gray-600">กรอกรายได้และกำหนด % หรือจำนวนเงินในแต่ละซอง เพื่อแบ่งเงินเดือนอย่างเป็นระบบ หากต้องการดูอัตราออมโดยรวมดูได้ที่ <a href="/คำนวณอัตราออม/" class="text-primary-600 underline hover:text-primary-800">คำนวณอัตราการออม</a> หรือ <a href="/คำนวณยอดงบยกปี/" class="text-primary-600 underline hover:text-primary-800">คำนวณยอดงบยกปี</a></p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="envelope-form" class="space-y-4">
+        <div>
+          <label for="env-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้ต่อเดือน (บาท)</label>
+          <input id="env-income" type="text" inputmode="numeric" placeholder="เช่น 35000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <p class="text-sm font-medium text-gray-700">กำหนดงบแต่ละซอง (% หรือ บาท)</p>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {envelopes.map(env => (
+            <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <span class="w-28 text-sm font-medium text-gray-700 shrink-0">{env.label}</span>
+              <input
+                id={env.id}
+                type="text"
+                inputmode="numeric"
+                placeholder={`${env.defaultPct}%`}
+                class="w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              />
+            </div>
+          ))}
+        </div>
+        <p class="text-xs text-gray-500">กรอกเป็น % (เช่น 20) หรือจำนวนบาท (เช่น 5000) ก็ได้</p>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">แผนงบซองเงินสด</h2>
+        <div id="env-breakdown" class="mb-4 space-y-2"></div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-primary-50 p-3 text-center">
+            <div class="text-xs text-gray-600">รวมที่แบ่งแล้ว</div>
+            <div id="env-total-alloc" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-3 text-center">
+            <div class="text-xs text-gray-600">เงินคงเหลือ</div>
+            <div id="env-remaining" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-3 text-center">
+            <div class="text-xs text-gray-600">% ที่แบ่งแล้ว</div>
+            <div id="env-pct-alloc" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณงบซองเงินสด/" categoryId="budget" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  const envelopes = [
+    { id: 'env-food', label: 'อาหาร' },
+    { id: 'env-rent', label: 'ค่าเช่า/ที่พัก' },
+    { id: 'env-travel', label: 'เดินทาง' },
+    { id: 'env-health', label: 'สุขภาพ' },
+    { id: 'env-entertain', label: 'บันเทิง' },
+    { id: 'env-save', label: 'ออม' },
+    { id: 'env-other', label: 'อื่นๆ' },
+  ];
+
+  document.getElementById('envelope-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const income = parseNum((document.getElementById('env-income') as HTMLInputElement).value);
+    if (income <= 0) return;
+
+    let totalAlloc = 0;
+    const lines: string[] = [];
+
+    envelopes.forEach(env => {
+      const raw = (document.getElementById(env.id) as HTMLInputElement).value.trim();
+      if (!raw) return;
+      const val = parseNum(raw);
+      // If value <= 100 and ends with %, treat as percentage; else treat as baht
+      const amount = val <= 100 && !raw.includes('.') && val > 0 ? income * (val / 100) : val;
+      if (amount > 0) {
+        totalAlloc += amount;
+        const pct = ((amount / income) * 100).toFixed(1);
+        lines.push(`<div class="flex justify-between items-center py-1 border-b border-gray-100"><span class="text-gray-700">${env.label}</span><span class="font-medium text-gray-900">${fmt(amount)} <span class="text-xs text-gray-400">(${pct}%)</span></span></div>`);
+      }
+    });
+
+    const remaining = income - totalAlloc;
+    const pctAlloc = ((totalAlloc / income) * 100).toFixed(1);
+
+    document.getElementById('env-breakdown')!.innerHTML = lines.length > 0 ? lines.join('') : '<p class="text-sm text-gray-500">ยังไม่ได้กรอกงบซอง</p>';
+    document.getElementById('env-total-alloc')!.textContent = fmt(totalAlloc);
+    document.getElementById('env-remaining')!.textContent = fmt(Math.max(0, remaining));
+    document.getElementById('env-pct-alloc')!.textContent = pctAlloc + '%';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

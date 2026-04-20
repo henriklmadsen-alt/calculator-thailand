@@ -1,0 +1,134 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณประกันคุ้มครองรายได้ (Income Protection) 2569 | ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณเบี้ยประกันคุ้มครองรายได้ 2569 สำหรับผู้ที่ไม่สามารถทำงานได้จากการเจ็บป่วยหรืออุบัติเหตุ รับเงินทดแทนรายได้รายเดือนจนกลับมาทำงานได้';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันคุ้มครองรายได้/`;
+
+const faqData = [
+  { question: 'ประกันคุ้มครองรายได้คืออะไร?', answer: 'Income Protection Insurance หรือประกันทุพพลภาพชั่วคราว จ่ายเงินชดเชยรายเดือนเมื่อคุณไม่สามารถทำงานได้จากการเจ็บป่วยหรืออุบัติเหตุ ช่วยให้มีรายได้ระหว่างพักรักษาตัว' },
+  { question: 'ประกันคุ้มครองรายได้ต่างจากประกันสุขภาพอย่างไร?', answer: 'ประกันสุขภาพจ่ายค่ารักษาพยาบาล แต่ไม่ได้ทดแทนรายได้ที่เสียไปขณะป่วย ประกันคุ้มครองรายได้จ่ายเงินรายเดือนทดแทนรายได้ ใช้จ่ายอะไรก็ได้ตามต้องการ' },
+  { question: 'เบี้ยประกันคุ้มครองรายได้แพงไหม?', answer: 'โดยทั่วไปเบี้ยอยู่ที่ 1-3% ของเงินชดเชยรายปีที่เลือก เช่น ถ้าต้องการชดเชย 30,000 บาท/เดือน (360,000 บาท/ปี) เบี้ยจะอยู่ที่ประมาณ 3,600-10,800 บาท/ปี' },
+  { question: 'ระยะเวลารอคอย (Waiting Period) คืออะไร?', answer: 'คือระยะเวลาก่อนที่ประกันจะเริ่มจ่าย เช่น 30 วัน 60 วัน หรือ 90 วัน นับจากวันที่ไม่สามารถทำงานได้ ระยะรอคอยนาน เบี้ยจะถูกลง' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณประกันคุ้มครองรายได้ 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันคุ้มครองรายได้">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณประกันคุ้มครองรายได้ / Income Protection</p>
+      <p class="mt-1 text-sm text-slate-700">อ้างอิงตลาดประกันภัยไทยปี 2569</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประกันคุ้มครองรายได้ 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">ประมาณเบี้ยประกันคุ้มครองรายได้ และคำนวณเงินชดเชยที่ต้องการตามรายได้และค่าใช้จ่าย</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="monthly-income" class="block text-sm font-medium text-gray-700 mb-1">รายได้รายเดือน (บาท)</label>
+          <input type="text" id="monthly-income" inputmode="numeric" placeholder="เช่น 50,000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="coverage-pct" class="block text-sm font-medium text-gray-700 mb-1">สัดส่วนที่ต้องการชดเชย</label>
+          <select id="coverage-pct" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="0.5">50% ของรายได้</option>
+            <option value="0.6" selected>60% ของรายได้ (แนะนำ)</option>
+            <option value="0.75">75% ของรายได้</option>
+          </select>
+          <p class="mt-1 text-xs text-gray-500">ส่วนใหญ่ประกันชดเชยได้สูงสุด 60-75% ของรายได้</p>
+        </div>
+        <div>
+          <label for="age" class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label>
+          <input type="text" id="age" inputmode="numeric" placeholder="เช่น 35" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="waiting" class="block text-sm font-medium text-gray-700 mb-1">ระยะรอคอย (Waiting Period)</label>
+          <select id="waiting" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="1.2">30 วัน (เบี้ยสูง)</option>
+            <option value="1.0" selected>60 วัน (มาตรฐาน)</option>
+            <option value="0.75">90 วัน (เบี้ยต่ำ)</option>
+          </select>
+        </div>
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณเบี้ยประกัน</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="bg-primary-50 border border-primary-200 rounded-lg p-5 mb-4 text-center">
+        <p class="text-sm text-primary-700 mb-1">เบี้ยประกันประมาณการรายปี</p>
+        <p class="text-4xl font-bold text-primary-700" id="total-premium">-</p>
+        <p class="text-sm text-primary-600 mt-1" id="monthly-premium">-</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ใครควรทำประกันคุ้มครองรายได้?</h2>
+      <p>ทุกคนที่รายได้มาจากการทำงาน โดยเฉพาะ: freelancer และผู้ประกอบอาชีพอิสระที่ไม่มีสวัสดิการจากนายจ้าง ผู้มีภาระหนี้หรือครอบครัวพึ่งพา และผู้ที่ทำงานในอาชีพเสี่ยงสูง</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
+      </div>
+    </section>
+    <RelatedCalculators currentHref="/คำนวณประกันคุ้มครองรายได้/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงขึ้นกับบริษัทประกันและอาชีพ</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const income = parseNum((document.getElementById('monthly-income') as HTMLInputElement).value);
+      const pct = parseFloat((document.getElementById('coverage-pct') as HTMLSelectElement).value);
+      const age = parseNum((document.getElementById('age') as HTMLInputElement).value);
+      const waitFactor = parseFloat((document.getElementById('waiting') as HTMLSelectElement).value);
+      const err = document.getElementById('form-error')!;
+      if (income < 5000) { err.textContent = 'กรุณากรอกรายได้รายเดือน'; err.classList.remove('hidden'); return; }
+      if (age < 18 || age > 60) { err.textContent = 'กรุณากรอกอายุ 18-60 ปี'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const monthlyBenefit = income * pct;
+      const annualBenefit = monthlyBenefit * 12;
+      const ageFactor = age < 30 ? 0.015 : age < 40 ? 0.02 : age < 50 ? 0.028 : 0.04;
+      const premium = annualBenefit * ageFactor * waitFactor;
+
+      const rows = [
+        ['รายได้รายเดือน', '', `${fmt(income)} บาท`],
+        ['เงินชดเชยรายเดือน', `${(pct*100).toFixed(0)}%`, `${fmt(monthlyBenefit)} บาท`],
+        ['เงินชดเชยรายปี', '', `${fmt(annualBenefit)} บาท`],
+        ['อัตราเบี้ยตามอายุ', `${(ageFactor*100).toFixed(1)}% ต่อปี`, `${fmt(annualBenefit * ageFactor)} บาท`],
+        ['ปรับตามระยะรอคอย', `× ${waitFactor}`, `${fmt(premium)} บาท`],
+        ['เบี้ยรวมประมาณการ/ปี', '', `<strong>${fmt(premium)} บาท</strong>`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('total-premium') as HTMLElement).textContent = fmt(premium) + ' บาท/ปี';
+      (document.getElementById('monthly-premium') as HTMLElement).textContent = `เงินชดเชยถ้าทำงานไม่ได้: ${fmt(monthlyBenefit)} บาท/เดือน`;
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

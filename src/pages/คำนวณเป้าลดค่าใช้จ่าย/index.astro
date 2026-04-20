@@ -1,0 +1,183 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณเป้าลดค่าใช้จ่าย 2569 | วางแผนตัดงบ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเป้าหมายลดค่าใช้จ่ายเพื่อเพิ่มการออม กำหนดยอดที่ต้องตัดในแต่ละหมวด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเป้าลดค่าใช้จ่าย/`;
+
+const faqData = [
+  {
+    question: 'ควรตัดค่าใช้จ่ายหมวดไหนก่อน?',
+    answer: 'ควรเริ่มจากหมวดที่ยืดหยุ่นได้มากที่สุด ได้แก่ บันเทิง ช้อปปิ้ง และอาหารนอกบ้าน ซึ่งสามารถลดได้ทันทีโดยไม่กระทบคุณภาพชีวิตมากนัก ส่วนหมวดคงที่อย่างค่าเช่าหรือผ่อนรถลดยากกว่าและต้องวางแผนระยะยาว',
+  },
+  {
+    question: 'ลดค่าอาหารได้มากแค่ไหนโดยไม่กระทบสุขภาพ?',
+    answer: 'สามารถลดค่าอาหารได้ 20-40% โดยลดการกินร้านอาหารหรูและเพิ่มการทำอาหารกินเอง ซื้อวัตถุดิบจากตลาดสด หรือเลือกร้านข้าวแกงแทนร้านอาหาร ซึ่งยังได้โภชนาการที่ดีในราคาต่ำกว่า',
+  },
+  {
+    question: 'จะรู้ได้อย่างไรว่าลดค่าใช้จ่ายได้สำเร็จ?',
+    answer: 'ติดตามค่าใช้จ่ายรายวันด้วยแอปหรือสมุดบัญชี เปรียบเทียบยอดรายเดือนกับเดือนก่อน และตรวจสอบว่าอัตราการออมเพิ่มขึ้นตามเป้าหมายหรือไม่ หากออมได้เพิ่มขึ้น แสดงว่าการลดค่าใช้จ่ายได้ผล',
+  },
+];
+
+const flexCategories = [
+  { id: 'cut-food', label: 'อาหาร' },
+  { id: 'cut-entertain', label: 'บันเทิง' },
+  { id: 'cut-shopping', label: 'ช้อปปิ้ง' },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเป้าลดค่าใช้จ่าย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเป้าลดค่าใช้จ่าย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณเป้าลดค่าใช้จ่าย 2569</h1>
+    <p class="mb-6 text-gray-600">กรอกค่าใช้จ่ายปัจจุบันและเป้าออมที่ต้องการเพิ่ม เพื่อดูว่าต้องลดหมวดไหนเท่าไร สามารถดูอัตราออมปัจจุบันได้ที่ <a href="/คำนวณอัตราออม/" class="text-primary-600 underline hover:text-primary-800">คำนวณอัตราการออม</a> หรือ <a href="/คำนวณ-burn-rate-รายเดือน/" class="text-primary-600 underline hover:text-primary-800">คำนวณ Burn Rate รายเดือน</a></p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="cut-form" class="space-y-4">
+        <div>
+          <label for="cur-expense" class="mb-1 block text-sm font-medium text-gray-700">ค่าใช้จ่ายรายเดือนปัจจุบัน (บาท)</label>
+          <input id="cur-expense" type="text" inputmode="numeric" placeholder="เช่น 30000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="save-goal" class="mb-1 block text-sm font-medium text-gray-700">เป้าออมเพิ่ม (บาท/เดือน)</label>
+          <input id="save-goal" type="text" inputmode="numeric" placeholder="เช่น 5000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <p class="mb-2 text-sm font-medium text-gray-700">หมวดที่ยืดหยุ่นได้ (กรอกยอดปัจจุบันต่อเดือน)</p>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {flexCategories.map(cat => (
+              <div>
+                <label for={cat.id} class="mb-1 block text-sm text-gray-700">{cat.label} (บาท)</label>
+                <input id={cat.id} type="text" inputmode="numeric" placeholder="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">เป้าหมายลดค่าใช้จ่าย</h2>
+        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้องลดทั้งหมด</div>
+            <div id="res-cut-total" class="text-3xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ลดจากรายจ่ายทั้งหมด</div>
+            <div id="res-cut-pct" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <div id="cut-breakdown" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณเป้าลดค่าใช้จ่าย/" categoryId="budget" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  const flexCats = [
+    { id: 'cut-food', label: 'อาหาร' },
+    { id: 'cut-entertain', label: 'บันเทิง' },
+    { id: 'cut-shopping', label: 'ช้อปปิ้ง' },
+  ];
+
+  document.getElementById('cut-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const curExp = parseNum((document.getElementById('cur-expense') as HTMLInputElement).value);
+    const saveGoal = parseNum((document.getElementById('save-goal') as HTMLInputElement).value);
+
+    if (curExp <= 0 || saveGoal <= 0) return;
+
+    const cutPct = (saveGoal / curExp) * 100;
+
+    // Calculate flexible category totals
+    let flexTotal = 0;
+    const catAmounts: { label: string; amount: number }[] = [];
+    flexCats.forEach(cat => {
+      const val = parseNum((document.getElementById(cat.id) as HTMLInputElement).value);
+      if (val > 0) {
+        flexTotal += val;
+        catAmounts.push({ label: cat.label, amount: val });
+      }
+    });
+
+    document.getElementById('res-cut-total')!.textContent = fmt(saveGoal);
+    document.getElementById('res-cut-pct')!.textContent = cutPct.toFixed(1) + '%';
+
+    const breakdownLines: string[] = [];
+    if (catAmounts.length > 0) {
+      breakdownLines.push('<p class="mb-2 text-sm font-medium text-gray-700">ตัวอย่างการกระจายการลด (ตามสัดส่วนหมวดยืดหยุ่น):</p>');
+      catAmounts.forEach(cat => {
+        const share = flexTotal > 0 ? (cat.amount / flexTotal) * saveGoal : saveGoal / catAmounts.length;
+        const newAmount = Math.max(0, cat.amount - share);
+        const reduction = cat.amount - newAmount;
+        breakdownLines.push(
+          `<div class="flex justify-between items-center py-2 border-b border-gray-100 text-sm">` +
+          `<span class="text-gray-700">${cat.label}</span>` +
+          `<span class="text-gray-500">${fmt(cat.amount)} → <strong class="text-red-600">${fmt(newAmount)}</strong> (ลด ${fmt(reduction)})</span>` +
+          `</div>`
+        );
+      });
+    } else {
+      breakdownLines.push('<p class="text-sm text-gray-500">กรอกหมวดยืดหยุ่นเพื่อดูตัวอย่างการกระจาย</p>');
+    }
+
+    document.getElementById('cut-breakdown')!.innerHTML = breakdownLines.join('');
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

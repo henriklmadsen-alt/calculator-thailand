@@ -1,0 +1,222 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเป้าออมเงินแต่งงาน ปี 2569 วางแผนออมงบแต่งงานให้ถึงเป้า | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเป้าหมายออมเงินแต่งงาน จำนวนเดือนที่ต้องออม และเงินออมต่อเดือนที่ต้องการ เพื่อให้งานแต่งงานเป็นจริง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเป้าออมเงินแต่งงาน/`;
+
+const faqData = [
+  {
+    question: 'งานแต่งงานในไทยใช้เงินเฉลี่ยเท่าไหร่?',
+    answer: 'งานแต่งงานในไทยเฉลี่ยอยู่ที่ 200,000–800,000 บาท ขึ้นอยู่กับขนาดงานและสถานที่ งานเล็กกว่า 100 คน อาจใช้ 150,000–300,000 บาท งานใหญ่ 300–500 คน อาจสูงถึง 500,000–1,000,000 บาท',
+  },
+  {
+    question: 'ควรออมเงินแต่งงานล่วงหน้ากี่ปี?',
+    answer: 'แนะนำวางแผนล่วงหน้าอย่างน้อย 2–3 ปี เพื่อให้มีเวลาออมโดยไม่ต้องกดดันมากเกินไป และยังมีเงินเหลือเป็นทุนตั้งตัวหลังแต่งงาน',
+  },
+  {
+    question: 'ค่าสินสอดควรรวมในงบแต่งงานหรือไม่?',
+    answer: 'ใช่ ค่าสินสอดเป็นส่วนหนึ่งของค่าใช้จ่ายการแต่งงานในไทย ควรนำมารวมในการคำนวณด้วย รวมถึงค่าแหวน ค่าชุด ค่าเช่าสถานที่ ค่าอาหาร และค่าใช้จ่ายอื่นๆ',
+  },
+  {
+    question: 'ควรเปิดบัญชีแยกต่างหากสำหรับออมเงินแต่งงานหรือไม่?',
+    answer: 'แนะนำให้แยกบัญชีออมเงินแต่งงานออกจากบัญชีหลัก เพื่อป้องกันการใช้เงินก้อนนั้นโดยไม่ตั้งใจ และยังช่วยติดตามความคืบหน้าได้ชัดเจนขึ้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเป้าออมเงินแต่งงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเป้าออมเงินแต่งงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-pink-100 bg-pink-50 p-4">
+      <p class="text-sm font-semibold text-pink-700">💍 คำนวณเป้าออมเงินแต่งงาน</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: เงินออม/เดือน = (งบแต่งงาน − ออมแล้ว) ÷ จำนวนเดือนที่เหลือ</p>
+      <p class="mt-1 text-xs font-medium text-pink-800">วางแผนออมล่วงหน้าเพื่อให้งานแต่งงานในฝันเป็นจริง</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเป้าออมเงินแต่งงาน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกงบแต่งงานที่ต้องการ เงินออมปัจจุบัน และระยะเวลา เพื่อคำนวณว่าต้องออมเดือนละเท่าไหร่จึงจะถึงเป้าหมาย
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="wed-form" class="space-y-5">
+        <p id="wed-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="wed-budget" class="mb-1 block text-sm font-medium text-gray-700">งบแต่งงานที่ต้องการ (บาท)</label>
+            <input type="text" id="wed-budget" inputmode="numeric" placeholder="เช่น 400,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="wed-budget-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">รวมสินสอด ชุดแต่งงาน สถานที่ อาหาร</p>
+          </div>
+          <div>
+            <label for="wed-current" class="mb-1 block text-sm font-medium text-gray-700">เงินออมปัจจุบัน (บาท)</label>
+            <input type="text" id="wed-current" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="wed-months" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลาออม (เดือน)</label>
+            <input type="text" id="wed-months" inputmode="numeric" placeholder="เช่น 36"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="wed-months-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="wed-rate" class="mb-1 block text-sm font-medium text-gray-700">ดอกเบี้ยเงินฝาก (% ต่อปี)</label>
+            <input type="text" id="wed-rate" inputmode="numeric" placeholder="เช่น 1.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ใส่ 0 ถ้าไม่นับดอกเบี้ย</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณเป้าออมแต่งงาน
+        </button>
+      </form>
+    </div>
+
+    <div id="wed-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-pink-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">งบแต่งงานทั้งหมด</div>
+            <div id="res-wed-budget" class="text-xl font-bold text-pink-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยังต้องออมอีก</div>
+            <div id="res-wed-gap" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ออมต่อเดือน</div>
+            <div id="res-wed-monthly" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <p id="wed-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>จำนวนที่ต้องออมเพิ่ม = งบแต่งงาน − เงินออมปัจจุบัน</li>
+        <li>กรณีไม่มีดอกเบี้ย: ออมต่อเดือน = จำนวนที่ต้องออม ÷ จำนวนเดือน</li>
+        <li>กรณีมีดอกเบี้ย: ใช้สูตร PMT = FV × r / [(1+r)^n − 1] โดย r = อัตราดอกเบี้ยรายเดือน</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#wed-results" />
+    <RelatedArticles currentHref="/คำนวณเป้าออมเงินแต่งงาน/" />
+    <RelatedCalculators currentHref="/คำนวณเป้าออมเงินแต่งงาน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ค่าใช้จ่ายจริงอาจแตกต่างตามขนาดงาน สถานที่ และรายละเอียดต่างๆ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('wed-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('wed-error').classList.add('hidden');
+      ['wed-budget-error','wed-months-error'].forEach(id => setErr(id, ''));
+
+      const budget = parseNum(document.getElementById('wed-budget').value);
+      const current = parseNum(document.getElementById('wed-current').value);
+      const months = parseNum(document.getElementById('wed-months').value);
+      const annualRate = parseNum(document.getElementById('wed-rate').value);
+
+      let hasError = false;
+      if (!budget || budget <= 0) { setErr('wed-budget-error', 'กรอกงบแต่งงาน'); hasError = true; }
+      if (!months || months <= 0) { setErr('wed-months-error', 'กรอกจำนวนเดือน'); hasError = true; }
+      if (hasError) { document.getElementById('wed-error').classList.remove('hidden'); document.getElementById('wed-results').classList.add('hidden'); return; }
+
+      const gap = Math.max(0, budget - current);
+      let monthly;
+      if (annualRate <= 0 || gap === 0) {
+        monthly = gap / months;
+      } else {
+        const r = annualRate / 100 / 12;
+        monthly = gap * r / (Math.pow(1 + r, months) - 1);
+      }
+
+      setText('res-wed-budget', formatMoney(budget));
+      setText('res-wed-gap', formatMoney(gap));
+      setText('res-wed-monthly', formatMoney(monthly));
+
+      const statusEl = document.getElementById('wed-status');
+      if (gap === 0) {
+        statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = 'ยอดเยี่ยม! คุณมีเงินออมเพียงพอสำหรับงานแต่งงานแล้ว';
+      } else {
+        statusEl.className = 'rounded-lg bg-blue-50 p-3 text-sm font-medium text-blue-800 border border-blue-200';
+        statusEl.textContent = `ออมเดือนละ ${formatMoney(monthly)} เป็นเวลา ${months} เดือน จะครบงบแต่งงาน ${formatMoney(budget)}`;
+      }
+
+      document.getElementById('wed-results').classList.remove('hidden');
+      document.getElementById('wed-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

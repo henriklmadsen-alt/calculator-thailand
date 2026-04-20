@@ -1,0 +1,147 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมเช็คธนาคาร 2569 | ค่าเรียกเก็บเช็ค | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าธรรมเนียมเรียกเก็บเช็คธนาคาร เช็คในพื้นที่และต่างพื้นที่ พร้อมระยะเวลาเรียกเก็บ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมเช็คธนาคาร/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียมเรียกเก็บเช็คธนาคารในไทยเป็นเท่าไร?',
+    answer: 'ค่าธรรมเนียมเรียกเก็บเช็คในพื้นที่ประมาณ 10-20 บาทต่อฉบับ เช็คต่างพื้นที่ 30-50 บาทต่อฉบับ และเช็คต่างธนาคาร 20-40 บาทต่อฉบับ อัตราจริงขึ้นอยู่กับธนาคารและประเภทบัญชี',
+  },
+  {
+    question: 'ใช้เวลาเรียกเก็บเช็คนานแค่ไหน?',
+    answer: 'เช็คในพื้นที่ (clearing) ใช้เวลา 1 วันทำการ เช็คต่างพื้นที่ 2-3 วันทำการ และเช็คต่างธนาคารอาจใช้เวลา 1-3 วันทำการขึ้นอยู่กับระบบ clearing ของธนาคาร',
+  },
+  {
+    question: 'การใช้เช็คธนาคารยังคุ้มค่าในยุคดิจิทัลไหม?',
+    answer: 'สำหรับธุรกรรมขนาดใหญ่หรือเชิงธุรกิจ เช็คยังคงใช้งานกันอยู่ แต่สำหรับธุรกรรมทั่วไป การโอนผ่านพร้อมเพย์หรือช่องทางดิจิทัลสะดวกกว่า รวดเร็วกว่า และมีค่าใช้จ่ายน้อยกว่า',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมเช็คธนาคาร',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมเช็คธนาคาร">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าธรรมเนียมเช็คธนาคาร 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณค่าธรรมเนียมเรียกเก็บเช็คในพื้นที่และต่างพื้นที่รวมต่อเดือนและต่อปี</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="local-count" class="mb-1 block text-sm font-medium text-gray-700">เช็คในพื้นที่ (ฉบับ/เดือน)</label>
+            <input id="local-count" type="text" inputmode="numeric" placeholder="0" value="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="local-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมเช็คในพื้นที่ (บาท/ฉบับ)</label>
+            <input id="local-fee" type="text" inputmode="numeric" value="15"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="remote-count" class="mb-1 block text-sm font-medium text-gray-700">เช็คต่างพื้นที่ (ฉบับ/เดือน)</label>
+            <input id="remote-count" type="text" inputmode="numeric" placeholder="0" value="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="remote-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมเช็คต่างพื้นที่ (บาท/ฉบับ)</label>
+            <input id="remote-fee" type="text" inputmode="numeric" value="40"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ค่าธรรมเนียมเช็ครวม</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวม/เดือน</div>
+            <div id="res-monthly" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวม/ปี</div>
+            <div id="res-yearly" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <div id="res-breakdown" class="mt-4 space-y-1 text-sm text-gray-700"></div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมเช็คธนาคาร/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const localCount = parseNum((document.getElementById('local-count') as HTMLInputElement).value);
+    const localFee = parseNum((document.getElementById('local-fee') as HTMLInputElement).value);
+    const remoteCount = parseNum((document.getElementById('remote-count') as HTMLInputElement).value);
+    const remoteFee = parseNum((document.getElementById('remote-fee') as HTMLInputElement).value);
+
+    const localTotal = localCount * localFee;
+    const remoteTotal = remoteCount * remoteFee;
+    const monthly = localTotal + remoteTotal;
+
+    const lines = [];
+    if (localCount > 0) lines.push(`• เช็คในพื้นที่ ${localCount} ฉบับ × ${fmt(localFee)}: ${fmt(localTotal)}`);
+    if (remoteCount > 0) lines.push(`• เช็คต่างพื้นที่ ${remoteCount} ฉบับ × ${fmt(remoteFee)}: ${fmt(remoteTotal)}`);
+
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-yearly')!.textContent = fmt(monthly * 12);
+    document.getElementById('res-breakdown')!.innerHTML = lines.join('<br/>') || 'ไม่มีค่าธรรมเนียม';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

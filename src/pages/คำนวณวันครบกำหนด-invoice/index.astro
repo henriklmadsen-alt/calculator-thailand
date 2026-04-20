@@ -1,0 +1,237 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณวันครบกำหนดชำระ Invoice ปี 2569 — Due Date Calculator | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณวันครบกำหนดชำระ Invoice จากวันที่ออกและเทอมการชำระ เช่น Net 30, Net 60, Net 90 ทราบวันครบกำหนดและวันเตือนล่วงหน้า';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณวันครบกำหนด-invoice/`;
+
+const faqData = [
+  {
+    question: 'Net 30 คืออะไร?',
+    answer: 'Net 30 คือเงื่อนไขการชำระเงินที่ผู้ซื้อต้องชำระภายใน 30 วันนับจากวันที่ Invoice ส่วน Net 60, Net 90 หมายถึง 60 และ 90 วันตามลำดับ',
+  },
+  {
+    question: '2/10 Net 30 หมายความว่าอย่างไร?',
+    answer: '2/10 Net 30 หมายถึง ได้ส่วนลด 2% ถ้าชำระภายใน 10 วัน แต่ต้องชำระเต็มภายใน 30 วัน เป็นเงื่อนไขส่วนลดเร็วจ่าย (Early Payment Discount)',
+  },
+  {
+    question: 'ควรนับวันทำการหรือวันปฏิทิน?',
+    answer: 'เงื่อนไขการชำระส่วนใหญ่นับวันปฏิทิน ไม่ใช่วันทำการ เช่น Net 30 = 30 วันปฏิทิน ควรระบุให้ชัดเจนในสัญญา',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณวันครบกำหนดชำระ Invoice',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวันครบกำหนด-invoice">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 p-4">
+      <p class="text-sm font-semibold text-indigo-700">คำนวณวันครบกำหนดชำระ Invoice — Due Date</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: Due Date = วันที่ Invoice + เทอมการชำระ (วัน)</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณวันครบกำหนดชำระ Invoice ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกวันที่ออก Invoice และเทอมการชำระ เพื่อดูวันครบกำหนดและวันเตือนล่วงหน้า
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="inv-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="inv-date" class="mb-1 block text-sm font-medium text-gray-700">วันที่ออก Invoice</label>
+            <input type="date" id="inv-date"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="inv-date-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="inv-terms" class="mb-1 block text-sm font-medium text-gray-700">เทอมการชำระ</label>
+            <select id="inv-terms" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="0">ชำระทันที (COD)</option>
+              <option value="7">Net 7 (7 วัน)</option>
+              <option value="14">Net 14 (14 วัน)</option>
+              <option value="30" selected>Net 30 (30 วัน)</option>
+              <option value="45">Net 45 (45 วัน)</option>
+              <option value="60">Net 60 (60 วัน)</option>
+              <option value="90">Net 90 (90 วัน)</option>
+              <option value="custom">กำหนดเอง</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="inv-custom-section" class="hidden">
+          <label for="inv-custom-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวัน (วัน)</label>
+          <input type="number" id="inv-custom-days" min="1" max="365" placeholder="เช่น 45"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+
+        <div>
+          <label for="inv-remind" class="mb-1 block text-sm font-medium text-gray-700">แจ้งเตือนล่วงหน้า (วัน)</label>
+          <input type="number" id="inv-remind" min="0" max="30" value="5"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">กี่วันก่อนครบกำหนดให้แจ้งเตือน</p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณวันครบกำหนด
+        </button>
+      </form>
+    </div>
+
+    <div id="inv-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-indigo-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">วันครบกำหนด</div>
+            <div id="res-inv-due" class="text-xl font-bold text-indigo-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">วันเตือนล่วงหน้า</div>
+            <div id="res-inv-remind" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div id="inv-status-box" class="rounded-lg p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เหลือ / เกินกำหนด</div>
+            <div id="res-inv-days-left" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>Due Date = วันที่ Invoice + จำนวนวันเทอม</li>
+        <li>วันเตือน = Due Date − วันเตือนล่วงหน้า</li>
+        <li>วันคงเหลือ = Due Date − วันนี้</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณดอกเบี้ย-invoice-ค้างชำระ/">คำนวณดอกเบี้ย Invoice ค้างชำระ</a></li>
+        <li><a href="/คำนวณปฏิทินชำระรายเดือน/">คำนวณปฏิทินชำระรายเดือน</a></li>
+        <li><a href="/คำนวณแบ่งชำระ/">คำนวณแบ่งชำระ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#inv-results" />
+    <RelatedArticles currentHref="/คำนวณวันครบกำหนด-invoice/" />
+    <RelatedCalculators currentHref="/คำนวณวันครบกำหนด-invoice/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+
+  <script type="module">
+    const termsSelect = document.getElementById('inv-terms');
+    const customSection = document.getElementById('inv-custom-section');
+    termsSelect?.addEventListener('change', () => {
+      customSection.classList.toggle('hidden', termsSelect.value !== 'custom');
+    });
+
+    // Set default date to today
+    const today = new Date();
+    const dateInput = document.getElementById('inv-date');
+    if (dateInput) dateInput.value = today.toISOString().split('T')[0];
+
+    function addDays(date, days) {
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+    }
+    function fmtDate(d) {
+      return d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+    document.getElementById('inv-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const dateVal = document.getElementById('inv-date').value;
+      const termsVal = termsSelect.value;
+      const remindDays = parseInt(document.getElementById('inv-remind').value) || 5;
+
+      let days;
+      if (termsVal === 'custom') {
+        days = parseInt(document.getElementById('inv-custom-days').value) || 0;
+      } else {
+        days = parseInt(termsVal);
+      }
+
+      if (!dateVal) {
+        document.getElementById('inv-date-error').textContent = 'กรุณาเลือกวันที่ออก Invoice';
+        document.getElementById('inv-date-error').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('inv-date-error').classList.add('hidden');
+
+      const invoiceDate = new Date(dateVal);
+      const dueDate = addDays(invoiceDate, days);
+      const remindDate = addDays(dueDate, -remindDays);
+      const todayDate = new Date();
+      todayDate.setHours(0,0,0,0);
+      const daysLeft = Math.round((dueDate - todayDate) / (1000*60*60*24));
+
+      setText('res-inv-due', fmtDate(dueDate));
+      setText('res-inv-remind', fmtDate(remindDate));
+
+      const statusBox = document.getElementById('inv-status-box');
+      const daysLeftEl = document.getElementById('res-inv-days-left');
+      if (daysLeft > 0) {
+        statusBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+        daysLeftEl.className = 'text-xl font-bold text-green-700';
+        daysLeftEl.textContent = `เหลือ ${daysLeft} วัน`;
+      } else if (daysLeft === 0) {
+        statusBox.className = 'rounded-lg bg-amber-50 p-4 text-center';
+        daysLeftEl.className = 'text-xl font-bold text-amber-700';
+        daysLeftEl.textContent = 'ครบกำหนดวันนี้';
+      } else {
+        statusBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+        daysLeftEl.className = 'text-xl font-bold text-red-700';
+        daysLeftEl.textContent = `เกินกำหนด ${Math.abs(daysLeft)} วัน`;
+      }
+
+      document.getElementById('inv-results').classList.remove('hidden');
+      document.getElementById('inv-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

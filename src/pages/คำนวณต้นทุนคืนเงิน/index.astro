@@ -1,0 +1,215 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนการคืนเงิน ปี 2569 — Refund Processing Cost สำหรับร้านค้า | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณต้นทุนรวมการคืนเงินสำหรับร้านค้า รวมค่าธรรมเนียมที่ไม่ได้คืน ต้นทุนดำเนินการ และผลกระทบต่อกำไร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนคืนเงิน/`;
+
+const faqData = [
+  {
+    question: 'การคืนเงินมีต้นทุนอะไรบ้าง?',
+    answer: 'ต้นทุนการคืนเงิน: (1) ค่าธรรมเนียม MDR ที่จ่ายไปแล้วอาจไม่ได้คืน (2) ค่าธรรมเนียม Processing Refund (3) ต้นทุนดำเนินการภายใน และ (4) ต้นทุนสินค้าถ้าไม่ได้ของคืน',
+  },
+  {
+    question: 'ค่าธรรมเนียม MDR จะคืนเมื่อ Refund ไหม?',
+    answer: 'ขึ้นอยู่กับธนาคาร บางแห่งคืน MDR ทั้งหมด บางแห่งคืนบางส่วน และบางแห่งไม่คืนเลย ควรตรวจสอบเงื่อนไขกับธนาคารที่ใช้บริการ',
+  },
+  {
+    question: 'อัตราการคืนเงินที่ดีควรอยู่ที่เท่าไหร่?',
+    answer: 'อัตราการคืนเงินที่ดีสำหรับ E-Commerce ควรต่ำกว่า 2–3% หากสูงกว่านั้นควรตรวจสอบคุณภาพสินค้าและกระบวนการ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนการคืนเงิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนคืนเงิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
+      <p class="text-sm font-semibold text-red-700">คำนวณต้นทุนการคืนเงิน — Refund Processing Cost</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ต้นทุน = MDR ที่ไม่ได้คืน + ค่า Processing + ต้นทุนดำเนินการ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณต้นทุนการคืนเงิน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดขาย MDR ที่จ่ายไป สัดส่วนที่ได้คืน และค่าใช้จ่ายอื่น เพื่อดูต้นทุนจริงของการ Refund
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="ref-form" class="space-y-5">
+        <p id="ref-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ref-sale" class="mb-1 block text-sm font-medium text-gray-700">ยอดขายที่คืนเงิน (บาท)</label>
+            <input type="text" id="ref-sale" inputmode="numeric" placeholder="เช่น 2,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ref-sale-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ref-mdr" class="mb-1 block text-sm font-medium text-gray-700">อัตรา MDR (%)</label>
+            <input type="text" id="ref-mdr" inputmode="decimal" placeholder="เช่น 1.75"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ref-mdr-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ref-mdr-return" class="mb-1 block text-sm font-medium text-gray-700">สัดส่วน MDR ที่ได้คืน (%)</label>
+            <input type="text" id="ref-mdr-return" inputmode="decimal" placeholder="เช่น 0 (ไม่คืนเลย) หรือ 100"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">0% = ไม่คืน, 100% = คืนทั้งหมด</p>
+          </div>
+          <div>
+            <label for="ref-proc-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียม Processing Refund (บาท)</label>
+            <input type="text" id="ref-proc-fee" inputmode="numeric" placeholder="เช่น 0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div>
+          <label for="ref-ops" class="mb-1 block text-sm font-medium text-gray-700">ต้นทุนดำเนินการ (บาท) — ไม่บังคับ</label>
+          <input type="text" id="ref-ops" inputmode="numeric" placeholder="เช่น 100"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณต้นทุนคืนเงิน
+        </button>
+      </form>
+    </div>
+
+    <div id="ref-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนรวม</div>
+            <div id="res-ref-total" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">MDR ที่ไม่ได้คืน</div>
+            <div id="res-ref-mdr-loss" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ต้นทุนต่อยอดคืน</div>
+            <div id="res-ref-pct" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>MDR ที่จ่ายไป = ยอดขาย × MDR%</li>
+        <li>MDR ที่ไม่ได้คืน = MDR ที่จ่าย × (1 − สัดส่วนคืน%)</li>
+        <li>ต้นทุนรวม = MDR ที่ไม่ได้คืน + ค่า Processing + ต้นทุนดำเนินการ</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณต้นทุน-chargeback/">คำนวณต้นทุน Chargeback</a></li>
+        <li><a href="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/">คำนวณ MDR ค่าธรรมเนียมร้านค้า</a></li>
+        <li><a href="/คำนวณต้นทุนรอรับเงิน/">คำนวณต้นทุนการรอรับเงิน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ref-results" />
+    <RelatedArticles currentHref="/คำนวณต้นทุนคืนเงิน/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนคืนเงิน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> นโยบายการคืน MDR แตกต่างตามธนาคาร ควรตรวจสอบเงื่อนไขกับธนาคารที่ใช้บริการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('ref-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('ref-error').classList.add('hidden');
+      ['ref-sale-error','ref-mdr-error'].forEach(id => setErr(id, ''));
+
+      const sale = parseNum(document.getElementById('ref-sale').value);
+      const mdr = parseNum(document.getElementById('ref-mdr').value);
+      const mdrReturn = parseNum(document.getElementById('ref-mdr-return').value) || 0;
+      const procFee = parseNum(document.getElementById('ref-proc-fee').value) || 0;
+      const ops = parseNum(document.getElementById('ref-ops').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(sale) || sale <= 0) { setErr('ref-sale-error', 'กรอกยอดขายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(mdr) || mdr < 0 || mdr >= 100) { setErr('ref-mdr-error', 'กรอกอัตรา MDR 0–99.99%'); hasError = true; }
+      if (hasError) { document.getElementById('ref-error').classList.remove('hidden'); document.getElementById('ref-results').classList.add('hidden'); return; }
+
+      const mdrPaid = sale * mdr / 100;
+      const mdrLoss = mdrPaid * (1 - mdrReturn / 100);
+      const total = mdrLoss + procFee + ops;
+      const pct = (total / sale) * 100;
+
+      setText('res-ref-total', fmt(total));
+      setText('res-ref-mdr-loss', fmt(mdrLoss));
+      setText('res-ref-pct', `${pct.toFixed(2)}%`);
+
+      document.getElementById('ref-results').classList.remove('hidden');
+      document.getElementById('ref-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

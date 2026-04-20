@@ -1,0 +1,231 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณมูลค่าไมล์สะสมเป็นบาท ปี 2569 — Air Miles, ROP, Thai Miles | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าไมล์สะสมบัตรเครดิตเป็นบาท ป้อนจำนวนไมล์และมูลค่าต่อไมล์ ทราบมูลค่ารวมและเปรียบเทียบตั๋วที่แลกได้';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณไมล์สะสม/`;
+
+const faqData = [
+  {
+    question: 'ไมล์สะสมมูลค่าเท่าไหร่?',
+    answer: '1 ไมล์ของสายการบินไทย (ROP) มูลค่าประมาณ 1.5–3.0 บาท ขึ้นอยู่กับตั๋วที่แลก เส้นทางบิน และชั้นที่นั่ง ยิ่งแลกชั้นสูงกว่า มูลค่าต่อไมล์ยิ่งสูง',
+  },
+  {
+    question: 'ได้ไมล์อัตราเท่าไหร่?',
+    answer: 'บัตรเครดิตที่สะสมไมล์ทั่วไปให้ 1 ไมล์/ทุก 25–50 บาท บัตรพรีเมียมอาจให้ 1 ไมล์/10–15 บาท โดยส่วนมากมีอัตรา conversion จาก Points เป็น Miles',
+  },
+  {
+    question: 'เมื่อไหร่ไมล์หมดอายุ?',
+    answer: 'ไมล์ ROP (การบินไทย) ไม่มีวันหมดอายุตราบที่มีกิจกรรมในบัญชีทุก 36 เดือน ส่วนสายการบินอื่นอาจต่างกัน ควรตรวจสอบโปรแกรมที่ใช้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณมูลค่าไมล์สะสม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณไมล์สะสม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณมูลค่าไมล์สะสม — Air Miles เป็นบาท</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: มูลค่า = จำนวนไมล์ × มูลค่าต่อไมล์ (บาท)</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณมูลค่าไมล์สะสมเป็นบาท ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนจำนวนไมล์และมูลค่าต่อไมล์ เพื่อดูมูลค่ารวมเป็นบาท และประเมินว่าไมล์ที่มีแลกตั๋วใดได้คุ้มที่สุด
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="mi-form" class="space-y-5">
+        <p id="mi-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="mi-miles" class="mb-1 block text-sm font-medium text-gray-700">จำนวนไมล์ (ไมล์)</label>
+            <input type="text" id="mi-miles" inputmode="numeric" placeholder="เช่น 100,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="mi-miles-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="mi-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าต่อ 1 ไมล์ (บาท)</label>
+            <input type="text" id="mi-value" inputmode="decimal" placeholder="เช่น 2.00"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="mi-value-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ROP ทั่วไป 1.5–3.0 บาท/ไมล์</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="mi-ticket" class="mb-1 block text-sm font-medium text-gray-700">ราคาตั๋วที่ต้องการแลก (บาท) — ไม่บังคับ</label>
+            <input type="text" id="mi-ticket" inputmode="numeric" placeholder="เช่น 15,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="mi-req" class="mb-1 block text-sm font-medium text-gray-700">ไมล์ที่ต้องใช้แลก (ไมล์) — ไม่บังคับ</label>
+            <input type="text" id="mi-req" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณมูลค่าไมล์
+        </button>
+      </form>
+    </div>
+
+    <div id="mi-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าไมล์รวม</div>
+            <div id="res-mi-total" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div id="mi-eff-box" class="hidden rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าต่อไมล์จริง</div>
+            <div id="res-mi-eff" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div id="mi-verdict-box" class="hidden rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">แลกได้คุ้มไหม?</div>
+            <div id="res-mi-verdict" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+        <p id="mi-note" class="hidden mt-2 text-sm text-gray-600"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>มูลค่าไมล์รวม = จำนวนไมล์ × มูลค่าต่อไมล์</li>
+        <li>มูลค่าต่อไมล์จริง (ถ้าแลกตั๋ว) = ราคาตั๋ว ÷ ไมล์ที่ใช้แลก</li>
+        <li>คุ้มถ้า: มูลค่าต่อไมล์จริง ≥ มูลค่าต่อไมล์ที่ตั้ง</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณแต้มสะสม/">คำนวณมูลค่าแต้มสะสม</a></li>
+        <li><a href="/คำนวณ-cashback/">คำนวณมูลค่า Cashback</a></li>
+        <li><a href="/คำนวณงบแลกเงินเดินทาง/">คำนวณงบแลกเงินเดินทาง</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#mi-results" />
+    <RelatedArticles currentHref="/คำนวณไมล์สะสม/" />
+    <RelatedCalculators currentHref="/คำนวณไมล์สะสม/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> มูลค่าไมล์ขึ้นอยู่กับโปรแกรมสะสมไมล์และช่วงเวลาแลก ควรตรวจสอบอัตราล่าสุดกับสายการบินโดยตรง
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('mi-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('mi-error').classList.add('hidden');
+      ['mi-miles-error','mi-value-error'].forEach(id => setErr(id, ''));
+
+      const miles = parseNum(document.getElementById('mi-miles').value);
+      const value = parseNum(document.getElementById('mi-value').value);
+      const ticket = parseNum(document.getElementById('mi-ticket').value);
+      const req = parseNum(document.getElementById('mi-req').value);
+
+      let hasError = false;
+      if (!Number.isFinite(miles) || miles < 0) { setErr('mi-miles-error', 'กรอกจำนวนไมล์ 0 ขึ้นไป'); hasError = true; }
+      if (!Number.isFinite(value) || value <= 0) { setErr('mi-value-error', 'กรอกมูลค่าต่อไมล์มากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('mi-error').classList.remove('hidden'); document.getElementById('mi-results').classList.add('hidden'); return; }
+
+      setText('res-mi-total', fmt(miles * value));
+
+      const effBox = document.getElementById('mi-eff-box');
+      const verdictBox = document.getElementById('mi-verdict-box');
+      const verdictEl = document.getElementById('res-mi-verdict');
+      const noteEl = document.getElementById('mi-note');
+
+      if (Number.isFinite(ticket) && ticket > 0 && Number.isFinite(req) && req > 0) {
+        const effVal = ticket / req;
+        setText('res-mi-eff', `${effVal.toFixed(2)} บาท/ไมล์`);
+        effBox.classList.remove('hidden');
+
+        if (effVal >= value) {
+          verdictBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+          verdictEl.className = 'text-xl font-bold text-green-700';
+          verdictEl.textContent = 'คุ้มค่า!';
+          noteEl.textContent = `มูลค่าต่อไมล์จากตั๋วนี้ ${effVal.toFixed(2)} บาท สูงกว่าเป้าหมาย ${value.toFixed(2)} บาท`;
+        } else {
+          verdictBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+          verdictEl.className = 'text-xl font-bold text-red-700';
+          verdictEl.textContent = 'ไม่คุ้มมาก';
+          noteEl.textContent = `มูลค่าต่อไมล์จากตั๋วนี้ ${effVal.toFixed(2)} บาท ต่ำกว่าเป้าหมาย ${value.toFixed(2)} บาท อาจดีกว่าถ้าแลกแบบอื่น`;
+        }
+        verdictBox.classList.remove('hidden');
+        noteEl.classList.remove('hidden');
+      } else {
+        effBox.classList.add('hidden');
+        verdictBox.classList.add('hidden');
+        noteEl.classList.add('hidden');
+      }
+
+      document.getElementById('mi-results').classList.remove('hidden');
+      document.getElementById('mi-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,224 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณกองทุนฉุกเฉิน-เติบโต ปี 2569 มูลค่าอนาคตพร้อมดอกเบี้ย | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าอนาคตของกองทุนฉุกเฉินเมื่อนำไปฝากและออมต่อเดือน รวมดอกเบี้ยทบต้น เพื่อวางแผนกองทุนฉุกเฉินที่เติบโต';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกองทุนฉุกเฉิน-เติบโต/`;
+
+const faqData = [
+  {
+    question: 'กองทุนฉุกเฉินควรนำไปฝากที่ไหนให้ดอกเบี้ยดีที่สุด?',
+    answer: 'บัญชีออมทรัพย์ดอกเบี้ยสูง (1–2% ต่อปี) กองทุนตลาดเงิน (Money Market Fund) หรือพันธบัตรรัฐบาลระยะสั้น เป็นตัวเลือกที่สมดุลระหว่างสภาพคล่องและผลตอบแทน',
+  },
+  {
+    question: 'ดอกเบี้ยทบต้นส่งผลต่อกองทุนฉุกเฉินมากแค่ไหน?',
+    answer: 'ดอกเบี้ยทบต้นมีผลมากขึ้นตามระยะเวลา เช่น เงิน 100,000 บาทที่ดอกเบี้ย 1.5% ต่อปี หลัง 5 ปีจะเติบโตเป็น 107,728 บาท การออมเพิ่มต่อเดือนยิ่งทำให้กองทุนเติบโตเร็วขึ้น',
+  },
+  {
+    question: 'ควรออมเพิ่มในกองทุนฉุกเฉินต่อเดือนหรือไม่?',
+    answer: 'หากกองทุนฉุกเฉินยังไม่ครบ 3–6 เดือนของค่าใช้จ่าย แนะนำออมเพิ่มต่อเดือนจนครบเป้าหมาย แต่ถ้าครบแล้ว อาจจัดสรรเงินส่วนเกินไปลงทุนในสินทรัพย์อื่นที่ให้ผลตอบแทนสูงกว่า',
+  },
+  {
+    question: 'กองทุนฉุกเฉินควรทบทวนทุกกี่ปี?',
+    answer: 'ควรทบทวนอย่างน้อยปีละครั้ง หรือเมื่อรายได้/ค่าใช้จ่ายเปลี่ยนแปลงอย่างมีนัยสำคัญ เช่น แต่งงาน มีบุตร เปลี่ยนงาน เพื่อให้เป้าหมายยังคงเหมาะสม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกองทุนฉุกเฉิน-เติบโต',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกองทุนฉุกเฉิน-เติบโต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">🛡️ คำนวณกองทุนฉุกเฉิน-เติบโต</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร FV = P(1+r)^n + PMT × [(1+r)^n − 1] ÷ r | ดอกเบี้ยทบต้นรายเดือน</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">ดูว่ากองทุนฉุกเฉินของคุณจะเติบโตเป็นเท่าไหร่ในอนาคต</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณกองทุนฉุกเฉิน-เติบโต ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินกองทุนฉุกเฉินปัจจุบัน อัตราดอกเบี้ย เงินออมเพิ่มต่อเดือน และระยะเวลา เพื่อดูมูลค่าในอนาคต
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="ef-grow-form" class="space-y-5">
+        <p id="ef-grow-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="efg-current" class="mb-1 block text-sm font-medium text-gray-700">เงินกองทุนฉุกเฉินปัจจุบัน (บาท)</label>
+            <input type="text" id="efg-current" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="efg-current-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="efg-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราดอกเบี้ย (% ต่อปี)</label>
+            <input type="text" id="efg-rate" inputmode="numeric" placeholder="เช่น 1.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="efg-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">บัญชีออมทรัพย์ทั่วไป ~1–2%</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="efg-monthly" class="mb-1 block text-sm font-medium text-gray-700">ออมเพิ่มต่อเดือน (บาท)</label>
+            <input type="text" id="efg-monthly" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="efg-years" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลา (ปี)</label>
+            <input type="text" id="efg-years" inputmode="numeric" placeholder="เช่น 3"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="efg-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณมูลค่าอนาคต
+        </button>
+      </form>
+    </div>
+
+    <div id="ef-grow-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าอนาคต</div>
+            <div id="res-efg-fv" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินต้นรวม</div>
+            <div id="res-efg-principal" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ดอกเบี้ยสะสม</div>
+            <div id="res-efg-interest" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เติบโต</div>
+            <div id="res-efg-growth" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+        <p id="efg-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>FV เงินต้น = P × (1 + r)^n</li>
+        <li>FV เงินออม = PMT × [(1+r)^n − 1] ÷ r</li>
+        <li>มูลค่าอนาคตรวม = FV เงินต้น + FV เงินออม</li>
+        <li>โดย r = อัตราดอกเบี้ยรายเดือน, n = จำนวนเดือน</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ef-grow-results" />
+    <RelatedArticles currentHref="/คำนวณกองทุนฉุกเฉิน-เติบโต/" />
+    <RelatedCalculators currentHref="/คำนวณกองทุนฉุกเฉิน-เติบโต/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ อัตราดอกเบี้ยจริงอาจเปลี่ยนแปลงตามนโยบายธนาคาร
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('ef-grow-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('ef-grow-error').classList.add('hidden');
+      ['efg-current-error','efg-rate-error','efg-years-error'].forEach(id => setErr(id, ''));
+
+      const P = parseNum(document.getElementById('efg-current').value);
+      const annualRate = parseNum(document.getElementById('efg-rate').value);
+      const pmt = parseNum(document.getElementById('efg-monthly').value);
+      const years = parseNum(document.getElementById('efg-years').value);
+
+      let hasError = false;
+      if (P <= 0 && pmt <= 0) { setErr('efg-current-error', 'กรอกเงินปัจจุบันหรือออมต่อเดือน'); hasError = true; }
+      if (annualRate <= 0) { setErr('efg-rate-error', 'กรอกอัตราดอกเบี้ย'); hasError = true; }
+      if (!years || years <= 0) { setErr('efg-years-error', 'กรอกระยะเวลา'); hasError = true; }
+      if (hasError) { document.getElementById('ef-grow-error').classList.remove('hidden'); document.getElementById('ef-grow-results').classList.add('hidden'); return; }
+
+      const r = annualRate / 100 / 12;
+      const n = years * 12;
+      const fvPrincipal = P * Math.pow(1 + r, n);
+      const fvPmt = r > 0 ? pmt * (Math.pow(1 + r, n) - 1) / r : pmt * n;
+      const fv = fvPrincipal + fvPmt;
+      const totalPrincipal = P + pmt * n;
+      const interest = fv - totalPrincipal;
+      const growthPct = totalPrincipal > 0 ? ((fv - totalPrincipal) / totalPrincipal * 100) : 0;
+
+      setText('res-efg-fv', formatMoney(fv));
+      setText('res-efg-principal', formatMoney(totalPrincipal));
+      setText('res-efg-interest', formatMoney(interest));
+      setText('res-efg-growth', `+${growthPct.toFixed(2)}%`);
+
+      const statusEl = document.getElementById('efg-status');
+      statusEl.className = 'rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-800 border border-emerald-200';
+      statusEl.textContent = `ใน ${years} ปี กองทุนฉุกเฉินของคุณจะเติบโตจาก ${formatMoney(P)} เป็น ${formatMoney(fv)} ได้รับดอกเบี้ยสะสม ${formatMoney(interest)}`;
+
+      document.getElementById('ef-grow-results').classList.remove('hidden');
+      document.getElementById('ef-grow-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

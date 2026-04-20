@@ -1,0 +1,230 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุน Chargeback ปี 2569 — ค่าใช้จ่ายเรียกเงินคืนบัตรเครดิต | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณต้นทุนรวมของ Chargeback รวมค่าสินค้า ค่าธรรมเนียม Chargeback และต้นทุนการดำเนินการ ทราบผลกระทบต่อกำไรทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุน-chargeback/`;
+
+const faqData = [
+  {
+    question: 'Chargeback คืออะไร?',
+    answer: 'Chargeback คือกระบวนการที่ลูกค้าขอคืนเงินผ่านธนาคารผู้ออกบัตร เมื่อไม่พอใจสินค้า/บริการ หรือถูกเรียกเก็บโดยไม่ได้รับอนุญาต ร้านค้าจะถูกหักเงินคืนพร้อมค่าธรรมเนียม',
+  },
+  {
+    question: 'ค่าธรรมเนียม Chargeback เท่าไหร่?',
+    answer: 'ค่าธรรมเนียม Chargeback ทั่วไป 500–1,500 บาทต่อเคส ขึ้นอยู่กับธนาคารและประเภทการโต้แย้ง นอกจากนี้ยังต้องนับต้นทุนสินค้าที่สูญไปด้วย',
+  },
+  {
+    question: 'อัตรา Chargeback ที่ยอมรับได้คือเท่าไหร่?',
+    answer: 'Visa/Mastercard กำหนดอัตรา Chargeback ที่ยอมรับได้ไม่เกิน 1% ของธุรกรรมต่อเดือน หากเกินจะถูกปรับหรืออาจถูกยกเลิกสิทธิ์รับบัตร',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุน Chargeback',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน-chargeback">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
+      <p class="text-sm font-semibold text-red-700">คำนวณต้นทุน Chargeback — ต้นทุนรวมต่อเคส</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ต้นทุนรวม = ยอดขาย + ค่าธรรมเนียม Chargeback + ต้นทุนสินค้า + ต้นทุนดำเนินการ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณต้นทุน Chargeback ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดขาย ต้นทุนสินค้า ค่าธรรมเนียม Chargeback และต้นทุนดำเนินการ เพื่อดูผลกระทบรวมต่อกำไร
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="cb3-form" class="space-y-5">
+        <p id="cb3-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cb3-sale" class="mb-1 block text-sm font-medium text-gray-700">ยอดขาย (บาท)</label>
+            <input type="text" id="cb3-sale" inputmode="numeric" placeholder="เช่น 3,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cb3-sale-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="cb3-cogs" class="mb-1 block text-sm font-medium text-gray-700">ต้นทุนสินค้า (บาท)</label>
+            <input type="text" id="cb3-cogs" inputmode="numeric" placeholder="เช่น 1,800"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cb3-cogs-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cb3-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียม Chargeback (บาท)</label>
+            <input type="text" id="cb3-fee" inputmode="numeric" placeholder="เช่น 500"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียมที่ธนาคารเรียกเก็บ</p>
+          </div>
+          <div>
+            <label for="cb3-ops" class="mb-1 block text-sm font-medium text-gray-700">ต้นทุนดำเนินการ (บาท) — ไม่บังคับ</label>
+            <input type="text" id="cb3-ops" inputmode="numeric" placeholder="เช่น 200"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าใช้จ่ายตอบโต้ เอกสาร ฯลฯ</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณต้นทุน Chargeback
+        </button>
+      </form>
+    </div>
+
+    <div id="cb3-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ขาดทุนรวมต่อเคส</div>
+            <div id="res-cb3-loss" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนรวม</div>
+            <div id="res-cb3-total" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดขายที่ต้องชดเชย</div>
+            <div id="res-cb3-recover" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินคืนลูกค้า (ยอดขาย)</span>
+            <span id="res-cb3-refund" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ต้นทุนสินค้าที่สูญ</span>
+            <span id="res-cb3-cogs" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียม Chargeback</span>
+            <span id="res-cb3-fee" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ต้นทุนดำเนินการ</span>
+            <span id="res-cb3-ops" class="font-medium text-red-600">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ต้นทุนรวม = ยอดขาย + ต้นทุนสินค้า + ค่าธรรมเนียม + ต้นทุนดำเนินการ</li>
+        <li>ขาดทุนรวม = ต้นทุนรวม (เงินที่ออกไปทั้งหมด)</li>
+        <li>ยอดขายชดเชย = ขาดทุนรวม ÷ (Gross Margin%) เพื่อกู้คืนกำไร</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณต้นทุนคืนเงิน/">คำนวณต้นทุนการคืนเงิน</a></li>
+        <li><a href="/คำนวณต้นทุนรอรับเงิน/">คำนวณต้นทุนการรอรับเงิน</a></li>
+        <li><a href="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/">คำนวณ MDR ค่าธรรมเนียมร้านค้า</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#cb3-results" />
+    <RelatedArticles currentHref="/คำนวณต้นทุน-chargeback/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุน-chargeback/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ค่าธรรมเนียม Chargeback แตกต่างตามธนาคารและประเภทบัตร ควรยืนยันกับธนาคารที่ให้บริการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('cb3-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('cb3-error').classList.add('hidden');
+      ['cb3-sale-error','cb3-cogs-error'].forEach(id => setErr(id, ''));
+
+      const sale = parseNum(document.getElementById('cb3-sale').value);
+      const cogs = parseNum(document.getElementById('cb3-cogs').value);
+      const fee = parseNum(document.getElementById('cb3-fee').value) || 0;
+      const ops = parseNum(document.getElementById('cb3-ops').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(sale) || sale <= 0) { setErr('cb3-sale-error', 'กรอกยอดขายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(cogs) || cogs < 0) { setErr('cb3-cogs-error', 'กรอกต้นทุนสินค้า 0 ขึ้นไป'); hasError = true; }
+      if (hasError) { document.getElementById('cb3-error').classList.remove('hidden'); document.getElementById('cb3-results').classList.add('hidden'); return; }
+
+      const total = sale + cogs + fee + ops;
+      const margin = (sale - cogs) / sale;
+      const recover = margin > 0 ? total / margin : 0;
+
+      setText('res-cb3-loss', fmt(total));
+      setText('res-cb3-total', fmt(total));
+      setText('res-cb3-recover', margin > 0 ? fmt(recover) : 'N/A');
+      setText('res-cb3-refund', fmt(sale));
+      setText('res-cb3-cogs', fmt(cogs));
+      setText('res-cb3-fee', fmt(fee));
+      setText('res-cb3-ops', fmt(ops));
+
+      document.getElementById('cb3-results').classList.remove('hidden');
+      document.getElementById('cb3-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

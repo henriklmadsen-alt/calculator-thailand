@@ -1,0 +1,228 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียม E-Wallet ปี 2569 — True Money, Rabbit LINE Pay | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าธรรมเนียม E-Wallet สำหรับร้านค้าและผู้บริโภค เช่น True Money Wallet, Rabbit LINE Pay ป้อนยอดชำระและอัตราค่าธรรมเนียม ทราบยอดรับจริงทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-e-wallet/`;
+
+const faqData = [
+  {
+    question: 'E-Wallet มีค่าธรรมเนียมอะไรบ้าง?',
+    answer: 'ค่าธรรมเนียม E-Wallet สำหรับร้านค้า: (1) ค่าธรรมเนียมต่อธุรกรรม 0.5–2% (2) ค่าธรรมเนียม Settlement หรือถอนเงิน (3) ค่าบำรุงรายเดือน (บางผู้ให้บริการ)',
+  },
+  {
+    question: 'True Money Wallet คิดค่าธรรมเนียมเท่าไหร่?',
+    answer: 'True Money Wallet สำหรับร้านค้าคิดค่าธรรมเนียมประมาณ 1–2.5% ต่อธุรกรรม ขึ้นอยู่กับประเภทร้านค้าและปริมาณธุรกรรม',
+  },
+  {
+    question: 'ค่าธรรมเนียมโอนเงินออก E-Wallet เท่าไหร่?',
+    answer: 'ค่าธรรมเนียมโอนหรือถอนเงินจาก E-Wallet แตกต่างตามผู้ให้บริการ บางรายฟรี บางรายคิด 5–25 บาทต่อครั้ง หรือคิดเป็น % ของยอดโอน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียม E-Wallet',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-e-wallet">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-purple-100 bg-purple-50 p-4">
+      <p class="text-sm font-semibold text-purple-700">คำนวณค่าธรรมเนียม E-Wallet — True Money, Rabbit LINE Pay และอื่นๆ</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ค่าธรรมเนียม = (ยอด × %) + ค่าคงที่ | ยอดรับจริง = ยอดชำระ − ค่าธรรมเนียม</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าธรรมเนียม E-Wallet ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดชำระ อัตราค่าธรรมเนียม และค่าคงที่ เพื่อดูค่าธรรมเนียมและยอดรับจริงสำหรับ E-Wallet ทุกเจ้า
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="ew-form" class="space-y-5">
+        <p id="ew-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ew-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดชำระ (บาท)</label>
+            <input type="text" id="ew-amount" inputmode="numeric" placeholder="เช่น 1,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ew-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ew-pct" class="mb-1 block text-sm font-medium text-gray-700">อัตราค่าธรรมเนียม (%)</label>
+            <input type="text" id="ew-pct" inputmode="decimal" placeholder="เช่น 1.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ew-pct-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 0.5–2.5%</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ew-fixed" class="mb-1 block text-sm font-medium text-gray-700">ค่าคงที่ต่อรายการ (บาท)</label>
+            <input type="text" id="ew-fixed" inputmode="decimal" placeholder="เช่น 0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ถ้าไม่มีใส่ 0</p>
+          </div>
+          <div>
+            <label for="ew-txns" class="mb-1 block text-sm font-medium text-gray-700">จำนวนธุรกรรม/เดือน — ไม่บังคับ</label>
+            <input type="text" id="ew-txns" inputmode="numeric" placeholder="เช่น 100"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าธรรมเนียม E-Wallet
+        </button>
+      </form>
+    </div>
+
+    <div id="ew-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียม/ครั้ง</div>
+            <div id="res-ew-fee" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรับจริง/ครั้ง</div>
+            <div id="res-ew-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราจริง</div>
+            <div id="res-ew-eff" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <div id="ew-monthly-section" class="hidden space-y-2 text-sm">
+          <h3 class="font-medium text-gray-800">สรุปรายเดือน</h3>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียมรวม/เดือน</span>
+            <span id="res-ew-m-fee" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดรับจริงรวม/เดือน</span>
+            <span id="res-ew-m-net" class="font-medium text-green-600">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าธรรมเนียม = (ยอดชำระ × อัตรา%) + ค่าคงที่</li>
+        <li>ยอดรับจริง = ยอดชำระ − ค่าธรรมเนียม</li>
+        <li>อัตราจริง = ค่าธรรมเนียม ÷ ยอดชำระ × 100</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-QR-payment/">คำนวณค่าธรรมเนียม QR Payment</a></li>
+        <li><a href="/คำนวณ-payment-gateway/">คำนวณค่าธรรมเนียม Payment Gateway</a></li>
+        <li><a href="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/">คำนวณ MDR ค่าธรรมเนียมร้านค้า</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ew-results" />
+    <RelatedArticles currentHref="/คำนวณ-e-wallet/" />
+    <RelatedCalculators currentHref="/คำนวณ-e-wallet/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราค่าธรรมเนียม E-Wallet อาจเปลี่ยนแปลงได้ ควรตรวจสอบกับผู้ให้บริการก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('ew-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('ew-error').classList.add('hidden');
+      ['ew-amount-error','ew-pct-error'].forEach(id => setErr(id, ''));
+
+      const amount = parseNum(document.getElementById('ew-amount').value);
+      const pct = parseNum(document.getElementById('ew-pct').value);
+      const fixed = parseNum(document.getElementById('ew-fixed').value) || 0;
+      const txns = parseNum(document.getElementById('ew-txns').value);
+
+      let hasError = false;
+      if (!Number.isFinite(amount) || amount <= 0) { setErr('ew-amount-error', 'กรอกยอดชำระมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(pct) || pct < 0 || pct >= 100) { setErr('ew-pct-error', 'กรอกอัตรา 0–99.99%'); hasError = true; }
+      if (hasError) { document.getElementById('ew-error').classList.remove('hidden'); document.getElementById('ew-results').classList.add('hidden'); return; }
+
+      const fee = (amount * pct / 100) + fixed;
+      const net = amount - fee;
+      const eff = (fee / amount) * 100;
+
+      setText('res-ew-fee', fmt(fee));
+      setText('res-ew-net', fmt(net));
+      setText('res-ew-eff', `${eff.toFixed(2)}%`);
+
+      const monthlySection = document.getElementById('ew-monthly-section');
+      if (Number.isFinite(txns) && txns > 0) {
+        setText('res-ew-m-fee', fmt(fee * txns));
+        setText('res-ew-m-net', fmt(net * txns));
+        monthlySection.classList.remove('hidden');
+      } else {
+        monthlySection.classList.add('hidden');
+      }
+
+      document.getElementById('ew-results').classList.remove('hidden');
+      document.getElementById('ew-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,227 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนชำระเงินข้ามประเทศ ปี 2569 — Cross-Border Payment | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณต้นทุนรวมการชำระเงินข้ามประเทศ รวมค่าธรรมเนียมธนาคาร ค่าแลกเปลี่ยน Spread และค่าธรรมเนียมระหว่างกัน ทราบต้นทุนจริงทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนชำระเงินข้ามประเทศ/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียมชำระเงินข้ามประเทศมีอะไรบ้าง?',
+    answer: 'ต้นทุนหลัก 3 ส่วน: (1) ค่าธรรมเนียมโอนของธนาคารต้นทาง (2) ค่าธรรมเนียมธนาคารตัวกลาง (Correspondent Bank) และ (3) FX Spread ส่วนต่างอัตราแลกเปลี่ยน',
+  },
+  {
+    question: 'FX Spread คืออะไร?',
+    answer: 'FX Spread คือส่วนต่างระหว่างอัตราแลกเปลี่ยนที่ธนาคารให้กับลูกค้า กับอัตราตลาดจริง เช่น อัตราตลาด 34.00 บาท/ดอลลาร์ แต่ธนาคารให้ 34.50 บาท — Spread คือ 0.50 บาท',
+  },
+  {
+    question: 'วิธีลดต้นทุนชำระเงินข้ามประเทศ?',
+    answer: 'ใช้บริการ FinTech เช่น Wise หรือ Revolut ที่ใช้อัตราตลาดจริง ค่าธรรมเนียมต่ำกว่า หรือหากโอนใหญ่ควรเจรจาอัตราพิเศษกับธนาคาร',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนชำระเงินข้ามประเทศ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนชำระเงินข้ามประเทศ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+      <p class="text-sm font-semibold text-blue-700">คำนวณต้นทุนรวม Cross-Border Payment</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ต้นทุนรวม = ค่าธรรมเนียมส่ง + ค่าธรรมเนียมตัวกลาง + (ยอด × FX Spread%)</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณต้นทุนชำระเงินข้ามประเทศ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดที่ต้องการโอน ค่าธรรมเนียมต่างๆ และ FX Spread เพื่อดูต้นทุนรวมและยอดที่ผู้รับได้จริง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="cb2-form" class="space-y-5">
+        <p id="cb2-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cb2-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดโอน (บาท)</label>
+            <input type="text" id="cb2-amount" inputmode="numeric" placeholder="เช่น 100,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cb2-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="cb2-fx-spread" class="mb-1 block text-sm font-medium text-gray-700">FX Spread (%)</label>
+            <input type="text" id="cb2-fx-spread" inputmode="decimal" placeholder="เช่น 1.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cb2-fx-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไปธนาคาร 1–3%</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cb2-send-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมส่ง (บาท)</label>
+            <input type="text" id="cb2-send-fee" inputmode="numeric" placeholder="เช่น 500"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียม SWIFT ธนาคารต้นทาง</p>
+          </div>
+          <div>
+            <label for="cb2-corr-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมตัวกลาง (บาท)</label>
+            <input type="text" id="cb2-corr-fee" inputmode="numeric" placeholder="เช่น 200"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">Correspondent Bank Fee (ถ้าไม่มีใส่ 0)</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณต้นทุนรวม
+        </button>
+      </form>
+    </div>
+
+    <div id="cb2-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนรวม</div>
+            <div id="res-cb2-total" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ต้นทุนต่อยอดโอน</div>
+            <div id="res-cb2-pct" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรับจริง (ประมาณ)</div>
+            <div id="res-cb2-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่า FX Spread</span>
+            <span id="res-cb2-fx" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียมส่ง</span>
+            <span id="res-cb2-sf" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียมตัวกลาง</span>
+            <span id="res-cb2-cf" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่า FX Spread = ยอดโอน × (Spread% ÷ 100)</li>
+        <li>ต้นทุนรวม = ค่า FX + ค่าธรรมเนียมส่ง + ค่าธรรมเนียมตัวกลาง</li>
+        <li>% ต้นทุน = ต้นทุนรวม ÷ ยอดโอน × 100</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณยอดรับเงินโอนต่างประเทศ/">คำนวณยอดรับเงินโอนต่างประเทศ</a></li>
+        <li><a href="/คำนวณ-wire-transfer/">เปรียบเทียบ Wire Transfer</a></li>
+        <li><a href="/คำนวณแปลงรายรับส่งออก/">คำนวณแปลงรายรับส่งออกเป็นบาท</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#cb2-results" />
+    <RelatedArticles currentHref="/คำนวณต้นทุนชำระเงินข้ามประเทศ/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนชำระเงินข้ามประเทศ/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ค่าธรรมเนียมและ FX Spread เปลี่ยนแปลงได้ตามธนาคารและตลาด ควรยืนยันอัตราจริงก่อนทำรายการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('cb2-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('cb2-error').classList.add('hidden');
+      ['cb2-amount-error','cb2-fx-error'].forEach(id => setErr(id, ''));
+
+      const amount = parseNum(document.getElementById('cb2-amount').value);
+      const fxSpread = parseNum(document.getElementById('cb2-fx-spread').value);
+      const sendFee = parseNum(document.getElementById('cb2-send-fee').value) || 0;
+      const corrFee = parseNum(document.getElementById('cb2-corr-fee').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(amount) || amount <= 0) { setErr('cb2-amount-error', 'กรอกยอดโอนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(fxSpread) || fxSpread < 0 || fxSpread >= 100) { setErr('cb2-fx-error', 'กรอก FX Spread 0–99.99%'); hasError = true; }
+      if (hasError) { document.getElementById('cb2-error').classList.remove('hidden'); document.getElementById('cb2-results').classList.add('hidden'); return; }
+
+      const fxCost = amount * fxSpread / 100;
+      const total = fxCost + sendFee + corrFee;
+      const net = amount - total;
+      const pct = (total / amount) * 100;
+
+      setText('res-cb2-total', fmt(total));
+      setText('res-cb2-pct', `${pct.toFixed(2)}%`);
+      setText('res-cb2-net', fmt(net));
+      setText('res-cb2-fx', fmt(fxCost));
+      setText('res-cb2-sf', fmt(sendFee));
+      setText('res-cb2-cf', fmt(corrFee));
+
+      document.getElementById('cb2-results').classList.remove('hidden');
+      document.getElementById('cb2-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>
