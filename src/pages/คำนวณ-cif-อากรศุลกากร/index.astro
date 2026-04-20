@@ -1,0 +1,230 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณ CIF อากรศุลกากร ปี 2569 | ราคา Cost Insurance Freight | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่า CIF (Cost + Insurance + Freight) สำหรับการนำเข้าสินค้า เพื่อใช้เป็นฐานคำนวณอากรศุลกากรและภาษีมูลค่าเพิ่ม อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-cif-อากรศุลกากร/`;
+
+const faqData = [
+  {
+    question: 'CIF คืออะไร และใช้ทำอะไร?',
+    answer: 'CIF ย่อมาจาก Cost (ราคาสินค้า) + Insurance (ค่าประกันภัย) + Freight (ค่าขนส่ง) เป็นมูลค่าที่ใช้เป็นฐานในการคำนวณอากรศุลกากรของประเทศไทย โดยกรมศุลกากรจะใช้มูลค่า CIF คูณกับอัตราอากรเพื่อได้จำนวนอากรที่ต้องชำระ',
+  },
+  {
+    question: 'ค่าประกันภัย (Insurance) คิดอย่างไรถ้าไม่มีใบเสร็จ?',
+    answer: 'หากไม่มีค่าประกันภัยแยก สามารถประมาณเป็น 0.5%-1% ของราคาสินค้า (Cost) กรมศุลกากรอาจใช้ค่าประมาณมาตรฐาน 1% ของราคา FOB ในกรณีที่ผู้นำเข้าไม่สามารถแสดงหลักฐานได้',
+  },
+  {
+    question: 'FOB ต่างจาก CIF อย่างไร?',
+    answer: 'FOB (Free On Board) = ราคาสินค้า ณ ท่าเรือต้นทาง ยังไม่รวมค่าขนส่งและประกัน ส่วน CIF = FOB + ค่าขนส่งระหว่างประเทศ + ค่าประกันภัย ประเทศไทยใช้มูลค่า CIF เป็นฐานภาษีนำเข้า',
+  },
+  {
+    question: 'ถ้าสินค้ามาทางอากาศ ค่าขนส่งคิดอย่างไร?',
+    answer: 'ค่าขนส่งทางอากาศใช้ค่าจริงที่ชำระให้สายการบินหรือบริษัทขนส่ง ซึ่งมักสูงกว่าทางเรือมาก ต้องนำมารวมใน CIF เพื่อคำนวณอากรศุลกากรเช่นเดียวกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ CIF อากรศุลกากร',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ CIF อากรศุลกากร">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ CIF (Cost + Insurance + Freight)
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณมูลค่า CIF สำหรับสินค้านำเข้า เพื่อใช้เป็นฐานคำนวณอากรศุลกากรตามมาตรฐานกรมศุลกากรไทย
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลต้นทุนสินค้านำเข้า</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label for="cost-thb" class="block text-sm font-medium text-gray-700 mb-1">
+            ราคาสินค้า — Cost (บาท)
+          </label>
+          <input type="text" id="cost-thb" inputmode="numeric" placeholder="เช่น 45,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+
+        <div>
+          <label for="insurance-thb" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าประกันภัย — Insurance (บาท) <span class="text-gray-400 font-normal">— ใส่ 0 ถ้าไม่มี</span>
+          </label>
+          <input type="text" id="insurance-thb" inputmode="numeric" placeholder="เช่น 450"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+
+        <div>
+          <label for="freight-thb" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าขนส่งระหว่างประเทศ — Freight (บาท)
+          </label>
+          <input type="text" id="freight-thb" inputmode="numeric" placeholder="เช่น 3,500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+
+        <div>
+          <label for="duty-rate-cif" class="block text-sm font-medium text-gray-700 mb-1">
+            อัตราอากรนำเข้า (%) <span class="text-gray-400 font-normal">— ใส่ 0 ถ้าไม่ต้องการคำนวณอากร</span>
+          </label>
+          <input type="number" id="duty-rate-cif" min="0" max="300" step="0.5" placeholder="เช่น 20"
+            value="0"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="mt-5 w-full sm:w-auto px-8 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+        คำนวณ CIF
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+        <h3 class="font-semibold text-primary-900 mb-3">ผลการคำนวณ</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-700">ราคาสินค้า (Cost)</span>
+            <span id="res-cost" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">ค่าประกันภัย (Insurance)</span>
+            <span id="res-ins" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">ค่าขนส่ง (Freight)</span>
+            <span id="res-freight" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-t border-primary-300 pt-2 mt-2">
+            <span class="font-bold text-primary-900">มูลค่า CIF (ฐานภาษีนำเข้า)</span>
+            <span id="res-cif" class="font-bold text-primary-700 text-lg">-</span>
+          </div>
+          <div id="duty-row" class="flex justify-between hidden">
+            <span class="text-gray-700">อากรศุลกากร</span>
+            <span id="res-duty" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div id="vat-row" class="flex justify-between hidden">
+            <span class="text-gray-700">VAT 7% (บน CIF + อากร)</span>
+            <span id="res-vat" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div id="total-row" class="flex justify-between border-t border-primary-300 pt-2 mt-2 hidden">
+            <span class="font-bold text-primary-900">ต้นทุนรวมทั้งสิ้น</span>
+            <span id="res-total" class="font-bold text-green-700 text-lg">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">CIF คืออะไร?</h2>
+      <p>
+        CIF (Cost, Insurance and Freight) เป็นเงื่อนไขการค้าระหว่างประเทศที่หมายถึงราคาสินค้า
+        รวมค่าประกันภัยและค่าขนส่งไปยังท่าเรือปลายทาง ประเทศไทยใช้มูลค่า CIF
+        เป็นฐานในการคำนวณอากรศุลกากรสำหรับสินค้านำเข้าทุกชนิด
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ CIF</h3>
+      <p class="font-mono bg-gray-100 p-3 rounded text-sm">
+        CIF = Cost (ราคาสินค้า) + Insurance (ค่าประกัน) + Freight (ค่าขนส่ง)
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ราคาสินค้า = 45,000 บาท</li>
+        <li>ค่าประกัน = 450 บาท (1% ของราคาสินค้า)</li>
+        <li>ค่าขนส่ง = 3,500 บาท</li>
+        <li><strong>CIF = 48,950 บาท</strong></li>
+        <li>อากรศุลกากร 20% = 9,790 บาท</li>
+        <li>VAT 7% บน (48,950 + 9,790) = 4,113.30 บาท</li>
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณ-cif-อากรศุลกากร/" />
+    <RelatedCalculators currentHref="/คำนวณ-cif-อากรศุลกากร/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาตรวจสอบกับกรมศุลกากรสำหรับอัตราที่แน่นอน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+    function show(id: string) { (document.getElementById(id) as HTMLElement).classList.remove('hidden'); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const cost = parseNum((document.getElementById('cost-thb') as HTMLInputElement).value);
+      const insurance = parseNum((document.getElementById('insurance-thb') as HTMLInputElement).value);
+      const freight = parseNum((document.getElementById('freight-thb') as HTMLInputElement).value);
+      const dutyRate = parseNum((document.getElementById('duty-rate-cif') as HTMLInputElement).value) / 100;
+
+      if (cost <= 0) { (document.getElementById('cost-thb') as HTMLInputElement).focus(); return; }
+
+      const cif = cost + insurance + freight;
+      (document.getElementById('res-cost') as HTMLElement).textContent = fmt(cost);
+      (document.getElementById('res-ins') as HTMLElement).textContent = fmt(insurance);
+      (document.getElementById('res-freight') as HTMLElement).textContent = fmt(freight);
+      (document.getElementById('res-cif') as HTMLElement).textContent = fmt(cif);
+
+      if (dutyRate > 0) {
+        const duty = cif * dutyRate;
+        const vatBase = cif + duty;
+        const vat = vatBase * 0.07;
+        const total = vatBase + vat;
+        (document.getElementById('res-duty') as HTMLElement).textContent = fmt(duty);
+        (document.getElementById('res-vat') as HTMLElement).textContent = fmt(vat);
+        (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
+        show('duty-row'); show('vat-row'); show('total-row');
+      }
+
+      document.getElementById('result')!.classList.remove('hidden');
+      trackCalculatorUsed('cif-customs');
+    });
+  </script>
+</BaseLayout>

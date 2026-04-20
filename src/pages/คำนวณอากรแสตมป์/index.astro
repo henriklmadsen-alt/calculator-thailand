@@ -1,0 +1,212 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณอากรแสตมป์ ปี 2569 | สัญญาเช่า โอนหุ้น กู้เงิน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณอากรแสตมป์ตามประเภทเอกสาร สัญญาเช่า สัญญากู้ยืม โอนหุ้น จ้างทำของ แสดงอัตราและจำนวนเงินแบบละเอียด อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณอากรแสตมป์/`;
+
+const docTypes = [
+  { id: 'lease', label: 'สัญญาเช่าที่ดิน/อสังหาริมทรัพย์', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (ค่าเช่าตลอดสัญญา)', minStamp: 1 },
+  { id: 'loan', label: 'สัญญากู้ยืมเงิน / ตราสารเงินกู้', rate: 1, per: 2000, desc: '1 บาท ต่อทุก 2,000 บาท (เศษนับเป็น 2,000)', minStamp: 1 },
+  { id: 'share', label: 'ใบหุ้น / ใบหุ้นกู้', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (มูลค่าหุ้น)', minStamp: 1 },
+  { id: 'transfer', label: 'สัญญาจ้างทำของ / รับจ้าง', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (ค่าจ้างตามสัญญา)', minStamp: 1 },
+  { id: 'shareXfer', label: 'โอนหุ้น (ใบโอนหุ้น)', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (ราคาโอน)', minStamp: 1 },
+];
+
+const faqData = [
+  {
+    question: 'อากรแสตมป์คืออะไร?',
+    answer: 'อากรแสตมป์เป็นอากรตามประมวลรัษฎากร หมวด 6 เรียกเก็บจากการทำเอกสารหรือตราสารบางประเภท เช่น สัญญาเช่า สัญญากู้ยืม ใบหุ้น โดยต้องติดแสตมป์หรือชำระอากรภายใน 15 วันหลังทำเอกสาร',
+  },
+  {
+    question: 'สัญญาเช่าคำนวณอากรแสตมป์อย่างไร?',
+    answer: 'อากรแสตมป์สัญญาเช่า = ค่าเช่าตลอดระยะเวลาสัญญา ÷ 1,000 (ปัดขึ้น) × 1 บาท ตัวอย่าง: ค่าเช่า 10,000 บาท/เดือน สัญญา 1 ปี = 120,000 บาท ÷ 1,000 = 120 บาท',
+  },
+  {
+    question: 'สัญญากู้ยืมเงินต้องติดแสตมป์เท่าไร?',
+    answer: 'อากรแสตมป์สัญญากู้ = จำนวนเงินกู้ ÷ 2,000 (ปัดขึ้น) × 1 บาท เช่น กู้ 500,000 บาท = 500,000 ÷ 2,000 = 250 บาท',
+  },
+  {
+    question: 'ไม่ติดอากรแสตมป์มีผลอย่างไร?',
+    answer: 'ตราสารที่ไม่ปิดอากรแสตมป์ไม่สามารถใช้เป็นพยานหลักฐานในคดีแพ่งได้ จนกว่าจะชำระอากรและเบี้ยปรับแล้ว นอกจากนี้ยังมีโทษปรับไม่เกิน 500 บาทหรือ 5 เท่าของอากรที่ค้างชำระ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณอากรแสตมป์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอากรแสตมป์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณอากรแสตมป์
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณอากรแสตมป์ตามประเภทเอกสาร สัญญาเช่า สัญญากู้ยืม ใบหุ้น และตราสารอื่นๆ ตามประมวลรัษฎากร
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">เลือกประเภทตราสาร</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label for="doc-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทเอกสาร</label>
+          <select id="doc-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+            {docTypes.map((d) => (
+              <option value={d.id}>{d.label}</option>
+            ))}
+          </select>
+          <p id="rate-hint" class="text-xs text-gray-500 mt-1"></p>
+        </div>
+
+        <div>
+          <label for="contract-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าตามสัญญา (บาท)</label>
+          <input type="text" id="contract-value" inputmode="numeric" placeholder="เช่น 120,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="mt-5 w-full sm:w-auto px-8 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+        คำนวณอากรแสตมป์
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+        <h3 class="font-semibold text-primary-900 mb-3">ผลการคำนวณ</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-700">ประเภทเอกสาร</span>
+            <span id="res-type" class="font-semibold text-gray-900 text-right max-w-xs">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">มูลค่าตามสัญญา</span>
+            <span id="res-value" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-t border-primary-300 pt-2 mt-2">
+            <span class="font-bold text-primary-900">อากรแสตมป์ที่ต้องชำระ</span>
+            <span id="res-stamp" class="font-bold text-primary-700 text-lg">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">อากรแสตมป์ (Stamp Duty) คืออะไร?</h2>
+      <p>
+        อากรแสตมป์เป็นภาษีที่รัฐเรียกเก็บจากการกระทำทางกฎหมายบางประเภทที่ต้องทำเป็นลายลักษณ์อักษร
+        ตามบัญชีอัตราอากรแสตมป์ท้ายหมวด 6 แห่งประมวลรัษฎากร
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราอากรแสตมป์สำคัญ</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-3 py-2 text-left">ประเภทตราสาร</th>
+              <th class="border border-gray-300 px-3 py-2 text-right">อัตรา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="border border-gray-300 px-3 py-2">สัญญาเช่าที่ดิน/อสังหาริมทรัพย์</td><td class="border border-gray-300 px-3 py-2 text-right">1 บาท / 1,000 บาท</td></tr>
+            <tr class="bg-gray-50"><td class="border border-gray-300 px-3 py-2">สัญญากู้ยืมเงิน</td><td class="border border-gray-300 px-3 py-2 text-right">1 บาท / 2,000 บาท</td></tr>
+            <tr><td class="border border-gray-300 px-3 py-2">ใบหุ้น / ใบหุ้นกู้</td><td class="border border-gray-300 px-3 py-2 text-right">1 บาท / 1,000 บาท</td></tr>
+            <tr class="bg-gray-50"><td class="border border-gray-300 px-3 py-2">สัญญาจ้างทำของ</td><td class="border border-gray-300 px-3 py-2 text-right">1 บาท / 1,000 บาท</td></tr>
+            <tr><td class="border border-gray-300 px-3 py-2">ใบโอนหุ้น</td><td class="border border-gray-300 px-3 py-2 text-right">1 บาท / 1,000 บาท</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณอากรแสตมป์/" />
+    <RelatedCalculators currentHref="/คำนวณอากรแสตมป์/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    const DOC_TYPES: Record<string, { label: string; rate: number; per: number; desc: string }> = {
+      lease:     { label: 'สัญญาเช่าที่ดิน/อสังหาริมทรัพย์', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (ค่าเช่าตลอดสัญญา)' },
+      loan:      { label: 'สัญญากู้ยืมเงิน / ตราสารเงินกู้', rate: 1, per: 2000, desc: '1 บาท ต่อทุก 2,000 บาท (เศษนับเป็น 2,000)' },
+      share:     { label: 'ใบหุ้น / ใบหุ้นกู้', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (มูลค่าหุ้น)' },
+      transfer:  { label: 'สัญญาจ้างทำของ / รับจ้าง', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (ค่าจ้างตามสัญญา)' },
+      shareXfer: { label: 'โอนหุ้น (ใบโอนหุ้น)', rate: 1, per: 1000, desc: '1 บาท ต่อทุก 1,000 บาท (ราคาโอน)' },
+    };
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+
+    const sel = document.getElementById('doc-type') as HTMLSelectElement;
+    const hint = document.getElementById('rate-hint') as HTMLElement;
+
+    function updateHint() {
+      const d = DOC_TYPES[sel.value];
+      if (d) hint.textContent = 'อัตรา: ' + d.desc;
+    }
+    sel.addEventListener('change', updateHint);
+    updateHint();
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const val = parseNum((document.getElementById('contract-value') as HTMLInputElement).value);
+      if (val <= 0) { (document.getElementById('contract-value') as HTMLInputElement).focus(); return; }
+
+      const d = DOC_TYPES[sel.value];
+      const units = Math.ceil(val / d.per);
+      const stamp = Math.max(1, units * d.rate);
+
+      (document.getElementById('res-type') as HTMLElement).textContent = d.label;
+      (document.getElementById('res-value') as HTMLElement).textContent = fmt(val);
+      (document.getElementById('res-stamp') as HTMLElement).textContent = stamp.toFixed(0) + ' บาท';
+      document.getElementById('result')!.classList.remove('hidden');
+      trackCalculatorUsed('stamp-duty');
+    });
+  </script>
+</BaseLayout>

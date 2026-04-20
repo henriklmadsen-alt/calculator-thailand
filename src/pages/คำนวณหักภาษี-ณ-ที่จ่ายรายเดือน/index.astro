@@ -1,0 +1,322 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณภาษีหัก ณ ที่จ่ายรายเดือน 2569 | ฟรี ออนไลน์ | Calculator Thailand';
+const pageDescription = 'คำนวณภาษีหัก ณ ที่จ่ายรายเดือน สำหรับพนักงานและฟรีแลนซ์ อัตรา 5–37% สำหรับเงินเดือน 3% สำหรับค่าบริการ ตามหลักเกณฑ์กรมสรรพากร 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน/`;
+
+const faqData = [
+  {
+    question: 'ภาษีหัก ณ ที่จ่ายคืออะไร?',
+    answer: 'ภาษีหัก ณ ที่จ่าย คือภาษีที่นายจ้างหรือผู้จ่ายเงินหักจากรายได้ก่อนจ่ายให้ผู้รับ แล้วนำส่งกรมสรรพากรแทนผู้มีรายได้ เป็นการเก็บภาษีล่วงหน้าตลอดปี',
+  },
+  {
+    question: 'อัตราภาษีหัก ณ ที่จ่ายสำหรับเงินเดือนเป็นเท่าไร?',
+    answer: 'ภาษีหัก ณ ที่จ่ายสำหรับเงินเดือน (ประเภท 40(1)) คำนวณจากรายได้ทั้งปีหักค่าใช้จ่ายและค่าลดหย่อนแล้วคำนวณตามอัตราขั้นบันได 5–35% แล้วหารด้วย 12 เดือน',
+  },
+  {
+    question: 'ฟรีแลนซ์ถูกหักภาษี ณ ที่จ่ายเท่าไร?',
+    answer: 'ค่าจ้างบริการฟรีแลนซ์ (ประเภท 40(2)) ถูกหักภาษี ณ ที่จ่าย 3% ของรายได้ทุกครั้งที่รับเงิน ผู้จ่ายเงินต้องหักและออกหนังสือรับรองการหักภาษี ณ ที่จ่าย',
+  },
+  {
+    question: 'ภาษีหัก ณ ที่จ่ายรายเดือนนำไปใช้อะไรได้บ้าง?',
+    answer: 'ภาษีหัก ณ ที่จ่ายที่ถูกหักตลอดปีสามารถนำมาหักออกจากภาษีที่ต้องชำระเมื่อยื่นแบบ ภ.ง.ด.90/91 ประจำปี หากหักเกินจะได้รับเงินคืนจากกรมสรรพากร',
+  },
+  {
+    question: 'รายได้ประเภทอื่นๆ ถูกหักภาษี ณ ที่จ่ายเท่าไร?',
+    answer: 'รายได้ประเภท 40(3) ค่าสิทธิ หักภาษี 3% / รายได้ประเภท 40(5) ค่าเช่า หักภาษี 5% / รายได้ประเภท 40(6) วิชาชีพอิสระ หักภาษี 3% / รายได้ประเภท 40(8) อื่นๆ หักภาษี 1–3% แล้วแต่ประเภท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีหัก ณ ที่จ่ายรายเดือน 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัตราภาษีปี 2569 (กรมสรรพากร)</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณภาษีหัก ณ ที่จ่ายรายเดือน 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณภาษีหัก ณ ที่จ่ายรายเดือนสำหรับพนักงานประจำและฟรีแลนซ์
+      ตามอัตราและวิธีของกรมสรรพากร ใช้ฟรี ไม่ต้องสมัครสมาชิก
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรายได้</h2>
+
+      <form id="wht-form" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทรายได้</label>
+          <select id="income-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="salary">40(1) เงินเดือน / ค่าจ้างพนักงาน</option>
+            <option value="freelance">40(2) ค่าจ้าง / บริการฟรีแลนซ์ (หัก 3%)</option>
+            <option value="royalty">40(3) ค่าสิทธิ / ลิขสิทธิ์ (หัก 3%)</option>
+            <option value="rental">40(5) ค่าเช่า (หัก 5%)</option>
+            <option value="professional">40(6) วิชาชีพอิสระ (หัก 3%)</option>
+          </select>
+        </div>
+
+        <div id="salary-section">
+          <div class="space-y-4">
+            <div>
+              <label for="monthly-income" class="block text-sm font-medium text-gray-700 mb-1">รายได้รายเดือน (บาท)</label>
+              <input type="text" id="monthly-income" inputmode="numeric" placeholder="เช่น 45,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="personal-deduct" class="block text-sm font-medium text-gray-700 mb-1">ค่าลดหย่อนต่อปีโดยรวม (บาท)</label>
+              <input type="text" id="personal-deduct" inputmode="numeric" placeholder="เช่น 120,000 (ส่วนตัว+ประกัน)"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <p class="mt-1 text-xs text-gray-500">ค่าลดหย่อนส่วนตัว 60,000 + ประกันสังคม 9,000 = 69,000 บาทขั้นต่ำ</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="flat-section" class="hidden">
+          <label for="payment-amount" class="block text-sm font-medium text-gray-700 mb-1">จำนวนเงินที่จ่าย (บาท)</label>
+          <input type="text" id="payment-amount" inputmode="numeric" placeholder="เช่น 30,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <button type="submit" id="wht-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณภาษีหัก ณ ที่จ่าย</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีหัก ณ ที่จ่าย/เดือน</div>
+            <div id="result-monthly-wht" class="text-2xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รับสุทธิ/เดือน</div>
+            <div id="result-net-monthly" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีหัก ณ ที่จ่าย/ปี</div>
+            <div id="result-annual-wht" class="text-2xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">รายได้ต่อปี</span>
+            <span id="result-annual-income" class="font-medium">-</span>
+          </div>
+          <div id="row-expense" class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">หักค่าใช้จ่าย (50% สูงสุด 100,000)</span>
+            <span id="result-expense" class="font-medium text-red-600">-</span>
+          </div>
+          <div id="row-deduct" class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">หักค่าลดหย่อน</span>
+            <span id="result-deduct" class="font-medium text-red-600">-</span>
+          </div>
+          <div id="row-net" class="flex justify-between py-1 border-b border-gray-100 font-semibold">
+            <span>รายได้สุทธิ/ปี</span>
+            <span id="result-net-income">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราภาษีหัก ณ ที่จ่าย</span>
+            <span id="result-rate" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ภาษีหัก ณ ที่จ่ายคืออะไร และคำนวณอย่างไร?</h2>
+      <p>ภาษีหัก ณ ที่จ่าย (Withholding Tax) คือระบบที่กรมสรรพากรกำหนดให้นายจ้างหรือผู้จ่ายเงินหักภาษีจากรายได้ก่อนจ่ายให้ผู้รับ เพื่อรวบรวมภาษีตลอดปีแทนการเก็บครั้งเดียว</p>
+
+      <h3 class="text-lg font-semibold mt-4 mb-2">วิธีคำนวณสำหรับพนักงานประจำ (40(1))</h3>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>คำนวณรายได้ทั้งปี (รายได้รายเดือน × 12)</li>
+        <li>หักค่าใช้จ่าย 50% ของรายได้ แต่ไม่เกิน 100,000 บาท</li>
+        <li>หักค่าลดหย่อนทั้งหมด (ส่วนตัว คู่สมรส บุตร ประกัน ฯลฯ)</li>
+        <li>คำนวณภาษีจากรายได้สุทธิตามอัตราขั้นบันได</li>
+        <li>หารด้วย 12 เดือน = ภาษีหัก ณ ที่จ่ายต่อเดือน</li>
+      </ol>
+
+      <h3 class="text-lg font-semibold mt-4 mb-2">อัตราหัก ณ ที่จ่ายตามประเภทรายได้</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left border-b">ประเภทรายได้</th>
+              <th class="px-3 py-2 text-right border-b">อัตราหัก</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="px-3 py-2 border-b">40(1) เงินเดือน / ค่าจ้าง</td><td class="px-3 py-2 text-right border-b">ตามขั้นบันได (5–35%)</td></tr>
+            <tr><td class="px-3 py-2 border-b">40(2) ค่าจ้างบริการ / ฟรีแลนซ์</td><td class="px-3 py-2 text-right border-b">3%</td></tr>
+            <tr><td class="px-3 py-2 border-b">40(3) ค่าสิทธิ / ลิขสิทธิ์</td><td class="px-3 py-2 text-right border-b">3%</td></tr>
+            <tr><td class="px-3 py-2 border-b">40(5) ค่าเช่า</td><td class="px-3 py-2 text-right border-b">5%</td></tr>
+            <tr><td class="px-3 py-2">40(6) วิชาชีพอิสระ</td><td class="px-3 py-2 text-right">3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน/" />
+    <RelatedCalculators currentHref="/คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น อัตราภาษีอ้างอิงจากกรมสรรพากร ปีภาษี 2569 กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    const TAX_BRACKETS = [
+      { min: 0, max: 150_000, rate: 0 },
+      { min: 150_000, max: 300_000, rate: 0.05 },
+      { min: 300_000, max: 500_000, rate: 0.10 },
+      { min: 500_000, max: 750_000, rate: 0.15 },
+      { min: 750_000, max: 1_000_000, rate: 0.20 },
+      { min: 1_000_000, max: 2_000_000, rate: 0.25 },
+      { min: 2_000_000, max: 5_000_000, rate: 0.30 },
+      { min: 5_000_000, max: Infinity, rate: 0.35 },
+    ];
+
+    const FLAT_RATES: Record<string, number> = {
+      freelance: 0.03,
+      royalty: 0.03,
+      rental: 0.05,
+      professional: 0.03,
+    };
+
+    function parseNum(v: string) { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number, d = 2) { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n) + ' บาท'; }
+    function fmtPct(n: number) { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n * 100) + '%'; }
+
+    function calcProgressiveTax(annualIncome: number): number {
+      let remaining = annualIncome;
+      let tax = 0;
+      for (const b of TAX_BRACKETS) {
+        const w = b.max === Infinity ? Infinity : b.max - b.min;
+        const taxable = Math.min(remaining, w);
+        tax += taxable * b.rate;
+        remaining -= taxable;
+        if (remaining <= 0) break;
+      }
+      return tax;
+    }
+
+    function effectiveRate(annualIncome: number, annualTax: number): number {
+      return annualIncome > 0 ? annualTax / annualIncome : 0;
+    }
+
+    const incomeTypeEl = document.getElementById('income-type') as HTMLSelectElement;
+    const salarySection = document.getElementById('salary-section') as HTMLElement;
+    const flatSection = document.getElementById('flat-section') as HTMLElement;
+    const rowExpense = document.getElementById('row-expense') as HTMLElement;
+    const rowDeduct = document.getElementById('row-deduct') as HTMLElement;
+    const rowNet = document.getElementById('row-net') as HTMLElement;
+
+    incomeTypeEl.addEventListener('change', () => {
+      const isSalary = incomeTypeEl.value === 'salary';
+      salarySection.classList.toggle('hidden', !isSalary);
+      flatSection.classList.toggle('hidden', isSalary);
+      rowExpense.classList.toggle('hidden', !isSalary);
+      rowDeduct.classList.toggle('hidden', !isSalary);
+      rowNet.classList.toggle('hidden', !isSalary);
+    });
+
+    const form = document.getElementById('wht-form') as HTMLFormElement;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const type = incomeTypeEl.value;
+      const resultsDiv = document.getElementById('results') as HTMLElement;
+
+      if (type === 'salary') {
+        const monthly = parseNum((document.getElementById('monthly-income') as HTMLInputElement).value);
+        const deductions = parseNum((document.getElementById('personal-deduct') as HTMLInputElement).value);
+        if (monthly <= 0) return;
+
+        const annual = monthly * 12;
+        const expense = Math.min(annual * 0.5, 100_000);
+        const netIncome = Math.max(0, annual - expense - deductions);
+        const annualTax = calcProgressiveTax(netIncome);
+        const monthlyWHT = annualTax / 12;
+
+        (document.getElementById('result-monthly-wht') as HTMLElement).textContent = fmt(monthlyWHT);
+        (document.getElementById('result-net-monthly') as HTMLElement).textContent = fmt(monthly - monthlyWHT);
+        (document.getElementById('result-annual-wht') as HTMLElement).textContent = fmt(annualTax);
+        (document.getElementById('result-annual-income') as HTMLElement).textContent = fmt(annual);
+        (document.getElementById('result-expense') as HTMLElement).textContent = '-' + fmt(expense);
+        (document.getElementById('result-deduct') as HTMLElement).textContent = '-' + fmt(deductions);
+        (document.getElementById('result-net-income') as HTMLElement).textContent = fmt(netIncome);
+        (document.getElementById('result-rate') as HTMLElement).textContent = fmtPct(effectiveRate(annual, annualTax));
+      } else {
+        const amount = parseNum((document.getElementById('payment-amount') as HTMLInputElement).value);
+        if (amount <= 0) return;
+
+        const rate = FLAT_RATES[type] || 0.03;
+        const wht = amount * rate;
+
+        (document.getElementById('result-monthly-wht') as HTMLElement).textContent = fmt(wht);
+        (document.getElementById('result-net-monthly') as HTMLElement).textContent = fmt(amount - wht);
+        (document.getElementById('result-annual-wht') as HTMLElement).textContent = fmt(wht * 12);
+        (document.getElementById('result-annual-income') as HTMLElement).textContent = fmt(amount);
+        (document.getElementById('result-rate') as HTMLElement).textContent = fmtPct(rate);
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('monthly_withholding_tax');
+      trackCalculatorUsed('monthly_withholding_tax');
+    });
+
+    form.addEventListener('input', () => { trackCalculatorStart('monthly_withholding_tax'); }, { once: true });
+  </script>
+</BaseLayout>
