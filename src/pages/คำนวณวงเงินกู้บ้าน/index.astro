@@ -1,0 +1,321 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณวงเงินกู้บ้าน 2569 | กู้ได้สูงสุดเท่าไรจากรายได้ | Calculator Thailand';
+const pageDescription = 'คำนวณวงเงินกู้บ้านสูงสุดจากรายได้และภาระหนี้เดิมปี 2569 ฟรี ดูค่างวดสูงสุด เงินดาวน์ขั้นต่ำ และสัดส่วนหนี้ต่อรายได้ ก่อนยื่นกู้ธนาคาร ผลทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณวงเงินกู้บ้าน/`;
+
+const faqData = [
+  {
+    question: 'ธนาคารใช้เกณฑ์อะไรพิจารณาวงเงินกู้บ้าน?',
+    answer: 'ธนาคารมักใช้ภาระหนี้รวมต่อรายได้ (Debt Service Ratio) ไม่เกิน 40–45% ของรายได้สุทธิต่อเดือน รวมถึงพิจารณาประวัติเครดิต อายุ และความมั่นคงของรายได้',
+  },
+  {
+    question: 'LTV (Loan-to-Value) คืออะไร?',
+    answer: 'LTV คืออัตราส่วนวงเงินกู้ต่อมูลค่าอสังหาริมทรัพย์ ธนาคารส่วนใหญ่ปล่อยกู้ได้สูงสุด 80–90% ของราคาประเมิน คุณต้องเตรียมเงินดาวน์ส่วนที่เหลืออย่างน้อย 10–20%',
+  },
+  {
+    question: 'ถ้ามีหนี้อื่นอยู่แล้ว กู้บ้านได้น้อยลงแค่ไหน?',
+    answer: 'ภาระหนี้เดิมทุกบาทจะลดค่างวดสูงสุดที่ธนาคารอนุมัติได้ เช่น มีผ่อนรถ 8,000 บาท/เดือน วงเงินกู้บ้านที่ได้รับจะลดลงตามสัดส่วนนั้น ยิ่งหนี้เดิมน้อย วงเงินกู้ยิ่งสูง',
+  },
+  {
+    question: 'จะเพิ่มวงเงินกู้ได้อย่างไร?',
+    answer: 'ทำได้โดย ลดภาระหนี้เดิม (ปิดบัตรเครดิต/หนี้สินเชื่ออื่น) เพิ่มรายได้ที่พิสูจน์ได้ กู้ร่วมกับคู่สมรสหรือผู้กู้ร่วม หรือขอระยะเวลากู้ที่นานขึ้นเพื่อลดค่างวดต่อเดือน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณวงเงินกู้บ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวงเงินกู้บ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">🏠 รู้ผลทันที — ไม่บันทึกข้อมูล</p>
+      <p class="mt-1 text-sm text-slate-700">ประมาณวงเงินกู้สูงสุดจากรายได้และภาระหนี้เดิมก่อนยื่นกู้จริง</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณวงเงินกู้บ้านสูงสุด 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกรายได้ ภาระหนี้เดิม และดอกเบี้ย เพื่อประมาณวงเงินกู้สูงสุดที่ธนาคารน่าจะอนุมัติ
+      พร้อมค่างวดสูงสุด เงินดาวน์ขั้นต่ำ และสัดส่วนหนี้ต่อรายได้
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="afford-form" class="space-y-5">
+        <p id="afford-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="afford-income" class="block text-sm font-medium text-gray-700 mb-1">
+              รายได้ต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="afford-income"
+              inputmode="numeric"
+              value="60000"
+              placeholder="เช่น 60,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="afford-existing-debt" class="block text-sm font-medium text-gray-700 mb-1">
+              ภาระหนี้เดิมต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="afford-existing-debt"
+              inputmode="numeric"
+              value="0"
+              placeholder="เช่น 5,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="afford-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="afford-rate"
+              inputmode="decimal"
+              value="5.5"
+              placeholder="เช่น 5.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="afford-term-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลากู้ (ปี)
+            </label>
+            <input
+              type="text"
+              id="afford-term-years"
+              inputmode="numeric"
+              value="30"
+              placeholder="เช่น 30"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="afford-property-value" class="block text-sm font-medium text-gray-700 mb-1">
+            ราคาบ้าน (บาท) <span class="text-gray-400 font-normal">ไม่บังคับ — ใช้คำนวณเงินดาวน์</span>
+          </label>
+          <input
+            type="text"
+            id="afford-property-value"
+            inputmode="numeric"
+            placeholder="เช่น 3,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="afford-results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณวงเงินกู้</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">วงเงินกู้สูงสุด</div>
+            <div id="res-max-loan" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดสูงสุด</div>
+            <div id="res-max-payment" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์ขั้นต่ำ</div>
+            <div id="res-min-down" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สัดส่วนหนี้ต่อรายได้</div>
+            <div id="res-dti" class="text-xl font-bold text-gray-800">-</div>
+          </div>
+        </div>
+
+        <div id="res-afford-summary" class="p-3 rounded-lg text-sm bg-primary-50 border border-primary-200 text-primary-900">-</div>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#afford-results"
+    />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณวงเงินกู้บ้าน</h2>
+      <p class="text-gray-700">
+        เครื่องมือใช้หลัก Debt Service Ratio (DSR) โดยธนาคารส่วนใหญ่กำหนดให้ภาระหนี้รวมต่อเดือน
+        ไม่เกิน <strong>40%</strong> ของรายได้ ค่างวดสูงสุด = รายได้ × 40% − หนี้เดิมต่อเดือน
+        จากนั้นคำนวณย้อนกลับหาวงเงินกู้สูงสุดด้วยสูตร Inverse PMT
+      </p>
+      <p class="text-gray-700 mt-2">
+        หากใส่ราคาบ้าน ระบบจะตรวจสอบเพิ่มเติมว่าวงเงินไม่เกิน 80% ของราคาบ้าน (LTV 80%)
+        และคำนวณเงินดาวน์ขั้นต่ำที่ต้องเตรียม
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เกณฑ์ที่ธนาคารไทยใช้ทั่วไป</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>DSR ≤ 40% ของรายได้สุทธิต่อเดือน</li>
+        <li>LTV สูงสุด 80–90% ของราคาประเมิน (บ้านราคาสูงกว่า 10 ล้านบาท อาจต่ำกว่า)</li>
+        <li>อายุ + ระยะเวลากู้ ≤ 65 ปี (พนักงาน) หรือ 70 ปี (ธุรกิจส่วนตัว)</li>
+        <li>รายได้ขั้นต่ำมักอยู่ที่ 15,000–20,000 บาท/เดือน ขึ้นกับธนาคาร</li>
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณวงเงินกู้บ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณวงเงินกู้บ้าน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลคำนวณเป็นการประมาณการเพื่อวางแผนเท่านั้น วงเงินที่ได้รับจริงขึ้นอยู่กับนโยบายและการพิจารณาของแต่ละธนาคาร
+      โปรดปรึกษาสถาบันการเงินก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function fmtPct(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n) + '%';
+    }
+
+    // Inverse PMT: given payment, rate, term — find principal
+    function inversePMT(payment: number, annualRate: number, months: number): number {
+      if (months <= 0 || payment <= 0) return 0;
+      const r = annualRate / 100 / 12;
+      if (r === 0) return payment * months;
+      const factor = Math.pow(1 + r, months);
+      return payment * (factor - 1) / (r * factor);
+    }
+
+    const form = document.getElementById('afford-form') as HTMLFormElement;
+    const formError = document.getElementById('afford-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('afford-results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const income = parseNum((document.getElementById('afford-income') as HTMLInputElement).value);
+      const existingDebt = parseNum((document.getElementById('afford-existing-debt') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('afford-rate') as HTMLInputElement).value);
+      const termYears = parseNum((document.getElementById('afford-term-years') as HTMLInputElement).value);
+      const propertyValue = parseNum((document.getElementById('afford-property-value') as HTMLInputElement).value);
+
+      if (income <= 0 || termYears <= 0) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorUsed('mortgage-affordability');
+
+      const DSR = 0.40;
+      const LTV = 0.80;
+      const months = Math.round(termYears * 12);
+
+      const maxPayment = Math.max(0, income * DSR - existingDebt);
+      let maxLoan = inversePMT(maxPayment, rate, months);
+
+      // Cap by LTV if property value provided
+      let minDown: number | null = null;
+      if (propertyValue > 0) {
+        const ltvMax = propertyValue * LTV;
+        if (maxLoan > ltvMax) maxLoan = ltvMax;
+        minDown = Math.max(0, propertyValue - maxLoan);
+      }
+
+      const dti = income > 0 ? ((maxPayment + existingDebt) / income) * 100 : 0;
+
+      (document.getElementById('res-max-loan') as HTMLElement).textContent = fmt(maxLoan) + ' บาท';
+      (document.getElementById('res-max-payment') as HTMLElement).textContent = fmt(maxPayment) + ' บาท/เดือน';
+      (document.getElementById('res-min-down') as HTMLElement).textContent =
+        minDown !== null ? fmt(minDown) + ' บาท' : 'ไม่ได้ระบุราคาบ้าน';
+      (document.getElementById('res-dti') as HTMLElement).textContent = fmtPct(dti);
+
+      const summary = document.getElementById('res-afford-summary') as HTMLElement;
+      if (maxLoan > 0) {
+        summary.className = 'p-3 rounded-lg text-sm bg-green-50 border border-green-200 text-green-900';
+        summary.textContent =
+          `วงเงินกู้สูงสุดประมาณ ${fmt(maxLoan)} บาท (ค่างวดไม่เกิน ${fmt(maxPayment)} บาท/เดือน)` +
+          (minDown !== null ? ` ควรเตรียมเงินดาวน์อย่างน้อย ${fmt(minDown)} บาท` : '');
+      } else {
+        summary.className = 'p-3 rounded-lg text-sm bg-amber-50 border border-amber-200 text-amber-900';
+        summary.textContent = 'ภาระหนี้เดิมเกิน 40% ของรายได้ ธนาคารอาจไม่อนุมัติวงเงินเพิ่ม ควรลดหนี้เดิมก่อน';
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackResultViewed('mortgage-affordability');
+    });
+  </script>
+</BaseLayout>

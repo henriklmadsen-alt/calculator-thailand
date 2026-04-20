@@ -1,0 +1,170 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณสินเชื่อค้ำประกัน 2569 — วงเงิน ค่างวด ดอกเบี้ย | Calculator Thailand';
+const pageDescription = 'คำนวณสินเชื่อที่ใช้หลักประกัน ทั้งอสังหาริมทรัพย์ สลากออมทรัพย์ หรือหุ้นกู้ ดูวงเงินสูงสุด ค่างวด และเปรียบเทียบกับสินเชื่อไม่มีหลักประกัน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณสินเชื่อค้ำประกัน/`;
+
+const faqData = [
+  {
+    question: 'หลักประกันประเภทไหนบ้างที่ธนาคารรับ?',
+    answer: 'ธนาคารรับหลักประกันหลายประเภท: (1) อสังหาริมทรัพย์ (บ้าน ที่ดิน คอนโด) กู้ได้ 70-80% ของราคาประเมิน (2) สลากออมทรัพย์ ฝากประจำ กู้ได้ 90-95% (3) พันธบัตร/หุ้นกู้ กู้ได้ 70-80% (4) ยานพาหนะ กู้ได้ 60-70%',
+  },
+  {
+    question: 'สินเชื่อค้ำประกัน vs ไม่ค้ำประกัน ต่างกันอย่างไร?',
+    answer: 'สินเชื่อค้ำประกัน: ดอกเบี้ยต่ำกว่า (6-10%) วงเงินสูงกว่า ผ่อนนานกว่า แต่ต้องมีทรัพย์สินค้ำประกัน สินเชื่อส่วนบุคคลไม่ค้ำประกัน: ดอกเบี้ย 18-28% วงเงินจำกัด อนุมัติง่ายกว่า ไม่เสี่ยงทรัพย์สิน',
+  },
+  {
+    question: 'หากผิดนัดชำระหนี้จะเกิดอะไรขึ้น?',
+    answer: 'หากผิดนัดชำระเกิน 3 งวด ธนาคารมีสิทธิ์บังคับหลักประกัน เช่น ประมูลขายทรัพย์สิน หากขายได้ไม่ครบยอดหนี้ ผู้กู้ยังต้องชำระส่วนที่ขาด จึงต้องประเมินความสามารถในการชำระอย่างรอบคอบ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณสินเชื่อค้ำประกัน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อค้ำประกัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณสินเชื่อค้ำประกัน — วงเงิน ค่างวด และดอกเบี้ย
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณวงเงินกู้สูงสุดตามมูลค่าหลักประกัน และค่างวดผ่อนชำระ</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="collateral-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="collateral-value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">มูลค่าหลักประกัน (บาท)</label>
+            <input type="text" id="collateral-value" inputmode="numeric" placeholder="เช่น 3,000,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="collateral-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ประเภทหลักประกัน</label>
+            <select id="collateral-type" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base">
+              <option value="0.80">อสังหาริมทรัพย์ (80%)</option>
+              <option value="0.90">สลาก/เงินฝากประจำ (90%)</option>
+              <option value="0.75">พันธบัตร/หุ้นกู้ (75%)</option>
+              <option value="0.65">รถยนต์/ยานพาหนะ (65%)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="loan-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="loan-rate" inputmode="decimal" placeholder="เช่น 7.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="loan-term" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลา (ปี)</label>
+            <input type="text" id="loan-term" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">วงเงินกู้สูงสุด</div>
+            <div id="res-max-loan" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ค่างวด/เดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+          <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">ข้อดีของสินเชื่อค้ำประกัน</h2>
+      <p>สินเชื่อที่มีหลักประกันให้ดอกเบี้ยต่ำกว่าสินเชื่อส่วนบุคคลมาก เนื่องจากธนาคารมีความเสี่ยงต่ำกว่า ผู้กู้จึงได้ประโยชน์จากดอกเบี้ยที่ต่ำกว่าและวงเงินที่สูงกว่า เหมาะสำหรับความต้องการเงินก้อนใหญ่ระยะยาว</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณสินเชื่อค้ำประกัน/" />
+    <RelatedCalculators currentHref="/คำนวณสินเชื่อค้ำประกัน/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ เงื่อนไขจริงขึ้นอยู่กับสถาบันการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('collateral-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = parseNum((document.getElementById('collateral-value') as HTMLInputElement).value);
+      const ltv = parseFloat((document.getElementById('collateral-type') as HTMLSelectElement).value) || 0.80;
+      const rate = parseNum((document.getElementById('loan-rate') as HTMLInputElement).value) || 7.5;
+      const years = parseNum((document.getElementById('loan-term') as HTMLInputElement).value) || 10;
+      if (!val) return;
+
+      const maxLoan = val * ltv;
+      const n = years * 12;
+      const r = rate / 100 / 12;
+      const monthly = r === 0 ? maxLoan / n : maxLoan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const totalInterest = monthly * n - maxLoan;
+
+      (document.getElementById('res-max-loan') as HTMLElement).textContent = fmt(maxLoan) + ' บาท';
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthly) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('collateral-loan');
+    });
+  </script>
+</BaseLayout>

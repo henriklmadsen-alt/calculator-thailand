@@ -1,0 +1,275 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเปรียบเทียบสินเชื่อ 2569 — เลือกข้อเสนอที่คุ้มที่สุด | Calculator Thailand';
+const pageDescription = 'เปรียบเทียบสินเชื่อ 2 ข้อเสนอพร้อมกัน คำนวณค่างวด ดอกเบี้ยรวม และต้นทุนแท้จริง (EIR) ช่วยตัดสินใจเลือกสินเชื่อบ้าน รถ หรือส่วนบุคคลที่ประหยัดที่สุด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเปรียบเทียบสินเชื่อ/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ย flat rate vs reducing balance ต่างกันอย่างไร?',
+    answer: 'Flat rate คำนวณดอกเบี้ยจากเงินต้นทั้งก้อนตลอดระยะเวลา เช่น flat 3% ต่อปีจริงเทียบเท่า reducing balance ประมาณ 5.5-6% ส่วน reducing balance คำนวณจากยอดคงเหลือ ดอกเบี้ยลดลงทุกเดือน รวมจ่ายน้อยกว่า',
+  },
+  {
+    question: 'EIR คืออะไร?',
+    answer: 'EIR (Effective Interest Rate) หรืออัตราดอกเบี้ยที่แท้จริง รวมค่าธรรมเนียมทั้งหมดเข้าไปในการคำนวณ ใช้เปรียบเทียบสินเชื่อต่างธนาคารได้อย่างยุติธรรม ธนาคารแห่งประเทศไทยกำหนดให้ต้องแจ้ง EIR',
+  },
+  {
+    question: 'ควรเลือกสินเชื่อดอกเบี้ยต่ำหรือค่างวดต่ำ?',
+    answer: 'ดูที่ดอกเบี้ยรวมตลอดสัญญาเป็นหลัก ค่างวดต่ำอาจหมายถึงระยะเวลานานและดอกเบี้ยรวมมากกว่า หากรายได้มั่นคง เลือกค่างวดสูงกว่าเพื่อปิดหนี้เร็วและประหยัดดอกเบี้ย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเปรียบเทียบสินเชื่อ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเปรียบเทียบสินเชื่อ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณเปรียบเทียบสินเชื่อ — หาข้อเสนอที่คุ้มที่สุด
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">เปรียบเทียบสินเชื่อ 2 ข้อเสนอพร้อมกัน ดูค่างวด ดอกเบี้ยรวม และต้นทุนแท้จริง</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="compare-form" class="space-y-6">
+        <div class="grid gap-6 md:grid-cols-2">
+          <!-- Loan A -->
+          <div class="border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+            <h3 class="font-semibold text-blue-700 dark:text-blue-300 mb-3">สินเชื่อ A</h3>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">วงเงินกู้ (บาท)</label>
+                <input type="text" id="a-principal" inputmode="numeric" placeholder="เช่น 1,000,000"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">อัตราดอกเบี้ย (%/ปี)</label>
+                <input type="text" id="a-rate" inputmode="decimal" placeholder="เช่น 6.5"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">ระยะเวลา (ปี)</label>
+                <input type="text" id="a-term" inputmode="numeric" placeholder="เช่น 20"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">ค่าธรรมเนียมแรกเข้า (บาท)</label>
+                <input type="text" id="a-fee" inputmode="numeric" placeholder="0"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <fieldset>
+                <legend class="text-xs text-gray-600 dark:text-gray-400 mb-1">วิธีคิดดอกเบี้ย</legend>
+                <div class="flex gap-3">
+                  <label class="flex items-center gap-1 text-xs"><input type="radio" name="a-method" value="reducing" checked class="w-3 h-3" /> ลดต้นลดดอก</label>
+                  <label class="flex items-center gap-1 text-xs"><input type="radio" name="a-method" value="flat" class="w-3 h-3" /> แบบคงที่</label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- Loan B -->
+          <div class="border border-green-200 dark:border-green-700 rounded-lg p-4">
+            <h3 class="font-semibold text-green-700 dark:text-green-300 mb-3">สินเชื่อ B</h3>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">วงเงินกู้ (บาท)</label>
+                <input type="text" id="b-principal" inputmode="numeric" placeholder="เช่น 1,000,000"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">อัตราดอกเบี้ย (%/ปี)</label>
+                <input type="text" id="b-rate" inputmode="decimal" placeholder="เช่น 5.99"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">ระยะเวลา (ปี)</label>
+                <input type="text" id="b-term" inputmode="numeric" placeholder="เช่น 20"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">ค่าธรรมเนียมแรกเข้า (บาท)</label>
+                <input type="text" id="b-fee" inputmode="numeric" placeholder="0"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" />
+              </div>
+              <fieldset>
+                <legend class="text-xs text-gray-600 dark:text-gray-400 mb-1">วิธีคิดดอกเบี้ย</legend>
+                <div class="flex gap-3">
+                  <label class="flex items-center gap-1 text-xs"><input type="radio" name="b-method" value="reducing" checked class="w-3 h-3" /> ลดต้นลดดอก</label>
+                  <label class="flex items-center gap-1 text-xs"><input type="radio" name="b-method" value="flat" class="w-3 h-3" /> แบบคงที่</label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          เปรียบเทียบ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลเปรียบเทียบ</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left border-b border-gray-200 dark:border-gray-700">
+                <th class="py-2 pr-4 text-gray-600 dark:text-gray-400">รายการ</th>
+                <th class="py-2 pr-4 text-blue-700 dark:text-blue-300">สินเชื่อ A</th>
+                <th class="py-2 text-green-700 dark:text-green-300">สินเชื่อ B</th>
+              </tr>
+            </thead>
+            <tbody id="compare-tbody" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+          </table>
+        </div>
+        <div id="winner-box" class="mt-4 p-3 rounded-lg text-sm font-semibold"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">วิธีเปรียบเทียบสินเชื่ออย่างถูกต้อง</h2>
+      <p>การเปรียบเทียบสินเชื่อควรดูที่ต้นทุนรวมทั้งหมด ไม่ใช่แค่ค่างวดรายเดือน ปัจจัยที่ควรพิจารณา ได้แก่ อัตราดอกเบี้ยที่แท้จริง (EIR) ค่าธรรมเนียมแรกเข้า ค่าธรรมเนียมปิดก่อนกำหนด และเงื่อนไขพิเศษช่วงต้น</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณเปรียบเทียบสินเชื่อ/" />
+    <RelatedCalculators currentHref="/คำนวณเปรียบเทียบสินเชื่อ/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ อัตราดอกเบี้ยจริงขึ้นอยู่กับเงื่อนไขของแต่ละสถาบันการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    function calcLoan(principal: number, annualRate: number, termYears: number, method: string, fee: number) {
+      const termMonths = Math.round(termYears * 12);
+      const monthlyRate = annualRate / 100 / 12;
+      let monthly: number;
+      let totalInterest: number;
+
+      if (method === 'flat') {
+        totalInterest = principal * (annualRate / 100) * termYears;
+        monthly = (principal + totalInterest) / termMonths;
+      } else {
+        if (monthlyRate === 0) {
+          monthly = principal / termMonths;
+          totalInterest = 0;
+        } else {
+          monthly = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+          totalInterest = monthly * termMonths - principal;
+        }
+      }
+      const totalCost = principal + totalInterest + fee;
+      return { monthly, totalInterest, totalCost, termMonths };
+    }
+
+    const form = document.getElementById('compare-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const aP = parseNum((document.getElementById('a-principal') as HTMLInputElement).value);
+      const aR = parseNum((document.getElementById('a-rate') as HTMLInputElement).value);
+      const aT = parseNum((document.getElementById('a-term') as HTMLInputElement).value);
+      const aF = parseNum((document.getElementById('a-fee') as HTMLInputElement).value);
+      const aM = (document.querySelector('input[name="a-method"]:checked') as HTMLInputElement).value;
+
+      const bP = parseNum((document.getElementById('b-principal') as HTMLInputElement).value);
+      const bR = parseNum((document.getElementById('b-rate') as HTMLInputElement).value);
+      const bT = parseNum((document.getElementById('b-term') as HTMLInputElement).value);
+      const bF = parseNum((document.getElementById('b-fee') as HTMLInputElement).value);
+      const bM = (document.querySelector('input[name="b-method"]:checked') as HTMLInputElement).value;
+
+      if (!aP || !aT || !bP || !bT) return;
+
+      const a = calcLoan(aP, aR, aT, aM, aF);
+      const b = calcLoan(bP, bR, bT, bM, bF);
+
+      const rows = [
+        ['วงเงินกู้', fmt(aP) + ' บาท', fmt(bP) + ' บาท'],
+        ['ค่างวดต่อเดือน', fmt(a.monthly) + ' บาท', fmt(b.monthly) + ' บาท'],
+        ['ดอกเบี้ยรวม', fmt(a.totalInterest) + ' บาท', fmt(b.totalInterest) + ' บาท'],
+        ['ค่าธรรมเนียม', fmt(aF) + ' บาท', fmt(bF) + ' บาท'],
+        ['ต้นทุนรวม', fmt(a.totalCost) + ' บาท', fmt(b.totalCost) + ' บาท'],
+        ['จำนวนงวด', a.termMonths + ' งวด', b.termMonths + ' งวด'],
+      ];
+
+      const tbody = document.getElementById('compare-tbody') as HTMLTableSectionElement;
+      tbody.innerHTML = rows.map(([label, va, vb]) => `
+        <tr>
+          <td class="py-2 pr-4 text-gray-600 dark:text-gray-400">${label}</td>
+          <td class="py-2 pr-4 font-medium text-gray-900 dark:text-gray-100">${va}</td>
+          <td class="py-2 font-medium text-gray-900 dark:text-gray-100">${vb}</td>
+        </tr>
+      `).join('');
+
+      const winnerBox = document.getElementById('winner-box') as HTMLElement;
+      const saving = Math.abs(a.totalCost - b.totalCost);
+      if (a.totalCost < b.totalCost) {
+        winnerBox.className = 'mt-4 p-3 rounded-lg text-sm font-semibold bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300';
+        winnerBox.textContent = `สินเชื่อ A ประหยัดกว่า ${fmt(saving)} บาท`;
+      } else if (b.totalCost < a.totalCost) {
+        winnerBox.className = 'mt-4 p-3 rounded-lg text-sm font-semibold bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-300';
+        winnerBox.textContent = `สินเชื่อ B ประหยัดกว่า ${fmt(saving)} บาท`;
+      } else {
+        winnerBox.className = 'mt-4 p-3 rounded-lg text-sm font-semibold bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+        winnerBox.textContent = 'ต้นทุนรวมทั้งสองเท่ากัน';
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('loan-compare');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { trackResultViewed('loan-compare'); resultObserver.disconnect(); } });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

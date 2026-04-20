@@ -1,0 +1,170 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณสินเชื่อฉุกเฉิน Payday Loan 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณต้นทุนที่แท้จริงของสินเชื่อฉุกเฉินและ Payday Loan ดูดอกเบี้ยต่อวัน APR และต้นทุนรวม เปรียบเทียบกับทางเลือกอื่นที่ถูกกว่า';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณสินเชื่อฉุกเฉิน/`;
+
+const faqData = [
+  {
+    question: 'สินเชื่อฉุกเฉินในไทยมีดอกเบี้ยเท่าไร?',
+    answer: 'สินเชื่อฉุกเฉินที่ถูกกฎหมายในไทยดอกเบี้ยสูงสุด 15-36% ต่อปี ขึ้นอยู่กับประเภท สินเชื่อนาโนไฟแนนซ์สูงสุด 36% สินเชื่อส่วนบุคคลจากธนาคาร 18-28% สถาบันนอกระบบผิดกฎหมายอาจสูงกว่ามาก',
+  },
+  {
+    question: 'APR (Annual Percentage Rate) คืออะไร?',
+    answer: 'APR คืออัตราดอกเบี้ยต่อปีที่รวมค่าธรรมเนียมทุกอย่างเข้าไป ช่วยเปรียบเทียบต้นทุนของสินเชื่อต่างประเภทได้อย่างยุติธรรม Payday Loan ระยะสั้น 30 วัน แม้ดอกเบี้ยดูน้อยแต่ APR อาจสูงถึง 300-1000%',
+  },
+  {
+    question: 'ทางเลือกอื่นแทนสินเชื่อฉุกเฉินมีอะไรบ้าง?',
+    answer: 'ทางเลือกที่ดีกว่า: (1) กองทุนสำรองฉุกเฉินของตนเอง (2) ยืมครอบครัว/เพื่อนสนิท (3) สินเชื่อส่วนบุคคลจากธนาคาร (4) บัตรกดเงินสด (5) สหกรณ์ออมทรัพย์ (6) กองทุนสวัสดิการจากที่ทำงาน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณสินเชื่อฉุกเฉิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อฉุกเฉิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณสินเชื่อฉุกเฉิน (Payday Loan) — เปิดเผยต้นทุนจริง
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณดอกเบี้ยต่อวัน APR ต่อปี และต้นทุนรวมของสินเชื่อฉุกเฉิน ก่อนตัดสินใจกู้</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="payday-form" class="space-y-5">
+        <div>
+          <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">จำนวนเงินกู้ (บาท)</label>
+          <input type="text" id="amount" inputmode="numeric" placeholder="เช่น 5,000"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fee-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ค่าธรรมเนียม/ดอกเบี้ย (บาท)</label>
+            <input type="text" id="fee-amount" inputmode="numeric" placeholder="เช่น 500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="duration-days" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลา (วัน)</label>
+            <input type="text" id="duration-days" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ชำระคืนทั้งหมด</div>
+            <div id="res-repay" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ย/วัน</div>
+            <div id="res-daily-rate" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">APR ต่อปี</div>
+            <div id="res-apr" class="text-xl font-bold text-orange-700 dark:text-orange-300">-</div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ต้นทุนต่อ 1,000 บาท</div>
+            <div id="res-per-1000" class="text-xl font-bold text-gray-700 dark:text-gray-300">-</div>
+          </div>
+        </div>
+        <div id="warning" class="p-3 rounded-lg text-sm bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">ควรระวังอะไรกับสินเชื่อฉุกเฉิน?</h2>
+      <p>สินเชื่อฉุกเฉินหรือ Payday Loan แม้ดอกเบี้ยดูเหมือนไม่มากในแต่ละงวด แต่เมื่อคำนวณเป็น APR ต่อปีแล้วสูงมาก ควรใช้เป็นทางเลือกสุดท้าย และต้องมั่นใจว่าสามารถชำระคืนได้ตามกำหนด เพื่อหลีกเลี่ยงดอกเบี้ยเบี้ยปรับที่จะทบทวีขึ้น</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณสินเชื่อฉุกเฉิน/" />
+    <RelatedCalculators currentHref="/คำนวณสินเชื่อฉุกเฉิน/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเพื่อให้ข้อมูล ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('payday-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const amount = parseNum((document.getElementById('amount') as HTMLInputElement).value);
+      const fee = parseNum((document.getElementById('fee-amount') as HTMLInputElement).value);
+      const days = parseNum((document.getElementById('duration-days') as HTMLInputElement).value) || 30;
+      if (!amount) return;
+
+      const repay = amount + fee;
+      const dailyRate = (fee / amount / days) * 100;
+      const apr = dailyRate * 365;
+      const per1000 = (fee / amount) * 1000;
+
+      (document.getElementById('res-repay') as HTMLElement).textContent = fmt(repay) + ' บาท';
+      (document.getElementById('res-daily-rate') as HTMLElement).textContent = dailyRate.toFixed(3) + '%';
+      (document.getElementById('res-apr') as HTMLElement).textContent = apr.toFixed(1) + '%';
+      (document.getElementById('res-per-1000') as HTMLElement).textContent = fmt(per1000) + ' บาท';
+
+      const warning = document.getElementById('warning') as HTMLElement;
+      if (apr > 100) {
+        warning.textContent = `⚠️ APR ${apr.toFixed(0)}% สูงมาก กู้ 1,000 บาทต้องจ่ายดอกเบี้ยเพิ่ม ${fmt(per1000)} บาท พิจารณาทางเลือกอื่นก่อนตัดสินใจ`;
+      } else {
+        warning.textContent = `APR ${apr.toFixed(1)}% ต่อปี ยังคงสูงกว่าสินเชื่อปกติ ควรเปรียบเทียบกับทางเลือกอื่นก่อน`;
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('payday-loan');
+    });
+  </script>
+</BaseLayout>

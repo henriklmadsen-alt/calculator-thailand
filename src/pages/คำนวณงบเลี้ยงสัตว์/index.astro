@@ -1,0 +1,210 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณงบเลี้ยงสัตว์ 2569 | ค่าใช้จ่ายเลี้ยงสุนัขและแมว | เครื่องคำนวณไทย';
+const pageDescription = 'ประเมินค่าใช้จ่ายเลี้ยงสุนัขหรือแมวรายเดือน ค่าอาหาร ค่าหมอ ค่า grooming ค่าวัคซีน ค่าทราย อุปกรณ์ เพื่อวางแผนการเงินก่อนรับสัตว์เลี้ยง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบเลี้ยงสัตว์/`;
+
+const faqData = [
+  {
+    question: 'เลี้ยงสุนัขเสียค่าใช้จ่ายเดือนละเท่าไร?',
+    answer: 'ค่าใช้จ่ายเลี้ยงสุนัขขนาดกลาง-ใหญ่อยู่ที่ประมาณ 2,500-5,000 บาทต่อเดือน รวมค่าอาหาร ค่า grooming ค่าหมอ และค่าอุปกรณ์ สุนัขขนาดเล็กอาจประหยัดกว่าที่ 1,500-3,000 บาท',
+  },
+  {
+    question: 'เลี้ยงแมวเสียค่าใช้จ่ายน้อยกว่าสุนัขไหม?',
+    answer: 'โดยทั่วไปแมวมีค่าใช้จ่ายน้อยกว่าสุนัขเล็กน้อย ประมาณ 1,500-3,500 บาทต่อเดือน เพราะกินน้อยกว่า grooming น้อยกว่า และออกกำลังกายเองได้ แต่ค่าทรายแมวอาจสูงถึง 400-800 บาทต่อเดือน',
+  },
+  {
+    question: 'ค่าวัคซีนสัตว์เลี้ยงต่อปีเท่าไร?',
+    answer: 'ค่าวัคซีนรายปีสำหรับสุนัขหรือแมวอยู่ที่ประมาณ 1,500-3,000 บาทต่อปี รวมค่าตรวจสุขภาพประจำปี ค่าวัคซีนหลัก และยาพยาธิ หากสัตว์เลี้ยงป่วยหรือต้องผ่าตัด ค่าใช้จ่ายอาจสูงถึง 10,000-50,000 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบเลี้ยงสัตว์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบเลี้ยงสัตว์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบเลี้ยงสัตว์ 2569</h1>
+    <p class="mb-6 text-gray-600">ประเมินค่าใช้จ่ายเลี้ยงสุนัขหรือแมวรายเดือน ค่าอาหาร ค่าหมอ ค่า grooming</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pet-form" class="space-y-4">
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">สัตว์เลี้ยง</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="pet-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="petType" value="dog" class="sr-only" checked /> 🐶 สุนัข
+            </label>
+            <label class="pet-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="petType" value="cat" class="sr-only" /> 🐱 แมว
+            </label>
+          </div>
+        </fieldset>
+        <div id="dog-size-section">
+          <fieldset>
+            <legend class="mb-2 text-sm font-medium text-gray-700">ขนาดสุนัข</legend>
+            <div class="flex flex-wrap gap-2">
+              <label class="size-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+                <input type="radio" name="dogSize" value="small" class="sr-only" /> เล็ก (ต่ำกว่า 10 กก.)
+              </label>
+              <label class="size-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+                <input type="radio" name="dogSize" value="medium" class="sr-only" checked /> กลาง (10-25 กก.)
+              </label>
+              <label class="size-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+                <input type="radio" name="dogSize" value="large" class="sr-only" /> ใหญ่ (มากกว่า 25 กก.)
+              </label>
+            </div>
+          </fieldset>
+        </div>
+        <div>
+          <label for="pet-age" class="mb-1 block text-sm font-medium text-gray-700">อายุ</label>
+          <select id="pet-age" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto">
+            <option value="puppy">ลูกสัตว์ (ต่ำกว่า 1 ปี)</option>
+            <option value="adult" selected>ผู้ใหญ่ (1-7 ปี)</option>
+            <option value="senior">สูงอายุ (7 ปีขึ้นไป)</option>
+          </select>
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ค่าใช้จ่ายสัตว์เลี้ยงต่อเดือน</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">รวมต่อเดือน</div>
+          <div id="res-monthly" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🍖 ค่าอาหาร</span>
+            <span id="res-food" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🏥 ค่าหมอ/วัคซีน (เฉลี่ยต่อเดือน)</span>
+            <span id="res-vet" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">✂️ ค่า grooming</span>
+            <span id="res-groom" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🧴 ค่าทราย/ของใช้</span>
+            <span id="res-supplies" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-gray-700">ค่าใช้จ่ายต่อปี</span>
+            <span id="res-yearly" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณงบเลี้ยงสัตว์/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  // [food, vet/mo, groom/mo, supplies/mo]
+  const DOG: Record<string, Record<string, number[]>> = {
+    small:  { puppy: [600, 250, 300, 150], adult: [500, 150, 300, 100], senior: [700, 300, 300, 100] },
+    medium: { puppy: [900, 300, 400, 150], adult: [800, 200, 400, 100], senior: [1000, 400, 400, 100] },
+    large:  { puppy: [1400, 350, 500, 200], adult: [1200, 250, 500, 150], senior: [1500, 500, 500, 150] },
+  };
+  const CAT: Record<string, number[]> = {
+    puppy:  [700, 250, 100, 500],
+    adult:  [600, 150, 100, 400],
+    senior: [800, 300, 100, 400],
+  };
+
+  function setupPills(cls: string) {
+    document.querySelectorAll<HTMLLabelElement>(`.${cls}`).forEach((pill) => {
+      pill.querySelector('input')?.addEventListener('change', () => {
+        document.querySelectorAll<HTMLLabelElement>(`.${cls}`).forEach((p) => {
+          p.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+          p.classList.add('border-gray-200', 'text-gray-700');
+        });
+        pill.classList.remove('border-gray-200', 'text-gray-700');
+        pill.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+      });
+    });
+  }
+  setupPills('pet-pill');
+  setupPills('size-pill');
+
+  // Show/hide dog size section
+  document.querySelectorAll('input[name="petType"]').forEach((input) => {
+    input.addEventListener('change', () => {
+      const val = (input as HTMLInputElement).value;
+      document.getElementById('dog-size-section')!.classList.toggle('hidden', val !== 'dog');
+    });
+  });
+
+  document.getElementById('pet-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const petType = (document.querySelector('input[name="petType"]:checked') as HTMLInputElement)?.value ?? 'dog';
+    const dogSize = (document.querySelector('input[name="dogSize"]:checked') as HTMLInputElement)?.value ?? 'medium';
+    const age = (document.getElementById('pet-age') as HTMLSelectElement).value;
+
+    let food, vet, groom, supplies;
+    if (petType === 'dog') {
+      [food, vet, groom, supplies] = DOG[dogSize][age];
+    } else {
+      [food, vet, groom, supplies] = CAT[age];
+    }
+
+    const monthly = food + vet + groom + supplies;
+
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-food')!.textContent = fmt(food);
+    document.getElementById('res-vet')!.textContent = fmt(vet);
+    document.getElementById('res-groom')!.textContent = fmt(groom);
+    document.getElementById('res-supplies')!.textContent = fmt(supplies);
+    document.getElementById('res-yearly')!.textContent = fmt(monthly * 12);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

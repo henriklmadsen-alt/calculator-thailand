@@ -1,0 +1,253 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเงินสำรองฉุกเฉิน ปี 2569 เป้าหมาย 3-6 เดือน ระยะเวลาถึงเป้าหมาย | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเงินสำรองฉุกเฉินที่ควรมี 3 หรือ 6 เดือนของค่าใช้จ่าย ช่องว่างจากเงินออมปัจจุบัน และระยะเวลาที่ใช้ถึงเป้าหมาย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินสำรองฉุกเฉิน/`;
+
+const faqData = [
+  {
+    question: 'เงินสำรองฉุกเฉินควรมีกี่เดือน?',
+    answer: 'มาตรฐานทั่วไปคือ 3-6 เดือนของค่าใช้จ่ายรายเดือน ถ้าคุณทำงานประจำที่มั่นคง 3 เดือนก็พอ แต่ถ้าเป็นฟรีแลนซ์ เจ้าของกิจการ หรือรายได้ไม่แน่นอน แนะนำ 6 เดือน',
+  },
+  {
+    question: 'เงินสำรองฉุกเฉินควรเก็บไว้ที่ไหน?',
+    answer: 'ควรเก็บในบัญชีที่เข้าถึงได้ง่ายและปลอดภัย เช่น บัญชีออมทรัพย์ที่ให้ดอกเบี้ยดี กองทุนตลาดเงิน (Money Market Fund) หรือพันธบัตรรัฐบาลระยะสั้น ไม่ควรเก็บในหุ้นเพราะมูลค่าผันผวน',
+  },
+  {
+    question: 'ถ้าใช้เงินสำรองฉุกเฉินไปแล้วต้องทำอย่างไร?',
+    answer: 'หลังจากใช้เงินสำรองฉุกเฉินไป ให้เร่งเติมให้กลับมาเป็นลำดับความสำคัญสูงสุด ก่อนออมเพื่อเป้าหมายอื่น เพราะเงินสำรองคือเกราะป้องกันทางการเงิน',
+  },
+  {
+    question: 'ค่าใช้จ่ายรายเดือนในการคำนวณควรรวมอะไรบ้าง?',
+    answer: 'ควรรวมค่าใช้จ่ายที่จำเป็นทุกอย่าง ได้แก่ ค่าเช่า/ผ่อนบ้าน ค่าอาหาร ค่าสาธารณูปโภค ค่าเดินทาง ค่าผ่อนหนี้ขั้นต่ำ และค่าประกัน ไม่จำเป็นต้องรวมค่าบันเทิงหรือช้อปปิ้ง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเงินสำรองฉุกเฉิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินสำรองฉุกเฉิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณเงินสำรองฉุกเฉิน เป้าหมาย 3-6 เดือนของค่าใช้จ่าย</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: เป้าหมาย = ค่าใช้จ่าย/เดือน × จำนวนเดือน | ระยะเวลา = ช่องว่าง ÷ ออมต่อเดือน</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">เงินสำรองฉุกเฉินคือรากฐานของความมั่นคงทางการเงิน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเงินสำรองฉุกเฉิน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกค่าใช้จ่ายต่อเดือน จำนวนเดือนที่ต้องการสำรอง เงินออมปัจจุบัน และเงินออมต่อเดือน เพื่อดูว่าจะถึงเป้าหมายเมื่อไหร่
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="ef-form" class="space-y-5">
+        <p id="ef-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ef-expenses" class="mb-1 block text-sm font-medium text-gray-700">ค่าใช้จ่ายจำเป็นต่อเดือน (บาท)</label>
+            <input type="text" id="ef-expenses" inputmode="numeric" placeholder="เช่น 20,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ef-expenses-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">รวมเช่า อาหาร สาธารณูปโภค ผ่อนหนี้</p>
+          </div>
+          <div>
+            <label for="ef-months" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเดือนที่ต้องการสำรอง</label>
+            <select id="ef-months" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="3">3 เดือน (มาตรฐาน พนักงานประจำ)</option>
+              <option value="6" selected>6 เดือน (แนะนำ)</option>
+              <option value="9">9 เดือน (เพิ่มความปลอดภัย)</option>
+              <option value="12">12 เดือน (รายได้ไม่แน่นอน)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ef-current" class="mb-1 block text-sm font-medium text-gray-700">เงินออมปัจจุบัน (บาท)</label>
+            <input type="text" id="ef-current" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="ef-monthly-saving" class="mb-1 block text-sm font-medium text-gray-700">ออมต่อเดือน (บาท)</label>
+            <input type="text" id="ef-monthly-saving" inputmode="numeric" placeholder="เช่น 3,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ef-monthly-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณเงินสำรองฉุกเฉิน
+        </button>
+      </form>
+    </div>
+
+    <div id="ef-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เป้าหมายสำรอง</div>
+            <div id="res-ef-target" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มีอยู่แล้ว</div>
+            <div id="res-ef-current" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยังขาดอีก</div>
+            <div id="res-ef-gap" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ถึงเป้าหมายใน</div>
+            <div id="res-ef-months" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <div class="mb-1 flex justify-between text-sm">
+            <span class="text-gray-600">ความคืบหน้า</span>
+            <span id="res-ef-pct" class="font-medium text-blue-700">0%</span>
+          </div>
+          <div class="h-3 w-full overflow-hidden rounded-full bg-gray-200">
+            <div id="ef-progress-bar" class="h-3 rounded-full bg-emerald-500 transition-all" style="width:0%"></div>
+          </div>
+        </div>
+        <p id="ef-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>เป้าหมาย = ค่าใช้จ่าย/เดือน × จำนวนเดือนที่สำรอง</li>
+        <li>ช่องว่าง = เป้าหมาย - เงินออมปัจจุบัน</li>
+        <li>ระยะเวลา = ช่องว่าง ÷ เงินออมต่อเดือน</li>
+        <li>% ความคืบหน้า = (ปัจจุบัน ÷ เป้าหมาย) × 100%</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-sinking-fund/">คำนวณ Sinking Fund</a></li>
+        <li><a href="/คำนวณ-cash-runway/">คำนวณ Cash Runway</a></li>
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ef-results" />
+    <RelatedArticles currentHref="/คำนวณเงินสำรองฉุกเฉิน/" />
+    <RelatedCalculators currentHref="/คำนวณเงินสำรองฉุกเฉิน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ จำนวนเดือนที่เหมาะสมอาจแตกต่างตามความมั่นคงของรายได้และสถานการณ์ส่วนตัว
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('ef-form');
+    const formError = document.getElementById('ef-error');
+    const resultBox = document.getElementById('ef-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['ef-expenses-error','ef-monthly-error'].forEach(id => setErr(id, ''));
+
+      const expenses = parseNum(document.getElementById('ef-expenses').value);
+      const months = parseInt(document.getElementById('ef-months').value, 10);
+      const currentSavings = parseNum(document.getElementById('ef-current').value);
+      const monthlySaving = parseNum(document.getElementById('ef-monthly-saving').value);
+
+      let hasError = false;
+      if (!expenses || expenses <= 0) { setErr('ef-expenses-error', 'กรอกค่าใช้จ่ายต่อเดือน'); hasError = true; }
+      if (!monthlySaving || monthlySaving <= 0) { setErr('ef-monthly-error', 'กรอกจำนวนเงินออมต่อเดือน'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const target = expenses * months;
+      const gap = Math.max(0, target - currentSavings);
+      const monthsToTarget = gap > 0 ? Math.ceil(gap / monthlySaving) : 0;
+      const pct = Math.min(100, target > 0 ? (currentSavings / target) * 100 : 0);
+
+      setText('res-ef-target', formatMoney(target));
+      setText('res-ef-current', formatMoney(currentSavings));
+      setText('res-ef-gap', formatMoney(gap));
+      setText('res-ef-months', gap === 0 ? 'ถึงแล้ว!' : `${monthsToTarget} เดือน`);
+      setText('res-ef-pct', `${pct.toFixed(1)}%`);
+
+      const progressBar = document.getElementById('ef-progress-bar');
+      progressBar.style.width = `${pct}%`;
+
+      const statusEl = document.getElementById('ef-status');
+      if (gap === 0) {
+        statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = `ยอดเยี่ยม! คุณมีเงินสำรองฉุกเฉินครบ ${months} เดือนแล้ว`;
+      } else if (monthsToTarget <= 12) {
+        statusEl.className = 'rounded-lg bg-blue-50 p-3 text-sm font-medium text-blue-800 border border-blue-200';
+        statusEl.textContent = `ออมต่อเดือน ${formatMoney(monthlySaving)} จะถึงเป้าหมายใน ${monthsToTarget} เดือน (${Math.ceil(monthsToTarget / 12)} ปีหรือน้อยกว่า)`;
+      } else {
+        statusEl.className = 'rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 border border-amber-200';
+        statusEl.textContent = `ออมต่อเดือน ${formatMoney(monthlySaving)} จะถึงเป้าหมายใน ${monthsToTarget} เดือน ลองเพิ่มเงินออมเพื่อเร่งถึงเป้าเร็วขึ้น`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

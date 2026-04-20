@@ -1,0 +1,196 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณวงเงินกู้สูงสุดที่ได้ 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณวงเงินสินเชื่อสูงสุดที่ธนาคารอาจอนุมัติ จากรายได้และภาระหนี้ปัจจุบัน ใช้ DTI 40% เป็นเกณฑ์ช่วยวางแผนซื้อบ้านและรถ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณวงเงินกู้สูงสุด/`;
+
+const faqData = [
+  {
+    question: 'ธนาคารใช้เกณฑ์อะไรตัดสินวงเงินกู้?',
+    answer: 'ธนาคารพิจารณาจาก DTI (ภาระหนี้ต่อรายได้) ควรไม่เกิน 40% เครดิตสกอร์ ความมั่นคงของรายได้ ระยะเวลาการทำงาน และหลักทรัพย์ค้ำประกัน รายได้ประจำมักได้วงเงินสูงกว่ารายได้จากธุรกิจส่วนตัว',
+  },
+  {
+    question: 'วงเงินกู้บ้านคำนวณอย่างไร?',
+    answer: 'วงเงินกู้บ้านสูงสุด = [(รายได้/เดือน × 40%) - ค่างวดหนี้อื่น] / อัตราผ่อนต่อล้านบาท ตัวอย่าง รายได้ 50,000 บาท/เดือน ไม่มีหนี้อื่น ดอกเบี้ย 6.5% ผ่อน 30 ปี วงเงินสูงสุดประมาณ 3.2 ล้านบาท',
+  },
+  {
+    question: 'รายได้คู่สมรสนับรวมได้หรือไม่?',
+    answer: 'ใช่ สามารถนำรายได้คู่สมรสมารวมกู้ด้วยได้ เรียกว่า "กู้ร่วม" ทำให้วงเงินสูงขึ้น แต่ทั้งคู่ต้องรับผิดชอบหนี้ร่วมกัน และประวัติเครดิตของทั้งคู่จะถูกตรวจสอบ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณวงเงินกู้สูงสุด',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวงเงินกู้สูงสุด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณวงเงินกู้สูงสุดที่ได้ — ประเมินก่อนยื่นกู้
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณวงเงินสินเชื่อสูงสุดที่ธนาคารอาจอนุมัติ โดยใช้ DTI 40% เป็นเกณฑ์มาตรฐาน</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="maxloan-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="income1" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">รายได้ผู้กู้หลัก (บาท/เดือน)</label>
+            <input type="text" id="income1" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="income2" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">รายได้ผู้กู้ร่วม (บาท/เดือน)</label>
+            <input type="text" id="income2" inputmode="numeric" placeholder="0 ถ้าไม่มี"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div>
+          <label for="existing-debt" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ค่างวดหนี้อื่นปัจจุบัน (บาท/เดือน)</label>
+          <input type="text" id="existing-debt" inputmode="numeric" placeholder="0"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ยสินเชื่อ (%/ปี)</label>
+            <input type="text" id="interest-rate" inputmode="decimal" placeholder="เช่น 6.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="loan-term" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลาผ่อน (ปี)</label>
+            <input type="text" id="loan-term" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">วงเงินกู้สูงสุด</div>
+            <div id="res-maxloan" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ค่างวดสูงสุด/เดือน</div>
+            <div id="res-maxpay" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+          <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">รายได้รวม/เดือน</div>
+            <div id="res-income" class="text-xl font-bold text-green-700 dark:text-green-300">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">วงเงินที่ชำระหนี้ได้ (40% ของรายได้)</span>
+            <span id="res-capacity" class="font-medium text-gray-900 dark:text-gray-100">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">หักค่างวดหนี้เดิม</span>
+            <span id="res-existing" class="font-medium text-gray-900 dark:text-gray-100">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">คงเหลือสำหรับสินเชื่อใหม่</span>
+            <span id="res-available" class="font-medium text-green-600">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">สูตรคำนวณวงเงินกู้สูงสุด</h2>
+      <p>วงเงินกู้สูงสุด คำนวณจากค่างวดสูงสุดที่ผ่อนได้ (รายได้ × 40% - หนี้เดิม) แล้วถอยหลังหาวงเงินต้นที่สอดคล้องกับค่างวดนั้น โดยใช้สูตรลดต้นลดดอก ซึ่งเป็นวิธีมาตรฐานสำหรับสินเชื่อบ้าน</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณวงเงินกู้สูงสุด/" />
+    <RelatedCalculators currentHref="/คำนวณวงเงินกู้สูงสุด/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลเป็นเพียงการประมาณการ วงเงินจริงขึ้นอยู่กับนโยบายและการพิจารณาของธนาคาร
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('maxloan-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const income1 = parseNum((document.getElementById('income1') as HTMLInputElement).value);
+      if (!income1) return;
+      const income2 = parseNum((document.getElementById('income2') as HTMLInputElement).value);
+      const existingDebt = parseNum((document.getElementById('existing-debt') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('interest-rate') as HTMLInputElement).value) || 6.5;
+      const years = parseNum((document.getElementById('loan-term') as HTMLInputElement).value) || 30;
+
+      const totalIncome = income1 + income2;
+      const capacity = totalIncome * 0.40;
+      const availablePayment = Math.max(0, capacity - existingDebt);
+      const n = years * 12;
+      const r = rate / 100 / 12;
+
+      let maxLoan: number;
+      if (r === 0) {
+        maxLoan = availablePayment * n;
+      } else {
+        maxLoan = availablePayment * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
+      }
+
+      (document.getElementById('res-maxloan') as HTMLElement).textContent = fmt(maxLoan) + ' บาท';
+      (document.getElementById('res-maxpay') as HTMLElement).textContent = fmt(availablePayment) + ' บาท';
+      (document.getElementById('res-income') as HTMLElement).textContent = fmt(totalIncome) + ' บาท';
+      (document.getElementById('res-capacity') as HTMLElement).textContent = fmt(capacity) + ' บาท';
+      (document.getElementById('res-existing') as HTMLElement).textContent = fmt(existingDebt) + ' บาท';
+      (document.getElementById('res-available') as HTMLElement).textContent = fmt(availablePayment) + ' บาท';
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('max-loan');
+    });
+  </script>
+</BaseLayout>

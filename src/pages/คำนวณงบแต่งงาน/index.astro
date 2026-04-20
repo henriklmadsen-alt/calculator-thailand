@@ -1,0 +1,204 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณงบแต่งงาน 2569 | ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย | เครื่องคำนวณไทย';
+const pageDescription = 'ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย สินสอด ของหมั้น ค่าสถานที่ ค่าชุด ค่าถ่ายรูป ค่าอาหารเลี้ยงแขก แยกตามขนาดและระดับงาน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบแต่งงาน/`;
+
+const faqData = [
+  {
+    question: 'งานแต่งงานในไทยเฉลี่ยค่าใช้จ่ายเท่าไร?',
+    answer: 'งานแต่งงานในประเทศไทยมีค่าใช้จ่ายเฉลี่ยตั้งแต่ 200,000 บาทสำหรับงานเรียบง่าย ไปจนถึง 1,000,000 บาทขึ้นไปสำหรับงานหรูหรา ไม่รวมสินสอดซึ่งขึ้นอยู่กับการตกลงระหว่างสองฝ่าย',
+  },
+  {
+    question: 'สินสอดในไทยเฉลี่ยเท่าไร?',
+    answer: 'สินสอดในไทยไม่มีกฎตายตัว แต่ตามธรรมเนียมมักอยู่ที่ 50,000-200,000 บาทสำหรับคู่รักทั่วไป สำหรับสาวที่มีการศึกษาสูงหรือฐานะดีอาจสูงถึง 300,000-1,000,000 บาท ขึ้นอยู่กับการเจรจาตกลง',
+  },
+  {
+    question: 'ควรเก็บเงินแต่งงานนานแค่ไหน?',
+    answer: 'ขึ้นอยู่กับงบประมาณเป้าหมาย หากตั้งเป้างานมาตรฐาน 300,000-500,000 บาท และสามารถออมได้เดือนละ 10,000-20,000 บาท ควรใช้เวลาเก็บประมาณ 1.5-4 ปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบแต่งงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบแต่งงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบแต่งงาน 2569</h1>
+    <p class="mb-6 text-gray-600">ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย สินสอด ของหมั้น งานเลี้ยง แยกตามขนาดและระดับงาน</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="wedding-form" class="space-y-4">
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">ขนาดงาน</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="size-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="wSize" value="small" class="sr-only" /> เล็ก (ไม่เกิน 50 คน)
+            </label>
+            <label class="size-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="wSize" value="medium" class="sr-only" checked /> กลาง (50-150 คน)
+            </label>
+            <label class="size-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="wSize" value="large" class="sr-only" /> ใหญ่ (150 คนขึ้นไป)
+            </label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">ระดับงาน</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="level-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="wLevel" value="simple" class="sr-only" /> เรียบง่าย
+            </label>
+            <label class="level-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="wLevel" value="standard" class="sr-only" checked /> มาตรฐาน
+            </label>
+            <label class="level-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="wLevel" value="luxury" class="sr-only" /> หรูหรา
+            </label>
+          </div>
+        </fieldset>
+        <div>
+          <label for="dowry" class="mb-1 block text-sm font-medium text-gray-700">สินสอด (บาท)</label>
+          <input id="dowry" type="text" inputmode="numeric" placeholder="เช่น 100,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">งบประมาณงานแต่งงาน</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">งบประมาณรวม (ไม่รวมสินสอด)</div>
+          <div id="res-total" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🏛️ ค่าสถานที่และอาหาร</span>
+            <span id="res-venue" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">👗 ค่าชุดแต่งงาน</span>
+            <span id="res-dress" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">📷 ค่าถ่ายรูป/วิดีโอ</span>
+            <span id="res-photo" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">💐 ค่าดอกไม้และตกแต่ง</span>
+            <span id="res-flowers" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">💍 ของหมั้นและแหวน</span>
+            <span id="res-ring" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">💰 สินสอด</span>
+            <span id="res-dowry" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm font-semibold text-gray-900">รวมทั้งหมด (รวมสินสอด)</span>
+            <span id="res-grand" class="text-sm font-bold text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณงบแต่งงาน/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  // [venue+food, dress, photo, flowers, ring] multipliers per size/level combo
+  const COSTS: Record<string, Record<string, number[]>> = {
+    small: { simple: [50000, 15000, 20000, 8000, 15000], standard: [80000, 25000, 35000, 15000, 30000], luxury: [150000, 50000, 60000, 30000, 60000] },
+    medium: { simple: [120000, 20000, 30000, 15000, 20000], standard: [200000, 40000, 50000, 30000, 50000], luxury: [400000, 80000, 100000, 70000, 100000] },
+    large: { simple: [250000, 25000, 40000, 25000, 25000], standard: [450000, 60000, 80000, 60000, 70000], luxury: [900000, 120000, 150000, 120000, 150000] },
+  };
+
+  function setupPills(cls: string) {
+    document.querySelectorAll<HTMLLabelElement>(`.${cls}`).forEach((pill) => {
+      pill.querySelector('input')?.addEventListener('change', () => {
+        document.querySelectorAll<HTMLLabelElement>(`.${cls}`).forEach((p) => {
+          p.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+          p.classList.add('border-gray-200', 'text-gray-700');
+        });
+        pill.classList.remove('border-gray-200', 'text-gray-700');
+        pill.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+      });
+    });
+  }
+  setupPills('size-pill');
+  setupPills('level-pill');
+
+  document.getElementById('wedding-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const size = (document.querySelector('input[name="wSize"]:checked') as HTMLInputElement)?.value ?? 'medium';
+    const level = (document.querySelector('input[name="wLevel"]:checked') as HTMLInputElement)?.value ?? 'standard';
+    const dowry = parseNum((document.getElementById('dowry') as HTMLInputElement).value);
+
+    const [venue, dress, photo, flowers, ring] = COSTS[size][level];
+    const total = venue + dress + photo + flowers + ring;
+    const grand = total + dowry;
+
+    document.getElementById('res-total')!.textContent = fmt(total);
+    document.getElementById('res-venue')!.textContent = fmt(venue);
+    document.getElementById('res-dress')!.textContent = fmt(dress);
+    document.getElementById('res-photo')!.textContent = fmt(photo);
+    document.getElementById('res-flowers')!.textContent = fmt(flowers);
+    document.getElementById('res-ring')!.textContent = fmt(ring);
+    document.getElementById('res-dowry')!.textContent = dowry > 0 ? fmt(dowry) : '—';
+    document.getElementById('res-grand')!.textContent = fmt(grand);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

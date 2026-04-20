@@ -1,0 +1,198 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณดอกเบี้ยลดต้นลดดอก (Reducing Balance) 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณดอกเบี้ยแบบลดต้นลดดอกทุกงวด แสดงตารางผ่อนชำระ สัดส่วนเงินต้นและดอกเบี้ยแต่ละงวด ดอกเบี้ยรวม และยอดคงเหลือ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณดอกเบี้ยลดต้นลดดอก/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ยลดต้นลดดอกคำนวณอย่างไร?',
+    answer: 'ดอกเบี้ยแต่ละงวด = ยอดเงินต้นคงเหลือ × อัตราดอกเบี้ยต่อเดือน เงินต้นที่ชำระ = ค่างวด - ดอกเบี้ยงวดนั้น ยอดคงเหลือใหม่ = ยอดเดิม - เงินต้นที่ชำระ วิธีนี้ทำให้ดอกเบี้ยลดลงทุกงวด',
+  },
+  {
+    question: 'ดอกเบี้ยลดต้นลดดอก vs แบบคงที่ ต่างกันแค่ไหน?',
+    answer: 'สินเชื่อ 1 ล้านบาท ดอกเบี้ย 6% ผ่อน 5 ปี: แบบลดต้นลดดอกดอกเบี้ยรวมประมาณ 160,000 บาท แบบคงที่ดอกเบี้ยรวมประมาณ 300,000 บาท ต่างกันเกือบเท่าตัวสำหรับระยะผ่อนเดียวกัน',
+  },
+  {
+    question: 'การโปะเงินต้นช่วยประหยัดดอกเบี้ยได้เท่าไร?',
+    answer: 'การโปะเงินต้นพิเศษจะลดยอดคงเหลือทันที ทำให้ดอกเบี้ยงวดถัดไปลดลง ยิ่งโปะเร็วยิ่งประหยัดดอกเบี้ยรวมได้มาก เช่น โปะ 100,000 บาทในปีที่ 1 ของสินเชื่อ 3 ล้าน 6.5% 30 ปี ประหยัดดอกเบี้ยได้กว่า 300,000 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณดอกเบี้ยลดต้นลดดอก',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยลดต้นลดดอก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณดอกเบี้ยลดต้นลดดอก — ตารางผ่อนชำระรายงวด
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณดอกเบี้ยและเงินต้นแต่ละงวดแบบ Reducing Balance พร้อมตารางผ่อนชำระเต็มรูปแบบ</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="rb-form" class="space-y-5">
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">เงินต้น (บาท)</label>
+          <input type="text" id="principal" inputmode="numeric" placeholder="เช่น 2,000,000"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="rate" inputmode="decimal" placeholder="เช่น 6.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="term" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลา (ปี)</label>
+            <input type="text" id="term" inputmode="numeric" placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ค่างวด/เดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ชำระรวมทั้งหมด</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700 dark:text-gray-300">-</div>
+          </div>
+        </div>
+
+        <details class="mt-2">
+          <summary class="cursor-pointer font-semibold text-gray-900 dark:text-gray-100 hover:text-primary-600 mb-2">ตารางผ่อนชำระ (คลิกเพื่อดู)</summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-xs sm:text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                  <th class="py-2 pr-2">งวด</th>
+                  <th class="py-2 pr-2 text-right">ค่างวด</th>
+                  <th class="py-2 pr-2 text-right">เงินต้น</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
+                  <th class="py-2 text-right">คงเหลือ</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-body" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">หลักการลดต้นลดดอก (Reducing Balance)</h2>
+      <p>วิธีลดต้นลดดอก (Reducing Balance Method) คือการคำนวณดอกเบี้ยจากยอดเงินต้นคงเหลือจริงในแต่ละงวด เมื่อผ่อนชำระแล้วเงินต้นลดลง ดอกเบี้ยงวดถัดไปก็ลดลงด้วย ส่วนเงินต้นที่ชำระแต่ละงวดเพิ่มขึ้นเรื่อยๆ สูตร PMT = P × [r(1+r)ⁿ] / [(1+r)ⁿ - 1]</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณดอกเบี้ยลดต้นลดดอก/" />
+    <RelatedCalculators currentHref="/คำนวณดอกเบี้ยลดต้นลดดอก/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ ค่างวดจริงอาจต่างตามเงื่อนไขสัญญา
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('rb-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const P = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const annualRate = parseNum((document.getElementById('rate') as HTMLInputElement).value) || 6.5;
+      const years = parseNum((document.getElementById('term') as HTMLInputElement).value) || 20;
+      if (!P) return;
+
+      const n = Math.round(years * 12);
+      const r = annualRate / 100 / 12;
+      const monthly = r === 0 ? P / n : P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const totalPaid = monthly * n;
+      const totalInterest = totalPaid - P;
+
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthly) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      let balance = P;
+      for (let i = 0; i < n; i++) {
+        const monthNum = i + 1;
+        const show = monthNum <= 24 || monthNum % 12 === 0 || monthNum === n;
+        const interestPart = balance * r;
+        const principalPart = monthly - interestPart;
+        balance = Math.max(0, balance - principalPart);
+
+        if (show) {
+          if (monthNum > 25 && (monthNum - 1) % 12 !== 0) {
+            const sep = document.createElement('tr');
+            sep.innerHTML = '<td colspan="5" class="py-1 text-center text-gray-400 text-xs">⋮</td>';
+            tbody.appendChild(sep);
+          }
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td class="py-1.5 pr-2 text-gray-600 dark:text-gray-400">${monthNum}</td><td class="py-1.5 pr-2 text-right">${fmt(monthly)}</td><td class="py-1.5 pr-2 text-right">${fmt(principalPart)}</td><td class="py-1.5 pr-2 text-right">${fmt(interestPart)}</td><td class="py-1.5 text-right">${fmt(balance)}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('reducing-balance');
+    });
+  </script>
+</BaseLayout>

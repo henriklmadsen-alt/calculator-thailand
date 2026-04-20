@@ -1,0 +1,263 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณความสามารถจ้างพนักงานใหม่ New Hire Affordability ปี 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณว่าบริษัทสามารถจ้างพนักงานใหม่ได้หรือไม่ โดยเปรียบเทียบค่าจ้างรวมกับรายได้ และค่าใช้จ่ายพนักงานปัจจุบัน เครื่องมือสำหรับ HR และผู้บริหาร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณความสามารถจ้างพนักงานใหม่/`;
+
+const faqData = [
+  {
+    question: 'อัตราค่าจ้างต่อรายได้ที่เหมาะสมสำหรับธุรกิจคือเท่าไร?',
+    answer: 'โดยทั่วไปผู้เชี่ยวชาญแนะนำว่าค่าจ้างรวมไม่ควรเกิน 30% ของรายได้รวม อย่างไรก็ตามขึ้นอยู่กับประเภทธุรกิจ ธุรกิจบริการอาจสูงถึง 50% ขณะที่การผลิตอาจต่ำกว่า 20%',
+  },
+  {
+    question: 'ค่าใช้จ่าย Overhead นายจ้างสำหรับพนักงานใหม่คืออะไร?',
+    answer: 'Overhead นายจ้างประกอบด้วย SSF 5% PVD (ถ้ามี) ประกันสุขภาพ และสวัสดิการอื่นๆ โดยทั่วไปอยู่ที่ 10-20% ของเงินเดือน ค่าเริ่มต้นในเครื่องคำนวณคือ 15%',
+  },
+  {
+    question: 'ควรพิจารณาปัจจัยอะไรบ้างนอกจากตัวเลขก่อนจ้างพนักงานใหม่?',
+    answer: 'นอกจากความสามารถทางการเงิน ควรพิจารณาความจำเป็นของงาน ผลตอบแทนที่คาดว่าจะได้รับ ระยะเวลาที่พนักงานจะสร้างรายได้ได้ และความเสี่ยงหากรายได้ลดลง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณความสามารถจ้างพนักงานใหม่',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณความสามารถจ้างพนักงานใหม่">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ทดสอบความสามารถทางการเงินก่อนจ้างพนักงานใหม่</p>
+      <p class="mt-1 text-sm text-slate-700">เปรียบเทียบค่าจ้างรวมกับรายได้ตามเกณฑ์ที่กำหนด เพื่อตัดสินใจรับพนักงานใหม่ได้อย่างมั่นใจ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับ CEO, HR Manager และเจ้าของธุรกิจ SME</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณความสามารถจ้างพนักงานใหม่ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้รายเดือน ค่าจ้างพนักงานปัจจุบัน และเงินเดือนที่ต้องการจ้าง ระบบจะประเมินว่าบริษัทสามารถรับพนักงานใหม่ได้หรือไม่
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="afford-form" class="space-y-5">
+        <p id="afford-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="af-revenue" class="mb-1 block text-sm font-medium text-gray-700">รายได้รายเดือน (บาท)</label>
+            <input type="text" id="af-revenue" inputmode="numeric" placeholder="เช่น 500,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="af-revenue-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="af-current-payroll" class="mb-1 block text-sm font-medium text-gray-700">ค่าจ้างรวมปัจจุบัน (บาท/เดือน)</label>
+            <input type="text" id="af-current-payroll" inputmode="numeric" placeholder="เช่น 120,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="af-current-payroll-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="af-max-pct" class="mb-1 block text-sm font-medium text-gray-700">เกณฑ์ค่าจ้างสูงสุด (% ของรายได้)</label>
+            <input type="text" id="af-max-pct" inputmode="decimal" placeholder="เช่น 30"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าเริ่มต้นแนะนำ 30%</p>
+          </div>
+          <div>
+            <label for="af-new-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือนพนักงานใหม่ที่ต้องการจ้าง (บาท)</label>
+            <input type="text" id="af-new-salary" inputmode="numeric" placeholder="เช่น 25,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="af-new-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="af-overhead-pct" class="mb-1 block text-sm font-medium text-gray-700">Overhead นายจ้าง (% SSF+PVD+สวัสดิการ)</label>
+            <input type="text" id="af-overhead-pct" inputmode="decimal" placeholder="เช่น 15"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าเริ่มต้น 15% (SSF 5% + PVD + สวัสดิการ)</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          ประเมินความสามารถจ้างพนักงาน
+        </button>
+      </form>
+    </div>
+
+    <div id="afford-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการประเมิน</h2>
+        <div id="afford-verdict" class="mb-4 rounded-lg p-4 text-center text-lg font-bold"></div>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">งบค่าจ้างสูงสุดที่รับได้</div>
+            <div id="res-af-max-payroll" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">งบที่เหลือหลังค่าจ้างเดิม</div>
+            <div id="res-af-remaining" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนพนักงานใหม่รวม Overhead</div>
+            <div id="res-af-new-cost" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายได้รายเดือน</span>
+            <span id="res-af-revenue" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าจ้างปัจจุบัน + พนักงานใหม่ (รวม overhead)</span>
+            <span id="res-af-total-after" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">% ค่าจ้างรวมต่อรายได้ (หลังรับพนักงานใหม่)</span>
+            <span id="res-af-pct" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>งบค่าจ้างสูงสุด = รายได้ × เกณฑ์%</li>
+        <li>งบที่เหลือ = งบสูงสุด − ค่าจ้างปัจจุบัน</li>
+        <li>ต้นทุนพนักงานใหม่ = เงินเดือน × (1 + overhead%)</li>
+        <li>จ้างได้หรือไม่ = ต้นทุนพนักงานใหม่ ≤ งบที่เหลือ</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณพนักงาน/">คำนวณงบประมาณพนักงาน</a></li>
+        <li><a href="/คำนวณต้นทุนพนักงานรายเดือน/">คำนวณต้นทุนพนักงานรายเดือน</a></li>
+        <li><a href="/คำนวณเปรียบเทียบฟรีแลนซ์กับพนักงานประจำ/">คำนวณเปรียบเทียบฟรีแลนซ์กับพนักงานประจำ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#afford-results" />
+    <RelatedArticles currentHref="/คำนวณความสามารถจ้างพนักงานใหม่/" />
+    <RelatedCalculators currentHref="/คำนวณความสามารถจ้างพนักงานใหม่/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการเชิงการเงินเท่านั้น การตัดสินใจจ้างพนักงานควรพิจารณาปัจจัยอื่นๆ ประกอบด้วย เช่น กระแสเงินสด แนวโน้มรายได้ และความต้องการธุรกิจ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('afford-form');
+    const formError = document.getElementById('afford-form-error');
+    const resultBox = document.getElementById('afford-results');
+    const verdictBox = document.getElementById('afford-verdict');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['af-revenue-error', 'af-current-payroll-error', 'af-new-salary-error'].forEach((id) => setErr(id, ''));
+
+      const revenue = parseNum(document.getElementById('af-revenue').value);
+      const currentPayroll = parseNum(document.getElementById('af-current-payroll').value);
+      const maxPct = parseNum(document.getElementById('af-max-pct').value) || 30;
+      const newSalary = parseNum(document.getElementById('af-new-salary').value);
+      const overheadPct = parseNum(document.getElementById('af-overhead-pct').value) || 15;
+
+      let hasError = false;
+      if (!Number.isFinite(revenue) || revenue <= 0) { setErr('af-revenue-error', 'กรอกรายได้มากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(currentPayroll) || currentPayroll < 0) { setErr('af-current-payroll-error', 'กรอกค่าจ้างปัจจุบัน (0 ถ้าไม่มี)'); hasError = true; }
+      if (!Number.isFinite(newSalary) || newSalary <= 0) { setErr('af-new-salary-error', 'กรอกเงินเดือนพนักงานใหม่มากกว่า 0'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const maxPayroll = revenue * (maxPct / 100);
+      const remaining = maxPayroll - currentPayroll;
+      const newHireCost = newSalary * (1 + overheadPct / 100);
+      const affordable = newHireCost <= remaining;
+      const totalAfter = currentPayroll + newHireCost;
+      const pctAfter = (totalAfter / revenue) * 100;
+
+      if (affordable) {
+        verdictBox.textContent = '✅ สามารถจ้างพนักงานใหม่ได้';
+        verdictBox.className = 'mb-4 rounded-lg bg-green-50 p-4 text-center text-lg font-bold text-green-700';
+      } else {
+        verdictBox.textContent = '❌ งบประมาณไม่เพียงพอสำหรับพนักงานใหม่';
+        verdictBox.className = 'mb-4 rounded-lg bg-red-50 p-4 text-center text-lg font-bold text-red-700';
+      }
+
+      setText('res-af-max-payroll', formatMoney(maxPayroll));
+      setText('res-af-remaining', formatMoney(remaining));
+      setText('res-af-new-cost', formatMoney(newHireCost));
+      setText('res-af-revenue', formatMoney(revenue));
+      setText('res-af-total-after', formatMoney(totalAfter));
+      setText('res-af-pct', `${pctAfter.toFixed(1)}% (เกณฑ์: ${maxPct}%)`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,234 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค้างจ่ายเงินเดือน Payroll Accrual บัญชีค่าใช้จ่ายค้างจ่าย ปี 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค้างจ่ายเงินเดือน (Payroll Accrual) สำหรับการทำบัญชี จำนวนเงินเดือนที่พนักงานได้รับสิทธิ์แล้วแต่ยังไม่ได้จ่าย คำนวณตามวันและรอบจ่ายเงินเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค้างจ่ายเงินเดือน/`;
+
+const faqData = [
+  {
+    question: 'ค้างจ่ายเงินเดือน (Payroll Accrual) คืออะไร?',
+    answer: 'ค้างจ่ายเงินเดือน คือค่าใช้จ่ายเงินเดือนที่พนักงานทำงานได้รับสิทธิ์แล้วแต่ยังไม่ถึงรอบจ่าย ใช้บันทึกในบัญชีตามหลัก Accrual Basis เพื่อให้งบการเงินสะท้อนค่าใช้จ่ายที่เกิดขึ้นจริงในงวดนั้น',
+  },
+  {
+    question: 'ต้องบันทึกบัญชีค้างจ่ายเงินเดือนอย่างไร?',
+    answer: 'บันทึก Debit: ค่าใช้จ่ายเงินเดือน (Salary Expense) และ Credit: ค้างจ่ายเงินเดือน (Accrued Salaries Payable) ด้วยจำนวนเงินเดือนที่ค้างจ่าย ณ วันปิดงวดบัญชี',
+  },
+  {
+    question: 'ค้างจ่ายเงินเดือนคำนวณอย่างไร?',
+    answer: 'ค้างจ่ายเงินเดือน = (เงินเดือนต่อเดือน ÷ วันทั้งหมดในเดือน) × จำนวนวันที่ค้างจ่าย วันที่ค้างจ่าย = วันที่ปิดงวด − วันตัดรอบจ่ายเงินเดือนล่าสุด',
+  },
+  {
+    question: 'ความแตกต่างระหว่างรอบจ่ายรายเดือนและกึ่งเดือน?',
+    answer: 'รอบจ่ายรายเดือน (Monthly): จ่ายครั้งเดียวต่อเดือน เช่น ทุกวันที่ 28 รอบกึ่งเดือน (Bi-monthly): จ่าย 2 ครั้ง เช่น วันที่ 15 และ 30 ทำให้วงจรค้างจ่ายสั้นลง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค้างจ่ายเงินเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค้างจ่ายเงินเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">Payroll Accrual — ค้างจ่ายเงินเดือนสำหรับบัญชี</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณจำนวนเงินเดือนที่พนักงานได้รับสิทธิ์แต่ยังไม่ถึงรอบจ่าย ใช้บันทึกในงบการเงิน ณ วันปิดงวด</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับนักบัญชี CFO และทีม Finance ที่ต้องปิดงวดบัญชีรายเดือน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค้างจ่ายเงินเดือน (Payroll Accrual) ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน วันตัดรอบจ่ายเงินเดือน และวันที่ต้องการคำนวณ ระบบจะคำนวณยอดค้างจ่ายเงินเดือนสำหรับบันทึกบัญชี
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="accrual-form" class="space-y-5">
+        <p id="accrual-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ac-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="ac-salary" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ac-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ac-cycle" class="mb-1 block text-sm font-medium text-gray-700">รอบการจ่ายเงินเดือน</label>
+            <select id="ac-cycle"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="monthly">รายเดือน (Monthly)</option>
+              <option value="bimonthly">กึ่งเดือน (Bi-monthly)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ac-total-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันทั้งหมดในเดือน</label>
+            <input type="text" id="ac-total-days" inputmode="numeric" placeholder="เช่น 31"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">เช่น มกราคม = 31, กุมภาพันธ์ = 28 หรือ 29</p>
+            <p id="ac-total-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ac-accrued-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันค้างจ่าย (นับจากรอบจ่ายล่าสุด)</label>
+            <input type="text" id="ac-accrued-days" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">วันที่ปิดงวด − วันตัดรอบจ่ายล่าสุด</p>
+            <p id="ac-accrued-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค้างจ่ายเงินเดือน
+        </button>
+      </form>
+    </div>
+
+    <div id="accrual-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดค้างจ่ายเงินเดือน</div>
+            <div id="res-ac-accrual" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราเงินเดือนรายวัน</div>
+            <div id="res-ac-daily" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">จำนวนวันค้างจ่าย</div>
+            <div id="res-ac-days" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+          <strong>รายการบัญชี:</strong> Dr. ค่าใช้จ่ายเงินเดือน <span id="res-ac-accrual-note">-</span> / Cr. ค้างจ่ายเงินเดือน <span id="res-ac-accrual-note2">-</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>อัตราเงินเดือนรายวัน = เงินเดือน ÷ จำนวนวันในเดือน</li>
+        <li>ยอดค้างจ่าย = อัตรารายวัน × จำนวนวันค้างจ่าย</li>
+        <li>วันค้างจ่าย = วันที่ปิดงวด − วันตัดรอบจ่ายล่าสุด</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณเงินเดือนงวดสุดท้าย/">คำนวณเงินเดือนงวดสุดท้าย</a></li>
+        <li><a href="/คำนวณสลิปเงินเดือน/">คำนวณสลิปเงินเดือน</a></li>
+        <li><a href="/คำนวณเงินเดือนระหว่างทดลองงาน/">คำนวณเงินเดือนระหว่างทดลองงาน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#accrual-results" />
+    <RelatedArticles currentHref="/คำนวณค้างจ่ายเงินเดือน/" />
+    <RelatedCalculators currentHref="/คำนวณค้างจ่ายเงินเดือน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการสำหรับใช้อ้างอิงเบื้องต้นเท่านั้น การบันทึกบัญชีที่ถูกต้องควรปรึกษาผู้สอบบัญชีและผู้เชี่ยวชาญด้านบัญชีของท่าน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('accrual-form');
+    const formError = document.getElementById('accrual-form-error');
+    const resultBox = document.getElementById('accrual-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['ac-salary-error', 'ac-total-days-error', 'ac-accrued-days-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('ac-salary').value);
+      const totalDays = parseNum(document.getElementById('ac-total-days').value);
+      const accruedDays = parseNum(document.getElementById('ac-accrued-days').value);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('ac-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(totalDays) || totalDays < 28 || totalDays > 31) { setErr('ac-total-days-error', 'กรอกจำนวนวัน 28-31 วัน'); hasError = true; }
+      if (!Number.isFinite(accruedDays) || accruedDays <= 0 || accruedDays > 31) { setErr('ac-accrued-days-error', 'กรอกจำนวนวันค้างจ่าย 1-31 วัน'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const dailyRate = salary / totalDays;
+      const accrualAmount = dailyRate * accruedDays;
+      const formatted = formatMoney(accrualAmount);
+
+      setText('res-ac-accrual', formatted);
+      setText('res-ac-daily', formatMoney(dailyRate));
+      setText('res-ac-days', `${accruedDays} วัน`);
+      setText('res-ac-accrual-note', formatted);
+      setText('res-ac-accrual-note2', formatted);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

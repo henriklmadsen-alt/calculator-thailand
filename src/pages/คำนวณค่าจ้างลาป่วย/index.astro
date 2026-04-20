@@ -1,0 +1,226 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าจ้างลาป่วย 30 วันต่อปี ตาม พ.ร.บ. คุ้มครองแรงงาน ปี 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าจ้างลาป่วยตามกฎหมายแรงงานไทย มีสิทธิ์ 30 วันต่อปี ได้รับค่าจ้างเต็ม คำนวณจำนวนวันที่ใช้ไปและวันที่คงเหลือ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างลาป่วย/`;
+
+const faqData = [
+  {
+    question: 'ลาป่วยได้กี่วันต่อปีตามกฎหมาย?',
+    answer: 'พระราชบัญญัติคุ้มครองแรงงาน มาตรา 57 กำหนดให้ลูกจ้างมีสิทธิ์ลาป่วยได้เท่าที่ป่วยจริง และนายจ้างต้องจ่ายค่าจ้างในวันลาป่วยไม่เกิน 30 วันทำงานต่อปี',
+  },
+  {
+    question: 'ลาป่วยเกิน 3 วัน ต้องมีใบรับรองแพทย์หรือไม่?',
+    answer: 'กฎหมายกำหนดว่าหากลาป่วยตั้งแต่ 3 วันทำงานติดต่อกันขึ้นไป นายจ้างอาจให้ลูกจ้างแสดงใบรับรองแพทย์แผนปัจจุบัน หรือใบรับรองของผู้ประกอบวิชาชีพเวชกรรม',
+  },
+  {
+    question: 'ลาป่วยไม่ครบ 30 วัน สะสมไปปีหน้าได้หรือไม่?',
+    answer: 'สิทธิ์ลาป่วย 30 วันต่อปีไม่สะสมข้ามปี แต่ในทางปฏิบัติบางบริษัทอาจกำหนดนโยบายพิเศษเพิ่มเติมที่ดีกว่ากฎหมาย กรุณาตรวจสอบข้อบังคับการทำงานของบริษัทท่าน',
+  },
+  {
+    question: 'อัตราค่าจ้างในวันลาป่วยคำนวณอย่างไร?',
+    answer: 'ค่าจ้างในวันลาป่วยคำนวณในอัตราเดียวกับค่าจ้างปกติ โดยทั่วไปคิดจาก เงินเดือน ÷ 30 ต่อวัน และนายจ้างต้องจ่ายเต็มจำนวนสำหรับวันลาป่วยในโควตา 30 วันต่อปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจ้างลาป่วย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างลาป่วย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">🏥 สิทธิ์ลาป่วยตาม พ.ร.บ. คุ้มครองแรงงาน มาตรา 57</p>
+      <p class="mt-1 text-sm text-slate-700">มีสิทธิ์ลาป่วยได้ไม่จำกัด แต่นายจ้างจ่ายค่าจ้างสูงสุด 30 วันทำงานต่อปี ในอัตราค่าจ้างปกติ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ลาป่วยติดต่อกัน 3 วันขึ้นไป นายจ้างอาจขอใบรับรองแพทย์</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจ้างลาป่วย ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือนและจำนวนวันป่วยที่ใช้ไปในปีนี้ เพื่อคำนวณค่าจ้างที่ได้รับและวันลาป่วยที่คงเหลือ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="sick-form" class="space-y-5">
+        <p id="sick-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="sick-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="sick-salary" inputmode="numeric" placeholder="เช่น 28,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="sick-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="sick-days-used" class="mb-1 block text-sm font-medium text-gray-700">วันลาป่วยที่ใช้ไปในปีนี้ (วัน)</label>
+            <input type="text" id="sick-days-used" inputmode="numeric" placeholder="เช่น 5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">สิทธิ์รวม 30 วันต่อปี</p>
+            <p id="sick-days-used-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าจ้างลาป่วย
+        </button>
+      </form>
+    </div>
+
+    <div id="sick-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายวัน</div>
+            <div id="res-sick-daily" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">วันป่วยที่ได้รับค่าจ้าง</div>
+            <div id="res-sick-paid-days" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรวมระหว่างป่วย</div>
+            <div id="res-sick-total" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-rose-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">วันลาป่วยคงเหลือปีนี้</div>
+            <div id="res-sick-remaining" class="text-xl font-bold text-rose-700">-</div>
+          </div>
+        </div>
+        <div id="res-sick-note" class="hidden rounded-lg border border-orange-200 bg-orange-50 p-3 text-sm text-orange-800">
+          วันลาป่วยที่ใช้เกินโควตา 30 วัน นายจ้างไม่จำเป็นต้องจ่ายค่าจ้างสำหรับวันส่วนที่เกิน
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าจ้างรายวัน = เงินเดือน ÷ 30</li>
+        <li>วันที่ได้รับค่าจ้าง = min(วันป่วยที่ใช้, 30 วัน)</li>
+        <li>ค่าจ้างรวม = ค่าจ้างรายวัน × วันที่ได้รับค่าจ้าง</li>
+        <li>วันลาคงเหลือ = 30 - วันป่วยที่ใช้ (ไม่ต่ำกว่า 0)</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าจ้างลาคลอด/">คำนวณค่าจ้างลาคลอด</a></li>
+        <li><a href="/คำนวณค่าวันลาพักร้อนคงเหลือ/">คำนวณค่าวันลาพักร้อนคงเหลือ</a></li>
+        <li><a href="/คำนวณสลิปเงินเดือน/">คำนวณสลิปเงินเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#sick-results" />
+    <RelatedArticles currentHref="/คำนวณค่าจ้างลาป่วย/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างลาป่วย/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการตามกฎหมายแรงงานไทย บริษัทบางแห่งอาจมีนโยบายที่ดีกว่ากฎหมายกำหนด กรุณาตรวจสอบข้อบังคับการทำงานและสัญญาจ้างของท่าน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('sick-form');
+    const formError = document.getElementById('sick-form-error');
+    const resultBox = document.getElementById('sick-results');
+    const MAX_SICK_DAYS = 30;
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['sick-salary-error', 'sick-days-used-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('sick-salary').value);
+      const daysUsed = parseNum(document.getElementById('sick-days-used').value);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('sick-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(daysUsed) || daysUsed < 0 || !Number.isInteger(daysUsed)) { setErr('sick-days-used-error', 'กรอกจำนวนวันที่ใช้ไป (เลขจำนวนเต็ม >= 0)'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const dailyRate = salary / 30;
+      const paidDays = Math.min(daysUsed, MAX_SICK_DAYS);
+      const totalPay = dailyRate * paidDays;
+      const remaining = Math.max(0, MAX_SICK_DAYS - daysUsed);
+
+      setText('res-sick-daily', formatMoney(dailyRate));
+      setText('res-sick-paid-days', `${paidDays} วัน`);
+      setText('res-sick-total', formatMoney(totalPay));
+      setText('res-sick-remaining', `${remaining} วัน`);
+
+      const noteEl = document.getElementById('res-sick-note');
+      if (noteEl) {
+        noteEl.classList.toggle('hidden', daysUsed <= MAX_SICK_DAYS);
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

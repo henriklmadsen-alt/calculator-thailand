@@ -1,0 +1,192 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณงบเดินทางท่องเที่ยว 2569 | งบทริปในประเทศ ค่าเดินทาง ที่พัก | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณงบทริปในประเทศ ค่าเดินทาง ที่พัก อาหาร กิจกรรม ตามระยะทางและจำนวนวัน เพื่อวางแผนการท่องเที่ยวในประเทศไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบเดินทางท่องเที่ยว/`;
+
+const faqData = [
+  {
+    question: 'ทริปในประเทศ 3 วัน 2 คืน ควรใช้งบเท่าไร?',
+    answer: 'ทริปในประเทศ 3 วัน 2 คืนสำหรับ 2 คนในระดับมาตรฐาน ค่าใช้จ่ายโดยประมาณอยู่ที่ 5,000-12,000 บาทต่อคน รวมค่าเดินทาง ที่พัก อาหาร และกิจกรรม',
+  },
+  {
+    question: 'เที่ยวในประเทศจังหวัดไหนถูกที่สุด?',
+    answer: 'จังหวัดที่ท่องเที่ยวได้ราคาประหยัดในประเทศไทย ได้แก่ กาญจนบุรี ราชบุรี เพชรบุรี สุพรรณบุรี และจังหวัดในภาคเหนือและภาคอีสาน ที่พักและอาหารมักราคาถูกกว่าจังหวัดท่องเที่ยวหลักเช่น ภูเก็ต หรือ เกาะสมุย',
+  },
+  {
+    question: 'ควรออมเงินเดือนละเท่าไรสำหรับการท่องเที่ยว?',
+    answer: 'หากตั้งเป้าเที่ยวในประเทศปีละ 2-3 ครั้ง งบทริปละ 10,000-20,000 บาท ควรออมเงินค่าท่องเที่ยวเดือนละ 2,000-5,000 บาท หรือคิดเป็นประมาณ 8-15% ของรายได้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบเดินทางท่องเที่ยว',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบเดินทางท่องเที่ยว">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบเดินทางท่องเที่ยว 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณงบทริปในประเทศ ค่าเดินทาง ที่พัก อาหาร กิจกรรม</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="trip-form" class="space-y-4">
+        <div>
+          <label for="destination" class="mb-1 block text-sm font-medium text-gray-700">ระยะทางปลายทาง</label>
+          <select id="destination" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto">
+            <option value="near">ใกล้ (ต่ำกว่า 200 กม.) เช่น กาญจนบุรี พัทยา</option>
+            <option value="mid" selected>กลาง (200-500 กม.) เช่น เชียงใหม่ อยุธยา หัวหิน</option>
+            <option value="far">ไกล (500 กม.ขึ้นไป) เช่น ภูเก็ต เกาะสมุย</option>
+          </select>
+        </div>
+        <div>
+          <label for="travelers" class="mb-1 block text-sm font-medium text-gray-700">จำนวนคน</label>
+          <input id="travelers" type="text" inputmode="numeric" placeholder="เช่น 2"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-32" />
+        </div>
+        <div>
+          <label for="days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวัน</label>
+          <input id="days" type="text" inputmode="numeric" placeholder="เช่น 3"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-32" />
+        </div>
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">ระดับที่พัก</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="hotel-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="hotelLevel" value="budget" class="sr-only" /> ประหยัด (ต่ำกว่า 500/คืน)
+            </label>
+            <label class="hotel-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="hotelLevel" value="mid" class="sr-only" checked /> กลาง (500-1,500/คืน)
+            </label>
+            <label class="hotel-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="hotelLevel" value="luxury" class="sr-only" /> หรูหรา (1,500+/คืน)
+            </label>
+          </div>
+        </fieldset>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">งบท่องเที่ยวโดยประมาณ</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">งบรวมทริป</div>
+          <div id="res-total" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">✈️ ค่าเดินทาง (ไป-กลับ รวมทุกคน)</span>
+            <span id="res-transport" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🏨 ค่าที่พัก</span>
+            <span id="res-hotel" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🍜 ค่าอาหาร</span>
+            <span id="res-food" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-gray-700">🎡 ค่ากิจกรรม</span>
+            <span id="res-activity" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณงบเดินทางท่องเที่ยว/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  // transport per person roundtrip, hotel per room per night, food per person per day, activity per person per day
+  const DEST: Record<string, number[]> = {
+    near: [600, 0, 0, 0],
+    mid:  [1200, 0, 0, 0],
+    far:  [3000, 0, 0, 0],
+  };
+  const HOTEL_PER_NIGHT: Record<string, number> = { budget: 400, mid: 1000, luxury: 2500 };
+  const FOOD_PER_DAY = 400;
+  const ACTIVITY_PER_DAY = 300;
+
+  document.querySelectorAll<HTMLLabelElement>('.hotel-pill').forEach((pill) => {
+    pill.querySelector('input')?.addEventListener('change', () => {
+      document.querySelectorAll<HTMLLabelElement>('.hotel-pill').forEach((p) => {
+        p.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        p.classList.add('border-gray-200', 'text-gray-700');
+      });
+      pill.classList.remove('border-gray-200', 'text-gray-700');
+      pill.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+    });
+  });
+
+  document.getElementById('trip-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const dest = (document.getElementById('destination') as HTMLSelectElement).value;
+    const travelers = parseNum((document.getElementById('travelers') as HTMLInputElement).value) || 1;
+    const days = parseNum((document.getElementById('days') as HTMLInputElement).value) || 1;
+    const hotelLevel = (document.querySelector('input[name="hotelLevel"]:checked') as HTMLInputElement)?.value ?? 'mid';
+
+    const nights = Math.max(days - 1, 0);
+    const roomsNeeded = Math.ceil(travelers / 2);
+    const transport = DEST[dest][0] * travelers;
+    const hotel = HOTEL_PER_NIGHT[hotelLevel] * roomsNeeded * nights;
+    const food = FOOD_PER_DAY * travelers * days;
+    const activity = ACTIVITY_PER_DAY * travelers * days;
+    const total = transport + hotel + food + activity;
+
+    document.getElementById('res-total')!.textContent = fmt(total);
+    document.getElementById('res-transport')!.textContent = fmt(transport);
+    document.getElementById('res-hotel')!.textContent = fmt(hotel);
+    document.getElementById('res-food')!.textContent = fmt(food);
+    document.getElementById('res-activity')!.textContent = fmt(activity);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>
