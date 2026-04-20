@@ -1,32 +1,33 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
 const pageTitle = 'คำนวณประมาณเบี้ยประกันอัคคีภัย 2569 | บ้านและอาคาร | เครื่องคำนวณไทย';
-const pageDescription = 'ประมาณการเบี้ยประกันอัคคีภัยสำหรับบ้าน อาคาร และทรัพย์สิน ตามมูลค่า ประเภทอาคาร และการใช้งาน';
+const pageDescription = 'ประมาณการเบี้ยประกันอัคคีภัยสำหรับบ้าน อาคาร และทรัพย์สิน ตามมูลค่าและประเภทอาคาร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณประมาณเบี้ยประกันอัคคีภัย/`;
 
 const faqData = [
   {
-    question: 'ประกันอัคคีภัยครอบคลุมอะไรบ้าง?',
-    answer: 'ประกันอัคคีภัยพื้นฐานครอบคลุม 3 ภัย ได้แก่ ไฟไหม้ ฟ้าผ่า และการระเบิดของแก๊ส โดยคุ้มครองทั้งตัวอาคาร ทรัพย์สินภายใน และค่าซ่อมแซม บางกรมธรรม์มีความคุ้มครองเพิ่มเติม เช่น ลมพายุ น้ำท่วม โจรกรรม',
+    question: 'ประกันอัคคีภัยมาตรฐานคุ้มครองอะไรบ้าง?',
+    answer: 'ประกันอัคคีภัยมาตรฐาน (Fire Insurance) ตาม คปภ. คุ้มครองความเสียหายจากไฟไหม้ ฟ้าผ่า การระเบิดของแก๊ส และยานพาหนะ ไม่รวมภัยธรรมชาติเช่นน้ำท่วม แผ่นดินไหว ซึ่งต้องซื้อเพิ่มเติม ยังคุ้มครองค่าซ่อมแซมหรือก่อสร้างใหม่',
   },
   {
-    question: 'อาคารไม้มีเบี้ยสูงกว่าอาคารคอนกรีตเพราะอะไร?',
-    answer: 'อาคารไม้ติดไฟได้ง่ายกว่าและลุกลามเร็วกว่าอาคารคอนกรีต ทำให้ความเสี่ยงต่อไฟไหม้สูงกว่ามาก บริษัทประกันจึงคิดเบี้ยสำหรับอาคารไม้สูงกว่าอาคารคอนกรีต 2-3 เท่า เพื่อสะท้อนความเสี่ยงที่แตกต่างกัน',
+    question: 'ประเภทอาคารส่งผลต่อเบี้ยประกันอัคคีภัยอย่างไร?',
+    answer: 'ประเภทวัสดุก่อสร้างส่งผลโดยตรงต่ออัตราเบี้ย อาคารไม้ติดไฟง่ายมีอัตราเบี้ยสูงสุดประมาณ 0.4% อาคารครึ่งตึกครึ่งไม้ประมาณ 0.25% และอาคารตึก (คอนกรีต) ติดไฟยากอัตราต่ำสุดประมาณ 0.12% ต่อปีของทุนประกัน',
   },
   {
-    question: 'ต้องทำประกันอัคคีภัยบ้านในมูลค่าเท่าไหร่?',
-    answer: 'ควรทำประกันในมูลค่าที่ต้องใช้สร้างบ้านใหม่ทั้งหลัง (Replacement Cost) ไม่ใช่ราคาตลาด เพราะราคาก่อสร้างใหม่อาจต่างจากราคาขาย หากทำประกันต่ำกว่ามูลค่าจริงอาจเจอ Average Clause ที่บริษัทจ่ายค่าเสียหายตามสัดส่วน',
+    question: 'ทุนประกันอัคคีภัยควรตั้งไว้เท่าไร?',
+    answer: 'ทุนประกันควรเท่ากับมูลค่าทดแทนของอาคาร (Replacement Cost) ซึ่งคำนวณจากพื้นที่ก่อสร้างคูณต้นทุนต่อตารางเมตรในปัจจุบัน ไม่ควรตั้งต่ำกว่าความเป็นจริงเพราะอาจได้รับค่าชดเชยไม่เต็มจำนวนหากเกิดความเสียหาย',
   },
 ];
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'เครื่องคำนวณประมาณเบี้ยประกันอัคคีภัย',
+  name: 'เครื่องคำนวณเบี้ยประกันอัคคีภัย 2569',
   description: pageDescription,
   url: canonical,
   applicationCategory: 'FinanceApplication',
@@ -52,91 +53,109 @@ const jsonLdFaq = {
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
-      <p class="text-sm font-semibold text-sky-700">ประมาณเบี้ยประกันอัคคีภัย 2569</p>
-      <p class="mt-1 text-sm text-slate-700">ตัวเลขเป็นการประมาณการ เพื่อใช้วางแผนเท่านั้น</p>
-      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตปี 2569</p>
+      <p class="text-sm font-semibold text-sky-700">ประมาณการเบี้ยประกันอัคคีภัยสำหรับบ้านและอาคาร</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการประมาณการเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิงอัตราเบี้ย คปภ. มาตรฐานประกันอัคคีภัย ปี 2569</p>
     </div>
 
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-      คำนวณประมาณเบี้ยประกันอัคคีภัย 2569 — บ้านและอาคาร
+      คำนวณประมาณเบี้ยประกันอัคคีภัย 2569 (2026)
     </h1>
 
     <p class="text-gray-600 mb-6">
-      ประมาณการเบี้ยประกันอัคคีภัยตามประเภทอาคาร การใช้งาน และมูลค่าทรัพย์สิน
+      ประมาณการเบี้ยประกันอัคคีภัยสำหรับบ้าน อาคาร และทรัพย์สิน ตามมูลค่าและประเภทอาคาร ผลลัพธ์ทันที ใช้งานฟรี
     </p>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
-      <form id="fire-form" class="space-y-5">
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label for="fire-building" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าอาคาร (บาท)</label>
-            <input type="text" id="fire-building" inputmode="numeric" placeholder="เช่น 3,000,000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
-            <p id="fire-building-error" class="mt-1 hidden text-sm text-red-600"></p>
-          </div>
-          <div>
-            <label for="fire-contents" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าทรัพย์สิน (บาท)</label>
-            <input type="text" id="fire-contents" inputmode="numeric" placeholder="เช่น 500,000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
-          </div>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลอาคารและทรัพย์สิน</h2>
+      <form id="insurance-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลให้ครบถ้วน
+        </p>
+        <div>
+          <label for="building-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าอาคาร (บาท)</label>
+          <input type="text" id="building-value" inputmode="numeric" placeholder="เช่น 3,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">มูลค่าสิ่งปลูกสร้าง ไม่รวมที่ดิน</p>
         </div>
-
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label for="fire-construction" class="block text-sm font-medium text-gray-700 mb-1">ประเภทอาคาร</label>
-            <select id="fire-construction" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
-              <option value="wood">ไม้ทั้งหลัง</option>
-              <option value="half">ครึ่งตึกครึ่งไม้</option>
-              <option value="concrete" selected>ตึก/คอนกรีต</option>
-            </select>
-          </div>
-          <div>
-            <label for="fire-usage" class="block text-sm font-medium text-gray-700 mb-1">ประเภทการใช้งาน</label>
-            <select id="fire-usage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
-              <option value="residential" selected>ที่อยู่อาศัย</option>
-              <option value="commercial">พาณิชย์/ร้านค้า</option>
-              <option value="warehouse">คลังสินค้า/โกดัง</option>
-            </select>
-          </div>
+        <div>
+          <label for="contents-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าทรัพย์สิน (บาท)</label>
+          <input type="text" id="contents-value" inputmode="numeric" placeholder="เช่น 500,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
         </div>
-
-        <button type="submit" id="fire-submit"
-          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
-          คำนวณทันที
+        <div>
+          <label for="building-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทอาคาร</label>
+          <select id="building-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+            <option value="concrete">ตึก (คอนกรีต/อิฐ)</option>
+            <option value="half">ครึ่งตึกครึ่งไม้</option>
+            <option value="wood">ไม้</option>
+          </select>
+        </div>
+        <div>
+          <label for="usage-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทการใช้งาน</label>
+          <select id="usage-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+            <option value="residential">ที่อยู่อาศัย</option>
+            <option value="commercial">อาคารพาณิชย์/สำนักงาน</option>
+            <option value="warehouse">คลังสินค้า/โรงงาน</option>
+          </select>
+        </div>
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณเบี้ยประกันอัคคีภัย
         </button>
       </form>
     </div>
 
     <div id="results" class="hidden mb-8">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ (ประมาณการ)</h2>
-        <div class="space-y-2 mb-4">
-          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">เบี้ยอาคาร</span><span id="res-building" class="font-medium">-</span></div>
-          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">เบี้ยทรัพย์สิน</span><span id="res-contents" class="font-medium">-</span></div>
-          <div class="flex justify-between py-3 bg-primary-50 px-3 rounded-lg">
-            <span class="font-bold">รวมเบี้ยรายปี</span>
-            <span id="res-total" class="text-xl font-bold text-primary-700">-</span>
-          </div>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการประมาณการ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div class="bg-primary-50 rounded-lg p-4 border border-primary-200">
+          <p class="text-xs text-gray-500 mb-1">เบี้ยประมาณการรายปี</p>
+          <p class="text-2xl font-bold text-primary-700"><span id="res-premium">-</span> <span class="text-sm font-normal">บาท/ปี</span></p>
         </div>
-        <p id="res-note" class="text-sm text-gray-600 mt-2">-</p>
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <p class="text-xs text-gray-500 mb-1">ทุนประกันรวม</p>
+          <p class="text-2xl font-bold text-blue-700"><span id="res-coverage">-</span> <span class="text-sm font-normal">บาท</span></p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm">
+          <tbody>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">เบี้ยส่วนอาคาร</td><td id="det-building" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">เบี้ยส่วนทรัพย์สิน</td><td id="det-contents" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">ประเภทอาคาร</td><td id="det-type" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">ประเภทการใช้งาน</td><td id="det-usage" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="bg-gray-50 font-semibold"><td class="px-4 py-3 text-gray-900">รวมเบี้ยประมาณการ</td><td id="det-total" class="px-4 py-3 text-right text-primary-700">-</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
 
     <section class="prose prose-gray max-w-none mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">อัตราเบี้ยประกันอัคคีภัย (ประมาณการ)</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกันอัคคีภัยคืออะไร?</h2>
+      <p>
+        ประกันอัคคีภัย (Fire Insurance) คือประกันภัยที่คุ้มครองความเสียหายต่ออาคารและทรัพย์สินจากไฟไหม้
+        ฟ้าผ่า การระเบิด และภัยที่กำหนดเพิ่มเติม เป็นประกันพื้นฐานที่เจ้าของบ้านและอาคารควรมี
+        โดยเฉพาะผู้ที่มีสินเชื่อบ้านกับธนาคาร
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราเบี้ยตามประเภทอาคาร</h3>
       <div class="overflow-x-auto">
         <table class="w-full text-sm border border-gray-200">
-          <thead><tr class="bg-gray-50"><th class="px-4 py-2 text-left border-b">ประเภทอาคาร</th><th class="px-4 py-2 text-right border-b">ที่อยู่อาศัย</th><th class="px-4 py-2 text-right border-b">พาณิชย์</th><th class="px-4 py-2 text-right border-b">คลังสินค้า</th></tr></thead>
+          <thead><tr class="bg-gray-50"><th class="px-4 py-2 text-left border-b">ประเภทอาคาร</th><th class="px-4 py-2 text-right border-b">อัตราเบี้ย</th></tr></thead>
           <tbody>
-            <tr class="border-b"><td class="px-4 py-2">ตึก/คอนกรีต</td><td class="px-4 py-2 text-right">0.12%</td><td class="px-4 py-2 text-right">0.18%</td><td class="px-4 py-2 text-right">0.24%</td></tr>
-            <tr class="border-b"><td class="px-4 py-2">ครึ่งตึกครึ่งไม้</td><td class="px-4 py-2 text-right">0.25%</td><td class="px-4 py-2 text-right">0.375%</td><td class="px-4 py-2 text-right">0.50%</td></tr>
-            <tr><td class="px-4 py-2">ไม้ทั้งหลัง</td><td class="px-4 py-2 text-right">0.40%</td><td class="px-4 py-2 text-right">0.60%</td><td class="px-4 py-2 text-right">0.80%</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">ตึก (คอนกรีต/อิฐ)</td><td class="px-4 py-2 text-right">0.12% ต่อปี</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">ครึ่งตึกครึ่งไม้</td><td class="px-4 py-2 text-right">0.25% ต่อปี</td></tr>
+            <tr><td class="px-4 py-2">ไม้ทั้งหลัง</td><td class="px-4 py-2 text-right">0.40% ต่อปี</td></tr>
           </tbody>
         </table>
       </div>
+      <p class="mt-4">อาคารพาณิชย์มีอัตราเบี้ยเพิ่มขึ้น 1.5 เท่า คลังสินค้า/โรงงาน 2.0 เท่า เนื่องจากความเสี่ยงสูงกว่าที่อยู่อาศัย</p>
     </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
 
     <section class="mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
@@ -150,55 +169,53 @@ const jsonLdFaq = {
       </div>
     </section>
 
+    <RelatedArticles currentHref="/คำนวณประมาณเบี้ยประกันอัคคีภัย/" />
     <RelatedCalculators currentHref="/คำนวณประมาณเบี้ยประกันอัคคีภัย/" />
 
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงต้องสอบถามบริษัทประกันภัยโดยตรง อัตราอาจแตกต่างตามบริษัทและเงื่อนไขกรมธรรม์
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      เบี้ยจริงขึ้นอยู่กับบริษัทประกันภัย ประเภทอาคาร สถานที่ตั้ง และเงื่อนไขกรมธรรม์
+      กรุณาสอบถามบริษัทประกันภัยโดยตรง
     </div>
   </article>
 
   <script>
-    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
-    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n) + ' บาท'; }
-
-    const form = document.getElementById('fire-form') as HTMLFormElement;
-    const resultsDiv = document.getElementById('results') as HTMLDivElement;
-
-    function setErr(id: string, msg: string) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.classList.remove('hidden'); } }
-    function clearErr(id: string) { const el = document.getElementById(id); if (el) { el.textContent = ''; el.classList.add('hidden'); } }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      clearErr('fire-building-error');
-
-      const building = parseNum((document.getElementById('fire-building') as HTMLInputElement).value);
-      const contents = parseNum((document.getElementById('fire-contents') as HTMLInputElement).value);
-      const construction = (document.getElementById('fire-construction') as HTMLSelectElement).value;
-      const usage = (document.getElementById('fire-usage') as HTMLSelectElement).value;
-
-      if (building <= 0) { setErr('fire-building-error', 'กรุณากรอกมูลค่าอาคาร'); return; }
-
-      trackCalculatorStart('fire-insurance-estimate');
-
-      const baseRates: Record<string, number> = { wood: 0.004, half: 0.0025, concrete: 0.0012 };
-      const usageMultipliers: Record<string, number> = { residential: 1.0, commercial: 1.5, warehouse: 2.0 };
-
-      const rate = (baseRates[construction] || 0.0012) * (usageMultipliers[usage] || 1.0);
-      const buildingPremium = building * rate;
-      const contentsPremium = contents * rate * 1.1;
-      const total = buildingPremium + contentsPremium;
-
-      const usageNames: Record<string, string> = { residential: 'ที่อยู่อาศัย', commercial: 'พาณิชย์', warehouse: 'คลังสินค้า' };
-      const constructionNames: Record<string, string> = { wood: 'ไม้', half: 'ครึ่งตึกครึ่งไม้', concrete: 'ตึก/คอนกรีต' };
-
-      (document.getElementById('res-building') as HTMLElement).textContent = fmt(buildingPremium);
-      (document.getElementById('res-contents') as HTMLElement).textContent = contents > 0 ? fmt(contentsPremium) : 'ไม่รวม';
-      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
-      (document.getElementById('res-note') as HTMLElement).textContent = `อาคาร${constructionNames[construction]} | ใช้เป็น${usageNames[usage]} | อัตราเบี้ย ${(rate * 100).toFixed(3)}%`;
-
-      resultsDiv.classList.remove('hidden');
-      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      trackCalculatorComplete('fire-insurance-estimate');
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(n));
+    }
+    const BUILD_RATES: Record<string, number> = { concrete: 0.0012, half: 0.0025, wood: 0.004 };
+    const BUILD_NAMES: Record<string, string> = { concrete: 'ตึก (คอนกรีต)', half: 'ครึ่งตึกครึ่งไม้', wood: 'ไม้' };
+    const USAGE_MULT: Record<string, number> = { residential: 1.0, commercial: 1.5, warehouse: 2.0 };
+    const USAGE_NAMES: Record<string, string> = { residential: 'ที่อยู่อาศัย', commercial: 'พาณิชย์/สำนักงาน', warehouse: 'คลังสินค้า/โรงงาน' };
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const formError = document.getElementById('form-error')!;
+      formError.classList.add('hidden');
+      const buildingValue = parseNum((document.getElementById('building-value') as HTMLInputElement).value);
+      const contentsValue = parseNum((document.getElementById('contents-value') as HTMLInputElement).value);
+      const buildingType = (document.getElementById('building-type') as HTMLSelectElement).value;
+      const usageType = (document.getElementById('usage-type') as HTMLSelectElement).value;
+      if (buildingValue <= 0 && contentsValue <= 0) {
+        formError.textContent = 'กรุณากรอกมูลค่าอาคารหรือทรัพย์สิน';
+        formError.classList.remove('hidden');
+        return;
+      }
+      const rate = (BUILD_RATES[buildingType] || 0.0012) * (USAGE_MULT[usageType] || 1.0);
+      const buildingPremium = buildingValue * rate;
+      const contentsPremium = contentsValue * rate;
+      const totalPremium = buildingPremium + contentsPremium;
+      const totalCoverage = buildingValue + contentsValue;
+      (document.getElementById('res-premium') as HTMLElement).textContent = fmt(totalPremium);
+      (document.getElementById('res-coverage') as HTMLElement).textContent = fmt(totalCoverage);
+      (document.getElementById('det-building') as HTMLElement).textContent = fmt(buildingPremium) + ' บาท';
+      (document.getElementById('det-contents') as HTMLElement).textContent = fmt(contentsPremium) + ' บาท';
+      (document.getElementById('det-type') as HTMLElement).textContent = BUILD_NAMES[buildingType] || '-';
+      (document.getElementById('det-usage') as HTMLElement).textContent = USAGE_NAMES[usageType] || '-';
+      (document.getElementById('det-total') as HTMLElement).textContent = fmt(totalPremium) + ' บาท/ปี';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
       trackCalculatorUsed('fire-insurance-estimate');
     });
   </script>
