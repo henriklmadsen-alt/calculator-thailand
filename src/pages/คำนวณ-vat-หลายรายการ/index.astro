@@ -1,0 +1,370 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ VAT หลายรายการ 2569 | ใบกำกับภาษีหลายบรรทัด | kamnuanlek.com';
+const pageDescription = 'คำนวณ VAT 7% หลายรายการในใบกำกับภาษีเดียว รองรับราคาไม่รวม VAT และราคารวม VAT แล้ว ดูยอดรวมและ VAT แต่ละรายการทันที ใช้งานฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-vat-หลายรายการ/`;
+
+const faqData = [
+  {
+    question: 'VAT 7% คิดจากอะไร?',
+    answer: 'VAT 7% คิดจากมูลค่าสินค้าหรือบริการก่อน VAT หากราคาไม่รวม VAT ให้คูณ 1.07 เพื่อได้ราคารวม หากราคารวม VAT แล้วให้หาร 1.07 เพื่อได้ราคาก่อน VAT และ VAT = ราคาก่อน VAT × 0.07',
+  },
+  {
+    question: 'ใบกำกับภาษีหลายรายการ VAT รวมกันอย่างไร?',
+    answer: 'สามารถรวม VAT แต่ละรายการได้เลย เนื่องจาก VAT เป็นอัตราเดียวกัน (7%) ผลรวม VAT = ผลรวมมูลค่าก่อน VAT × 7%',
+  },
+  {
+    question: 'หากสินค้าบางรายการยกเว้น VAT ทำยังไง?',
+    answer: 'สินค้าที่ยกเว้น VAT เช่น สินค้าเกษตร ยา การศึกษา ให้ใส่ราคาและเลือก "ยกเว้น VAT" เครื่องคำนวณจะไม่คิด VAT สำหรับรายการนั้น',
+  },
+  {
+    question: 'ต้องออกใบกำกับภาษีเมื่อไร?',
+    answer: 'ผู้ประกอบการที่จดทะเบียน VAT ต้องออกใบกำกับภาษีทุกครั้งที่ขายสินค้าหรือบริการที่อยู่ในระบบ VAT ภายใน 15 วัน หรือทันทีที่ความรับผิดในการเสีย VAT เกิดขึ้น',
+  },
+  {
+    question: 'ใบกำกับภาษีอย่างย่อต่างจากใบกำกับภาษีปกติอย่างไร?',
+    answer: 'ใบกำกับภาษีอย่างย่อไม่ต้องระบุชื่อผู้ซื้อ ใช้สำหรับการค้าปลีก มูลค่าไม่เกิน 1,000 บาท ส่วนใบกำกับภาษีปกติต้องระบุชื่อ-ที่อยู่ผู้ซื้อ ใช้เป็นเอกสารเพื่อขอคืน VAT ได้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ VAT หลายรายการ 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-vat-หลายรายการ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณหลายรายการในที่เดียว</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">VAT 7% อัปเดตปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ VAT หลายรายการ ใบกำกับภาษี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      เพิ่มรายการสินค้าหรือบริการ เลือกว่าราคาไม่รวมหรือรวม VAT แล้ว
+      ระบบจะคำนวณ VAT 7% ทุกรายการและสรุปยอดรวมทันที
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">รายการสินค้า/บริการ</h2>
+
+      <!-- Line Items -->
+      <div id="line-items" class="space-y-3 mb-4">
+        <!-- Items added by JS -->
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button
+          type="button"
+          id="add-item-btn"
+          class="px-4 py-2 text-sm font-medium text-primary-700 border border-primary-300 rounded-md hover:bg-primary-50 transition-colors"
+        >
+          + เพิ่มรายการ
+        </button>
+        <button
+          type="button"
+          id="calculate-btn"
+          class="px-8 py-2 bg-primary-600 text-white text-sm font-semibold rounded-md hover:bg-primary-700 transition-colors"
+        >
+          คำนวณ VAT
+        </button>
+      </div>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">สรุปใบกำกับภาษี</h2>
+          <button
+            id="print-btn"
+            class="text-sm text-primary-600 hover:text-primary-800 font-medium"
+            onclick="window.print()"
+          >
+            🖨️ พิมพ์
+          </button>
+        </div>
+
+        <!-- Printable invoice summary -->
+        <div id="invoice-table" class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-3">รายการ</th>
+                <th class="py-2 pr-3 text-right">ราคาก่อน VAT</th>
+                <th class="py-2 pr-3 text-right">VAT 7%</th>
+                <th class="py-2 text-right">ราคารวม VAT</th>
+              </tr>
+            </thead>
+            <tbody id="invoice-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4 space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600">มูลค่าก่อน VAT รวม</span>
+            <span id="total-pre-vat" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">VAT 7% รวม</span>
+            <span id="total-vat" class="font-medium text-blue-700">-</span>
+          </div>
+          <div class="flex justify-between text-base font-bold border-t border-gray-200 pt-2">
+            <span class="text-gray-900">ยอดรวมทั้งสิ้น (รวม VAT)</span>
+            <span id="grand-total" class="text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรคำนวณ VAT 7%</h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="bg-blue-50 rounded-lg p-4">
+          <h3 class="font-semibold text-blue-800 mb-2">ราคาไม่รวม VAT → รวม VAT</h3>
+          <p class="text-sm text-blue-700">ราคารวม = ราคาก่อน VAT × 1.07</p>
+          <p class="text-sm text-blue-700">VAT = ราคาก่อน VAT × 0.07</p>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4">
+          <h3 class="font-semibold text-green-800 mb-2">ราคารวม VAT → แยก VAT</h3>
+          <p class="text-sm text-green-700">ราคาก่อน VAT = ราคารวม ÷ 1.07</p>
+          <p class="text-sm text-green-700">VAT = ราคารวม - ราคาก่อน VAT</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณ-vat-หลายรายการ/" />
+    <RelatedCalculators currentHref="/คำนวณ-vat-หลายรายการ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ
+      กรุณาตรวจสอบกับผู้เชี่ยวชาญด้านภาษีสำหรับการออกใบกำกับภาษีจริง
+    </div>
+  </article>
+
+  <style>
+    @media print {
+      header, nav, footer, .no-print, #add-item-btn, #calculate-btn, #print-btn,
+      details, section:not(:has(#invoice-table)), .bg-sky-50, .bg-yellow-50 {
+        display: none !important;
+      }
+      #results { display: block !important; }
+    }
+  </style>
+
+  <script>
+    const VAT_RATE = 0.07;
+
+    interface LineItem {
+      id: number;
+      name: string;
+      amount: number;
+      priceType: 'exclusive' | 'inclusive'; // exclusive = price before VAT, inclusive = price includes VAT
+    }
+
+    let items: LineItem[] = [];
+    let nextId = 1;
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+    }
+
+    function parseNumber(val: string): number {
+      return Math.max(0, parseFloat(val.replace(/,/g, '')) || 0);
+    }
+
+    function renderItems() {
+      const container = document.getElementById('line-items') as HTMLElement;
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-400 italic">ยังไม่มีรายการ กด "+ เพิ่มรายการ" เพื่อเริ่มต้น</p>';
+        return;
+      }
+
+      for (const item of items) {
+        const row = document.createElement('div');
+        row.className = 'grid gap-2 sm:grid-cols-[1fr_auto_auto_auto] items-center p-3 bg-gray-50 rounded-lg';
+        row.innerHTML = `
+          <input
+            type="text"
+            placeholder="ชื่อสินค้า/บริการ"
+            value="${item.name}"
+            data-id="${item.id}"
+            data-field="name"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+          />
+          <input
+            type="text"
+            inputmode="numeric"
+            placeholder="ราคา"
+            value="${item.amount > 0 ? item.amount : ''}"
+            data-id="${item.id}"
+            data-field="amount"
+            class="w-full sm:w-32 px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500"
+          />
+          <select
+            data-id="${item.id}"
+            data-field="priceType"
+            class="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+          >
+            <option value="exclusive" ${item.priceType === 'exclusive' ? 'selected' : ''}>ไม่รวม VAT</option>
+            <option value="inclusive" ${item.priceType === 'inclusive' ? 'selected' : ''}>รวม VAT แล้ว</option>
+          </select>
+          <button
+            data-remove="${item.id}"
+            class="text-red-400 hover:text-red-600 text-sm px-2 py-1 rounded hover:bg-red-50 transition-colors"
+            aria-label="ลบรายการ"
+          >✕</button>
+        `;
+        container.appendChild(row);
+      }
+
+      // Attach event listeners
+      container.querySelectorAll('input[data-field]').forEach((el) => {
+        el.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = parseInt(target.dataset.id!);
+          const field = target.dataset.field!;
+          const itemIdx = items.findIndex((i) => i.id === id);
+          if (itemIdx < 0) return;
+          if (field === 'name') items[itemIdx].name = target.value;
+          if (field === 'amount') items[itemIdx].amount = parseNumber(target.value);
+        });
+      });
+
+      container.querySelectorAll('select[data-field]').forEach((el) => {
+        el.addEventListener('change', (e) => {
+          const target = e.target as HTMLSelectElement;
+          const id = parseInt(target.dataset.id!);
+          const itemIdx = items.findIndex((i) => i.id === id);
+          if (itemIdx < 0) return;
+          items[itemIdx].priceType = target.value as 'exclusive' | 'inclusive';
+        });
+      });
+
+      container.querySelectorAll('button[data-remove]').forEach((el) => {
+        el.addEventListener('click', (e) => {
+          const btn = e.target as HTMLButtonElement;
+          const id = parseInt(btn.dataset.remove!);
+          items = items.filter((i) => i.id !== id);
+          renderItems();
+        });
+      });
+    }
+
+    function addItem() {
+      items.push({ id: nextId++, name: '', amount: 0, priceType: 'exclusive' });
+      renderItems();
+    }
+
+    function calculate() {
+      if (items.length === 0) {
+        alert('กรุณาเพิ่มรายการก่อนคำนวณ');
+        return;
+      }
+
+      let totalPreVat = 0;
+      let totalVat = 0;
+      let totalWithVat = 0;
+
+      const tbody = document.getElementById('invoice-tbody') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      for (const item of items) {
+        let preVat: number, vat: number, withVat: number;
+        if (item.priceType === 'exclusive') {
+          preVat = item.amount;
+          vat = preVat * VAT_RATE;
+          withVat = preVat + vat;
+        } else {
+          withVat = item.amount;
+          preVat = withVat / (1 + VAT_RATE);
+          vat = withVat - preVat;
+        }
+
+        totalPreVat += preVat;
+        totalVat += vat;
+        totalWithVat += withVat;
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-3 text-gray-700">${item.name || '(ไม่ระบุชื่อ)'}</td>
+          <td class="py-2 pr-3 text-right">${formatThai(preVat)}</td>
+          <td class="py-2 pr-3 text-right text-blue-700">${formatThai(vat)}</td>
+          <td class="py-2 text-right font-medium">${formatThai(withVat)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      (document.getElementById('total-pre-vat') as HTMLElement).textContent = `${formatThai(totalPreVat)} บาท`;
+      (document.getElementById('total-vat') as HTMLElement).textContent = `${formatThai(totalVat)} บาท`;
+      (document.getElementById('grand-total') as HTMLElement).textContent = `${formatThai(totalWithVat)} บาท`;
+
+      const resultsDiv = document.getElementById('results') as HTMLElement;
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('vat_multi_line');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('vat_multi_line');
+    }
+
+    // Initialize with 3 empty items
+    addItem();
+    addItem();
+    addItem();
+
+    (document.getElementById('add-item-btn') as HTMLButtonElement).addEventListener('click', addItem);
+    (document.getElementById('calculate-btn') as HTMLButtonElement).addEventListener('click', calculate);
+
+    document.getElementById('line-items')?.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('vat_multi_line');
+    }, { once: true });
+  </script>
+</BaseLayout>

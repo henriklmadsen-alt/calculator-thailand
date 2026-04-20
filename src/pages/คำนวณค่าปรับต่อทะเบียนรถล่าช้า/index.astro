@@ -1,0 +1,266 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าปรับต่อทะเบียนรถล่าช้า 2569 | ค่าปรับรายวัน กรมขนส่ง | kamnuanlek.com';
+const pageDescription = 'คำนวณค่าปรับต่อทะเบียนรถล่าช้า 2569 ฟรี ค่าปรับ 1% ต่อเดือนของภาษีรถประจำปี ใส่จำนวนวันที่ค้างชำระ ดูค่าปรับรวมทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าปรับต่อทะเบียนรถล่าช้า/`;
+
+const faqData = [
+  {
+    question: 'ค่าปรับต่อทะเบียนรถล่าช้าคิดอย่างไร?',
+    answer: 'ค่าปรับคิด 1% ต่อเดือน ของภาษีรถประจำปีที่ต้องชำระ โดยนับตั้งแต่วันครบกำหนดชำระ (30 วันหลังวันสิ้นอายุทะเบียน) จนถึงวันที่นำรถมาต่อทะเบียน',
+  },
+  {
+    question: 'ค่าปรับมีขั้นต่ำไหม?',
+    answer: 'ไม่มีขั้นต่ำสำหรับค่าปรับรายเดือน แต่หากค่าปรับน้อยกว่า 1 บาท จะปัดเป็น 1 บาท และค่าปรับสูงสุดไม่มีการจำกัด ยิ่งล่าช้ายิ่งเสียมาก',
+  },
+  {
+    question: 'ทะเบียนรถหมดอายุนานเท่าไรถึงต้องนำรถไปตรวจสภาพ?',
+    answer: 'รถยนต์อายุเกิน 7 ปี (นับจากปีที่จดทะเบียนครั้งแรก) ต้องตรวจสภาพที่ตรอ. ก่อนต่อทะเบียน รถมอเตอร์ไซค์อายุเกิน 5 ปีต้องตรวจสภาพ',
+  },
+  {
+    question: 'หากไม่ต่อทะเบียนเลย โดนอะไรบ้าง?',
+    answer: 'นอกจากค่าปรับต่อทะเบียนล่าช้าแล้ว หากถูกตำรวจตรวจพบขับรถที่ขาดต่อทะเบียน โทษปรับสูงสุด 2,000 บาท และหากขาดต่อ พ.ร.บ. ด้วยอาจผิดกฎหมายอื่นอีก',
+  },
+  {
+    question: 'ค่าปรับกับค่า พ.ร.บ. ต่างกันอย่างไร?',
+    answer: 'ค่าปรับต่อทะเบียนล่าช้าเป็นค่าปรับจากกรมขนส่ง ส่วน พ.ร.บ. (ประกันภัยภาคบังคับ) เป็นคนละส่วน ต้องชำระทั้งสองอย่างจึงจะต่อทะเบียนได้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าปรับต่อทะเบียนรถล่าช้า 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าปรับต่อทะเบียนรถล่าช้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัตราตามกรมขนส่งทางบก 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าปรับต่อทะเบียนรถล่าช้า ปี 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าปรับที่ต้องจ่ายเมื่อต่อทะเบียนรถล่าช้ากว่ากำหนด ตามอัตรากรมขนส่งทางบก
+      1% ต่อเดือน ของภาษีรถประจำปี (เศษของเดือนนับเป็น 1 เดือน)
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรถและวันที่ค้างชำระ</h2>
+
+      <form id="penalty-form" class="space-y-6">
+        <p id="penalty-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="annual-tax" class="block text-sm font-medium text-gray-700 mb-1">
+              ภาษีรถประจำปี (บาท)
+            </label>
+            <input
+              type="text"
+              id="annual-tax"
+              inputmode="numeric"
+              placeholder="เช่น 1,200"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ดูจากป้ายทะเบียนหรือหนังสือแจ้งเตือนต่อทะเบียน</p>
+          </div>
+
+          <div>
+            <label for="late-days" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนวันที่ค้างชำระ (วัน)
+            </label>
+            <input
+              type="number"
+              id="late-days"
+              inputmode="numeric"
+              min="1"
+              max="3650"
+              placeholder="เช่น 45"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">นับตั้งแต่วันครบกำหนดชำระ (หลัง 30 วันจากทะเบียนหมดอายุ)</p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณค่าปรับต่อทะเบียนล่าช้า</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนเดือนที่ค้าง</div>
+            <div id="result-months" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าปรับรวม</div>
+            <div id="result-penalty" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รวมภาษี + ค่าปรับ</div>
+            <div id="result-total" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ภาษีรถประจำปี</span>
+            <span id="result-tax-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ค่าปรับ (1%/เดือน × จำนวนเดือน)</span>
+            <span id="result-penalty-display" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between py-1 font-semibold">
+            <span class="text-gray-900">รวมทั้งสิ้น</span>
+            <span id="result-total-display">-</span>
+          </div>
+        </div>
+        <p class="mt-3 text-xs text-gray-500">*ไม่รวมค่า พ.ร.บ. ค่าตรวจสภาพรถ (ตรอ.) และค่าธรรมเนียมอื่นๆ</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าปรับต่อทะเบียนรถล่าช้า คิดอย่างไร?</h2>
+      <p>
+        ตามพระราชบัญญัติรถยนต์ หากต่อทะเบียนช้ากว่ากำหนด กรมขนส่งทางบกจะเรียกเก็บค่าปรับในอัตรา
+        <strong>1% ต่อเดือน</strong> ของภาษีรถประจำปี โดยเศษของเดือนนับเป็น 1 เดือนเต็ม
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left border-b">ภาษีรถ/ปี</th>
+              <th class="px-3 py-2 text-center border-b">ค้างชำระ</th>
+              <th class="px-3 py-2 text-right border-b">ค่าปรับ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="px-3 py-2 border-b">1,000 บาท</td><td class="px-3 py-2 text-center border-b">1 เดือน</td><td class="px-3 py-2 text-right border-b">10 บาท</td></tr>
+            <tr><td class="px-3 py-2 border-b">1,000 บาท</td><td class="px-3 py-2 text-center border-b">3 เดือน</td><td class="px-3 py-2 text-right border-b">30 บาท</td></tr>
+            <tr><td class="px-3 py-2 border-b">2,500 บาท</td><td class="px-3 py-2 text-center border-b">6 เดือน</td><td class="px-3 py-2 text-right border-b">150 บาท</td></tr>
+            <tr><td class="px-3 py-2">5,000 บาท</td><td class="px-3 py-2 text-center">12 เดือน</td><td class="px-3 py-2 text-right">600 บาท</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าปรับต่อทะเบียนรถล่าช้า/" />
+    <RelatedCalculators currentHref="/คำนวณค่าปรับต่อทะเบียนรถล่าช้า/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการตามอัตราที่ระบุ
+      ค่าธรรมเนียมจริงอาจแตกต่างขึ้นอยู่กับประเภทรถและเงื่อนไขเฉพาะ กรุณาตรวจสอบกับสำนักงานขนส่งในพื้นที่
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(value: string): number {
+      return Math.max(0, parseFloat(value.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number, decimals = 2): string {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      }).format(num);
+    }
+
+    const form = document.getElementById('penalty-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+    const errorDiv = document.getElementById('penalty-error') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const annualTax = parseNumber((document.getElementById('annual-tax') as HTMLInputElement).value);
+      const lateDays = parseInt((document.getElementById('late-days') as HTMLInputElement).value) || 0;
+
+      if (annualTax <= 0 || lateDays <= 0) {
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Round up to whole months (each partial month = 1 full month)
+      const months = Math.ceil(lateDays / 30);
+      const penaltyRate = 0.01; // 1% per month
+      const penalty = annualTax * penaltyRate * months;
+      const total = annualTax + penalty;
+
+      (document.getElementById('result-months') as HTMLElement).textContent = `${months} เดือน`;
+      (document.getElementById('result-penalty') as HTMLElement).textContent = `${formatThai(penalty)} บาท`;
+      (document.getElementById('result-total') as HTMLElement).textContent = `${formatThai(total)} บาท`;
+      (document.getElementById('result-tax-display') as HTMLElement).textContent = `${formatThai(annualTax)} บาท`;
+      (document.getElementById('result-penalty-display') as HTMLElement).textContent = `${formatThai(penalty)} บาท`;
+      (document.getElementById('result-total-display') as HTMLElement).textContent = `${formatThai(total)} บาท`;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('road_tax_late_penalty');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('road_tax_late_penalty');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('road_tax_late_penalty');
+    }, { once: true });
+  </script>
+</BaseLayout>
