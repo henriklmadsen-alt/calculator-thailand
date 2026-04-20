@@ -1,0 +1,374 @@
+---
+import BlogPostLayout from '../../../layouts/BlogPostLayout.astro';
+import ArticleCalculatorCTA from '../../../components/templates/ArticleCalculatorCTA.astro';
+
+const title = 'คำนวณผ่อนบ้าน 2569 | สูตรค่างวด ดอกเบี้ย | เครื่องคำนวณไทย';
+const description = 'คำนวณผ่อนบ้าน 2569 แบบเข้าใจง่าย อธิบายสูตรค่างวดทั้ง 2 วิธี (อายัติ vs อัตราคงที่) พร้อมตัวอย่างจริง ดูดอกเบี้ยรวมและแผนระยะเวลา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/บทความ/คำนวณผ่อนบ้าน-2569-สูตรค่างวด-อัตราดอกเบี้ย/`;
+
+const faqData = [
+  {
+    question: 'ผ่อนบ้านแบบอายัติกับแบบอัตราคงที่ต่างกันยังไง?',
+    answer: 'อายัติ: ค่างวดเท่ากันทุกเดือน แต่ส่วนที่เป็นต้นเงินกับดอกเบี้ยเปลี่ยน ดอกเบี้ยเดือนแรกสูงแล้วลดเรื่อยๆ ส่วนอัตราคงที่: ดอกเบี้ยคิดจากเงินกู้เดิมตลอด ค่างวดต่ำกว่า แต่ส่วนดอกเบี้ยไม่เปลี่ยน',
+  },
+  {
+    question: 'ผ่อน 2 ล้านบาท 20 ปี อัตรา 3% ค่างวดเดือนละกี่บาท?',
+    answer: 'วิธีอายัติ (ธรรมชาติ): ประมาณ 9,646 บาท/เดือน ดอกเบี้ยรวมประมาณ 1.32 ล้านบาท วิธีอัตราคงที่: ประมาณ 8,333 บาท/เดือน ดอกเบี้ยรวมประมาณ 1.2 ล้านบาท',
+  },
+  {
+    question: 'ควรเลือกระยะเวลาผ่อนกี่ปี?',
+    answer: 'ถ้ามีความสามารถจ่ายสูงให้เลือกระยะสั้น ดอกเบี้ยรวมจะน้อย แต่ค่างวดสูง ถ้าต้องการภาระรายเดือนต่ำให้ยืดระยะเวลาแต่จะต้องจ่ายดอกเบี้ยรวมมากขึ้น',
+  },
+  {
+    question: 'โปะเงินต้นก่อนกำหนดคุ้มไหม?',
+    answer: 'ใช่ ถ้าผ่อนแบบอายัติการโปะต้นจะลดสัดส่วนดอกเบี้ยของเดือนต่อไป ลดดอกเบี้ยรวมได้เร็วมาก สำหรับอัตราคงที่เสียประโยชน์น้อยลง',
+  },
+  {
+    question: 'อัตราดอกเบี้ยผ่อนบ้านปัจจุบันเท่าไร?',
+    answer: 'อัตราวงเงินทั่วไปของธนาคารพาณิชย์ ปี 2569 อยู่ที่ 2.5%-4.5% ต่อปี ขึ้นอยู่กับลักษณะสินเชื่อ สถานะของผู้กู้ และนโยบายของธนาคาร ควรเทียบดูจากหลายแห่ง',
+  },
+];
+---
+
+<BlogPostLayout
+  title={title}
+  description={description}
+  publishDate="2026-04-20"
+  modifiedDate="2026-04-20"
+  canonical={canonical}
+  faqData={faqData}
+>
+  <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+    คำนวณผ่อนบ้าน 2569: สูตรค่างวด อายัติ vs อัตราคงที่ คำนวณจนใจเบ
+  </h1>
+
+  <p>
+    การเลือกบ้านและตัดสินใจผ่อนสินเชื่อเป็นการตัดสินใจที่สำคัญในชีวิต
+    และส่วนใหญ่คนไทยจะต้องมองว่าค่างวดรายเดือนเท่าไร ดอกเบี้ยรวมเท่าไร
+    และจะจ่ายเงินต้นหมดในปลายสุด
+    แต่วิธีคำนวณมีสองแบบที่นิยมใช้กัน และให้ผลต่างกันค่อนข้างชัด
+  </p>
+
+  <p>
+    บทความนี้อธิบายวิธีคำนวณผ่อนบ้านแบบ "อายัติ" (reducing balance หรือ annuity)
+    ซึ่งเป็นวิธีที่ธนาคารไทยใช้มากที่สุด พร้อมตัวอย่างเปรียบเทียบกับวิธีอัตราคงที่
+    เพื่อให้คุณเข้าใจความต่างและสามารถตัดสินใจเลือกแผนที่เหมาะกับตัวเองได้
+  </p>
+
+  <ArticleCalculatorCTA
+    title="คำนวณค่างวดบ้านของคุณทันที"
+    description="กรอกเงินกู้ อัตราดอกเบี้ย และระยะเวลา เพื่อดูค่างวด ดอกเบี้ยรวม และตารางเช่าการลดหนี้ตามเดือน"
+    href="/คำนวณผ่อนบ้าน/"
+    buttonLabel="ไปที่เครื่องคำนวณผ่อนบ้าน"
+  />
+
+  <h2>ผ่อนบ้านต้องรู้อะไรบ้างก่อนลงนาม</h2>
+
+  <p>
+    ก่อนจะตัดสินใจผ่อนบ้าน สิ่งสำคัญที่ต้องเข้าใจชัดเจนคือ "ค่างวด" ที่จะต้องจ่ายรายเดือน
+    ไม่ใช่เรื่องสุ่มสี่สุ่มห้า แต่มีสูตรคำนวณที่ชัดเจน อย่างไรก็ตาม
+    ธนาคารที่ต่างกันอาจใช้วิธีคิดที่ต่างกัน ซึ่งส่งผลให้ยอดที่ต้องจ่ายต่างกันได้
+  </p>
+
+  <p>ส่วนประกอบหลักที่ต้องรู้ก่อนคำนวณ ได้แก่:</p>
+
+  <ul>
+    <li><strong>เงินกู้หลัก (Principal)</strong> - จำนวนเงินที่ธนาคารให้กู้ (ไม่รวมค่าธรรมเนียมหรืออื่นๆ)</li>
+    <li><strong>อัตราดอกเบี้ยต่อปี (Annual Interest Rate)</strong> - คิดเป็นเปอร์เซ็นต์ต่อปี เช่น 3.5% ต่อปี</li>
+    <li><strong>ระยะเวลาผ่อน (Loan Term)</strong> - จำนวนเดือนหรือปีที่ตกลงกับธนาคาร เช่น 20 ปี (240 เดือน)</li>
+    <li><strong>วิธีคำนวณ (Calculation Method)</strong> - อายัติ (annuity) หรืออัตราคงที่ (flat rate)</li>
+  </ul>
+
+  <h2>วิธีที่ 1: ผ่อนแบบอายัติ (Reducing Balance / Annuity)</h2>
+
+  <p>
+    วิธีนี้เป็นที่นิยมของธนาคารพาณิชย์ไทยที่สุด เพราะค่างวดคงที่ทุกเดือน
+    ทำให้ง่ายต่อการวางแผนการเงิน แต่ส่วนดอกเบี้ยจะสูงมากในเดือนแรก
+    และค่อยๆ ลดลงตามระยะเวลา
+  </p>
+
+  <h3>สูตรคำนวณอายัติ</h3>
+
+  <p>ค่างวดต่อเดือน (Fixed Monthly Payment) คิดจากสูตรดังนี้:</p>
+
+  <div class="not-prose my-4 overflow-x-auto bg-blue-50 p-4 rounded-lg border border-blue-200">
+    <p class="font-mono text-sm text-center text-gray-900">
+      ค่างวด = เงินกู้ × [r × (1 + r)ⁿ] / [(1 + r)ⁿ - 1]
+    </p>
+    <p class="text-xs text-center text-gray-600 mt-2">
+      โดย r = อัตราดอกเบี้ยต่อเดือน (อัตราต่อปี ÷ 12 ÷ 100)<br/>
+      n = จำนวนเดือนทั้งสิ้น
+    </p>
+  </div>
+
+  <h3>ตัวอย่างคำนวณจริง: ผ่อน 2 ล้านบาท 20 ปี อัตรา 3% ต่อปี</h3>
+
+  <ul>
+    <li><strong>เงินกู้:</strong> 2,000,000 บาท</li>
+    <li><strong>อัตราดอกเบี้ยต่อปี:</strong> 3%</li>
+    <li><strong>ระยะเวลา:</strong> 20 ปี (240 เดือน)</li>
+    <li><strong>อัตราต่อเดือน:</strong> 3% ÷ 12 = 0.25% = 0.0025</li>
+  </ul>
+
+  <p><strong>คำนวณค่างวด:</strong></p>
+
+  <div class="not-prose my-4 overflow-x-auto">
+    <table class="w-full min-w-[640px] border-collapse border border-gray-200 text-sm bg-white">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="border border-gray-200 px-3 py-2 text-left">ขั้นตอน</th>
+          <th class="border border-gray-200 px-3 py-2 text-left">สูตร</th>
+          <th class="border border-gray-200 px-3 py-2 text-right">ผลลัพธ์</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2">1. คำนวณ (1+r)ⁿ</td>
+          <td class="border border-gray-200 px-3 py-2">(1 + 0.0025)²⁴⁰</td>
+          <td class="border border-gray-200 px-3 py-2 text-right">1.8206</td>
+        </tr>
+        <tr class="bg-gray-50">
+          <td class="border border-gray-200 px-3 py-2">2. คำนวณตัวเศษ</td>
+          <td class="border border-gray-200 px-3 py-2">r × (1+r)ⁿ</td>
+          <td class="border border-gray-200 px-3 py-2 text-right">0.00455</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2">3. คำนวณตัวส่วน</td>
+          <td class="border border-gray-200 px-3 py-2">(1+r)ⁿ - 1</td>
+          <td class="border border-gray-200 px-3 py-2 text-right">0.8206</td>
+        </tr>
+        <tr class="bg-gray-50">
+          <td class="border border-gray-200 px-3 py-2"><strong>4. ค่างวด</strong></td>
+          <td class="border border-gray-200 px-3 py-2">2,000,000 × (0.00455 ÷ 0.8206)</td>
+          <td class="border border-gray-200 px-3 py-2 text-right"><strong>9,646 บาท/เดือน</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>ดอกเบี้ยรวมทั้งสิ้น:</strong> (9,646 × 240) - 2,000,000 = <strong>1,315,040 บาท</strong></p>
+
+  <h3>ตารางการลดหนี้เดือนแรก-เดือนสุดท้าย</h3>
+
+  <p>
+    จากตัวอย่างข้างต้น เราจะเห็นว่าดอกเบี้ยเดือนแรกมีจำนวนมาก
+    แต่เมื่อจ่ายไปเรื่อยๆ ส่วนของดอกเบี้ยจะลดลง
+  </p>
+
+  <div class="not-prose my-4 overflow-x-auto">
+    <table class="w-full min-w-[720px] border-collapse border border-gray-200 text-xs bg-white">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="border border-gray-200 px-2 py-2 text-left">เดือน</th>
+          <th class="border border-gray-200 px-2 py-2 text-right">ค่างวด</th>
+          <th class="border border-gray-200 px-2 py-2 text-right">ดอกเบี้ย</th>
+          <th class="border border-gray-200 px-2 py-2 text-right">ต้นเงิน</th>
+          <th class="border border-gray-200 px-2 py-2 text-right">คงเหลือ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-200 px-2 py-2">1</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">9,646</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">5,000</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">4,646</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">1,995,354</td>
+        </tr>
+        <tr class="bg-gray-50">
+          <td class="border border-gray-200 px-2 py-2">2</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">9,646</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">4,988</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">4,658</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">1,990,696</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-200 px-2 py-2 text-center" colspan="5" class="text-gray-500">... (เดือน 3-239)</td>
+        </tr>
+        <tr class="bg-blue-50 font-semibold">
+          <td class="border border-gray-200 px-2 py-2">240</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">9,646</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">20</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">9,626</td>
+          <td class="border border-gray-200 px-2 py-2 text-right">0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    จะเห็นว่าเดือนแรกดอกเบี้ยที่ต้องจ่ายเท่ากับเงินกู้ × อัตราต่อเดือน = 2,000,000 × 0.25% = 5,000 บาท
+    ส่วนต้นเงิน = 9,646 - 5,000 = 4,646 บาท เมื่อจ่ายเป็นจำนวน 240 เดือน
+    หนี้คงเหลือจึงลดลงเรื่อยๆ และเดือนสุดท้ายดอกเบี้ยเพียง 20 บาทเท่านั้น
+  </p>
+
+  <h2>วิธีที่ 2: ผ่อนแบบอัตราคงที่ (Flat Rate)</h2>
+
+  <p>
+    วิธีนี้คิดดอกเบี้ยจากเงินกู้เดิมตลอดทั้งระยะเวลา ไม่ว่าจะเหลือหนี้เท่าไร
+    ค่างวดจึงต่ำกว่า และคำนวณง่ายกว่า แต่คุณต้องสูญเสีย "ประโยชน์จากการโปะเงินต้น"
+    เพราะดอกเบี้ยจะเท่าเดิมทุกเดือน
+  </p>
+
+  <h3>สูตรคำนวณอัตราคงที่</h3>
+
+  <div class="not-prose my-4 overflow-x-auto bg-orange-50 p-4 rounded-lg border border-orange-200">
+    <p class="font-mono text-sm text-center text-gray-900">
+      ดอกเบี้ยรวม = เงินกู้ × อัตรา(%) × ระยะเวลา(ปี)
+    </p>
+    <p class="font-mono text-sm text-center text-gray-900 mt-2">
+      ค่างวด = (เงินกู้ + ดอกเบี้ยรวม) ÷ จำนวนเดือน
+    </p>
+  </div>
+
+  <h3>ตัวอย่างเปรียบเทียบเดียวกัน: 2 ล้านบาท 20 ปี 3%</h3>
+
+  <div class="not-prose my-4 overflow-x-auto">
+    <table class="w-full min-w-[640px] border-collapse border border-gray-200 text-sm bg-white">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="border border-gray-200 px-3 py-2 text-left">ขั้นตอน</th>
+          <th class="border border-gray-200 px-3 py-2 text-left">สูตร</th>
+          <th class="border border-gray-200 px-3 py-2 text-right">ผลลัพธ์</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2">1. ดอกเบี้ยรวม</td>
+          <td class="border border-gray-200 px-3 py-2">2,000,000 × 3% × 20</td>
+          <td class="border border-gray-200 px-3 py-2 text-right">1,200,000 บาท</td>
+        </tr>
+        <tr class="bg-gray-50">
+          <td class="border border-gray-200 px-3 py-2">2. ยอดรวมทั้งสิ้น</td>
+          <td class="border border-gray-200 px-3 py-2">2,000,000 + 1,200,000</td>
+          <td class="border border-gray-200 px-3 py-2 text-right">3,200,000 บาท</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2"><strong>3. ค่างวด</strong></td>
+          <td class="border border-gray-200 px-3 py-2">3,200,000 ÷ 240</td>
+          <td class="border border-gray-200 px-3 py-2 text-right"><strong>13,333 บาท/เดือน</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>หมายเหตุ:</strong> ที่นี่ค่างวดสูงกว่าอายัติ! เพราะในอัตราคงที่ "ดอกเบี้ยรวม" คิดจากเงินกู้เต็มตลอด</p>
+
+  <h2>เปรียบเทียบอายัติ vs อัตราคงที่</h2>
+
+  <div class="not-prose my-4 overflow-x-auto">
+    <table class="w-full min-w-[720px] border-collapse border border-gray-200 text-sm bg-white">
+      <thead class="bg-gradient-to-r from-blue-50 to-purple-50">
+        <tr>
+          <th class="border border-gray-200 px-3 py-2 text-left">เกณฑ์</th>
+          <th class="border border-gray-200 px-3 py-2 text-center">อายัติ (Annuity)</th>
+          <th class="border border-gray-200 px-3 py-2 text-center">อัตราคงที่ (Flat)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2"><strong>ค่างวด</strong></td>
+          <td class="border border-gray-200 px-3 py-2 text-center">เท่ากันทุกเดือน</td>
+          <td class="border border-gray-200 px-3 py-2 text-center">เท่ากันทุกเดือน</td>
+        </tr>
+        <tr class="bg-gray-50">
+          <td class="border border-gray-200 px-3 py-2"><strong>ส่วนดอกเบี้ย</strong></td>
+          <td class="border border-gray-200 px-3 py-2 text-center">สูงแรก ลดเรื่อยๆ</td>
+          <td class="border border-gray-200 px-3 py-2 text-center">เท่ากันทุกเดือน</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2"><strong>โปะต้นได้ประโยชน์</strong></td>
+          <td class="border border-gray-200 px-3 py-2 text-center">✅ มี (ลดดอกเบี้ยเร็ว)</td>
+          <td class="border border-gray-200 px-3 py-2 text-center">❌ ไม่มี</td>
+        </tr>
+        <tr class="bg-gray-50">
+          <td class="border border-gray-200 px-3 py-2"><strong>ดอกเบี้ยรวมในตัวอย่าง</strong></td>
+          <td class="border border-gray-200 px-3 py-2 text-center">1,315,040 บาท</td>
+          <td class="border border-gray-200 px-3 py-2 text-center">1,200,000 บาท</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-200 px-3 py-2"><strong>เหมาะสำหรับ</strong></td>
+          <td class="border border-gray-200 px-3 py-2 text-center">ผู้ที่อาจโปะเงินต้น</td>
+          <td class="border border-gray-200 px-3 py-2 text-center">ผู้ที่ต้องการค่างวดต่ำ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ArticleCalculatorCTA
+    title="ลองคำนวณทั้งสองวิธีและเปรียบเทียบด้วยตัวเอง"
+    description="กรอกข้อมูลของคุณในเครื่องคำนวณผ่อนบ้าน แล้วดูว่าค่างวดกับดอกเบี้ยรวมจะเป็นไปตามคำนวณที่นี่หรือไม่"
+    href="/คำนวณผ่อนบ้าน/"
+    buttonLabel="เปิดเครื่องคำนวณผ่อนบ้าน"
+  />
+
+  <h2>ปัจจัยที่ส่งผลต่อค่างวดบ้าน</h2>
+
+  <h3>1. เงินกู้ (Loan Amount)</h3>
+  <p>
+    เงินที่ต้องกู้มากขึ้น ค่างวดและดอกเบี้ยก็มากขึ้นตามนั้น ตัวอย่าง: ถ้าผ่อน 1 ล้านแทน 2 ล้าน
+    ค่างวดจะเหลือประมาณ 4,823 บาท/เดือน (ลดลงครึ่งหนึ่ง)
+  </p>
+
+  <h3>2. อัตราดอกเบี้ย (Interest Rate)</h3>
+  <p>
+    ส่วนต่างอัตราดอกเบี้ยเพียง 1% ต่อปีอาจจะส่งผลให้ค่างวดเพิ่มขึ้นหลักร้อยบาท
+    ตัวอย่าง: ถ้าเพิ่มจาก 3% เป็น 4% ค่างวดจะเพิ่มเป็น 11,561 บาท (เพิ่ม 1,915 บาทต่อเดือน!)
+  </p>
+
+  <h3>3. ระยะเวลาผ่อน (Loan Term)</h3>
+  <p>
+    ยืดระยะเวลาผ่อนทำให้ค่างวดต่ำลง แต่ดอกเบี้ยรวมสูงขึ้น
+    ตัวอย่าง: ผ่อน 20 ปี = 9,646 บาท/เดือน แต่ผ่อน 30 ปี = 8,439 บาท/เดือน (ลดลง 1,207 บาท)
+    แต่ดอกเบี้ยรวมจะเพิ่มจาก 1,315,040 ไปเป็น 2,038,040 บาท!
+  </p>
+
+  <h2>วิธีลดค่าจ่ายบ้านให้คุ้มสุด</h2>
+
+  <ol>
+    <li>
+      <strong>ลดเงินกู้ตั้งแต่ต้น</strong><br/>
+      ทำให้เงินดาวน์มากขึ้น (ถ้าเป็นไปได้) ส่วนนี้ไม่มีดอกเบี้ย
+    </li>
+    <li>
+      <strong>เลือกอัตราดอกเบี้ยต่ำที่สุด</strong><br/>
+      เปรียบเทียบจากธนาคารหลายแห่ง แม้แต่ 0.5% ต่อปีก็ส่งผลต่างกันไป
+    </li>
+    <li>
+      <strong>ระยะเวลาสั้นที่สามารถจ่ายได้</strong><br/>
+      ถ้าจ่ายความสามารถจ่ายได้ให้เลือกระยะ 15-20 ปีแทน 25-30 ปี
+    </li>
+    <li>
+      <strong>โปะเงินต้นเมื่อมีเงินเก็บ</strong><br/>
+      ลดหนี้คงเหลือ = ลดดอกเบี้ยต่อเดือนในวิธีอายัติทันที
+    </li>
+  </ol>
+
+  <h2>คำถามที่พบบ่อย (FAQ)</h2>
+
+  {faqData.map((faq) => (
+    <details class="mb-3 overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 transition-colors hover:bg-gray-50">
+        {faq.question}
+      </summary>
+      <div class="px-4 pb-3 text-sm leading-relaxed text-gray-600">
+        {faq.answer}
+      </div>
+    </details>
+  ))}
+
+  <h2>เครื่องคำนวณที่เกี่ยวข้อง</h2>
+
+  <ul>
+    <li><a href="/คำนวณผ่อนบ้าน/">คำนวณผ่อนบ้าน</a> - เทียบอายัติ ผ่อน รีไฟแนนซ์ และหาจุดคุ้มทุน</li>
+    <li><a href="/คำนวณจุดคุ้มทุนรีไฟแนนซ์/">จุดคุ้มทุนรีไฟแนนซ์</a> - คำนวณว่ารีไฟแนนซ์คุ้มเมื่อไร</li>
+    <li><a href="/คำนวณประหยัดรีไฟแนนซ์บ้าน/">ประหยัดรีไฟแนนซ์</a> - หาเงินประหยัดสุทธิจากการรีไฟแนนซ์</li>
+  </ul>
+
+  <h2>บทความที่เกี่ยวข้อง</h2>
+
+  <ul>
+    <li><a href="/บทความ/รีไฟแนนซ์บ้าน-2569-คุ้มไหม-ดอกเบี้ยใหม่ต้องลดเท่าไร/">รีไฟแนนซ์บ้าน 2569: คุ้มไหม ดอกเบี้ยใหม่ต้องลดเท่าไร</a></li>
+    <li><a href="/บทความ/รีไฟแนนซ์บ้าน-vs-โปะบ้าน-แบบไหนคุ้ม-2569/">รีไฟแนนซ์บ้าน vs โปะบ้าน: แบบไหนคุ้ม ปี 2569</a></li>
+  </ul>
+</BlogPostLayout>
