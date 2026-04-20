@@ -9,6 +9,7 @@ export interface Category {
   color: string;       // Tailwind bg class for the icon circle
   colorText: string;   // Tailwind text class
   description: string; // Thai meta description for category page
+  sortOrder: number;   // Display order in category grid (1-based)
 }
 
 export interface Calculator {
@@ -16,7 +17,8 @@ export interface Calculator {
   desc: string;
   href: string;
   icon: string;
-  categoryId: string;
+  categoryId: string;          // Primary category for navigation
+  secondaryCategories?: string[]; // Additional category IDs for search/filtering
   tag?: string;
   tagColor?: string;
   popular?: boolean;
@@ -32,6 +34,7 @@ export const categories: Category[] = [
     color: 'bg-amber-100',
     colorText: 'text-amber-700',
     description: 'รวมเครื่องคำนวณภาษีออนไลน์: ภาษีเงินได้บุคคลธรรมดา VAT ภาษีที่ดิน ภาษีรถยนต์ อัปเดตปี 2569',
+    sortOrder: 1,
   },
   {
     id: 'loan',
@@ -42,6 +45,7 @@ export const categories: Category[] = [
     color: 'bg-blue-100',
     colorText: 'text-blue-700',
     description: 'คำนวณค่างวดสินเชื่อบ้าน รถ ส่วนบุคคล ดอกเบี้ยเงินฝาก พร้อมตารางผ่อนชำระ',
+    sortOrder: 2,
   },
   {
     id: 'bills',
@@ -52,6 +56,7 @@ export const categories: Category[] = [
     color: 'bg-yellow-100',
     colorText: 'text-yellow-700',
     description: 'คำนวณค่าไฟฟ้า ค่าน้ำประปา ค่าส่งพัสดุ ค่าทำพาสปอร์ต ตามอัตราจริงปี 2569',
+    sortOrder: 3,
   },
   {
     id: 'salary',
@@ -62,6 +67,7 @@ export const categories: Category[] = [
     color: 'bg-green-100',
     colorText: 'text-green-700',
     description: 'คำนวณเงินเดือนสุทธิ ค่าแรงขั้นต่ำ ค่าโอที ประกันสังคม ตามกฎหมายแรงงานปี 2569',
+    sortOrder: 4,
   },
   {
     id: 'realestate',
@@ -72,6 +78,7 @@ export const categories: Category[] = [
     color: 'bg-rose-100',
     colorText: 'text-rose-700',
     description: 'คำนวณค่าธรรมเนียมโอนบ้าน ภาษีที่ดิน ผ่อนบ้าน สำหรับการซื้อขายอสังหาริมทรัพย์',
+    sortOrder: 5,
   },
   {
     id: 'health',
@@ -82,6 +89,7 @@ export const categories: Category[] = [
     color: 'bg-pink-100',
     colorText: 'text-pink-700',
     description: 'คำนวณ BMI อายุ วันกำหนดคลอด เงินเกษียณ เครื่องมือดูแลสุขภาพและชีวิต',
+    sortOrder: 6,
   },
   {
     id: 'creditcard',
@@ -92,6 +100,7 @@ export const categories: Category[] = [
     color: 'bg-purple-100',
     colorText: 'text-purple-700',
     description: 'คำนวณดอกเบี้ยบัตรเครดิต ค่างวดบัตรเครดิต ยอดชำระขั้นต่ำ พร้อมตารางผ่อน',
+    sortOrder: 7,
   },
   {
     id: 'convert',
@@ -102,6 +111,7 @@ export const categories: Category[] = [
     color: 'bg-teal-100',
     colorText: 'text-teal-700',
     description: 'แปลงหน่วยวัด คำนวณเปอร์เซ็นต์ แปลงอัตราแลกเปลี่ยน เครื่องมือคำนวณทั่วไป',
+    sortOrder: 8,
   },
 ];
 
@@ -133,6 +143,7 @@ export const calculators: Calculator[] = [
     href: '/คำนวณภาษีที่ดิน/',
     icon: '🏛️',
     categoryId: 'tax',
+    secondaryCategories: ['realestate'],
   },
   {
     title: 'คำนวณค่าภาษีรถยนต์',
@@ -159,6 +170,7 @@ export const calculators: Calculator[] = [
     href: '/คำนวณผ่อนบ้าน/',
     icon: '🏘️',
     categoryId: 'loan',
+    secondaryCategories: ['realestate'],
   },
   {
     title: 'คำนวณผ่อนรถ',
@@ -175,6 +187,16 @@ export const calculators: Calculator[] = [
     href: '/คำนวณดอกเบี้ยเงินฝาก/',
     icon: '🏦',
     categoryId: 'loan',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณผ่อนมือถือ',
+    desc: 'คำนวณค่าผ่อนมือถือ เทียบ 0% ผ่อนค่ายมือถือ และบัตรเครดิต',
+    href: '/คำนวณผ่อนมือถือ/',
+    icon: '📱',
+    categoryId: 'loan',
+    secondaryCategories: ['creditcard'],
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
@@ -213,6 +235,72 @@ export const calculators: Calculator[] = [
     icon: '✈️',
     categoryId: 'bills',
   },
+  {
+    title: 'คำนวณค่าทิป',
+    desc: 'คำนวณค่าทิป เลือกเปอร์เซ็นต์ หารจำนวนคน ดูยอดรวมและยอดต่อคน',
+    href: '/คำนวณค่าทิป/',
+    icon: '🍽️',
+    categoryId: 'bills',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าห้องพัก',
+    desc: 'เปรียบเทียบค่าเช่ารายเดือน-รายวัน มัดจำ ค่าสาธารณูปโภค รวมค่าใช้จ่ายย้ายเข้า',
+    href: '/คำนวณค่าห้องพัก/',
+    icon: '🏢',
+    categoryId: 'bills',
+    secondaryCategories: ['realestate'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าธรรมเนียมศาล',
+    desc: 'ค่าขึ้นศาลตามทุนทรัพย์ คดีแพ่ง อาญา แรงงาน ทั้งศาลชั้นต้น อุทธรณ์ ฎีกา',
+    href: '/คำนวณค่าธรรมเนียมศาล/',
+    icon: '⚖️',
+    categoryId: 'bills',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าเลี้ยงดูบุตร',
+    desc: 'ประเมินค่าอุปการะเลี้ยงดูบุตรตามแนวทางศาลไทย จากรายได้พ่อแม่และจำนวนบุตร',
+    href: '/คำนวณค่าเลี้ยงดูบุตร/',
+    icon: '👨‍👩‍👧',
+    categoryId: 'bills',
+    secondaryCategories: ['health'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าเช่าร้าน',
+    desc: 'คำนวณค่าเช่าร้านค้า สำนักงาน ค่าส่วนกลาง ค่าที่จอดรถ ค่าเซ้ง รวมค่าใช้จ่ายทั้งหมด',
+    href: '/คำนวณค่าเช่าร้าน/',
+    icon: '🏪',
+    categoryId: 'bills',
+    secondaryCategories: ['realestate'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าปรับจราจร',
+    desc: 'คำนวณค่าปรับจราจรตามประเภทความผิด พร้อมระบบตัดคะแนนใบขับขี่และกฎพักใช้ใบอนุญาต',
+    href: '/คำนวณค่าปรับจราจร/',
+    icon: '🚦',
+    categoryId: 'bills',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าขนส่งสินค้า',
+    desc: 'เปรียบเทียบค่าขนส่ง รถบรรทุก รถไฟ เรือชายฝั่ง ตามน้ำหนัก ปริมาตร ระยะทาง สำหรับธุรกิจ',
+    href: '/คำนวณค่าขนส่งสินค้า/',
+    icon: '🚛',
+    categoryId: 'bills',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 
   // ── Salary/Work ──
   {
@@ -240,6 +328,17 @@ export const calculators: Calculator[] = [
     href: '/คำนวณค่าโอที/',
     icon: '⏱️',
     categoryId: 'salary',
+    secondaryCategories: ['bills'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าจ้างรายวัน',
+    desc: 'แปลงเงินเดือนเป็นรายวัน หรือรายวันเป็นรายเดือน พร้อมค่าโอทีและหักประกันสังคม',
+    href: '/คำนวณค่าจ้างรายวัน/',
+    icon: '💼',
+    categoryId: 'salary',
+    secondaryCategories: ['bills'],
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
@@ -260,6 +359,7 @@ export const calculators: Calculator[] = [
     href: '/คำนวณค่าธรรมเนียมโอนบ้าน/',
     icon: '🏠',
     categoryId: 'realestate',
+    secondaryCategories: ['bills'],
     popular: true,
   },
 
@@ -311,7 +411,29 @@ export const calculators: Calculator[] = [
     categoryId: 'creditcard',
   },
 
+  // ── Insurance ──
+  {
+    title: 'คำนวณค่าประกันรถยนต์',
+    desc: 'เปรียบเทียบเบี้ยประกันรถชั้น 1, 2+, 2, 3+, 3 ตามมูลค่ารถ กลุ่มรถ อายุรถ',
+    href: '/คำนวณค่าประกันรถยนต์/',
+    icon: '🚗',
+    categoryId: 'bills',
+    secondaryCategories: ['tax'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
   // ── Convert/General ──
+  {
+    title: 'คำนวณค่าปุ๋ย',
+    desc: 'คำนวณปริมาณและค่าปุ๋ยตามชนิดพืช พื้นที่ ประเภทดิน พร้อมสูตร NPK',
+    href: '/คำนวณค่าปุ๋ย/',
+    icon: '🌾',
+    categoryId: 'convert',
+    secondaryCategories: ['bills'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
   {
     title: 'แปลงหน่วย',
     desc: 'แปลงหน่วยวัด: ความยาว มวล อุณหภูมิ และพื้นที่ รวมหน่วยไทย',
@@ -332,6 +454,16 @@ export const calculators: Calculator[] = [
     href: '/คำนวณอัตราแลกเปลี่ยน/',
     icon: '💱',
     categoryId: 'convert',
+  },
+  {
+    title: 'คำนวณค่าเดินทาง',
+    desc: 'ประมาณงบเที่ยวต่างประเทศ ตั๋วเครื่องบิน ที่พัก อาหาร ขนส่ง ประกัน',
+    href: '/คำนวณค่าเดินทาง/',
+    icon: '✈️',
+    categoryId: 'convert',
+    secondaryCategories: ['bills'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
   },
 ];
 
@@ -360,4 +492,16 @@ export function getCategoryCounts(): Record<string, number> {
 /** Get the popular calculators (for the ยอดนิยม row). */
 export function getPopularCalculators(): Calculator[] {
   return calculators.filter((c) => c.popular);
+}
+
+/** Get calculators belonging to a category (primary or secondary — for search/filtering). */
+export function getCalculatorsInCategory(categoryId: string): Calculator[] {
+  return calculators.filter(
+    (c) => c.categoryId === categoryId || c.secondaryCategories?.includes(categoryId),
+  );
+}
+
+/** Get categories sorted by sortOrder. */
+export function getCategoriesSorted(): Category[] {
+  return [...categories].sort((a, b) => a.sortOrder - b.sortOrder);
 }

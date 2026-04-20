@@ -1,0 +1,479 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าขนส่งสินค้า 2569 | รถบรรทุก รถไฟ เรือ | เครื่องคำนวณไทย';
+const pageDescription = 'เครื่องคำนวณค่าขนส่งสินค้า เปรียบเทียบ 3 รูปแบบ: รถบรรทุก รถไฟ เรือชายฝั่ง กรอกน้ำหนัก ขนาด ระยะทาง เพื่อประมาณค่าใช้จ่ายขนส่งสำหรับธุรกิจ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าขนส่งสินค้า/`;
+
+const faqData = [
+  {
+    question: 'น้ำหนักตามปริมาตร (Volumetric Weight) สำหรับขนส่งสินค้าคิดอย่างไร?',
+    answer:
+      'น้ำหนักตามปริมาตร = กว้าง × ยาว × สูง (ซม.) ÷ 6,000 สำหรับขนส่งทางบกและรถไฟ ส่วนเรือคิดตาม CBM (ลูกบาศก์เมตร) ผู้ให้บริการจะคิดค่าขนส่งจากน้ำหนักจริงหรือน้ำหนักตามปริมาตร แล้วแต่ว่าอันไหนมากกว่า',
+  },
+  {
+    question: 'ขนส่งแบบไหนถูกที่สุดสำหรับสินค้าน้ำหนักมาก?',
+    answer:
+      'สำหรับสินค้าน้ำหนักมากและไม่เร่งด่วน รถไฟ (การรถไฟแห่งประเทศไทย) มักมีต้นทุนต่อกิโลกรัมต่ำที่สุด ส่วนเรือชายฝั่งเหมาะกับสินค้าปริมาณมากระหว่างท่าเรือ',
+  },
+  {
+    question: 'ค่า Fuel Surcharge คืออะไร?',
+    answer:
+      'ค่าธรรมเนียมน้ำมันเชื้อเพลิง (Fuel Surcharge / BAF) เป็นค่าใช้จ่ายเพิ่มเติมที่ผู้ให้บริการขนส่งเรียกเก็บเพื่อชดเชยต้นทุนน้ำมันที่ผันผวน อัตราจะแตกต่างกันตามรูปแบบการขนส่ง',
+  },
+  {
+    question: 'ราคาที่แสดงเป็นราคาสุดท้ายหรือไม่?',
+    answer:
+      'ราคาที่แสดงเป็นการประมาณจากอัตราเฉลี่ยในอุตสาหกรรม ราคาจริงอาจต่างออกไปตามผู้ให้บริการ ปริมาณสินค้า สัญญาขนส่ง ประเภทสินค้า และค่าบริการเพิ่มเติม เช่น ค่ายกขน ค่าประกันภัยเต็มจำนวน กรุณาขอใบเสนอราคาจากผู้ให้บริการโดยตรง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าขนส่งสินค้า',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าขนส่งสินค้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">เปรียบเทียบค่าขนส่ง 3 รูปแบบ</p>
+      <p class="mt-1 text-sm text-slate-700">รถบรรทุก · รถไฟ (SRT) · เรือชายฝั่ง — ราคาประมาณการปี 2569</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ราคาอ้างอิงอัตราเฉลี่ยอุตสาหกรรม อาจต่างจากผู้ให้บริการแต่ละราย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าขนส่งสินค้า เปรียบเทียบ 3 รูปแบบ</h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกน้ำหนัก ขนาดสินค้า และระยะทาง เพื่อเปรียบเทียบค่าขนส่งระหว่างรถบรรทุก รถไฟ และเรือชายฝั่ง
+      พร้อมแสดงค่าใช้จ่ายแยกรายการ ตัวเลือกถูกที่สุดและเร็วที่สุด
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="freight-form" class="space-y-5">
+        <p id="freight-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลที่กรอกให้ครบถ้วน
+        </p>
+
+        <div>
+          <label for="weight" class="mb-1 block text-sm font-medium text-gray-700">น้ำหนักสินค้า (กิโลกรัม)</label>
+          <input
+            type="text"
+            id="weight"
+            inputmode="decimal"
+            placeholder="เช่น 500"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <p id="weight-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700">ขนาดสินค้า (เซนติเมตร)</label>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <input
+                type="text"
+                id="length"
+                inputmode="decimal"
+                placeholder="ยาว"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                id="width"
+                inputmode="decimal"
+                placeholder="กว้าง"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                id="height"
+                inputmode="decimal"
+                placeholder="สูง"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+          </div>
+          <p class="mt-1 text-xs text-gray-500">น้ำหนักตามปริมาตร = ยาว × กว้าง × สูง ÷ 6,000 | CBM = ยาว × กว้าง × สูง ÷ 1,000,000</p>
+          <p id="dimensions-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div>
+          <label for="distance" class="mb-1 block text-sm font-medium text-gray-700">ระยะทาง (กิโลเมตร)</label>
+          <input
+            type="text"
+            id="distance"
+            inputmode="decimal"
+            placeholder="เช่น 700"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <p class="mt-1 text-xs text-gray-500">ระยะทางโดยประมาณ เช่น กรุงเทพฯ–เชียงใหม่ ≈ 700 กม. กรุงเทพฯ–สุราษฎร์ธานี ≈ 650 กม.</p>
+          <p id="distance-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div>
+          <label for="mode" class="mb-1 block text-sm font-medium text-gray-700">รูปแบบขนส่งหลัก</label>
+          <select
+            id="mode"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="truck">🚛 รถบรรทุก</option>
+            <option value="rail">🚂 รถไฟ (การรถไฟฯ)</option>
+            <option value="sea">🚢 เรือชายฝั่ง</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          id="freight-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          กรอกข้อมูลให้ครบ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการเปรียบเทียบค่าขนส่งสินค้า</h2>
+
+        <!-- Weight / Volume summary -->
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">น้ำหนักจริง</div>
+            <div id="res-actual-weight" class="text-lg font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">น้ำหนักตามปริมาตร</div>
+            <div id="res-vol-weight" class="text-lg font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">น้ำหนักคิดค่าส่ง</div>
+            <div id="res-charged-weight" class="text-lg font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-teal-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ปริมาตร (CBM)</div>
+            <div id="res-cbm" class="text-lg font-bold text-teal-700">-</div>
+          </div>
+        </div>
+
+        <!-- Distance -->
+        <div class="mb-6 flex items-center justify-between border-b border-gray-100 py-2 text-sm">
+          <span class="text-gray-600">ระยะทาง</span>
+          <span id="res-distance" class="font-medium text-gray-900">-</span>
+        </div>
+
+        <!-- Best picks -->
+        <div class="mb-6 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg border-2 border-green-200 bg-green-50 p-4">
+            <div class="mb-1 text-xs font-semibold uppercase tracking-wide text-green-600">ถูกที่สุด</div>
+            <div id="res-cheapest-name" class="text-base font-bold text-gray-900">-</div>
+            <div id="res-cheapest-cost" class="mt-1 text-2xl font-extrabold text-green-700">-</div>
+            <div id="res-cheapest-days" class="mt-1 text-sm text-gray-600">-</div>
+            <div id="res-cheapest-perkg" class="mt-1 text-xs text-gray-500">-</div>
+          </div>
+          <div class="rounded-lg border-2 border-blue-200 bg-blue-50 p-4">
+            <div class="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-600">เร็วที่สุด</div>
+            <div id="res-fastest-name" class="text-base font-bold text-gray-900">-</div>
+            <div id="res-fastest-cost" class="mt-1 text-2xl font-extrabold text-blue-700">-</div>
+            <div id="res-fastest-days" class="mt-1 text-sm text-gray-600">-</div>
+            <div id="res-fastest-perkg" class="mt-1 text-xs text-gray-500">-</div>
+          </div>
+        </div>
+
+        <!-- Full comparison table -->
+        <h3 class="mb-2 text-base font-semibold text-gray-900">เปรียบเทียบทุกรูปแบบขนส่ง</h3>
+        <div class="overflow-x-auto rounded-md border border-gray-200">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50 text-gray-700">
+              <tr>
+                <th class="px-3 py-2 text-left font-medium">รูปแบบ</th>
+                <th class="px-3 py-2 text-right font-medium">ค่าขนส่ง</th>
+                <th class="px-3 py-2 text-right font-medium">ค่าน้ำมัน</th>
+                <th class="px-3 py-2 text-right font-medium">ประกัน</th>
+                <th class="px-3 py-2 text-right font-medium">รวม (บาท)</th>
+                <th class="px-3 py-2 text-right font-medium">ต่อ กก.</th>
+                <th class="px-3 py-2 text-right font-medium">ระยะเวลา</th>
+                <th class="hidden px-3 py-2 text-left font-medium lg:table-cell">หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody id="quotes-body" class="divide-y divide-gray-100 bg-white"></tbody>
+          </table>
+        </div>
+
+        <p id="result-note" class="mt-4 rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800"></p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีคำนวณค่าขนส่งสินค้า</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>น้ำหนักตามปริมาตร (ทางบก/รถไฟ) = ยาว × กว้าง × สูง (ซม.) ÷ 6,000</li>
+        <li>ปริมาตร CBM (ทางเรือ) = ยาว × กว้าง × สูง (ซม.) ÷ 1,000,000</li>
+        <li>น้ำหนักคิดค่าส่ง = ค่ามากกว่าระหว่าง น้ำหนักจริง กับ น้ำหนักตามปริมาตร</li>
+        <li>ค่าขนส่ง = อัตราต่อกิโลกรัม/CBM × น้ำหนักคิดค่าส่ง (ตามระยะทางและรูปแบบขนส่ง)</li>
+        <li>ค่าธรรมเนียมน้ำมัน (Fuel Surcharge / BAF): รถบรรทุก ~8%, รถไฟ ~5%, เรือ ~10%</li>
+        <li>ค่าประกันภัย: ประมาณ 0.1–0.15% ของมูลค่าสินค้า</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <RelatedArticles currentHref="/คำนวณค่าขนส่งสินค้า/" />
+    <RelatedCalculators currentHref="/คำนวณค่าขนส่งสินค้า/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
+      <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h2>
+      <ul class="list-disc space-y-1 pl-5">
+        <li><a href="https://www.dlt.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กรมการขนส่งทางบก (DLT) — อัตราค่าขนส่งสินค้า</a></li>
+        <li><a href="https://www.railway.co.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">การรถไฟแห่งประเทศไทย (SRT) — อัตราค่าระวางสินค้า</a></li>
+        <li><a href="https://www.md.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กรมเจ้าท่า — อัตราค่าขนส่งทางน้ำ</a></li>
+      </ul>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>หมายเหตุสำคัญ:</strong> ราคาที่แสดงเป็นการประมาณจากอัตราเฉลี่ยในอุตสาหกรรมขนส่งไทย
+      ราคาจริงอาจเปลี่ยนแปลงตามผู้ให้บริการ ปริมาณสินค้า สัญญาขนส่ง ประเภทสินค้า (สินค้าอันตราย สินค้าควบคุมอุณหภูมิ)
+      และค่าบริการเสริม (ยกขน จัดเรียง ประกันภัยเต็มจำนวน)
+      กรุณาขอใบเสนอราคาจากผู้ให้บริการโดยตรงก่อนใช้งานจริง
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculateFreight } from '../../lib/freight-calculator';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function fmtMoney(amount) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount)} บาท`;
+    }
+
+    function fmtWeight(kg) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(kg)} กก.`;
+    }
+
+    function fmtCBM(cbm) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(cbm)} m³`;
+    }
+
+    const form = document.getElementById('freight-form');
+    const submitBtn = document.getElementById('freight-submit-btn');
+    const formError = document.getElementById('freight-form-error');
+    const resultsDiv = document.getElementById('results');
+    const quotesBody = document.getElementById('quotes-body');
+
+    const fields = {
+      weight: document.getElementById('weight'),
+      length: document.getElementById('length'),
+      width: document.getElementById('width'),
+      height: document.getElementById('height'),
+      distance: document.getElementById('distance'),
+      mode: document.getElementById('mode'),
+    };
+
+    function setFieldError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      ['weight-error', 'dimensions-error', 'distance-error'].forEach(clearFieldError);
+    }
+
+    function updateSubmitState() {
+      const weight = parseNum(fields.weight.value);
+      const length = parseNum(fields.length.value);
+      const width = parseNum(fields.width.value);
+      const height = parseNum(fields.height.value);
+      const distance = parseNum(fields.distance.value);
+
+      const ready =
+        Number.isFinite(weight) && weight > 0 &&
+        Number.isFinite(length) && length > 0 &&
+        Number.isFinite(width) && width > 0 &&
+        Number.isFinite(height) && height > 0 &&
+        Number.isFinite(distance) && distance > 0;
+
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณค่าขนส่ง' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+      submitBtn.classList.toggle('opacity-70', !ready);
+    }
+
+    Object.values(fields).forEach((field) => {
+      field.addEventListener('input', () => { clearValidation(); updateSubmitState(); });
+      field.addEventListener('change', () => { clearValidation(); updateSubmitState(); });
+    });
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    updateSubmitState();
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearValidation();
+
+      const weight = parseNum(fields.weight.value);
+      const length = parseNum(fields.length.value);
+      const width = parseNum(fields.width.value);
+      const height = parseNum(fields.height.value);
+      const distance = parseNum(fields.distance.value);
+      const mode = fields.mode.value;
+
+      const validity = {
+        weight: Number.isFinite(weight) && weight > 0 && weight <= 100000,
+        dimensions: Number.isFinite(length) && length > 0 &&
+                    Number.isFinite(width) && width > 0 &&
+                    Number.isFinite(height) && height > 0,
+        distance: Number.isFinite(distance) && distance > 0 && distance <= 5000,
+      };
+
+      if (!validity.weight) setFieldError('weight-error', 'กรุณากรอกน้ำหนักระหว่าง 0.01 - 100,000 กก.');
+      if (!validity.dimensions) setFieldError('dimensions-error', 'กรุณากรอกขนาดสินค้าให้ครบทั้ง 3 ด้าน (มากกว่า 0)');
+      if (!validity.distance) setFieldError('distance-error', 'กรุณากรอกระยะทางระหว่าง 1 - 5,000 กม.');
+
+      if (!Object.values(validity).every(Boolean)) {
+        formError.classList.remove('hidden');
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('freight_cost');
+
+      const result = calculateFreight({
+        weightKg: weight,
+        lengthCm: length,
+        widthCm: width,
+        heightCm: height,
+        distanceKm: distance,
+        mode: mode,
+      });
+
+      // Weight/volume summary
+      setText('res-actual-weight', fmtWeight(result.actualWeight));
+      setText('res-vol-weight', fmtWeight(result.volumetricWeight));
+      setText('res-charged-weight', fmtWeight(result.chargedWeight));
+      setText('res-cbm', fmtCBM(result.cbm));
+      setText('res-distance', `${new Intl.NumberFormat('th-TH').format(distance)} กม.`);
+
+      // Best picks
+      setText('res-cheapest-name', result.cheapest.modeNameTh);
+      setText('res-cheapest-cost', fmtMoney(result.cheapest.totalCost));
+      setText('res-cheapest-days', `จัดส่ง ${result.cheapest.estimatedDays}`);
+      setText('res-cheapest-perkg', `≈ ${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(result.cheapest.costPerKg)} บาท/กก.`);
+
+      setText('res-fastest-name', result.fastest.modeNameTh);
+      setText('res-fastest-cost', fmtMoney(result.fastest.totalCost));
+      setText('res-fastest-days', `จัดส่ง ${result.fastest.estimatedDays}`);
+      setText('res-fastest-perkg', `≈ ${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(result.fastest.costPerKg)} บาท/กก.`);
+
+      // Comparison table
+      quotesBody.innerHTML = '';
+      result.quotes.forEach((q) => {
+        const isCheapest = q.mode === result.cheapest.mode;
+        const row = document.createElement('tr');
+        if (isCheapest) row.classList.add('bg-green-50');
+        row.innerHTML = `
+          <td class="px-3 py-2 text-gray-700">
+            <span class="font-medium">${q.modeNameTh}</span>
+            ${isCheapest ? '<span class="ml-1 inline-block rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">ถูกสุด</span>' : ''}
+          </td>
+          <td class="px-3 py-2 text-right text-gray-700">${new Intl.NumberFormat('th-TH').format(q.baseCost)}</td>
+          <td class="px-3 py-2 text-right text-gray-700">${new Intl.NumberFormat('th-TH').format(q.fuelSurcharge)}</td>
+          <td class="px-3 py-2 text-right text-gray-700">${new Intl.NumberFormat('th-TH').format(q.insuranceCost)}</td>
+          <td class="px-3 py-2 text-right font-semibold text-gray-900">${new Intl.NumberFormat('th-TH').format(q.totalCost)}</td>
+          <td class="px-3 py-2 text-right text-gray-700">${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(q.costPerKg)}</td>
+          <td class="px-3 py-2 text-right text-gray-700">${q.estimatedDays}</td>
+          <td class="hidden px-3 py-2 text-gray-500 lg:table-cell">${q.note}</td>
+        `;
+        quotesBody.appendChild(row);
+      });
+
+      const volNote = result.volumetricWeight > result.actualWeight
+        ? `น้ำหนักตามปริมาตร (${fmtWeight(result.volumetricWeight)}) มากกว่าน้ำหนักจริง จึงใช้น้ำหนักตามปริมาตรคิดค่าขนส่ง`
+        : `น้ำหนักจริง (${fmtWeight(result.actualWeight)}) มากกว่าหรือเท่ากับน้ำหนักตามปริมาตร จึงใช้น้ำหนักจริงคิดค่าขนส่ง`;
+      setText('result-note', volNote);
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณค่าขนส่ง';
+      trackCalculatorComplete('freight_cost', result.cheapest.totalCost);
+      trackCalculatorUsed('freight_cost');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('freight_cost');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

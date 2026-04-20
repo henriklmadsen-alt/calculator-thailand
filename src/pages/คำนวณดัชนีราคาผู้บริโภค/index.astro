@@ -1,4 +1,6 @@
 ---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import { THAI_CPI_DATA, getAvailableYears } from '../../lib/cpi-calculator.ts';
@@ -53,6 +55,7 @@ const jsonLdFaq = {
 
 // Serialize CPI data for client-side use
 const cpiDataJson = JSON.stringify(THAI_CPI_DATA);
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดัชนีราคาผู้บริโภค">
@@ -311,27 +314,8 @@ const cpiDataJson = JSON.stringify(THAI_CPI_DATA);
     </section>
 
     <!-- Related -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
-      <div class="grid gap-3 sm:grid-cols-2">
-        <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยเงินฝาก</span>
-          <span class="text-gray-400 text-sm block">เปรียบเทียบผลตอบแทนฝากประจำ ออมทรัพย์</span>
-        </a>
-        <a href="/คำนวณเงินเกษียณ/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">คำนวณเงินเกษียณ</span>
-          <span class="text-gray-400 text-sm block">วางแผนเงินเกษียณให้พอใช้</span>
-        </a>
-        <a href="/คำนวณอัตราแลกเปลี่ยน/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">คำนวณอัตราแลกเปลี่ยน</span>
-          <span class="text-gray-400 text-sm block">แปลงเงินสกุลต่างๆ อัตราย้อนกลับ</span>
-        </a>
-        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้</span>
-          <span class="text-gray-400 text-sm block">ภาษีเงินได้ตามขั้นบันได 2569</span>
-        </a>
-      </div>
-    </section>
+    <RelatedArticles currentHref="/คำนวณดัชนีราคาผู้บริโภค/" />
+    <RelatedCalculators currentHref="/คำนวณดัชนีราคาผู้บริโภค/" />
 
     <!-- Source -->
     <section class="mb-8">

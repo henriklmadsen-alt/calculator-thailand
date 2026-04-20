@@ -1,0 +1,397 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณค่าทิป 2569 | คิดทิปง่ายๆ หารค่าอาหาร | Calculator Thailand';
+const pageDescription = 'คำนวณค่าทิปออนไลน์ฟรี เลือกเปอร์เซ็นต์ทิป หารจำนวนคน คำนวณยอดรวมทิปและยอดต่อคน ใช้ได้ทั้งร้านอาหาร สปา โรงแรม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าทิป/`;
+
+const faqData = [
+  {
+    question: 'ทิปในไทยต้องให้เท่าไร?',
+    answer: 'ในประเทศไทยไม่มีกฎหมายบังคับให้ทิป แต่โดยทั่วไปร้านอาหารระดับกลาง-สูงมักให้ทิป 5-10% ของยอดบิล สำหรับร้านอาหารในโรงแรมหรือร้านไฟน์ไดนิ่งอาจให้ 10-15% บางร้านรวมค่าบริการ (Service Charge) 10% ไว้ในบิลแล้ว',
+  },
+  {
+    question: 'Service Charge กับทิปต่างกันอย่างไร?',
+    answer: 'Service Charge คือค่าบริการที่ร้านบวกเพิ่มในบิลอัตโนมัติ (มักเป็น 10%) ซึ่งเป็นรายได้ของร้าน ส่วนทิปคือเงินที่ลูกค้าให้เพิ่มเติมโดยสมัครใจ มักให้กับพนักงานโดยตรง หากบิลมี Service Charge แล้ว ไม่จำเป็นต้องให้ทิปเพิ่ม',
+  },
+  {
+    question: 'ให้ทิปเท่าไรดี สำหรับแต่ละสถานการณ์?',
+    answer: 'ร้านอาหารทั่วไป: 20-100 บาท หรือเศษเงินทอน / ร้านอาหารระดับสูง: 5-15% / สปาและนวด: 50-100 บาท / พนักงานยกกระเป๋าโรงแรม: 20-50 บาท / แท็กซี่: ปัดเศษขึ้น / ไกด์ทัวร์: 200-500 บาทต่อวัน',
+  },
+  {
+    question: 'คำนวณทิปอย่างไร?',
+    answer: 'สูตรง่ายๆ: ค่าทิป = ยอดบิล × เปอร์เซ็นต์ทิป ÷ 100 เช่น บิล 1,000 บาท ทิป 10% = 1,000 × 10 ÷ 100 = 100 บาท ยอดรวม = 1,000 + 100 = 1,100 บาท หากหาร 2 คน = คนละ 550 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าทิป',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าทิป">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าทิป (Tip Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าทิปง่ายๆ เลือกเปอร์เซ็นต์ทิปที่ต้องการ หารจำนวนคน ดูยอดรวมและยอดต่อคนทันที
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Bill Amount -->
+      <div class="mb-5">
+        <label for="bill-amount" class="block text-sm font-medium text-gray-700 mb-1">
+          ยอดบิล (บาท)
+        </label>
+        <input
+          type="text"
+          id="bill-amount"
+          inputmode="decimal"
+          placeholder="เช่น 1,500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+      </div>
+
+      <!-- Tip Percentage -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          เปอร์เซ็นต์ทิป
+        </label>
+        <div class="flex flex-wrap gap-2 mb-3" id="tip-presets">
+          <button type="button" data-tip="5" class="tip-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors">5%</button>
+          <button type="button" data-tip="10" class="tip-btn px-4 py-2 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors">10%</button>
+          <button type="button" data-tip="15" class="tip-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors">15%</button>
+          <button type="button" data-tip="20" class="tip-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors">20%</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="tip-custom" class="text-sm text-gray-500">กำหนดเอง:</label>
+          <input
+            type="text"
+            id="tip-custom"
+            inputmode="decimal"
+            placeholder="10"
+            class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-center"
+          />
+          <span class="text-sm text-gray-500">%</span>
+        </div>
+      </div>
+
+      <!-- Number of People -->
+      <div class="mb-5">
+        <label for="num-people" class="block text-sm font-medium text-gray-700 mb-1">
+          จำนวนคน
+        </label>
+        <div class="flex items-center gap-3">
+          <button type="button" id="btn-minus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">&minus;</button>
+          <input
+            type="text"
+            id="num-people"
+            inputmode="numeric"
+            value="1"
+            class="w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-center"
+          />
+          <button type="button" id="btn-plus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">+</button>
+        </div>
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณ
+      </button>
+
+      <!-- Results -->
+      <div id="tip-result" class="hidden mt-6">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าทิป</div>
+            <div id="res-tip" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดรวม (บิล + ทิป)</div>
+            <div id="res-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <!-- Per-person section (shown when > 1 person) -->
+        <div id="per-person-section" class="hidden mt-3">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="bg-blue-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ยอดต่อคน (รวมทิป)</div>
+              <div id="res-per-person" class="text-xl font-bold text-blue-700">-</div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ทิปต่อคน</div>
+              <div id="res-tip-per-person" class="text-xl font-bold text-gray-700">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div id="res-summary"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">การให้ทิปในประเทศไทย</h2>
+
+      <p>
+        การให้ทิปในประเทศไทยไม่ได้เป็นธรรมเนียมบังคับเหมือนในหลายประเทศตะวันตก
+        แต่เป็นการแสดงความขอบคุณสำหรับบริการที่ดี โดยเฉพาะในร้านอาหาร สปา โรงแรม
+        และบริการท่องเที่ยว
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่าทิป</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าทิป = ยอดบิล × (เปอร์เซ็นต์ทิป ÷ 100)</li>
+        <li>ยอดรวม = ยอดบิล + ค่าทิป</li>
+        <li>ยอดต่อคน = ยอดรวม ÷ จำนวนคน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        บิลค่าอาหาร 2,000 บาท ให้ทิป 10% จำนวน 4 คน:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าทิป = 2,000 × 0.10 = 200 บาท</li>
+        <li>ยอดรวม = 2,000 + 200 = 2,200 บาท</li>
+        <li>ยอดต่อคน = 2,200 ÷ 4 = 550 บาท</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราทิปที่แนะนำ</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">สถานการณ์</th>
+              <th class="py-2">ทิปที่แนะนำ</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ร้านอาหารทั่วไป / street food</td>
+              <td class="py-2">เศษเงินทอน หรือ 20-50 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ร้านอาหารระดับกลาง-สูง</td>
+              <td class="py-2">5-10%</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">โรงแรม / ไฟน์ไดนิ่ง</td>
+              <td class="py-2">10-15%</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">สปา / นวดแผนไทย</td>
+              <td class="py-2">50-100 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">พนักงานยกกระเป๋า</td>
+              <td class="py-2">20-50 บาท</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">แท็กซี่ / Grab</td>
+              <td class="py-2">ปัดเศษขึ้น หรือ 20 บาท</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">Service Charge vs ทิป</h3>
+
+      <p>
+        ร้านอาหารหลายแห่งในไทยจะรวมค่าบริการ (Service Charge) 10% ไว้ในบิลแล้ว
+        ซึ่งจะแสดงเป็นรายการแยกในใบเสร็จ หากบิลมี Service Charge แล้ว
+        ไม่จำเป็นต้องให้ทิปเพิ่ม แต่หากต้องการให้เพิ่มก็สามารถทำได้
+      </p>
+
+      <p class="mt-4">
+        เครื่องคำนวณค่าทิปนี้ช่วยให้คุณคำนวณค่าทิปได้สะดวก เลือกเปอร์เซ็นต์ที่ต้องการ
+        หารค่าใช้จ่ายตามจำนวนคน เหมาะสำหรับทุกสถานการณ์ ทั้งร้านอาหาร สปา โรงแรม
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าทิป/" />
+    <RelatedCalculators currentHref="/คำนวณค่าทิป/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>หมายเหตุ:</strong> การให้ทิปในประเทศไทยเป็นไปโดยสมัครใจ ไม่มีกฎหมายบังคับ
+      อัตราทิปที่แนะนำเป็นเพียงแนวทางทั่วไป สามารถปรับตามความเหมาะสมและความพึงพอใจในบริการ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const billInput = document.getElementById('bill-amount') as HTMLInputElement;
+    const tipCustom = document.getElementById('tip-custom') as HTMLInputElement;
+    const numPeopleInput = document.getElementById('num-people') as HTMLInputElement;
+    const tipBtns = document.querySelectorAll<HTMLButtonElement>('.tip-btn');
+
+    let selectedTip = 10;
+    tipCustom.value = '10';
+
+    // Tip preset buttons
+    tipBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedTip = parseFloat(btn.dataset.tip || '10');
+        tipCustom.value = String(selectedTip);
+        updateTipBtnStyles();
+      });
+    });
+
+    // Custom tip input
+    tipCustom.addEventListener('input', () => {
+      const val = parseFloat(tipCustom.value);
+      if (!isNaN(val) && val >= 0) {
+        selectedTip = val;
+      }
+      updateTipBtnStyles();
+    });
+
+    function updateTipBtnStyles() {
+      tipBtns.forEach((btn) => {
+        const btnTip = parseFloat(btn.dataset.tip || '0');
+        if (btnTip === selectedTip) {
+          btn.className = 'tip-btn px-4 py-2 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors';
+        } else {
+          btn.className = 'tip-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors';
+        }
+      });
+    }
+
+    // People +/- buttons
+    document.getElementById('btn-minus')!.addEventListener('click', () => {
+      const current = Math.max(1, parseInt(numPeopleInput.value) || 1);
+      if (current > 1) {
+        numPeopleInput.value = String(current - 1);
+      }
+    });
+
+    document.getElementById('btn-plus')!.addEventListener('click', () => {
+      const current = Math.max(1, parseInt(numPeopleInput.value) || 1);
+      numPeopleInput.value = String(current + 1);
+    });
+
+    // Calculate
+    function calculate() {
+      const bill = parseNum(billInput.value);
+      if (bill <= 0) { billInput.focus(); return; }
+
+      const tipPct = Math.max(0, parseFloat(tipCustom.value) || 0);
+      const people = Math.max(1, parseInt(numPeopleInput.value) || 1);
+
+      const tipAmount = bill * (tipPct / 100);
+      const total = bill + tipAmount;
+      const perPerson = total / people;
+      const tipPerPerson = tipAmount / people;
+
+      (document.getElementById('res-tip') as HTMLElement).textContent = fmt(tipAmount) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total) + ' บาท';
+      (document.getElementById('res-per-person') as HTMLElement).textContent = fmt(perPerson) + ' บาท';
+      (document.getElementById('res-tip-per-person') as HTMLElement).textContent = fmt(tipPerPerson) + ' บาท';
+
+      // Summary text
+      const summary = `ยอดบิล ${fmt(bill)} บาท + ทิป ${tipPct}% (${fmt(tipAmount)} บาท) = รวม ${fmt(total)} บาท` +
+        (people > 1 ? ` ÷ ${people} คน = คนละ ${fmt(perPerson)} บาท` : '');
+      (document.getElementById('res-summary') as HTMLElement).textContent = summary;
+
+      // Show/hide per-person section
+      const perPersonSection = document.getElementById('per-person-section') as HTMLDivElement;
+      if (people > 1) {
+        perPersonSection.classList.remove('hidden');
+      } else {
+        perPersonSection.classList.add('hidden');
+      }
+
+      (document.getElementById('tip-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('tip');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Enter key on bill input
+    billInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculate();
+      }
+    });
+
+    // Track when result section enters viewport
+    const tipResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('tip');
+          tipResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    tipResultObserver.observe(document.getElementById('tip-result')!);
+  </script>
+</BaseLayout>

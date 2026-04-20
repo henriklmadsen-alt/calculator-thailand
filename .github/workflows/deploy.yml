@@ -91,3 +91,8 @@ jobs:
             echo "- Expected SHA: \`${{ steps.resolve.outputs.expected_sha }}\`"
             echo "- Timeout: \`${{ steps.resolve.outputs.timeout_ms }} ms\`"
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Submit URLs to IndexNow
+        if: success()
+        run: |
+          node scripts/submit-indexnow.mjs \
+            --site-url "${{ steps.resolve.outputs.site_url }}"

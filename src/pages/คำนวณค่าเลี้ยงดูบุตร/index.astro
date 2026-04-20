@@ -1,0 +1,504 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าเลี้ยงดูบุตร 2569 | ประเมินค่าอุปการะเลี้ยงดูตามกฎหมายไทย | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าเลี้ยงดูบุตรตามแนวทางศาลไทย ประเมินจากรายได้พ่อแม่ จำนวนบุตร และค่าใช้จ่ายจริง อ้างอิง ป.พ.พ. มาตรา 1564 และ 1598/38 ปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าเลี้ยงดูบุตร/`;
+
+const faqData = [
+  {
+    question: 'ค่าเลี้ยงดูบุตรตามกฎหมายไทยคิดอย่างไร?',
+    answer: 'กฎหมายไทยไม่ได้กำหนดสูตรตายตัว ศาลพิจารณาจากรายได้ของพ่อแม่ทั้งสองฝ่าย ฐานะความเป็นอยู่ ค่าใช้จ่ายจริงของบุตร (ค่าเล่าเรียน ค่ารักษาพยาบาล ค่ากิน-อยู่) และจำนวนบุตร ตามประมวลกฎหมายแพ่งและพาณิชย์ มาตรา 1564 และ 1598/38',
+  },
+  {
+    question: 'ค่าเลี้ยงดูบุตรโดยทั่วไปอยู่ที่เท่าไร?',
+    answer: 'จากแนวคำพิพากษา ศาลมักกำหนดค่าเลี้ยงดูประมาณ 20-30% ของรายได้รวมพ่อแม่สำหรับบุตร 1 คน, 30-40% สำหรับ 2 คน, และ 40-50% สำหรับ 3 คนขึ้นไป โดยแบ่งสัดส่วนตามรายได้แต่ละฝ่าย',
+  },
+  {
+    question: 'ใครมีหน้าที่จ่ายค่าเลี้ยงดูบุตร?',
+    answer: 'พ่อแม่ทั้งสองฝ่ายมีหน้าที่ร่วมกันอุปการะเลี้ยงดูบุตร ตาม ป.พ.พ. มาตรา 1564 โดยศาลจะกำหนดสัดส่วนตามรายได้และความสามารถของแต่ละฝ่าย ไม่จำเป็นต้องจ่ายเท่ากัน',
+  },
+  {
+    question: 'ค่าเลี้ยงดูบุตรจ่ายถึงอายุเท่าไร?',
+    answer: 'ตามกฎหมายไทย หน้าที่อุปการะเลี้ยงดูบุตรสิ้นสุดเมื่อบุตรบรรลุนิติภาวะ (อายุ 20 ปีบริบูรณ์) หรือสมรสก่อนอายุ 20 ปี แต่ถ้าบุตรยังศึกษาอยู่ ศาลอาจสั่งให้จ่ายต่อจนจบการศึกษา',
+  },
+  {
+    question: 'จะขอเปลี่ยนแปลงค่าเลี้ยงดูบุตรได้หรือไม่?',
+    answer: 'ได้ ทั้งฝ่ายพ่อและแม่สามารถร้องขอต่อศาลให้เพิ่มหรือลดค่าเลี้ยงดูได้ หากมีเหตุอันสมควร เช่น รายได้เปลี่ยนแปลง ค่าใช้จ่ายบุตรเพิ่มขึ้น หรือสถานการณ์ทางเศรษฐกิจเปลี่ยน ตาม ป.พ.พ. มาตรา 1598/39',
+  },
+  {
+    question: 'ค่าเลี้ยงดูบุตรครอบคลุมอะไรบ้าง?',
+    answer: 'ครอบคลุมค่าใช้จ่ายจำเป็นทุกด้าน ได้แก่ ค่าอาหาร ค่าที่อยู่อาศัย ค่าเครื่องแต่งกาย ค่าเล่าเรียนและอุปกรณ์การเรียน ค่ารักษาพยาบาล รวมถึงค่าใช้จ่ายเพื่อพัฒนาการของบุตรตามสมควรแก่ฐานะ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเลี้ยงดูบุตร',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเลี้ยงดูบุตร">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าเลี้ยงดูบุตร ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ประเมินค่าเลี้ยงดูบุตร (ค่าอุปการะเลี้ยงดู) ตามแนวทางศาลไทย
+      คำนวณจากรายได้พ่อแม่ทั้งสองฝ่าย จำนวนบุตร และค่าใช้จ่ายจริง
+      อ้างอิงประมวลกฎหมายแพ่งและพาณิชย์ บรรพ 5 ครอบครัว
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="cs-form" class="space-y-5">
+        <p id="cs-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="parent-a-income" class="mb-1 block text-sm font-medium text-gray-700">
+              รายได้ผู้ปกครองฝ่ายที่ 1 (บาท/เดือน)
+            </label>
+            <input
+              type="text"
+              id="parent-a-income"
+              inputmode="decimal"
+              placeholder="เช่น 25000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="parent-a-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="parent-b-income" class="mb-1 block text-sm font-medium text-gray-700">
+              รายได้ผู้ปกครองฝ่ายที่ 2 (บาท/เดือน)
+            </label>
+            <input
+              type="text"
+              id="parent-b-income"
+              inputmode="decimal"
+              placeholder="เช่น 35000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="parent-b-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="num-children" class="mb-1 block text-sm font-medium text-gray-700">
+            จำนวนบุตร
+          </label>
+          <select
+            id="num-children"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48"
+          >
+            <option value="1">1 คน</option>
+            <option value="2">2 คน</option>
+            <option value="3">3 คน</option>
+            <option value="4">4 คน</option>
+            <option value="5">5 คน</option>
+          </select>
+        </div>
+
+        <!-- Optional: Known child expenses -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="use-custom-expenses" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm font-medium text-gray-700">ระบุค่าใช้จ่ายบุตรจริงต่อเดือน (ถ้าทราบ)</span>
+          </label>
+
+          <div id="custom-expenses-field" class="mt-4 hidden">
+            <label for="child-expenses" class="mb-1 block text-sm font-medium text-gray-700">
+              ค่าใช้จ่ายบุตรรวมต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="child-expenses"
+              inputmode="decimal"
+              placeholder="เช่น 15000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64"
+            />
+            <p class="mt-1 text-xs text-gray-500">รวมค่าเล่าเรียน ค่าอาหาร ค่ารักษาพยาบาล ค่าที่อยู่อาศัย ฯลฯ</p>
+            <p id="child-expenses-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="cs-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าเลี้ยงดูบุตร
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="cs-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการประเมินค่าเลี้ยงดูบุตร</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าเลี้ยงดูรวมต่อเดือน</div>
+            <div id="res-total-support" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าเลี้ยงดูต่อบุตร 1 คน</div>
+            <div id="res-per-child" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">สัดส่วนค่าเลี้ยงดู</div>
+            <div id="res-percentage" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <!-- Contribution Breakdown -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">สัดส่วนการจ่ายของแต่ละฝ่าย</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">รายได้รวมทั้งสองฝ่าย</span>
+              <span id="res-combined-income" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">ฝ่ายที่ 1 — สัดส่วนรายได้</span>
+              <span id="res-parent-a-share" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">ฝ่ายที่ 1 — ส่วนที่ต้องจ่าย</span>
+              <span id="res-parent-a-amount" class="font-medium text-blue-700">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">ฝ่ายที่ 2 — สัดส่วนรายได้</span>
+              <span id="res-parent-b-share" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">ฝ่ายที่ 2 — ส่วนที่ต้องจ่าย</span>
+              <span id="res-parent-b-amount" class="font-medium text-blue-700">-</span>
+            </div>
+            <div class="flex justify-between border-t-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">ค่าเลี้ยงดูรวมต่อเดือน</span>
+              <span id="res-total-bottom" class="font-bold text-green-700">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#cs-results" />
+
+    <!-- Reference Table -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">ตารางประเมินค่าเลี้ยงดูบุตรตามรายได้รวม</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50">
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รายได้รวม (บาท)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">1 คน (~25%)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">2 คน (~35%)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">3 คน (~40%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[20000, 30000, 40000, 50000, 60000, 80000, 100000, 150000].map((income) => (
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="px-4 py-3 text-right font-medium text-gray-900">
+                  {new Intl.NumberFormat('th-TH').format(income)}
+                </td>
+                <td class="px-4 py-3 text-right text-gray-700">
+                  {new Intl.NumberFormat('th-TH').format(Math.round(income * 0.25))}
+                </td>
+                <td class="px-4 py-3 text-right text-gray-700">
+                  {new Intl.NumberFormat('th-TH').format(Math.round(income * 0.35))}
+                </td>
+                <td class="px-4 py-3 text-right text-gray-700">
+                  {new Intl.NumberFormat('th-TH').format(Math.round(income * 0.40))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-gray-500">* ตัวเลขเป็นการประเมินจากแนวคำพิพากษา ค่าจริงขึ้นอยู่กับดุลยพินิจของศาล</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#cs-results" />
+
+    <!-- Formula / How It Works -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">หลักเกณฑ์ที่เครื่องมือนี้ใช้</h2>
+      <p class="text-gray-700">
+        เครื่องมือนี้ประเมินค่าเลี้ยงดูบุตรตาม <strong>แนวทางสัดส่วนรายได้</strong> (Income Shares Model)
+        ซึ่งเป็นวิธีที่ศาลไทยมักใช้เป็นแนวทาง:
+      </p>
+      <ol class="list-decimal space-y-1 pl-6 text-gray-700">
+        <li>รวมรายได้ของพ่อแม่ทั้งสองฝ่าย</li>
+        <li>ประเมินค่าใช้จ่ายบุตรตามสัดส่วนรายได้รวม (ประมาณ 25% สำหรับ 1 คน, 35% สำหรับ 2 คน, 40% สำหรับ 3 คน)</li>
+        <li>แบ่งสัดส่วนการจ่ายตามรายได้ของแต่ละฝ่าย</li>
+      </ol>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">สูตรคำนวณ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้รวม = รายได้ฝ่ายที่ 1 + รายได้ฝ่ายที่ 2</li>
+        <li>ค่าเลี้ยงดูรวม = รายได้รวม × สัดส่วนตามจำนวนบุตร</li>
+        <li>สัดส่วนฝ่ายที่ 1 = รายได้ฝ่ายที่ 1 ÷ รายได้รวม</li>
+        <li>ส่วนที่ฝ่ายที่ 1 จ่าย = ค่าเลี้ยงดูรวม × สัดส่วนฝ่ายที่ 1</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่าง</h3>
+      <p>
+        พ่อมีรายได้ 40,000 บาท/เดือน แม่มีรายได้ 20,000 บาท/เดือน มีบุตร 2 คน
+      </p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้รวม = 40,000 + 20,000 = 60,000 บาท</li>
+        <li>ค่าเลี้ยงดูรวม = 60,000 × 35% = 21,000 บาท</li>
+        <li>ค่าเลี้ยงดูต่อบุตร = 21,000 ÷ 2 = 10,500 บาท</li>
+        <li>ส่วนของพ่อ = 21,000 × (40,000/60,000) = 14,000 บาท</li>
+        <li>ส่วนของแม่ = 21,000 × (20,000/60,000) = 7,000 บาท</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ประมวลกฎหมายแพ่งและพาณิชย์ บรรพ 5 ครอบครัว มาตรา 1564 — หน้าที่อุปการะเลี้ยงดูบุตร</li>
+        <li>ประมวลกฎหมายแพ่งและพาณิชย์ มาตรา 1598/38 — การกำหนดค่าอุปการะเลี้ยงดู</li>
+        <li>ประมวลกฎหมายแพ่งและพาณิชย์ มาตรา 1598/39 — การแก้ไขค่าอุปการะเลี้ยงดู</li>
+      </ul>
+    </section>
+
+    <!-- Supporting Article -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">ค่าเลี้ยงดูบุตร 2569: สิ่งที่พ่อแม่ต้องรู้</h2>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">ค่าเลี้ยงดูบุตรคืออะไร?</h3>
+      <p class="text-gray-700">
+        ค่าเลี้ยงดูบุตร (ค่าอุปการะเลี้ยงดู) คือเงินที่พ่อแม่มีหน้าที่จ่ายเพื่อเลี้ยงดูบุตรที่ยังไม่บรรลุนิติภาวะ
+        ตามกฎหมายไทย พ่อแม่ทั้งสองฝ่ายมีหน้าที่ร่วมกันอุปการะเลี้ยงดูบุตร ไม่ว่าจะจดทะเบียนสมรสหรือไม่
+        โดยศาลจะกำหนดค่าเลี้ยงดูตามฐานะและความสามารถของแต่ละฝ่าย
+      </p>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">ปัจจัยที่ศาลพิจารณา</h3>
+      <p class="text-gray-700">
+        ศาลครอบครัวจะพิจารณาปัจจัยหลายประการในการกำหนดค่าเลี้ยงดูบุตร ได้แก่:
+      </p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><strong>รายได้และทรัพย์สิน</strong> ของพ่อแม่ทั้งสองฝ่าย</li>
+        <li><strong>ค่าใช้จ่ายจำเป็น</strong> ของบุตร: ค่าเล่าเรียน ค่ารักษาพยาบาล ค่าอาหาร ค่าที่อยู่อาศัย</li>
+        <li><strong>จำนวนบุตร</strong> ที่ต้องอุปการะ</li>
+        <li><strong>ฐานะความเป็นอยู่</strong> ของครอบครัวก่อนแยกกัน</li>
+        <li><strong>ความต้องการพิเศษ</strong> ของบุตร เช่น โรคประจำตัว หรือความพิการ</li>
+      </ul>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">ขั้นตอนการขอค่าเลี้ยงดูบุตร</h3>
+      <ol class="list-decimal space-y-1 pl-6 text-gray-700">
+        <li><strong>ตกลงกันเอง:</strong> พ่อแม่เจรจาตกลงกันโดยไม่ต้องผ่านศาล สามารถทำเป็นบันทึกข้อตกลงเป็นลายลักษณ์อักษร</li>
+        <li><strong>ไกล่เกลี่ย:</strong> หากตกลงกันไม่ได้ สามารถขอไกล่เกลี่ยผ่านสำนักงานอัยการหรือศาลครอบครัว</li>
+        <li><strong>ฟ้องศาล:</strong> ยื่นฟ้องต่อศาลครอบครัวและเยาวชน ศาลจะพิจารณาและกำหนดค่าเลี้ยงดูที่เหมาะสม</li>
+      </ol>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">ค่าใช้จ่ายศาล</h3>
+      <p class="text-gray-700">
+        หากต้องยื่นฟ้องขอค่าเลี้ยงดูบุตร สามารถใช้
+        <a href="/คำนวณค่าธรรมเนียมศาล/" class="text-primary-600 hover:underline">เครื่องคำนวณค่าธรรมเนียมศาล</a>
+        เพื่อประเมินค่าใช้จ่ายเบื้องต้น
+      </p>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">การวางแผนการเงินหลังแยกทาง</h3>
+      <p class="text-gray-700">
+        นอกจากค่าเลี้ยงดูบุตรแล้ว ผู้ปกครองควรวางแผนการเงินเพิ่มเติม เช่น
+        <a href="/คำนวณเงินเดือนสุทธิ/" class="text-primary-600 hover:underline">คำนวณเงินเดือนสุทธิ</a>
+        เพื่อดูรายได้หลังหักภาษีและประกันสังคม หรือ
+        <a href="/คำนวณเงินเกษียณ/" class="text-primary-600 hover:underline">คำนวณเงินเกษียณ</a>
+        เพื่อวางแผนอนาคตระยะยาว
+      </p>
+    </section>
+
+    <!-- Related Calculators -->
+    <RelatedArticles currentHref="/คำนวณค่าเลี้ยงดูบุตร/" />
+    <RelatedCalculators currentHref="/คำนวณค่าเลี้ยงดูบุตร/" />
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประเมินเบื้องต้นตามแนวทางที่ศาลไทยมักใช้เท่านั้น
+      กฎหมายไทยไม่ได้กำหนดสูตรคำนวณค่าเลี้ยงดูบุตรตายตัว ค่าเลี้ยงดูจริงขึ้นอยู่กับดุลยพินิจของศาลครอบครัว
+      กรุณาปรึกษาทนายความหรือนิติกรเพื่อคำแนะนำเฉพาะกรณีของท่าน
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculateChildSupport } from '../../lib/child-support-calculator.ts';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const num = Number(normalized);
+      return Number.isFinite(num) ? num : NaN;
+    }
+
+    function formatMoney(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num)} บาท`;
+    }
+
+    function formatPercent(ratio) {
+      return `${(ratio * 100).toFixed(1)}%`;
+    }
+
+    const form = document.getElementById('cs-form');
+    const formError = document.getElementById('cs-form-error');
+    const resultBox = document.getElementById('cs-results');
+    const useCustomExpenses = document.getElementById('use-custom-expenses');
+    const customExpensesField = document.getElementById('custom-expenses-field');
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.textContent = '';
+    }
+
+    function setFieldError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearErrors() {
+      formError?.classList.add('hidden');
+      clearFieldError('parent-a-error');
+      clearFieldError('parent-b-error');
+      clearFieldError('child-expenses-error');
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    useCustomExpenses?.addEventListener('change', () => {
+      if (useCustomExpenses.checked) {
+        customExpensesField?.classList.remove('hidden');
+      } else {
+        customExpensesField?.classList.add('hidden');
+      }
+    });
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors();
+
+      if (typeof window.trackCalculatorStart === 'function') {
+        window.trackCalculatorStart('child_support');
+      }
+
+      const parentAIncome = parseNum(document.getElementById('parent-a-income')?.value || '');
+      const parentBIncome = parseNum(document.getElementById('parent-b-income')?.value || '');
+      const numberOfChildren = Number(document.getElementById('num-children')?.value || '1');
+      const useCustom = useCustomExpenses?.checked || false;
+      const childExpenses = useCustom ? parseNum(document.getElementById('child-expenses')?.value || '') : undefined;
+
+      let hasError = false;
+
+      if (!Number.isFinite(parentAIncome) || parentAIncome < 0) {
+        setFieldError('parent-a-error', 'กรุณากรอกรายได้ที่ถูกต้อง (0 ขึ้นไป)');
+        hasError = true;
+      }
+
+      if (!Number.isFinite(parentBIncome) || parentBIncome < 0) {
+        setFieldError('parent-b-error', 'กรุณากรอกรายได้ที่ถูกต้อง (0 ขึ้นไป)');
+        hasError = true;
+      }
+
+      if (!hasError && parentAIncome === 0 && parentBIncome === 0) {
+        setFieldError('parent-a-error', 'รายได้อย่างน้อยหนึ่งฝ่ายต้องมากกว่า 0');
+        hasError = true;
+      }
+
+      if (useCustom && (!Number.isFinite(childExpenses) || childExpenses <= 0)) {
+        setFieldError('child-expenses-error', 'กรุณากรอกค่าใช้จ่ายบุตรที่ถูกต้อง');
+        hasError = true;
+      }
+
+      if (hasError) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const result = calculateChildSupport({
+          parentAIncome,
+          parentBIncome,
+          numberOfChildren,
+          childExpenses: useCustom ? childExpenses : undefined,
+        });
+
+        setText('res-total-support', formatMoney(result.totalSupport));
+        setText('res-per-child', formatMoney(result.perChildSupport));
+        setText('res-percentage', formatPercent(result.childPercentage));
+
+        setText('res-combined-income', formatMoney(result.combinedIncome));
+        setText('res-parent-a-share', formatPercent(result.parentAShare));
+        setText('res-parent-a-amount', formatMoney(result.parentAContribution));
+        setText('res-parent-b-share', formatPercent(result.parentBShare));
+        setText('res-parent-b-amount', formatMoney(result.parentBContribution));
+        setText('res-total-bottom', formatMoney(result.totalSupport));
+
+        resultBox?.classList.remove('hidden');
+        resultBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (typeof window.trackCalculatorComplete === 'function') {
+          window.trackCalculatorComplete('child_support', result.totalSupport);
+        }
+      } catch (_error) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+      }
+    });
+  </script>
+</BaseLayout>

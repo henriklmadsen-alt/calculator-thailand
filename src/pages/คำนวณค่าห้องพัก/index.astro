@@ -1,0 +1,352 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณค่าห้องพัก 2569 | เปรียบเทียบรายเดือน-รายวัน ค่ามัดจำ ค่าสาธารณูปโภค';
+const pageDescription = 'คำนวณค่าเช่าห้องพักรายเดือนและรายวัน ค่ามัดจำ ค่าล่วงหน้า ค่าไฟ ค่าน้ำ ค่าอินเทอร์เน็ต ค่าส่วนกลาง รวมค่าใช้จ่ายทั้งหมดสำหรับผู้เช่าในไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าห้องพัก/`;
+
+const faqData = [
+  {
+    question: 'ค่ามัดจำห้องพักปกติกี่เดือน?',
+    answer: 'ห้องพักรายเดือนส่วนใหญ่ในไทยเรียกเก็บค่ามัดจำ 1-2 เดือน และค่าเช่าล่วงหน้า 1 เดือน รวมเป็นเงินที่ต้องจ่ายก่อนเข้าอยู่ 2-3 เดือน คอนโดมิเนียมอาจเรียกเก็บ 2-3 เดือน',
+  },
+  {
+    question: 'ค่าเช่ารายวันกับรายเดือนต่างกันอย่างไร?',
+    answer: 'ค่าเช่ารายวันมักสูงกว่ารายเดือนเมื่อเทียบต่อวัน เพราะรวมค่าสาธารณูปโภคและบริการแล้ว ห้องพักรายเดือนแยกค่าน้ำ-ค่าไฟต่างหาก แต่ค่าเช่าฐานต่ำกว่า เครื่องมือนี้ช่วยเปรียบเทียบให้เห็นชัด',
+  },
+  {
+    question: 'ค่าไฟห้องพักคิดอัตราเท่าไหร่?',
+    answer: 'หอพักและอพาร์ทเมนต์มักคิดค่าไฟ 7-9 บาท/หน่วย (สูงกว่าอัตราการไฟฟ้า) คอนโดมิเนียมคิดตามมิเตอร์การไฟฟ้าโดยตรง ประมาณ 4-5 บาท/หน่วย ค่าน้ำมักอยู่ที่ 18-25 บาท/หน่วย สำหรับห้องพัก',
+  },
+  {
+    question: 'ค่าส่วนกลางคืออะไร?',
+    answer: 'ค่าส่วนกลาง (Common Fee) เป็นค่าดูแลพื้นที่ส่วนกลางของอาคาร เช่น ลิฟต์ สระว่ายน้ำ ฟิตเนส รปภ. มักพบในคอนโดมิเนียม คิดตามขนาดห้อง ประมาณ 30-80 บาท/ตร.ม./เดือน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าห้องพัก',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าห้องพัก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณค่าห้องพัก 2569 — เปรียบเทียบรายเดือน/รายวัน พร้อมค่าสาธารณูปโภค</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณค่ามัดจำ ค่าเช่าล่วงหน้า ค่าไฟ ค่าน้ำ และค่าใช้จ่ายทั้งหมดก่อนตัดสินใจเช่า</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับผู้เช่าห้องพัก อพาร์ทเมนต์ หอพัก และคอนโดมิเนียม</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าห้องพัก 2569 — ค่าเช่า มัดจำ สาธารณูปโภครวม
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกค่าเช่าห้องพัก จำนวนเดือนมัดจำ และประมาณค่าสาธารณูปโภครายเดือน ระบบจะคำนวณค่าใช้จ่ายย้ายเข้า
+      ค่าใช้จ่ายรายเดือนรวม และค่าใช้จ่ายรายปี พร้อมเปรียบเทียบอัตรารายวัน-รายเดือน
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'อัตราค่าเช่าทั่วไปในตลาดห้องพักไทย ปี 2569',
+        'ข้อมูลค่ามัดจำตามหลักปฏิบัติสัญญาเช่าที่อยู่อาศัย',
+      ]}
+      assumptions={[
+        'ใช้ 30 วันต่อเดือนในการแปลงอัตรารายวัน-รายเดือน',
+        'ค่าสาธารณูปโภคเป็นประมาณการจากข้อมูลที่ผู้ใช้กรอก',
+        'ผลคำนวณเป็นการประมาณเพื่อวางแผนงบประมาณ ค่าใช้จ่ายจริงขึ้นอยู่กับเงื่อนไขสัญญาเช่า',
+      ]}
+      references={[
+        {
+          label: 'คำนวณค่าไฟฟ้า — เครื่องคำนวณไทย',
+          href: '/คำนวณค่าไฟฟ้า/',
+        },
+        {
+          label: 'คำนวณค่าน้ำ — เครื่องคำนวณไทย',
+          href: '/คำนวณค่าน้ำ/',
+        },
+      ]}
+    />
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="room-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกค่าเช่าห้องพักให้ถูกต้อง
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="room-rate" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่าห้องพัก (บาท)</label>
+            <input id="room-rate" type="text" inputmode="decimal" placeholder="เช่น 5,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+
+          <div>
+            <label for="rate-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทค่าเช่า</label>
+            <select id="rate-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="monthly">รายเดือน</option>
+              <option value="daily">รายวัน</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="deposit-months" class="mb-1 block text-sm font-medium text-gray-700">ค่ามัดจำ (จำนวนเดือน)</label>
+            <select id="deposit-months" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="1">1 เดือน</option>
+              <option value="2" selected>2 เดือน</option>
+              <option value="3">3 เดือน</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="advance-months" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่าล่วงหน้า (จำนวนเดือน)</label>
+            <select id="advance-months" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="0">ไม่มี</option>
+              <option value="1" selected>1 เดือน</option>
+              <option value="2">2 เดือน</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4">
+          <p class="mb-3 text-sm font-semibold text-gray-700">ค่าสาธารณูปโภคประมาณการ (บาท/เดือน)</p>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label for="electricity-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าไฟฟ้า</label>
+              <input id="electricity-cost" type="text" inputmode="decimal" placeholder="เช่น 800" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="water-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าน้ำ</label>
+              <input id="water-cost" type="text" inputmode="decimal" placeholder="เช่น 150" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="internet-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าอินเทอร์เน็ต</label>
+              <input id="internet-cost" type="text" inputmode="decimal" placeholder="เช่น 599" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="common-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าส่วนกลาง</label>
+              <input id="common-fee" type="text" inputmode="decimal" placeholder="เช่น 1,500" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="other-cost" class="mb-1 block text-sm font-medium text-gray-700">อื่น ๆ (ที่จอดรถ ฯลฯ)</label>
+              <input id="other-cost" type="text" inputmode="decimal" placeholder="เช่น 500" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าห้องพัก
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณค่าห้องพัก</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าเช่ารายเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายย้ายเข้า</div>
+            <div id="res-movein" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมรายเดือนทั้งหมด</div>
+            <div id="res-total-monthly" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่ารายวันเทียบเท่า</span>
+            <span id="res-daily" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่ามัดจำ</span>
+            <span id="res-deposit" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่าล่วงหน้า</span>
+            <span id="res-advance" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รวมค่าสาธารณูปโภค/เดือน</span>
+            <span id="res-utilities" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รวมค่าใช้จ่ายต่อปี</span>
+            <span id="res-annual" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <h3 id="utility-heading" class="mb-2 hidden text-base font-semibold text-gray-900">แจกแจงค่าสาธารณูปโภค</h3>
+        <ul id="utility-breakdown" class="space-y-2 text-sm text-gray-700"></ul>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าเช่ารายเดือน = ค่าเช่ารายวัน × 30 (หรือกรอกตรงหากเป็นรายเดือน)</li>
+        <li>ค่าเช่ารายวัน = ค่าเช่ารายเดือน ÷ 30</li>
+        <li>ค่ามัดจำ = ค่าเช่ารายเดือน × จำนวนเดือนมัดจำ</li>
+        <li>ค่าเช่าล่วงหน้า = ค่าเช่ารายเดือน × จำนวนเดือนล่วงหน้า</li>
+        <li>ค่าใช้จ่ายย้ายเข้า = ค่ามัดจำ + ค่าเช่าล่วงหน้า</li>
+        <li>รวมรายเดือน = ค่าเช่า + ค่าไฟ + ค่าน้ำ + ค่าอินเทอร์เน็ต + ค่าส่วนกลาง + อื่น ๆ</li>
+        <li>รวมรายปี = รวมรายเดือน × 12</li>
+      </ul>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าห้องพัก/" />
+    <RelatedCalculators currentHref="/คำนวณค่าห้องพัก/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อช่วยประมาณการค่าใช้จ่ายห้องพักเบื้องต้น
+      ค่าใช้จ่ายจริงขึ้นอยู่กับเงื่อนไขสัญญาเช่าและอัตราค่าสาธารณูปโภคของแต่ละสถานที่
+    </div>
+  </article>
+
+  <script>
+    import { calculateRoomRate } from '../../lib/room-rate-calculator';
+
+    const form = document.getElementById('room-form');
+    const formError = document.getElementById('form-error');
+    const results = document.getElementById('results');
+
+    const roomRateInput = document.getElementById('room-rate');
+    const rateTypeInput = document.getElementById('rate-type');
+    const depositMonthsInput = document.getElementById('deposit-months');
+    const advanceMonthsInput = document.getElementById('advance-months');
+    const electricityInput = document.getElementById('electricity-cost');
+    const waterInput = document.getElementById('water-cost');
+    const internetInput = document.getElementById('internet-cost');
+    const commonFeeInput = document.getElementById('common-fee');
+    const otherInput = document.getElementById('other-cost');
+
+    const show = (el) => el?.classList.remove('hidden');
+    const hide = (el) => el?.classList.add('hidden');
+
+    const parseNumber = (value) => {
+      const normalized = String(value ?? '').replace(/,/g, '').trim();
+      if (!normalized) return 0;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    };
+
+    const formatMoney = (value) => `${new Intl.NumberFormat('th-TH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)} บาท`;
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hide(formError);
+
+      const roomRate = parseNumber(roomRateInput?.value);
+      const rateType = rateTypeInput?.value;
+
+      if (!Number.isFinite(roomRate) || roomRate <= 0) {
+        show(formError);
+        hide(results);
+        return;
+      }
+
+      const result = calculateRoomRate({
+        roomRate,
+        rateType: rateType as 'monthly' | 'daily',
+        depositMonths: Number(depositMonthsInput?.value) || 0,
+        advanceMonths: Number(advanceMonthsInput?.value) || 0,
+        electricityCost: parseNumber(electricityInput?.value) || 0,
+        waterCost: parseNumber(waterInput?.value) || 0,
+        internetCost: parseNumber(internetInput?.value) || 0,
+        commonFee: parseNumber(commonFeeInput?.value) || 0,
+        otherCost: parseNumber(otherInput?.value) || 0,
+      });
+
+      document.getElementById('res-monthly').textContent = formatMoney(result.monthlyRate);
+      document.getElementById('res-movein').textContent = formatMoney(result.moveInCost);
+      document.getElementById('res-total-monthly').textContent = formatMoney(result.totalMonthlyCost);
+      document.getElementById('res-daily').textContent = formatMoney(result.dailyRate);
+      document.getElementById('res-deposit').textContent = formatMoney(result.depositAmount);
+      document.getElementById('res-advance').textContent = formatMoney(result.advanceAmount);
+      document.getElementById('res-utilities').textContent = formatMoney(result.totalUtilities);
+      document.getElementById('res-annual').textContent = formatMoney(result.totalAnnualCost);
+
+      const utilityBreakdown = document.getElementById('utility-breakdown');
+      const utilityHeading = document.getElementById('utility-heading');
+      if (utilityBreakdown) {
+        utilityBreakdown.innerHTML = '';
+        if (result.utilityBreakdown.length > 0) {
+          show(utilityHeading);
+          result.utilityBreakdown.forEach((item) => {
+            const li = document.createElement('li');
+            li.className = 'rounded-md border border-gray-100 bg-gray-50 px-3 py-2 flex justify-between';
+            li.innerHTML = `<span>${item.label}</span><span class="font-medium">${formatMoney(item.amount)}</span>`;
+            utilityBreakdown.appendChild(li);
+          });
+        } else {
+          hide(utilityHeading);
+        }
+      }
+
+      show(results);
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('room_rate');
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('room_rate', result.totalMonthlyCost);
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('room_rate');
+      if (typeof trackResultViewed === 'function') trackResultViewed('room_rate');
+    });
+  </script>
+</BaseLayout>
