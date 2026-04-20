@@ -1,32 +1,33 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณประมาณเบี้ยประกันน้ำท่วม 2569 | บ้านและอาคาร | เครื่องคำนวณไทย';
-const pageDescription = 'ประมาณการเบี้ยประกันน้ำท่วมสำหรับบ้านและอาคาร ตามระดับความเสี่ยงพื้นที่ มูลค่าอาคาร และชั้นล่าง';
+const pageTitle = 'คำนวณประมาณเบี้ยประกันน้ำท่วม 2569 | ความเสี่ยงพื้นที่ | เครื่องคำนวณไทย';
+const pageDescription = 'ประมาณการเบี้ยประกันน้ำท่วมบ้านและทรัพย์สิน ตามพื้นที่เสี่ยงและมูลค่าทรัพย์สิน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณประมาณเบี้ยประกันน้ำท่วม/`;
 
 const faqData = [
   {
-    question: 'ประกันน้ำท่วมมีแยกต่างหากจากประกันอัคคีภัยไหม?',
-    answer: 'ประกันน้ำท่วมในไทยมักเป็นภัยเพิ่มพิเศษ (Extension) ที่ซื้อเพิ่มจากกรมธรรม์ประกันอัคคีภัยหลัก ไม่สามารถซื้อแยกได้โดยตรง บางบริษัทมีแพ็กเกจ All Risks ที่รวมน้ำท่วมไว้แล้ว ควรตรวจสอบเงื่อนไขกรมธรรม์ก่อนซื้อ',
+    question: 'ประกันน้ำท่วมครอบคลุมอะไรบ้าง?',
+    answer: 'ประกันน้ำท่วมมักเป็นส่วนเพิ่มเติม (Rider) จากประกันอัคคีภัย ครอบคลุมความเสียหายต่ออาคารและทรัพย์สินจากน้ำท่วมภายนอก ไม่รวมน้ำรั่วจากภายใน มีค่าเสียหายส่วนแรก (Deductible) โดยทั่วไป 10% ของค่าเสียหายหรือขั้นต่ำ 10,000 บาท',
   },
   {
-    question: 'พื้นที่ความเสี่ยงสูงเบี้ยประกันน้ำท่วมแพงแค่ไหน?',
-    answer: 'พื้นที่เสี่ยงสูงเช่นลุ่มน้ำเจ้าพระยา พื้นที่ราบลุ่ม หรือใกล้แม่น้ำสายหลัก เบี้ยอาจสูงถึง 0.30% ของทุนประกันต่อปี เทียบกับพื้นที่เสี่ยงต่ำที่อยู่ที่ 0.08% บางบริษัทอาจปฏิเสธการรับประกันในพื้นที่เสี่ยงสูงมากหลังเหตุการณ์น้ำท่วมใหญ่',
+    question: 'พื้นที่เสี่ยงน้ำท่วมส่งผลต่อเบี้ยอย่างไร?',
+    answer: 'ระดับความเสี่ยงน้ำท่วมส่งผลโดยตรงต่ออัตราเบี้ย พื้นที่เสี่ยงต่ำอัตราประมาณ 0.08% พื้นที่เสี่ยงปานกลาง 0.15% และพื้นที่เสี่ยงสูง (เช่น ที่ราบลุ่มแม่น้ำ พื้นที่น้ำท่วมซ้ำ) 0.30% ต่อปี บางบริษัทอาจปฏิเสธให้ความคุ้มครองในพื้นที่เสี่ยงสูงมาก',
   },
   {
-    question: 'ควรทำประกันน้ำท่วมในมูลค่าเท่าไหร่?',
-    answer: 'ควรทำประกันครอบคลุมมูลค่าทดแทนทั้งหมด ได้แก่ อาคาร ทรัพย์สินภายใน และสิ่งปลูกสร้าง หากทำประกันต่ำกว่ามูลค่าจริงอาจเจอ Average Clause ที่บริษัทจ่ายค่าเสียหายตามสัดส่วนเท่านั้น ควรปรับทุนประกันทุก 3-5 ปีตามราคาก่อสร้างที่เปลี่ยนแปลง',
+    question: 'ควรทำประกันน้ำท่วมไหมถ้าไม่เคยน้ำท่วม?',
+    answer: 'แนะนำให้ทำหากบ้านอยู่ในพื้นที่ที่อาจได้รับผลกระทบจากน้ำท่วม เพราะสภาพภูมิอากาศเปลี่ยนแปลงทำให้ความถี่และความรุนแรงของน้ำท่วมเพิ่มขึ้น เบี้ยประกันน้ำท่วมค่อนข้างถูกเมื่อเทียบกับความเสียหายที่อาจเกิดขึ้น',
   },
 ];
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'เครื่องคำนวณประมาณเบี้ยประกันน้ำท่วม',
+  name: 'เครื่องคำนวณเบี้ยประกันน้ำท่วม 2569',
   description: pageDescription,
   url: canonical,
   applicationCategory: 'FinanceApplication',
@@ -52,92 +53,110 @@ const jsonLdFaq = {
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
-      <p class="text-sm font-semibold text-sky-700">ประมาณเบี้ยประกันน้ำท่วม 2569</p>
-      <p class="mt-1 text-sm text-slate-700">ตัวเลขเป็นการประมาณการ เพื่อใช้วางแผนเท่านั้น</p>
-      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตปี 2569</p>
+      <p class="text-sm font-semibold text-sky-700">ประมาณการเบี้ยประกันน้ำท่วมบ้านและทรัพย์สิน</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการประมาณการเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิงอัตราเบี้ย คปภ. และมาตรฐานอุตสาหกรรมประกันภัย ปี 2569</p>
     </div>
 
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-      คำนวณประมาณเบี้ยประกันน้ำท่วม 2569 — บ้านและอาคาร
+      คำนวณประมาณเบี้ยประกันน้ำท่วม 2569 (2026)
     </h1>
 
     <p class="text-gray-600 mb-6">
-      ประมาณการเบี้ยประกันน้ำท่วมตามระดับความเสี่ยงพื้นที่ มูลค่าอาคาร และทรัพย์สิน
+      ประมาณการเบี้ยประกันน้ำท่วมสำหรับบ้านและทรัพย์สิน ตามระดับความเสี่ยงพื้นที่และมูลค่าทรัพย์สิน ผลลัพธ์ทันที ใช้งานฟรี
     </p>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
-      <form id="flood-form" class="space-y-5">
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label for="flood-building" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าอาคาร (บาท)</label>
-            <input type="text" id="flood-building" inputmode="numeric" placeholder="เช่น 3,000,000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
-            <p id="flood-building-error" class="mt-1 hidden text-sm text-red-600"></p>
-          </div>
-          <div>
-            <label for="flood-contents" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าทรัพย์สิน (บาท)</label>
-            <input type="text" id="flood-contents" inputmode="numeric" placeholder="เช่น 500,000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
-          </div>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลทรัพย์สิน</h2>
+      <form id="insurance-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลให้ครบถ้วน
+        </p>
+        <div>
+          <label for="building-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าอาคาร (บาท)</label>
+          <input type="text" id="building-value" inputmode="numeric" placeholder="เช่น 2,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">มูลค่าสิ่งปลูกสร้าง ไม่รวมที่ดิน</p>
         </div>
-
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label for="flood-risk" class="block text-sm font-medium text-gray-700 mb-1">ระดับความเสี่ยงพื้นที่</label>
-            <select id="flood-risk" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
-              <option value="low">ต่ำ — พื้นที่สูง ห่างแม่น้ำ</option>
-              <option value="medium" selected>ปานกลาง — ชานเมือง ลุ่มน้ำรอง</option>
-              <option value="high">สูง — ลุ่มน้ำเจ้าพระยา พื้นที่ราบลุ่ม</option>
-            </select>
-          </div>
-          <div>
-            <label for="flood-groundfloor" class="block text-sm font-medium text-gray-700 mb-1">ชั้นล่างสุด</label>
-            <select id="flood-groundfloor" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
-              <option value="ground">ชั้น 1 (พื้นดิน)</option>
-              <option value="elevated" selected>ยกพื้น / ชั้น 2 ขึ้นไป</option>
-            </select>
-          </div>
+        <div>
+          <label for="contents-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าทรัพย์สินภายใน (บาท)</label>
+          <input type="text" id="contents-value" inputmode="numeric" placeholder="เช่น 500,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
         </div>
-
-        <button type="submit" id="flood-submit"
-          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
-          คำนวณทันที
+        <div>
+          <label for="risk-level" class="block text-sm font-medium text-gray-700 mb-1">ระดับความเสี่ยงพื้นที่</label>
+          <select id="risk-level" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+            <option value="low">ต่ำ (พื้นที่ดอน ไม่เคยน้ำท่วม)</option>
+            <option value="medium" selected>ปานกลาง (พื้นที่กึ่งดอน-ลุ่ม)</option>
+            <option value="high">สูง (พื้นที่ลุ่มต่ำ น้ำท่วมซ้ำ)</option>
+          </select>
+        </div>
+        <div>
+          <label for="floor-level" class="block text-sm font-medium text-gray-700 mb-1">ชั้นล่างของที่พัก</label>
+          <select id="floor-level" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+            <option value="ground">ชั้น 1 (พื้นดิน)</option>
+            <option value="upper">ชั้น 2 ขึ้นไป</option>
+          </select>
+        </div>
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณเบี้ยประกันน้ำท่วม
         </button>
       </form>
     </div>
 
     <div id="results" class="hidden mb-8">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ (ประมาณการ)</h2>
-        <div class="space-y-2 mb-4">
-          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">เบี้ยอาคาร</span><span id="res-building" class="font-medium">-</span></div>
-          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">เบี้ยทรัพย์สิน</span><span id="res-contents" class="font-medium">-</span></div>
-          <div class="flex justify-between py-3 bg-primary-50 px-3 rounded-lg">
-            <span class="font-bold">รวมเบี้ยรายปี</span>
-            <span id="res-total" class="text-xl font-bold text-primary-700">-</span>
-          </div>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการประมาณการ</h2>
+      <div class="grid gap-4 sm:grid-cols-3 mb-6">
+        <div class="bg-primary-50 rounded-lg p-4 border border-primary-200">
+          <p class="text-xs text-gray-500 mb-1">เบี้ยประมาณการรายปี</p>
+          <p class="text-2xl font-bold text-primary-700"><span id="res-premium">-</span> <span class="text-sm font-normal">บาท</span></p>
         </div>
-        <p id="res-note" class="text-sm text-gray-600 mt-2">-</p>
-        <p class="text-xs text-gray-500 mt-1">* ค่าสินไหมมีค่าเสียหายส่วนแรก (Deductible) ประมาณ 10% ของค่าเสียหาย</p>
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <p class="text-xs text-gray-500 mb-1">ความคุ้มครองสูงสุด</p>
+          <p class="text-2xl font-bold text-blue-700"><span id="res-coverage">-</span> <span class="text-sm font-normal">บาท</span></p>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+          <p class="text-xs text-gray-500 mb-1">ค่าเสียหายส่วนแรก (10%)</p>
+          <p class="text-2xl font-bold text-orange-700"><span id="res-excess">-</span> <span class="text-sm font-normal">บาท</span></p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm">
+          <tbody>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">เบี้ยส่วนอาคาร</td><td id="det-building" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">เบี้ยส่วนทรัพย์สิน</td><td id="det-contents" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="border-b border-gray-100"><td class="px-4 py-3 text-gray-600">ระดับความเสี่ยง</td><td id="det-risk" class="px-4 py-3 text-right font-medium text-gray-900">-</td></tr>
+            <tr class="bg-gray-50 font-semibold"><td class="px-4 py-3 text-gray-900">รวมเบี้ยประมาณการ</td><td id="det-total" class="px-4 py-3 text-right text-primary-700">-</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
 
     <section class="prose prose-gray max-w-none mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">อัตราเบี้ยประกันน้ำท่วม (ประมาณการ)</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกันน้ำท่วมคืออะไร?</h2>
+      <p>
+        ประกันน้ำท่วม (Flood Insurance) เป็นความคุ้มครองที่ครอบคลุมความเสียหายต่ออาคารและทรัพย์สินจากน้ำท่วม
+        น้ำทะลักหรือน้ำป่าไหลหลาก โดยทั่วไปเป็นสัญญาเพิ่มเติม (Rider) ที่ต้องซื้อแยกจากประกันอัคคีภัยมาตรฐาน
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราเบี้ยตามระดับความเสี่ยง</h3>
       <div class="overflow-x-auto">
         <table class="w-full text-sm border border-gray-200">
-          <thead><tr class="bg-gray-50"><th class="px-4 py-2 text-left border-b">ระดับความเสี่ยง</th><th class="px-4 py-2 text-right border-b">อัตราเบี้ย</th><th class="px-4 py-2 text-left border-b">พื้นที่ตัวอย่าง</th></tr></thead>
+          <thead><tr class="bg-gray-50"><th class="px-4 py-2 text-left border-b">ระดับความเสี่ยง</th><th class="px-4 py-2 text-right border-b">อัตราเบี้ย (% ต่อปี)</th></tr></thead>
           <tbody>
-            <tr class="border-b"><td class="px-4 py-2">ต่ำ</td><td class="px-4 py-2 text-right">0.08%</td><td class="px-4 py-2">พื้นที่สูง ห่างแม่น้ำ ดอนเมือง ลาดพร้าว</td></tr>
-            <tr class="border-b"><td class="px-4 py-2">ปานกลาง</td><td class="px-4 py-2 text-right">0.15%</td><td class="px-4 py-2">ชานเมือง ปทุมธานี นนทบุรี บางส่วน</td></tr>
-            <tr><td class="px-4 py-2">สูง</td><td class="px-4 py-2 text-right">0.30%</td><td class="px-4 py-2">ลุ่มน้ำเจ้าพระยา อยุธยา ปทุมธานีต่ำ</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">ต่ำ (พื้นที่ดอน)</td><td class="px-4 py-2 text-right">0.08%</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">ปานกลาง</td><td class="px-4 py-2 text-right">0.15%</td></tr>
+            <tr><td class="px-4 py-2">สูง (ลุ่มต่ำ)</td><td class="px-4 py-2 text-right">0.30%</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="text-sm text-gray-500 mt-2">* ชั้น 1 ติดพื้นดิน บวกเพิ่ม 0.05% | มีค่าเสียหายส่วนแรก 10%</p>
+      <p class="mt-4">ชั้น 1 (พื้นดิน) มีความเสี่ยงสูงกว่า เบี้ยเพิ่ม 0.05% โดยทั่วไปมีค่าเสียหายส่วนแรก (Deductible) 10%</p>
     </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
 
     <section class="mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
@@ -151,55 +170,53 @@ const jsonLdFaq = {
       </div>
     </section>
 
+    <RelatedArticles currentHref="/คำนวณประมาณเบี้ยประกันน้ำท่วม/" />
     <RelatedCalculators currentHref="/คำนวณประมาณเบี้ยประกันน้ำท่วม/" />
 
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงต้องสอบถามบริษัทประกันภัยโดยตรง อัตราอาจแตกต่างตามบริษัท พื้นที่ และเงื่อนไขกรมธรรม์
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      เบี้ยจริงขึ้นอยู่กับบริษัทประกันภัย ที่ตั้ง โครงสร้างอาคาร และเงื่อนไขกรมธรรม์
+      กรุณาสอบถามบริษัทประกันภัยโดยตรง
     </div>
   </article>
 
   <script>
-    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
-    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n) + ' บาท'; }
-
-    const form = document.getElementById('flood-form') as HTMLFormElement;
-    const resultsDiv = document.getElementById('results') as HTMLDivElement;
-
-    function setErr(id: string, msg: string) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.classList.remove('hidden'); } }
-    function clearErr(id: string) { const el = document.getElementById(id); if (el) { el.textContent = ''; el.classList.add('hidden'); } }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      clearErr('flood-building-error');
-
-      const building = parseNum((document.getElementById('flood-building') as HTMLInputElement).value);
-      const contents = parseNum((document.getElementById('flood-contents') as HTMLInputElement).value);
-      const risk = (document.getElementById('flood-risk') as HTMLSelectElement).value;
-      const groundfloor = (document.getElementById('flood-groundfloor') as HTMLSelectElement).value;
-
-      if (building <= 0) { setErr('flood-building-error', 'กรุณากรอกมูลค่าอาคาร'); return; }
-
-      trackCalculatorStart('flood-insurance-estimate');
-
-      const baseRates: Record<string, number> = { low: 0.0008, medium: 0.0015, high: 0.0030 };
-      const riskNames: Record<string, string> = { low: 'ต่ำ', medium: 'ปานกลาง', high: 'สูง' };
-
-      let rate = baseRates[risk] || 0.0015;
-      if (groundfloor === 'ground') rate += 0.0005;
-
-      const buildingPremium = building * rate;
-      const contentsPremium = contents * rate;
-      const total = buildingPremium + contentsPremium;
-
-      (document.getElementById('res-building') as HTMLElement).textContent = fmt(buildingPremium);
-      (document.getElementById('res-contents') as HTMLElement).textContent = contents > 0 ? fmt(contentsPremium) : 'ไม่รวม';
-      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
-      (document.getElementById('res-note') as HTMLElement).textContent =
-        `ความเสี่ยง${riskNames[risk]} | ${groundfloor === 'ground' ? 'ชั้น 1 ติดพื้น' : 'ยกพื้น/ชั้น 2+'} | อัตราเบี้ย ${(rate * 100).toFixed(3)}%`;
-
-      resultsDiv.classList.remove('hidden');
-      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      trackCalculatorComplete('flood-insurance-estimate');
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(n));
+    }
+    const RISK_RATES: Record<string, number> = { low: 0.0008, medium: 0.0015, high: 0.003 };
+    const RISK_NAMES: Record<string, string> = { low: 'ต่ำ', medium: 'ปานกลาง', high: 'สูง' };
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const formError = document.getElementById('form-error')!;
+      formError.classList.add('hidden');
+      const buildingValue = parseNum((document.getElementById('building-value') as HTMLInputElement).value);
+      const contentsValue = parseNum((document.getElementById('contents-value') as HTMLInputElement).value);
+      const riskLevel = (document.getElementById('risk-level') as HTMLSelectElement).value;
+      const floorLevel = (document.getElementById('floor-level') as HTMLSelectElement).value;
+      if (buildingValue <= 0 && contentsValue <= 0) {
+        formError.textContent = 'กรุณากรอกมูลค่าอาคารหรือทรัพย์สิน';
+        formError.classList.remove('hidden');
+        return;
+      }
+      let rate = RISK_RATES[riskLevel] || 0.0015;
+      if (floorLevel === 'ground') rate += 0.0005;
+      const buildingPremium = buildingValue * rate;
+      const contentsPremium = contentsValue * rate;
+      const totalPremium = buildingPremium + contentsPremium;
+      const totalCoverage = buildingValue + contentsValue;
+      const excess = Math.max(totalCoverage * 0.1, 10000);
+      (document.getElementById('res-premium') as HTMLElement).textContent = fmt(totalPremium);
+      (document.getElementById('res-coverage') as HTMLElement).textContent = fmt(totalCoverage);
+      (document.getElementById('res-excess') as HTMLElement).textContent = fmt(excess);
+      (document.getElementById('det-building') as HTMLElement).textContent = fmt(buildingPremium) + ' บาท';
+      (document.getElementById('det-contents') as HTMLElement).textContent = fmt(contentsPremium) + ' บาท';
+      (document.getElementById('det-risk') as HTMLElement).textContent = RISK_NAMES[riskLevel] + (floorLevel === 'ground' ? ' (ชั้น 1 +0.05%)' : '');
+      (document.getElementById('det-total') as HTMLElement).textContent = fmt(totalPremium) + ' บาท/ปี';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
       trackCalculatorUsed('flood-insurance-estimate');
     });
   </script>
