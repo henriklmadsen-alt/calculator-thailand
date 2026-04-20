@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณเงินกู้เกษตร 2569 | สินเชื่อเกษตรกร | Calculator Thailand';
+const pageDescription = 'คำนวณเงินกู้เกษตรกร ดอกเบี้ย ระยะเวลาผ่อน ตารางชำระหนี้ เปรียบเทียบเงื่อนไขการกู้';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-เงินกู้เกษตร/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินกู้เกษตร">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเงินกู้เกษตร</h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-lime-200 bg-lime-50 px-3 py-2">
+      <p class="text-xs font-semibold text-lime-800">[อัปเดตปี 2569]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเงินกู้เกษตร สินเชื่อเกษตรกรจากสถาบันการเงิน ดอกเบี้ย ระยะเวลาผ่อน และตารางชำระหนี้รายเดือน
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="loanAmount" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนเงินกู้ (บาท)
+          </label>
+          <input
+            type="text"
+            id="loanAmount"
+            inputmode="decimal"
+            placeholder="เช่น 200000"
+            value="200000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="interestRate" class="block text-sm font-medium text-gray-700 mb-1">
+            ดอกเบี้ยต่อปี (%)
+          </label>
+          <input
+            type="text"
+            id="interestRate"
+            inputmode="decimal"
+            placeholder="เช่น 4.5"
+            value="4.5"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="loanTerm" class="block text-sm font-medium text-gray-700 mb-1">
+            ระยะเวลาผ่อน (ปี)
+          </label>
+          <input
+            type="text"
+            id="loanTerm"
+            inputmode="decimal"
+            placeholder="เช่น 5"
+            value="5"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base"
+      >
+        คำนวณค่างวด
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-blue-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ค่างวดรายเดือน</p>
+            <p id="monthly-payment" class="text-lg font-bold text-gray-900">-</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">จำนวนเดือน</p>
+            <p id="num-payments" class="text-lg font-bold text-gray-900">-</p>
+          </div>
+          <div class="bg-green-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ชำระหนี้ทั้งหมด</p>
+            <p id="total-payment" class="text-lg font-bold text-green-600">-</p>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ดอกเบี้ยรวม</p>
+            <p id="total-interest" class="text-lg font-bold text-orange-600">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สินเชื่อเกษตรกร</h2>
+      <p>
+        สินเชื่อเกษตรกรช่วยให้เกษตรกรสามารถขยายการทำเกษตร ซื้ออุปกรณ์ หรือปรับปรุงระบบการเกษตร การคำนวณค่างวดอย่างถูกต้องช่วยให้สามารถวางแผนการชำระหนี้ได้ดี
+      </p>
+    </section>
+  </article>
+
+  <script>
+    function formatCurrency(num: number): string {
+      return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(num);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const loanAmount = parseFloat((document.getElementById('loanAmount') as HTMLInputElement).value) || 0;
+      const interestRate = parseFloat((document.getElementById('interestRate') as HTMLInputElement).value) || 4.5;
+      const loanTerm = parseFloat((document.getElementById('loanTerm') as HTMLInputElement).value) || 5;
+
+      if (loanAmount <= 0) return;
+
+      const monthlyRate = interestRate / 100 / 12;
+      const numPayments = loanTerm * 12;
+      const monthlyPayment = (loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments))) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+      const totalPayment = monthlyPayment * numPayments;
+      const totalInterest = totalPayment - loanAmount;
+
+      (document.getElementById('monthly-payment') as HTMLElement).textContent = formatCurrency(monthlyPayment);
+      (document.getElementById('num-payments') as HTMLElement).textContent = numPayments.toString();
+      (document.getElementById('total-payment') as HTMLElement).textContent = formatCurrency(totalPayment);
+      (document.getElementById('total-interest') as HTMLElement).textContent = formatCurrency(totalInterest);
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('agricultural-loan');
+    });
+
+    // Auto-calculate
+    document.getElementById('btn-calculate')!.click();
+  </script>
+</BaseLayout>

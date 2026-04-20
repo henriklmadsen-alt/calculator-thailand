@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณต้นทุนระบบชลประทาน 2569 | เกษตร | Calculator Thailand';
+const pageDescription = 'คำนวณต้นทุนระบบชลประทาน ท่อน้ำ เครื่องสูบน้ำ ค่าบำรุงรักษา ค่าน้ำประจำปี สำหรับพื้นที่เกษตร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ต้นทุนชลประทาน/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนชลประทาน">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณต้นทุนระบบชลประทาน</h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-lime-200 bg-lime-50 px-3 py-2">
+      <p class="text-xs font-semibold text-lime-800">[อัปเดตปี 2569]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณต้นทุนติดตั้งระบบชลประทาน ต้นทุนบำรุงรักษา ค่าน้ำ ค่าไฟฟ้า สำหรับการเพาะปลูกแบบมีน้ำชลประทาน
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="raiSize" class="block text-sm font-medium text-gray-700 mb-1">
+            ขนาดพื้นที่ (ไร่)
+          </label>
+          <input
+            type="text"
+            id="raiSize"
+            inputmode="decimal"
+            placeholder="เช่น 10"
+            value="10"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="systemType" class="block text-sm font-medium text-gray-700 mb-1">
+            ประเภทระบบชลประทาน
+          </label>
+          <select id="systemType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base">
+            <option value="drip">ระบบน้ำหยด (Drip)</option>
+            <option value="sprinkler">ระบบสปรินเคลอร์</option>
+            <option value="canal">ระบบสุขภาคจาก</option>
+          </select>
+        </div>
+
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            id="wellRequired"
+            checked
+            class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500 rounded"
+          />
+          <label for="wellRequired" class="ml-2 text-sm text-gray-700">
+            ต้องเจาะบ่อเก็บน้ำ
+          </label>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base"
+      >
+        คำนวณต้นทุน
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-blue-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ต้นทุนติดตั้ง</p>
+            <p id="install-cost" class="text-lg font-bold text-gray-900">-</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ต้นทุนต่อปี</p>
+            <p id="annual-cost" class="text-lg font-bold text-gray-900">-</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ระยะเวลาคืนทุน</p>
+            <p id="payback" class="text-lg font-bold text-gray-900">-</p>
+          </div>
+          <div class="bg-green-50 rounded-lg p-3">
+            <p class="text-xs text-gray-600">ประโยชน์ต่อปี</p>
+            <p id="benefit" class="text-lg font-bold text-green-600">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ระบบชลประทานสำหรับเกษตร</h2>
+      <p>
+        ระบบชลประทานที่มีประสิทธิภาพช่วยประหยัดน้ำและเพิ่มผลผลิต แม้ต้นทุนติดตั้งค่อนข้างสูง แต่การเพิ่มผลผลิตในระยะยาวจะคุ้มค่า
+      </p>
+    </section>
+  </article>
+
+  <script>
+    function formatCurrency(num: number): string {
+      return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(num);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const raiSize = parseFloat((document.getElementById('raiSize') as HTMLInputElement).value) || 0;
+      const systemType = (document.getElementById('systemType') as HTMLSelectElement).value;
+      const wellRequired = (document.getElementById('wellRequired') as HTMLInputElement).checked;
+
+      if (raiSize <= 0) return;
+
+      const wellCost = wellRequired ? 40000 : 0;
+      const costPerRai: Record<string, number> = { drip: 15000, sprinkler: 12000, canal: 8000 };
+      const pipelineCost = raiSize * (costPerRai[systemType] || 15000);
+      const equipmentCost = 5000 + raiSize * 2000;
+      const laborCost = raiSize * 3000;
+      const totalInstall = wellCost + pipelineCost + equipmentCost + laborCost;
+
+      const annualCost = raiSize * 6500; // maintenance + water + electricity
+      const annualBenefit = raiSize * 750;
+      const payback = totalInstall / annualBenefit;
+
+      (document.getElementById('install-cost') as HTMLElement).textContent = formatCurrency(totalInstall);
+      (document.getElementById('annual-cost') as HTMLElement).textContent = formatCurrency(annualCost);
+      (document.getElementById('payback') as HTMLElement).textContent = Math.round(payback * 10) / 10 + ' ปี';
+      (document.getElementById('benefit') as HTMLElement).textContent = formatCurrency(annualBenefit);
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('irrigation-system');
+    });
+
+    // Auto-calculate
+    document.getElementById('btn-calculate')!.click();
+  </script>
+</BaseLayout>
