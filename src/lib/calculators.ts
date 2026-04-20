@@ -3680,6 +3680,15 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  { title: 'คำนวณต้นทุนระบบรักษาความปลอดภัย', desc: 'กล้อง CCTV ล็อคปลอดภัย เซ็นเซอร์', href: '/คำนวณต้นทุนระบบรักษาความปลอดภัย/', icon: '🔒', categoryId: 'construction', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณ ROI อัตโนมัติบ้าน', desc: 'ผลตอบแทนจากการลงทุนสมาร์ทโฮม', href: '/คำนวณ-roi-อัตโนมัติบ้าน/', icon: '📈', categoryId: 'construction', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณต้นทุนระบบอ่อนน้ำ', desc: 'ระบบปรับคุณภาพน้ำ ค่าบำรุง', href: '/คำนวณต้นทุนระบบอ่อนน้ำ/', icon: '💧', categoryId: 'construction', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณต้นทุนอัปเกรดระบายน้ำ', desc: 'บ่อเกรอะ ท่อระบายน้ำ ปรับปรุง', href: '/คำนวณต้นทุนอัปเกรดระบายน้ำ/', icon: '🚰', categoryId: 'bills', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณต้นทุนเปลี่ยนเครื่องบดขยะ', desc: 'เครื่องบดขยะอัตโนมัติ', href: '/คำนวณต้นทุนเปลี่ยนเครื่องบดขยะ/', icon: '♻️', categoryId: 'construction', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณต้นทุนบำรุงถังเก็บน้ำเสีย', desc: 'ล้างถังเก็บ บำรุงรักษา', href: '/คำนวณต้นทุนบำรุงถังเก็บน้ำเสีย/', icon: '🔧', categoryId: 'construction', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณขนาดเครื่องปั่นไฟสำรอง', desc: 'เครื่องสำรอง ขนาด KVA', href: '/คำนวณขนาดเครื่องปั่นไฟสำรอง/', icon: '⚡', categoryId: 'bills', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณเปรียบเทียบประกันบ้าน', desc: 'ประกัน vs ซ่อมด้วยตัวเอง', href: '/คำนวณเปรียบเทียบประกันบ้าน/', icon: '🏠', categoryId: 'insurance', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณต้นทุนย้ายบ้าน', desc: 'ค่าย้ายบ้าน ขนส่ง จัดเก็บ', href: '/คำนวณต้นทุนย้ายบ้าน/', icon: '🚚', categoryId: 'bills', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
 ];
 
 /** Look up a category by its slug (used in dynamic routes). */
