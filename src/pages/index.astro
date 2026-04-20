@@ -3,209 +3,296 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 
+/* ── Category taxonomy ─────────────────────────────────────────── */
+const categories = [
+  { id: 'tax',         name: 'ภาษี',              icon: '💰', slug: 'ภาษี' },
+  { id: 'loan',        name: 'สินเชื่อ/ผ่อน',     icon: '🏠', slug: 'สินเชื่อ-ผ่อน' },
+  { id: 'bills',       name: 'ค่าใช้จ่าย',         icon: '⚡', slug: 'ค่าใช้จ่าย' },
+  { id: 'salary',      name: 'เงินเดือน/แรงงาน',   icon: '👷', slug: 'เงินเดือน-แรงงาน' },
+  { id: 'realestate',  name: 'อสังหาฯ',            icon: '🏘️', slug: 'อสังหาริมทรัพย์' },
+  { id: 'health',      name: 'สุขภาพ/ชีวิต',       icon: '❤️', slug: 'สุขภาพ-ชีวิต' },
+  { id: 'creditcard',  name: 'บัตรเครดิต',          icon: '💳', slug: 'บัตรเครดิต' },
+  { id: 'general',     name: 'แปลง/ทั่วไป',        icon: '📏', slug: 'แปลง-ทั่วไป' },
+];
+
+/* ── All calculators with category assignment ──────────────────── */
 const calculators = [
-  {
-    title: 'คำนวณค่าไฟฟ้า',
-    desc: 'คำนวณค่าไฟฐาน ค่า Ft ค่าบริการ และ VAT 7% สำหรับ MEA/PEA อัปเดตปี 2569',
-    href: '/คำนวณค่าไฟฟ้า/',
-    icon: '⚡',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณค่าแรงขั้นต่ำ',
-    desc: 'ค่าแรงขั้นต่ำ 77 จังหวัด รายวัน รายเดือน พร้อมค่าโอที อัปเดตปี 2569',
-    href: '/คำนวณค่าแรงขั้นต่ำ/',
-    icon: '👷',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณค่าโอที',
-    desc: 'คำนวณ OT วันธรรมดา 1.5 เท่า ทำงานวันหยุด 2 เท่า และ OT วันหยุด 3 เท่า ตามกฎหมายแรงงานปี 2569',
-    href: '/คำนวณค่าโอที/',
-    icon: '⏱️',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
+  /* ── ภาษี (Tax) ── */
   {
     title: 'คำนวณภาษีเงินได้',
     desc: 'คำนวณภาษีเงินได้บุคคลธรรมดาตามขั้นบันได พร้อมค่าลดหย่อน',
     href: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
     icon: '💰',
+    category: 'tax',
     tag: 'ยอดนิยม',
     tagColor: 'bg-red-50 text-red-600',
+    popular: true,
   },
   {
     title: 'คำนวณ VAT 7%',
     desc: 'บวก VAT หรือแยก VAT จากราคารวม รองรับหลายรายการ',
     href: '/คำนวณภาษีมูลค่าเพิ่ม/',
     icon: '🧾',
+    category: 'tax',
     tag: 'สำหรับธุรกิจ',
     tagColor: 'bg-blue-50 text-blue-600',
-  },
-  {
-    title: 'คำนวณผ่อนกู้',
-    desc: 'คำนวณค่างวดสินเชื่อบ้าน รถ ส่วนบุคคล พร้อมตารางผ่อน',
-    href: '/คำนวณผ่อนกู้/',
-    icon: '🏠',
-    tag: null,
-    tagColor: '',
-  },
-  {
-    title: 'คำนวณ BMI',
-    desc: 'คำนวณดัชนีมวลกาย ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย',
-    href: '/คำนวณ-bmi/',
-    icon: '⚖️',
-    tag: null,
-    tagColor: '',
-  },
-  {
-    title: 'คำนวณประกันสังคม',
-    desc: 'เงินสมทบประกันสังคม มาตรา 33 39 40 แสดงส่วนลูกจ้าง นายจ้าง รัฐบาล',
-    href: '/คำนวณประกันสังคม/',
-    icon: '🛡️',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณเงินเดือนสุทธิ',
-    desc: 'เงินเดือนหลังหักภาษีและประกันสังคม พร้อมรายละเอียดทุกรายการ',
-    href: '/คำนวณเงินเดือนสุทธิ/',
-    icon: '📊',
-    tag: 'มนุษย์เงินเดือน',
-    tagColor: 'bg-green-50 text-green-600',
-  },
-  {
-    title: 'คำนวณผ่อนรถ',
-    desc: 'คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย flat rate พร้อมตารางผ่อน',
-    href: '/คำนวณผ่อนรถ/',
-    icon: '🚗',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณค่าภาษีรถยนต์',
-    desc: 'ภาษีรถประจำปี + พ.ร.บ. รถเก๋ง กระบะ มอเตอร์ไซค์ พร้อมส่วนลดอายุรถ',
-    href: '/คำนวณค่าภาษีรถยนต์/',
-    icon: '🚘',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณดอกเบี้ยเงินฝาก',
-    desc: 'ดอกเบี้ยฝากประจำและออมทรัพย์ หักภาษี 15% แสดงผลตอบแทนสุทธิ',
-    href: '/คำนวณดอกเบี้ยเงินฝาก/',
-    icon: '🏦',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณอายุ',
-    desc: 'คำนวณอายุจากวันเกิด รองรับ พ.ศ. พร้อมราศีและ Generation',
-    href: '/คำนวณอายุ/',
-    icon: '🎂',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
-  },
-  {
-    title: 'คำนวณเปอร์เซ็นต์',
-    desc: 'คำนวณ X% ของจำนวน เปอร์เซ็นต์ของส่วนหนึ่ง และเปอร์เซ็นต์เพิ่ม/ลด',
-    href: '/คำนวณเปอร์เซ็นต์/',
-    icon: '📐',
-    tag: null,
-    tagColor: '',
-  },
-  {
-    title: 'คำนวณผ่อนบ้าน',
-    desc: 'คำนวณค่างวดบ้านแบบลดต้นลดดอก เทียบแผนเดิมกับแผนรีไฟแนนซ์',
-    href: '/คำนวณผ่อนบ้าน/',
-    icon: '🏘️',
-    tag: null,
-    tagColor: '',
-  },
-  {
-    title: 'คำนวณค่าน้ำ',
-    desc: 'คำนวณค่าน้ำประปาตามขั้นบันได กปน./กปภ. พร้อม VAT',
-    href: '/คำนวณค่าน้ำ/',
-    icon: '💧',
-    tag: null,
-    tagColor: '',
-  },
-  {
-    title: 'คำนวณค่าธรรมเนียมโอนบ้าน',
-    desc: 'คำนวณค่าโอน ค่าจดจำนอง ภาษีธุรกิจเฉพาะ อากรแสตมป์ ในหน้าเดียว',
-    href: '/คำนวณค่าธรรมเนียมโอนบ้าน/',
-    icon: '🏠',
-    tag: null,
-    tagColor: '',
+    popular: false,
   },
   {
     title: 'คำนวณภาษีที่ดิน',
     desc: 'คำนวณภาษีที่ดินแบบขั้นมูลค่า แยกที่อยู่อาศัย เกษตร พาณิชย์',
     href: '/คำนวณภาษีที่ดิน/',
     icon: '🏛️',
+    category: 'tax',
     tag: null,
     tagColor: '',
+    popular: false,
   },
   {
-    title: 'คำนวณดอกเบี้ยบัตรเครดิต',
-    desc: 'ดอกเบี้ยก่อนครบกำหนด ยอดคงค้างรอบถัดไป พร้อมยอดชำระขั้นต่ำ',
-    href: '/คำนวณดอกเบี้ยบัตรเครดิต/',
-    icon: '💳',
+    title: 'คำนวณค่าภาษีรถยนต์',
+    desc: 'ภาษีรถประจำปี + พ.ร.บ. รถเก๋ง กระบะ มอเตอร์ไซค์ พร้อมส่วนลดอายุรถ',
+    href: '/คำนวณค่าภาษีรถยนต์/',
+    icon: '🚘',
+    category: 'tax',
     tag: null,
     tagColor: '',
+    popular: false,
+  },
+
+  /* ── สินเชื่อ/ผ่อน (Loans) ── */
+  {
+    title: 'คำนวณผ่อนกู้',
+    desc: 'คำนวณค่างวดสินเชื่อบ้าน รถ ส่วนบุคคล พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนกู้/',
+    icon: '🏠',
+    category: 'loan',
+    tag: null,
+    tagColor: '',
+    popular: true,
   },
   {
-    title: 'คำนวณค่างวดบัตรเครดิต',
-    desc: 'คำนวณค่างวดขั้นต่ำ ดอกเบี้ยรวม และยอดคงเหลือรอบถัดไป',
-    href: '/คำนวณค่างวดบัตรเครดิต/',
-    icon: '🧮',
+    title: 'คำนวณผ่อนรถ',
+    desc: 'คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย flat rate พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนรถ/',
+    icon: '🚗',
+    category: 'loan',
     tag: null,
     tagColor: '',
+    popular: true,
   },
   {
-    title: 'คำนวณวันคลอด',
-    desc: 'คำนวณวันกำหนดคลอดและอายุครรภ์ปัจจุบัน พร้อมไตรมาส',
-    href: '/คำนวณวันคลอด/',
-    icon: '👶',
+    title: 'คำนวณผ่อนบ้าน',
+    desc: 'คำนวณค่างวดบ้านแบบลดต้นลดดอก เทียบแผนเดิมกับแผนรีไฟแนนซ์',
+    href: '/คำนวณผ่อนบ้าน/',
+    icon: '🏘️',
+    category: 'loan',
     tag: null,
     tagColor: '',
+    popular: false,
   },
   {
-    title: 'คำนวณอัตราแลกเปลี่ยน',
-    desc: 'แปลงเงินสกุลต่างๆ อัตราย้อนกลับ และยอดสุทธิหลังหักสเปรด',
-    href: '/คำนวณอัตราแลกเปลี่ยน/',
-    icon: '💱',
+    title: 'คำนวณดอกเบี้ยเงินฝาก',
+    desc: 'ดอกเบี้ยฝากประจำและออมทรัพย์ หักภาษี 15% แสดงผลตอบแทนสุทธิ',
+    href: '/คำนวณดอกเบี้ยเงินฝาก/',
+    icon: '🏦',
+    category: 'loan',
     tag: null,
     tagColor: '',
+    popular: false,
+  },
+
+  /* ── ค่าใช้จ่าย (Bills) ── */
+  {
+    title: 'คำนวณค่าไฟฟ้า',
+    desc: 'คำนวณค่าไฟฐาน ค่า Ft ค่าบริการ และ VAT 7% สำหรับ MEA/PEA อัปเดตปี 2569',
+    href: '/คำนวณค่าไฟฟ้า/',
+    icon: '⚡',
+    category: 'bills',
+    tag: 'ยอดนิยม',
+    tagColor: 'bg-red-50 text-red-600',
+    popular: true,
   },
   {
-    title: 'คำนวณเงินเกษียณ',
-    desc: 'ประเมินเงินที่ต้องมี เงินสะสม ณ วันเกษียณ และช่องว่างเงินเกษียณ',
-    href: '/คำนวณเงินเกษียณ/',
-    icon: '🎯',
+    title: 'คำนวณค่าน้ำ',
+    desc: 'คำนวณค่าน้ำประปาตามขั้นบันได กปน./กปภ. พร้อม VAT',
+    href: '/คำนวณค่าน้ำ/',
+    icon: '💧',
+    category: 'bills',
     tag: null,
     tagColor: '',
-  },
-  {
-    title: 'แปลงหน่วย',
-    desc: 'แปลงหน่วยวัด: ความยาว มวล อุณหภูมิ และพื้นที่ รวมหน่วยไทย',
-    href: '/แปลงหน่วย/',
-    icon: '📏',
-    tag: null,
-    tagColor: '',
+    popular: false,
   },
   {
     title: 'คำนวณค่าส่งพัสดุ',
     desc: 'เปรียบเทียบค่าส่ง ไปรษณีย์ไทย Kerry Flash J&T กรอกน้ำหนักและขนาด หาตัวเลือกถูกสุด',
     href: '/คำนวณค่าส่งพัสดุ/',
     icon: '📦',
-    tag: 'ใหม่',
-    tagColor: 'bg-orange-50 text-orange-600',
+    category: 'bills',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+
+  /* ── เงินเดือน/แรงงาน (Salary/Work) ── */
+  {
+    title: 'คำนวณค่าแรงขั้นต่ำ',
+    desc: 'ค่าแรงขั้นต่ำ 77 จังหวัด รายวัน รายเดือน พร้อมค่าโอที อัปเดตปี 2569',
+    href: '/คำนวณค่าแรงขั้นต่ำ/',
+    icon: '👷',
+    category: 'salary',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'คำนวณค่าโอที',
+    desc: 'คำนวณ OT วันธรรมดา 1.5 เท่า ทำงานวันหยุด 2 เท่า และ OT วันหยุด 3 เท่า ตามกฎหมายแรงงานปี 2569',
+    href: '/คำนวณค่าโอที/',
+    icon: '⏱️',
+    category: 'salary',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'คำนวณเงินเดือนสุทธิ',
+    desc: 'เงินเดือนหลังหักภาษีและประกันสังคม พร้อมรายละเอียดทุกรายการ',
+    href: '/คำนวณเงินเดือนสุทธิ/',
+    icon: '📊',
+    category: 'salary',
+    tag: 'มนุษย์เงินเดือน',
+    tagColor: 'bg-green-50 text-green-600',
+    popular: true,
+  },
+  {
+    title: 'คำนวณประกันสังคม',
+    desc: 'เงินสมทบประกันสังคม มาตรา 33 39 40 แสดงส่วนลูกจ้าง นายจ้าง รัฐบาล',
+    href: '/คำนวณประกันสังคม/',
+    icon: '🛡️',
+    category: 'salary',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+
+  /* ── อสังหาฯ (Real Estate) ── */
+  {
+    title: 'คำนวณค่าธรรมเนียมโอนบ้าน',
+    desc: 'คำนวณค่าโอน ค่าจดจำนอง ภาษีธุรกิจเฉพาะ อากรแสตมป์ ในหน้าเดียว',
+    href: '/คำนวณค่าธรรมเนียมโอนบ้าน/',
+    icon: '🏠',
+    category: 'realestate',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'คำนวณเงินเกษียณ',
+    desc: 'ประเมินเงินที่ต้องมี เงินสะสม ณ วันเกษียณ และช่องว่างเงินเกษียณ',
+    href: '/คำนวณเงินเกษียณ/',
+    icon: '🎯',
+    category: 'realestate',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+
+  /* ── สุขภาพ/ชีวิต (Health/Life) ── */
+  {
+    title: 'คำนวณ BMI',
+    desc: 'คำนวณดัชนีมวลกาย ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย',
+    href: '/คำนวณ-bmi/',
+    icon: '⚖️',
+    category: 'health',
+    tag: 'ยอดนิยม',
+    tagColor: 'bg-red-50 text-red-600',
+    popular: true,
+  },
+  {
+    title: 'คำนวณอายุ',
+    desc: 'คำนวณอายุจากวันเกิด รองรับ พ.ศ. พร้อมราศีและ Generation',
+    href: '/คำนวณอายุ/',
+    icon: '🎂',
+    category: 'health',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'คำนวณวันคลอด',
+    desc: 'คำนวณวันกำหนดคลอดและอายุครรภ์ปัจจุบัน พร้อมไตรมาส',
+    href: '/คำนวณวันคลอด/',
+    icon: '👶',
+    category: 'health',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+
+  /* ── บัตรเครดิต (Credit Cards) ── */
+  {
+    title: 'คำนวณดอกเบี้ยบัตรเครดิต',
+    desc: 'ดอกเบี้ยก่อนครบกำหนด ยอดคงค้างรอบถัดไป พร้อมยอดชำระขั้นต่ำ',
+    href: '/คำนวณดอกเบี้ยบัตรเครดิต/',
+    icon: '💳',
+    category: 'creditcard',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'คำนวณค่างวดบัตรเครดิต',
+    desc: 'คำนวณค่างวดขั้นต่ำ ดอกเบี้ยรวม และยอดคงเหลือรอบถัดไป',
+    href: '/คำนวณค่างวดบัตรเครดิต/',
+    icon: '🧮',
+    category: 'creditcard',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+
+  /* ── แปลง/ทั่วไป (Convert/General) ── */
+  {
+    title: 'คำนวณเปอร์เซ็นต์',
+    desc: 'คำนวณ X% ของจำนวน เปอร์เซ็นต์ของส่วนหนึ่ง และเปอร์เซ็นต์เพิ่ม/ลด',
+    href: '/คำนวณเปอร์เซ็นต์/',
+    icon: '📐',
+    category: 'general',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'คำนวณอัตราแลกเปลี่ยน',
+    desc: 'แปลงเงินสกุลต่างๆ อัตราย้อนกลับ และยอดสุทธิหลังหักสเปรด',
+    href: '/คำนวณอัตราแลกเปลี่ยน/',
+    icon: '💱',
+    category: 'general',
+    tag: null,
+    tagColor: '',
+    popular: false,
+  },
+  {
+    title: 'แปลงหน่วย',
+    desc: 'แปลงหน่วยวัด: ความยาว มวล อุณหภูมิ และพื้นที่ รวมหน่วยไทย',
+    href: '/แปลงหน่วย/',
+    icon: '📏',
+    category: 'general',
+    tag: null,
+    tagColor: '',
+    popular: false,
   },
 ];
 
+/* ── Derived data ──────────────────────────────────────────────── */
+const categoriesWithCount = categories.map(cat => ({
+  ...cat,
+  count: calculators.filter(c => c.category === cat.id).length,
+}));
+
+const popularCalcs = calculators.filter(c => c.popular);
+
+/* ── JSON-LD (preserved) ──────────────────────────────────────── */
 const jsonLdWebsite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -233,60 +320,142 @@ const jsonLdItemList = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebsite)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} />
-  <!-- Hero Section -->
-  <div class="text-center mb-10 sm:mb-14">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-50 text-primary-700 rounded-full text-sm font-medium mb-5">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-      คำนวณแม่นยำ ใช้งานง่าย ฟรี 100%
-    </div>
-    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+
+  <!-- ─── Hero (minimal) ─────────────────────────────────────── -->
+  <div class="text-center mb-6 sm:mb-8">
+    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-2 leading-tight">
       เครื่องคำนวณออนไลน์
       <span class="bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent"> สำหรับคนไทย</span>
     </h1>
-    <p class="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-      คำนวณภาษี ดอกเบี้ย สินเชื่อ BMI และอื่นๆ ได้ทันที ไม่ต้องสมัครสมาชิก
+    <p class="text-base sm:text-lg text-gray-500 max-w-xl mx-auto">
+      คำนวณภาษี ดอกเบี้ย สินเชื่อ BMI และอื่นๆ ได้ทันที ฟรี 100%
     </p>
-    <a href="#calculators" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-semibold rounded-xl shadow-md transition-colors">
-      เริ่มคำนวณเลย
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+  </div>
+
+  <!-- ─── Search Bar (sticky) ────────────────────────────────── -->
+  <div id="search-wrapper" class="sticky top-0 z-30 -mx-4 px-4 py-3 bg-white/80 backdrop-blur-md border-b border-transparent transition-all duration-200">
+    <div class="max-w-2xl mx-auto relative">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-    </a>
+      <input
+        id="search-input"
+        type="text"
+        inputmode="text"
+        autocomplete="off"
+        placeholder="ค้นหาเครื่องคำนวณ... (เช่น ภาษี, ผ่อนบ้าน, BMI)"
+        class="w-full pl-12 pr-10 py-3 sm:py-3.5 rounded-2xl border border-gray-200 bg-white text-gray-900 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-card transition-shadow"
+      />
+      <button id="search-clear" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs hover:bg-gray-300 transition-colors hidden" aria-label="ล้างการค้นหา">&times;</button>
+    </div>
+    <!-- Search results dropdown -->
+    <div id="search-results" class="max-w-2xl mx-auto mt-2 bg-white rounded-2xl shadow-card-hover border border-gray-100 overflow-hidden hidden">
+    </div>
   </div>
 
-  <!-- Calculator Grid -->
-  <div id="calculators" class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-12">
-    {calculators.map((calc) => (
-      <a
-        href={calc.href}
-        class="calc-card group relative block p-5 sm:p-6 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200"
-      >
-        {calc.tag && (
-          <span class={`absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-full ${calc.tagColor}`}>
-            {calc.tag}
+  <!-- ─── Category Icon Grid (Lazada-style) ──────────────────── -->
+  <div class="my-8">
+    <div class="grid grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
+      {categoriesWithCount.map((cat) => (
+        <button
+          data-category-btn={cat.id}
+          class="category-btn group flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-2xl hover:bg-primary-50 transition-colors cursor-pointer"
+        >
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary-50 flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform shadow-sm">
+            {cat.icon}
+          </div>
+          <span class="text-xs sm:text-sm font-semibold text-gray-700 text-center leading-tight group-hover:text-primary-600 transition-colors">
+            {cat.name}
           </span>
-        )}
-        <div class="text-3xl mb-3">{calc.icon}</div>
-        <h2 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1.5">
-          {calc.title}
-        </h2>
-        <p class="text-sm text-gray-500 leading-relaxed">
-          {calc.desc}
-        </p>
-        <div class="mt-4 flex items-center text-primary-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-          เปิดเครื่องคำนวณ
-          <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </a>
-    ))}
-
+          <span class="text-[10px] font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+            {cat.count}
+          </span>
+        </button>
+      ))}
+    </div>
   </div>
 
-  <!-- Trust Section -->
+  <!-- ─── Popular Row ────────────────────────────────────────── -->
+  <section class="mb-10">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
+        <span class="text-red-500">&#x1F525;</span> ยอดนิยม
+      </h2>
+    </div>
+    <div class="flex gap-4 overflow-x-auto pb-3 -mx-1 px-1 snap-x snap-mandatory scrollbar-hide">
+      {popularCalcs.map((calc) => (
+        <a
+          href={calc.href}
+          class="group snap-start flex-shrink-0 w-60 sm:w-64 p-4 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200 transition-all"
+        >
+          <div class="flex items-start gap-3">
+            <div class="text-2xl flex-shrink-0 mt-0.5">{calc.icon}</div>
+            <div class="min-w-0">
+              <h3 class="text-sm font-bold text-gray-900 group-hover:text-primary-600 transition-colors truncate">
+                {calc.title}
+              </h3>
+              <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                {calc.desc}
+              </p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- ─── All Calculators (category-filterable grid) ─────────── -->
+  <section id="all-calculators" class="mb-12">
+    <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">
+      เครื่องคำนวณทั้งหมด
+    </h2>
+
+    <!-- Category chips -->
+    <div class="flex gap-2 overflow-x-auto pb-3 mb-5 -mx-1 px-1 snap-x scrollbar-hide">
+      <button data-chip="all" class="category-chip snap-start flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors bg-primary-600 text-white border-primary-600">
+        ทั้งหมด
+      </button>
+      {categories.map((cat) => (
+        <button data-chip={cat.id} class="category-chip snap-start flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors bg-white text-gray-600 border-gray-200 hover:border-primary-400 hover:text-primary-600">
+          {cat.icon} {cat.name}
+        </button>
+      ))}
+    </div>
+
+    <!-- Calculator grid -->
+    <div id="calc-grid" class="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {calculators.map((calc) => (
+        <a
+          href={calc.href}
+          data-category={calc.category}
+          data-title={calc.title}
+          data-desc={calc.desc}
+          class="calc-card group relative block p-5 sm:p-6 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200 transition-all"
+        >
+          {calc.tag && (
+            <span class={`absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-full ${calc.tagColor}`}>
+              {calc.tag}
+            </span>
+          )}
+          <div class="text-3xl mb-3">{calc.icon}</div>
+          <h3 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1.5">
+            {calc.title}
+          </h3>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            {calc.desc}
+          </p>
+          <div class="mt-4 flex items-center text-primary-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            เปิดเครื่องคำนวณ
+            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- ─── Trust Section ──────────────────────────────────────── -->
   <div class="text-center py-8 border-t border-gray-100">
     <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-gray-400">
       <div class="flex items-center gap-2">
@@ -309,4 +478,156 @@ const jsonLdItemList = {
       </div>
     </div>
   </div>
+
+  <!-- ─── Client-side JS: search + category filter ───────────── -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('search-input') as HTMLInputElement;
+      const searchClear = document.getElementById('search-clear') as HTMLButtonElement;
+      const searchResults = document.getElementById('search-results') as HTMLElement;
+      const calcGrid = document.getElementById('calc-grid') as HTMLElement;
+      const allCards = Array.from(calcGrid.querySelectorAll('.calc-card')) as HTMLElement[];
+      const chips = Array.from(document.querySelectorAll('.category-chip')) as HTMLButtonElement[];
+      const categoryBtns = Array.from(document.querySelectorAll('[data-category-btn]')) as HTMLButtonElement[];
+
+      let activeCategory = 'all';
+
+      /* ── Category chip / icon grid filter ──────────────────── */
+      function setCategory(catId: string) {
+        activeCategory = catId;
+
+        // Update chip styling
+        chips.forEach(chip => {
+          const isActive = chip.dataset.chip === catId;
+          chip.classList.toggle('bg-primary-600', isActive);
+          chip.classList.toggle('text-white', isActive);
+          chip.classList.toggle('border-primary-600', isActive);
+          chip.classList.toggle('bg-white', !isActive);
+          chip.classList.toggle('text-gray-600', !isActive);
+          chip.classList.toggle('border-gray-200', !isActive);
+        });
+
+        // Filter cards
+        allCards.forEach(card => {
+          const matches = catId === 'all' || card.dataset.category === catId;
+          card.style.display = matches ? '' : 'none';
+        });
+
+        // Scroll to grid
+        const section = document.getElementById('all-calculators');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => setCategory(chip.dataset.chip || 'all'));
+      });
+
+      categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => setCategory(btn.dataset.categoryBtn || 'all'));
+      });
+
+      /* ── Search ────────────────────────────────────────────── */
+      function normalizeSearch(text: string): string {
+        return text.toLowerCase().replace(/\s+/g, '');
+      }
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim();
+        searchClear.classList.toggle('hidden', query.length === 0);
+
+        if (query.length === 0) {
+          searchResults.classList.add('hidden');
+          searchResults.innerHTML = '';
+          return;
+        }
+
+        const normalized = normalizeSearch(query);
+        const matches = allCards
+          .map(card => ({
+            title: card.dataset.title || '',
+            desc: card.dataset.desc || '',
+            href: card.getAttribute('href') || '',
+            icon: card.querySelector('.text-3xl')?.textContent?.trim() || '',
+          }))
+          .filter(item =>
+            normalizeSearch(item.title).includes(normalized) ||
+            normalizeSearch(item.desc).includes(normalized)
+          )
+          .slice(0, 6);
+
+        if (matches.length === 0) {
+          searchResults.innerHTML = '<div class="p-4 text-center text-gray-400 text-sm">ไม่พบเครื่องคำนวณ</div>';
+          searchResults.classList.remove('hidden');
+          return;
+        }
+
+        searchResults.innerHTML = matches.map(m =>
+          `<a href="${m.href}" class="flex items-center gap-3 px-4 py-3 hover:bg-primary-50 transition-colors border-b border-gray-50 last:border-b-0">
+            <span class="text-xl flex-shrink-0">${m.icon}</span>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-gray-900 truncate">${m.title}</div>
+              <div class="text-xs text-gray-500 truncate">${m.desc}</div>
+            </div>
+            <svg class="w-4 h-4 text-gray-300 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>`
+        ).join('');
+        searchResults.classList.remove('hidden');
+      });
+
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchClear.classList.add('hidden');
+        searchResults.classList.add('hidden');
+        searchResults.innerHTML = '';
+        searchInput.focus();
+      });
+
+      // Close search results on outside click
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (!searchInput.contains(target) && !searchResults.contains(target)) {
+          searchResults.classList.add('hidden');
+        }
+      });
+
+      // Re-show results on focus if there's a query
+      searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim().length > 0 && searchResults.innerHTML) {
+          searchResults.classList.remove('hidden');
+        }
+      });
+
+      /* ── Sticky search border on scroll ────────────────────── */
+      const searchWrapper = document.getElementById('search-wrapper') as HTMLElement;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          searchWrapper.classList.toggle('border-gray-200', !entry.isIntersecting);
+        },
+        { threshold: 0 }
+      );
+      // Observe the hero section
+      const hero = searchWrapper.previousElementSibling;
+      if (hero) observer.observe(hero);
+    });
+  </script>
+
+  <style>
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
 </BaseLayout>
