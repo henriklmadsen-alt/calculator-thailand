@@ -4237,6 +4237,42 @@ export const calculators: Calculator[] = [
     tag: 'KLC-0553',
     tagColor: 'bg-sky-50 text-sky-600',
   },
+  {
+    title: 'คำนวณค่าเชื้อเพลิง',
+    desc: 'คำนวณค่าเชื้อเพลิง ตามระยะทางและอัตราการบริโภค',
+    href: '/คำนวณค่าเชื้อเพลิง/',
+    icon: '⛽',
+    categoryId: 'travel',
+    tag: 'KLC-0554',
+    tagColor: 'bg-sky-50 text-sky-600',
+  },
+  {
+    title: 'คำนวณค่าทางด่วน',
+    desc: 'คำนวณค่าผ่านด่านทางหลวง ตามเส้นทางและประเภทรถ',
+    href: '/คำนวณค่าทางด่วน/',
+    icon: '🛣️',
+    categoryId: 'travel',
+    tag: 'KLC-0555',
+    tagColor: 'bg-sky-50 text-sky-600',
+  },
+  {
+    title: 'คำนวณค่าจอดรถ',
+    desc: 'คำนวณค่าที่จอดรถ ตามสถานที่และจำนวนชั่วโมง',
+    href: '/คำนวณค่าจอดรถ/',
+    icon: '🅿️',
+    categoryId: 'travel',
+    tag: 'KLC-0556',
+    tagColor: 'bg-sky-50 text-sky-600',
+  },
+  {
+    title: 'วางแผนงบประมาณเดินทาง',
+    desc: 'วางแผนงบประมาณเดินทาง คำนวณค่าใช้จ่ายทั้งหมด',
+    href: '/วางแผนงบประมาณเดินทาง/',
+    icon: '📊',
+    categoryId: 'travel',
+    tag: 'KLC-0557',
+    tagColor: 'bg-sky-50 text-sky-600',
+  },
 ];
 
 

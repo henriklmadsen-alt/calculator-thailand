@@ -1,0 +1,231 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ ค่า SaaS Subscription 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณค่า SaaS Subscription Plan ประเมิน MRR, Churn Rate และ LTV';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่า-saas/`;
+
+const faqData = [
+  {
+    question: 'ราคา SaaS ควรเป็นเท่าไร?',
+    answer: 'Startup: $5-50/เดือน Enterprise: $500+/เดือน ขึ้นอยู่กับ Value Delivered และ Target Market',
+  },
+  {
+    question: 'SaaS LTV คืออะไร?',
+    answer: 'Lifetime Value = รายได้เฉลี่ยต่อลูกค้าตลอดชีวิต = ARPU ÷ Churn Rate ยิ่งสูง SaaS ยิ่งมีค่า',
+  },
+  {
+    question: 'CAC:LTV Ratio ควรเป็นเท่าไร?',
+    answer: 'ควร 1:3 ขึ้นไป (ลงทุน 1 บาท ได้ 3 บาท Lifetime) 1:1 ขึ้นไป ยังใช้ได้ แต่บางเสี่ยง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่า SaaS',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่า SaaS Subscription">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      💻 คำนวณค่า SaaS Subscription
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่า SaaS Subscription Plan ประเมิน MRR, Churn Rate และ LTV
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="saas-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="monthly-subscribers" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนผู้ใช้
+            </label>
+            <input
+              type="text"
+              id="monthly-subscribers"
+              inputmode="numeric"
+              placeholder="เช่น 100"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="arpu" class="block text-sm font-medium text-gray-700 mb-1">
+              ARPU (บาท/เดือน)
+            </label>
+            <input
+              type="text"
+              id="arpu"
+              inputmode="numeric"
+              placeholder="เช่น 1000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="churn-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              Churn Rate (%)
+            </label>
+            <input
+              type="text"
+              id="churn-rate"
+              inputmode="numeric"
+              placeholder="เช่น 5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="cac" class="block text-sm font-medium text-gray-700 mb-1">
+              CAC - Customer Acquisition Cost (บาท)
+            </label>
+            <input
+              type="text"
+              id="cac"
+              inputmode="numeric"
+              placeholder="เช่น 5000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณค่า
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">MRR</div>
+            <div id="res-mrr" class="text-xl font-bold text-blue-600">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">LTV</div>
+            <div id="res-ltv" class="text-xl font-bold text-green-600">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">Payback Period</div>
+            <div id="res-payback" class="text-xl font-bold text-purple-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">LTV:CAC Ratio</div>
+            <div id="res-ratio" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <GuardedAdSlot />
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณ-ค่า-saas/" />
+    <RelatedCalculators currentHref="/คำนวณ-ค่า-saas/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('saas-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const subscribers = parseNum((document.getElementById('monthly-subscribers') as HTMLInputElement).value);
+      const arpu = parseNum((document.getElementById('arpu') as HTMLInputElement).value);
+      const churnRate = parseNum((document.getElementById('churn-rate') as HTMLInputElement).value);
+      const cac = parseNum((document.getElementById('cac') as HTMLInputElement).value);
+
+      if (subscribers <= 0) { (document.getElementById('monthly-subscribers') as HTMLInputElement).focus(); return; }
+      if (arpu <= 0) { (document.getElementById('arpu') as HTMLInputElement).focus(); return; }
+
+      const mrr = subscribers * arpu;
+      const ltv = churnRate > 0 ? arpu / (churnRate / 100) : arpu * 100;
+      const payback = cac > 0 && arpu > 0 ? cac / arpu : 0;
+      const ratio = cac > 0 ? ltv / cac : 0;
+
+      (document.getElementById('res-mrr') as HTMLElement).textContent = fmt(mrr) + ' บาท';
+      (document.getElementById('res-ltv') as HTMLElement).textContent = fmt(ltv) + ' บาท';
+      (document.getElementById('res-payback') as HTMLElement).textContent = payback.toFixed(1) + ' เดือน';
+      (document.getElementById('res-ratio') as HTMLElement).textContent = ratio.toFixed(1) + ':1';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('saas-subscription-cost');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('saas-subscription-cost');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>
