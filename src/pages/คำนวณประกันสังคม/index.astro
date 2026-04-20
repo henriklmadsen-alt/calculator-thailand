@@ -50,11 +50,26 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณเงินสมทบประกันสังคม (SSO) ปี 2569",
+  "description": "ขั้นตอนการคำนวณเงินสมทบประกันสังคมของพนักงาน ตามอัตรา 5% ของเงินเดือน และเพดานเงินเดือนสูงสุด 15,000 บาท ตามสำนักงานประกันสังคม",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบเงินเดือนเต็ม (Gross Salary)", "text": "ระบุเงินเดือนรายเดือนที่ได้รับจากนายจ้าง ก่อนหักภาษีและประกันสังคม เช่น 30,000 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบเพดานเงินเดือนประกันสังคม", "text": "เงินเดือนสำหรับคำนวณ SSO มีเพดานสูงสุด 15,000 บาท/เดือน ตัวอย่าง: เงินเดือน 30,000 → ใช้ 15,000 สำหรับคำนวณ SSO"},
+    {"@type": "HowToStep", "name": "คำนวณเงินสมทบพนักงาน 5%", "text": "เงินเดือนสำหรับ SSO × 5% = เงินสมทบของพนักงาน ตัวอย่าง: 15,000 × 5% = 750 บาท/เดือน (พนักงานจ่าย)"},
+    {"@type": "HowToStep", "name": "คำนวณเงินสมทบนายจ้าง 5%", "text": "เงินเดือนสำหรับ SSO × 5% = เงินสมทบของนายจ้าง ตัวอย่าง: 15,000 × 5% = 750 บาท/เดือน (นายจ้างจ่าย)"},
+    {"@type": "HowToStep", "name": "คำนวณยอดรวมประกันสังคม", "text": "รวมเงินสมทบทั้งหมด = พนักงาน 750 + นายจ้าง 750 + รัฐบาล 75 (0.5%) = 1,575 บาท/เดือน"}
+  ]
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคม">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">

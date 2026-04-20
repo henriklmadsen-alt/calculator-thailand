@@ -49,11 +49,26 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีมูลค่าเพิ่ม (VAT) ปี 2569",
+  "description": "ขั้นตอนการคำนวณภาษีมูลค่าเพิ่ม (Value Added Tax) ในอัตรา 7% สำหรับสินค้าและบริการ ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบว่าสินค้าหรือบริการอยู่ภายใต้ VAT", "text": "สินค้าส่วนใหญ่ต้องเสียภาษี ยกเว้น อาหารสดใหม่, ยาแผนไทย, หนังสือพิมพ์, บริการทางการแพทย์ และการศึกษา"},
+    {"@type": "HowToStep", "name": "บันทึกราคามูลค่าสินค้า (Net Price)", "text": "ราคาก่อน VAT = ราคาตั้งต้นของสินค้า/บริการ ตัวอย่าง: ราคาสินค้า 1,000 บาท (ยังไม่รวม VAT)"},
+    {"@type": "HowToStep", "name": "คำนวณ VAT 7%", "text": "VAT = ราคามูลค่า × 7% ตัวอย่าง: 1,000 × 7% = 70 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณราคาสุทธิ (ราคารวม VAT)", "text": "ราคารวม VAT = ราคามูลค่า + VAT = ราคาที่ลูกค้าจ่าย ตัวอย่าง: 1,000 + 70 = 1,070 บาท"},
+    {"@type": "HowToStep", "name": "บันทึกรายการ VAT ประจำเดือน", "text": "ผู้ประกอบการต้องบันทึก: (1) VAT ที่เก็บจากลูกค้า (Output VAT), (2) VAT ที่จ่ายให้ซัพพลายเออร์ (Input VAT), ส่วนต่าง = ต้องจ่ายให้กรมสรรพากรหรือได้เบิกคืน"}
+  ]
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีมูลค่าเพิ่ม VAT 7%">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

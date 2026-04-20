@@ -48,11 +48,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีสรรพสามิต (Excise Tax) ปี 2569",
+  "description": "ขั้นตอนการคำนวณภาษีสรรพสามิต (Excise Duty) ที่เก็บจากสินค้าเฉพาะ เช่น บุหรี่ เหล้า น้ำมันเชื้อเพลิง ตามอัตราที่กำหนดของกรมสรรพสามิต",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบว่าสินค้าต้องเสียภาษีสรรพสามิต", "text": "สินค้าต้องเสียภาษีสรรพสามิต: (1) บุหรี่, (2) เหล้า/เบียร์, (3) น้ำมันเชื้อเพลิง, (4) ยานยนต์, (5) เครื่องดื่มน้ำตาลสูง ตรวจสอบว่าสินค้าของคุณอยู่ในรายการ"},
+    {"@type": "HowToStep", "name": "ตรวจสอบอัตราภาษี (Excise Rate)", "text": "อัตราภาษีตามประเภทสินค้า: บุหรี่ 85%, เบียร์ 70%, เหล้า 60-80%, น้ำมันเบนซิน 3 บาท/ลิตร, ดีเซล 3 บาท/ลิตร"},
+    {"@type": "HowToStep", "name": "คำนวณภาษีสรรพสามิต (Ad Valorem Method)", "text": "ภาษี = มูลค่าสินค้า × อัตราภาษี (%) ตัวอย่าง: บุหรี่ 100 บาท × 85% = 85 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณภาษีสรรพสามิต (Specific Duty Method)", "text": "ภาษี = ปริมาณ × อัตราภาษี (บาท/หน่วย) ตัวอย่าง: น้ำมันเบนซิน 1,000 ลิตร × 3 บาท/ลิตร = 3,000 บาท"},
+    {"@type": "HowToStep", "name": "บันทึกและส่งแบบประเมินภาษี", "text": "ผู้ผลิต/นำเข้าต้องจดทะเบียนกับกรมสรรพสามิต, บันทึกรายการ, และส่งแบบประเมินภาษีประจำเดือน พร้อมชำระภาษี"}
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีสรรพสามิต">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

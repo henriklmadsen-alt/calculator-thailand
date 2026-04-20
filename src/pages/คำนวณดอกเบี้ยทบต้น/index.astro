@@ -45,11 +45,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณดอกเบี้ยทบต้น (Compound Interest) ปี 2569",
+  "description": "ขั้นตอนการคำนวณดอกเบี้ยทบต้น โดยดอกเบี้ยจะถูกบวกเข้ากับเงินต้น และในรอบถัดไปดอกเบี้ยจะคำนวณจากเงินต้นรวมดอกเบี้ยสะสม ตามหลักการของธนาคารแห่งประเทศไทย",
+  "step": [
+    {"@type": "HowToStep", "name": "ระบุเงินต้น (Principal)", "text": "บันทึกจำนวนเงินเริ่มต้นที่ฝาก เช่น 100,000 บาท นี้คือ P (เงินต้น) ที่ใช้ในการคำนวณ"},
+    {"@type": "HowToStep", "name": "ตรวจสอบอัตราดอกเบี้ยต่อปี (Annual Rate)", "text": "ดูจากเงื่อนไขเงินฝากประจำจากธนาคาร เช่น 2.5% ต่อปี นี้คือ r (อัตราดอกเบี้ย) ที่ใช้ในสูตร"},
+    {"@type": "HowToStep", "name": "ระบุระยะเวลาและความถี่การคำนวณดอกเบี้ย", "text": "ระยะเวลาฝาก เช่น 5 ปี (t) ความถี่การทบต้น (n): ปีละ 1 ครั้ง, 6 เดือน, ไตรมาส, หรือรายเดือน"},
+    {"@type": "HowToStep", "name": "ใช้สูตรดอกเบี้ยทบต้น", "text": "สูตร: A = P × (1 + r/n)^(n×t) ตัวอย่าง: 100,000 × (1 + 0.025/1)^(1×5) = 113,141 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณดอกเบี้ยที่ได้", "text": "ดอกเบี้ยที่ได้ = เงินรวมสิ้นสุด (A) - เงินต้น (P) ตัวอย่าง: 113,141 - 100,000 = 13,141 บาท (ดอกเบี้ยที่ได้รับในระยะ 5 ปี)"}
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแต้มสะสม">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">

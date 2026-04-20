@@ -48,11 +48,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณลดหย่อนดอกเบี้ยบ้าน (Mortgage Interest Deduction) ปี 2569",
+  "description": "ขั้นตอนการคำนวณลดหย่อนดอกเบี้ยบ้านสำหรับผู้มีเงินได้ที่ผ่อนบ้านกับธนาคาร ลดหย่อนได้สูงสุด 100,000 บาท/ปี ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบเงื่อนไขการลดหย่อน", "text": "เงื่อนไข: (1) ต้องมีอาคารที่อยู่อาศัยในประเทศไทย, (2) บ้านใช้สำหรับอยู่อาศัยของตัวเองหรือครอบครัว, (3) เงินกู้ยืมจากธนาคารในไทย"},
+    {"@type": "HowToStep", "name": "จัดเก็บเอกสารเงินกู้", "text": "เก็บสำเนา: (1) สัญญาเงินกู้ยืม, (2) ใบรับดอกเบี้ยประจำปี (Annual Interest Statement) จากธนาคาร"},
+    {"@type": "HowToStep", "name": "บันทึกเงินดอกเบี้ยที่จ่ายจริงในปี 2569", "text": "ตัวอย่าง: ยอดเงินกู้ 2,000,000 บาท, ดอกเบี้ย 3% ต่อปี = 60,000 บาท/ปี"},
+    {"@type": "HowToStep", "name": "ตรวจสอบเพดานสูงสุดของลดหย่อน", "text": "ลดหย่อนดอกเบี้ยบ้าน สูงสุด 100,000 บาท/ปี ถ้าจ่ายดอกเบี้ย 60,000 บาท < 100,000 ลดหย่อนได้ทั้ง 60,000 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณผลประหยัดภาษี", "text": "ผลประหยัดภาษี = ยอดลดหย่อน × อัตราภาษีขั้นบันได ตัวอย่าง: ลดหย่อน 60,000 บาท × อัตราภาษี 15% = ประหยัดภาษี 9,000 บาท"}
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนดอกเบี้ยบ้าน">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">

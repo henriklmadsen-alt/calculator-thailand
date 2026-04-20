@@ -1,0 +1,225 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculateSolarROI } from '../../lib/klc-0576-solar-panel-roi';
+
+const pageTitle = 'คำนวณผลตอบแทน Solar Panel (ROI) ปี 2569 | ระยะคืนทุน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณผลตอบแทนจากการติดตั้งแผง Solar เซลล์ การประหยัด ROI ระยะเวลาคืนทุน ตามอัตรา MEA/PEA ปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0576-โซลาร์-roi/`;
+
+const faqData = [
+  {
+    question: 'ระยะเวลาคืนทุน (Payback Period) คือความหมายอะไร?',
+    answer: 'คือจำนวนปีที่ต้องใช้ในการประหยัดไฟให้เท่ากับต้นทุนการติดตั้ง Solar ตัวอย่าง: ถ้าติดตั้งเสียเงิน 250,000 บาท แต่ประหยัดไฟ 50,000 บาทต่อปี ระยะเวลาคืนทุนคือ 5 ปี',
+  },
+  {
+    question: 'ROI (Return on Investment) คือความหมายอะไร?',
+    answer: 'ROI = (รายได้ - ต้นทุน) ÷ ต้นทุน × 100% ตัวอย่าง: ROI 20% หมายถึงสำหรับทุกบาทที่ลงทุน คุณได้รับเงินกลับ 0.20 บาท ต่อปี',
+  },
+  {
+    question: 'ทำไมการคำนวณจึงคำนึงถึงการลดลงประสิทธิ (Degradation)?',
+    answer: 'แผง Solar มีประสิทธิลดลงประมาณ 0.5-0.8% ต่อปี เพราะน้ำฝน ฝุ่น และการเสื่อมสภาพของวัสดุ ในการคำนวณระยะยาว 25 ปี จึงต้องพิจารณาปัจจัยนี้',
+  },
+  {
+    question: 'ข้อมูลอื่นที่ต้องรู้เพื่อการตัดสินใจ?',
+    answer: 'ตรวจสอบว่าหลังคาของคุณได้รับแดดเพียงพอ ความสูงของชั้นหลังคา สภาพหลังคาปัจจุบัน รวมถึงกฎระเบียบท้องถิ่นสำหรับการติดตั้ง Solar ควรปรึกษาผู้เชี่ยวชาญการติดตั้ง',
+  },
+  {
+    question: 'ใครเป็นแหล่งข้อมูลที่เชื่อถือได้สำหรับ Solar ในไทย?',
+    answer: 'สำนักงานพลังงานจากแสงอาทิตย์ (TISO) กระทรวงพลังงาน การไฟฟ้านครหลวง (MEA) การไฟฟ้าส่วนภูมิภาค (PEA) และสมาคมพลังงานหมุนเวียนไทย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผลตอบแทน Solar Panel',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+  author: {
+    '@type': 'Organization',
+    name: 'เครื่องคำนวณไทย',
+    url: siteUrl,
+  },
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="klc0576-solar-roi">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
+      <p class="text-sm font-semibold text-green-700">คำนวณผลตอบแทน Solar Panel</p>
+      <p class="mt-1 text-sm text-slate-700">ตามอัตรา MEA/PEA และข้อมูล TISO ปี 2569</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณผลตอบแทน Solar Panel (ROI) ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      คำนวณผลตอบแทนจากการติดตั้งแผง Solar เซลล์ ระยะเวลาคืนทุน ROI ตามสภาพเมืองไทยที่ได้รับแดดประมาณ 4.5 ชั่วโมงต่อวัน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc_klc0576" class="space-y-5">
+        <p id="error_klc0576" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label for="systemKW" class="mb-1 block text-sm font-medium text-gray-700">ขนาดระบบ Solar (kW) *</label>
+          <input type="number" id="systemKW" step="0.5" min="1" max="100" placeholder="เช่น 5" required
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">ปกติบ้านเลือก 3-10 kW ธุรกิจ 10-50 kW</p>
+        </div>
+
+        <div>
+          <label for="costPerKW" class="mb-1 block text-sm font-medium text-gray-700">ค่าติดตั้งต่อ kW (บาท) *</label>
+          <input type="number" id="costPerKW" step="1000" min="20000" max="100000" placeholder="เช่น 50000" required
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">ปกติ 40,000-60,000 บาท/kW (ปี 2569)</p>
+        </div>
+
+        <div>
+          <label for="electricityRate" class="mb-1 block text-sm font-medium text-gray-700">ราคาไฟฟ้า (บาท/kWh) *</label>
+          <input type="number" id="electricityRate" step="0.1" min="2" max="6" placeholder="เช่น 4" required
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">MEA/PEA ปกติ 3-4.5 บาท/kWh ตามประเภท</p>
+        </div>
+
+        <div>
+          <label for="maintenanceCost" class="mb-1 block text-sm font-medium text-gray-700">ค่าบำรุงรักษาต่อปี (บาท)</label>
+          <input type="number" id="maintenanceCost" step="500" min="0" max="20000" placeholder="เช่น 3000" value="3000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">ปกติ 2,000-5,000 บาท/ปี</p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-green-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณผลตอบแทน Solar
+        </button>
+      </form>
+    </div>
+
+    <div id="results_klc0576" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-6 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg bg-blue-50 p-4">
+            <div class="text-sm text-gray-600">ต้นทุนการติดตั้ง</div>
+            <div id="res_cost" class="mt-2 text-2xl font-bold text-blue-700">-</div>
+          </div>
+
+          <div class="rounded-lg bg-green-50 p-4">
+            <div class="text-sm text-gray-600">ประหยัดไฟต่อปี</div>
+            <div id="res_savings" class="mt-2 text-2xl font-bold text-green-700">-</div>
+          </div>
+
+          <div class="rounded-lg bg-orange-50 p-4">
+            <div class="text-sm text-gray-600">ระยะเวลาคืนทุน</div>
+            <div id="res_payback" class="mt-2 text-2xl font-bold text-orange-700">-</div>
+          </div>
+
+          <div class="rounded-lg bg-purple-50 p-4">
+            <div class="text-sm text-gray-600">ROI ต่อปี</div>
+            <div id="res_roi" class="mt-2 text-2xl font-bold text-purple-700">-</div>
+          </div>
+
+          <div class="col-span-1 rounded-lg bg-slate-50 p-4 sm:col-span-2">
+            <div class="text-sm text-gray-600">ประหยัดรวม 25 ปี</div>
+            <div id="res_lifetime" class="mt-2 text-2xl font-bold text-slate-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4 sm:p-6">
+      <h2 class="mb-4 text-lg font-semibold text-blue-900">ตัวอย่างการคำนวณ</h2>
+      <div class="space-y-3 text-sm">
+        <p><strong>บ้านขนาดเล็ก (5 kW):</strong> ต้นทุน 250,000 บ. ประหยัดต่อปี 80,000 บ. ROI 32%</p>
+        <p><strong>บ้านขนาดกลาง (10 kW):</strong> ต้นทุน 500,000 บ. ประหยัดต่อปี 160,000 บ. ROI 32%</p>
+        <p><strong>ธุรกิจ (20 kW):</strong> ต้นทุน 900,000 บ. ประหยัดต่อปี 280,000 บ. ROI 31%</p>
+      </div>
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900">คำถามที่ถามบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 p-3">
+            <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <p class="mt-3 text-gray-600">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-lg border border-yellow-100 bg-yellow-50 p-4 sm:p-6">
+      <h3 class="font-semibold text-yellow-900">⚠️ สำคัญ</h3>
+      <p class="mt-2 text-sm text-yellow-800">
+        ผลการคำนวณนี้เป็นการประมาณการเท่านั้น ค่าจริงอาจแตกต่างขึ้นอยู่กับ:
+        สภาพลมหนาวของพื้นที่ สภาพหลังคา การก่อสร้าง คุณภาพแผง ประเทศของผู้ผลิต
+        ควรปรึกษาผู้เชี่ยวชาญการติดตั้ง Solar ก่อนการตัดสินใจลงทุน
+      </p>
+    </div>
+  </article>
+
+  <script define:vars={{calculateSolarROI}} client:load>
+    const form = document.getElementById('calc_klc0576');
+    const resultsDiv = document.getElementById('results_klc0576');
+    const errorDiv = document.getElementById('error_klc0576');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const systemKW = parseFloat(document.getElementById('systemKW').value);
+      const costPerKW = parseFloat(document.getElementById('costPerKW').value);
+      const electricityRate = parseFloat(document.getElementById('electricityRate').value);
+      const maintenanceCost = parseFloat(document.getElementById('maintenanceCost').value);
+
+      if (!systemKW || !costPerKW || !electricityRate) {
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      const result = window.calculateSolarROI({
+        systemKW,
+        installationCostPerKW: costPerKW,
+        currentMonthlyBill: electricityRate * 100,
+        electricityRate,
+        systemEfficiencyLoss: 0.7,
+        systemLifespan: 25,
+        annualMaintenanceCost: maintenanceCost,
+      });
+
+      document.getElementById('res_cost').textContent = `฿${result.installationCost.toLocaleString('th-TH')}`;
+      document.getElementById('res_savings').textContent = `฿${result.annualEnergySavings.toLocaleString('th-TH')}`;
+      document.getElementById('res_payback').textContent = `${result.paybackPeriodYears} ปี`;
+      document.getElementById('res_roi').textContent = `${result.roiPercentage.toFixed(1)}%`;
+      document.getElementById('res_lifetime').textContent = `฿${result.totalLifetimeSavings.toLocaleString('th-TH')}`;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</BaseLayout>

@@ -48,11 +48,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีเงินปันผล ปี 2569",
+  "description": "ขั้นตอนการคำนวณภาษีจากเงินปันผล (Dividend Income) ที่ได้รับจากหุ้นหรือกองทุน ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "step": [
+    {"@type": "HowToStep", "name": "รวบรวมใบรับรองการปันผล", "text": "เก็บใบรับรองจากบริษัทหรือสถาบันการเงินที่จ่ายปันผล บันทึกจำนวนเงินปันผลทั้งหมดที่ได้รับในปี 2569 ตัวอย่าง: ปันผลจากหุ้น 50,000 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบวิธีการคำนวณภาษี", "text": "ปันผลในไทยมี 2 วิธี: (1) Exemption Method = ไม่นับเป็นรายได้ (ถ้าจ่ายภาษีบริษัท 20% แล้ว), (2) Full Inclusion = นับเป็นรายได้ทั้งหมด + tax credit 20%"},
+    {"@type": "HowToStep", "name": "คำนวณภาษี (ถ้าใช้ Full Inclusion)", "text": "ภาษี = ปันผลที่รับ × อัตราภาษีขั้นบันได ตัวอย่าง: ปันผล 50,000 บาท ในขั้น 5% ภาษี = 50,000 × 5% = 2,500 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบ Tax Credit (ถ้าสมควร)", "text": "ถ้าใช้ Full Inclusion Method อาจได้ Tax Credit 20% ของปันผลที่รับ ตัวอย่าง: ปันผล 50,000 × 20% = 10,000 บาท credit สามารถหักจากภาษีที่ต้องชำระ"},
+    {"@type": "HowToStep", "name": "เปรียบเทียบสองวิธีและเลือกที่ดีกว่า", "text": "คำนวณภาษีสุทธิทั้งสองวิธีแล้วเลือกวิธีที่เสียภาษีน้อยกว่า หรือไม่เสียเลย ยื่นแบบ ภ.ง.ด.90 ภายใน 31 มีนาคม ปีถัดไป"}
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีเงินปันผล">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">

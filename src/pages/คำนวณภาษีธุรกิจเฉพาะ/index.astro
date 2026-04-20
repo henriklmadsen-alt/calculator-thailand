@@ -48,11 +48,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีธุรกิจเฉพาะ ปี 2569",
+  "description": "ขั้นตอนการคำนวณภาษีธุรกิจเฉพาะสำหรับผู้ประกอบการ เช่น อสังหาริมทรัพย์ ธนาคาร ประกันชีวิต ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบว่าธุรกิจต้องเสียภาษีธุรกิจเฉพาะ", "text": "ธุรกิจที่เสียภาษีธุรกิจเฉพาะ: (1) ธนาคาร/สถาบันการเงิน, (2) ประกันชีวิต, (3) อสังหาริมทรัพย์ (ขายที่ดิน/บ้าน), (4) ธุรกิจจำนำ, (5) การขายหลักทรัพย์"},
+    {"@type": "HowToStep", "name": "ระบุฐานภาษี (Tax Base)", "text": "ฐานภาษีธุรกิจเฉพาะ = รายรับรวม (Gross Revenue) ก่อนหักค่าใช้จ่าย ตัวอย่าง: ขายที่ดิน 5,000,000 บาท → ฐานภาษี = 5,000,000 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบอัตราภาษี", "text": "อัตราภาษีธุรกิจเฉพาะ: อสังหาริมทรัพย์ 3.3% (รวมภาษีท้องถิ่น), ธนาคาร 3.3%, ประกันชีวิต 2.75%, การจำนำ 2.75%, การขายหลักทรัพย์ 0.1%"},
+    {"@type": "HowToStep", "name": "คำนวณภาษีธุรกิจเฉพาะ", "text": "ภาษีธุรกิจเฉพาะ = ฐานภาษี × อัตราภาษี ตัวอย่าง: ขายที่ดิน 5,000,000 × 3.3% = 165,000 บาท"},
+    {"@type": "HowToStep", "name": "ยื่นแบบและชำระภาษี", "text": "ยื่นแบบ ภ.ธ.40 ภายใน 15 วันของเดือนถัดไป หรือสำหรับอสังหาริมทรัพย์ ชำระพร้อมการโอนที่สำนักงานที่ดิน"}
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีธุรกิจเฉพาะ">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

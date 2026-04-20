@@ -48,11 +48,27 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีนำเข้า (Import Duty) ปี 2569",
+  "description": "ขั้นตอนการคำนวณอากรศุลกากรและภาษีนำเข้าของสินค้า โดยใช้ค่า CIF และอัตราศุลกากรตามประเภทสินค้า ตามอัตราที่กำหนดของกรมศุลกากร",
+  "step": [
+    {"@type": "HowToStep", "name": "จัดหาเอกสารประกาศสินค้า", "text": "เก็บเอกสาร: (1) Commercial Invoice - บันทึกมูลค่า FOB, (2) Packing List, (3) Bill of Lading/AWB, (4) Harmonized System Code (HS Code)"},
+    {"@type": "HowToStep", "name": "ค้นหา HS Code ของสินค้า", "text": "ตรวจสอบ Thai HS Code ใน Tariff Schedule จากเว็บไซต์กรมศุลกากร (customs.go.th) ตัวอย่าง: เสื้อผ้า = HS Code 6204"},
+    {"@type": "HowToStep", "name": "ตรวจสอบอัตราศุลกากร (Tariff Rate)", "text": "อัตราศุลกากรแตกต่างไปตามประเทศต้นทาง (MFN, Free Trade Agreement Rate) ตัวอย่าง: เสื้อผ้าจากจีน MFN Rate 37.5%, จากสมาชิก ASEAN ได้อัตรา AFTA ต่ำกว่า"},
+    {"@type": "HowToStep", "name": "คำนวณค่า Customs Value (CIF)", "text": "Customs Value = มูลค่า FOB + Freight + Insurance ตัวอย่าง: FOB 10,000 + Freight 500 + Insurance 100 = 10,600 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณ Customs Duty", "text": "Duty = Customs Value × อัตราศุลกากร ตัวอย่าง: 10,600 × 37.5% = 3,975 บาท"},
+    {"@type": "HowToStep", "name": "เพิ่ม VAT 7% และอากรอื่นๆ", "text": "VAT = (Customs Value + Duty) × 7% ตัวอย่าง: (10,600 + 3,975) × 7% = 1,020 บาท รวมจ่ายทั้งหมด = 3,975 + 1,020 = 4,995 บาท"}
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีนำเข้า">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

@@ -55,11 +55,26 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีที่ดิน (Property Tax) ปี 2569",
+  "description": "ขั้นตอนการคำนวณภาษีที่ดิน โดยใช้มูลค่าประเมินอากร และอัตราภาษีตามประเภทของที่ดิน ตามพระราชบัญญัติภาษีที่ดินและสิ่งปลูกสร้าง พ.ศ. 2562",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบมูลค่าประเมินอากร (Assessed Value)", "text": "ดูเอกสารใบประเมินอากรจากสำนักที่ดิน บันทึกมูลค่าประเมิน (ไม่ใช่ราคาซื้อขาย) ตัวอย่าง: ที่ดินมูลค่าประเมิน 500,000 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบประเภทที่ดิน (Land Classification)", "text": "ระบุประเภท: (1) ที่อยู่อาศัย, (2) เพาะปลูก, (3) พาณิชย์, (4) อุตสาหกรรม อัตราภาษีแตกต่างกันตามประเภท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบอัตราภาษีตามจังหวัด", "text": "อัตราภาษีที่ดินแตกต่างไปตามจังหวัดและประเภทที่ดิน ตัวอย่าง: ที่ดินอยู่อาศัยกรุงเทพมหานครอัตรา 0.02% ต่อปี"},
+    {"@type": "HowToStep", "name": "คำนวณภาษีที่ดิน", "text": "ภาษีที่ดิน = มูลค่าประเมิน × อัตราภาษี ตัวอย่าง: 500,000 × 0.02% = 100 บาท/ปี"},
+    {"@type": "HowToStep", "name": "ตรวจสอบการยกเว้นหรือลดหย่อน", "text": "ตรวจสอบสิทธิยกเว้นภาษี: ที่ดินอยู่อาศัยส่วนตัว (มูลค่าไม่เกิน 50 ล้านบาท), ที่ดินเกษตรกรรม, หรือโครงการของรัฐอาจได้รับยกเว้น"}
+  ]
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีที่ดิน">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
