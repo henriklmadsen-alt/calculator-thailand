@@ -1,0 +1,219 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณประกันสังคมมาตรา 39 ปี 2569 ฐาน 4,800 บาท สมทบ 432 บาท/เดือน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเงินสมทบประกันสังคมมาตรา 39 สำหรับผู้ที่ลาออกจากงานแต่ต้องการรักษาสิทธิ์ ฐานคิด 4,800 บาท สมทบ 9% = 432 บาท/เดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันสังคมมาตรา39/`;
+
+const faqData = [
+  {
+    question: 'ประกันสังคมมาตรา 39 คืออะไร?',
+    answer: 'มาตรา 39 เป็นการประกันสังคมสำหรับผู้ที่เคยเป็นผู้ประกันตนมาตรา 33 (ลูกจ้าง) แล้วลาออก แต่ต้องการรักษาสิทธิ์ประกันสังคม โดยจ่ายสมทบเองฝ่ายเดียว',
+  },
+  {
+    question: 'มาตรา 39 คุ้มครองอะไรบ้าง?',
+    answer: 'คุ้มครอง 5 กรณี: 1) เจ็บป่วย 2) คลอดบุตร 3) ทุพพลภาพ 4) เสียชีวิต 5) สงเคราะห์บุตร ไม่รวมกรณีว่างงานและชราภาพ',
+  },
+  {
+    question: 'จะสมัครมาตรา 39 ได้เมื่อไร?',
+    answer: 'ต้องสมัครภายใน 6 เดือนนับจากวันที่ออกจากงาน และต้องเคยเป็นผู้ประกันตนมาตรา 33 ติดต่อกันไม่น้อยกว่า 12 เดือน',
+  },
+  {
+    question: 'มาตรา 39 ต้องจ่ายเดือนละเท่าไร?',
+    answer: 'จ่าย 9% ของฐาน 4,800 บาท = 432 บาท/เดือน จ่ายเองทั้งหมด ไม่มีนายจ้างหรือรัฐบาลสมทบ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกันสังคมมาตรา 39',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคมมาตรา 39">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประกันสังคมมาตรา 39 — ฐาน 4,800 บาท × 9% = 432 บาท/เดือน</p>
+      <p class="mt-1 text-sm text-slate-700">สำหรับผู้ที่ลาออกจากงานแต่ต้องการรักษาสิทธิ์ประกันสังคม 5 กรณี</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ต้องสมัครภายใน 6 เดือนหลังออกจากงาน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณประกันสังคมมาตรา 39 ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ระบุจำนวนเดือนที่ต้องการคำนวณ ระบบจะแสดงเงินสมทบรายเดือน รายปี และสรุปสิทธิ์ที่ได้รับ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="m39-form" class="space-y-5">
+        <div class="rounded-lg bg-blue-50 p-4">
+          <p class="text-sm font-semibold text-blue-800">อัตราคงที่ มาตรา 39</p>
+          <div class="mt-2 grid gap-2 sm:grid-cols-3 text-sm">
+            <div><span class="text-gray-600">ฐานคิด:</span> <strong>4,800 บาท/เดือน</strong></div>
+            <div><span class="text-gray-600">อัตรา:</span> <strong>9%</strong></div>
+            <div><span class="text-gray-600">เงินสมทบ:</span> <strong>432 บาท/เดือน</strong></div>
+          </div>
+        </div>
+
+        <div>
+          <label for="m39-months" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเดือนที่ต้องการคำนวณ</label>
+          <input type="text" id="m39-months" inputmode="numeric" placeholder="เช่น 12"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p id="m39-months-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="m39-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินสมทบ/เดือน</div>
+            <div class="text-xl font-bold text-green-700">432 บาท</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมทั้งหมด</div>
+            <div id="res-m39-total" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">จำนวนเดือน</div>
+            <div id="res-m39-months" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <h3 class="mb-3 text-sm font-semibold text-gray-700">สิทธิ์ที่ได้รับ (5 กรณี)</h3>
+        <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 text-sm">
+          <div class="flex items-center gap-2 rounded-lg bg-gray-50 p-3">
+            <span class="text-green-600">✓</span> เจ็บป่วย
+          </div>
+          <div class="flex items-center gap-2 rounded-lg bg-gray-50 p-3">
+            <span class="text-green-600">✓</span> คลอดบุตร
+          </div>
+          <div class="flex items-center gap-2 rounded-lg bg-gray-50 p-3">
+            <span class="text-green-600">✓</span> ทุพพลภาพ
+          </div>
+          <div class="flex items-center gap-2 rounded-lg bg-gray-50 p-3">
+            <span class="text-green-600">✓</span> เสียชีวิต
+          </div>
+          <div class="flex items-center gap-2 rounded-lg bg-gray-50 p-3">
+            <span class="text-green-600">✓</span> สงเคราะห์บุตร
+          </div>
+          <div class="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-gray-500">
+            <span class="text-red-400">✗</span> ว่างงาน / ชราภาพ
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">รายละเอียดมาตรา 39</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ฐานคิด: 4,800 บาท/เดือน (คงที่ ไม่ขึ้นกับรายได้จริง)</li>
+        <li>อัตราสมทบ: 9% = 432 บาท/เดือน</li>
+        <li>จ่ายเองทั้งหมด ไม่มีนายจ้างหรือรัฐบาลสมทบ</li>
+        <li>ต้องสมัครภายใน 6 เดือนนับจากออกจากงาน</li>
+        <li>เคยเป็นมาตรา 33 ต่อเนื่อง ≥ 12 เดือน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แหล่งอ้างอิง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.sso.go.th/wpr/content.jsp?lang=th&cat=866" target="_blank" rel="noopener noreferrer">สำนักงานประกันสังคม (SSO): มาตรา 39</a></li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณประกันสังคม/">คำนวณประกันสังคม</a></li>
+        <li><a href="/คำนวณประกันสังคมมาตรา40/">คำนวณประกันสังคมมาตรา 40</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#m39-results" />
+    <RelatedArticles currentHref="/คำนวณประกันสังคมมาตรา39/" />
+    <RelatedCalculators currentHref="/คำนวณประกันสังคมมาตรา39/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราและเงื่อนไขอาจเปลี่ยนแปลงตามประกาศของสำนักงานประกันสังคม ควรตรวจสอบข้อมูลล่าสุดที่ sso.go.th
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const MONTHLY_CONTRIBUTION = 432;
+    const form = document.getElementById('m39-form');
+    const resultBox = document.getElementById('m39-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      setErr('m39-months-error', '');
+
+      const months = parseNum(document.getElementById('m39-months').value);
+      if (!Number.isFinite(months) || months <= 0 || months > 120) {
+        setErr('m39-months-error', 'กรอกจำนวนเดือน 1-120');
+        resultBox.classList.add('hidden');
+        return;
+      }
+
+      const total = MONTHLY_CONTRIBUTION * months;
+      setText('res-m39-total', formatMoney(total));
+      setText('res-m39-months', `${months} เดือน`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

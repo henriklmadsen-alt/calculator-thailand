@@ -1,0 +1,254 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณภาษีเงินเดือนและประกันสังคม ปี 2569 ฝั่งลูกจ้างและนายจ้าง | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณภาษีเงินเดือนหัก ณ ที่จ่าย และประกันสังคมมาตรา 33 แยกฝั่งลูกจ้างและนายจ้าง สรุปต้นทุน Payroll รายเดือน อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณภาษีเงินเดือนและประกันสังคม/`;
+
+const faqData = [
+  {
+    question: 'ประกันสังคมมาตรา 33 ลูกจ้างจ่ายเท่าไร?',
+    answer: 'ลูกจ้างสมทบ 5% ของค่าจ้าง ฐานคิดขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท ดังนั้นสมทบสูงสุด 750 บาท/เดือน',
+  },
+  {
+    question: 'นายจ้างต้องนำส่ง SSC เมื่อไร?',
+    answer: 'นายจ้างต้องนำส่งเงินสมทบประกันสังคมทั้งส่วนนายจ้างและลูกจ้างภายในวันที่ 15 ของเดือนถัดไป',
+  },
+  {
+    question: 'ภาษีหัก ณ ที่จ่ายคิดอย่างไร?',
+    answer: 'คำนวณตามอัตราก้าวหน้า โดยนายจ้างคิดเงินเดือนทั้งปีหักค่าลดหย่อน แล้วหารด้วย 12 เพื่อได้ยอดหักรายเดือน',
+  },
+  {
+    question: 'ถ้าพนักงานมีค่าลดหย่อนพิเศษต้องแจ้งนายจ้างไหม?',
+    answer: 'ใช่ พนักงานควรแจ้งค่าลดหย่อนเพิ่มเติม (เช่น ประกันชีวิต SSF/RMF บุตร) ให้ HR/บัญชีทราบเพื่อคำนวณภาษีหัก ณ ที่จ่ายที่ถูกต้อง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีเงินเดือนและประกันสังคม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีเงินเดือนและประกันสังคม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">สรุป Payroll รายเดือน ครบทุกรายการ</p>
+      <p class="mt-1 text-sm text-slate-700">SSC ลูกจ้าง + ภาษีหัก ณ ที่จ่าย + SSC นายจ้าง = ต้นทุน Payroll รวม</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับ HR บัญชี และนายจ้างที่ต้องการสรุป Payroll</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณภาษีเงินเดือนและประกันสังคม ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือนและค่าลดหย่อน ระบบจะแสดงรายการหักและสรุปต้นทุน Payroll ทั้งฝั่งลูกจ้างและนายจ้าง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="payroll-form" class="space-y-5">
+        <p id="payroll-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pr-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="pr-salary" inputmode="numeric" placeholder="เช่น 45,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pr-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pr-extra-allowance" class="mb-1 block text-sm font-medium text-gray-700">ค่าลดหย่อนพิเศษเพิ่มเติม (บาท/ปี)</label>
+            <input type="text" id="pr-extra-allowance" inputmode="numeric" placeholder="เช่น 50,000 หรือ 0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าลดหย่อนส่วนตัว 60,000 บาท/ปี รวมอยู่แล้ว</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ Payroll
+        </button>
+      </form>
+    </div>
+
+    <div id="payroll-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ Payroll</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินเดือนสุทธิ (Net)</div>
+            <div id="res-pr-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">หักรวม (ลูกจ้าง)</div>
+            <div id="res-pr-deduction" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุน Payroll รวม (นายจ้าง)</div>
+            <div id="res-pr-employer-total" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <h3 class="mb-2 text-sm font-semibold text-gray-700">ฝั่งลูกจ้าง</h3>
+        <div class="mb-4 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินเดือน Gross</span>
+            <span id="res-pr-gross" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">SSC ลูกจ้าง (5% สูงสุด 750 บาท)</span>
+            <span id="res-pr-ssc-employee" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ภาษีหัก ณ ที่จ่าย/เดือน</span>
+            <span id="res-pr-wht" class="font-medium text-red-600">-</span>
+          </div>
+        </div>
+        <h3 class="mb-2 text-sm font-semibold text-gray-700">ฝั่งนายจ้าง (เพิ่มเติม)</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">SSC นายจ้าง (5% สูงสุด 750 บาท)</span>
+            <span id="res-pr-ssc-employer" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">การคำนวณ Payroll</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>SSC ลูกจ้าง = min(max(เงินเดือน, 1650), 15000) × 5%</li>
+        <li>SSC นายจ้าง = เท่ากับ SSC ลูกจ้าง</li>
+        <li>ภาษี WHT = คำนวณจากรายได้สุทธิต่อปีตามขั้นบันได ÷ 12</li>
+        <li>Net = เงินเดือน − SSC ลูกจ้าง − WHT</li>
+        <li>ต้นทุน Payroll = เงินเดือน + SSC นายจ้าง</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+        <li><a href="/คำนวณประกันสังคม/">คำนวณประกันสังคม</a></li>
+        <li><a href="/คำนวณต้นทุนพนักงานรายเดือน/">คำนวณต้นทุนพนักงานรายเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#payroll-results" />
+    <RelatedArticles currentHref="/คำนวณภาษีเงินเดือนและประกันสังคม/" />
+    <RelatedCalculators currentHref="/คำนวณภาษีเงินเดือนและประกันสังคม/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ตัวเลขจริงขึ้นอยู่กับค่าลดหย่อนส่วนบุคคลทั้งหมดและรายได้อื่นในปีนั้น
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    function calcSSC(salary) {
+      return Math.min(Math.max(salary, 1650), 15000) * 0.05;
+    }
+
+    function calcAnnualTax(salary, ssc, extraAllowance) {
+      const annualGross = salary * 12;
+      const expense = Math.min(annualGross * 0.5, 100000);
+      const personal = 60000 + (extraAllowance || 0);
+      const annualSSC = ssc * 12;
+      const netIncome = Math.max(annualGross - expense - personal - annualSSC, 0);
+      const brackets = [[150000,0],[150000,.05],[200000,.10],[250000,.15],[250000,.20],[1000000,.25],[3000000,.30],[Infinity,.35]];
+      let tax = 0, rem = netIncome;
+      for (const [size, rate] of brackets) {
+        if (rem <= 0) break;
+        const chunk = Math.min(rem, size);
+        tax += chunk * rate;
+        rem -= chunk;
+      }
+      return tax / 12;
+    }
+
+    const form = document.getElementById('payroll-form');
+    const formError = document.getElementById('payroll-form-error');
+    const resultBox = document.getElementById('payroll-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('pr-salary-error', '');
+
+      const salary = parseNum(document.getElementById('pr-salary').value);
+      const extraAllowance = parseNum(document.getElementById('pr-extra-allowance').value) || 0;
+
+      if (!Number.isFinite(salary) || salary <= 0) {
+        setErr('pr-salary-error', 'กรอกเงินเดือนมากกว่า 0');
+        formError.classList.remove('hidden');
+        resultBox.classList.add('hidden');
+        return;
+      }
+
+      const ssc = calcSSC(salary);
+      const wht = calcAnnualTax(salary, ssc, extraAllowance);
+      const net = salary - ssc - wht;
+      const sscEmployer = ssc;
+      const employerTotal = salary + sscEmployer;
+      const deduction = ssc + wht;
+
+      setText('res-pr-net', formatMoney(net));
+      setText('res-pr-deduction', formatMoney(deduction));
+      setText('res-pr-employer-total', formatMoney(employerTotal));
+      setText('res-pr-gross', formatMoney(salary));
+      setText('res-pr-ssc-employee', `−${formatMoney(ssc)}`);
+      setText('res-pr-wht', `−${formatMoney(wht)}`);
+      setText('res-pr-ssc-employer', `+${formatMoney(sscEmployer)}`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

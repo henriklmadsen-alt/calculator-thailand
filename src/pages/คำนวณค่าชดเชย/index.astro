@@ -1,0 +1,254 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าชดเชย ปี 2569 ตามพ.ร.บ.คุ้มครองแรงงาน มาตรา 118 เลิกจ้าง | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าชดเชยเลิกจ้างตามพ.ร.บ.คุ้มครองแรงงาน พ.ศ.2541 แก้ไขปี 2560 และ 2562 มาตรา 118 ตามอายุงาน ตั้งแต่ 30 วัน ถึง 400 วัน อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าชดเชย/`;
+
+const faqData = [
+  {
+    question: 'ค่าชดเชยตามกฎหมายคำนวณอย่างไร?',
+    answer: 'ค่าชดเชยคำนวณจากค่าจ้างอัตราสุดท้าย × จำนวนวันชดเชย โดยจำนวนวันขึ้นอยู่กับอายุงาน ตามมาตรา 118 พ.ร.บ.คุ้มครองแรงงาน พ.ศ. 2541 แก้ไขเพิ่มเติมปี 2562',
+  },
+  {
+    question: 'อายุงานน้อยกว่า 120 วันได้ค่าชดเชยไหม?',
+    answer: 'ไม่ได้รับค่าชดเชย ลูกจ้างที่ทำงานน้อยกว่า 120 วันไม่มีสิทธิ์ได้รับค่าชดเชย',
+  },
+  {
+    question: 'ค่าจ้างอัตราสุดท้ายหมายความว่าอะไร?',
+    answer: 'หมายถึงค่าจ้างในอัตราที่จ่ายจริงในเดือนสุดท้ายก่อนเลิกจ้าง ไม่รวมโบนัส ค่าโอที หรือสวัสดิการอื่นๆ',
+  },
+  {
+    question: 'ลูกจ้างอายุงาน 20 ปีขึ้นไปได้ค่าชดเชยกี่วัน?',
+    answer: 'ตามการแก้ไขปี 2562 ลูกจ้างที่มีอายุงานตั้งแต่ 20 ปีขึ้นไปมีสิทธิ์ได้รับค่าชดเชยไม่น้อยกว่า 400 วัน (เพิ่มจาก 300 วันของกฎหมายเดิม)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าชดเชย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าชดเชย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อัปเดตตาม พ.ร.บ.คุ้มครองแรงงาน แก้ไขปี 2562</p>
+      <p class="mt-1 text-sm text-slate-700">มาตรา 118: อายุงาน 20 ปีขึ้นไป = 400 วัน | 10-20 ปี = 300 วัน | 6-10 ปี = 240 วัน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับพนักงานที่ถูกเลิกจ้างและ HR ที่ต้องการคำนวณค่าชดเชย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าชดเชย ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกค่าจ้างอัตราสุดท้ายและอายุงาน ระบบจะคำนวณค่าชดเชยตามมาตรา 118 พ.ร.บ.คุ้มครองแรงงาน พ.ศ. 2541 แก้ไขเพิ่มเติม
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="severance-form" class="space-y-5">
+        <p id="severance-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="sev-salary" class="mb-1 block text-sm font-medium text-gray-700">ค่าจ้างอัตราสุดท้าย (บาท/เดือน)</label>
+            <input type="text" id="sev-salary" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="sev-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="sev-years" class="mb-1 block text-sm font-medium text-gray-700">อายุงาน (ปี)</label>
+            <input type="text" id="sev-years" inputmode="decimal" placeholder="เช่น 5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="sev-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="sev-months" class="mb-1 block text-sm font-medium text-gray-700">อายุงานเพิ่มเติม (เดือน, ถ้ามี)</label>
+          <input type="text" id="sev-months" inputmode="decimal" placeholder="เช่น 6 (ถ้าทำงาน 5 ปี 6 เดือน)"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าชดเชย
+        </button>
+      </form>
+    </div>
+
+    <div id="severance-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าชดเชยที่พึงได้รับ</div>
+            <div id="res-sev-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">จำนวนวันชดเชย</div>
+            <div id="res-sev-days" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายวัน</div>
+            <div id="res-sev-daily" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อายุงานรวม</span>
+            <span id="res-sev-tenure" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เกณฑ์ที่ใช้ (มาตรา 118)</span>
+            <span id="res-sev-bracket" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">เกณฑ์ค่าชดเชย มาตรา 118</h2>
+      <table class="w-full text-sm">
+        <thead><tr class="bg-gray-50"><th class="p-2 text-left">อายุงาน</th><th class="p-2 text-right">วันชดเชย</th></tr></thead>
+        <tbody>
+          <tr><td class="p-2">น้อยกว่า 120 วัน</td><td class="p-2 text-right">ไม่ได้รับ</td></tr>
+          <tr class="bg-gray-50"><td class="p-2">120 วัน - น้อยกว่า 1 ปี</td><td class="p-2 text-right">30 วัน</td></tr>
+          <tr><td class="p-2">1 ปี - น้อยกว่า 3 ปี</td><td class="p-2 text-right">90 วัน</td></tr>
+          <tr class="bg-gray-50"><td class="p-2">3 ปี - น้อยกว่า 6 ปี</td><td class="p-2 text-right">180 วัน</td></tr>
+          <tr><td class="p-2">6 ปี - น้อยกว่า 10 ปี</td><td class="p-2 text-right">240 วัน</td></tr>
+          <tr class="bg-gray-50"><td class="p-2">10 ปี - น้อยกว่า 20 ปี</td><td class="p-2 text-right">300 วัน</td></tr>
+          <tr><td class="p-2">20 ปีขึ้นไป</td><td class="p-2 text-right">400 วัน</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-sm text-gray-600">ค่าจ้างรายวัน = ค่าจ้างรายเดือน ÷ 30</p>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แหล่งอ้างอิง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.mol.go.th/wp-content/uploads/sites/2/2018/07/183.pdf" target="_blank" rel="noopener noreferrer">พ.ร.บ.คุ้มครองแรงงาน พ.ศ. 2541 มาตรา 118</a></li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าวันลาพักร้อนคงเหลือ/">คำนวณค่าวันลาพักร้อนคงเหลือ</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+        <li><a href="/คำนวณค่าจ้างพนักงาน/">คำนวณค่าจ้างพนักงาน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#severance-results" />
+    <RelatedArticles currentHref="/คำนวณค่าชดเชย/" />
+    <RelatedCalculators currentHref="/คำนวณค่าชดเชย/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณตาม พ.ร.บ.คุ้มครองแรงงานขั้นต่ำ กรณีเลิกจ้างอาจมีสิทธิ์ได้รับค่าบอกกล่าวล่วงหน้าและค่าเสียหายเพิ่มเติม ควรปรึกษาทนายความด้านแรงงาน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    function getSeveranceDays(totalYears) {
+      const days = totalYears * 365;
+      if (days < 120) return { days: 0, bracket: 'น้อยกว่า 120 วัน — ไม่ได้รับค่าชดเชย' };
+      if (totalYears < 1) return { days: 30, bracket: '120 วัน – น้อยกว่า 1 ปี → 30 วัน' };
+      if (totalYears < 3) return { days: 90, bracket: '1 ปี – น้อยกว่า 3 ปี → 90 วัน' };
+      if (totalYears < 6) return { days: 180, bracket: '3 ปี – น้อยกว่า 6 ปี → 180 วัน' };
+      if (totalYears < 10) return { days: 240, bracket: '6 ปี – น้อยกว่า 10 ปี → 240 วัน' };
+      if (totalYears < 20) return { days: 300, bracket: '10 ปี – น้อยกว่า 20 ปี → 300 วัน' };
+      return { days: 400, bracket: '20 ปีขึ้นไป → 400 วัน' };
+    }
+
+    const form = document.getElementById('severance-form');
+    const formError = document.getElementById('severance-form-error');
+    const resultBox = document.getElementById('severance-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['sev-salary-error','sev-years-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('sev-salary').value);
+      const years = parseNum(document.getElementById('sev-years').value) || 0;
+      const months = parseNum(document.getElementById('sev-months').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('sev-salary-error', 'กรอกค่าจ้างมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(years) || years < 0) { setErr('sev-years-error', 'กรอกอายุงาน (ตัวเลขมากกว่าหรือเท่ากับ 0)'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const totalYears = years + months / 12;
+      const dailyRate = salary / 30;
+      const { days, bracket } = getSeveranceDays(totalYears);
+      const severancePay = dailyRate * days;
+
+      const yearsDisplay = months > 0 ? `${years} ปี ${months} เดือน` : `${years} ปี`;
+
+      setText('res-sev-total', days === 0 ? 'ไม่ได้รับค่าชดเชย' : formatMoney(severancePay));
+      setText('res-sev-days', `${days} วัน`);
+      setText('res-sev-daily', formatMoney(dailyRate));
+      setText('res-sev-tenure', yearsDisplay);
+      setText('res-sev-bracket', bracket);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

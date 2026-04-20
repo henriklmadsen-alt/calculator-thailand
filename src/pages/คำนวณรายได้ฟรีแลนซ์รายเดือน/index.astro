@@ -1,0 +1,276 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณรายได้ฟรีแลนซ์รายเดือน ปี 2569 ค่าจ้างรายวัน หรือราคาต่อโปรเจกต์ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณรายได้ฟรีแลนซ์รายเดือน จากอัตราค่าจ้างรายวัน × วันทำงาน หรือราคาต่อโปรเจกต์ × จำนวนโปรเจกต์ พร้อมประมาณการภาษีตามอัตราขั้นบันได';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณรายได้ฟรีแลนซ์รายเดือน/`;
+
+const faqData = [
+  {
+    question: 'ฟรีแลนซ์ต้องยื่นภาษีแบบไหน?',
+    answer: 'ฟรีแลนซ์ที่ทำงานบริการจัดเป็นรายได้ 40(2) หักค่าใช้จ่าย 50% สูงสุด 100,000 บาท/ปี หรือหักจริงก็ได้ ต้องยื่น ภ.ง.ด.90 หรือ 91 ทุกปี',
+  },
+  {
+    question: 'ฟรีแลนซ์มีภาษีหัก ณ ที่จ่ายไหม?',
+    answer: 'ลูกค้าที่จ่ายค่าบริการให้ฟรีแลนซ์ต้องหัก ณ ที่จ่าย 3% ของค่าบริการ ฟรีแลนซ์จะได้รับใบหัก ณ ที่จ่ายไปใช้หักภาษีเมื่อยื่นแบบ',
+  },
+  {
+    question: 'ฟรีแลนซ์ควรตั้งราคาต่อวัน (Day Rate) อย่างไร?',
+    answer: 'ปกติ Day Rate ฟรีแลนซ์จะสูงกว่าพนักงานประจำ 30-50% เพราะต้องบวกค่าใช้จ่ายเพิ่มเติม ไม่มีสวัสดิการ และความไม่แน่นอนของงาน',
+  },
+  {
+    question: 'ฟรีแลนซ์ต้องสมัครประกันสังคมไหม?',
+    answer: 'ฟรีแลนซ์สมัครประกันสังคมได้โดยสมัครใจผ่านมาตรา 40 มี 3 ตัวเลือก 70-300 บาท/เดือน เพื่อรับสิทธิ์ประกันชราภาพ ทุพพลภาพ ตาย และอื่นๆ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณรายได้ฟรีแลนซ์รายเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณรายได้ฟรีแลนซ์รายเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณได้ทั้งแบบ Day Rate และ Project Rate</p>
+      <p class="mt-1 text-sm text-slate-700">พร้อมประมาณการภาษีหัก ณ ที่จ่าย 3% และภาษีประจำปีตามขั้นบันได</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับฟรีแลนซ์ที่ต้องการวางแผนรายได้และภาษี</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณรายได้ฟรีแลนซ์รายเดือน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกวิธีคิดรายได้และกรอกข้อมูล ระบบจะคำนวณรายได้รวมพร้อมประมาณการภาษี
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="freelance-form" class="space-y-5">
+        <p id="freelance-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700">วิธีคิดรายได้</label>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="fl-mode" value="day-rate" checked class="accent-primary-600" /> อัตรารายวัน (Day Rate)
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="fl-mode" value="project" class="accent-primary-600" /> ราคาต่อโปรเจกต์
+            </label>
+          </div>
+        </div>
+
+        <div id="fl-day-rate-section" class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fl-day-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราค่าจ้างรายวัน (บาท)</label>
+            <input type="text" id="fl-day-rate" inputmode="numeric" placeholder="เช่น 3,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="fl-day-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="fl-work-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงาน/เดือน</label>
+            <input type="text" id="fl-work-days" inputmode="numeric" placeholder="เช่น 20"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="fl-work-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div id="fl-project-section" class="hidden grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fl-project-rate" class="mb-1 block text-sm font-medium text-gray-700">ราคาต่อโปรเจกต์ (บาท)</label>
+            <input type="text" id="fl-project-rate" inputmode="numeric" placeholder="เช่น 20,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="fl-project-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="fl-projects" class="mb-1 block text-sm font-medium text-gray-700">จำนวนโปรเจกต์/เดือน</label>
+            <input type="text" id="fl-projects" inputmode="decimal" placeholder="เช่น 3"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="fl-projects-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณรายได้ฟรีแลนซ์
+        </button>
+      </form>
+    </div>
+
+    <div id="freelance-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้รายเดือน</div>
+            <div id="res-fl-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ภาษีหัก ณ ที่จ่าย 3%/เดือน</div>
+            <div id="res-fl-wht" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรับจริง/เดือน</div>
+            <div id="res-fl-net" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายได้รายปี (ประมาณ)</span>
+            <span id="res-fl-annual" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ประมาณการภาษีประจำปี (หักค่าใช้จ่าย 50% สูงสุด 100,000)</span>
+            <span id="res-fl-tax-annual" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">การคำนวณภาษีฟรีแลนซ์</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้จากบริการ (40(2)) หักค่าใช้จ่าย 50% สูงสุด 100,000 บาท/ปี</li>
+        <li>หักค่าลดหย่อนส่วนตัว 60,000 บาท/ปี</li>
+        <li>คำนวณภาษีตามขั้นบันได 0-35%</li>
+        <li>ภาษีหัก ณ ที่จ่าย 3% นำไปหักจากภาษีที่ต้องชำระ</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณรายได้งานพาร์ทไทม์/">คำนวณรายได้งานพาร์ทไทม์</a></li>
+        <li><a href="/คำนวณประกันสังคมมาตรา40/">คำนวณประกันสังคมมาตรา 40</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#freelance-results" />
+    <RelatedArticles currentHref="/คำนวณรายได้ฟรีแลนซ์รายเดือน/" />
+    <RelatedCalculators currentHref="/คำนวณรายได้ฟรีแลนซ์รายเดือน/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> การประมาณการภาษีเป็นเพียงการคาดการณ์เบื้องต้น ภาษีจริงขึ้นอยู่กับรายได้ทั้งปีและค่าลดหย่อนทั้งหมด ควรปรึกษานักบัญชี
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.querySelectorAll('input[name="fl-mode"]').forEach((r) => {
+      r.addEventListener('change', () => {
+        const mode = document.querySelector('input[name="fl-mode"]:checked').value;
+        document.getElementById('fl-day-rate-section').classList.toggle('hidden', mode !== 'day-rate');
+        document.getElementById('fl-project-section').classList.toggle('hidden', mode !== 'project');
+      });
+    });
+
+    function calcAnnualTax(annualIncome) {
+      const expense = Math.min(annualIncome * 0.5, 100000);
+      const personal = 60000;
+      const netIncome = Math.max(annualIncome - expense - personal, 0);
+      const brackets = [[150000,0],[150000,.05],[200000,.10],[250000,.15],[250000,.20],[1000000,.25],[3000000,.30],[Infinity,.35]];
+      let tax = 0, rem = netIncome;
+      for (const [size, rate] of brackets) {
+        if (rem <= 0) break;
+        const chunk = Math.min(rem, size);
+        tax += chunk * rate;
+        rem -= chunk;
+      }
+      return tax;
+    }
+
+    const form = document.getElementById('freelance-form');
+    const formError = document.getElementById('freelance-form-error');
+    const resultBox = document.getElementById('freelance-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['fl-day-rate-error','fl-work-days-error','fl-project-rate-error','fl-projects-error'].forEach((id) => setErr(id, ''));
+
+      const mode = document.querySelector('input[name="fl-mode"]:checked').value;
+      let monthlyIncome = 0;
+      let hasError = false;
+
+      if (mode === 'day-rate') {
+        const dayRate = parseNum(document.getElementById('fl-day-rate').value);
+        const workDays = parseNum(document.getElementById('fl-work-days').value);
+        if (!Number.isFinite(dayRate) || dayRate <= 0) { setErr('fl-day-rate-error', 'กรอกอัตรารายวันมากกว่า 0'); hasError = true; }
+        if (!Number.isFinite(workDays) || workDays <= 0 || workDays > 31) { setErr('fl-work-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true; }
+        if (!hasError) monthlyIncome = dayRate * workDays;
+      } else {
+        const projectRate = parseNum(document.getElementById('fl-project-rate').value);
+        const projects = parseNum(document.getElementById('fl-projects').value);
+        if (!Number.isFinite(projectRate) || projectRate <= 0) { setErr('fl-project-rate-error', 'กรอกราคาโปรเจกต์มากกว่า 0'); hasError = true; }
+        if (!Number.isFinite(projects) || projects <= 0) { setErr('fl-projects-error', 'กรอกจำนวนโปรเจกต์มากกว่า 0'); hasError = true; }
+        if (!hasError) monthlyIncome = projectRate * projects;
+      }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const wht = monthlyIncome * 0.03;
+      const netReceived = monthlyIncome - wht;
+      const annualIncome = monthlyIncome * 12;
+      const annualTax = calcAnnualTax(annualIncome);
+
+      setText('res-fl-monthly', formatMoney(monthlyIncome));
+      setText('res-fl-wht', formatMoney(wht));
+      setText('res-fl-net', formatMoney(netReceived));
+      setText('res-fl-annual', formatMoney(annualIncome));
+      setText('res-fl-tax-annual', formatMoney(annualTax));
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>
