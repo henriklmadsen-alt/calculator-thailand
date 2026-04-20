@@ -1,0 +1,347 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณประกันรถพาณิชย์ ปี 2569 | เครื่องมือประมาณการเบี้ยประกัน | Calculator Thailand';
+const pageDescription = 'คำนวณเบี้ยประกันรถพาณิชย์ (รถบรรทุก รถแต่ง) เชื้อเพลิง พลัง ประเภทรถ ตรวจสอบเบี้ยที่เหมาะสม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันรถพาณิชย์/`;
+
+const faqData = [
+  {
+    question: 'ประกันรถพาณิชย์คืออะไร?',
+    answer: 'ประกันรถพาณิชย์เป็นประกันที่ออกแบบมาสำหรับรถยนต์ประเภทพาณิชย์ เช่น รถบรรทุก รถแต่ง รถตู้เชิงพาณิชย์ ที่ใช้เพื่อการค้าหรือบริการ มีข้อบังคับและเบี้ยประกันต่างจากรถส่วนบุคคล',
+  },
+  {
+    question: 'เบี้ยประกันรถพาณิชย์ขึ้นอยู่กับปัจจัยไหนบ้าง?',
+    answer: 'เบี้ยประกันรถพาณิชย์ขึ้นอยู่กับ: (1) มูลค่ารถ (2) ประเภทของรถและ การใช้งาน (3) พลังของเครื่องยนต์ (4) อายุรถ (5) บันทึกการเรียกร้องอดีต (6) ชั้นประกัน (พื้นฐานหรือวิชชุ) (7) บริเวณใช้งาน',
+  },
+  {
+    question: 'ประกันรถพาณิชย์ชั้น 3 กับ ชั้น 1 ต่างกันอย่างไร?',
+    answer: 'ชั้น 3 (ประกันภาคบังคับ) ครอบคลุมความรับผิดชอบต่อคนอื่น ส่วนชั้น 1 (ประกันวิชชุ) ครอบคลุมความรับผิดชอบต่อคนอื่นบวกกับความเสียหายต่อรถตัวเอง เบี้ยชั้น 1 สูงกว่า',
+  },
+  {
+    question: 'วิธีลดเบี้ยประกันรถพาณิชย์อย่างไร?',
+    answer: 'วิธีลดเบี้ย: (1) เลือกเบี้ยสูง (deductible) (2) ติดตั้งอุปกรณ์ป้องกันขโมย (3) ขับขี่อย่างปลอดภัยโดยไม่มีการเรียกร้องอดีต (4) เปรียบเทียบเบี้ยจากบริษัทประกันหลายแห่ง (5) ปรึกษาตัวแทนประกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันรถพาณิชย์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันรถพาณิชย์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณประกันรถพาณิชย์
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประมาณการเบี้ยประกันรถพาณิชย์ โดยอิงจากข้อมูลรถและความเสี่ยง
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <!-- Vehicle Value -->
+          <div>
+            <label for="vehicle-value" class="block text-sm font-medium text-gray-700 mb-1">
+              มูลค่ารถพาณิชย์ (บาท)
+            </label>
+            <input
+              type="text"
+              id="vehicle-value"
+              inputmode="decimal"
+              placeholder="เช่น 600000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Vehicle Type -->
+          <div>
+            <label for="vehicle-type" class="block text-sm font-medium text-gray-700 mb-1">
+              ประเภทรถพาณิชย์
+            </label>
+            <select
+              id="vehicle-type"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            >
+              <option value="1">รถบรรทุกน้อย (กระบะ/ตู้)</option>
+              <option value="1.2">รถบรรทุกกลาง</option>
+              <option value="1.4">รถบรรทุกใหญ่</option>
+              <option value="1.1">รถแต่งโครงสร้าง</option>
+              <option value="0.9">รถเก๋งดัดแปลง</option>
+            </select>
+          </div>
+
+          <!-- Engine Power -->
+          <div>
+            <label for="engine-power" class="block text-sm font-medium text-gray-700 mb-1">
+              พลังเครื่องยนต์ (แรงม้า)
+            </label>
+            <input
+              type="text"
+              id="engine-power"
+              inputmode="decimal"
+              placeholder="เช่น 150"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Vehicle Age -->
+          <div>
+            <label for="vehicle-age" class="block text-sm font-medium text-gray-700 mb-1">
+              อายุรถ (ปี)
+            </label>
+            <input
+              type="text"
+              id="vehicle-age"
+              inputmode="decimal"
+              placeholder="เช่น 3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Usage Type -->
+          <div>
+            <label for="usage-type" class="block text-sm font-medium text-gray-700 mb-1">
+              ประเภทการใช้งาน
+            </label>
+            <select
+              id="usage-type"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            >
+              <option value="1">เขตเมืองหลัก</option>
+              <option value="1.15">เขตชานเมือง</option>
+              <option value="1.3">พื้นที่ห่าง/บ้านไร่</option>
+            </select>
+          </div>
+
+          <!-- Coverage Type -->
+          <div>
+            <label for="coverage-type" class="block text-sm font-medium text-gray-700 mb-1">
+              ชั้นประกัน
+            </label>
+            <select
+              id="coverage-type"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            >
+              <option value="0.5">ชั้น 3 (ภาคบังคับเท่านั้น)</option>
+              <option value="1">ชั้น 1 (วิชชุ)</option>
+            </select>
+          </div>
+
+          <!-- No-Claim Discount -->
+          <div>
+            <label for="no-claim" class="block text-sm font-medium text-gray-700 mb-1">
+              ส่วนลดไม่เรียกร้องประกัน (ปี)
+            </label>
+            <input
+              type="text"
+              id="no-claim"
+              inputmode="decimal"
+              placeholder="เช่น 1"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Deductible -->
+          <div>
+            <label for="deductible" class="block text-sm font-medium text-gray-700 mb-1">
+              เบี้ยสูง Deductible (บาท)
+            </label>
+            <select
+              id="deductible"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            >
+              <option value="0">ไม่มี</option>
+              <option value="5000">5,000</option>
+              <option value="10000">10,000</option>
+              <option value="15000">15,000</option>
+              <option value="20000">20,000</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณเบี้ยประกัน
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <!-- Annual Premium -->
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">เบี้ยประกันต่อปี</div>
+          <div id="annual-premium" class="text-4xl font-bold mb-2 text-primary-600">0</div>
+          <div class="text-gray-600">บาท</div>
+        </div>
+
+        <!-- Monthly Premium -->
+        <div class="bg-blue-50 rounded-lg p-4 mb-4">
+          <div class="text-sm text-gray-600">เบี้ยประกันต่อเดือน</div>
+          <div id="monthly-premium" class="text-2xl font-bold text-blue-700">0</div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+
+        <!-- Discount Info -->
+        <div class="bg-green-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-2">รายละเอียดลดหย่อม</h3>
+          <div class="text-sm text-gray-600">
+            <div>ส่วนลดไม่เรียกร้อง: <span id="no-claim-discount" class="font-semibold">0%</span></div>
+            <div>ส่วนลดเบี้ยสูง: <span id="deductible-discount" class="font-semibold">0%</span></div>
+            <div class="mt-2 pt-2 border-t border-green-200">
+              ส่วนลดรวม: <span id="total-discount" class="font-semibold text-lg">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกันรถพาณิชย์ประเภทไหนเหมาะกับคุณ?</h2>
+
+      <p>
+        ประกันรถพาณิชย์มีความแตกต่างอย่างมากจากประกันรถส่วนบุคคล เนื่องจากรถพาณิชย์ใช้สำหรับวัตถุประสงค์ทางธุรกิจ
+        ต้องรับมือกับความเสี่ยงสูงขึ้น และมีการสึกหรอที่มากขึ้น การเลือกประกันที่เหมาะสมจึงมีความสำคัญต่อการคุ้มครองต้นทุนทางธุรกิจของคุณ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัจจัยที่ส่งผลต่อเบี้ยประกันรถพาณิชย์</h3>
+
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+        <li><strong>มูลค่ารถ:</strong> รถที่มีมูลค่าสูงจะมีเบี้ยสูงกว่า</li>
+        <li><strong>ประเภทรถ:</strong> รถบรรทุกใหญ่มีเบี้ยสูงกว่ารถบรรทุกน้อย</li>
+        <li><strong>พลังเครื่องยนต์:</strong> เครื่องยนต์ที่มีพลังสูงขึ้นมีเบี้ยสูงขึ้น</li>
+        <li><strong>อายุรถ:</strong> รถใหม่จะมีเบี้ยที่สูงขึ้นเนื่องจากมูลค่า</li>
+        <li><strong>ประสบการณ์การเรียกร้อง:</strong> ไม่มีการเรียกร้องอดีตจะลดเบี้ย</li>
+        <li><strong>บริเวณใช้งาน:</strong> การใช้งานในเขตเมืองมีเบี้ยแตกต่างกับพื้นที่ห่าง</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีประหยัดเบี้ยประกันรถพาณิชย์</h3>
+
+      <p>มีหลายวิธีที่สามารถช่วยลดเบี้ยประกันรถพาณิชย์:</p>
+
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li>เลือกเบี้ยสูง (Deductible) ที่มากขึ้นเพื่อลดเบี้ยรายเดือน</li>
+        <li>ติดตั้งระบบป้องกันขโมยและอุปกรณ์ความปลอดภัย</li>
+        <li>รักษาประวัติการขับขี่ที่ดีเพื่อไม่เรียกร้องประกัน</li>
+        <li>เปรียบเทียบเบี้ยจากบริษัทประกันต่างๆ</li>
+        <li>ปรึกษาตัวแทนประกัน เพื่อหาแพ็คเกจที่เหมาะสม</li>
+      </ol>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณประกันรถพาณิชย์/" />
+    <RelatedCalculators currentHref="/คำนวณประกันรถพาณิชย์/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      เบี้ยจริงขึ้นอยู่กับการประเมินของบริษัทประกัน กรุณาติดต่อบริษัทประกันโดยตรงเพื่อได้รับเบี้ยที่แน่นอน
+    </div>
+  </article>
+
+  <script>
+    function formatNumber(num: number): string {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      }).format(num);
+    }
+
+    function calculateInsurance() {
+      const vehicleValue = parseFloat(document.getElementById('vehicle-value')?.value || '0') || 0;
+      const vehicleType = parseFloat(document.getElementById('vehicle-type')?.value || '1') || 1;
+      const enginePower = parseFloat(document.getElementById('engine-power')?.value || '100') || 100;
+      const vehicleAge = parseFloat(document.getElementById('vehicle-age')?.value || '1') || 1;
+      const usageType = parseFloat(document.getElementById('usage-type')?.value || '1') || 1;
+      const coverageType = parseFloat(document.getElementById('coverage-type')?.value || '1') || 1;
+      const noClaim = parseFloat(document.getElementById('no-claim')?.value || '0') || 0;
+      const deductible = parseFloat(document.getElementById('deductible')?.value || '0') || 0;
+
+      // Base premium: 2.5% of vehicle value for standard coverage
+      let basePremium = vehicleValue * 0.025;
+
+      // Apply adjustments
+      basePremium *= vehicleType * usageType * coverageType;
+
+      // Age adjustment (newer cars higher premium)
+      const ageAdjustment = Math.max(1, 1.3 - vehicleAge * 0.05);
+      basePremium *= ageAdjustment;
+
+      // Engine power adjustment
+      basePremium *= (1 + enginePower / 500);
+
+      // Apply discounts
+      let noClaimDiscount = Math.min(noClaim * 0.05, 0.2); // Max 20% for no-claim
+      let deductibleDiscount = deductible > 0 ? 0.1 : 0; // 10% for selecting deductible
+      let totalDiscount = noClaimDiscount + deductibleDiscount;
+
+      const finalPremium = basePremium * (1 - totalDiscount);
+      const monthlyPremium = finalPremium / 12;
+
+      // Update display
+      document.getElementById('annual-premium')!.textContent = formatNumber(finalPremium);
+      document.getElementById('monthly-premium')!.textContent = formatNumber(monthlyPremium);
+      document.getElementById('no-claim-discount')!.textContent = formatNumber(noClaimDiscount * 100) + '%';
+      document.getElementById('deductible-discount')!.textContent = formatNumber(deductibleDiscount * 100) + '%';
+      document.getElementById('total-discount')!.textContent = formatNumber(totalDiscount * 100) + '%';
+
+      document.getElementById('result')?.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-calculate')?.addEventListener('click', calculateInsurance);
+  </script>
+</BaseLayout>

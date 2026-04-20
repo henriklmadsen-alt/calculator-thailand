@@ -3408,6 +3408,33 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'คำนวณ ROI ติดตามรถด้วย GPS',
+    desc: 'วิเคราะห์ผลตอบแทนจากระบบ GPS ติดตามรถ และระยะเวลาคืนทุน',
+    href: '/คำนวณ-roi-ติดตามรถด้วย-gps/',
+    icon: '📍',
+    categoryId: 'vehicles',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณต้นทุนระบบ Telematics',
+    desc: 'ประเมินต้นทุนและประโยชน์จากระบบ Telematics สำหรับจัดการรถบริษัท',
+    href: '/คำนวณต้นทุนระบบ-telematics/',
+    icon: '📡',
+    categoryId: 'vehicles',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณอัตราการผ่านการตรวจสอบรถ',
+    desc: 'ประเมินและวิเคราะห์อัตราการผ่านการตรวจสอบรถประจำปี',
+    href: '/คำนวณอัตราการผ่านการตรวจสอบรถ/',
+    icon: '✓',
+    categoryId: 'vehicles',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 
   // ── Property Purchase & Ownership (KLC-0301 to KLC-0320) ──
   {

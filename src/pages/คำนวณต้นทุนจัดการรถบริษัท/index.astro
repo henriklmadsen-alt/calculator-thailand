@@ -1,0 +1,445 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณต้นทุนจัดการรถบริษัท ปี 2569 | เครื่องมือวิเคราะห์งบประมาณรถบริษัท | Calculator Thailand';
+const pageDescription = 'คำนวณต้นทุนจัดการรถบริษัทต่อเดือน รวมค่าดำเนินการ ค่าน้ำมัน ค่าซ่อมบำรุง ประกัน ลิขสิทธิ์ ค่าแรง วิเคราะห์บัญชีรายได้-ค่าใช้จ่ายรถยนต์บริษัท';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนจัดการรถบริษัท/`;
+
+const faqData = [
+  {
+    question: 'ต้นทุนจัดการรถบริษัทรวมอะไรบ้าง?',
+    answer: 'ต้นทุนจัดการรถบริษัทรวมถึง: (1) ค่าเสื่อมราคารถ (2) ค่าน้ำมันเชื้อเพลิง (3) ค่าซ่อมบำรุงและอะไหล่ (4) ประกันรถและประกันผู้ขับขี่ (5) ค่าจดทะเบียนและลิขสิทธิ์ (6) ค่าแรงพนักงาน (7) ค่า GPS และระบบติดตามรถ (8) ค่าอื่นๆ เช่น ล้างรถ บ้านรถ เป็นต้น',
+  },
+  {
+    question: 'วิธีคำนวณค่าเสื่อมราคารถอย่างไร?',
+    answer: 'สำหรับการคำนวณค่าเสื่อมราคา ใช้วิธีส่วนเส้นตรง: (ราคารถ - มูลค่าซากที่คาดว่าจะเหลือ) ÷ อายุการใช้งานที่คาดหวัง (ปกติ 5-10 ปี) = ค่าเสื่อมปีละเท่าไร ÷ 12 = ค่าเสื่อมต่อเดือน',
+  },
+  {
+    question: 'ค่าน้ำมันเชื้อเพลิงคำนวณยังไง?',
+    answer: 'ค่าน้ำมัน = ระยะทางต่อเดือน (กม.) ÷ อัตราสิ้นเปลืองน้ำมัน (กม./ลิตร) × ราคาน้ำมันต่อลิตร (บาท) ตัวอย่าง: วิ่ง 2,000 กม. เดือนละครั้ง ดีเซล 8 กม./ลิตร ราคา 27 บาท/ลิตร = (2,000÷8)×27 = 6,750 บาท/เดือน',
+  },
+  {
+    question: 'ต้องคำนึงถึงต้นทุนอะไรบ้างเมื่อวิเคราะห์ความคุ้มค่ารถบริษัท?',
+    answer: 'ต้องคำนึงถึง: (1) ต้นทุนซ้ำได้ (ค่าดำเนินการรายเดือน) (2) ต้นทุนหลังการขาย (maintenance) (3) ความเสี่ยงจากอุบัติเหตุ (4) ความสูญเสียจากค่าเสื่อมราคา (5) ผลตอบแทนจากการใช้งาน (รายได้จากการให้เช่า หรือประสิทธิภาพการบริการ)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนจัดการรถบริษัท',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนจัดการรถบริษัท">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณต้นทุนจัดการรถบริษัท
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      วิเคราะห์ต้นทุนรวมจัดการรถบริษัทต่อเดือน พร้อมแบ่งรายละเอียดค่าใช้จ่ายแต่ละชนิด
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <!-- Vehicle Cost -->
+          <div>
+            <label for="vehicle-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคารถเมื่อซื้อ (บาท)
+            </label>
+            <input
+              type="text"
+              id="vehicle-cost"
+              inputmode="decimal"
+              placeholder="เช่น 800000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Useful Life -->
+          <div>
+            <label for="useful-life" class="block text-sm font-medium text-gray-700 mb-1">
+              อายุการใช้งาน (ปี)
+            </label>
+            <input
+              type="text"
+              id="useful-life"
+              inputmode="decimal"
+              placeholder="เช่น 5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Salvage Value -->
+          <div>
+            <label for="salvage-value" class="block text-sm font-medium text-gray-700 mb-1">
+              มูลค่าซาก (บาท)
+            </label>
+            <input
+              type="text"
+              id="salvage-value"
+              inputmode="decimal"
+              placeholder="เช่น 150000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Monthly Mileage -->
+          <div>
+            <label for="monthly-mileage" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะทางต่อเดือน (กม.)
+            </label>
+            <input
+              type="text"
+              id="monthly-mileage"
+              inputmode="decimal"
+              placeholder="เช่น 2000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Fuel Consumption -->
+          <div>
+            <label for="fuel-consumption" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราสิ้นเปลืองน้ำมัน (กม./ลิตร)
+            </label>
+            <input
+              type="text"
+              id="fuel-consumption"
+              inputmode="decimal"
+              placeholder="เช่น 7"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Fuel Price -->
+          <div>
+            <label for="fuel-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาน้ำมันต่อลิตร (บาท)
+            </label>
+            <input
+              type="text"
+              id="fuel-price"
+              inputmode="decimal"
+              placeholder="เช่น 27"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Insurance Monthly -->
+          <div>
+            <label for="insurance-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าประกันต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="insurance-monthly"
+              inputmode="decimal"
+              placeholder="เช่น 3500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Maintenance Monthly -->
+          <div>
+            <label for="maintenance-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าซ่อมบำรุงเฉลี่ยต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="maintenance-monthly"
+              inputmode="decimal"
+              placeholder="เช่น 2000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Registration and License -->
+          <div>
+            <label for="registration-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าจดทะเบียนลิขสิทธิ์ต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="registration-monthly"
+              inputmode="decimal"
+              placeholder="เช่น 500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Driver Salary -->
+          <div>
+            <label for="driver-salary" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าแรงคนขับต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="driver-salary"
+              inputmode="decimal"
+              placeholder="เช่น 20000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- GPS and Tracking -->
+          <div>
+            <label for="gps-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่า GPS และติดตามรถต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="gps-monthly"
+              inputmode="decimal"
+              placeholder="เช่น 500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+
+          <!-- Other Costs -->
+          <div>
+            <label for="other-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าใช้จ่ายอื่นๆต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="other-monthly"
+              inputmode="decimal"
+              placeholder="เช่น 1000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณต้นทุน
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <!-- Total Monthly Cost -->
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ต้นทุนรวมต่อเดือน</div>
+          <div id="total-cost" class="text-4xl font-bold mb-2 text-primary-600">0</div>
+          <div class="text-gray-600">บาท</div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-gray-900 mb-3">รายละเอียดต้นทุน</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าเสื่อมราคารถ</span>
+              <span id="cost-depreciation" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าน้ำมันเชื้อเพลิง</span>
+              <span id="cost-fuel" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าประกัน</span>
+              <span id="cost-insurance" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าซ่อมบำรุง</span>
+              <span id="cost-maintenance" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าจดทะเบียน/ลิขสิทธิ์</span>
+              <span id="cost-registration" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าแรงคนขับ</span>
+              <span id="cost-salary" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่า GPS และติดตาม</span>
+              <span id="cost-gps" class="font-semibold text-gray-900">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">ค่าใช้จ่ายอื่นๆ</span>
+              <span id="cost-other" class="font-semibold text-gray-900">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost Per KM -->
+        <div class="bg-blue-50 rounded-lg p-4 mb-4">
+          <div class="text-sm text-gray-600">ต้นทุนต่อกิโลเมตร</div>
+          <div id="cost-per-km" class="text-2xl font-bold text-blue-700">0</div>
+          <div class="text-sm text-gray-600">บาท/กม.</div>
+        </div>
+
+        <!-- Annual Cost -->
+        <div class="bg-green-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600">ต้นทุนต่อปี</div>
+          <div id="annual-cost" class="text-2xl font-bold text-green-700">0</div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ต้นทุนจัดการรถบริษัทคืออะไร?</h2>
+
+      <p>
+        ต้นทุนจัดการรถบริษัท (Fleet Management Cost) คือค่าใช้จ่ายทั้งหมดที่บริษัทต้องจ่ายเพื่อดำเนินการรถยนต์บริษัท
+        ตั้งแต่ซื้อรถ ใช้งาน บำรุงรักษา จนถึงแลกเปลี่ยนหรือขายรถ
+        การคำนวณต้นทุนนี้จะช่วยให้บริษัทเข้าใจความเป็นจริงของค่าใช้จ่ายและตัดสินใจเกี่ยวกับ การลงทุนในยานพาหนะได้อย่างฉลาด
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">องค์ประกอบของต้นทุนจัดการรถบริษัท</h3>
+
+      <p>ต้นทุนจัดการรถบริษัทประกอบด้วย:</p>
+
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li><strong>ค่าเสื่อมราคา:</strong> ค่าลดลงของมูลค่ารถ คำนวณจาก (ราคารถ - มูลค่าซาก) ÷ อายุการใช้งาน</li>
+        <li><strong>ค่าน้ำมันเชื้อเพลิง:</strong> ราคาน้ำมันที่ใช้จริงต่อเดือน โดยขึ้นอยู่กับระยะทางและอัตราสิ้นเปลืองน้ำมัน</li>
+        <li><strong>ค่าประกัน:</strong> ค่าประกันรถเบื้องต้น (ชั้น 3) หรือประกันวิชชุ (ชั้น 1) ต่อเดือน</li>
+        <li><strong>ค่าซ่อมบำรุง:</strong> ค่าซ่อมแซม ค่าแรง ค่าอะไหล่ ที่รถต้องใช้จ่ายอย่างสม่ำเสมอ</li>
+        <li><strong>ค่าจดทะเบียนและลิขสิทธิ์:</strong> ค่าต่ออายุจดทะเบียนประจำปี และค่าหนังสือเดินทางรถ</li>
+        <li><strong>ค่าแรงคนขับ:</strong> เงินเดือนและสิทธิประโยชน์ของพนักงานขับรถ</li>
+        <li><strong>ค่า GPS และระบบติดตามรถ:</strong> ค่าเช่า GPS และบริการติดตามตำแหน่งรถแบบบนไลน์</li>
+        <li><strong>ค่าใช้จ่ายอื่นๆ:</strong> ค่าล้างรถ บ้านรถ วัสดุสิ้นเปลืองเล็กน้อย</li>
+      </ol>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีลดต้นทุนจัดการรถบริษัท</h3>
+
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+        <li><strong>เลือกรถตรงความต้องการ:</strong> ไม่ต้องซื้อรถยนต์ระดับสูงเกินความจำเป็น</li>
+        <li><strong>บำรุงรักษาเป็นระยะ:</strong> ดำเนินการตรวจสอบและบำรุงตามกำหนดเพื่อลดค่าซ่อมฉุกเฉิน</li>
+        <li><strong>ใช้ GPS และระบบติดตาม:</strong> ลดการใช้ระยะทางและเชื้อเพลิงโดยการปลายเส้นทางที่มีประสิทธิภาพ</li>
+        <li><strong>ประกันรถที่เหมาะสม:</strong> เปรียบเทียบประกัน และเลือกที่เหมาะกับความเสี่ยง</li>
+        <li><strong>ฝึกคนขับให้ขับอย่างปลอดภัย:</strong> ลดอุบัติเหตุและค่าซ่อมแซม</li>
+        <li><strong>ใช้เชื้อเพลิงทางเลือก:</strong> พิจารณารถที่ใช้ LPG หรือ EV เพื่อลดค่าน้ำมัน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณต้นทุนจัดการรถบริษัท</h3>
+
+      <p>
+        สมมติว่าบริษัทต้องการซื้อรถกระบะสำหรับใช้ในธุรกิจลอจิสติก ราคารถ 800,000 บาท
+        ใช้งาน 5 ปี มูลค่าซาก 150,000 บาท วิ่ง 2,000 กม./เดือน สิ้นเปลืองน้ำมัน 7 กม./ลิตร ราคาน้ำมัน 27 บาท/ลิตร
+        ค่าประกัน 3,500 บาท/เดือน ค่าซ่อมบำรุง 2,000 บาท/เดือน คนขับ 20,000 บาท/เดือน
+      </p>
+
+      <p>
+        ต้นทุนเสื่อมราคา = (800,000 - 150,000) ÷ 5 ÷ 12 = 10,833 บาท/เดือน
+        ต้นทุนน้ำมัน = (2,000 ÷ 7) × 27 = 7,714 บาท/เดือน
+        ต้นทุนรวม ≈ 48,447 บาท/เดือน หรือ 24.22 บาท/กม.
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณต้นทุนจัดการรถบริษัท/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนจัดการรถบริษัท/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ต้นทุนจริงอาจแตกต่างตามสภาพรถ สภาพถนน การขับขี่ และปัจจัยอื่นๆ กรุณาปรึกษาผู้เชี่ยวชาญด้านลอจิสติก
+    </div>
+  </article>
+
+  <script>
+    function formatNumber(num: number): string {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      }).format(num);
+    }
+
+    function calculateFleetCost() {
+      const vehicleCost = parseFloat(document.getElementById('vehicle-cost')?.value || '0') || 0;
+      const usefulLife = parseFloat(document.getElementById('useful-life')?.value || '5') || 5;
+      const salvageValue = parseFloat(document.getElementById('salvage-value')?.value || '0') || 0;
+      const monthlyMileage = parseFloat(document.getElementById('monthly-mileage')?.value || '0') || 0;
+      const fuelConsumption = parseFloat(document.getElementById('fuel-consumption')?.value || '1') || 1;
+      const fuelPrice = parseFloat(document.getElementById('fuel-price')?.value || '0') || 0;
+      const insuranceMonthly = parseFloat(document.getElementById('insurance-monthly')?.value || '0') || 0;
+      const maintenanceMonthly = parseFloat(document.getElementById('maintenance-monthly')?.value || '0') || 0;
+      const registrationMonthly = parseFloat(document.getElementById('registration-monthly')?.value || '0') || 0;
+      const driverSalary = parseFloat(document.getElementById('driver-salary')?.value || '0') || 0;
+      const gpsMonthly = parseFloat(document.getElementById('gps-monthly')?.value || '0') || 0;
+      const otherMonthly = parseFloat(document.getElementById('other-monthly')?.value || '0') || 0;
+
+      // Calculate costs
+      const depreciation = (vehicleCost - salvageValue) / usefulLife / 12;
+      const fuel = (monthlyMileage / fuelConsumption) * fuelPrice;
+
+      const totalCost = depreciation + fuel + insuranceMonthly + maintenanceMonthly + registrationMonthly + driverSalary + gpsMonthly + otherMonthly;
+      const costPerKm = monthlyMileage > 0 ? totalCost / monthlyMileage : 0;
+      const annualCost = totalCost * 12;
+
+      // Update display
+      document.getElementById('cost-depreciation')!.textContent = formatNumber(depreciation);
+      document.getElementById('cost-fuel')!.textContent = formatNumber(fuel);
+      document.getElementById('cost-insurance')!.textContent = formatNumber(insuranceMonthly);
+      document.getElementById('cost-maintenance')!.textContent = formatNumber(maintenanceMonthly);
+      document.getElementById('cost-registration')!.textContent = formatNumber(registrationMonthly);
+      document.getElementById('cost-salary')!.textContent = formatNumber(driverSalary);
+      document.getElementById('cost-gps')!.textContent = formatNumber(gpsMonthly);
+      document.getElementById('cost-other')!.textContent = formatNumber(otherMonthly);
+      document.getElementById('total-cost')!.textContent = formatNumber(totalCost);
+      document.getElementById('cost-per-km')!.textContent = formatNumber(costPerKm);
+      document.getElementById('annual-cost')!.textContent = formatNumber(annualCost);
+
+      document.getElementById('result')?.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-calculate')?.addEventListener('click', calculateFleetCost);
+  </script>
+</BaseLayout>
