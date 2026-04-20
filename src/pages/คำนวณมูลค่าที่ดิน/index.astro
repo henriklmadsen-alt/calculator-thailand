@@ -1,0 +1,382 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณมูลค่าที่ดิน/บ้าน ปี 2569 | วิธีประเมินราคาสินทรัพย์ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าที่ดิน บ้าน คอนโด โดยวิธีเปรียบเทียบราคาคุณสมบัติ ตำแหน่ง และสภาพ อัปเดตข้อมูลตลาดปี 2569 ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณมูลค่าที่ดิน/`;
+
+const faqData = [
+  {
+    question: 'วิธีประเมินมูลค่าที่ดิน/บ้านอย่างไรให้แม่นยำ?',
+    answer: 'ใช้วิธีเปรียบเทียบราคาสินทรัพย์ (Comparative Market Analysis — CMA) ผลการขายล่าสุด ตำแหน่ง ขนาด เงื่อนไข ที่ดิน และสภาพทั่วไป ส่วนมากใช้เพื่อการสนับสนุนตัดสินใจซื้อ-ขายหรือเงินกู้',
+  },
+  {
+    question: 'ปัจจัยอะไรส่งผลต่อมูลค่าที่ดิน?',
+    answer: 'ตำแหน่ง (ใกล้ BTS/MRT, เมืองหลัก, มหาวิทยาลัย) ขนาด สภาพที่ดิน โฉนด ดินแดน การพัฒนาในอนาคต เข้าถนน และสถานการณ์ตลาด',
+  },
+  {
+    question: 'ต้องแก้ไขมูลค่าประเมินทำไม?',
+    answer: 'มูลค่าประเมินทำการ (Government Appraisal Value) อาจล้าสมัยหรือต่ำกว่าราคาตลาด ประเมินใหม่เมื่อตลาดเปลี่ยน ที่ดินมีการปรับปรุง หรือเพื่อลดหนี้สิน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณมูลค่าที่ดิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าที่ดิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
+      <p class="text-sm font-semibold text-amber-700">วิธีเปรียบเทียบราคาสินทรัพย์</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณมูลค่าโดยอ้างอิงจากราคาขายของทรัพย์สินที่คล้ายคลึง ในพื้นที่เดียวกันหรือใกล้เคียง</p>
+      <p class="mt-1 text-xs font-medium text-amber-800">ผลลัพธ์ใช้เพื่อสนับสนุนการตัดสินใจซื้อ-ขาย หรือยื่นขอเงินกู้</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณมูลค่าที่ดิน บ้าน คอนโด ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกข้อมูลที่ดิน/บ้านของคุณและข้อมูลทรัพย์สินที่เปรียบเทียบ ระบบจะช่วยประเมินมูลค่าโดยปรับแก้ผลต่างด้านตำแหน่ง ขนาด และสภาพ
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'สมาคมอสังหาริมทรัพย์ไทย (Thai Real Estate Association)',
+        'ธนาคารแห่งประเทศไทย: คู่มือวิธีประเมินมูลค่า',
+        'กรมที่ดิน: ข้อมูลธรรมชาติที่ดิน และค่าประเมิน',
+      ]}
+      assumptions={[
+        'การประเมินนี้เป็นการประมาณการ ขึ้นอยู่กับข้อมูลที่คุณกรอก และตลาดจริง',
+        'ข้อมูลทรัพย์สินที่เปรียบเทียบควรมาจากการขายจริงในรอบ 6 เดือนที่ผ่านมา',
+        'ตำแหน่ง สภาพ และเงื่อนไขอื่น ๆ ส่งผลต่อมูลค่าอย่างมีนัยสำคัญ',
+      ]}
+      references={[
+        {
+          label: 'สมาคมอสังหาริมทรัพย์ไทย',
+          href: 'https://www.thairea.or.th/',
+        },
+        {
+          label: 'ธนาคารแห่งประเทศไทย: วิธีประเมินมูลค่า',
+          href: 'https://www.bot.or.th/th/Pages/default.aspx',
+        },
+        {
+          label: 'กรมที่ดิน: ข้อมูลค่าประเมินทรัพย์สิน',
+          href: 'https://www.dol.go.th/',
+        },
+      ]}
+    />
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="property-valuation-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลที่จำเป็นให้ครบ
+        </p>
+
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-gray-900 mb-3">ข้อมูลทรัพย์สินที่ต้องการประเมิน</h3>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="property-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทอสังหาริมทรัพย์</label>
+              <select id="property-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="land">ที่ดิน</option>
+                <option value="house">บ้านเดี่ยว</option>
+                <option value="condo">คอนโด</option>
+                <option value="townhouse">ทาวน์เฮาส์</option>
+                <option value="commercial">พาณิชย์</option>
+              </select>
+            </div>
+            <div>
+              <label for="property-size" class="block text-sm font-medium text-gray-700 mb-1">ขนาด (ตร.ม. หรือ ตร.วา)</label>
+              <input id="property-size" type="text" inputmode="numeric" placeholder="เช่น 100" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2 mt-4">
+            <div>
+              <label for="location-condition" class="block text-sm font-medium text-gray-700 mb-1">สภาพตำแหน่ง</label>
+              <select id="location-condition" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="prime">ตำแหน่งทำเลดี (ใกล้BTS/MRT/หนทางหลัก)</option>
+                <option value="good">ตำแหน่งดี (เขตหลัก)</option>
+                <option value="normal">ตำแหน่งปกติ (เขตรอบนอก)</option>
+              </select>
+            </div>
+            <div>
+              <label for="property-condition" class="block text-sm font-medium text-gray-700 mb-1">สภาพทั่วไป</label>
+              <select id="property-condition" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="excellent">ดีมาก (ใหม่/ปรับปรุงแล้ว)</option>
+                <option value="good">ดี (ปรับปรุงบ้าง)</option>
+                <option value="fair">ปกติ (ต้องซ่อมแซม)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">ข้อมูลทรัพย์สินที่เปรียบเทียบ</h3>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="comp-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาขายที่เปรียบเทียบ (บาท)</label>
+              <input id="comp-price" type="text" inputmode="numeric" placeholder="เช่น 5,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="comp-size" class="block text-sm font-medium text-gray-700 mb-1">ขนาด (ตร.ม. หรือ ตร.วา)</label>
+              <input id="comp-size" type="text" inputmode="numeric" placeholder="เช่น 100" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2 mt-4">
+            <div>
+              <label for="comp-location-condition" class="block text-sm font-medium text-gray-700 mb-1">สภาพตำแหน่ง</label>
+              <select id="comp-location-condition" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="prime">ตำแหน่งทำเลดี</option>
+                <option value="good">ตำแหน่งดี</option>
+                <option value="normal">ตำแหน่งปกติ</option>
+              </select>
+            </div>
+            <div>
+              <label for="comp-property-condition" class="block text-sm font-medium text-gray-700 mb-1">สภาพทั่วไป</label>
+              <select id="comp-property-condition" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="excellent">ดีมาก</option>
+                <option value="good">ดี</option>
+                <option value="fair">ปกติ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        >
+          คำนวณมูลค่าประเมิน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการประเมินมูลค่า</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาต่อหน่วย (ทรัพย์เปรียบเทียบ)</div>
+            <div id="res-unit-price" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาประเมินเบื้องต้น</div>
+            <div id="res-base-valuation" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าประเมินแก้ไข</div>
+            <div id="res-adjusted-valuation" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm mb-4 bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">ราคาขายที่เปรียบเทียบ</span>
+            <span id="res-comp-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">ขนาดที่เปรียบเทียบ</span>
+            <span id="res-comp-size" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-t border-gray-200 pt-2 mt-2">
+            <span class="text-gray-600 font-medium">ราคาต่อหน่วย</span>
+            <span id="res-calc-unit-price" class="font-bold">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">ขนาดของคุณ</span>
+            <span id="res-your-size" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-t border-gray-200 pt-2 mt-2">
+            <span class="text-gray-600 font-medium">ราคาประเมินเบื้องต้น</span>
+            <span id="res-calc-base" class="font-bold">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">ปรับแก้ตำแหน่ง ±</span>
+            <span id="res-location-adj" class="font-medium text-primary-600">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">ปรับแก้สภาพ ±</span>
+            <span id="res-condition-adj" class="font-medium text-primary-600">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-t border-gray-200 pt-2 mt-2">
+            <span class="text-gray-700 font-semibold">มูลค่าประเมินแก้ไข</span>
+            <span id="res-calc-adjusted" class="font-bold text-lg text-emerald-700">-</span>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-500">
+          หมายเหตุ: ผลลัพธ์เป็นการประมาณการเท่านั้น อ้างอิงจากข้อมูลที่คุณกรอก อาจแตกต่างจากค่าประเมินทรัพย์สินอย่างเป็นทางการจากธนาคารหรือสำนักประเมิน
+        </p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ราคาต่อหน่วย = ราคาขายที่เปรียบเทียบ ÷ ขนาด</li>
+        <li>ราคาประเมินเบื้องต้น = ราคาต่อหน่วย × ขนาดของคุณ</li>
+        <li>ปรับแก้ตำแหน่ง: ±5% ถึง ±15% ตามสภาพตำแหน่ง</li>
+        <li>ปรับแก้สภาพ: ±10% ถึง ±20% ตามสภาพทั่วไป</li>
+        <li>มูลค่าประเมินแก้ไข = ราคาประเมินเบื้องต้น + ปรับแก้ทั้งหมด</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <RelatedArticles currentHref="/คำนวณมูลค่าที่ดิน/" />
+    <RelatedCalculators currentHref="/คำนวณมูลค่าที่ดิน/" />
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  function formatPercent(value) {
+    const sign = value >= 0 ? '+' : '';
+    return `${sign}${value.toFixed(1)}%`;
+  }
+
+  const form = document.querySelector('#property-valuation-form');
+  const formError = document.querySelector('#form-error');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const propertySize = parseNumber(document.querySelector('#property-size')?.value || '');
+    const compPrice = parseNumber(document.querySelector('#comp-price')?.value || '');
+    const compSize = parseNumber(document.querySelector('#comp-size')?.value || '');
+    const locationCondition = document.querySelector('#location-condition')?.value;
+    const propertyCondition = document.querySelector('#property-condition')?.value;
+    const compLocationCondition = document.querySelector('#comp-location-condition')?.value;
+    const compPropertyCondition = document.querySelector('#comp-property-condition')?.value;
+
+    const isValid = Number.isFinite(propertySize) && propertySize > 0 &&
+                    Number.isFinite(compPrice) && compPrice > 0 &&
+                    Number.isFinite(compSize) && compSize > 0;
+
+    if (!isValid) {
+      formError?.classList.remove('hidden');
+      results?.classList.add('hidden');
+      return;
+    }
+
+    formError?.classList.add('hidden');
+
+    // Calculate unit price
+    const unitPrice = compPrice / compSize;
+
+    // Base valuation
+    const baseValuation = unitPrice * propertySize;
+
+    // Adjustments
+    let locationAdj = 0;
+    let conditionAdj = 0;
+
+    // Location adjustment
+    if (locationCondition === compLocationCondition) {
+      locationAdj = 0;
+    } else if (locationCondition === 'prime' && compLocationCondition !== 'prime') {
+      locationAdj = 0.10;
+    } else if (locationCondition === 'good' && compLocationCondition === 'normal') {
+      locationAdj = 0.05;
+    } else if (locationCondition !== 'prime' && compLocationCondition === 'prime') {
+      locationAdj = -0.10;
+    } else if (locationCondition === 'normal' && compLocationCondition === 'good') {
+      locationAdj = -0.05;
+    }
+
+    // Condition adjustment
+    if (propertyCondition === compPropertyCondition) {
+      conditionAdj = 0;
+    } else if (propertyCondition === 'excellent' && compPropertyCondition !== 'excellent') {
+      conditionAdj = 0.15;
+    } else if (propertyCondition === 'good' && compPropertyCondition === 'fair') {
+      conditionAdj = 0.10;
+    } else if (propertyCondition !== 'excellent' && compPropertyCondition === 'excellent') {
+      conditionAdj = -0.15;
+    } else if (propertyCondition === 'fair' && compPropertyCondition === 'good') {
+      conditionAdj = -0.10;
+    }
+
+    const totalAdj = locationAdj + conditionAdj;
+    const adjustedValuation = baseValuation * (1 + totalAdj);
+
+    // Update display
+    document.querySelector('#res-unit-price').textContent = formatCurrency(unitPrice);
+    document.querySelector('#res-base-valuation').textContent = formatCurrency(baseValuation);
+    document.querySelector('#res-adjusted-valuation').textContent = formatCurrency(adjustedValuation);
+
+    document.querySelector('#res-comp-price').textContent = formatCurrency(compPrice);
+    document.querySelector('#res-comp-size').textContent = `${compSize.toLocaleString('th-TH')} ตร.ม.`;
+    document.querySelector('#res-calc-unit-price').textContent = formatCurrency(unitPrice);
+    document.querySelector('#res-your-size').textContent = `${propertySize.toLocaleString('th-TH')} ตร.ม.`;
+    document.querySelector('#res-calc-base').textContent = formatCurrency(baseValuation);
+    document.querySelector('#res-location-adj').textContent = formatPercent(locationAdj * 100);
+    document.querySelector('#res-condition-adj').textContent = formatPercent(conditionAdj * 100);
+    document.querySelector('#res-calc-adjusted').textContent = formatCurrency(adjustedValuation);
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
