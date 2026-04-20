@@ -3709,6 +3709,12 @@ export const calculators: Calculator[] = [
   { title: 'คำนวณต้นทุนที่จอดรถ', desc: 'ค่าจอดรถ ประจำเดือน', href: '/คำนวณต้นทุนที่จอดรถ/', icon: '🅿️', categoryId: 'bills', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณประกันครอบ-gap', desc: 'Gap insurance ประกันครอบ', href: '/คำนวณประกันครอบ-gap/', icon: '📝', categoryId: 'vehicles', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณการชำระเงินค่าเสียหายอุบัติเหตุ', desc: 'Claim settlement ประกัน', href: '/คำนวณการชำระเงินค่าเสียหายอุบัติเหตุ/', icon: '💔', categoryId: 'vehicles', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณมูลค่าอสังหาฯเชิงพาณิชย์', desc: 'ประเมินมูลค่าทรัพย์สินพาณิชย์ด้วยวิธี Income Approach และ Cap Rate', href: '/คำนวณมูลค่าอสังหาฯเชิงพาณิชย์/', icon: '🏢', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณ Cap Rate อสังหาฯ', desc: 'คำนวณอัตราผลตอบแทน Cap Rate จากรายได้ NOI และมูลค่าทรัพย์สิน', href: '/คำนวณ-cap-rate-อสังหาฯ/', icon: '📊', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณ Cash Flow อสังหาฯ', desc: 'วิเคราะห์เงินสดสุทธิจากการลงทุนอสังหาฯ หลังหักค่าจำนอง ค่าดำเนินการ', href: '/คำนวณ-cash-flow-อสังหาฯ/', icon: '💵', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณ IRR อสังหาฯ', desc: 'คำนวณ IRR (Internal Rate of Return) สำหรับการลงทุนอสังหาฯระยะยาว', href: '/คำนวณ-irr-อสังหาฯ/', icon: '📈', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณค่าบริหารจัดการอสังหาฯ', desc: 'คำนวณค่าบริหารจัดการและค่าสาธารณูปโภค สำหรับการให้เช่าทรัพย์สิน', href: '/คำนวณค่าบริหารจัดการอสังหาฯ/', icon: '🔑', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณการเพิ่มมูลค่าคอนโด', desc: 'ประเมินมูลค่าคอนโดในอนาคต และกำไรจากการถือครองและขายคอนโด', href: '/คำนวณการเพิ่มมูลค่าคอนโด/', icon: '🏗️', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
 ];
 
 /** Look up a category by its slug (used in dynamic routes). */
