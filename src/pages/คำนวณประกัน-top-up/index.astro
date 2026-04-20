@@ -1,0 +1,239 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณประกัน Top-up เพิ่มเติม 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณเบี้ยประกัน Top-up เพื่อเพิ่มทุนประกันให้เพียงพอ ช่วยเติมช่องว่างความคุ้มครองของประกันชีวิต';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกัน-top-up/`;
+
+const faqData = [
+  {
+    question: 'ประกัน Top-up คืออะไร?',
+    answer: 'ประกัน Top-up เป็นการเพิ่มทุนประกันเพิ่มเติมจากกรมธรรมชีวิตเดิม โดยไม่ต้องสอบแพทย์ใหม่ และเบี้ยจะคำนวณจากทุนเพิ่มเติมเท่านั้น',
+  },
+  {
+    question: 'ควรเลือก Top-up เมื่อไร?',
+    answer: 'ควรพิจารณา Top-up เมื่อ: (1) ทุนประกันเดิมไม่เพียงพอ (2) มีภาระหนี้หรือค่าใช้จ่ายเพิ่มขึ้น (3) ได้รับเงินเดือนเพิ่มขึ้น (4) ต้องการสะสมทุนเพิ่มเติม',
+  },
+  {
+    question: 'ประกัน Top-up จ่ายเบี้ยได้นานกว่าเดิมหรือไม่?',
+    answer: 'ตามปกติ ประกัน Top-up จะมีระยะเวลาการจ่ายเบี้ยเดียวกันกับกรมธรรมชีวิตเดิม อาจสั้นกว่าเดิมหากเพิ่มอายุคุม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกัน Top-up',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกัน Top-up">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประกัน Top-up เพิ่มเติม</h1>
+    <p class="text-gray-600 mb-6">คำนวณเบี้ยประกัน Top-up เพื่อเพิ่มทุนประกันให้เพียงพอตามความต้องการ</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="desiredCoverage" class="block text-sm font-medium text-gray-700 mb-1">ทุนประกันที่ต้องการ (บาท)</label>
+          <input type="text" id="desiredCoverage" inputmode="decimal" placeholder="เช่น 1,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">เป้าหมายทุนประกันที่ต้องการ</p>
+        </div>
+        <div>
+          <label for="currentCoverage" class="block text-sm font-medium text-gray-700 mb-1">ทุนประกันปัจจุบัน (บาท)</label>
+          <input type="text" id="currentCoverage" inputmode="decimal" placeholder="เช่น 500,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">ทุนประกันของกรมธรรมปัจจุบัน</p>
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="age" class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label>
+          <input type="text" id="age" inputmode="numeric" placeholder="เช่น 35"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="premiumRate" class="block text-sm font-medium text-gray-700 mb-1">อัตราเบี้ยต่อ 100 บาททุน</label>
+          <input type="text" id="premiumRate" inputmode="decimal" placeholder="เช่น 2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-500">ขึ้นอยู่กับอายุและชนิดประกัน</p>
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+        คำนวณเบี้ย Top-up
+      </button>
+
+      <div id="result" class="hidden mt-6">
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">เบี้ย Top-up ต่อปี</div>
+          <div id="topup-premium" class="text-5xl font-bold mb-2 text-primary-600">-</div>
+          <div class="text-lg font-semibold text-gray-700">บาท</div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-gray-900 mb-3">รายละเอียด</h3>
+          <div class="text-sm text-gray-700 space-y-2">
+            <div class="flex justify-between">
+              <span>ทุนที่ต้องการ:</span>
+              <span id="detail-desired" class="font-semibold">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span>ทุนปัจจุบัน:</span>
+              <span id="detail-current" class="font-semibold">-</span>
+            </div>
+            <div class="flex justify-between border-t pt-2 mt-2">
+              <span>ทุน Top-up:</span>
+              <span id="detail-topup-amount" class="font-semibold text-primary-600">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span>อัตราเบี้ย:</span>
+              <span id="detail-rate" class="font-semibold">-</span>
+            </div>
+            <div class="flex justify-between border-t pt-2 mt-2">
+              <span>เบี้ย Top-up ต่อปี:</span>
+              <span id="detail-final" class="font-semibold text-primary-600">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-blue-50 rounded-lg">
+          <h3 class="font-semibold text-gray-900 mb-2">แนวทาง</h3>
+          <p class="text-sm text-gray-600">เบี้ย Top-up นี้ต่อเดือนคำนวณจาก เบี้ยต่อปี ÷ 12 ทำให้เช่นนี้เพราะเบี้ยจะถูกหารด้วยจำนวนเดือนของการครอบคลุม</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกัน Top-up คืออะไร?</h2>
+      <p>
+        ประกัน Top-up เป็นวิธีการเพิ่มทุนประกันชีวิตหรือประกันอื่นๆ เมื่อทุนเดิมไม่เพียงพอ
+        เป็นทางเลือกที่สะดวกเพราะไม่ต้องสอบแพทย์ใหม่และส่วนใหญ่ไม่มีการรอ (Waiting Period)
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรการคำนวณเบี้ย Top-up</h3>
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-lg font-semibold">เบี้ย Top-up = (ทุนต้องการ - ทุนปัจจุบัน) × อัตรา ÷ 100</p>
+        <p class="text-sm text-gray-500 mt-2">ตัวอย่าง: (1,000,000 - 500,000) × 2% = 10,000 บาท/ปี</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ข้อดีของประกัน Top-up</h3>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>ง่ายและสะดวก:</strong> ไม่ต้องสอบแพทย์ใหม่ มีเอกสารน้อย</li>
+        <li><strong>เบี้ยต่ำ:</strong> คำนวณจากทุนเพิ่มเติมเท่านั้น ไม่มี underwriting นอกจากนี้</li>
+        <li><strong>ไม่มีการรอ:</strong> ส่วนใหญ่เริ่มมีผลทันที หรือรอเพียงไม่กี่วัน</li>
+        <li><strong>เหมาะสำหรับผู้ที่มีกรมธรรมแล้ว:</strong> ขยายความคุ้มครองของกรมธรรมเดิม</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สิ่งที่ต้องทราบ</h3>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>Top-up มักเป็นไปตามนโยบายของแต่ละบริษัทประกัน</li>
+        <li>อัตราเบี้ยอาจแตกต่างไปตามอายุและประเภทประกัน</li>
+        <li>ต้องอยู่ในช่วงอายุที่บริษัทกำหนด</li>
+        <li>ทุน Top-up มักมีขั้นต่ำ เช่น 50,000 หรือ 100,000 บาท</li>
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณประกัน-top-up/" />
+    <RelatedCalculators currentHref="/คำนวณประกัน-top-up/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางการเงิน กรุณาติดต่อบริษัทประกันของคุณสำหรับข้อมูลที่แม่นยำ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    const desiredInput = document.getElementById('desiredCoverage') as HTMLInputElement;
+    const currentInput = document.getElementById('currentCoverage') as HTMLInputElement;
+    const rateInput = document.getElementById('premiumRate') as HTMLInputElement;
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const desired = parseNum(desiredInput.value);
+      const current = parseNum(currentInput.value);
+      const rate = parseNum(rateInput.value);
+
+      if (desired <= 0) { desiredInput.focus(); return; }
+      if (current < 0) { currentInput.focus(); return; }
+      if (rate < 0) { rateInput.focus(); return; }
+
+      if (current >= desired) {
+        alert('ทุนปัจจุบันไม่ควรมากกว่าทุนที่ต้องการ');
+        return;
+      }
+
+      const topupAmount = desired - current;
+      const topupPremium = (topupAmount * rate) / 100;
+
+      const fmt = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      (document.getElementById('topup-premium') as HTMLElement).textContent = fmt.format(topupPremium);
+      (document.getElementById('detail-desired') as HTMLElement).textContent = fmt.format(desired);
+      (document.getElementById('detail-current') as HTMLElement).textContent = fmt.format(current);
+      (document.getElementById('detail-topup-amount') as HTMLElement).textContent = fmt.format(topupAmount);
+      (document.getElementById('detail-rate') as HTMLElement).textContent = rate.toFixed(2) + '%';
+      (document.getElementById('detail-final') as HTMLElement).textContent = fmt.format(topupPremium);
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('topup_insurance');
+    });
+
+    [desiredInput, currentInput, rateInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>
