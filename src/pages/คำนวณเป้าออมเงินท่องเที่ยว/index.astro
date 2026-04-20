@@ -1,37 +1,32 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
-import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณเป้าออมเงินท่องเที่ยว ปี 2569 วางแผนออมทริปในฝัน | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณเงินที่ต้องออมต่อเดือนเพื่อทริปท่องเที่ยวในฝัน ทั้งในและต่างประเทศ กำหนดงบ ระยะเวลา และยอดออมรายเดือน';
+const pageTitle = 'คำนวณเป้าหมายออมเงินท่องเที่ยว 2569 | วางแผนเที่ยว | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเงินออมรายเดือนสำหรับทริปท่องเที่ยว จากงบประมาณเดินทาง ระยะเวลา และอัตราดอกเบี้ย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเป้าออมเงินท่องเที่ยว/`;
 
 const faqData = [
   {
-    question: 'ควรวางแผนงบทริปต่างประเทศเท่าไหร่?',
-    answer: 'ขึ้นอยู่กับปลายทาง ทริปอาเซียน เช่น เวียดนาม ญี่ปุ่น อาจใช้ 30,000–80,000 บาท/คน ยุโรปหรืออเมริกาอาจใช้ 100,000–200,000 บาท/คน รวมค่าตั๋ว ที่พัก ค่าใช้จ่ายอื่นๆ',
+    question: 'ควรวางแผนออมเงินท่องเที่ยวไว้ล่วงหน้าแค่ไหน?',
+    answer: 'แนะนำวางแผนล่วงหน้าอย่างน้อย 3-6 เดือนสำหรับทริปในประเทศ และ 6-12 เดือนสำหรับทริปต่างประเทศ การจองตั๋วล่วงหน้านานกว่า 2 เดือนมักได้ราคาที่ถูกกว่า ประหยัดงบได้ 20-40%',
   },
   {
-    question: 'ควรออมเงินท่องเที่ยวแยกจากเงินออมหลักหรือไม่?',
-    answer: 'แนะนำให้แยกบัญชีออมทริปต่างหาก เพื่อติดตามความคืบหน้าและป้องกันการใช้เงินโดยไม่ตั้งใจ อาจใช้บัญชีออมทรัพย์ดอกเบี้ยสูงหรือกองทุนตลาดเงิน',
+    question: 'งบท่องเที่ยวต่างประเทศเฉลี่ยเป็นเท่าไหร่?',
+    answer: 'งบท่องเที่ยวขึ้นอยู่กับปลายทาง ทริปในเอเชียตะวันออกเฉียงใต้ (เวียดนาม กัมพูชา) ประมาณ 20,000-40,000 บาท/คน ญี่ปุ่น-เกาหลี 50,000-80,000 บาท/คน ยุโรปหรืออเมริกา 100,000-200,000 บาท/คน รวมตั๋ว ที่พัก อาหาร และกิจกรรม',
   },
   {
-    question: 'ควรจองตั๋วเครื่องบินล่วงหน้ากี่เดือน?',
-    answer: 'ตั๋วเครื่องบินราคาประหยัดมักเปิดขายล่วงหน้า 3–6 เดือน ซื้อล่วงหน้าในช่วงนี้มักได้ราคาดีที่สุด โดยเฉพาะช่วงเทศกาลหรือวันหยุดยาว',
-  },
-  {
-    question: 'ควรเตรียมเงินสำรองท่องเที่ยวเพิ่มเท่าไหร่?',
-    answer: 'แนะนำเตรียมเงินสำรองเพิ่มอีก 10–20% ของงบทริปเพื่อรองรับค่าใช้จ่ายที่ไม่คาดคิด เช่น ค่าพยาบาล ของฝาก หรือกิจกรรมที่เพิ่มเข้ามาระหว่างการเดินทาง',
+    question: 'เงินออมท่องเที่ยวควรเก็บในบัญชีอะไร?',
+    answer: 'แนะนำเปิดบัญชีออมทรัพย์แยกต่างหากสำหรับการท่องเที่ยวโดยเฉพาะ เพื่อไม่สับสนกับเงินใช้จ่ายประจำวัน บัญชีออมทรัพย์พิเศษหรือกองทุนตลาดเงินให้ดอกเบี้ยสูงกว่าและเข้าถึงได้ง่าย',
   },
 ];
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'เครื่องคำนวณเป้าออมเงินท่องเที่ยว',
+  name: 'เครื่องคำนวณเป้าหมายออมเงินท่องเที่ยว',
   description: pageDescription,
   url: canonical,
   applicationCategory: 'FinanceApplication',
@@ -57,169 +52,165 @@ const jsonLdFaq = {
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
-      <p class="text-sm font-semibold text-sky-700">✈️ คำนวณเป้าออมเงินท่องเที่ยว</p>
-      <p class="mt-1 text-sm text-slate-700">สูตร: ออมต่อเดือน = (งบทริป − ออมแล้ว) ÷ จำนวนเดือนก่อนออกเดินทาง</p>
-      <p class="mt-1 text-xs font-medium text-sky-800">วางแผนออมอย่างมีระบบ เที่ยวได้โดยไม่เป็นหนี้</p>
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
     </div>
 
-    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
-      คำนวณเป้าออมเงินท่องเที่ยว ปี 2569
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเป้าหมายออมเงินท่องเที่ยว 2569 — วางแผนทริปในฝัน
     </h1>
 
-    <p class="mb-6 text-gray-600">
-      กรอกงบทริปทั้งหมด เงินออมปัจจุบัน และจำนวนเดือนก่อนออกเดินทาง เพื่อคำนวณยอดออมต่อเดือน
+    <p class="text-gray-600 mb-6">
+      คำนวณเงินออมรายเดือนสำหรับทริปท่องเที่ยว จากงบประมาณเดินทาง ระยะเวลา และอัตราดอกเบี้ย
     </p>
 
-    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-      <form id="trip-form" class="space-y-5">
-        <p id="trip-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
-          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="travel-savings-form" class="space-y-5">
+        <p id="travel-savings-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
         </p>
 
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="trip-budget" class="mb-1 block text-sm font-medium text-gray-700">งบทริปทั้งหมด (บาท)</label>
-            <input type="text" id="trip-budget" inputmode="numeric" placeholder="เช่น 60,000"
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            <p id="trip-budget-error" class="mt-1 hidden text-sm text-red-600"></p>
-            <p class="mt-1 text-xs text-gray-500">รวมตั๋ว ที่พัก อาหาร กิจกรรม ของฝาก</p>
+            <label for="tv-budget" class="block text-sm font-medium text-gray-700 mb-1">งบประมาณท่องเที่ยว (บาท)</label>
+            <input type="text" id="tv-budget" inputmode="numeric" placeholder="เช่น 80,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="tv-budget-error" class="mt-1 hidden text-sm text-red-600"></p>
           </div>
           <div>
-            <label for="trip-current" class="mb-1 block text-sm font-medium text-gray-700">เงินออมสำหรับทริปแล้ว (บาท)</label>
-            <input type="text" id="trip-current" inputmode="numeric" placeholder="0"
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <label for="tv-current" class="block text-sm font-medium text-gray-700 mb-1">เงินออมปัจจุบัน (บาท)</label>
+            <input type="text" id="tv-current" inputmode="numeric" placeholder="เช่น 10,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
           </div>
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="trip-months" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเดือนก่อนออกเดินทาง</label>
-            <input type="text" id="trip-months" inputmode="numeric" placeholder="เช่น 12"
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            <p id="trip-months-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <label for="tv-months" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลา (เดือน)</label>
+            <select id="tv-months" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+              <option value="3">3 เดือน</option>
+              <option value="6" selected>6 เดือน</option>
+              <option value="12">12 เดือน</option>
+              <option value="18">18 เดือน</option>
+              <option value="24">24 เดือน</option>
+              <option value="36">36 เดือน</option>
+            </select>
           </div>
           <div>
-            <label for="trip-reserve" class="mb-1 block text-sm font-medium text-gray-700">เงินสำรองเพิ่มเติม (%)</label>
-            <select id="trip-reserve" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <option value="0">ไม่เพิ่ม</option>
-              <option value="10" selected>10% (แนะนำ)</option>
-              <option value="15">15%</option>
-              <option value="20">20%</option>
-            </select>
+            <label for="tv-rate" class="block text-sm font-medium text-gray-700 mb-1">อัตราดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="tv-rate" inputmode="decimal" placeholder="เช่น 1.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
           </div>
         </div>
 
-        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
-          คำนวณเป้าออมท่องเที่ยว
+        <button type="submit" id="travel-savings-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
         </button>
       </form>
     </div>
 
-    <div id="trip-results" class="mb-8 hidden">
-      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
-        <div class="mb-6 grid gap-3 sm:grid-cols-4">
-          <div class="rounded-lg bg-sky-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">งบทริปรวมสำรอง</div>
-            <div id="res-trip-total" class="text-xl font-bold text-sky-700">-</div>
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินออมรายเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
           </div>
-          <div class="rounded-lg bg-green-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">ออมแล้ว</div>
-            <div id="res-trip-current" class="text-xl font-bold text-green-700">-</div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยที่ได้</div>
+            <div id="res-interest" class="text-xl font-bold text-green-700">-</div>
           </div>
-          <div class="rounded-lg bg-red-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">ยังขาดอีก</div>
-            <div id="res-trip-gap" class="text-xl font-bold text-red-700">-</div>
-          </div>
-          <div class="rounded-lg bg-amber-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">ออมต่อเดือน</div>
-            <div id="res-trip-monthly" class="text-xl font-bold text-amber-700">-</div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดรวม</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
           </div>
         </div>
-        <p id="trip-status" class="rounded-lg p-3 text-sm font-medium"></p>
       </div>
     </div>
 
-    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
-      <ul class="list-disc space-y-1 pl-6 text-gray-700">
-        <li>งบทริปรวม = งบทริป × (1 + % สำรอง ÷ 100)</li>
-        <li>ช่องว่าง = งบทริปรวม − เงินออมปัจจุบัน</li>
-        <li>ออมต่อเดือน = ช่องว่าง ÷ จำนวนเดือน</li>
-      </ul>
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีวางแผนออมเงินท่องเที่ยว</h2>
+      <p>การออมเงินเพื่อการท่องเที่ยวทำให้คุณสามารถเดินทางในฝันได้โดยไม่เป็นหนี้ เครื่องคำนวณนี้ช่วยหาเงินออมรายเดือนที่เหมาะสมตามงบประมาณและระยะเวลาที่กำหนด</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับออมเงินท่องเที่ยว</h3>
+      <p>ตั้งบัญชีออมทรัพย์แยกสำหรับการท่องเที่ยวโดยเฉพาะ ตั้ง auto-transfer รายเดือน และหาโปรโมชั่นตั๋วและที่พักล่วงหน้าเพื่อประหยัดงบได้มากขึ้น</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">งบท่องเที่ยวประกอบด้วยอะไรบ้าง</h3>
+      <p>ค่าตั๋วเครื่องบิน ที่พัก อาหาร ค่าเข้าชมสถานที่ การเดินทางในประเทศ ของฝาก และค่าใช้จ่ายสำรองฉุกเฉิน 10-15% ของงบรวม</p>
     </section>
 
-    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#trip-results" />
-    <RelatedArticles currentHref="/คำนวณเป้าออมเงินท่องเที่ยว/" />
-    <RelatedCalculators currentHref="/คำนวณเป้าออมเงินท่องเที่ยว/" />
-
+    <!-- FAQ -->
     <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
       <div class="space-y-4">
         {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
             <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
           </details>
         ))}
       </div>
     </section>
 
-    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
-      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ค่าใช้จ่ายจริงอาจแตกต่างตามปลายทาง ฤดูกาล และรูปแบบการเดินทาง
+    <RelatedCalculators currentHref="/คำนวณเป้าออมเงินท่องเที่ยว/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น อัตราดอกเบี้ยจริงอาจแตกต่างตามเงื่อนไขของธนาคาร ไม่ถือเป็นคำแนะนำทางการเงิน
     </div>
   </article>
 
-  <script type="module">
-    function parseNum(v) {
-      const s = String(v).replace(/,/g, '').trim();
-      if (s === '') return 0;
-      const n = Number(s);
-      return Number.isFinite(n) && n >= 0 ? n : 0;
-    }
-    function formatMoney(n) {
-      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
-    }
-    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
-    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
-
-    document.getElementById('trip-form')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      document.getElementById('trip-error').classList.add('hidden');
-      ['trip-budget-error','trip-months-error'].forEach(id => setErr(id, ''));
-
-      const budget = parseNum(document.getElementById('trip-budget').value);
-      const current = parseNum(document.getElementById('trip-current').value);
-      const months = parseNum(document.getElementById('trip-months').value);
-      const reservePct = parseFloat(document.getElementById('trip-reserve').value);
-
-      let hasError = false;
-      if (!budget || budget <= 0) { setErr('trip-budget-error', 'กรอกงบทริป'); hasError = true; }
-      if (!months || months <= 0) { setErr('trip-months-error', 'กรอกจำนวนเดือน'); hasError = true; }
-      if (hasError) { document.getElementById('trip-error').classList.remove('hidden'); document.getElementById('trip-results').classList.add('hidden'); return; }
-
-      const total = budget * (1 + reservePct / 100);
-      const gap = Math.max(0, total - current);
-      const monthly = gap / months;
-
-      setText('res-trip-total', formatMoney(total));
-      setText('res-trip-current', formatMoney(current));
-      setText('res-trip-gap', formatMoney(gap));
-      setText('res-trip-monthly', gap === 0 ? 'ครบแล้ว!' : formatMoney(monthly));
-
-      const statusEl = document.getElementById('trip-status');
-      if (gap === 0) {
-        statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
-        statusEl.textContent = 'ยอดเยี่ยม! คุณมีเงินพร้อมสำหรับทริปนี้แล้ว ออกเดินทางได้เลย!';
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+    const form = document.getElementById('travel-savings-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('travel-savings-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('travel-savings-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const budgetInput = document.getElementById('tv-budget') as HTMLInputElement;
+    const currentInput = document.getElementById('tv-current') as HTMLInputElement;
+    const rateInput = document.getElementById('tv-rate') as HTMLInputElement;
+    function setFieldError(id: string, msg: string) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.remove('hidden'); }
+    function clearFieldError(id: string) { const el = document.getElementById(id); if (!el) return; el.textContent = ''; el.classList.add('hidden'); }
+    function clearValidation() { formError.classList.add('hidden'); ['tv-budget-error'].forEach(clearFieldError); }
+    [budgetInput, currentInput, rateInput].forEach(input => { input.addEventListener('input', clearValidation); });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); clearValidation();
+      const target = parseNum(budgetInput.value);
+      const current = parseNum(currentInput.value);
+      const months = parseInt((document.getElementById('tv-months') as HTMLSelectElement).value) || 6;
+      const annualRate = parseFloat(rateInput.value.replace(/,/g, '')) || 0;
+      if (target <= 0) { setFieldError('tv-budget-error', 'กรุณากรอกงบประมาณท่องเที่ยว'); formError.classList.remove('hidden'); return; }
+      submitBtn.disabled = true; submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('vacation-savings-goal');
+      const r = annualRate / 100;
+      let monthlyPmt: number;
+      if (r === 0) {
+        const needed = target - current;
+        monthlyPmt = needed > 0 ? needed / months : 0;
       } else {
-        statusEl.className = 'rounded-lg bg-blue-50 p-3 text-sm font-medium text-blue-800 border border-blue-200';
-        statusEl.textContent = `ออมเดือนละ ${formatMoney(monthly)} เป็นเวลา ${months} เดือน จะมีเงินทริปครบ ${formatMoney(total)}`;
+        const rm = r / 12;
+        const factor = Math.pow(1 + rm, months);
+        const currentFV = current * factor;
+        const needed = target - currentFV;
+        monthlyPmt = needed <= 0 ? 0 : needed / ((factor - 1) / rm);
       }
-
-      document.getElementById('trip-results').classList.remove('hidden');
-      document.getElementById('trip-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      monthlyPmt = Math.max(0, monthlyPmt);
+      const totalContributions = current + monthlyPmt * months;
+      const totalInterest = Math.max(0, target - totalContributions);
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPmt) + ' บาท/เดือน';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(target) + ' บาท';
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false; submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('vacation-savings-goal');
+      trackCalculatorUsed('vacation-savings-goal');
     });
   </script>
 </BaseLayout>

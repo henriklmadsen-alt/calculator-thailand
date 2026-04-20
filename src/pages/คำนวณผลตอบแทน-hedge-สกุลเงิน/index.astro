@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณผลตอบแทน Hedge สกุลเงิน ปี 2569 ป้องกันความเสี่ยงอัตราแลกเปลี่ยน | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณผลตอบแทนจริงของการลงทุนต่างประเทศหลัง Hedge ค่าเงิน รวมผลตอบแทนการลงทุนและกำไร/ขาดทุนจากอัตราแลกเปลี่ยน';
+const pageTitle = 'คำนวณผลตอบแทน Hedge สกุลเงิน 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณผลตอบแทนจริงจากการลงทุนต่างประเทศ หลังรวมผลของอัตราแลกเปลี่ยนและค่า Hedge';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผลตอบแทน-hedge-สกุลเงิน/`;
 
@@ -196,6 +196,7 @@ const jsonLdFaq = {
       document.getElementById('hedge-error').classList.add('hidden');
       ['hedge-invest-error','hedge-return-error','hedge-fx-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('currency-hedged-return');
       const invest = parseNum(document.getElementById('hedge-invest').value);
       const returnRate = parseNum(document.getElementById('hedge-return').value);
       const fxStart = parseNum(document.getElementById('hedge-fx-start').value);
@@ -229,6 +230,8 @@ const jsonLdFaq = {
 
       document.getElementById('hedge-results').classList.remove('hidden');
       document.getElementById('hedge-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('currency-hedged-return');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('currency-hedged-return');
     });
   </script>
 </BaseLayout>

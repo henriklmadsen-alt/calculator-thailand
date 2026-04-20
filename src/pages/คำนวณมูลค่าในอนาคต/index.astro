@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณมูลค่าในอนาคต ปี 2569 FV เงินออมและลงทุนดอกเบี้ยทบต้น | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณมูลค่าในอนาคต (Future Value) ของเงินออมและการลงทุนด้วยดอกเบี้ยทบต้น ทั้งแบบก้อนเดียวและออมรายเดือน';
+const pageTitle = 'คำนวณมูลค่าในอนาคต (Future Value) 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าเงินในอนาคตจากเงินต้น ออมรายเดือน และอัตราดอกเบี้ยทบต้น';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณมูลค่าในอนาคต/`;
 
@@ -199,6 +199,7 @@ const jsonLdFaq = {
       if (pv <= 0 && pmt <= 0) { document.getElementById('fv-error').classList.remove('hidden'); document.getElementById('fv-results').classList.add('hidden'); return; }
       if (hasError) { document.getElementById('fv-error').classList.remove('hidden'); document.getElementById('fv-results').classList.add('hidden'); return; }
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('future-value-calculator');
       const r = annualRate / 100 / 12;
       const n = years * 12;
       const fvPrincipal = pv * Math.pow(1 + r, n);
@@ -219,6 +220,8 @@ const jsonLdFaq = {
 
       document.getElementById('fv-results').classList.remove('hidden');
       document.getElementById('fv-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('future-value-calculator');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('future-value-calculator');
     });
   </script>
 </BaseLayout>

@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณแผนออมทอง ปี 2569 ออมทองรายเดือนถึงเป้าหมายกี่บาท | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณแผนออมทองรายเดือน จำนวนทองที่จะสะสมได้ มูลค่าทองตามราคาปัจจุบัน และระยะเวลาถึงเป้าหมาย';
+const pageTitle = 'คำนวณแผนออมทอง 2569 | ออมทองแท่งรายเดือน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าการออมทองแท่งหรือทองรูปพรรณรายเดือน ตามราคาทองและอัตราการเติบโต';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณแผนออมทอง/`;
 
@@ -197,6 +197,7 @@ const jsonLdFaq = {
       document.getElementById('gold-error').classList.add('hidden');
       ['gold-monthly-error','gold-price-error','gold-target-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('gold-savings-plan');
       const monthly = parseNum(document.getElementById('gold-monthly').value);
       const price = parseNum(document.getElementById('gold-price').value);
       const current = parseNum(document.getElementById('gold-current').value);
@@ -231,6 +232,8 @@ const jsonLdFaq = {
 
       document.getElementById('gold-results').classList.remove('hidden');
       document.getElementById('gold-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('gold-savings-plan');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('gold-savings-plan');
     });
   </script>
 </BaseLayout>

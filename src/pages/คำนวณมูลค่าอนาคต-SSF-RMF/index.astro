@@ -4,10 +4,10 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณมูลค่าอนาคต SSF RMF ปี 2569 ลดหย่อนภาษีและผลตอบแทนระยะยาว | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณมูลค่าอนาคตของกองทุน SSF และ RMF ลดหย่อนภาษีที่ประหยัดได้ และผลตอบแทนระยะยาวสำหรับการเกษียณ';
+const pageTitle = 'คำนวณ SSF RMF มูลค่าอนาคต 2569 | ลดหย่อนภาษี | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าอนาคตจากการลงทุน SSF และ RMF พร้อมสิทธิลดหย่อนภาษีสูงสุด 500,000 บาท';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
-const canonical = `${siteUrl}/คำนวณมูลค่าอนาคต-SSF-RMF/`;
+const canonical = `${siteUrl}/คำนวณมูลค่าอนาคต-ssf-rmf/`;
 
 const faqData = [
   {
@@ -51,7 +51,7 @@ const jsonLdFaq = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าอนาคต-SSF-RMF">
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าอนาคต-ssf-rmf">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
@@ -166,8 +166,8 @@ const jsonLdFaq = {
     </section>
 
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ssf-results" />
-    <RelatedArticles currentHref="/คำนวณมูลค่าอนาคต-SSF-RMF/" />
-    <RelatedCalculators currentHref="/คำนวณมูลค่าอนาคต-SSF-RMF/" />
+    <RelatedArticles currentHref="/คำนวณมูลค่าอนาคต-ssf-rmf/" />
+    <RelatedCalculators currentHref="/คำนวณมูลค่าอนาคต-ssf-rmf/" />
 
     <section class="mb-8">
       <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
@@ -206,6 +206,7 @@ const jsonLdFaq = {
       document.getElementById('ssf-error').classList.add('hidden');
       ['ssf-annual-error','ssf-return-error','ssf-years-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('ssf-rmf-future-value');
       const annual = parseNum(document.getElementById('ssf-annual').value);
       const current = parseNum(document.getElementById('ssf-current').value);
       const returnRate = parseNum(document.getElementById('ssf-return').value);
@@ -240,6 +241,8 @@ const jsonLdFaq = {
 
       document.getElementById('ssf-results').classList.remove('hidden');
       document.getElementById('ssf-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('ssf-rmf-future-value');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('ssf-rmf-future-value');
     });
   </script>
 </BaseLayout>

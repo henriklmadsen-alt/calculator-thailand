@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณเงินฝากประจำรายเดือน ปี 2569 Recurring Deposit ดอกเบี้ยสะสม | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณผลตอบแทนเงินฝากประจำรายเดือน ดอกเบี้ยสะสม และมูลค่ารวมเมื่อครบกำหนด สำหรับการออมรายเดือนอย่างสม่ำเสมอ';
+const pageTitle = 'คำนวณเงินฝากประจำรายเดือน 2569 | ดอกเบี้ยหักภาษี | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณผลตอบแทนจากการฝากประจำรายเดือนสม่ำเสมอ รวมดอกเบี้ย หักภาษี 15%';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเงินฝากประจำรายเดือน/`;
 
@@ -194,6 +194,7 @@ const jsonLdFaq = {
       document.getElementById('rd-error').classList.add('hidden');
       ['rd-monthly-error','rd-rate-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('recurring-deposit');
       const pmt = parseNum(document.getElementById('rd-monthly').value);
       const annualRate = parseNum(document.getElementById('rd-rate').value);
       const n = parseInt(document.getElementById('rd-months').value, 10);
@@ -222,6 +223,8 @@ const jsonLdFaq = {
 
       document.getElementById('rd-results').classList.remove('hidden');
       document.getElementById('rd-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('recurring-deposit');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('recurring-deposit');
     });
   </script>
 </BaseLayout>

@@ -1,37 +1,34 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
-import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณผลตอบแทนจริง ปี 2569 ผลตอบแทนสุทธิหลังภาษีและเงินเฟ้อ | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณผลตอบแทนจริงหลังหักภาษีและเงินเฟ้อ เปรียบเทียบผลตอบแทนนาม ภาษี และอัตราเงินเฟ้อ';
+const pageTitle = 'คำนวณผลตอบแทนจริงหลังภาษีและเงินเฟ้อ 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณผลตอบแทนที่แท้จริงหลังหักทั้งภาษีและเงินเฟ้อ เพื่อเปรียบเทียบทางเลือกลงทุน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผลตอบแทนจริง/`;
 
 const faqData = [
   {
-    question: 'ผลตอบแทนจริงต่างจากผลตอบแทนนามอย่างไร?',
-    answer: 'ผลตอบแทนนาม (Nominal Return) คือตัวเลขที่เห็นในเอกสาร เช่น ดอกเบี้ย 5% ต่อปี ส่วนผลตอบแทนจริง (Real Return) คือผลตอบแทนหลังหักเงินเฟ้อออกแล้ว ซึ่งบอกถึงการเพิ่มขึ้นของกำลังซื้อที่แท้จริง',
+    question: 'ภาษีดอกเบี้ยและเงินปันผลในไทยเป็นเท่าไหร่?',
+    answer: 'ดอกเบี้ยเงินฝากและตราสารหนี้ถูกหักภาษี ณ ที่จ่าย 15% เงินปันผลหุ้นถูกหัก 10% แต่สามารถเลือกนำมารวมในการคำนวณภาษีเงินได้บุคคลธรรมดาเพื่อขอคืนได้ กองทุนรวมหุ้นไทยบางประเภทได้รับยกเว้นภาษีกำไร',
   },
   {
-    question: 'ดอกเบี้ยเงินฝากในไทยต้องเสียภาษีเท่าไหร่?',
-    answer: 'ดอกเบี้ยเงินฝากในไทยถูกหักภาษี ณ ที่จ่าย 15% ทุกครั้งที่ได้รับดอกเบี้ย เช่น ดอกเบี้ย 1,000 บาท จะหักภาษี 150 บาท เหลือรับจริง 850 บาท',
+    question: 'ทำไมผลตอบแทนหลังภาษีและเงินเฟ้อถึงสำคัญ?',
+    answer: 'เพราะเป็นตัวเลขที่สะท้อนความมั่งคั่งที่แท้จริง ผลตอบแทนก่อนภาษีอาจดูน่าสนใจ แต่หลังหักภาษีและเงินเฟ้อแล้วอาจได้กำลังซื้อเพิ่มขึ้นน้อยมาก การเปรียบเทียบทางเลือกลงทุนต่างๆ ด้วยตัวเลขหลังภาษีและเงินเฟ้อจะแม่นยำกว่า',
   },
   {
-    question: 'การลงทุนในกองทุนรวมต้องเสียภาษีอย่างไร?',
-    answer: 'กำไรจากกองทุนรวมในไทย ผู้ลงทุนบุคคลธรรมดาได้รับยกเว้นภาษีเงินได้จากกำไรส่วนทุน แต่เงินปันผลจากกองทุนถูกหักภาษี ณ ที่จ่าย 10% กองทุน SSF และ RMF มีสิทธิลดหย่อนภาษีเพิ่มเติม',
-  },
-  {
-    question: 'ผลตอบแทนจริงควรอยู่ที่เท่าไหร่จึงจะถือว่าดี?',
-    answer: 'ผลตอบแทนจริงที่เป็นบวกหมายความว่าเงินเติบโตเร็วกว่าเงินเฟ้อ โดยทั่วไปนักการเงินแนะนำให้มีผลตอบแทนจริงอย่างน้อย 2–3% ต่อปีเพื่อให้ความมั่งคั่งเติบโตอย่างมีนัยสำคัญ',
+    question: 'จะลดภาระภาษีการลงทุนได้อย่างไร?',
+    answer: 'ลงทุนในกองทุน SSF/RMF เพื่อลดหย่อนภาษีเงินได้ ใช้กองทุนรวมตราสารทุนแทนดอกเบี้ยตรง พิจารณาลงทุนในหุ้นระยะยาวซึ่งกำไรส่วนทุนไม่ถูกเก็บภาษีในไทย และกระจายสินทรัพย์เพื่อใช้สิทธิ์ยกเว้นภาษีอย่างมีประสิทธิภาพ',
   },
 ];
+
+const taxRates = [0, 5, 10, 15, 20, 25, 30, 35];
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'เครื่องคำนวณผลตอบแทนจริง',
+  name: 'เครื่องคำนวณผลตอบแทนจริงหลังภาษีและเงินเฟ้อ',
   description: pageDescription,
   url: canonical,
   applicationCategory: 'FinanceApplication',
@@ -56,154 +53,165 @@ const jsonLdFaq = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
-    <div class="mb-4 rounded-xl border border-teal-100 bg-teal-50 p-4">
-      <p class="text-sm font-semibold text-teal-700">📊 คำนวณผลตอบแทนจริงหลังภาษีและเงินเฟ้อ</p>
-      <p class="mt-1 text-sm text-slate-700">สูตร: ผลตอบแทนหลังภาษี = นาม × (1 − ภาษี%) | ผลตอบแทนจริง = [(1+หลังภาษี)÷(1+เงินเฟ้อ)] − 1</p>
-      <p class="mt-1 text-xs font-medium text-teal-800">เข้าใจผลตอบแทนที่แท้จริงที่คุณได้รับ</p>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
     </div>
 
-    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
-      คำนวณผลตอบแทนจริง ปี 2569
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณผลตอบแทนจริงหลังภาษีและเงินเฟ้อ 2569
     </h1>
 
-    <p class="mb-6 text-gray-600">
-      กรอกผลตอบแทนนาม อัตราภาษี และอัตราเงินเฟ้อ เพื่อดูผลตอบแทนที่แท้จริงที่คุณได้รับ
+    <p class="text-gray-600 mb-6">
+      คำนวณผลตอบแทนที่แท้จริงหลังหักทั้งภาษีและเงินเฟ้อ เพื่อเปรียบเทียบทางเลือกลงทุน
     </p>
 
-    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-      <form id="real-form" class="space-y-5">
-        <p id="real-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
-          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="real-return-form" class="space-y-5">
+        <p id="real-return-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
         </p>
 
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="real-nominal" class="mb-1 block text-sm font-medium text-gray-700">ผลตอบแทนนาม (% ต่อปี)</label>
-            <input type="text" id="real-nominal" inputmode="numeric" placeholder="เช่น 5"
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            <p id="real-nominal-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <label for="rr-nominal" class="block text-sm font-medium text-gray-700 mb-1">ผลตอบแทนก่อนภาษี (%/ปี)</label>
+            <input type="text" id="rr-nominal" inputmode="decimal" placeholder="เช่น 7"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="rr-nominal-error" class="mt-1 hidden text-sm text-red-600"></p>
           </div>
           <div>
-            <label for="real-tax" class="mb-1 block text-sm font-medium text-gray-700">อัตราภาษี (%)</label>
-            <select id="real-tax" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <option value="0">0% (ไม่เสียภาษี)</option>
-              <option value="10">10% (ปันผลกองทุน)</option>
-              <option value="15" selected>15% (ดอกเบี้ยเงินฝาก)</option>
-              <option value="20">20%</option>
-              <option value="25">25%</option>
-              <option value="30">30%</option>
+            <label for="rr-tax" class="block text-sm font-medium text-gray-700 mb-1">อัตราภาษี (%)</label>
+            <select id="rr-tax" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+              {taxRates.map(t => (
+                <option value={t} selected={t === 15}>{t}%</option>
+              ))}
             </select>
-          </div>
-          <div>
-            <label for="real-infl" class="mb-1 block text-sm font-medium text-gray-700">อัตราเงินเฟ้อ (% ต่อปี)</label>
-            <input type="text" id="real-infl" inputmode="numeric" placeholder="เช่น 3"
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            <p id="real-infl-error" class="mt-1 hidden text-sm text-red-600"></p>
           </div>
         </div>
 
-        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
-          คำนวณผลตอบแทนจริง
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rr-inflation" class="block text-sm font-medium text-gray-700 mb-1">อัตราเงินเฟ้อ (%/ปี)</label>
+            <input type="text" id="rr-inflation" inputmode="decimal" placeholder="เช่น 3.5" value="3.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="rr-inflation-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" id="real-return-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
         </button>
       </form>
     </div>
 
-    <div id="real-results" class="mb-8 hidden">
-      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
-        <div class="mb-6 grid gap-3 sm:grid-cols-3">
-          <div class="rounded-lg bg-blue-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">ผลตอบแทนนาม</div>
-            <div id="res-real-nominal" class="text-xl font-bold text-blue-700">-</div>
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนหลังภาษี (%/ปี)</div>
+            <div id="res-after-tax" class="text-xl font-bold text-blue-700">-</div>
           </div>
-          <div class="rounded-lg bg-teal-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">หลังหักภาษี</div>
-            <div id="res-real-after-tax" class="text-xl font-bold text-teal-700">-</div>
-          </div>
-          <div class="rounded-lg bg-green-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">ผลตอบแทนจริง</div>
-            <div id="res-real-return" class="text-xl font-bold text-green-700">-</div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนจริงหลังภาษีและเงินเฟ้อ (%/ปี)</div>
+            <div id="res-real" class="text-xl font-bold text-primary-700">-</div>
           </div>
         </div>
-        <p id="real-status" class="rounded-lg p-3 text-sm font-medium"></p>
+
+        <div class="overflow-x-auto mt-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">ตารางเปรียบเทียบอัตราภาษี</h3>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-3">อัตราภาษี</th>
+                <th class="py-2 pr-3 text-right">หลังภาษี</th>
+                <th class="py-2 text-right">หลังภาษี+เงินเฟ้อ</th>
+              </tr>
+            </thead>
+            <tbody id="rr-comparison-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
-      <ul class="list-disc space-y-1 pl-6 text-gray-700">
-        <li>ผลตอบแทนหลังภาษี = ผลตอบแทนนาม × (1 − อัตราภาษี)</li>
-        <li>ผลตอบแทนจริง = [(1 + หลังภาษี) ÷ (1 + เงินเฟ้อ)] − 1 (สูตร Fisher)</li>
-        <li>ผลตอบแทนจริงเป็นบวก = กำลังซื้อเพิ่มขึ้น</li>
-        <li>ผลตอบแทนจริงเป็นลบ = กำลังซื้อลดลง</li>
-      </ul>
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณผลตอบแทนจริงหลังภาษีและเงินเฟ้อ</h2>
+      <p>ผลตอบแทนหลังภาษี = ผลตอบแทนก่อนภาษี × (1 - อัตราภาษี/100)<br />ผลตอบแทนจริงหลังภาษี = ((1 + ผลตอบแทนหลังภาษี/100) / (1 + เงินเฟ้อ/100)) - 1</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการเปรียบเทียบ</h3>
+      <p>หากได้ผลตอบแทน 7%/ปี ภาษี 15% เงินเฟ้อ 3.5%<br />ผลตอบแทนหลังภาษี = 7% × 0.85 = 5.95%<br />ผลตอบแทนจริง = (1.0595/1.035) - 1 = 2.37%</p>
     </section>
 
-    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#real-results" />
-    <RelatedArticles currentHref="/คำนวณผลตอบแทนจริง/" />
-    <RelatedCalculators currentHref="/คำนวณผลตอบแทนจริง/" />
-
+    <!-- FAQ -->
     <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
       <div class="space-y-4">
         {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
             <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
           </details>
         ))}
       </div>
     </section>
 
-    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
-      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ อัตราภาษีและเงินเฟ้อจริงอาจแตกต่างตามปีและประเภทการลงทุน ควรปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับการวางแผนจริง
+    <RelatedCalculators currentHref="/คำนวณผลตอบแทนจริง/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น อัตราภาษีจริงขึ้นอยู่กับชนิดของรายได้และสถานการณ์ส่วนบุคคล ไม่ถือเป็นคำแนะนำทางการเงินหรือภาษี
     </div>
   </article>
 
-  <script type="module">
-    function parseNum(v) {
-      const s = String(v).replace(/,/g, '').trim();
-      if (s === '') return NaN;
-      return Number(s);
-    }
-    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
-    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
-
-    document.getElementById('real-form')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      document.getElementById('real-error').classList.add('hidden');
-      ['real-nominal-error','real-infl-error'].forEach(id => setErr(id, ''));
-
-      const nominal = parseNum(document.getElementById('real-nominal').value);
-      const taxRate = parseFloat(document.getElementById('real-tax').value);
-      const inflRate = parseNum(document.getElementById('real-infl').value);
-
+  <script>
+    function parseNum(v: string): number { return parseFloat(v.replace(/,/g, '')) || 0; }
+    function fmt2(n: number): string { return n.toFixed(2); }
+    const form = document.getElementById('real-return-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('real-return-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('real-return-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const nominalInput = document.getElementById('rr-nominal') as HTMLInputElement;
+    const inflationInput = document.getElementById('rr-inflation') as HTMLInputElement;
+    function setFieldError(id: string, msg: string) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.remove('hidden'); }
+    function clearFieldError(id: string) { const el = document.getElementById(id); if (!el) return; el.textContent = ''; el.classList.add('hidden'); }
+    function clearValidation() { formError.classList.add('hidden'); ['rr-nominal-error','rr-inflation-error'].forEach(clearFieldError); }
+    [nominalInput, inflationInput].forEach(input => { input.addEventListener('input', clearValidation); });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); clearValidation();
+      const nominal = parseNum(nominalInput.value);
+      const taxRate = parseFloat((document.getElementById('rr-tax') as HTMLSelectElement).value) || 0;
+      const inflation = parseNum(inflationInput.value);
       let hasError = false;
-      if (isNaN(nominal)) { setErr('real-nominal-error', 'กรอกผลตอบแทนนาม'); hasError = true; }
-      if (isNaN(inflRate)) { setErr('real-infl-error', 'กรอกอัตราเงินเฟ้อ'); hasError = true; }
-      if (hasError) { document.getElementById('real-error').classList.remove('hidden'); document.getElementById('real-results').classList.add('hidden'); return; }
-
-      const nominalDec = nominal / 100;
-      const afterTax = nominalDec * (1 - taxRate / 100);
-      const realReturn = (1 + afterTax) / (1 + inflRate / 100) - 1;
-
-      setText('res-real-nominal', `${nominal.toFixed(2)}%`);
-      setText('res-real-after-tax', `${(afterTax * 100).toFixed(2)}%`);
-      setText('res-real-return', `${(realReturn * 100).toFixed(2)}%`);
-
-      const statusEl = document.getElementById('real-status');
-      if (realReturn >= 0) {
-        statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
-        statusEl.textContent = `ผลตอบแทนจริง +${(realReturn * 100).toFixed(2)}%/ปี ชนะเงินเฟ้อ กำลังซื้อของคุณเพิ่มขึ้น`;
-      } else {
-        statusEl.className = 'rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800 border border-red-200';
-        statusEl.textContent = `ผลตอบแทนจริง ${(realReturn * 100).toFixed(2)}%/ปี แพ้เงินเฟ้อ ควรพิจารณาลงทุนในสินทรัพย์ที่ให้ผลตอบแทนสูงขึ้น`;
-      }
-
-      document.getElementById('real-results').classList.remove('hidden');
-      document.getElementById('real-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (isNaN(nominal) || nominalInput.value.trim() === '') { setFieldError('rr-nominal-error', 'กรุณากรอกผลตอบแทนก่อนภาษี'); hasError = true; }
+      if (isNaN(inflation) || inflationInput.value.trim() === '') { setFieldError('rr-inflation-error', 'กรุณากรอกอัตราเงินเฟ้อ'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); return; }
+      submitBtn.disabled = true; submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('real-after-tax-return');
+      const afterTax = nominal * (1 - taxRate / 100);
+      const realAfterTax = ((1 + afterTax / 100) / (1 + inflation / 100) - 1) * 100;
+      (document.getElementById('res-after-tax') as HTMLElement).textContent = fmt2(afterTax) + '%';
+      (document.getElementById('res-real') as HTMLElement).textContent = fmt2(realAfterTax) + '%';
+      const tbody = document.getElementById('rr-comparison-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      const allRates = [0, 5, 10, 15, 20, 25, 30, 35];
+      allRates.forEach(t => {
+        const at = nominal * (1 - t / 100);
+        const rat = ((1 + at / 100) / (1 + inflation / 100) - 1) * 100;
+        const tr = document.createElement('tr');
+        tr.className = t === taxRate ? 'border-b border-gray-100 bg-primary-50 font-semibold' : 'border-b border-gray-100';
+        tr.innerHTML = `<td class="py-2 pr-3">${t}%</td><td class="py-2 pr-3 text-right">${fmt2(at)}%</td><td class="py-2 text-right ${rat < 0 ? 'text-red-600' : ''}">${fmt2(rat)}%</td>`;
+        tbody.appendChild(tr);
+      });
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false; submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('real-after-tax-return');
+      trackCalculatorUsed('real-after-tax-return');
     });
   </script>
 </BaseLayout>

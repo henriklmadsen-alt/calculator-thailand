@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณกฎ 72 ปี 2569 เงินเท่าตัวในกี่ปีที่ดอกเบี้ยเท่านี้ | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณด้วยกฎ 72 ว่าเงินจะเพิ่มเป็น 2 เท่าในกี่ปี หรือต้องดอกเบี้ยเท่าไหร่ถึงเท่าตัวในเวลาที่กำหนด';
+const pageTitle = 'คำนวณกฎ 72 — เงินสองเท่าใน X ปี 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณระยะเวลาที่เงินจะเพิ่มเป็นสองเท่าตามกฎ 72 จากอัตราดอกเบี้ยหรือผลตอบแทน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณกฎ-72/`;
 
@@ -194,6 +194,7 @@ const jsonLdFaq = {
       e.preventDefault();
       ['r72-interest-error','r72-years-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('rule-of-72');
       const mode = document.querySelector('input[name="r72-mode"]:checked').value;
       const principal = parseNum(document.getElementById('r72-amount').value) || 100000;
 
@@ -226,6 +227,8 @@ const jsonLdFaq = {
 
       document.getElementById('r72-results').classList.remove('hidden');
       document.getElementById('r72-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('rule-of-72');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('rule-of-72');
     });
   </script>
 </BaseLayout>

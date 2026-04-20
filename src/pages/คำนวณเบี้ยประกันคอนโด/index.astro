@@ -1,0 +1,197 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเบี้ยประกันคอนโด 2569 | ห้องชุดและทรัพย์สิน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเบี้ยประกันห้องชุดคอนโดมิเนียม ครอบคลุมตกแต่งภายในและทรัพย์สิน พร้อมความคุ้มครองเพิ่มเติม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยประกันคอนโด/`;
+
+const faqData = [
+  {
+    question: 'ประกันคอนโดต่างจากประกันส่วนกลางของนิติบุคคลอย่างไร?',
+    answer: 'ประกันส่วนกลางของนิติบุคคลคอนโดครอบคลุมโครงสร้างอาคารและพื้นที่ส่วนกลางเท่านั้น ส่วนประกันคอนโดรายบุคคลครอบคลุมตกแต่งภายในห้อง ทรัพย์สินส่วนตัว และความรับผิดต่อห้องข้างเคียง จึงจำเป็นต้องทำเพิ่มเติม',
+  },
+  {
+    question: 'คอนโดชั้นสูงๆ เบี้ยแพงกว่าชั้นต่ำจริงไหม?',
+    answer: 'ใช่ คอนโดชั้นสูงมีความเสี่ยงจากลมพายุมากกว่า ค่าซ่อมแซมและค่าขนส่งสูงกว่า บางบริษัทประกันจึงคิดเบี้ยสูงขึ้นสำหรับห้องที่อยู่บนชั้น 16 ขึ้นไป โดยเฉลี่ยแล้วเพิ่มขึ้นประมาณ 5-10%',
+  },
+  {
+    question: 'ควรทำประกันคอนโดวงเงินเท่าไหร่?',
+    answer: 'ควรทำประกันให้ครอบคลุมมูลค่าตกแต่งภายในทั้งหมด ได้แก่ ค่าตกแต่ง เฟอร์นิเจอร์บิ้วอิน เครื่องใช้ไฟฟ้า และทรัพย์สินมีค่า วิธีง่ายคือบันทึกรายการทรัพย์สินและราคาซื้อทั้งหมด แล้วทำประกันในราคาทดแทน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันคอนโด',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันคอนโด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประมาณเบี้ยประกันคอนโด 2569</p>
+      <p class="mt-1 text-sm text-slate-700">ตัวเลขเป็นการประมาณการ เพื่อใช้วางแผนเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเบี้ยประกันคอนโด 2569 — ห้องชุดและทรัพย์สิน
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประมาณเบี้ยประกันห้องชุดคอนโดมิเนียม ครอบคลุมตกแต่งภายในและทรัพย์สินส่วนตัว
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="condo-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="condo-interior" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าตกแต่งภายใน (บาท)</label>
+            <input type="text" id="condo-interior" inputmode="numeric" placeholder="เช่น 500,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="condo-interior-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="condo-contents" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าทรัพย์สิน (บาท)</label>
+            <input type="text" id="condo-contents" inputmode="numeric" placeholder="เช่น 200,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+        </div>
+
+        <div>
+          <label for="condo-floor" class="block text-sm font-medium text-gray-700 mb-1">ชั้น</label>
+          <select id="condo-floor" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white sm:w-64">
+            <option value="low">ชั้น 1-5</option>
+            <option value="mid" selected>ชั้น 6-15</option>
+            <option value="high">ชั้น 16+</option>
+          </select>
+        </div>
+
+        <div>
+          <p class="block text-sm font-medium text-gray-700 mb-2">ความคุ้มครองเพิ่มเติม</p>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2"><input type="checkbox" id="condo-leak" class="rounded" /><span class="text-sm">น้ำรั่วจากห้องข้างเคียง (+0.03%)</span></label>
+            <label class="flex items-center gap-2"><input type="checkbox" id="condo-theft" class="rounded" /><span class="text-sm">โจรกรรม (+0.08%)</span></label>
+            <label class="flex items-center gap-2"><input type="checkbox" id="condo-liability" class="rounded" /><span class="text-sm">ความรับผิดต่อบุคคลภายนอก (+500 บาท)</span></label>
+          </div>
+        </div>
+
+        <button type="submit" id="condo-submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ (ประมาณการ)</h2>
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">เบี้ยตกแต่งภายใน</span><span id="res-interior" class="font-medium">-</span></div>
+          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">เบี้ยทรัพย์สิน</span><span id="res-contents" class="font-medium">-</span></div>
+          <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-600">ความเสี่ยงเพิ่มเติม</span><span id="res-extra" class="font-medium">-</span></div>
+          <div class="flex justify-between py-3 bg-primary-50 px-3 rounded-lg">
+            <span class="font-bold">รวมเบี้ยรายปี</span>
+            <span id="res-total" class="text-xl font-bold text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">อัตราเบี้ยประกันคอนโด (ประมาณการ)</h2>
+      <p>ตกแต่งภายใน: 0.12% | ทรัพย์สิน: 0.15% | ชั้น 6-15: +5% | ชั้น 16+: +10%</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณเบี้ยประกันคอนโด/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงต้องสอบถามบริษัทประกันภัยโดยตรง
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n) + ' บาท'; }
+
+    const form = document.getElementById('condo-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    function setErr(id: string, msg: string) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.classList.remove('hidden'); } }
+    function clearErr(id: string) { const el = document.getElementById(id); if (el) { el.textContent = ''; el.classList.add('hidden'); } }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearErr('condo-interior-error');
+
+      const interior = parseNum((document.getElementById('condo-interior') as HTMLInputElement).value);
+      const contents = parseNum((document.getElementById('condo-contents') as HTMLInputElement).value);
+      const floor = (document.getElementById('condo-floor') as HTMLSelectElement).value;
+      const leak = (document.getElementById('condo-leak') as HTMLInputElement).checked;
+      const theft = (document.getElementById('condo-theft') as HTMLInputElement).checked;
+      const liability = (document.getElementById('condo-liability') as HTMLInputElement).checked;
+
+      if (interior <= 0 && contents <= 0) { setErr('condo-interior-error', 'กรุณากรอกมูลค่าตกแต่งหรือทรัพย์สิน'); return; }
+
+      trackCalculatorStart('condo-insurance-premium');
+
+      const floorMult = floor === 'high' ? 1.1 : floor === 'mid' ? 1.05 : 1.0;
+      let interiorPremium = interior * 0.0012 * floorMult;
+      let contentsPremium = contents * 0.0015 * floorMult;
+
+      let extraPremium = 0;
+      if (leak) extraPremium += (interior + contents) * 0.0003;
+      if (theft) extraPremium += (interior + contents) * 0.0008;
+      if (liability) extraPremium += 500;
+
+      const total = interiorPremium + contentsPremium + extraPremium;
+
+      (document.getElementById('res-interior') as HTMLElement).textContent = fmt(interiorPremium);
+      (document.getElementById('res-contents') as HTMLElement).textContent = contents > 0 ? fmt(contentsPremium) : 'ไม่รวม';
+      (document.getElementById('res-extra') as HTMLElement).textContent = (leak || theft || liability) ? fmt(extraPremium) : 'ไม่เพิ่ม';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('condo-insurance-premium');
+      trackCalculatorUsed('condo-insurance-premium');
+    });
+  </script>
+</BaseLayout>

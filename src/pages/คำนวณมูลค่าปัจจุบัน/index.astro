@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณมูลค่าปัจจุบัน ปี 2569 PV Present Value ดิสเคาต์กระแสเงินสด | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณมูลค่าปัจจุบัน (Present Value) ของเงินในอนาคต ใช้สำหรับประเมินการลงทุน ค่างวด และกระแสเงินสดในอนาคต';
+const pageTitle = 'คำนวณมูลค่าปัจจุบัน (Present Value) 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าปัจจุบันของเงินในอนาคต และเงินรับรายงวดตามอัตราคิดลด';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณมูลค่าปัจจุบัน/`;
 
@@ -208,6 +208,7 @@ const jsonLdFaq = {
       document.getElementById('pv-error').classList.add('hidden');
       ['pv-fv-error','pv-pmt-error','pv-rate-error','pv-years-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('present-value-calculator');
       const type = document.querySelector('input[name="pv-type"]:checked').value;
       const rate = parseNum(document.getElementById('pv-rate').value);
       const years = parseNum(document.getElementById('pv-years').value);
@@ -246,6 +247,8 @@ const jsonLdFaq = {
 
       document.getElementById('pv-results').classList.remove('hidden');
       document.getElementById('pv-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('present-value-calculator');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('present-value-calculator');
     });
   </script>
 </BaseLayout>

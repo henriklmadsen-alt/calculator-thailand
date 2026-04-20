@@ -4,8 +4,8 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ ปี 2569 Provident Fund เกษียณสบาย | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณมูลค่าอนาคตของกองทุนสำรองเลี้ยงชีพ (PVD) เมื่อเกษียณ รวมสมทบนายจ้าง ผลตอบแทน และระยะเวลา';
+const pageTitle = 'คำนวณกองทุนสำรองเลี้ยงชีพ (Provident Fund) 2569 | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ จากสัดส่วนหักพนักงาน+นายจ้าง เงินเดือน และผลตอบแทนกองทุน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ/`;
 
@@ -216,6 +216,7 @@ const jsonLdFaq = {
       document.getElementById('pvd-error').classList.add('hidden');
       ['pvd-salary-error','pvd-return-error','pvd-years-error'].forEach(id => setErr(id, ''));
 
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('provident-fund-future-value');
       const salary = parseNum(document.getElementById('pvd-salary').value);
       const current = parseNum(document.getElementById('pvd-current').value);
       const empPct = parseFloat(document.getElementById('pvd-emp-pct').value);
@@ -259,6 +260,8 @@ const jsonLdFaq = {
 
       document.getElementById('pvd-results').classList.remove('hidden');
       document.getElementById('pvd-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('provident-fund-future-value');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('provident-fund-future-value');
     });
   </script>
 </BaseLayout>

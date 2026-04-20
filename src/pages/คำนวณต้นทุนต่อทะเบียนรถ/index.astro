@@ -1,0 +1,225 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนรวมต่อทะเบียนรถ 2569 | ภาษี+พ.ร.บ.+ตรวจสภาพ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณต้นทุนรวมการต่อทะเบียนรถยนต์ประจำปี รวมภาษีรถ เบี้ย พ.ร.บ. ค่าตรวจสภาพ และค่าธรรมเนียม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนต่อทะเบียนรถ/`;
+
+const faqData = [
+  {
+    question: 'ต่อทะเบียนรถต้องเสียค่าใช้จ่ายอะไรบ้าง?',
+    answer: 'ค่าใช้จ่ายในการต่อทะเบียนรถประกอบด้วย 1) ภาษีรถประจำปี (ขึ้นอยู่กับขนาดเครื่องยนต์) 2) เบี้ยประกัน พ.ร.บ. (ภาคบังคับ) 3) ค่าตรวจสภาพรถ (สำหรับรถอายุ 7 ปีขึ้นไป) 4) ค่าธรรมเนียมอื่นๆ เช่น ค่าบริการ',
+  },
+  {
+    question: 'ภาษีรถยนต์คำนวณอย่างไร?',
+    answer: 'ภาษีรถยนต์คำนวณจากขนาดซีซี ตัวอย่างรถเก๋ง: ≤600cc = 0.5 บาท/cc, 601-1800cc = 1.5 บาท/cc, 1801-3000cc = 4 บาท/cc, >3000cc = 10 บาท/cc โดยยังลดหย่อนได้ตามอายุรถ (0-1 ปี = เต็ม, 2-6 ปี = ลดหย่อน 10-40%, 7+ ปี = ลด 50-90%)',
+  },
+  {
+    question: 'รถต้องตรวจสภาพเมื่อไหร่?',
+    answer: 'รถยนต์ส่วนบุคคลที่อายุ 7 ปีขึ้นไปนับจากปีที่จดทะเบียน ต้องผ่านการตรวจสภาพจากสถานตรวจสภาพรถเอกชน (ตรอ.) ก่อนต่อทะเบียน ค่าตรวจสภาพอยู่ที่ 150-350 บาท สำหรับรถยนต์ทั่วไป',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนต่อทะเบียนรถ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนต่อทะเบียนรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประมาณค่าใช้จ่ายต่อทะเบียนรถ 2569</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการประมาณการเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิงอัตราภาษีกรมการขนส่งทางบก ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณต้นทุนรวมต่อทะเบียนรถ 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประมาณค่าใช้จ่ายรวมในการต่อทะเบียนรถยนต์ประจำปี รวมภาษีรถ เบี้ย พ.ร.บ. และค่าตรวจสภาพ
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="reg-form" class="space-y-5">
+        <p id="reg-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="reg-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทรถ</label>
+            <select id="reg-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+              <option value="sedan">รถยนต์นั่งส่วนบุคคล</option>
+              <option value="pickup">รถกระบะ</option>
+              <option value="motorcycle">รถมอเตอร์ไซค์</option>
+            </select>
+          </div>
+          <div>
+            <label for="reg-cc" class="block text-sm font-medium text-gray-700 mb-1">ขนาดเครื่องยนต์ (cc)</label>
+            <input type="text" id="reg-cc" inputmode="numeric" placeholder="เช่น 1600"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="reg-cc-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="reg-age" class="block text-sm font-medium text-gray-700 mb-1">อายุรถ (ปี)</label>
+          <select id="reg-age" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white sm:w-48">
+            <option value="1">1 ปี</option>
+            <option value="2">2 ปี</option>
+            <option value="3">3 ปี</option>
+            <option value="4">4 ปี</option>
+            <option value="5" selected>5 ปี</option>
+            <option value="6">6 ปี</option>
+            <option value="7">7 ปี</option>
+            <option value="8">8 ปี</option>
+            <option value="10">10 ปี</option>
+            <option value="15">15 ปี+</option>
+          </select>
+        </div>
+
+        <button type="submit" id="reg-submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">ภาษีรถประจำปี</span>
+            <span id="res-tax" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">เบี้ยประกัน พ.ร.บ.</span>
+            <span id="res-prb" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span id="res-inspect-label" class="text-gray-600">ค่าตรวจสภาพรถ</span>
+            <span id="res-inspect" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between py-3 bg-primary-50 px-3 rounded-lg">
+            <span class="font-bold text-gray-900">รวมทั้งหมด</span>
+            <span id="res-total" class="text-xl font-bold text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณภาษีรถยนต์ประจำปี</h2>
+      <p>ภาษีรถยนต์ขึ้นอยู่กับขนาดซีซีและอายุรถ สำหรับรถเก๋ง: ≤600cc = 0.5 บาท/cc, 601-1800cc = 1.5 บาท/cc, 1801-3000cc = 4 บาท/cc, >3000cc = 10 บาท/cc รถอายุมากกว่าได้รับส่วนลด</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณต้นทุนต่อทะเบียนรถ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงอาจแตกต่างตามกรมการขนส่งทางบก
+    </div>
+  </article>
+
+  <script>
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท'; }
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+
+    const PRB_RATES: Record<string, number> = { sedan: 645.21, pickup: 967.28, motorcycle: 362.18 };
+
+    function calcTax(cc: number, type: string, age: number): number {
+      let baseRate = 0;
+      if (type === 'motorcycle') {
+        baseRate = cc <= 125 ? 100 : cc <= 250 ? 200 : 400;
+      } else if (type === 'pickup') {
+        baseRate = cc * 0.5;
+      } else {
+        if (cc <= 600) baseRate = cc * 0.5;
+        else if (cc <= 1800) baseRate = 300 + (cc - 600) * 1.5;
+        else if (cc <= 3000) baseRate = 2100 + (cc - 1800) * 4;
+        else baseRate = 6900 + (cc - 3000) * 10;
+      }
+      const discounts: Record<number, number> = { 1: 0, 2: 0.1, 3: 0.2, 4: 0.3, 5: 0.4, 6: 0.5, 7: 0.6, 8: 0.7, 10: 0.8, 15: 0.9 };
+      const ages = Object.keys(discounts).map(Number).sort((a, b) => a - b);
+      let closestAge = ages[0];
+      for (const a of ages) { if (a <= age) closestAge = a; }
+      const discount = discounts[closestAge] || 0;
+      return Math.max(100, baseRate * (1 - discount));
+    }
+
+    const form = document.getElementById('reg-form') as HTMLFormElement;
+    const formError = document.getElementById('reg-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    function setErr(id: string, msg: string) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.classList.remove('hidden'); } }
+    function clearErr(id: string) { const el = document.getElementById(id); if (el) { el.textContent = ''; el.classList.add('hidden'); } }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      clearErr('reg-cc-error');
+
+      const type = (document.getElementById('reg-type') as HTMLSelectElement).value;
+      const cc = parseNum((document.getElementById('reg-cc') as HTMLInputElement).value) || 1600;
+      const age = parseInt((document.getElementById('reg-age') as HTMLSelectElement).value);
+
+      trackCalculatorStart('car-renewal-cost');
+
+      const tax = calcTax(cc, type, age);
+      const prb = PRB_RATES[type] || 645.21;
+      const inspect = age >= 7 ? 250 : 0;
+      const total = tax + prb + inspect;
+
+      (document.getElementById('res-tax') as HTMLElement).textContent = fmt(tax);
+      (document.getElementById('res-prb') as HTMLElement).textContent = fmt(prb);
+      (document.getElementById('res-inspect') as HTMLElement).textContent = age >= 7 ? fmt(inspect) : 'ไม่จำเป็น';
+      (document.getElementById('res-inspect-label') as HTMLElement).textContent = age >= 7 ? 'ค่าตรวจสภาพรถ (ต้องตรวจ)' : 'ค่าตรวจสภาพรถ';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('car-renewal-cost');
+      trackCalculatorUsed('car-renewal-cost');
+    });
+  </script>
+</BaseLayout>
