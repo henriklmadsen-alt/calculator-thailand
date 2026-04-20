@@ -1,0 +1,206 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเบี้ยประกันตลอดชีพ ปี 2569 Whole Life Insurance เบี้ยตามอายุ | เครื่องคำนวณไทย';
+const pageDescription = 'ประมาณเบี้ยประกันชีวิตแบบตลอดชีพ คุ้มครองถึงอายุ 99 ปี ตามอายุและทุนประกัน พร้อมวิเคราะห์ผลประโยชน์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยประกันตลอดชีพ/`;
+
+const faqData = [
+  {
+    question: 'ประกันชีวิตแบบตลอดชีพคืออะไร?',
+    answer: 'ประกันชีวิตแบบตลอดชีพ (Whole Life) ให้ความคุ้มครองตลอดชีวิตถึงอายุ 99 ปี ไม่ว่าจะเสียชีวิตเมื่อไหร่ทายาทจะได้รับทุนประกัน มีมูลค่าเวนคืนสะสมและสามารถกู้ยืมได้',
+  },
+  {
+    question: 'ประกันตลอดชีพดีกว่าสะสมทรัพย์อย่างไร?',
+    answer: 'ประกันตลอดชีพให้ความคุ้มครองที่ยาวนานกว่าและมีมูลค่าเวนคืนที่เติบโตช้ากว่า แต่คุ้มครองตลอดอายุขัย ประกันสะสมทรัพย์มีระยะเวลากำหนดและได้รับเงินคืนเมื่อครบสัญญา',
+  },
+  {
+    question: 'ควรเลือกชำระเบี้ยกี่ปี?',
+    answer: 'มักมีตัวเลือกชำระ 10, 15, 20 หรือ 25 ปี ยิ่งชำระน้อยปีเบี้ยต่อปียิ่งสูงกว่า แต่ไม่ต้องชำระนาน เลือกตามกำลังการชำระที่คาดว่าจะมีในช่วงนั้น',
+  },
+  {
+    question: 'ประกันตลอดชีพลดหย่อนภาษีได้หรือไม่?',
+    answer: 'ได้ เบี้ยประกันตลอดชีพที่มีอายุกรมธรรม์ไม่น้อยกว่า 10 ปีสามารถนำมาลดหย่อนภาษีได้สูงสุด 100,000 บาท/ปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันตลอดชีพ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันตลอดชีพ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
+      <p class="text-sm font-semibold text-green-700">🌿 ประมาณเบี้ยประกันชีวิตแบบตลอดชีพ</p>
+      <p class="mt-1 text-sm text-slate-700">คุ้มครองตลอดชีวิตถึงอายุ 99 ปี | เบี้ยขึ้นอยู่กับอายุ เพศ ทุนประกัน และระยะชำระ</p>
+      <p class="mt-1 text-xs font-medium text-green-800">ผลลัพธ์เป็นการประมาณการ ติดต่อบริษัทประกันเพื่อใบเสนอราคาจริง</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเบี้ยประกันตลอดชีพ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกอายุ เพศ ทุนประกัน และระยะเวลาชำระเบี้ย เพื่อประมาณเบี้ยประกันชีวิตแบบตลอดชีพ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="wl-form" class="space-y-5">
+        <p id="wl-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณาตรวจสอบข้อมูลก่อนคำนวณ</p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="wl-age" class="mb-1 block text-sm font-medium text-gray-700">อายุ (ปี)</label>
+            <input type="text" id="wl-age" inputmode="numeric" placeholder="เช่น 35"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="wl-age-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="wl-gender" class="mb-1 block text-sm font-medium text-gray-700">เพศ</label>
+            <select id="wl-gender" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="male" selected>ชาย</option>
+              <option value="female">หญิง</option>
+            </select>
+          </div>
+          <div>
+            <label for="wl-sum" class="mb-1 block text-sm font-medium text-gray-700">ทุนประกัน (บาท)</label>
+            <input type="text" id="wl-sum" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="wl-sum-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+        <div>
+          <label for="wl-pay" class="mb-1 block text-sm font-medium text-gray-700">ระยะชำระเบี้ย</label>
+          <select id="wl-pay" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48">
+            <option value="10">10 ปี</option>
+            <option value="15">15 ปี</option>
+            <option value="20" selected>20 ปี</option>
+            <option value="25">25 ปี</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 sm:w-auto">ประมาณเบี้ยประกันตลอดชีพ</button>
+      </form>
+    </div>
+
+    <div id="wl-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อปี</div>
+            <div id="res-wl-annual" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อเดือน</div>
+            <div id="res-wl-monthly" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยรวมทั้งหมด</div>
+            <div id="res-wl-total" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ลดหย่อนภาษี/ปี</div>
+            <div id="res-wl-tax" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">ลักษณะประกันชีวิตแบบตลอดชีพ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>คุ้มครองตลอดชีวิต ถึงอายุ 99 ปี</li>
+        <li>มีมูลค่าเวนคืน (Cash Value) สะสมเพิ่มขึ้นตามเวลา</li>
+        <li>สามารถกู้ยืมเงินจากกรมธรรม์ได้</li>
+        <li>เบี้ยปรับลดหย่อนภาษีได้สูงสุด 100,000 บาท/ปี</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#wl-results" />
+    <RelatedArticles currentHref="/คำนวณเบี้ยประกันตลอดชีพ/" />
+    <RelatedCalculators currentHref="/คำนวณเบี้ยประกันตลอดชีพ/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ราคาจริงขึ้นอยู่กับบริษัทประกันและสุขภาพผู้เอาประกัน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) { const s = String(v).replace(/,/g,'').trim(); if(!s)return 0; const n=Number(s); return Number.isFinite(n)&&n>0?n:0; }
+    function formatMoney(n) { return `${new Intl.NumberFormat('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)} บาท`; }
+    function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+    function setErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.classList.toggle('hidden',!msg);}
+
+    document.getElementById('wl-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('wl-error').classList.add('hidden');
+      ['wl-age-error','wl-sum-error'].forEach(id=>setErr(id,''));
+      const age=parseNum(document.getElementById('wl-age').value);
+      const gender=document.getElementById('wl-gender').value;
+      const sum=parseNum(document.getElementById('wl-sum').value);
+      const payYears=parseInt(document.getElementById('wl-pay').value,10);
+
+      let hasError=false;
+      if(!age||age<1||age>65){setErr('wl-age-error','กรอกอายุ 1–65 ปี');hasError=true;}
+      if(!sum){setErr('wl-sum-error','กรอกทุนประกัน');hasError=true;}
+      if(hasError){document.getElementById('wl-error').classList.remove('hidden');return;}
+
+      // Whole life approximate rates per 1000 (higher than term due to CV component)
+      const mRates={20:3.5,25:4.2,30:5.2,35:6.8,40:9.2,45:13.0,50:18.5,55:26.0,60:36.0};
+      const fRates={20:2.8,25:3.4,30:4.2,35:5.5,40:7.5,45:10.5,50:14.8,55:20.5,60:29.0};
+      const rates=gender==='male'?mRates:fRates;
+      const keys=Object.keys(rates).map(Number).sort((a,b)=>a-b);
+      let base=0;
+      for(const k of keys){if(age>=k)base=rates[k];}
+      const payMulti={10:1.8,15:1.4,20:1.0,25:0.85};
+      const annual=(sum/1000)*base*(payMulti[payYears]||1.0)*1.2;
+      const monthly=annual/12;
+      const total=annual*payYears;
+      const taxDeduct=Math.min(annual,100000);
+
+      setText('res-wl-annual',formatMoney(annual));
+      setText('res-wl-monthly',formatMoney(monthly));
+      setText('res-wl-total',formatMoney(total));
+      setText('res-wl-tax',formatMoney(taxDeduct));
+      document.getElementById('wl-results').classList.remove('hidden');
+      document.getElementById('wl-results').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,208 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณประกันสะสมทรัพย์ ปี 2569 Endowment ผลตอบแทนและเบี้ยประกัน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเบี้ยประกันสะสมทรัพย์ เงินครบสัญญาที่จะได้รับ และผลตอบแทนรวมจากการออมผ่านประกันสะสมทรัพย์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันสะสมทรัพย์/`;
+
+const faqData = [
+  {
+    question: 'ประกันสะสมทรัพย์คืออะไร?',
+    answer: 'ประกันสะสมทรัพย์ (Endowment) เป็นประกันชีวิตที่ผสมการออม ถ้าครบสัญญาจะได้รับเงินคืน ถ้าเสียชีวิตระหว่างสัญญาทายาทได้รับทุนประกัน ทำให้ได้ทั้งความคุ้มครองและเงินออม',
+  },
+  {
+    question: 'ผลตอบแทนประกันสะสมทรัพย์ดีแค่ไหน?',
+    answer: 'ผลตอบแทนประกันสะสมทรัพย์อยู่ที่ประมาณ 1–3% ต่อปี ซึ่งต่ำกว่าการลงทุนในกองทุนรวม แต่ให้ความคุ้มครองชีวิตด้วย เหมาะกับผู้ที่ต้องการออมอย่างมีวินัยพร้อมความคุ้มครอง',
+  },
+  {
+    question: 'ประกันสะสมทรัพย์ต่างจากเงินฝากประจำอย่างไร?',
+    answer: 'ประกันสะสมทรัพย์มีความคุ้มครองชีวิตเพิ่มเติม ลดหย่อนภาษีได้ แต่สภาพคล่องต่ำกว่า (เวนคืนก่อนครบสัญญาได้เงินน้อยกว่า) เงินฝากประจำสภาพคล่องสูงกว่าแต่ไม่มีความคุ้มครองและลดหย่อนภาษีไม่ได้',
+  },
+  {
+    question: 'เมื่อไหร่ควรซื้อประกันสะสมทรัพย์?',
+    answer: 'เหมาะเมื่อต้องการออมเงินระยะกลาง 10–20 ปี พร้อมความคุ้มครองชีวิต และต้องการลดหย่อนภาษี เช่น ออมสำหรับค่าเล่าเรียนบุตร วางแผนเกษียณ หรือต้องการเงินก้อนในอนาคต',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกันสะสมทรัพย์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสะสมทรัพย์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-teal-100 bg-teal-50 p-4">
+      <p class="text-sm font-semibold text-teal-700">💰 คำนวณประกันสะสมทรัพย์ (Endowment)</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณเบี้ย เงินครบสัญญา และผลตอบแทนรวม</p>
+      <p class="mt-1 text-xs font-medium text-teal-800">ออมเงินพร้อมรับความคุ้มครองชีวิตในกรมธรรม์เดียว</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณประกันสะสมทรัพย์ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกอายุ เพศ ทุนประกัน และระยะเวลา เพื่อดูเบี้ยและเงินครบสัญญาที่จะได้รับ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="end-form" class="space-y-5">
+        <p id="end-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณาตรวจสอบข้อมูลก่อนคำนวณ</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="end-age" class="mb-1 block text-sm font-medium text-gray-700">อายุ (ปี)</label>
+            <input type="text" id="end-age" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="end-age-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="end-gender" class="mb-1 block text-sm font-medium text-gray-700">เพศ</label>
+            <select id="end-gender" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="male" selected>ชาย</option>
+              <option value="female">หญิง</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="end-sum" class="mb-1 block text-sm font-medium text-gray-700">ทุนประกัน (บาท)</label>
+            <input type="text" id="end-sum" inputmode="numeric" placeholder="เช่น 500,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="end-sum-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="end-term" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลากรมธรรม์</label>
+            <select id="end-term" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="10">10 ปี</option>
+              <option value="15">15 ปี</option>
+              <option value="20" selected>20 ปี</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 sm:w-auto">คำนวณประกันสะสมทรัพย์</button>
+      </form>
+    </div>
+
+    <div id="end-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-teal-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อปี</div>
+            <div id="res-end-annual" class="text-xl font-bold text-teal-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยรวมทั้งหมด</div>
+            <div id="res-end-total-pay" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินครบสัญญา</div>
+            <div id="res-end-maturity" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ผลตอบแทน</div>
+            <div id="res-end-return" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <p id="end-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีคำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>เบี้ยต่อปี = ทุนประกัน × อัตราเบี้ยต่อ 1,000 บาท (ตามอายุและระยะเวลา)</li>
+        <li>เงินครบสัญญา ≈ ทุนประกัน + เงินปันผล (ถ้ามี)</li>
+        <li>ผลตอบแทน = (ครบสัญญา − เบี้ยรวม) ÷ เบี้ยรวม × 100%</li>
+        <li>ลดหย่อนภาษีได้สูงสุด 100,000 บาท/ปี</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#end-results" />
+    <RelatedArticles currentHref="/คำนวณประกันสะสมทรัพย์/" />
+    <RelatedCalculators currentHref="/คำนวณประกันสะสมทรัพย์/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ อัตราเบี้ยจริงขึ้นอยู่กับบริษัทประกัน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v){const s=String(v).replace(/,/g,'').trim();if(!s)return 0;const n=Number(s);return Number.isFinite(n)&&n>0?n:0;}
+    function formatMoney(n){return `${new Intl.NumberFormat('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)} บาท`;}
+    function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+    function setErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.classList.toggle('hidden',!msg);}
+
+    document.getElementById('end-form')?.addEventListener('submit',(e)=>{
+      e.preventDefault();
+      document.getElementById('end-error').classList.add('hidden');
+      ['end-age-error','end-sum-error'].forEach(id=>setErr(id,''));
+      const age=parseNum(document.getElementById('end-age').value);
+      const gender=document.getElementById('end-gender').value;
+      const sum=parseNum(document.getElementById('end-sum').value);
+      const term=parseInt(document.getElementById('end-term').value,10);
+      let hasError=false;
+      if(!age||age<1||age>70){setErr('end-age-error','กรอกอายุ 1–70 ปี');hasError=true;}
+      if(!sum){setErr('end-sum-error','กรอกทุนประกัน');hasError=true;}
+      if(hasError){document.getElementById('end-error').classList.remove('hidden');return;}
+      // Approximate endowment rates per 1000 sum assured
+      const mBase={20:3.0,25:3.6,30:4.5,35:5.8,40:7.8,45:11.0,50:15.5,55:22.0};
+      const fBase={20:2.4,25:2.9,30:3.6,35:4.6,40:6.2,45:8.8,50:12.5,55:17.5};
+      const rates=gender==='male'?mBase:fBase;
+      const keys=Object.keys(rates).map(Number).sort((a,b)=>a-b);
+      let base=0;
+      for(const k of keys){if(age>=k)base=rates[k];}
+      const termMulti={10:1.8,15:1.25,20:1.0};
+      const annual=(sum/1000)*base*(termMulti[term]||1.0)*1.2;
+      const totalPay=annual*term;
+      const maturity=sum*(1+0.02*term); // approximate with ~2% annual growth
+      const returnPct=((maturity-totalPay)/totalPay*100);
+      setText('res-end-annual',formatMoney(annual));
+      setText('res-end-total-pay',formatMoney(totalPay));
+      setText('res-end-maturity',formatMoney(maturity));
+      setText('res-end-return',`${returnPct.toFixed(1)}%`);
+      const statusEl=document.getElementById('end-status');
+      statusEl.className='rounded-lg bg-teal-50 p-3 text-sm font-medium text-teal-800 border border-teal-200';
+      statusEl.textContent=`ชำระเบี้ย ${term} ปี รวม ${formatMoney(totalPay)} จะได้รับเงินครบสัญญา ${formatMoney(maturity)} (ผลตอบแทน ${returnPct.toFixed(1)}%)`;
+      document.getElementById('end-results').classList.remove('hidden');
+      document.getElementById('end-results').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  </script>
+</BaseLayout>

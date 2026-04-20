@@ -1,0 +1,130 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณประกันพืชผล (Crop Insurance) 2569 | ประกันการเกษตร ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณเบี้ยประกันพืชผลการเกษตร 2569 ข้าว ยางพารา มันสำปะหลัง อ้อย ตามพื้นที่เพาะปลูกและความเสี่ยง ภัยแล้ง น้ำท่วม โรคพืช';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันพืชผล/`;
+
+const faqData = [
+  { question: 'ประกันพืชผลในไทยมีโครงการอะไรบ้าง?', answer: 'รัฐบาลไทยมีโครงการประกันภัยข้าวนาปีและนาปรัง ผ่านธนาคาร ธ.ก.ส. ซึ่งรัฐอุดหนุนเบี้ยส่วนหนึ่ง เกษตรกรจ่ายเพียงส่วนน้อย นอกจากนี้ยังมีประกันพืชผลภาคเอกชนสำหรับพืชอื่น' },
+  { question: 'ประกันข้าวราคาเท่าไร?', answer: 'โครงการประกันภัยข้าวนาปีปี 2569: เกษตรกรจ่าย 60 บาท/ไร่ ภาครัฐอุดหนุน 144-168 บาท/ไร่ คุ้มครองภัยธรรมชาติ 1,260-1,500 บาท/ไร่ รายละเอียดอาจเปลี่ยนแปลง ควรตรวจสอบกับ ธ.ก.ส.' },
+  { question: 'ความเสี่ยงใดบ้างที่ประกันพืชผลคุ้มครอง?', answer: 'ส่วนใหญ่คุ้มครอง: ภัยแล้ง น้ำท่วม ลมพายุ ฟ้าผ่า ลูกเห็บ และแมลงศัตรูพืชบางชนิด บางแผนเพิ่มคุ้มครองโรคพืชและอัคคีภัย ขึ้นกับประเภทพืชและบริษัทประกัน' },
+  { question: 'เกษตรกรรายย่อยสามารถซื้อประกันพืชผลได้ไหม?', answer: 'ได้ โครงการของรัฐออกแบบมาสำหรับเกษตรกรรายย่อยโดยเฉพาะ ขั้นต่ำบางโครงการ 1 ไร่ขึ้นไป เกษตรกรลูกค้า ธ.ก.ส. สามารถสมัครผ่านสาขาธนาคารใกล้บ้าน' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณประกันพืชผล 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันพืชผล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณเบี้ยและความคุ้มครองประกันพืชผล</p>
+      <p class="mt-1 text-sm text-slate-700">อ้างอิงโครงการประกันภัยพืชผลของรัฐและภาคเอกชนปี 2569</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประกันพืชผลการเกษตร 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">ประมาณเบี้ยและความคุ้มครองจากประกันพืชผล ตามประเภทพืช พื้นที่ และแผนที่เลือก</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลการเกษตร</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="crop-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทพืช</label>
+          <select id="crop-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="60|1260|rice">ข้าวนาปี (เกษตรกรจ่าย 60 บาท/ไร่)</option>
+            <option value="80|1500|rice-irrig">ข้าวนาปรัง (80 บาท/ไร่)</option>
+            <option value="150|3000|rubber">ยางพารา (~150 บาท/ไร่)</option>
+            <option value="120|2000|cassava">มันสำปะหลัง (~120 บาท/ไร่)</option>
+            <option value="100|2500|sugarcane">อ้อย (~100 บาท/ไร่)</option>
+          </select>
+        </div>
+        <div>
+          <label for="area-rai" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่เพาะปลูก (ไร่)</label>
+          <input type="text" id="area-rai" inputmode="numeric" placeholder="เช่น 20" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="risk-zone" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่เสี่ยง</label>
+          <select id="risk-zone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="1.0">ความเสี่ยงปกติ</option>
+            <option value="1.3">เสี่ยงน้ำท่วม/ภัยแล้งปานกลาง</option>
+            <option value="1.6">เสี่ยงสูง (น้ำท่วมบ่อย/แล้งซ้ำ)</option>
+          </select>
+        </div>
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณประกันพืชผล</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center"><p class="text-xs text-primary-700 mb-1">เบี้ยที่เกษตรกรจ่าย/ฤดูกาล</p><p class="text-2xl font-bold text-primary-700" id="farmer-premium">-</p></div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center"><p class="text-xs text-green-700 mb-1">ความคุ้มครองรวม</p><p class="text-2xl font-bold text-green-700" id="total-coverage">-</p></div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกันพืชผลช่วยเกษตรกรไทยอย่างไร?</h2>
+      <p>ประกันภัยพืชผลช่วยลดความเสี่ยงทางรายได้ของเกษตรกร เมื่อเกิดภัยธรรมชาติที่ทำให้ผลผลิตเสียหาย เกษตรกรจะได้รับเงินชดเชยตามพื้นที่ที่ลงทะเบียน ช่วยให้มีเงินทุนหมุนเวียนในฤดูกาลถัดไป</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
+      </div>
+    </section>
+    <RelatedCalculators currentHref="/คำนวณประกันพืชผล/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงขึ้นกับโครงการของ ธ.ก.ส. และบริษัทประกัน กรุณาตรวจสอบโครงการล่าสุดโดยตรง</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const cropData = (document.getElementById('crop-type') as HTMLSelectElement).value.split('|');
+      const farmerRatePerRai = parseFloat(cropData[0]);
+      const coveragePerRai = parseFloat(cropData[1]);
+      const area = parseNum((document.getElementById('area-rai') as HTMLInputElement).value);
+      const riskFactor = parseFloat((document.getElementById('risk-zone') as HTMLSelectElement).value);
+      const err = document.getElementById('form-error')!;
+      if (area < 1) { err.textContent = 'กรุณากรอกพื้นที่เพาะปลูกอย่างน้อย 1 ไร่'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const farmerPremium = farmerRatePerRai * area * riskFactor;
+      const totalCoverage = coveragePerRai * area;
+      const subsidyPerRai = coveragePerRai * 0.012 - farmerRatePerRai; // approx subsidy
+      const totalSubsidy = subsidyPerRai * area;
+
+      const rows = [
+        ['พื้นที่เพาะปลูก', '', `${area} ไร่`],
+        ['เบี้ยเกษตรกรต่อไร่', `× ตัวคูณความเสี่ยง ${riskFactor}`, `${fmt(farmerRatePerRai * riskFactor)} บาท/ไร่`],
+        ['เบี้ยเกษตรกรรวม/ฤดูกาล', '', `${fmt(farmerPremium)} บาท`],
+        ['รัฐอุดหนุน (ประมาณ)', '', `${fmt(totalSubsidy > 0 ? totalSubsidy : totalCoverage * 0.01)} บาท`],
+        ['ความคุ้มครองต่อไร่', '', `${fmt(coveragePerRai)} บาท/ไร่`],
+        ['ความคุ้มครองรวม', '', `<strong>${fmt(totalCoverage)} บาท</strong>`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('farmer-premium') as HTMLElement).textContent = fmt(farmerPremium) + ' บาท';
+      (document.getElementById('total-coverage') as HTMLElement).textContent = fmt(totalCoverage) + ' บาท';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

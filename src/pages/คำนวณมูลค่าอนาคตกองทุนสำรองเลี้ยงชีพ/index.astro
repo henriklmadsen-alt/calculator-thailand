@@ -1,0 +1,264 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ ปี 2569 Provident Fund เกษียณสบาย | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าอนาคตของกองทุนสำรองเลี้ยงชีพ (PVD) เมื่อเกษียณ รวมสมทบนายจ้าง ผลตอบแทน และระยะเวลา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ/`;
+
+const faqData = [
+  {
+    question: 'กองทุนสำรองเลี้ยงชีพ (PVD) คืออะไร?',
+    answer: 'PVD (Provident Fund) คือกองทุนออมทรัพย์ที่นายจ้างและลูกจ้างร่วมกันออม ลูกจ้างส่งสมทบ 2–15% ของเงินเดือน และนายจ้างส่งเพิ่มในอัตราที่กำหนด เงินจะสะสมและลงทุนจนเกษียณ',
+  },
+  {
+    question: 'ผลตอบแทน PVD โดยเฉลี่ยอยู่ที่เท่าไหร่?',
+    answer: 'ผลตอบแทน PVD ในไทยเฉลี่ยระยะยาวอยู่ที่ 3–7% ต่อปี ขึ้นอยู่กับนโยบายการลงทุน (เช่น หุ้น ตราสารหนี้ ผสม) ควรเลือกนโยบายตามอายุและความเสี่ยงที่รับได้',
+  },
+  {
+    question: 'ถ้าลาออกก่อนเกษียณจะได้เงิน PVD เท่าไหร่?',
+    answer: 'ขึ้นอยู่กับอายุงาน เงินของลูกจ้างได้คืนทั้งหมด แต่เงินสมทบนายจ้างอาจได้บางส่วนหรือทั้งหมดตามระยะเวลาทำงาน (Vesting Schedule) ควรตรวจสอบข้อบังคับกองทุนของบริษัท',
+  },
+  {
+    question: 'ควรส่งสมทบ PVD เท่าไหร่?',
+    answer: 'แนะนำส่งสมทบสูงสุดเท่าที่นายจ้างสมทบให้ (Match) เพื่อรับผลประโยชน์เต็มที่ โดยทั่วไปนายจ้าง Match 3–10% ถ้าส่งสมทบ PVD มากขึ้นก็ยังได้ลดหย่อนภาษีได้ด้วย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
+      <p class="text-sm font-semibold text-slate-700">💼 คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ (PVD)</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: สมทบรวม/เดือน = เงินเดือน × (% ลูกจ้าง + % นายจ้าง) | FV = PV(1+r)^n + PMT×[(1+r)^n−1]÷r</p>
+      <p class="mt-1 text-xs font-medium text-slate-800">วางแผนเกษียณกับ PVD ให้ได้เงินเพียงพอ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน อัตราสมทบ ยอด PVD ปัจจุบัน ผลตอบแทน และปีที่เหลือก่อนเกษียณ เพื่อประมาณมูลค่า PVD
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pvd-form" class="space-y-5">
+        <p id="pvd-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pvd-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือนปัจจุบัน (บาท)</label>
+            <input type="text" id="pvd-salary" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pvd-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pvd-current" class="mb-1 block text-sm font-medium text-gray-700">ยอด PVD ปัจจุบัน (บาท)</label>
+            <input type="text" id="pvd-current" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="pvd-emp-pct" class="mb-1 block text-sm font-medium text-gray-700">สมทบลูกจ้าง (%)</label>
+            <select id="pvd-emp-pct" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="3">3%</option>
+              <option value="5" selected>5%</option>
+              <option value="7">7%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+            </select>
+          </div>
+          <div>
+            <label for="pvd-er-pct" class="mb-1 block text-sm font-medium text-gray-700">สมทบนายจ้าง (%)</label>
+            <select id="pvd-er-pct" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="3">3%</option>
+              <option value="5" selected>5%</option>
+              <option value="7">7%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+            </select>
+          </div>
+          <div>
+            <label for="pvd-return" class="mb-1 block text-sm font-medium text-gray-700">ผลตอบแทน (%/ปี)</label>
+            <input type="text" id="pvd-return" inputmode="numeric" placeholder="เช่น 5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pvd-return-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pvd-years" class="mb-1 block text-sm font-medium text-gray-700">ปีที่เหลือก่อนเกษียณ</label>
+            <input type="text" id="pvd-years" inputmode="numeric" placeholder="เช่น 20"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pvd-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pvd-raise" class="mb-1 block text-sm font-medium text-gray-700">ขึ้นเงินเดือนต่อปี (%)</label>
+            <input type="text" id="pvd-raise" inputmode="numeric" placeholder="เช่น 3"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ใส่ 0 ถ้าเงินเดือนคงที่</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณมูลค่า PVD เมื่อเกษียณ
+        </button>
+      </form>
+    </div>
+
+    <div id="pvd-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-slate-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่า PVD เมื่อเกษียณ</div>
+            <div id="res-pvd-total" class="text-xl font-bold text-slate-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">สมทบรวมทั้งหมด</div>
+            <div id="res-pvd-contrib" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ผลตอบแทนสะสม</div>
+            <div id="res-pvd-gain" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">สมทบ/เดือน (เริ่มต้น)</div>
+            <div id="res-pvd-monthly" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <p id="pvd-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>สมทบรวม/เดือน = เงินเดือน × (% ลูกจ้าง + % นายจ้าง) ÷ 100</li>
+        <li>คำนวณแบบทบทีละปี โดยเพิ่มเงินเดือนตามอัตราขึ้นเงินเดือน</li>
+        <li>FV แต่ละปี = (FV ปีก่อน + สมทบ/ปี) × (1 + ผลตอบแทน/12)^12</li>
+        <li>ลดหย่อนภาษีได้ไม่เกิน 500,000 บาท/ปี (รวมกองทุนทุกประเภท)</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#pvd-results" />
+    <RelatedArticles currentHref="/คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ/" />
+    <RelatedCalculators currentHref="/คำนวณมูลค่าอนาคตกองทุนสำรองเลี้ยงชีพ/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ผลตอบแทนจริงขึ้นอยู่กับนโยบายกองทุนและสภาวะตลาด
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('pvd-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('pvd-error').classList.add('hidden');
+      ['pvd-salary-error','pvd-return-error','pvd-years-error'].forEach(id => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('pvd-salary').value);
+      const current = parseNum(document.getElementById('pvd-current').value);
+      const empPct = parseFloat(document.getElementById('pvd-emp-pct').value);
+      const erPct = parseFloat(document.getElementById('pvd-er-pct').value);
+      const returnRate = parseNum(document.getElementById('pvd-return').value);
+      const years = parseNum(document.getElementById('pvd-years').value);
+      const raiseRate = parseNum(document.getElementById('pvd-raise').value);
+
+      let hasError = false;
+      if (!salary || salary <= 0) { setErr('pvd-salary-error', 'กรอกเงินเดือน'); hasError = true; }
+      if (!returnRate || returnRate <= 0) { setErr('pvd-return-error', 'กรอกผลตอบแทน'); hasError = true; }
+      if (!years || years <= 0) { setErr('pvd-years-error', 'กรอกปีที่เหลือ'); hasError = true; }
+      if (hasError) { document.getElementById('pvd-error').classList.remove('hidden'); document.getElementById('pvd-results').classList.add('hidden'); return; }
+
+      const totalPct = (empPct + erPct) / 100;
+      const monthlyReturn = returnRate / 100 / 12;
+      let fv = current;
+      let totalContrib = 0;
+      let currentSalary = salary;
+      const initialMonthly = salary * totalPct;
+
+      for (let y = 0; y < years; y++) {
+        if (y > 0) currentSalary *= (1 + raiseRate / 100);
+        const monthlyContrib = currentSalary * totalPct;
+        for (let m = 0; m < 12; m++) {
+          fv = fv * (1 + monthlyReturn) + monthlyContrib;
+          totalContrib += monthlyContrib;
+        }
+      }
+
+      const gain = fv - current - totalContrib;
+
+      setText('res-pvd-total', formatMoney(fv));
+      setText('res-pvd-contrib', formatMoney(totalContrib));
+      setText('res-pvd-gain', formatMoney(gain));
+      setText('res-pvd-monthly', formatMoney(initialMonthly));
+
+      const statusEl = document.getElementById('pvd-status');
+      statusEl.className = 'rounded-lg bg-slate-50 p-3 text-sm font-medium text-slate-800 border border-slate-200';
+      statusEl.textContent = `ด้วยอัตราสมทบรวม ${empPct + erPct}% ผลตอบแทน ${returnRate}%/ปี ใน ${years} ปี PVD ของคุณจะมีมูลค่า ${formatMoney(fv)}`;
+
+      document.getElementById('pvd-results').classList.remove('hidden');
+      document.getElementById('pvd-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

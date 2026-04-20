@@ -137,6 +137,17 @@ export const categories: Category[] = [
       'รวมเครื่องคำนวณออมเงิน ลงทุน DCA SIP กองทุน หุ้น FIRE และวางแผนเกษียณ อัปเดตปี 2569',
     sortOrder: 10,
   },
+  {
+    id: 'insurance',
+    name: 'ประกัน',
+    nameEn: 'Insurance',
+    icon: '🛡️',
+    slug: 'ประกัน',
+    color: 'bg-indigo-100',
+    colorText: 'text-indigo-700',
+    description: 'รวมเครื่องคำนวณประกันต่างๆ: ประกันชีวิต สุขภาพ รถยนต์ และประกันอื่นๆ ฟรีออนไลน์',
+    sortOrder: 11,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -1493,6 +1504,15 @@ export const calculators: Calculator[] = [
     href: '/คำนวณ-bmi/',
     icon: '⚖️',
     categoryId: 'health',
+  },
+  {
+    title: 'คำนวณแคลอรี่',
+    desc: 'คำนวณ BMR TDEE และเป้าหมายแคลอรี่รายวันสำหรับน้ำหนักคุณ รองรับฐานข้อมูลอาหารไทย',
+    href: '/คำนวณแคลอรี่/',
+    icon: '🔥',
+    categoryId: 'health',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
   },
   {
     title: 'คำนวณอายุ',

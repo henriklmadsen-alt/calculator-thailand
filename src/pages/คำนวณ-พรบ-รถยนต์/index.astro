@@ -1,0 +1,190 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ พ.ร.บ. รถยนต์ ปี 2569 ค่าเบี้ยประกันภาคบังคับทุกประเภท | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่า พ.ร.บ. รถยนต์ภาคบังคับ (ประกันภัยรถยนต์ภาคบังคับ) สำหรับรถทุกประเภท ตามที่กฎหมายกำหนด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-พรบ-รถยนต์/`;
+
+const faqData = [
+  {
+    question: 'พ.ร.บ. รถยนต์คืออะไร?',
+    answer: 'พ.ร.บ. หรือประกันภัยรถยนต์ภาคบังคับ (พระราชบัญญัติคุ้มครองผู้ประสบภัยจากรถ พ.ศ. 2535) เป็นประกันที่กฎหมายบังคับให้รถทุกคันต้องมี คุ้มครองผู้ประสบอุบัติเหตุจากรถ ทั้งคนขับและผู้โดยสาร',
+  },
+  {
+    question: 'พ.ร.บ. คุ้มครองอะไรบ้าง?',
+    answer: 'พ.ร.บ. คุ้มครองค่ารักษาพยาบาลสูงสุด 80,000 บาท/คน ค่าสินไหมมรณกรรม/ทุพพลภาพถาวรสูงสุด 500,000 บาท/คน ค่าชดเชยรายวันระหว่างนอนพักรักษา 200 บาท/วัน (ไม่เกิน 20 วัน)',
+  },
+  {
+    question: 'ไม่ต่อ พ.ร.บ. มีโทษอะไร?',
+    answer: 'มีโทษปรับไม่เกิน 10,000 บาท ตาม พ.ร.บ.รถยนต์ พ.ศ. 2522 นอกจากนั้นยังไม่สามารถต่อทะเบียนรถได้หากไม่มีหลักฐาน พ.ร.บ.',
+  },
+  {
+    question: 'สามารถซื้อ พ.ร.บ. ออนไลน์ได้หรือไม่?',
+    answer: 'ได้ ปัจจุบันสามารถซื้อ พ.ร.บ. ออนไลน์ผ่านแอปและเว็บไซต์ของบริษัทประกันและตัวแทนที่ได้รับอนุญาต สะดวกและไม่ต้องไปที่สำนักงาน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ พ.ร.บ. รถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-พรบ-รถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+      <p class="text-sm font-semibold text-blue-700">📋 คำนวณ พ.ร.บ. รถยนต์ภาคบังคับ</p>
+      <p class="mt-1 text-sm text-slate-700">อัตรา พ.ร.บ. กำหนดโดยกรมธุรกิจประกันภัย ตามประเภทรถและขนาดเครื่องยนต์</p>
+      <p class="mt-1 text-xs font-medium text-blue-800">รถทุกคันต้องมี พ.ร.บ. กฎหมายบังคับ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณ พ.ร.บ. รถยนต์ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกประเภทรถและขนาดเครื่องยนต์เพื่อดูค่า พ.ร.บ. ที่ต้องจ่ายต่อปี
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="prb-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="prb-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทรถ</label>
+            <select id="prb-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="car_under110">รถยนต์นั่ง ไม่เกิน 7 ที่นั่ง cc ≤ 110</option>
+              <option value="car_over110" selected>รถยนต์นั่ง ไม่เกิน 7 ที่นั่ง cc > 110</option>
+              <option value="pickup">รถกระบะ (ป้ายแดง/ขาว)</option>
+              <option value="van">รถตู้/รถโดยสาร</option>
+              <option value="motorcycle_under110">มอเตอร์ไซค์ cc ≤ 110</option>
+              <option value="motorcycle_over110">มอเตอร์ไซค์ cc > 110</option>
+            </select>
+          </div>
+          <div>
+            <label for="prb-use" class="mb-1 block text-sm font-medium text-gray-700">การใช้งาน</label>
+            <select id="prb-use" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="private" selected>ส่วนบุคคล</option>
+              <option value="commercial">เชิงพาณิชย์</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่า พ.ร.บ.
+        </button>
+      </form>
+    </div>
+
+    <div id="prb-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ย พ.ร.บ. (ก่อน VAT)</div>
+            <div id="res-prb-base" class="text-2xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-gray-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">VAT 7%</div>
+            <div id="res-prb-vat" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมทั้งสิ้น</div>
+            <div id="res-prb-total" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div class="rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
+          <p class="font-semibold">ความคุ้มครอง พ.ร.บ.:</p>
+          <ul class="mt-2 list-disc space-y-1 pl-5">
+            <li>ค่ารักษาพยาบาล สูงสุด 80,000 บาท/คน</li>
+            <li>เสียชีวิต/ทุพพลภาพถาวรสิ้นเชิง สูงสุด 500,000 บาท/คน</li>
+            <li>ค่าชดเชยรายวัน 200 บาท/วัน (ไม่เกิน 20 วัน)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">อัตรา พ.ร.บ. ปี 2569</h2>
+      <p class="text-gray-700">อัตรา พ.ร.บ. กำหนดโดยกรมธุรกิจประกันภัย บริษัทประกันทุกแห่งต้องคิดในอัตราเดียวกัน ต่างกันเพียงบริการและช่องทางซื้อเท่านั้น</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#prb-results" />
+    <RelatedArticles currentHref="/คำนวณ-พรบ-รถยนต์/" />
+    <RelatedCalculators currentHref="/คำนวณ-พรบ-รถยนต์/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตรา พ.ร.บ. อิงจากประกาศกรมธุรกิจประกันภัย อาจมีการปรับปรุง ควรตรวจสอบกับบริษัทประกันเพื่อความแม่นยำ
+    </div>
+  </article>
+
+  <script type="module">
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+    // อัตรา พ.ร.บ. ปี 2569 (บาท) - อิงตามประกาศ คปภ.
+    const prbRates = {
+      car_under110: { private: 645.21, commercial: 1182.35 },
+      car_over110:  { private: 967.28, commercial: 1585.50 },
+      pickup:       { private: 967.28, commercial: 1585.50 },
+      van:          { private: 1182.35, commercial: 2320.50 },
+      motorcycle_under110: { private: 162.45, commercial: 232.00 },
+      motorcycle_over110:  { private: 323.40, commercial: 464.00 },
+    };
+
+    document.getElementById('prb-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const type = document.getElementById('prb-type').value;
+      const use = document.getElementById('prb-use').value;
+      const base = prbRates[type][use];
+      const vat = base * 0.07;
+      const total = base + vat;
+
+      setText('res-prb-base', formatMoney(base));
+      setText('res-prb-vat', formatMoney(vat));
+      setText('res-prb-total', formatMoney(total));
+
+      document.getElementById('prb-results').classList.remove('hidden');
+      document.getElementById('prb-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

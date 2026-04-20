@@ -1,0 +1,166 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณความสามารถในการซื้อประกัน (Insurance Affordability) 2569 | ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณงบประมาณประกันที่เหมาะสม 2569 ตามรายได้และรายจ่าย วิเคราะห์ว่าควรทุ่มงบไปกับประกันประเภทใด และเท่าไรต่อเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณความสามารถในการซื้อประกัน/`;
+
+const faqData = [
+  { question: 'ควรใช้เงินเท่าไรต่อเดือนกับค่าประกัน?', answer: 'หลักการทางการเงินแนะนำให้ใช้งบประกันรวม 5-15% ของรายได้สุทธิ โดยแบ่งเป็นประกันสุขภาพก่อน จากนั้นประกันชีวิต และประกันรถ เหลือจึงค่อยเพิ่มประกันอื่น ๆ' },
+  { question: 'ประกันใดควรซื้อก่อน?', answer: 'ลำดับความสำคัญ: (1) ประกันสุขภาพ — ป้องกันค่ารักษาพยาบาลที่อาจทำให้ล้มละลาย (2) ประกันชีวิต — ถ้ามีคนพึ่งพา (3) ประกันรถ — ตามกฎหมาย (4) ประกันโรคร้ายแรง (CI) (5) ประกันอื่น ๆ ตามสถานการณ์' },
+  { question: 'รายได้น้อยควรทำประกันไหม?', answer: 'ยิ่งรายได้น้อยยิ่งต้องการประกันสุขภาพ เพราะค่ารักษาพยาบาลกระทบรุนแรงกว่า บัตรทอง 30 บาทเป็นพื้นฐาน แต่ถ้ารายได้เพิ่มขึ้นควรซื้อประกันสุขภาพเสริมก่อนอื่น' },
+  { question: 'งบประกันควรปรับเมื่อไร?', answer: 'ควรทบทวนทุกปี โดยเฉพาะเมื่อ: เปลี่ยนงาน แต่งงาน มีบุตร ซื้อบ้าน หรือรายได้เปลี่ยนแปลงมาก เพื่อให้ความคุ้มครองยังเหมาะกับชีวิตในปัจจุบัน' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณความสามารถในการซื้อประกัน 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณความสามารถในการซื้อประกัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">วิเคราะห์งบประมาณประกันที่เหมาะสม</p>
+      <p class="mt-1 text-sm text-slate-700">ตามรายได้ รายจ่าย และลำดับความสำคัญของประกันแต่ละประเภท</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณความสามารถในการซื้อประกัน 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">วิเคราะห์ว่าคุณสามารถซื้อประกันได้เท่าไร และควรจัดสรรงบให้ประกันแต่ละประเภทอย่างไร</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลการเงิน</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <p class="text-sm font-semibold text-blue-800 mb-3">รายได้และรายจ่ายประจำเดือน</p>
+          <div class="space-y-3">
+            <div><label class="block text-xs text-gray-600 mb-1">รายได้สุทธิต่อเดือน (บาท)</label><input type="text" id="monthly-income" inputmode="numeric" placeholder="เช่น 40,000" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+            <div><label class="block text-xs text-gray-600 mb-1">ค่าใช้จ่ายประจำ (ไม่รวมประกัน) ต่อเดือน (บาท)</label><input type="text" id="monthly-expenses" inputmode="numeric" placeholder="เช่น 25,000" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+            <div><label class="block text-xs text-gray-600 mb-1">เบี้ยประกันที่จ่ายอยู่แล้ว/เดือน (บาท)</label><input type="text" id="current-premium" inputmode="numeric" placeholder="เช่น 2,000 (0 ถ้าไม่มี)" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+          <p class="text-sm font-semibold text-green-800 mb-3">สถานการณ์ชีวิต</p>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs text-gray-600 mb-1">สถานะครอบครัว</label>
+              <select id="family-status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white">
+                <option value="single">โสด ไม่มีผู้พึ่งพา</option>
+                <option value="couple">แต่งงาน ไม่มีบุตร</option>
+                <option value="family" selected>มีบุตร / มีผู้พึ่งพา</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-600 mb-1">มีหนี้สินหรือไม่?</label>
+              <select id="has-debt" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white">
+                <option value="no">ไม่มีหนี้</option>
+                <option value="yes" selected>มีหนี้ (บ้าน/รถ/อื่นๆ)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">วิเคราะห์งบประกัน</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการวิเคราะห์</h2>
+      <div class="grid gap-4 sm:grid-cols-3 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center"><p class="text-xs text-primary-700 mb-1">งบประกันสูงสุด/เดือน</p><p class="text-2xl font-bold text-primary-700" id="max-budget">-</p></div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center"><p class="text-xs text-green-700 mb-1">งบที่แนะนำ/เดือน</p><p class="text-2xl font-bold text-green-700" id="rec-budget">-</p></div>
+        <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center"><p class="text-xs text-orange-700 mb-1">ช่องว่างงบที่เหลือ</p><p class="text-2xl font-bold text-orange-700" id="budget-gap">-</p></div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">แนะนำการจัดสรรงบประกัน</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+      <div id="advice-box" class="rounded-lg p-4 border text-sm"></div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">หลักการจัดสรรงบประกัน</h2>
+      <p>นักวางแผนการเงินแนะนำให้แบ่งงบประกันเป็น 5-15% ของรายได้สุทธิ โดยจัดลำดับความสำคัญจากความเสี่ยงที่ทำให้ล้มละลายได้ก่อน: ค่ารักษาพยาบาล (ประกันสุขภาพ) ตามด้วยการสูญเสียรายได้ (ประกันชีวิต/ทุพพลภาพ) และสุดท้ายทรัพย์สิน (ประกันบ้าน รถ)</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
+      </div>
+    </section>
+    <RelatedCalculators currentHref="/คำนวณความสามารถในการซื้อประกัน/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการวิเคราะห์เป็นเพียงการประมาณการเบื้องต้น ควรปรึกษาที่ปรึกษาการเงินเพื่อแผนที่เหมาะสมกับสถานการณ์ของคุณ</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const income = parseNum((document.getElementById('monthly-income') as HTMLInputElement).value);
+      const expenses = parseNum((document.getElementById('monthly-expenses') as HTMLInputElement).value);
+      const currentPremium = parseNum((document.getElementById('current-premium') as HTMLInputElement).value);
+      const familyStatus = (document.getElementById('family-status') as HTMLSelectElement).value;
+      const hasDebt = (document.getElementById('has-debt') as HTMLSelectElement).value;
+      const err = document.getElementById('form-error')!;
+      if (income < 5000) { err.textContent = 'กรุณากรอกรายได้ต่อเดือน'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const freeCash = income - expenses - currentPremium;
+      const maxBudget = income * 0.15; // 15% of income
+      const recBudget = income * 0.08; // 8% recommended
+      const budgetGap = Math.max(0, recBudget - currentPremium);
+
+      // Recommended allocation
+      const healthAlloc = recBudget * 0.45;
+      const lifeAlloc = familyStatus !== 'single' ? recBudget * 0.30 : recBudget * 0.10;
+      const ciAlloc = recBudget * 0.15;
+      const otherAlloc = recBudget - healthAlloc - lifeAlloc - ciAlloc;
+
+      const rows = [
+        ['รายได้สุทธิ/เดือน', '', `${fmt(income)} บาท`],
+        ['ค่าใช้จ่ายประจำ', '', `-${fmt(expenses)} บาท`],
+        ['เบี้ยประกันปัจจุบัน', '', `-${fmt(currentPremium)} บาท`],
+        ['เงินเหลือสุทธิ', '', `${fmt(freeCash)} บาท`],
+        ['---', '', '---'],
+        ['งบประกันสูงสุดแนะนำ (15% รายได้)', '', `${fmt(maxBudget)} บาท/เดือน`],
+        ['งบที่เหมาะสม (8% รายได้)', '', `${fmt(recBudget)} บาท/เดือน`],
+        ['แนะนำ: ประกันสุขภาพ (45%)', '', `${fmt(healthAlloc)} บาท/เดือน`],
+        ['แนะนำ: ประกันชีวิต', familyStatus === 'single' ? '10% (โสด)' : '30% (มีผู้พึ่งพา)', `${fmt(lifeAlloc)} บาท/เดือน`],
+        ['แนะนำ: ประกัน CI (15%)', '', `${fmt(ciAlloc)} บาท/เดือน`],
+        ['แนะนำ: ประกันอื่นๆ', hasDebt === 'yes' ? 'รวมประกันทรัพย์สิน' : '', `${fmt(otherAlloc)} บาท/เดือน`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('max-budget') as HTMLElement).textContent = fmt(maxBudget) + ' บาท';
+      (document.getElementById('rec-budget') as HTMLElement).textContent = fmt(recBudget) + ' บาท';
+      (document.getElementById('budget-gap') as HTMLElement).textContent = fmt(budgetGap) + ' บาท';
+
+      const adviceBox = document.getElementById('advice-box')!;
+      if (freeCash < 0) {
+        adviceBox.className = 'rounded-lg p-4 border text-sm bg-red-50 border-red-200 text-red-800';
+        adviceBox.innerHTML = '<strong>ข้อควรระวัง:</strong> รายจ่ายและเบี้ยประกันปัจจุบันสูงกว่ารายได้ ควรทบทวนค่าใช้จ่ายก่อนเพิ่มประกัน';
+      } else if (currentPremium < recBudget * 0.5) {
+        adviceBox.className = 'rounded-lg p-4 border text-sm bg-blue-50 border-blue-200 text-blue-800';
+        adviceBox.innerHTML = '<strong>คำแนะนำ:</strong> คุณยังมีช่องว่างงบสำหรับเพิ่มความคุ้มครอง แนะนำเริ่มจากประกันสุขภาพก่อนหากยังไม่มี';
+      } else {
+        adviceBox.className = 'rounded-lg p-4 border text-sm bg-green-50 border-green-200 text-green-800';
+        adviceBox.innerHTML = '<strong>สถานะดี:</strong> งบประกันของคุณอยู่ในเกณฑ์ที่เหมาะสม ทบทวนความคุ้มครองให้ครอบคลุมความต้องการปัจจุบัน';
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

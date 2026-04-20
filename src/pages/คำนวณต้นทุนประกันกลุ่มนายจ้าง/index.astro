@@ -1,0 +1,138 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนประกันกลุ่มนายจ้าง 2569 | Group Insurance Employer Cost ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณต้นทุนประกันกลุ่มสำหรับนายจ้าง 2569 เบี้ยประกันสุขภาพกลุ่ม ประกันชีวิตกลุ่ม ต่อหัวพนักงาน รวมต้นทุนทั้งหมดต่อปีและต่อเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนประกันกลุ่มนายจ้าง/`;
+
+const faqData = [
+  { question: 'ประกันกลุ่มสำหรับนายจ้างมีอะไรบ้าง?', answer: 'ประกันกลุ่มสำหรับพนักงานมักประกอบด้วย: (1) ประกันชีวิตกลุ่ม คุ้มครอง 1-3 เท่าของเงินเดือน (2) ประกันสุขภาพกลุ่ม ครอบคลุมค่ารักษา (3) ประกันอุบัติเหตุ (PA) สำหรับทุพพลภาพ (4) ประกันทันตกรรม (บางบริษัท)' },
+  { question: 'เบี้ยประกันกลุ่มนายจ้างจ่ายทั้งหมดหรือแบ่งกับลูกจ้าง?', answer: 'ขึ้นกับนโยบายบริษัท บางแห่งนายจ้างจ่ายทั้งหมด บางแห่งแบ่งจ่าย เช่น นายจ้าง 80% ลูกจ้าง 20% เบี้ยที่นายจ้างจ่ายถือเป็นค่าใช้จ่ายกิจการหักภาษีได้ ส่วนของลูกจ้างนับเป็น non-cash benefit' },
+  { question: 'ประกันกลุ่มเบี้ยถูกกว่าประกันรายบุคคลเท่าไร?', answer: 'ประกันกลุ่มมักถูกกว่า 20-40% เมื่อเทียบกับประกันรายบุคคลในวงเงินเท่ากัน เนื่องจากบริษัทประกันมองว่าความเสี่ยงกระจายในกลุ่มพนักงาน และไม่ต้องตรวจสุขภาพรายบุคคล' },
+  { question: 'ต้องมีพนักงานกี่คนขึ้นไปจึงซื้อประกันกลุ่มได้?', answer: 'ส่วนใหญ่กำหนดขั้นต่ำ 5-10 คน บางบริษัทรับตั้งแต่ 3 คน ยิ่งจำนวนพนักงานมาก เบี้ยต่อหัวยิ่งถูกลง เพราะความเสี่ยงกระจายมากขึ้น' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณต้นทุนประกันกลุ่มนายจ้าง 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนประกันกลุ่มนายจ้าง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณต้นทุนประกันกลุ่มพนักงาน</p>
+      <p class="mt-1 text-sm text-slate-700">สำหรับนายจ้างและฝ่าย HR ในการวางแผนงบสวัสดิการ</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณต้นทุนประกันกลุ่มนายจ้าง 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">คำนวณเบี้ยประกันกลุ่มทั้งหมดต่อปีและต่อหัวพนักงาน สำหรับการวางแผนงบสวัสดิการ</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="num-employees" class="block text-sm font-medium text-gray-700 mb-1">จำนวนพนักงาน (คน)</label>
+          <input type="text" id="num-employees" inputmode="numeric" placeholder="เช่น 50" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="avg-salary" class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนเฉลี่ย (บาท/เดือน)</label>
+          <input type="text" id="avg-salary" inputmode="numeric" placeholder="เช่น 25,000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="health-plan" class="block text-sm font-medium text-gray-700 mb-1">แผนประกันสุขภาพกลุ่ม</label>
+          <select id="health-plan" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="5000">แผนพื้นฐาน — วงเงิน 100,000 บาท (~5,000 บาท/คน/ปี)</option>
+            <option value="9000" selected>แผนมาตรฐาน — วงเงิน 300,000 บาท (~9,000 บาท/คน/ปี)</option>
+            <option value="15000">แผนครอบคลุม — วงเงิน 500,000 บาท (~15,000 บาท/คน/ปี)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ความคุ้มครองเพิ่มเติม</label>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" id="chk-life" class="rounded" checked /> ประกันชีวิตกลุ่ม (1 เท่าเงินเดือน × 12 เดือน ~ 0.3%/ปี)</label>
+            <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" id="chk-pa" class="rounded" /> ประกันอุบัติเหตุกลุ่ม (~1,500 บาท/คน/ปี)</label>
+          </div>
+        </div>
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณต้นทุนรวม</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-3 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center"><p class="text-xs text-primary-700 mb-1">ต้นทุนรวม/ปี</p><p class="text-2xl font-bold text-primary-700" id="total-annual">-</p></div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center"><p class="text-xs text-blue-700 mb-1">ต้นทุน/คน/ปี</p><p class="text-2xl font-bold text-blue-700" id="per-person">-</p></div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center"><p class="text-xs text-green-700 mb-1">ต้นทุน/เดือน</p><p class="text-2xl font-bold text-green-700" id="per-month">-</p></div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกันกลุ่มสำคัญต่อการดึงดูดและรักษาบุคลากร</h2>
+      <p>ประกันกลุ่มเป็นสวัสดิการที่พนักงานให้ความสำคัญลำดับต้นๆ การมีประกันสุขภาพกลุ่มดีช่วยดึงดูดบุคลากรคุณภาพ และลดอัตราการลาออก ทำให้ต้นทุนการสรรหาพนักงานลดลงในระยะยาว</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
+      </div>
+    </section>
+    <RelatedCalculators currentHref="/คำนวณต้นทุนประกันกลุ่มนายจ้าง/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงขึ้นกับบริษัทประกันและองค์ประกอบกลุ่มพนักงาน</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const n = parseNum((document.getElementById('num-employees') as HTMLInputElement).value);
+      const salary = parseNum((document.getElementById('avg-salary') as HTMLInputElement).value);
+      const healthPerPerson = parseFloat((document.getElementById('health-plan') as HTMLSelectElement).value);
+      const hasLife = (document.getElementById('chk-life') as HTMLInputElement).checked;
+      const hasPA = (document.getElementById('chk-pa') as HTMLInputElement).checked;
+      const err = document.getElementById('form-error')!;
+      if (n < 3) { err.textContent = 'กรุณากรอกจำนวนพนักงานอย่างน้อย 3 คน'; err.classList.remove('hidden'); return; }
+      if (salary < 5000) { err.textContent = 'กรุณากรอกเงินเดือนเฉลี่ย'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const totalHealth = n * healthPerPerson;
+      const annualSalary = salary * 12;
+      const lifePerPerson = hasLife ? annualSalary * 0.003 : 0;
+      const totalLife = n * lifePerPerson;
+      const paPerPerson = hasPA ? 1500 : 0;
+      const totalPA = n * paPerPerson;
+      const totalAnnual = totalHealth + totalLife + totalPA;
+      const perPerson = totalAnnual / n;
+      const perMonth = totalAnnual / 12;
+
+      const rows = [
+        ['จำนวนพนักงาน', '', `${n} คน`],
+        ['ประกันสุขภาพกลุ่ม', `${fmt(healthPerPerson)} บาท/คน/ปี`, `${fmt(totalHealth)} บาท/ปี`],
+        hasLife ? ['ประกันชีวิตกลุ่ม', `${fmt(lifePerPerson)} บาท/คน/ปี`, `${fmt(totalLife)} บาท/ปี`] : null,
+        hasPA ? ['ประกันอุบัติเหตุกลุ่ม', `${fmt(paPerPerson)} บาท/คน/ปี`, `${fmt(totalPA)} บาท/ปี`] : null,
+        ['รวมทั้งหมด/ปี', '', `<strong>${fmt(totalAnnual)} บาท</strong>`],
+      ].filter(Boolean) as string[][];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('total-annual') as HTMLElement).textContent = fmt(totalAnnual) + ' บาท';
+      (document.getElementById('per-person') as HTMLElement).textContent = fmt(perPerson) + ' บาท';
+      (document.getElementById('per-month') as HTMLElement).textContent = fmt(perMonth) + ' บาท';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

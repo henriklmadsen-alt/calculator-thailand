@@ -1,0 +1,201 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเบี้ยประกันโรคร้ายแรง ปี 2569 Critical Illness ค่าเบี้ยตามอายุ | เครื่องคำนวณไทย';
+const pageDescription = 'ประมาณเบี้ยประกันโรคร้ายแรง (CI) ตามอายุ เพศ และวงเงินคุ้มครอง สำหรับโรคมะเร็ง หัวใจ หลอดเลือดสมอง และโรคร้ายแรงอื่นๆ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยประกันโรคร้ายแรง/`;
+
+const faqData = [
+  {
+    question: 'ประกันโรคร้ายแรง (CI) คุ้มครองอะไรบ้าง?',
+    answer: 'ประกัน CI คุ้มครองโรคร้ายแรงที่กำหนด เช่น มะเร็ง โรคหัวใจ โรคหลอดเลือดสมอง ไตวาย ตับวาย และโรคร้ายแรงอื่นๆ ตามเงื่อนไขกรมธรรม์ โดยจ่ายเงินก้อนเมื่อได้รับการวินิจฉัยว่าเป็นโรคดังกล่าว',
+  },
+  {
+    question: 'ควรซื้อวงเงิน CI เท่าไหร่?',
+    answer: 'แนะนำ 500,000–2,000,000 บาทขึ้นไป เพื่อให้เพียงพอสำหรับค่ารักษาพยาบาล ค่าใช้จ่ายระหว่างพักรักษา และทดแทนรายได้ที่สูญเสียระหว่างเจ็บป่วย',
+  },
+  {
+    question: 'CI ต่างจากประกันสุขภาพอย่างไร?',
+    answer: 'ประกัน CI จ่ายเงินก้อนเมื่อได้รับการวินิจฉัยว่าเป็นโรค ส่วนประกันสุขภาพชดเชยค่ารักษาพยาบาลตามจริง ควรมีทั้งสองประเภทเพื่อความคุ้มครองที่ครอบคลุม',
+  },
+  {
+    question: 'ควรซื้อ CI ก่อนหรือหลังตรวจสุขภาพ?',
+    answer: 'ควรซื้อก่อนตรวจพบโรค เมื่อยังสุขภาพดีจะได้รับเบี้ยมาตรฐานและผ่านการพิจารณาได้ง่าย ถ้าตรวจพบโรคแล้วจะถูกยกเว้นความคุ้มครองหรืออาจไม่ได้รับประกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันโรคร้ายแรง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันโรคร้ายแรง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
+      <p class="text-sm font-semibold text-red-700">🏥 ประมาณเบี้ยประกันโรคร้ายแรง (CI)</p>
+      <p class="mt-1 text-sm text-slate-700">เบี้ย CI อิงจากอายุ เพศ วงเงิน และประเภทโรคที่คุ้มครอง</p>
+      <p class="mt-1 text-xs font-medium text-red-800">คุ้มครองโรคมะเร็ง หัวใจ หลอดเลือดสมอง และโรคร้ายแรงอื่นๆ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเบี้ยประกันโรคร้ายแรง ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกอายุ เพศ วงเงินคุ้มครอง และประเภทโรค เพื่อประมาณเบี้ยประกันโรคร้ายแรง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="ci-form" class="space-y-5">
+        <p id="ci-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณาตรวจสอบข้อมูลก่อนคำนวณ</p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="ci-age" class="mb-1 block text-sm font-medium text-gray-700">อายุ (ปี)</label>
+            <input type="text" id="ci-age" inputmode="numeric" placeholder="เช่น 35"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ci-age-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ci-gender" class="mb-1 block text-sm font-medium text-gray-700">เพศ</label>
+            <select id="ci-gender" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="male" selected>ชาย</option>
+              <option value="female">หญิง</option>
+            </select>
+          </div>
+          <div>
+            <label for="ci-coverage" class="mb-1 block text-sm font-medium text-gray-700">วงเงินคุ้มครอง (บาท)</label>
+            <input type="text" id="ci-coverage" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ci-coverage-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+        <div>
+          <label for="ci-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทความคุ้มครอง</label>
+          <select id="ci-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-72">
+            <option value="basic">พื้นฐาน (มะเร็ง หัวใจ หลอดเลือดสมอง)</option>
+            <option value="standard" selected>มาตรฐาน (15–20 โรค)</option>
+            <option value="comprehensive">ครอบคลุม (30+ โรค)</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 sm:w-auto">ประมาณเบี้ย CI</button>
+      </form>
+    </div>
+
+    <div id="ci-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อปี (ประมาณ)</div>
+            <div id="res-ci-annual" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อเดือน</div>
+            <div id="res-ci-monthly" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">วงเงินคุ้มครอง</div>
+            <div id="res-ci-sum" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="ci-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">โรคร้ายแรงที่มักคุ้มครอง</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>มะเร็ง (ทุกชนิดตามนิยาม)</li>
+        <li>โรคหัวใจ (กล้ามเนื้อหัวใจตาย หลอดเลือดหัวใจ)</li>
+        <li>โรคหลอดเลือดสมอง (Stroke)</li>
+        <li>ไตวายเรื้อรัง ตับวาย ปลูกถ่ายอวัยวะ</li>
+        <li>อัมพาต โคม่า เส้นเลือดใหญ่ในหัวใจโป่งพอง</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#ci-results" />
+    <RelatedArticles currentHref="/คำนวณเบี้ยประกันโรคร้ายแรง/" />
+    <RelatedCalculators currentHref="/คำนวณเบี้ยประกันโรคร้ายแรง/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ราคาจริงขึ้นอยู่กับบริษัทประกันและเงื่อนไขกรมธรรม์
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v){const s=String(v).replace(/,/g,'').trim();if(!s)return 0;const n=Number(s);return Number.isFinite(n)&&n>0?n:0;}
+    function formatMoney(n){return `${new Intl.NumberFormat('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)} บาท`;}
+    function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+    function setErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.classList.toggle('hidden',!msg);}
+
+    // CI rates per 1000 sum assured per year (approximate Thai market)
+    const mCIRates={20:1.8,25:2.2,30:3.0,35:4.5,40:7.2,45:11.5,50:18.0,55:27.0,60:40.0};
+    const fCIRates={20:2.2,25:2.8,30:3.8,35:5.6,40:8.5,45:12.8,50:19.5,55:28.5,60:42.0};
+    const typeMulti={basic:0.7,standard:1.0,comprehensive:1.4};
+
+    document.getElementById('ci-form')?.addEventListener('submit',(e)=>{
+      e.preventDefault();
+      document.getElementById('ci-error').classList.add('hidden');
+      ['ci-age-error','ci-coverage-error'].forEach(id=>setErr(id,''));
+      const age=parseNum(document.getElementById('ci-age').value);
+      const gender=document.getElementById('ci-gender').value;
+      const coverage=parseNum(document.getElementById('ci-coverage').value);
+      const type=document.getElementById('ci-type').value;
+      let hasError=false;
+      if(!age||age<18||age>65){setErr('ci-age-error','กรอกอายุ 18–65 ปี');hasError=true;}
+      if(!coverage){setErr('ci-coverage-error','กรอกวงเงินคุ้มครอง');hasError=true;}
+      if(hasError){document.getElementById('ci-error').classList.remove('hidden');return;}
+      const rates=gender==='male'?mCIRates:fCIRates;
+      const keys=Object.keys(rates).map(Number).sort((a,b)=>a-b);
+      let base=0;
+      for(const k of keys){if(age>=k)base=rates[k];}
+      const annual=(coverage/1000)*base*(typeMulti[type]||1.0);
+      const monthly=annual/12;
+      setText('res-ci-annual',formatMoney(annual));
+      setText('res-ci-monthly',formatMoney(monthly));
+      setText('res-ci-sum',formatMoney(coverage));
+      const statusEl=document.getElementById('ci-status');
+      statusEl.className='rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800 border border-red-200';
+      statusEl.textContent=`วงเงิน CI ${formatMoney(coverage)} สำหรับ${gender==='male'?'ชาย':'หญิง'}อายุ ${age} ปี เบี้ยประมาณ ${formatMoney(annual)}/ปี (${formatMoney(monthly)}/เดือน)`;
+      document.getElementById('ci-results').classList.remove('hidden');
+      document.getElementById('ci-results').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  </script>
+</BaseLayout>
