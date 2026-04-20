@@ -170,6 +170,17 @@ export const categories: Category[] = [
     description: 'รวมเครื่องคำนวณต้นทุนก่อสร้าง ปรับปรุงบ้าน วัสดุก่อสร้าง ค่าแรง พลังงาน และยูทิลิตี้สำหรับโครงการที่อยู่อาศัย',
     sortOrder: 13,
   },
+  {
+    id: 'education',
+    name: 'การศึกษา',
+    nameEn: 'Education',
+    icon: '🎓',
+    slug: 'การศึกษา',
+    color: 'bg-blue-100',
+    colorText: 'text-blue-700',
+    description: 'รวมเครื่องคำนวณค่าใช้จ่ายการศึกษา ค่าเรียน ทุนการศึกษา ค่าเช่าหอพัก บ้านเรียน และแผนออมเพื่อการศึกษา',
+    sortOrder: 14,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -1828,6 +1839,15 @@ export const calculators: Calculator[] = [
   },
 
   // ── Education ──
+  {
+    title: 'คำนวณค่าเรียนมหาวิทยาลัย',
+    desc: 'คำนวณค่าเรียนมหาวิทยาลัย ปริญญาตรี ปริญญาโท หลักสูตรต่างประเทศ รวมค่าใช้จ่ายเพิ่มเติม ทุนการศึกษา',
+    href: '/คำนวณค่าเรียนมหาวิทยาลัย/',
+    icon: '🎓',
+    categoryId: 'education',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
   {
     title: 'คำนวณค่าเรียนพิเศษ',
     desc: 'คำนวณค่าเรียนพิเศษรายเดือน ตัวต่อตัว เรียนกลุ่ม สถาบันกวดวิชา ตามวิชาและระดับชั้น ราคาตลาดไทย 2569',
@@ -3720,6 +3740,17 @@ export const calculators: Calculator[] = [
   { title: 'คำนวณภาษีที่ดินตามจังหวัด', desc: 'คำนวณภาษีประจำปีสำหรับที่ดิน ตามจังหวัด พื้นที่ และประเภท', href: '/คำนวณภาษีที่ดินตามจังหวัด/', icon: '🗺️', categoryId: 'realestate', secondaryCategories: ['tax'], tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณต้นทุนก่อสร้างอาคาร', desc: 'ประมาณการต้นทุนก่อสร้างตามพื้นที่และประเภทอาคาร', href: '/คำนวณต้นทุนก่อสร้างอาคาร/', icon: '🏢', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณประกันอสังหาฯ', desc: 'ประมาณการเบี้ยประกันบ้านและอสังหาฯอื่นตามมูลค่าและประเภท', href: '/คำนวณประกันอสังหาฯ/', icon: '🛡️', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+
+  // WAVE3 BATCH U — Health & Medical Costs (KLC-0401-0425)
+  {
+    title: 'คำนวณต้นทุนการรักษาพยาบาล',
+    desc: 'คำนวณค่าการรักษาที่โรงพยาบาล รวมห้อง ผ่าตัด เอกซเรย์ แล็บ ยา ประมาณการรวมและค่าประกัน',
+    href: '/คำนวณต้นทุนโรงพยาบาล/',
+    icon: '🏥',
+    categoryId: 'health',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 ];
 
 /** Look up a category by its slug (used in dynamic routes). */
