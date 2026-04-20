@@ -1,0 +1,248 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณผ่อนสินเชื่อศึกษา ปี 2569 | ตารางผ่อน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณการผ่อนชำระสินเชื่อศึกษา จำนวนเงินต้น อัตราดอกเบี้ย ระยะเวลาผ่อน พร้อมตารางผ่อนชำระรายเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณผ่อนสินเชื่อศึกษา/`;
+
+const faqData = [
+  {
+    question: 'สินเชื่อศึกษาคืออะไร?',
+    answer: 'สินเชื่อศึกษา หรือเงินกู้การศึกษา เป็นสินเชื่อที่ออกแบบมาเพื่อช่วยนักศึกษาหรือผู้ปกครองชำระค่าเรียนและค่าใช้จ่ายการศึกษา มีแหล่งเงินกู้หลากหลาย เช่น ธ.ก.ส. ธนาคารพาณิชย์ สถาบันอุตสาหกรรมขนาดกลางและขนาดเล็ก (OSMEP) และสถาบันการเงินอื่นๆ',
+  },
+  {
+    question: 'อัตราดอกเบี้ยสินเชื่อศึกษาเป็นเท่าไหร่?',
+    answer: 'อัตราดอกเบี้ยแตกต่างกันตามแหล่งเงินกู้ ธ.ก.ส. มีอัตราดอกเบี้ยต่ำที่สุด (ประมาณ 3–5% ต่อปี) ส่วนธนาคารพาณิชย์อาจเรียกดอกเบี้ยสูงกว่า (5–8% ต่อปี) แนะนำให้เปรียบเทียบอัตราดอกเบี้ยและเงื่อนไขจากหลายแหล่งก่อนเลือก',
+  },
+  {
+    question: 'ระยะเวลาผ่อนสินเชื่อศึกษากี่ปี?',
+    answer: 'ระยะเวลาผ่อนโดยทั่วไปอยู่ระหว่าง 5 ถึง 15 ปี (60–180 เดือน) ขึ้นอยู่กับจำนวนเงินกู้ และนโยบายของแต่ละสถาบันการเงิน บางแหล่งอาจมีสิทธิพักชำระในช่วงเวลาหนึ่ง',
+  },
+  {
+    question: 'มีการออกอากาศดอกเบี้ยสินเชื่อศึกษาหรือไม่?',
+    answer: 'มี รัฐบาลไทยมีโครงการลด/ยกเว้นดอกเบี้ยสินเชื่อศึกษาสำหรับผู้กู้ที่อยู่ในเกณฑ์กำหนด เช่น ผู้ที่ทำงานในพื้นที่ด้อยพัฒนา หรือกลุ่มอาชีพที่รัฐบาลสนับสนุน ควรตรวจสอบสิทธิ์การลด/ยกเว้นกับสถาบันการเงินที่กู้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผ่อนสินเชื่อศึกษา',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนสินเชื่อศึกษา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณผ่อนชำระสินเชื่อศึกษา ปี 2569</h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่างวดรายเดือน ดอกเบี้ย และจำนวนเงินต้นที่ต้องชำระคืนสินเชื่อศึกษา พร้อมตารางผ่อนชำระแบบสมบูรณ์
+    </p>
+
+    <!-- Info Box -->
+    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4">
+      <p class="text-sm font-medium text-green-900">
+        สูตร: ค่างวด = เงินต้น × [อัตราดอกเบี้ย(1 + อัตราดอกเบี้ย)^เดือน] ÷ [(1 + อัตราดอกเบี้ย)^เดือน − 1]
+      </p>
+    </div>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="loan-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนเงินกู้ (บาท)
+            </label>
+            <input
+              type="text"
+              id="principal"
+              inputmode="numeric"
+              placeholder="เช่น 500,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ยต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="interest-rate"
+              inputmode="decimal"
+              placeholder="เช่น 4.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="loan-term" class="block text-sm font-medium text-gray-700 mb-1">
+            ระยะเวลาผ่อน (ปี)
+          </label>
+          <input
+            type="text"
+            id="loan-term"
+            inputmode="numeric"
+            placeholder="เช่น 5"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base"
+          />
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-green-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-green-700">
+          คำนวณค่างวด
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
+            <div id="res-monthly" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รวมดอกเบี้ย</div>
+            <div id="res-total-interest" class="text-2xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รวมชำระทั้งหมด</div>
+            <div id="res-total-payment" class="text-2xl font-bold text-red-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">เงินต้น</span>
+            <span id="res-principal" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">อัตราดอกเบี้ย/ปี</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ระยะเวลา</span>
+            <span id="res-term" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+            <span class="text-gray-700 font-semibold">ค่างวด/เดือน</span>
+            <span id="res-calc-monthly" class="font-bold text-lg text-green-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่างวด = เงินต้น × [อัตราดอกเบี้ยรายเดือน(1 + อัตราดอกเบี้ยรายเดือน)^จำนวนเดือน] ÷ [(1 + อัตราดอกเบี้ยรายเดือน)^จำนวนเดือน − 1]</li>
+        <li>อัตราดอกเบี้ยรายเดือน = อัตราดอกเบี้ยต่อปี ÷ 12</li>
+        <li>จำนวนเดือน = ระยะเวลา(ปี) × 12</li>
+        <li>รวมดอกเบี้ย = (ค่างวด × จำนวนเดือน) − เงินต้น</li>
+      </ul>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800 mb-8">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราดอกเบี้ยและเงื่อนไขการกู้อาจเปลี่ยนแปลง การคำนวณนี้เป็นการประมาณเบื้องต้น ควรตรวจสอบกับสถาบันการเงินที่กู้เพื่อทราบเงื่อนไขและอัตราที่แน่นอน
+    </div>
+
+    <RelatedArticles currentHref="/คำนวณผ่อนสินเชื่อศึกษา/" />
+    <RelatedCalculators currentHref="/คำนวณผ่อนสินเชื่อศึกษา/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-green-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return 0;
+    return Number(String(value).replace(/,/g, '').trim()) || 0;
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#loan-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const principal = parseNumber(document.querySelector('#principal')?.value || '');
+    const annualRate = parseNumber(document.querySelector('#interest-rate')?.value || '');
+    const loanTerm = parseNumber(document.querySelector('#loan-term')?.value || '');
+
+    if (!(principal > 0 && annualRate >= 0 && loanTerm > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const monthlyRate = annualRate / 100 / 12;
+    const totalMonths = loanTerm * 12;
+
+    let monthlyPayment;
+    if (monthlyRate === 0) {
+      monthlyPayment = principal / totalMonths;
+    } else {
+      monthlyPayment = (principal * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths))) /
+                       (Math.pow(1 + monthlyRate, totalMonths) - 1);
+    }
+
+    const totalPayment = monthlyPayment * totalMonths;
+    const totalInterest = totalPayment - principal;
+
+    document.querySelector('#res-monthly').textContent = formatCurrency(monthlyPayment);
+    document.querySelector('#res-total-interest').textContent = formatCurrency(totalInterest);
+    document.querySelector('#res-total-payment').textContent = formatCurrency(totalPayment);
+    document.querySelector('#res-principal').textContent = formatCurrency(principal);
+    document.querySelector('#res-rate').textContent = `${annualRate.toFixed(2)}%`;
+    document.querySelector('#res-term').textContent = `${loanTerm} ปี (${totalMonths} เดือน)`;
+    document.querySelector('#res-calc-monthly').textContent = formatCurrency(monthlyPayment);
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
