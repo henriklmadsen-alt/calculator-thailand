@@ -1,0 +1,208 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณแปลงรายรับส่งออกเป็นบาท ปี 2569 — Export Receipt Conversion | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณแปลงรายรับส่งออกจากสกุลเงินต่างประเทศเป็นบาท หักค่าธรรมเนียม FX Spread และค่าใช้จ่ายส่งออก ทราบรายรับสุทธิเป็นบาท';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณแปลงรายรับส่งออก/`;
+
+const faqData = [
+  {
+    question: 'ผู้ส่งออกควรใช้อัตราแลกเปลี่ยนใด?',
+    answer: 'ผู้ส่งออกจะได้รับ TT Selling Rate หรือ Export Rate จากธนาคาร ซึ่งต่ำกว่า Spot Rate เล็กน้อย ควรเปรียบเทียบอัตราจากหลายธนาคารก่อนตัดสินใจ',
+  },
+  {
+    question: 'ค่าธรรมเนียมการรับเงินส่งออกมีอะไรบ้าง?',
+    answer: 'ค่าธรรมเนียม Letter of Credit (L/C), ค่าธรรมเนียมรับโอน, FX Spread และค่าธรรมเนียม Negotiation สำหรับการส่งออกแบบ D/P หรือ D/A',
+  },
+  {
+    question: 'ควร Hedge รายรับส่งออกไหม?',
+    answer: 'ถ้าคาดว่าบาทจะแข็งค่า (อัตราตลาดต่ำลง) ควร Hedge ล็อคอัตราล่วงหน้า แต่ถ้าบาทน่าจะอ่อน การ Hedge ทำให้พลาดโอกาสได้รับบาทมากขึ้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณแปลงรายรับส่งออกเป็นบาท',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแปลงรายรับส่งออก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
+      <p class="text-sm font-semibold text-green-700">คำนวณแปลงรายรับส่งออกเป็นบาท</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: รายรับบาทสุทธิ = (ยอดส่งออก × อัตราแลก) − ค่าธรรมเนียม</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณแปลงรายรับส่งออกเป็นบาท ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดส่งออก อัตราแลกเปลี่ยน และค่าธรรมเนียม เพื่อดูรายรับสุทธิเป็นบาท
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="exp-form" class="space-y-5">
+        <p id="exp-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="exp-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดส่งออก (สกุลเงินต่างประเทศ)</label>
+            <input type="text" id="exp-amount" inputmode="decimal" placeholder="เช่น 10,000 USD"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="exp-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="exp-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตรา TT Selling (บาท/1 หน่วย)</label>
+            <input type="text" id="exp-rate" inputmode="decimal" placeholder="เช่น 33.80"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="exp-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">อัตราที่ธนาคารรับซื้อเงินจากผู้ส่งออก</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="exp-bank-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมธนาคาร (บาท)</label>
+            <input type="text" id="exp-bank-fee" inputmode="numeric" placeholder="เช่น 300"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียม Negotiation/รับโอน</p>
+          </div>
+          <div>
+            <label for="exp-other-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าใช้จ่ายส่งออกอื่น (บาท) — ไม่บังคับ</label>
+            <input type="text" id="exp-other-cost" inputmode="numeric" placeholder="เช่น 0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณรายรับส่งออก
+        </button>
+      </form>
+    </div>
+
+    <div id="exp-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายรับสุทธิ (บาท)</div>
+            <div id="res-exp-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายรับก่อนหักค่าใช้จ่าย</div>
+            <div id="res-exp-gross" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายรวม</div>
+            <div id="res-exp-total-cost" class="text-xl font-bold text-red-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายรับก่อนหัก = ยอดส่งออก × TT Selling Rate</li>
+        <li>ค่าใช้จ่ายรวม = ค่าธรรมเนียมธนาคาร + ค่าใช้จ่ายอื่น</li>
+        <li>รายรับสุทธิ = รายรับก่อนหัก − ค่าใช้จ่ายรวม</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-hedge-fx-นำเข้า/">คำนวณ FX Hedge สำหรับนำเข้า</a></li>
+        <li><a href="/คำนวณยอดรับเงินโอนต่างประเทศ/">คำนวณยอดรับเงินโอนต่างประเทศ</a></li>
+        <li><a href="/คำนวณต้นทุนชำระเงินข้ามประเทศ/">คำนวณต้นทุนชำระเงินข้ามประเทศ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#exp-results" />
+    <RelatedArticles currentHref="/คำนวณแปลงรายรับส่งออก/" />
+    <RelatedCalculators currentHref="/คำนวณแปลงรายรับส่งออก/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราแลกเปลี่ยนและค่าธรรมเนียมเปลี่ยนแปลงทุกวัน ควรยืนยันอัตราจริงกับธนาคารก่อนทำรายการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('exp-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      ['exp-amount-error','exp-rate-error'].forEach(id => setErr(id, ''));
+
+      const amount = parseNum(document.getElementById('exp-amount').value);
+      const rate = parseNum(document.getElementById('exp-rate').value);
+      const bankFee = parseNum(document.getElementById('exp-bank-fee').value) || 0;
+      const otherCost = parseNum(document.getElementById('exp-other-cost').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(amount) || amount <= 0) { setErr('exp-amount-error', 'กรอกยอดส่งออกมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(rate) || rate <= 0) { setErr('exp-rate-error', 'กรอกอัตราแลกเปลี่ยนมากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('exp-error').classList.remove('hidden'); document.getElementById('exp-results').classList.add('hidden'); return; }
+      document.getElementById('exp-error').classList.add('hidden');
+
+      const gross = amount * rate;
+      const totalCost = bankFee + otherCost;
+      const net = gross - totalCost;
+
+      setText('res-exp-net', fmt(net));
+      setText('res-exp-gross', fmt(gross));
+      setText('res-exp-total-cost', fmt(totalCost));
+
+      document.getElementById('exp-results').classList.remove('hidden');
+      document.getElementById('exp-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>
