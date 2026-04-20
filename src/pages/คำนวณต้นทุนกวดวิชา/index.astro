@@ -1,0 +1,306 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนกวดวิชา ปี 2569 | ราคาเรียนพิเศษ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณต้นทุนกวดวิชารวม: เรียนตัวต่อตัว เรียนกลุ่ม สถาบัน ค่าเดือน ค่างวดชั้น รวมต้นทุนทั้งปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนกวดวิชา/`;
+
+const faqData = [
+  {
+    question: 'ราคากวดวิชาแตกต่างกันอย่างไร?',
+    answer: 'เรียนตัวต่อตัว: 300–600 บาท/ชั่วโมง หรือ 1,500–3,000 บาท/เดือน เรียนกลุ่ม (3–5 คน): 500–1,500 บาท/เดือน สถาบันกวดวิชา: 2,000–10,000 บาท/เดือน ขึ้นอยู่กับวิชา ระดับชั้น และสถาบัน',
+  },
+  {
+    question: 'ควรเลือกเรียนแบบไหนดี?',
+    answer: 'เรียนตัวต่อตัว: ดีที่สุดแต่แพงที่สุด เหมาะสำหรับศูนย์วิชาอ่อน เรียนกลุ่ม: ราคาปานกลาง มีเพื่อนอื่น สถาบัน: ราคาพอสมควร หลักสูตรสมบูรณ์ แต่อาจไม่เหมาะกับบางคน',
+  },
+  {
+    question: 'มีวิธีประหยัดค่ากวดวิชาหรือไม่?',
+    answer: 'ลดจำนวนคน/ทีม, เลือกเรียนกลุ่มแทนตัวต่อตัว, โปรโมชั่นสิ้นปี/สิ้นเทอม, ลงทะเบียนรายปี (ได้ส่วนลด), หรือเรียนออนไลน์ (ราคาปกติต่ำกว่า)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนกวดวิชา',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนกวดวิชา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณต้นทุนกวดวิชา ปี 2569</h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่ากวดวิชารวมทั้งปี: เรียนตัวต่อตัว เรียนกลุ่ม หรือสถาบันกวดวิชา พร้อมวางแผนงบประมาณการศึกษา
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="tutoring-form" class="space-y-5">
+        <div class="space-y-3">
+          <h3 class="font-semibold text-gray-900">กวดวิชาที่ 1</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="subject1" class="block text-sm font-medium text-gray-700 mb-1">
+                วิชา (เช่น คณิต, อังกฤษ) — ไม่บังคับ
+              </label>
+              <input
+                type="text"
+                id="subject1"
+                placeholder="วิชาที่ 1"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="cost1" class="block text-sm font-medium text-gray-700 mb-1">
+                ค่ากวดวิชา/เดือน (บาท)
+              </label>
+              <input
+                type="text"
+                id="cost1"
+                inputmode="numeric"
+                placeholder="เช่น 2,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-semibold text-gray-900">กวดวิชาที่ 2 — ไม่บังคับ</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="subject2" class="block text-sm font-medium text-gray-700 mb-1">
+                วิชา
+              </label>
+              <input
+                type="text"
+                id="subject2"
+                placeholder="วิชาที่ 2"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="cost2" class="block text-sm font-medium text-gray-700 mb-1">
+                ค่ากวดวิชา/เดือน (บาท)
+              </label>
+              <input
+                type="text"
+                id="cost2"
+                inputmode="numeric"
+                placeholder="เช่น 1,500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-semibold text-gray-900">กวดวิชาที่ 3 — ไม่บังคับ</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="subject3" class="block text-sm font-medium text-gray-700 mb-1">
+                วิชา
+              </label>
+              <input
+                type="text"
+                id="subject3"
+                placeholder="วิชาที่ 3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="cost3" class="block text-sm font-medium text-gray-700 mb-1">
+                ค่ากวดวิชา/เดือน (บาท)
+              </label>
+              <input
+                type="text"
+                id="cost3"
+                inputmode="numeric"
+                placeholder="เช่น 1,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="months" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนเดือนที่เรียน
+          </label>
+          <input
+            type="text"
+            id="months"
+            inputmode="numeric"
+            placeholder="เช่น 12"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="other-fees" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าใช้จ่ายอื่น (เช่น หนังสือ, สอบ) — ไม่บังคับ
+          </label>
+          <input
+            type="text"
+            id="other-fees"
+            inputmode="numeric"
+            placeholder="เช่น 5,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+          />
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-blue-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-blue-700">
+          คำนวณต้นทุนทั้งปี
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="rounded-lg bg-blue-50 p-4 text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ต้นทุนกวดวิชารวมทั้งปี</div>
+          <div id="res-total" class="text-3xl font-bold text-blue-700">-</div>
+        </div>
+
+        <div id="detail-results" class="space-y-3 text-sm bg-gray-50 p-4 rounded-lg">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนกวดวิชา/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-blue-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return 0;
+    return Number(String(value).replace(/,/g, '').trim()) || 0;
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#tutoring-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const subject1 = document.querySelector('#subject1')?.value || 'วิชา 1';
+    const cost1 = parseNumber(document.querySelector('#cost1')?.value || '');
+    const subject2 = document.querySelector('#subject2')?.value;
+    const cost2 = parseNumber(document.querySelector('#cost2')?.value || '');
+    const subject3 = document.querySelector('#subject3')?.value;
+    const cost3 = parseNumber(document.querySelector('#cost3')?.value || '');
+    const months = parseNumber(document.querySelector('#months')?.value || '');
+    const otherFees = parseNumber(document.querySelector('#other-fees')?.value || '');
+
+    if (!(months > 0 && (cost1 > 0 || cost2 > 0 || cost3 > 0))) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const monthlyTotal = cost1 + cost2 + cost3;
+    const yearlyTotal = monthlyTotal * months + otherFees;
+
+    let detailHtml = `
+      <div class="flex justify-between py-2">
+        <span class="text-gray-600">${subject1}/เดือน</span>
+        <span class="font-medium">${formatCurrency(cost1)}</span>
+      </div>
+    `;
+
+    if (subject2 && cost2 > 0) {
+      detailHtml += `
+        <div class="flex justify-between py-2">
+          <span class="text-gray-600">${subject2}/เดือน</span>
+          <span class="font-medium">${formatCurrency(cost2)}</span>
+        </div>
+      `;
+    }
+
+    if (subject3 && cost3 > 0) {
+      detailHtml += `
+        <div class="flex justify-between py-2">
+          <span class="text-gray-600">${subject3}/เดือน</span>
+          <span class="font-medium">${formatCurrency(cost3)}</span>
+        </div>
+      `;
+    }
+
+    detailHtml += `
+      <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+        <span class="text-gray-700 font-semibold">รวมต่อเดือน</span>
+        <span class="font-bold text-blue-700">${formatCurrency(monthlyTotal)}</span>
+      </div>
+      <div class="flex justify-between py-2">
+        <span class="text-gray-600">จำนวนเดือน</span>
+        <span class="font-medium">${months} เดือน</span>
+      </div>
+    `;
+
+    if (otherFees > 0) {
+      detailHtml += `
+        <div class="flex justify-between py-2">
+          <span class="text-gray-600">ค่าใช้จ่ายอื่น</span>
+          <span class="font-medium">${formatCurrency(otherFees)}</span>
+        </div>
+      `;
+    }
+
+    detailHtml += `
+      <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+        <span class="text-gray-700 font-semibold">รวมต้นทุนทั้งปี</span>
+        <span class="font-bold text-lg text-blue-700">${formatCurrency(yearlyTotal)}</span>
+      </div>
+    `;
+
+    document.querySelector('#detail-results').innerHTML = detailHtml;
+    document.querySelector('#res-total').textContent = formatCurrency(yearlyTotal);
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
