@@ -607,6 +607,24 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       </div>
     </footer>
     <script is:inline>
+      (function trackRecentCalc() {
+        var RECENT_KEY = 'ct.recent-calcs.v1';
+        var MAX_RECENT = 5;
+        var path = decodeURIComponent(window.location.pathname);
+        if (path === '/' || path.startsWith('/บทความ/') || path.startsWith('/หมวดหมู่/') || path.startsWith('/en/')) return;
+        // Normalize: ensure trailing slash for consistent matching
+        var href = path.endsWith('/') ? path : path + '/';
+        try {
+          var recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+          if (!Array.isArray(recent)) recent = [];
+          recent = recent.filter(function(h) { return h !== href; });
+          recent.unshift(href);
+          if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
+          localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+        } catch(e) {}
+      })();
+    </script>
+    <script is:inline>
       (function initThemeToggle() {
         const STORAGE_KEY = 'ct.theme-preference.v1';
         const CYCLE = ['system', 'light', 'dark'];

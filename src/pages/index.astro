@@ -76,7 +76,10 @@ const jsonLdItemList = {
 
   <!-- Recently Used (populated by JS) -->
   <div id="recent-section" class="hidden mb-10">
-    <h2 class="text-lg font-bold text-gray-900 mb-4">ใช้ล่าสุด</h2>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-bold text-gray-900">ใช้ล่าสุด</h2>
+      <button id="recent-clear" type="button" class="text-xs text-gray-400 hover:text-red-500 transition-colors">ล้างประวัติ</button>
+    </div>
     <div id="recent-row" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin"></div>
   </div>
 
@@ -322,6 +325,16 @@ const jsonLdItemList = {
     }
 
     renderRecent();
+
+    // ── Clear Recent ──
+    var clearBtn = document.getElementById('recent-clear');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        try { localStorage.removeItem(RECENT_KEY); } catch(e) {}
+        if (recentSection) recentSection.classList.add('hidden');
+        if (recentRow) recentRow.innerHTML = '';
+      });
+    }
   })();
   </script>
 </BaseLayout>
