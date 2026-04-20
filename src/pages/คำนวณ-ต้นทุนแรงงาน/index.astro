@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณต้นทุนแรงงาน ผลิตภาพ | Calculator Thailand';
+const pageDescription = 'คำนวณต้นทุนแรงงาน ค่าแรง ผลิตภาพแรงงาน วิเคราะห์ค่าต่อไร่';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ต้นทุนแรงงาน/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนแรงงาน">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณต้นทุนแรงงาน ผลิตภาพ</h1>
+    <div class="mb-4 inline-block rounded-lg border border-lime-200 bg-lime-50 px-3 py-2"><p class="text-xs font-semibold text-lime-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนแรงงาน ผลิตภาพแรงงาน ค่าต่อไร่</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="laborers" class="block text-sm font-medium text-gray-700 mb-1">จำนวนแรง</label><input type="text" id="laborers" inputmode="numeric" placeholder="เช่น 5" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="days" class="block text-sm font-medium text-gray-700 mb-1">จำนวนวัน</label><input type="text" id="days" inputmode="numeric" placeholder="เช่น 10" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rai" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่ (ไร่)</label><input type="text" id="rai" inputmode="decimal" placeholder="เช่น 10" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-primary-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2"><div class="grid grid-cols-2 gap-2"><div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนรวม</p><p id="total" class="font-bold">-</p></div><div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าต่อไร่</p><p id="perrai" class="font-bold">-</p></div><div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าต่อวัน</p><p id="perday" class="font-bold">-</p></div></div></div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const laborers = parseFloat((document.getElementById('laborers') as HTMLInputElement).value) || 0;
+      const days = parseFloat((document.getElementById('days') as HTMLInputElement).value) || 0;
+      const rai = parseFloat((document.getElementById('rai') as HTMLInputElement).value) || 0;
+      if (laborers <= 0) return;
+      const dailyWage = 300, totalCost = laborers * days * dailyWage;
+      const costPerRai = rai > 0 ? totalCost / rai : 0, costPerDay = totalCost / days;
+      const fmt = (n: number) => new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(n);
+      (document.getElementById('total') as HTMLElement).textContent = fmt(totalCost);
+      (document.getElementById('perrai') as HTMLElement).textContent = fmt(costPerRai);
+      (document.getElementById('perday') as HTMLElement).textContent = fmt(costPerDay);
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('farm-labor-productivity');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

@@ -4755,6 +4755,17 @@ export const calculators: Calculator[] = [
     tag: 'KLC-0600',
     tagColor: 'bg-green-50 text-green-600',
   },
+
+  // WAVE4 BATCH AC — Family & Dependency Cost Calculators (KLC-0601-0625)
+  {
+    title: 'คำนวณค่าเลี้ยงเด็ก',
+    desc: 'คำนวณค่าเล่นกีฬา ค่าหลักสูตร ค่ากิจกรรม ค่าอาหาร เสื้อผ้า รายปี',
+    href: '/คำนวณ-klc0601-ค่าเลี้ยงเด็ก/',
+    icon: '👶',
+    categoryId: 'salary',
+    tag: 'KLC-0601',
+    tagColor: 'bg-blue-50 text-blue-600',
+  },
 ];
 
 
