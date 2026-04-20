@@ -1,36 +1,33 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณดอกเบี้ยทบต้น 2569 | Compound Interest รายปี รายเดือน รายวัน | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณดอกเบี้ยทบต้นแบบรายปี รายเดือน รายวัน เปรียบเทียบผลต่างของการทบต้น เห็นพลังของ compound interest ในระยะยาว อัปเดตปี 2569';
+const pageTitle = 'คำนวณมูลค่าแต้มสะสม ปี 2569 — Reward Points บัตรเครดิต | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณมูลค่าแต้มสะสมจากบัตรเครดิต ป้อนจำนวนแต้มและอัตราแลก ทราบมูลค่าเป็นบาท เปรียบเทียบการใช้แต้มแต่ละแบบ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
-const canonical = `${siteUrl}/คำนวณดอกเบี้ยทบต้น/`;
+const canonical = `${siteUrl}/คำนวณแต้มสะสม/`;
 
 const faqData = [
   {
-    question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?',
-    answer: 'ดอกเบี้ยทบต้นคือการนำดอกเบี้ยที่ได้รับในแต่ละงวดกลับไปรวมเป็นเงินต้นเพื่อคำนวณดอกเบี้ยในงวดถัดไป ทำให้เงินเติบโตแบบทวีคูณ ต่างจากดอกเบี้ยอย่างง่ายที่คิดจากเงินต้นเดิมตลอด สูตร: FV = P × (1 + r/n)^(n×t)',
+    question: 'แต้มสะสมบัตรเครดิตมูลค่าเท่าไหร่?',
+    answer: 'โดยทั่วไป 1 แต้ม = 0.10–1.00 บาท ขึ้นอยู่กับบัตรและวิธีใช้แต้ม เช่น แลกเป็น Cashback, ของรางวัล หรือแลกไมล์บิน',
   },
   {
-    question: 'ทบต้นรายเดือนดีกว่ารายปีแค่ไหน?',
-    answer: 'การทบต้นบ่อยขึ้นให้ผลตอบแทนสูงกว่า เช่น เงิน 100,000 บาท ดอกเบี้ย 10% ต่อปี เป็นเวลา 20 ปี: ทบต้นรายปีได้ 672,750 บาท ทบต้นรายเดือนได้ 732,810 บาท ทบต้นรายวันได้ 738,550 บาท',
+    question: 'ได้แต้มอัตราเท่าไหร่?',
+    answer: 'บัตรทั่วไปให้แต้ม 1 แต้ม/ทุก 25 บาท หรือ 4 แต้ม/100 บาท บัตรพรีเมียมอาจให้ 1 แต้ม/10 บาท หรือสูงกว่านั้นในหมวดพิเศษ',
   },
   {
-    question: 'กฎ 72 คืออะไร?',
-    answer: 'กฎ 72 เป็นสูตรลัดคำนวณว่าเงินจะเพิ่มเป็น 2 เท่าในกี่ปี โดยหาร 72 ด้วยอัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี ดอกเบี้ย 8% ต่อปี ใช้เวลา 9 ปี',
-  },
-  {
-    question: 'อัตราดอกเบี้ยที่แท้จริง (Effective Annual Rate) คืออะไร?',
-    answer: 'Effective Annual Rate (EAR) คืออัตราดอกเบี้ยที่แท้จริงเมื่อคำนึงถึงการทบต้น สูตร: EAR = (1 + r/n)^n − 1 เช่น ดอกเบี้ย 12% ต่อปี ทบต้นรายเดือน EAR = (1+0.01)^12 − 1 = 12.68% ต่อปี',
+    question: 'ควรเลือก Cashback หรือแต้มสะสม?',
+    answer: 'Cashback ง่ายกว่า ไม่มีเงื่อนไข ส่วนแต้มสะสมอาจให้มูลค่ามากกว่าถ้าใช้แลกไมล์บินหรือของรางวัลที่เหมาะสม ขึ้นอยู่กับพฤติกรรมใช้จ่าย',
   },
 ];
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'เครื่องคำนวณดอกเบี้ยทบต้น',
+  name: 'เครื่องคำนวณมูลค่าแต้มสะสม',
   description: pageDescription,
   url: canonical,
   applicationCategory: 'FinanceApplication',
@@ -50,342 +47,169 @@ const jsonLdFaq = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยทบต้น">
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแต้มสะสม">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
-    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
-      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
-      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
-      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
+      <p class="text-sm font-semibold text-amber-700">คำนวณมูลค่าแต้มสะสม — Reward Points บัตรเครดิต</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: มูลค่า = จำนวนแต้ม × มูลค่าต่อแต้ม (บาท)</p>
     </div>
 
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-      คำนวณดอกเบี้ยทบต้น 2569 — Compound Interest รายปี รายเดือน รายวัน
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณมูลค่าแต้มสะสม ปี 2569
     </h1>
 
-    <p class="text-gray-600 mb-6">
-      คำนวณและเปรียบเทียบผลตอบแทนดอกเบี้ยทบต้นแต่ละความถี่ พร้อมตารางการเติบโตรายปี
+    <p class="mb-6 text-gray-600">
+      ป้อนจำนวนแต้มสะสม อัตราการสะสม และมูลค่าต่อแต้ม เพื่อดูมูลค่ารวมเป็นบาท
     </p>
 
-    <!-- Calculator Form -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
-      <form id="compound-form" class="space-y-5">
-        <p id="compound-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
-          กรอกข้อมูลให้ครบก่อนคำนวณ
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="rp-form" class="space-y-5">
+        <p id="rp-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
         </p>
 
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="ci-principal" class="block text-sm font-medium text-gray-700 mb-1">
-              เงินต้น (บาท)
-            </label>
-            <input
-              type="text"
-              id="ci-principal"
-              inputmode="numeric"
-              placeholder="เช่น 100,000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
-            />
-            <p id="ci-principal-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <label for="rp-points" class="mb-1 block text-sm font-medium text-gray-700">จำนวนแต้มสะสม (แต้ม)</label>
+            <input type="text" id="rp-points" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="rp-points-error" class="mt-1 hidden text-sm text-red-600"></p>
           </div>
           <div>
-            <label for="ci-rate" class="block text-sm font-medium text-gray-700 mb-1">
-              อัตราดอกเบี้ย (% ต่อปี)
-            </label>
-            <input
-              type="text"
-              id="ci-rate"
-              inputmode="decimal"
-              placeholder="เช่น 8.0"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
-            />
-            <p id="ci-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <label for="rp-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าต่อ 1 แต้ม (บาท)</label>
+            <input type="text" id="rp-value" inputmode="decimal" placeholder="เช่น 0.25"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="rp-value-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 0.10–1.00 บาท/แต้ม</p>
           </div>
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="ci-years" class="block text-sm font-medium text-gray-700 mb-1">
-              ระยะเวลา (ปี)
-            </label>
-            <input
-              type="text"
-              id="ci-years"
-              inputmode="numeric"
-              placeholder="เช่น 10"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
-            />
-            <p id="ci-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <label for="rp-spend" class="mb-1 block text-sm font-medium text-gray-700">ยอดใช้จ่าย/เดือน (บาท) — ไม่บังคับ</label>
+            <input type="text" id="rp-spend" inputmode="numeric" placeholder="เช่น 20,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div>
-            <label for="ci-frequency" class="block text-sm font-medium text-gray-700 mb-1">
-              ความถี่ทบต้น
-            </label>
-            <select
-              id="ci-frequency"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
-            >
-              <option value="1">รายปี (1 ครั้ง/ปี)</option>
-              <option value="12" selected>รายเดือน (12 ครั้ง/ปี)</option>
-              <option value="365">รายวัน (365 ครั้ง/ปี)</option>
-            </select>
+            <label for="rp-earn" class="mb-1 block text-sm font-medium text-gray-700">อัตราสะสม (แต้ม/บาท) — ไม่บังคับ</label>
+            <input type="text" id="rp-earn" inputmode="decimal" placeholder="เช่น 0.04"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">เช่น 1 แต้ม/25 บาท = 0.04</p>
           </div>
         </div>
 
-        <button
-          type="submit"
-          id="compound-submit-btn"
-          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
-        >
-          คำนวณทันที
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณมูลค่าแต้ม
         </button>
       </form>
     </div>
 
-    <!-- Results -->
-    <div id="results" class="hidden mb-8">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
-
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-          <div class="bg-green-50 rounded-lg p-4 text-center">
-            <div class="text-sm text-gray-600 mb-1">ยอดเงินรวม</div>
-            <div id="res-fv" class="text-xl font-bold text-green-700">-</div>
+    <div id="rp-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าแต้มปัจจุบัน</div>
+            <div id="res-rp-value" class="text-xl font-bold text-amber-700">-</div>
           </div>
-          <div class="bg-primary-50 rounded-lg p-4 text-center">
-            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยที่ได้รับ</div>
-            <div id="res-interest" class="text-xl font-bold text-primary-700">-</div>
+          <div id="rp-earn-box" class="hidden rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">แต้มสะสม/เดือน</div>
+            <div id="res-rp-earn-pts" class="text-xl font-bold text-blue-700">-</div>
           </div>
-          <div class="bg-blue-50 rounded-lg p-4 text-center">
-            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนรวม</div>
-            <div id="res-return" class="text-xl font-bold text-blue-700">-</div>
-          </div>
-          <div class="bg-gray-50 rounded-lg p-4 text-center">
-            <div class="text-sm text-gray-600 mb-1">EAR (อัตราจริง)</div>
-            <div id="res-ear" class="text-xl font-bold text-gray-700">-</div>
+          <div id="rp-monthly-box" class="hidden rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าสะสม/เดือน</div>
+            <div id="res-rp-monthly" class="text-xl font-bold text-green-700">-</div>
           </div>
         </div>
-
-        <!-- Comparison Table -->
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">เปรียบเทียบความถี่ทบต้น</h3>
-        <div class="overflow-x-auto mb-6">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="text-left text-gray-500 border-b border-gray-200">
-                <th class="py-2 pr-2">ความถี่ทบต้น</th>
-                <th class="py-2 pr-2 text-right">ยอดรวม</th>
-                <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
-                <th class="py-2 text-right">EAR</th>
-              </tr>
-            </thead>
-            <tbody id="ci-comparison-body"></tbody>
-          </table>
-        </div>
-
-        <details class="mt-4">
-          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
-            ตารางการเติบโตรายปี (คลิกเพื่อดู)
-          </summary>
-          <div class="overflow-x-auto mt-2">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="text-left text-gray-500 border-b border-gray-200">
-                  <th class="py-2 pr-2">ปีที่</th>
-                  <th class="py-2 pr-2 text-right">ยอดรวม</th>
-                  <th class="py-2 text-right">ดอกเบี้ยปีนี้</th>
-                </tr>
-              </thead>
-              <tbody id="ci-yearly-body"></tbody>
-            </table>
-          </div>
-        </details>
       </div>
     </div>
 
-    <GuardedAdSlot
-      templateType="calculator"
-      slotId="C1"
-      revealAfterSelector="#results"
-    />
-
-    <!-- SEO Content -->
-    <section class="prose prose-gray max-w-none mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">พลังของดอกเบี้ยทบต้น</h2>
-
-      <p>
-        ดอกเบี้ยทบต้นเป็นหนึ่งในแนวคิดที่สำคัญที่สุดในการเงินส่วนบุคคล Albert Einstein เคยกล่าวว่า
-        "ดอกเบี้ยทบต้นคือสิ่งมหัศจรรย์อันดับ 8 ของโลก" เพราะมันทำให้เงินเติบโตแบบทวีคูณ
-      </p>
-
-      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตร Compound Interest</h3>
-      <p>FV = P × (1 + r/n)^(n×t)</p>
-      <ul class="list-disc pl-6 space-y-1 text-gray-700">
-        <li>P = เงินต้น</li>
-        <li>r = อัตราดอกเบี้ยต่อปี (ทศนิยม)</li>
-        <li>n = จำนวนครั้งทบต้นต่อปี (รายปี=1, รายเดือน=12, รายวัน=365)</li>
-        <li>t = จำนวนปี</li>
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>มูลค่าแต้ม = จำนวนแต้ม × มูลค่าต่อแต้ม (บาท)</li>
+        <li>แต้มสะสม/เดือน = ยอดใช้จ่าย × อัตราสะสม</li>
+        <li>มูลค่าสะสม/เดือน = แต้มสะสม/เดือน × มูลค่าต่อแต้ม</li>
       </ul>
-
-      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง: เงิน 100,000 บาท ดอกเบี้ย 8% ต่อปี 20 ปี</h3>
-      <ul class="list-disc pl-6 space-y-1 text-gray-700">
-        <li>ทบต้นรายปี: 100,000 × (1.08)^20 = <strong>466,096 บาท</strong></li>
-        <li>ทบต้นรายเดือน: 100,000 × (1+0.08/12)^240 = <strong>492,680 บาท</strong></li>
-        <li>ทบต้นรายวัน: 100,000 × (1+0.08/365)^7300 = <strong>495,217 บาท</strong></li>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-cashback/">คำนวณมูลค่า Cashback</a></li>
+        <li><a href="/คำนวณไมล์สะสม/">คำนวณมูลค่าไมล์สะสม</a></li>
+        <li><a href="/คำนวณเปรียบเทียบจ่ายสดกับบัตร/">เปรียบเทียบจ่ายสดกับบัตร</a></li>
       </ul>
     </section>
 
-    <!-- FAQ -->
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#rp-results" />
+    <RelatedArticles currentHref="/คำนวณแต้มสะสม/" />
+    <RelatedCalculators currentHref="/คำนวณแต้มสะสม/" />
+
     <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
       <div class="space-y-4">
         {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
               {faq.question}
             </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
           </details>
         ))}
       </div>
     </section>
 
-    <RelatedCalculators currentHref="/คำนวณดอกเบี้ยทบต้น/" />
-
-    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
-      ผลตอบแทนจริงอาจแตกต่างตามสภาวะตลาดและเงื่อนไขการลงทุน ไม่ถือเป็นคำแนะนำทางการเงิน
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> มูลค่าแต้มขึ้นอยู่กับบัตรและวิธีแลก ควรตรวจสอบเงื่อนไขจริงกับธนาคารก่อนตัดสินใจ
     </div>
   </article>
 
-  <script>
-    function parseNum(v: string): number {
-      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
     }
-
-    function fmt(n: number): string {
-      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
     }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
 
-    function calcFV(principal: number, annualRate: number, years: number, n: number): number {
-      if (n === 0) return principal;
-      return principal * Math.pow(1 + annualRate / 100 / n, n * years);
-    }
-
-    function calcEAR(annualRate: number, n: number): number {
-      return (Math.pow(1 + annualRate / 100 / n, n) - 1) * 100;
-    }
-
-    const form = document.getElementById('compound-form') as HTMLFormElement;
-    const submitBtn = document.getElementById('compound-submit-btn') as HTMLButtonElement;
-    const formError = document.getElementById('compound-form-error') as HTMLElement;
-    const resultsDiv = document.getElementById('results') as HTMLDivElement;
-
-    const principalInput = document.getElementById('ci-principal') as HTMLInputElement;
-    const rateInput = document.getElementById('ci-rate') as HTMLInputElement;
-    const yearsInput = document.getElementById('ci-years') as HTMLInputElement;
-
-    function setFieldError(id: string, msg: string) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = msg;
-      el.classList.remove('hidden');
-    }
-
-    function clearFieldError(id: string) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = '';
-      el.classList.add('hidden');
-    }
-
-    function clearValidation() {
-      formError.classList.add('hidden');
-      ['ci-principal-error', 'ci-rate-error', 'ci-years-error'].forEach(clearFieldError);
-    }
-
-    [principalInput, rateInput, yearsInput].forEach(input => {
-      input.addEventListener('input', clearValidation);
-    });
-
-    form.addEventListener('submit', (e) => {
+    document.getElementById('rp-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
-      clearValidation();
+      document.getElementById('rp-error').classList.add('hidden');
+      ['rp-points-error','rp-value-error'].forEach(id => setErr(id, ''));
 
-      const principal = parseNum(principalInput.value);
-      const annualRate = parseFloat(rateInput.value.replace(/,/g, '')) || 0;
-      const years = parseInt(yearsInput.value.replace(/,/g, '')) || 0;
-      const freq = parseInt((document.getElementById('ci-frequency') as HTMLSelectElement).value) || 12;
+      const points = parseNum(document.getElementById('rp-points').value);
+      const value = parseNum(document.getElementById('rp-value').value);
+      const spend = parseNum(document.getElementById('rp-spend').value);
+      const earn = parseNum(document.getElementById('rp-earn').value);
 
       let hasError = false;
-      if (principal <= 0) { setFieldError('ci-principal-error', 'กรุณากรอกเงินต้นที่ถูกต้อง'); hasError = true; }
-      if (annualRate <= 0) { setFieldError('ci-rate-error', 'กรุณากรอกอัตราดอกเบี้ยที่ถูกต้อง'); hasError = true; }
-      if (years <= 0 || years > 50) { setFieldError('ci-years-error', 'กรุณากรอกระยะเวลา 1-50 ปี'); hasError = true; }
+      if (!Number.isFinite(points) || points < 0) { setErr('rp-points-error', 'กรอกจำนวนแต้ม 0 ขึ้นไป'); hasError = true; }
+      if (!Number.isFinite(value) || value <= 0) { setErr('rp-value-error', 'กรอกมูลค่าต่อแต้มมากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('rp-error').classList.remove('hidden'); document.getElementById('rp-results').classList.add('hidden'); return; }
 
-      if (hasError) {
-        formError.classList.remove('hidden');
-        return;
+      setText('res-rp-value', fmt(points * value));
+
+      const earnBox = document.getElementById('rp-earn-box');
+      const monthlyBox = document.getElementById('rp-monthly-box');
+      if (Number.isFinite(spend) && spend > 0 && Number.isFinite(earn) && earn > 0) {
+        const earnedPts = spend * earn;
+        setText('res-rp-earn-pts', `${new Intl.NumberFormat('th-TH').format(Math.round(earnedPts))} แต้ม`);
+        setText('res-rp-monthly', fmt(earnedPts * value));
+        earnBox.classList.remove('hidden');
+        monthlyBox.classList.remove('hidden');
+      } else {
+        earnBox.classList.add('hidden');
+        monthlyBox.classList.add('hidden');
       }
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'กำลังคำนวณ...';
-      trackCalculatorStart('compound-interest');
-
-      const fv = calcFV(principal, annualRate, years, freq);
-      const interest = fv - principal;
-      const returnPct = (interest / principal) * 100;
-      const ear = calcEAR(annualRate, freq);
-
-      (document.getElementById('res-fv') as HTMLElement).textContent = fmt(fv) + ' บาท';
-      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(interest) + ' บาท';
-      (document.getElementById('res-return') as HTMLElement).textContent = returnPct.toFixed(2) + '%';
-      (document.getElementById('res-ear') as HTMLElement).textContent = ear.toFixed(4) + '%/ปี';
-
-      // Comparison table
-      const compFreqs = [{ n: 1, label: 'รายปี' }, { n: 12, label: 'รายเดือน' }, { n: 365, label: 'รายวัน' }];
-      const compBody = document.getElementById('ci-comparison-body') as HTMLTableSectionElement;
-      compBody.innerHTML = '';
-      compFreqs.forEach(f => {
-        const fvComp = calcFV(principal, annualRate, years, f.n);
-        const earComp = calcEAR(annualRate, f.n);
-        const tr = document.createElement('tr');
-        tr.className = f.n === freq ? 'border-b border-gray-100 bg-primary-50 font-medium' : 'border-b border-gray-100';
-        tr.innerHTML = `
-          <td class="py-2 pr-2 text-gray-600">${f.label}${f.n === freq ? ' ✓' : ''}</td>
-          <td class="py-2 pr-2 text-right">${fmt(fvComp)}</td>
-          <td class="py-2 pr-2 text-right text-green-700">${fmt(fvComp - principal)}</td>
-          <td class="py-2 text-right">${earComp.toFixed(4)}%</td>
-        `;
-        compBody.appendChild(tr);
-      });
-
-      // Yearly growth table
-      const yearlyBody = document.getElementById('ci-yearly-body') as HTMLTableSectionElement;
-      yearlyBody.innerHTML = '';
-      let prevFv = principal;
-      for (let y = 1; y <= years; y++) {
-        const fvY = calcFV(principal, annualRate, y, freq);
-        const yearInterest = fvY - prevFv;
-        const tr = document.createElement('tr');
-        tr.className = 'border-b border-gray-100';
-        tr.innerHTML = `
-          <td class="py-2 pr-2 text-gray-600">${y}</td>
-          <td class="py-2 pr-2 text-right font-medium">${fmt(fvY)}</td>
-          <td class="py-2 text-right text-green-700">+${fmt(yearInterest)}</td>
-        `;
-        yearlyBody.appendChild(tr);
-        prevFv = fvY;
-      }
-
-      resultsDiv.classList.remove('hidden');
-      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'คำนวณทันที';
-      trackCalculatorComplete('compound-interest');
-      trackCalculatorUsed('compound-interest');
+      document.getElementById('rp-results').classList.remove('hidden');
+      document.getElementById('rp-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   </script>
 </BaseLayout>
