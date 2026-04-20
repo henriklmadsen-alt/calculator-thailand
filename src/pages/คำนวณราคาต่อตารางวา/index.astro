@@ -1,0 +1,256 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณราคาต่อตารางวาที่ดิน 2569 | เปรียบเทียบราคาหน่วยพื้นที่ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณราคาต่อตารางวา ราคาต่อตร.ม. เพื่อเปรียบเทียบมูลค่าที่ดินในพื้นที่เดียวกัน อัปเดตปี 2569 ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณราคาต่อตารางวา/`;
+
+const faqData = [
+  {
+    question: 'ทำไมต้องคำนวณราคาต่อหน่วยพื้นที่?',
+    answer: 'เพื่อเปรียบเทียบมูลค่าที่ดินที่มีขนาดต่างกัน ราคาต่อหน่วย (ตร.ม. หรือ ตร.วา) ช่วยให้เห็นว่าพื้นที่ใดแพงกว่า และเหมาะสำหรับการตัดสินใจลงทุนหรือเจรจาราคา',
+  },
+  {
+    question: 'แล้วไง ราคาต่อตารางวา vs ราคาต่อตารางเมตร?',
+    answer: '1 ตารางวา = 4 ตารางเมตร ราคาต่อตารางเมตรจะต่ำกว่า 4 เท่า เลือกใช้เศษส่วนเดียวกันกับตลาดท้องถิ่นเพื่อให้เปรียบเทียบได้ง่าย',
+  },
+  {
+    question: 'ราคาต่อตร.วา แตกต่างกันในแต่ละพื้นที่ไหม?',
+    answer: 'ใช่ ตำแหน่งส่งผลต่อราคามากที่สุด ที่ดินใกล้ BTS/MRT, ศูนย์กลุ่มเมือง, และตามแนวทางหลัก มีราคาต่อหน่วยสูงกว่าพื้นที่ห่างไกล',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณราคาต่อตารางวาที่ดิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณราคาต่อตารางวา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+      <p class="text-sm font-semibold text-blue-700">เทียบเคียงราคาหน่วย</p>
+      <p class="mt-1 text-sm text-slate-700">แปลงราคารวมเป็นราคาต่อตารางวา และราคาต่อตารางเมตร เพื่อการเปรียบเทียบที่แน่นอน</p>
+      <p class="mt-1 text-xs font-medium text-blue-800">1 ตารางวา = 4 ตารางเมตร</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณราคาต่อตารางวาที่ดิน ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกราคารวมและขนาดที่ดิน ระบบจะคำนวณราคาต่อตารางวา ราคาต่อตารางเมตร เพื่อใช้เปรียบเทียบกับที่ดินอื่นในพื้นที่เดียวกัน
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'สมาคมอสังหาริมทรัพย์ไทย (TAREA)',
+        'กรมที่ดิน: มาตรฐานการวัดพื้นที่',
+        'ธนาคารแห่งประเทศไทย: ข้อมูลราคาตลาด',
+      ]}
+      assumptions={[
+        'การแปลงหน่วยใช้สูตร 1 ตารางวา = 4 ตารางเมตร',
+        'การกำหนดราคาต่อหน่วยขึ้นอยู่กับข้อมูลที่คุณกรอก',
+        'ผลลัพธ์เป็นการประมาณ และอาจแตกต่างจากราคาตลาดจริง',
+      ]}
+      references={[
+        {
+          label: 'สมาคมอสังหาริมทรัพย์ไทย',
+          href: 'https://www.thairea.or.th/',
+        },
+        {
+          label: 'กรมที่ดิน',
+          href: 'https://www.dol.go.th/',
+        },
+      ]}
+    />
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="price-per-unit-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลที่จำเป็นให้ครบ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="total-price" class="block text-sm font-medium text-gray-700 mb-1">ราคารวมทั้งหมด (บาท)</label>
+            <input id="total-price" type="text" inputmode="numeric" placeholder="เช่น 5,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="unit-type" class="block text-sm font-medium text-gray-700 mb-1">หน่วยวัด</label>
+            <select id="unit-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="wa">ตารางวา</option>
+              <option value="sqm">ตารางเมตร</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="area-size" class="block text-sm font-medium text-gray-700 mb-1">ขนาดพื้นที่</label>
+          <input id="area-size" type="text" inputmode="numeric" placeholder="เช่น 400" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        >
+          คำนวณราคาต่อหน่วย
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณราคาต่อหน่วย</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาต่อตารางวา</div>
+            <div id="res-price-per-wa" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาต่อตารางเมตร</div>
+            <div id="res-price-per-sqm" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm mb-4 bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ราคารวมทั้งหมด</span>
+            <span id="res-total-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">พื้นที่รวมทั้งหมด</span>
+            <span id="res-area-size" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2 mt-2">
+            <span class="text-gray-600 font-medium">ราคาต่อตารางวา (บาท)</span>
+            <span id="res-calc-wa" class="font-bold text-primary-700">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600 font-medium">ราคาต่อตารางเมตร (บาท)</span>
+            <span id="res-calc-sqm" class="font-bold text-sky-700">-</span>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-500">
+          หมายเหตุ: ผลลัพธ์คำนวณจากข้อมูลที่คุณกรอก อาจแตกต่างจากราคาตลาดจริง ขึ้นอยู่กับตำแหน่ง สภาพ และเงื่อนไขอื่นๆ
+        </p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ราคาต่อตารางวา = ราคารวม ÷ พื้นที่ (ตารางวา)</li>
+        <li>ราคาต่อตารางเมตร = ราคารวม ÷ พื้นที่ (ตารางเมตร)</li>
+        <li>แปลงหน่วย: 1 ตารางวา = 4 ตารางเมตร</li>
+        <li>ราคาต่อตร.ม. = ราคาต่อตร.วา ÷ 4</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <RelatedArticles currentHref="/คำนวณราคาต่อตารางวา/" />
+    <RelatedCalculators currentHref="/คำนวณราคาต่อตารางวา/" />
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#price-per-unit-form');
+  const formError = document.querySelector('#form-error');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const totalPrice = parseNumber(document.querySelector('#total-price')?.value || '');
+    const areaSize = parseNumber(document.querySelector('#area-size')?.value || '');
+    const unitType = document.querySelector('#unit-type')?.value || 'wa';
+
+    const isValid = Number.isFinite(totalPrice) && totalPrice > 0 &&
+                    Number.isFinite(areaSize) && areaSize > 0;
+
+    if (!isValid) {
+      formError?.classList.remove('hidden');
+      results?.classList.add('hidden');
+      return;
+    }
+
+    formError?.classList.add('hidden');
+
+    // Convert to common units
+    let areaSqm = unitType === 'wa' ? areaSize * 4 : areaSize;
+    let areaWa = unitType === 'wa' ? areaSize : areaSize / 4;
+
+    // Calculate price per unit
+    const pricePerWa = totalPrice / areaWa;
+    const pricePerSqm = totalPrice / areaSqm;
+
+    // Update display
+    document.querySelector('#res-price-per-wa').textContent = formatCurrency(pricePerWa);
+    document.querySelector('#res-price-per-sqm').textContent = formatCurrency(pricePerSqm);
+
+    document.querySelector('#res-total-price').textContent = formatCurrency(totalPrice);
+    document.querySelector('#res-area-size').textContent = `${areaSize.toLocaleString('th-TH')} ${unitType === 'wa' ? 'ตารางวา' : 'ตารางเมตร'} (${areaSqm.toLocaleString('th-TH')} ตร.ม.)`;
+    document.querySelector('#res-calc-wa').textContent = formatCurrency(pricePerWa);
+    document.querySelector('#res-calc-sqm').textContent = formatCurrency(pricePerSqm);
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
