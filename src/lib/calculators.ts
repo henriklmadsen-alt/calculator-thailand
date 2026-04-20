@@ -203,6 +203,17 @@ export const categories: Category[] = [
     description: 'รวมเครื่องคำนวณต้นทุนการเกษตร: ข้าว มันสำปะหลัง ยางพารา สัตว์เลี้ยง ประกันพืชผล และค่าใช้จ่ายการเกษตร ฟรีออนไลน์',
     sortOrder: 16,
   },
+  {
+    id: 'government',
+    name: 'รัฐบาล/กฎหมาย',
+    nameEn: 'Government & Legal',
+    icon: '⚖️',
+    slug: 'รัฐบาล',
+    color: 'bg-indigo-100',
+    colorText: 'text-indigo-700',
+    description: 'รวมเครื่องคำนวณค่าธรรมเนียมรัฐบาล: พาสปอร์ต ใบขับขี่ ค่าศาล ค่าโอนที่ดิน ภาษีอากร และค่ากฎหมาย ฟรีออนไลน์',
+    sortOrder: 17,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -4109,6 +4120,17 @@ export const calculators: Calculator[] = [
     categoryId: 'agriculture',
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // ── Government Fees & Legal (KLC-0501–0525) ──
+  {
+    title: 'คำนวณค่าพาสปอร์ต',
+    desc: 'คำนวณค่าธรรมเนียมพาสปอร์ต (หนังสือเดินทาง) ผู้ใหญ่และเด็ก บริการด่วน ตามอัตรา 2569',
+    href: '/คำนวณ-ค่าพาสปอร์ต/',
+    icon: '📕',
+    categoryId: 'government',
+    tag: 'KLC-0501',
+    tagColor: 'bg-indigo-50 text-indigo-600',
   },
 ];
 
