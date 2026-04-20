@@ -1,0 +1,363 @@
+// Shared calculator data model — single source of truth for homepage, category pages, search, and sitemap.
+
+export interface Category {
+  id: string;
+  name: string;
+  nameEn: string;
+  icon: string;
+  slug: string;
+  color: string;       // Tailwind bg class for the icon circle
+  colorText: string;   // Tailwind text class
+  description: string; // Thai meta description for category page
+}
+
+export interface Calculator {
+  title: string;
+  desc: string;
+  href: string;
+  icon: string;
+  categoryId: string;
+  tag?: string;
+  tagColor?: string;
+  popular?: boolean;
+}
+
+export const categories: Category[] = [
+  {
+    id: 'tax',
+    name: 'ภาษี',
+    nameEn: 'Tax',
+    icon: '💰',
+    slug: 'ภาษี',
+    color: 'bg-amber-100',
+    colorText: 'text-amber-700',
+    description: 'รวมเครื่องคำนวณภาษีออนไลน์: ภาษีเงินได้บุคคลธรรมดา VAT ภาษีที่ดิน ภาษีรถยนต์ อัปเดตปี 2569',
+  },
+  {
+    id: 'loan',
+    name: 'สินเชื่อ/ผ่อน',
+    nameEn: 'Loans',
+    icon: '🏦',
+    slug: 'สินเชื่อ',
+    color: 'bg-blue-100',
+    colorText: 'text-blue-700',
+    description: 'คำนวณค่างวดสินเชื่อบ้าน รถ ส่วนบุคคล ดอกเบี้ยเงินฝาก พร้อมตารางผ่อนชำระ',
+  },
+  {
+    id: 'bills',
+    name: 'ค่าใช้จ่าย',
+    nameEn: 'Bills',
+    icon: '⚡',
+    slug: 'ค่าใช้จ่าย',
+    color: 'bg-yellow-100',
+    colorText: 'text-yellow-700',
+    description: 'คำนวณค่าไฟฟ้า ค่าน้ำประปา ค่าส่งพัสดุ ค่าทำพาสปอร์ต ตามอัตราจริงปี 2569',
+  },
+  {
+    id: 'salary',
+    name: 'เงินเดือน/แรงงาน',
+    nameEn: 'Salary',
+    icon: '👷',
+    slug: 'เงินเดือน',
+    color: 'bg-green-100',
+    colorText: 'text-green-700',
+    description: 'คำนวณเงินเดือนสุทธิ ค่าแรงขั้นต่ำ ค่าโอที ประกันสังคม ตามกฎหมายแรงงานปี 2569',
+  },
+  {
+    id: 'realestate',
+    name: 'อสังหาฯ',
+    nameEn: 'Real Estate',
+    icon: '🏠',
+    slug: 'อสังหา',
+    color: 'bg-rose-100',
+    colorText: 'text-rose-700',
+    description: 'คำนวณค่าธรรมเนียมโอนบ้าน ภาษีที่ดิน ผ่อนบ้าน สำหรับการซื้อขายอสังหาริมทรัพย์',
+  },
+  {
+    id: 'health',
+    name: 'สุขภาพ/ชีวิต',
+    nameEn: 'Health',
+    icon: '❤️',
+    slug: 'สุขภาพ',
+    color: 'bg-pink-100',
+    colorText: 'text-pink-700',
+    description: 'คำนวณ BMI อายุ วันกำหนดคลอด เงินเกษียณ เครื่องมือดูแลสุขภาพและชีวิต',
+  },
+  {
+    id: 'creditcard',
+    name: 'บัตรเครดิต',
+    nameEn: 'Credit Cards',
+    icon: '💳',
+    slug: 'บัตรเครดิต',
+    color: 'bg-purple-100',
+    colorText: 'text-purple-700',
+    description: 'คำนวณดอกเบี้ยบัตรเครดิต ค่างวดบัตรเครดิต ยอดชำระขั้นต่ำ พร้อมตารางผ่อน',
+  },
+  {
+    id: 'convert',
+    name: 'แปลง/ทั่วไป',
+    nameEn: 'Convert',
+    icon: '📐',
+    slug: 'แปลง',
+    color: 'bg-teal-100',
+    colorText: 'text-teal-700',
+    description: 'แปลงหน่วยวัด คำนวณเปอร์เซ็นต์ แปลงอัตราแลกเปลี่ยน เครื่องมือคำนวณทั่วไป',
+  },
+];
+
+export const calculators: Calculator[] = [
+  // ── Tax ──
+  {
+    title: 'คำนวณภาษีเงินได้',
+    desc: 'คำนวณภาษีเงินได้บุคคลธรรมดาตามขั้นบันได พร้อมค่าลดหย่อน',
+    href: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+    icon: '💰',
+    categoryId: 'tax',
+    tag: 'ยอดนิยม',
+    tagColor: 'bg-red-50 text-red-600',
+    popular: true,
+  },
+  {
+    title: 'คำนวณ VAT 7%',
+    desc: 'บวก VAT หรือแยก VAT จากราคารวม รองรับหลายรายการ',
+    href: '/คำนวณภาษีมูลค่าเพิ่ม/',
+    icon: '🧾',
+    categoryId: 'tax',
+    tag: 'สำหรับธุรกิจ',
+    tagColor: 'bg-blue-50 text-blue-600',
+    popular: true,
+  },
+  {
+    title: 'คำนวณภาษีที่ดิน',
+    desc: 'คำนวณภาษีที่ดินแบบขั้นมูลค่า แยกที่อยู่อาศัย เกษตร พาณิชย์',
+    href: '/คำนวณภาษีที่ดิน/',
+    icon: '🏛️',
+    categoryId: 'tax',
+  },
+  {
+    title: 'คำนวณค่าภาษีรถยนต์',
+    desc: 'ภาษีรถประจำปี + พ.ร.บ. รถเก๋ง กระบะ มอเตอร์ไซค์ พร้อมส่วนลดอายุรถ',
+    href: '/คำนวณค่าภาษีรถยนต์/',
+    icon: '🚘',
+    categoryId: 'tax',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // ── Loans ──
+  {
+    title: 'คำนวณผ่อนกู้',
+    desc: 'คำนวณค่างวดสินเชื่อบ้าน รถ ส่วนบุคคล พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนกู้/',
+    icon: '🏠',
+    categoryId: 'loan',
+    popular: true,
+  },
+  {
+    title: 'คำนวณผ่อนบ้าน',
+    desc: 'คำนวณค่างวดบ้านแบบลดต้นลดดอก เทียบแผนเดิมกับแผนรีไฟแนนซ์',
+    href: '/คำนวณผ่อนบ้าน/',
+    icon: '🏘️',
+    categoryId: 'loan',
+  },
+  {
+    title: 'คำนวณผ่อนรถ',
+    desc: 'คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย flat rate พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนรถ/',
+    icon: '🚗',
+    categoryId: 'loan',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณดอกเบี้ยเงินฝาก',
+    desc: 'ดอกเบี้ยฝากประจำและออมทรัพย์ หักภาษี 15% แสดงผลตอบแทนสุทธิ',
+    href: '/คำนวณดอกเบี้ยเงินฝาก/',
+    icon: '🏦',
+    categoryId: 'loan',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // ── Bills ──
+  {
+    title: 'คำนวณค่าไฟฟ้า',
+    desc: 'คำนวณค่าไฟฐาน ค่า Ft ค่าบริการ และ VAT 7% สำหรับ MEA/PEA อัปเดตปี 2569',
+    href: '/คำนวณค่าไฟฟ้า/',
+    icon: '⚡',
+    categoryId: 'bills',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+    popular: true,
+  },
+  {
+    title: 'คำนวณค่าน้ำ',
+    desc: 'คำนวณค่าน้ำประปาตามขั้นบันได กปน./กปภ. พร้อม VAT',
+    href: '/คำนวณค่าน้ำ/',
+    icon: '💧',
+    categoryId: 'bills',
+  },
+  {
+    title: 'คำนวณค่าส่งพัสดุ',
+    desc: 'เปรียบเทียบค่าส่ง ไปรษณีย์ไทย Kerry Flash J&T กรอกน้ำหนักและขนาด หาตัวเลือกถูกสุด',
+    href: '/คำนวณค่าส่งพัสดุ/',
+    icon: '📦',
+    categoryId: 'bills',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าทำพาสปอร์ต',
+    desc: 'ค่าธรรมเนียมทำพาสปอร์ตไทย ทั้งเล่มปกติและเล่มด่วน',
+    href: '/คำนวณค่าทำพาสปอร์ต/',
+    icon: '✈️',
+    categoryId: 'bills',
+  },
+
+  // ── Salary/Work ──
+  {
+    title: 'คำนวณเงินเดือนสุทธิ',
+    desc: 'เงินเดือนหลังหักภาษีและประกันสังคม พร้อมรายละเอียดทุกรายการ',
+    href: '/คำนวณเงินเดือนสุทธิ/',
+    icon: '📊',
+    categoryId: 'salary',
+    tag: 'มนุษย์เงินเดือน',
+    tagColor: 'bg-green-50 text-green-600',
+    popular: true,
+  },
+  {
+    title: 'คำนวณค่าแรงขั้นต่ำ',
+    desc: 'ค่าแรงขั้นต่ำ 77 จังหวัด รายวัน รายเดือน พร้อมค่าโอที อัปเดตปี 2569',
+    href: '/คำนวณค่าแรงขั้นต่ำ/',
+    icon: '👷',
+    categoryId: 'salary',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าโอที',
+    desc: 'คำนวณ OT วันธรรมดา 1.5 เท่า ทำงานวันหยุด 2 เท่า และ OT วันหยุด 3 เท่า ตามกฎหมายแรงงานปี 2569',
+    href: '/คำนวณค่าโอที/',
+    icon: '⏱️',
+    categoryId: 'salary',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณประกันสังคม',
+    desc: 'เงินสมทบประกันสังคม มาตรา 33 39 40 แสดงส่วนลูกจ้าง นายจ้าง รัฐบาล',
+    href: '/คำนวณประกันสังคม/',
+    icon: '🛡️',
+    categoryId: 'salary',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // ── Real Estate ──
+  {
+    title: 'คำนวณค่าธรรมเนียมโอนบ้าน',
+    desc: 'คำนวณค่าโอน ค่าจดจำนอง ภาษีธุรกิจเฉพาะ อากรแสตมป์ ในหน้าเดียว',
+    href: '/คำนวณค่าธรรมเนียมโอนบ้าน/',
+    icon: '🏠',
+    categoryId: 'realestate',
+    popular: true,
+  },
+
+  // ── Health/Life ──
+  {
+    title: 'คำนวณ BMI',
+    desc: 'คำนวณดัชนีมวลกาย ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย',
+    href: '/คำนวณ-bmi/',
+    icon: '⚖️',
+    categoryId: 'health',
+  },
+  {
+    title: 'คำนวณอายุ',
+    desc: 'คำนวณอายุจากวันเกิด รองรับ พ.ศ. พร้อมราศีและ Generation',
+    href: '/คำนวณอายุ/',
+    icon: '🎂',
+    categoryId: 'health',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณวันคลอด',
+    desc: 'คำนวณวันกำหนดคลอดและอายุครรภ์ปัจจุบัน พร้อมไตรมาส',
+    href: '/คำนวณวันคลอด/',
+    icon: '👶',
+    categoryId: 'health',
+  },
+  {
+    title: 'คำนวณเงินเกษียณ',
+    desc: 'ประเมินเงินที่ต้องมี เงินสะสม ณ วันเกษียณ และช่องว่างเงินเกษียณ',
+    href: '/คำนวณเงินเกษียณ/',
+    icon: '🎯',
+    categoryId: 'health',
+  },
+
+  // ── Credit Cards ──
+  {
+    title: 'คำนวณดอกเบี้ยบัตรเครดิต',
+    desc: 'ดอกเบี้ยก่อนครบกำหนด ยอดคงค้างรอบถัดไป พร้อมยอดชำระขั้นต่ำ',
+    href: '/คำนวณดอกเบี้ยบัตรเครดิต/',
+    icon: '💳',
+    categoryId: 'creditcard',
+  },
+  {
+    title: 'คำนวณค่างวดบัตรเครดิต',
+    desc: 'คำนวณค่างวดขั้นต่ำ ดอกเบี้ยรวม และยอดคงเหลือรอบถัดไป',
+    href: '/คำนวณค่างวดบัตรเครดิต/',
+    icon: '🧮',
+    categoryId: 'creditcard',
+  },
+
+  // ── Convert/General ──
+  {
+    title: 'แปลงหน่วย',
+    desc: 'แปลงหน่วยวัด: ความยาว มวล อุณหภูมิ และพื้นที่ รวมหน่วยไทย',
+    href: '/แปลงหน่วย/',
+    icon: '📏',
+    categoryId: 'convert',
+  },
+  {
+    title: 'คำนวณเปอร์เซ็นต์',
+    desc: 'คำนวณ X% ของจำนวน เปอร์เซ็นต์ของส่วนหนึ่ง และเปอร์เซ็นต์เพิ่ม/ลด',
+    href: '/คำนวณเปอร์เซ็นต์/',
+    icon: '📐',
+    categoryId: 'convert',
+  },
+  {
+    title: 'คำนวณอัตราแลกเปลี่ยน',
+    desc: 'แปลงเงินสกุลต่างๆ อัตราย้อนกลับ และยอดสุทธิหลังหักสเปรด',
+    href: '/คำนวณอัตราแลกเปลี่ยน/',
+    icon: '💱',
+    categoryId: 'convert',
+  },
+];
+
+/** Look up a category by its slug (used in dynamic routes). */
+export function getCategoryBySlug(slug: string): Category | undefined {
+  return categories.find((c) => c.slug === slug);
+}
+
+/** Get all calculators belonging to a category. */
+export function getCalculatorsByCategory(categoryId: string): Calculator[] {
+  return calculators.filter((c) => c.categoryId === categoryId);
+}
+
+/** Count calculators per category. */
+export function getCategoryCounts(): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const cat of categories) {
+    counts[cat.id] = 0;
+  }
+  for (const calc of calculators) {
+    counts[calc.categoryId] = (counts[calc.categoryId] || 0) + 1;
+  }
+  return counts;
+}
+
+/** Get the popular calculators (for the ยอดนิยม row). */
+export function getPopularCalculators(): Calculator[] {
+  return calculators.filter((c) => c.popular);
+}
