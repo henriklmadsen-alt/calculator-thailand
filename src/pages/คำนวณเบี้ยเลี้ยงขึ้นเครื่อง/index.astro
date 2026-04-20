@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout pageName="คำนวณเบี้ยเลี้ยงขึ้นเครื่อง">
+  <h1 class="text-2xl font-bold mb-4">คำนวณเบี้ยเลี้ยงขึ้นเครื่อง</h1>
+  <div class="bg-white p-6 rounded-lg border">
+    <input type="number" id="distance" placeholder="ระยะทาง" class="w-full p-2 border rounded mb-2" />
+    <input type="number" id="rate" placeholder="อัตราต่อ กม." class="w-full p-2 border rounded mb-4" />
+    <button onclick="calculate()" class="bg-primary-600 text-white px-4 py-2 rounded">คำนวณ</button>
+    <div id="result" class="hidden mt-4 p-4 bg-blue-50 rounded">
+      <div class="flex justify-between"><span>เบี้ยเลี้ยง</span><span id="total" class="font-bold">-</span></div>
+    </div>
+  </div>
+  <script>
+    import { calculateMileageAllowance } from '../../lib/vehicle-mileage-calculator';
+    function calculate() {
+      const result = calculateMileageAllowance({ distance: parseInt(document.getElementById('distance').value), thbPerKm: parseInt(document.getElementById('rate').value) });
+      document.getElementById('total').textContent = result.totalAllowance.toLocaleString('th-TH') + ' บาท';
+      document.getElementById('result').classList.remove('hidden');
+    }
+  </script>
+</BaseLayout>

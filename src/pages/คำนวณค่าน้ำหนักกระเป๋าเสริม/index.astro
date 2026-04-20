@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout pageName="คำนวณค่าน้ำหนักกระเป๋าเสริม">
+  <h1 class="text-2xl font-bold mb-4">คำนวณค่าน้ำหนักกระเป๋าเสริม</h1>
+  <div class="bg-white p-6 rounded-lg border">
+    <input type="number" id="weight" placeholder="น้ำหนัก (กก.)" class="w-full p-2 border rounded mb-2" />
+    <select id="airline" class="w-full p-2 border rounded mb-4">
+      <option value="fullservice">สายการบินเต็มบริการ</option>
+      <option value="budget">สายการบินต้นทุนต่ำ</option>
+    </select>
+    <button onclick="calculate()" class="bg-primary-600 text-white px-4 py-2 rounded">คำนวณ</button>
+    <div id="result" class="hidden mt-4 p-4 bg-blue-50 rounded">
+      <div class="flex justify-between"><span>ค่าเพิ่มเติม</span><span id="total" class="font-bold">-</span></div>
+    </div>
+  </div>
+  <script>
+    import { calculateLuggageExcess } from '../../lib/luggage-excess-calculator';
+    function calculate() {
+      const result = calculateLuggageExcess({ weightKg: parseInt(document.getElementById('weight').value), airlineType: document.getElementById('airline').value as any });
+      document.getElementById('total').textContent = result.excessFee.toLocaleString('th-TH') + ' บาท';
+      document.getElementById('result').classList.remove('hidden');
+    }
+  </script>
+</BaseLayout>

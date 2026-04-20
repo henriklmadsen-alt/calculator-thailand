@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout pageName="คำนวณค่ารถไฟ">
+  <h1 class="text-2xl font-bold mb-4">คำนวณค่ารถไฟ</h1>
+  <div class="bg-white p-6 rounded-lg border">
+    <input type="number" id="distance" placeholder="ระยะทาง" class="w-full p-2 border rounded mb-2" />
+    <select id="class" class="w-full p-2 border rounded mb-4">
+      <option value="3rd">ชั้นที่ 3</option>
+      <option value="2nd">ชั้นที่ 2</option>
+      <option value="1st">ชั้นที่ 1</option>
+    </select>
+    <button onclick="calculate()" class="bg-primary-600 text-white px-4 py-2 rounded">คำนวณ</button>
+    <div id="result" class="hidden mt-4 p-4 bg-blue-50 rounded">
+      <div class="flex justify-between"><span>ค่ารถไฟ</span><span id="total" class="font-bold">-</span></div>
+    </div>
+  </div>
+  <script>
+    import { calculateTrainTicket } from '../../lib/train-ticket-calculator';
+    function calculate() {
+      const result = calculateTrainTicket({ distance: parseInt(document.getElementById('distance').value), classType: document.getElementById('class').value as any });
+      document.getElementById('total').textContent = result.ticketPrice.toLocaleString('th-TH') + ' บาท';
+      document.getElementById('result').classList.remove('hidden');
+    }
+  </script>
+</BaseLayout>
