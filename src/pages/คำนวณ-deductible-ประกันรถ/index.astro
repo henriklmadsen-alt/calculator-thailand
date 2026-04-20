@@ -1,0 +1,303 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณ Deductible ประกันรถยนต์ | เบี้ยสูง vs. จ่ายน้อย | Calculator Thailand';
+const pageDescription = 'คำนวณและเปรียบเทียบประโยชน์ของ deductible ระดับต่างๆ สำหรับประกันรถยนต์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-deductible-ประกันรถ/`;
+
+const faqData = [
+  {
+    question: 'Deductible ประกันรถยนต์คืออะไร?',
+    answer: 'Deductible หรือค่าเสียหายส่วนแรก คือจำนวนเงินที่ผู้เอาประกันต้องรับผิดชอบเองก่อนที่บริษัทประกันจะจ่ายส่วนที่เหลือ เช่น หาก Deductible คือ 5,000 บาท และค่าซ่อมรวม 50,000 บาท บริษัทประกันจะจ่ายให้ 45,000 บาท',
+  },
+  {
+    question: 'Deductible สูงขึ้นทำให้เบี้ยประกันถูกลงได้อย่างไร?',
+    answer: 'เมื่อผู้เอาประกันยอมรับความเสี่ยงส่วนแรกเพิ่มขึ้น (Deductible สูง) บริษัทประกันมีความเสี่ยงลดลง จึงเสนอเบี้ยประกันในอัตราที่ต่ำกว่า โดยทั่วไปการเพิ่ม Deductible 2,000–5,000 บาท อาจลดเบี้ยได้ 5–15% ต่อปี',
+  },
+  {
+    question: 'ควรเลือก Deductible สูงหรือต่ำดี?',
+    answer: 'ขึ้นอยู่กับพฤติกรรมการขับรถและฐานะการเงิน หากขับรถระมัดระวัง เคลมน้อย และมีเงินสำรองฉุกเฉินเพียงพอ Deductible สูงช่วยประหยัดเบี้ยได้ในระยะยาว แต่หากเคลมบ่อยหรือไม่มีเงินสำรอง Deductible ต่ำอาจเหมาะกว่า',
+  },
+  {
+    question: 'Break-even analysis ของ Deductible คืออะไร?',
+    answer: 'Break-even คือจำนวนครั้งที่เคลมซึ่งทำให้การเลือก Deductible สูงและต่ำมีต้นทุนเท่ากัน คำนวณจาก ประหยัดเบี้ยต่อปี หาร ส่วนต่าง Deductible ยิ่งเคลมน้อยกว่า Break-even ยิ่งได้ประโยชน์จาก Deductible สูง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ Deductible ประกันรถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ Deductible ประกันรถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ Deductible ประกันรถยนต์
+    </h1>
+    <p class="text-gray-600 mb-6">
+      เปรียบเทียบประโยชน์ของการเลือก Deductible สูง (เบี้ยถูกกว่า) กับ Deductible ต่ำ (จ่ายน้อยเมื่อเคลม)
+      เพื่อเลือกแผนประกันที่คุ้มค่าที่สุดสำหรับคุณ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="claim-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              วงเงินเคลมต่อครั้ง (บาท)
+            </label>
+            <input
+              type="text"
+              id="claim-amount"
+              inputmode="decimal"
+              placeholder="เช่น 30000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="deductible-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              Deductible ที่เลือก (บาท)
+            </label>
+            <input
+              type="text"
+              id="deductible-amount"
+              inputmode="decimal"
+              placeholder="เช่น 5000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="current-premium" class="block text-sm font-medium text-gray-700 mb-1">
+              เบี้ยประกันปัจจุบัน (บาท/ปี)
+            </label>
+            <input
+              type="text"
+              id="current-premium"
+              inputmode="decimal"
+              placeholder="เช่น 20000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="premium-reduction" class="block text-sm font-medium text-gray-700 mb-1">
+              เบี้ยลดลงจาก Deductible สูง (%)
+            </label>
+            <input
+              type="text"
+              id="premium-reduction"
+              inputmode="decimal"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="claims-per-year" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนครั้งที่คาดว่าจะเคลมต่อปี
+            </label>
+            <input
+              type="text"
+              id="claims-per-year"
+              inputmode="decimal"
+              placeholder="เช่น 0.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-blue-700 font-medium mb-1">จ่ายเองต่อครั้ง (Deductible)</div>
+            <div id="res-out-of-pocket" class="text-xl font-bold text-blue-800">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-green-700 font-medium mb-1">ประหยัดเบี้ยต่อปี</div>
+            <div id="res-premium-savings" class="text-xl font-bold text-green-800">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <div class="text-sm text-orange-700 font-medium mb-1">ผลสุทธิต่อครั้งที่เคลม</div>
+            <div id="res-net-benefit" class="text-xl font-bold text-orange-800">-</div>
+            <div id="res-net-note" class="text-xs text-orange-600 mt-1">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <div class="text-sm text-orange-700 font-medium mb-1">ต้นทุนรวมต่อปี (ประมาณการ)</div>
+            <div id="res-annual-cost" class="text-xl font-bold text-orange-800">-</div>
+          </div>
+        </div>
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div class="text-sm text-blue-700 font-medium mb-2">การวิเคราะห์ Break-even</div>
+          <div id="res-breakeven" class="text-lg font-bold text-blue-800">-</div>
+          <div id="res-recommendation" class="text-sm text-blue-600 mt-2">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ทำความเข้าใจ Deductible ประกันรถยนต์</h2>
+      <p>
+        Deductible หรือค่าเสียหายส่วนแรก เป็นหนึ่งในปัจจัยสำคัญที่มีผลต่อเบี้ยประกันและต้นทุนรวมของการมีประกันรถยนต์
+        การเลือก Deductible ที่เหมาะสมต้องพิจารณาจากพฤติกรรมการขับรถ ความถี่ในการเคลม และความสามารถทางการเงิน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ Deductible</h3>
+      <div class="bg-gray-50 rounded-lg p-4 my-4 space-y-2">
+        <p class="font-medium">จ่ายเองต่อครั้ง = Deductible ที่เลือก</p>
+        <p class="font-medium">ประหยัดเบี้ยต่อปี = เบี้ยปัจจุบัน × (% ลด / 100)</p>
+        <p class="font-medium">ผลสุทธิต่อครั้ง = ประหยัดเบี้ย − Deductible เพิ่มขึ้น</p>
+        <p class="font-semibold text-primary-700">Break-even = ส่วนต่าง Deductible ÷ ประหยัดเบี้ยต่อปี (ปี)</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">แนวทางเลือก Deductible ในไทย</h3>
+      <p>
+        ในตลาดประกันรถยนต์ไทย Deductible มาตรฐานอยู่ที่ 2,000–5,000 บาท
+        บางบริษัทเสนอแผน Deductible สูงถึง 10,000–20,000 บาท พร้อมส่วนลดเบี้ย 10–25%
+        เหมาะกับผู้ขับขี่ที่มีประสบการณ์สูง ไม่เคยมีประวัติอุบัติเหตุ และมีกองทุนฉุกเฉินรองรับ
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณ-deductible-ประกันรถ/" />
+    <RelatedCalculators currentHref="/คำนวณ-deductible-ประกันรถ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเพื่อช่วยตัดสินใจเท่านั้น
+      อัตราเบี้ยประกันและเงื่อนไข Deductible จริงขึ้นอยู่กับบริษัทประกันแต่ละแห่ง
+      กรุณาปรึกษาตัวแทนประกันเพื่อข้อมูลที่ครบถ้วนและแม่นยำ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function fmtDec(n: number, d = 2): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const claimAmount = parseNum((document.getElementById('claim-amount') as HTMLInputElement).value);
+      const deductible = parseNum((document.getElementById('deductible-amount') as HTMLInputElement).value);
+      const premium = parseNum((document.getElementById('current-premium') as HTMLInputElement).value);
+      const reductionPct = parseNum((document.getElementById('premium-reduction') as HTMLInputElement).value);
+      const claimsPerYear = parseNum((document.getElementById('claims-per-year') as HTMLInputElement).value);
+
+      if (premium <= 0) {
+        (document.getElementById('current-premium') as HTMLInputElement).focus();
+        return;
+      }
+
+      const premiumSavings = premium * (reductionPct / 100);
+      const outOfPocket = deductible;
+      // Net benefit of higher deductible per claim event: savings minus extra cost paid
+      const netBenefitPerClaim = premiumSavings - outOfPocket;
+      const annualCost = premium - premiumSavings + (claimsPerYear * deductible);
+      const breakEvenYears = premiumSavings > 0 ? deductible / premiumSavings : 0;
+
+      (document.getElementById('res-out-of-pocket') as HTMLElement).textContent = `฿${fmt(outOfPocket)}`;
+      (document.getElementById('res-premium-savings') as HTMLElement).textContent = `฿${fmt(premiumSavings)}`;
+
+      const netEl = document.getElementById('res-net-benefit') as HTMLElement;
+      const netNoteEl = document.getElementById('res-net-note') as HTMLElement;
+      if (netBenefitPerClaim >= 0) {
+        netEl.textContent = `+฿${fmt(netBenefitPerClaim)}`;
+        netEl.className = 'text-xl font-bold text-green-700';
+        netNoteEl.textContent = 'ได้ประโยชน์จาก Deductible สูง แม้มีการเคลม';
+      } else {
+        netEl.textContent = `-฿${fmt(Math.abs(netBenefitPerClaim))}`;
+        netEl.className = 'text-xl font-bold text-red-700';
+        netNoteEl.textContent = 'ต้องเคลมน้อยกว่า Break-even จึงจะคุ้มค่า';
+      }
+
+      (document.getElementById('res-annual-cost') as HTMLElement).textContent = `฿${fmt(annualCost)}`;
+
+      const breakEvenEl = document.getElementById('res-breakeven') as HTMLElement;
+      const recEl = document.getElementById('res-recommendation') as HTMLElement;
+      if (premiumSavings <= 0) {
+        breakEvenEl.textContent = 'ไม่มีส่วนลดเบี้ย — ไม่มี Break-even';
+        recEl.textContent = 'กรุณาใส่ % ลดเบี้ยเพื่อคำนวณ Break-even';
+      } else {
+        breakEvenEl.textContent = `Break-even: ${fmtDec(breakEvenYears, 1)} ปี`;
+        if (claimsPerYear > 0) {
+          const claimsBreakEven = premiumSavings / deductible;
+          recEl.textContent = `หากเคลมน้อยกว่า ${fmtDec(claimsBreakEven, 2)} ครั้ง/ปี Deductible สูงจะคุ้มกว่า (ปัจจุบันคาดเคลม ${fmtDec(claimsPerYear, 1)} ครั้ง/ปี)`;
+        } else {
+          recEl.textContent = `ประหยัดเบี้ย ฿${fmt(premiumSavings)} ต่อปี คุ้มทุนภายใน ${fmtDec(breakEvenYears, 1)} ปีถ้าไม่มีการเคลม`;
+        }
+      }
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+
+    document.querySelectorAll('#calculator-form input').forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

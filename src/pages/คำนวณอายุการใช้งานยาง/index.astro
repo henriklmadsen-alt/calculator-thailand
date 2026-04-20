@@ -1,0 +1,343 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณอายุการใช้งานยางรถยนต์ | ระยะเปลี่ยนยาง | Calculator Thailand';
+const pageDescription = 'คำนวณอายุการใช้งานยางรถยนต์ตามระยะทางและระยะเวลา พร้อมแนะนำช่วงเปลี่ยนยาง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณอายุการใช้งานยาง/`;
+
+const faqData = [
+  {
+    question: 'ยางรถยนต์ควรเปลี่ยนทุกกี่กิโลเมตร?',
+    answer: 'ระยะเปลี่ยนยางขึ้นอยู่กับประเภทยางและพฤติกรรมการขับ โดยทั่วไปยางคุณภาพมาตรฐานควรเปลี่ยนที่ 40,000–60,000 กม. ยางคุณภาพสูง 60,000–80,000 กม. อย่างไรก็ตาม ควรตรวจสอบดอกยางและสภาพยางอยู่เสมอโดยไม่คำนึงถึงระยะทางอย่างเดียว',
+  },
+  {
+    question: 'ยางรถยนต์มีอายุการใช้งานกี่ปีตามระยะเวลา?',
+    answer: 'แม้ยางยังมีดอกเหลืออยู่ ยางที่มีอายุเกิน 5–6 ปีนับจากวันผลิต (ดูจากรหัส DOT บนยาง) อาจเสื่อมสภาพและแตกร้าวได้ ผู้ผลิตส่วนใหญ่แนะนำไม่ควรใช้ยางเกิน 10 ปีนับจากวันผลิต ไม่ว่าสภาพภายนอกจะดีเพียงใด',
+  },
+  {
+    question: 'วิธีตรวจสอบว่าถึงเวลาเปลี่ยนยางหรือยัง?',
+    answer: 'วิธีตรวจสอบ ได้แก่ วัดความลึกดอกยาง (ควรไม่น้อยกว่า 1.6 มม. ตามกฎหมาย แต่แนะนำ 3 มม. เพื่อความปลอดภัย) ตรวจสอบรอยแตกร้าวที่ผนังยาง ดูอายุยางจากรหัส DOT และสังเกตอาการสั่นหรือดึงออกข้างขณะขับ',
+  },
+  {
+    question: 'การขับรถในเมืองกับทางหลวงส่งผลต่ออายุยางอย่างไร?',
+    answer: 'การขับในเมืองที่มีการเบรก เลี้ยว และออกตัวบ่อยทำให้ยางสึกเร็วกว่าการขับทางหลวงระยะไกล โดยเฉลี่ยการขับในเมืองอาจทำให้ยางสึกเร็วขึ้น 20–30% เมื่อเทียบกับระยะทางเท่ากัน นอกจากนี้ลมยางที่ไม่ถูกต้องและการทรงตัวที่ผิดปกติก็ทำให้ยางสึกเร็วขึ้นเช่นกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณอายุการใช้งานยางรถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอายุการใช้งานยางรถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณอายุการใช้งานยางรถยนต์
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณว่ายางรถยนต์ของคุณจะหมดอายุการใช้งานเมื่อไร พร้อมต้นทุนต่อกิโลเมตรและกำหนดเปลี่ยนยางที่แนะนำ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="warranty-km" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะรับประกันยาง (กม.)
+            </label>
+            <input
+              type="text"
+              id="warranty-km"
+              inputmode="decimal"
+              placeholder="เช่น 60000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="monthly-km" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะทางเฉลี่ยต่อเดือน (กม.)
+            </label>
+            <input
+              type="text"
+              id="monthly-km"
+              inputmode="decimal"
+              placeholder="เช่น 2000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="purchase-year" class="block text-sm font-medium text-gray-700 mb-1">
+              ปีที่ซื้อยาง (พ.ศ.)
+            </label>
+            <input
+              type="text"
+              id="purchase-year"
+              inputmode="numeric"
+              placeholder="เช่น 2567"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="purchase-month" class="block text-sm font-medium text-gray-700 mb-1">
+              เดือนที่ซื้อยาง
+            </label>
+            <select
+              id="purchase-month"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="1">มกราคม</option>
+              <option value="2">กุมภาพันธ์</option>
+              <option value="3">มีนาคม</option>
+              <option value="4">เมษายน</option>
+              <option value="5" selected>พฤษภาคม</option>
+              <option value="6">มิถุนายน</option>
+              <option value="7">กรกฎาคม</option>
+              <option value="8">สิงหาคม</option>
+              <option value="9">กันยายน</option>
+              <option value="10">ตุลาคม</option>
+              <option value="11">พฤศจิกายน</option>
+              <option value="12">ธันวาคม</option>
+            </select>
+          </div>
+          <div>
+            <label for="tire-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคายางทั้งชุด (บาท)
+            </label>
+            <input
+              type="text"
+              id="tire-price"
+              inputmode="decimal"
+              placeholder="เช่น 16000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-blue-700 font-medium mb-1">อายุการใช้งานโดยประมาณ</div>
+            <div id="res-life-months" class="text-2xl font-bold text-blue-800">-</div>
+            <div id="res-life-years" class="text-sm text-blue-600 mt-1">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-green-700 font-medium mb-1">ต้นทุนต่อกิโลเมตร</div>
+            <div id="res-cost-per-km" class="text-2xl font-bold text-green-800">-</div>
+            <div class="text-xs text-green-600 mt-1">บาท/กม.</div>
+          </div>
+        </div>
+        <div id="replacement-panel" class="rounded-lg p-4 border">
+          <div class="text-sm font-medium mb-1" id="replacement-label">กำหนดเปลี่ยนยาง</div>
+          <div id="res-replacement-date" class="text-xl font-bold">-</div>
+          <div id="res-overdue" class="text-sm mt-1">-</div>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-4">
+          <div class="text-sm text-orange-700 font-medium mb-2">สรุปข้อมูลยาง</div>
+          <div id="res-summary" class="text-sm text-orange-800 space-y-1">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">อายุการใช้งานยางรถยนต์และปัจจัยที่ส่งผล</h2>
+      <p>
+        ยางรถยนต์เป็นอุปกรณ์ความปลอดภัยที่สำคัญที่สุดของรถ การรู้ว่าเมื่อใดควรเปลี่ยนยางช่วยป้องกันอุบัติเหตุ
+        และช่วยวางแผนค่าใช้จ่ายได้ล่วงหน้า ปัจจัยหลักที่กำหนดอายุยางได้แก่
+        ระยะทางสะสม ระยะเวลานับจากวันผลิต และพฤติกรรมการขับรถ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณอายุการใช้งานยาง</h3>
+      <div class="bg-gray-50 rounded-lg p-4 my-4 space-y-2">
+        <p class="font-medium">อายุการใช้งาน (เดือน) = ระยะรับประกัน (กม.) ÷ ระยะทางเฉลี่ยต่อเดือน</p>
+        <p class="font-medium">กำหนดเปลี่ยนยาง = วันที่ซื้อ + อายุการใช้งาน</p>
+        <p class="font-semibold text-primary-700">ต้นทุนต่อ กม. = ราคายาง ÷ ระยะรับประกัน (กม.)</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สัญญาณที่บ่งบอกว่าต้องเปลี่ยนยาง</h3>
+      <p>
+        นอกจากระยะทาง ควรตรวจสอบสัญญาณเหล่านี้เป็นประจำ ได้แก่ ดอกยางต่ำกว่า 3 มม. (ขีดจำกัดกฎหมายคือ 1.6 มม.)
+        รอยแตกร้าวหรือกระเปาะที่ผนังยาง อาการสั่นหรือดึงออกข้างเมื่อขับ
+        และยางที่มีอายุเกิน 5 ปีนับจากวันผลิตแม้ดอกยางยังดีอยู่
+        ในประเทศไทยที่อุณหภูมิสูงและถนนมีสภาพหลากหลาย ยางเสื่อมสภาพเร็วกว่าในภูมิอากาศหนาว
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณอายุการใช้งานยาง/" />
+    <RelatedCalculators currentHref="/คำนวณอายุการใช้งานยาง/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการตามระยะทาง
+      อายุยางจริงขึ้นอยู่กับหลายปัจจัย เช่น สภาพถนน พฤติกรรมการขับ ลมยาง และสภาพอากาศ
+      ควรตรวจสอบสภาพยางด้วยตาและให้ช่างผู้เชี่ยวชาญตรวจสอบเป็นระยะ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number, decimals = 2): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
+    }
+
+    const THAI_MONTHS = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม',
+    ];
+
+    function addMonths(year: number, month: number, addMonths: number): { year: number; month: number } {
+      const totalMonths = (year * 12 + (month - 1)) + addMonths;
+      return {
+        year: Math.floor(totalMonths / 12),
+        month: (totalMonths % 12) + 1,
+      };
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const warrantyKm = parseNum((document.getElementById('warranty-km') as HTMLInputElement).value);
+      const monthlyKm = parseNum((document.getElementById('monthly-km') as HTMLInputElement).value);
+      const purchaseYear = parseNum((document.getElementById('purchase-year') as HTMLInputElement).value);
+      const purchaseMonth = parseInt((document.getElementById('purchase-month') as HTMLSelectElement).value, 10);
+      const tirePrice = parseNum((document.getElementById('tire-price') as HTMLInputElement).value);
+
+      if (warrantyKm <= 0 || monthlyKm <= 0) {
+        (document.getElementById('warranty-km') as HTMLInputElement).focus();
+        return;
+      }
+
+      const lifeMonths = warrantyKm / monthlyKm;
+      const lifeYears = lifeMonths / 12;
+      const costPerKm = tirePrice > 0 ? tirePrice / warrantyKm : 0;
+
+      // Current date in Thai Buddhist era
+      const now = new Date();
+      const currentYear = now.getFullYear() + 543; // CE to BE
+      const currentMonth = now.getMonth() + 1;
+
+      // Replacement date
+      const baseYear = purchaseYear || currentYear;
+      const replacement = addMonths(baseYear, purchaseMonth, Math.round(lifeMonths));
+
+      // Check overdue
+      const currentTotalMonths = currentYear * 12 + (currentMonth - 1);
+      const replacementTotalMonths = replacement.year * 12 + (replacement.month - 1);
+      const monthsOverdue = currentTotalMonths - replacementTotalMonths;
+
+      // Update UI
+      (document.getElementById('res-life-months') as HTMLElement).textContent = `${fmt(lifeMonths, 0)} เดือน`;
+      (document.getElementById('res-life-years') as HTMLElement).textContent = `ประมาณ ${fmt(lifeYears, 1)} ปี`;
+      (document.getElementById('res-cost-per-km') as HTMLElement).textContent =
+        tirePrice > 0 ? fmt(costPerKm, 2) : 'ไม่ระบุราคา';
+
+      const replacementDateStr = `${THAI_MONTHS[replacement.month - 1]} ${replacement.year}`;
+      (document.getElementById('res-replacement-date') as HTMLElement).textContent = replacementDateStr;
+
+      const panel = document.getElementById('replacement-panel') as HTMLElement;
+      const overdueEl = document.getElementById('res-overdue') as HTMLElement;
+      const labelEl = document.getElementById('replacement-label') as HTMLElement;
+
+      if (monthsOverdue > 0) {
+        panel.className = 'rounded-lg p-4 border border-red-300 bg-red-50';
+        (document.getElementById('res-replacement-date') as HTMLElement).className = 'text-xl font-bold text-red-800';
+        labelEl.className = 'text-sm font-medium mb-1 text-red-700';
+        labelEl.textContent = 'กำหนดเปลี่ยนยาง — เกินกำหนดแล้ว!';
+        overdueEl.textContent = `เกินกำหนดมาแล้ว ${monthsOverdue} เดือน — ควรตรวจสอบสภาพยางทันที`;
+        overdueEl.className = 'text-sm mt-1 text-red-600 font-medium';
+      } else if (monthsOverdue > -3) {
+        panel.className = 'rounded-lg p-4 border border-orange-300 bg-orange-50';
+        (document.getElementById('res-replacement-date') as HTMLElement).className = 'text-xl font-bold text-orange-800';
+        labelEl.className = 'text-sm font-medium mb-1 text-orange-700';
+        labelEl.textContent = 'กำหนดเปลี่ยนยาง — ใกล้ถึงเวลาแล้ว';
+        overdueEl.textContent = `อีก ${Math.abs(monthsOverdue)} เดือนถึงกำหนด — ควรเริ่มวางแผนเปลี่ยนยาง`;
+        overdueEl.className = 'text-sm mt-1 text-orange-600';
+      } else {
+        panel.className = 'rounded-lg p-4 border border-green-300 bg-green-50';
+        (document.getElementById('res-replacement-date') as HTMLElement).className = 'text-xl font-bold text-green-800';
+        labelEl.className = 'text-sm font-medium mb-1 text-green-700';
+        labelEl.textContent = 'กำหนดเปลี่ยนยาง';
+        overdueEl.textContent = `อีก ${Math.abs(monthsOverdue)} เดือน — ยางยังอยู่ในช่วงอายุการใช้งาน`;
+        overdueEl.className = 'text-sm mt-1 text-green-600';
+      }
+
+      const summaryEl = document.getElementById('res-summary') as HTMLElement;
+      const summaryLines = [
+        `ระยะรับประกัน: ${fmt(warrantyKm, 0)} กม.`,
+        `ระยะทางต่อเดือน: ${fmt(monthlyKm, 0)} กม./เดือน`,
+        `อายุการใช้งาน: ${fmt(lifeMonths, 1)} เดือน (${fmt(lifeYears, 1)} ปี)`,
+      ];
+      if (tirePrice > 0) summaryLines.push(`ต้นทุนต่อ กม.: ${fmt(costPerKm, 4)} บาท`);
+      summaryEl.innerHTML = summaryLines.map(l => `<div>${l}</div>`).join('');
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+
+    document.querySelectorAll('#calculator-form input').forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>
