@@ -146,7 +146,7 @@ export function calculateDroughtCost(input: { farmLandHectares: number; cropsAff
 // KLC-0597: Electric Motorcycle Savings
 export function compareElectricMotorcycle(input: { yearlyKM: number; electricityRate: number; fuelRate: number }) {
   const electricCost = (input.yearlyKM / 50) * input.electricityRate; // 50 km per charge
-  const petrolCost = (input.yearlyKM / 40) * fuelRate; // 40 km per liter
+  const petrolCost = (input.yearlyKM / 40) * input.fuelRate; // 40 km per liter
   return {
     electricYearlyCost: Math.round(electricCost),
     petrolYearlyCost: Math.round(petrolCost),

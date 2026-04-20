@@ -18,6 +18,7 @@ export interface CorporateIncomeTaxInput {
   deductibleExpenses: number; // Allowable deductions
   capitalGains: number; // Capital gains (if any)
   isResident: boolean; // Is company resident in Thailand
+  isSME?: boolean; // Registered capital <= 5M THB — uses SME tiered rates
 }
 
 export interface CorporateIncomeTaxResult {
@@ -35,28 +36,40 @@ export interface CorporateIncomeTaxResult {
 
 /**
  * Corporate tax rates in Thailand 2567-2569
- * Progressive brackets: 15% → 20% → 30% → 37%
+ *
+ * Standard company (registered capital > 5M THB): flat 20% on net profit
+ *
+ * SME (registered capital <= 5M THB — isSME = true):
+ *   0%  on first 300,000 THB
+ *   15% on 300,001 – 3,000,000 THB
+ *   20% above 3,000,000 THB
+ *
+ * Source: Revenue Code — Royal Decree on CIT Reduction, amended 2566
  */
-function calculateIncomeTax(taxableIncome: number): number {
-  // 2567-2569 rates (current)
+function calculateIncomeTax(taxableIncome: number, isSME: boolean): number {
   if (taxableIncome <= 0) return 0;
 
-  if (taxableIncome <= 500000) {
-    return taxableIncome * 0.15;
-  } else if (taxableIncome <= 1000000) {
-    return (500000 * 0.15) + ((taxableIncome - 500000) * 0.20);
-  } else if (taxableIncome <= 4000000) {
-    return (500000 * 0.15) + (500000 * 0.20) + ((taxableIncome - 1000000) * 0.30);
+  if (!isSME) {
+    // Standard company: flat 20%
+    return taxableIncome * 0.20;
+  }
+
+  // SME tiered rates
+  if (taxableIncome <= 300000) {
+    return 0;
+  } else if (taxableIncome <= 3000000) {
+    return (taxableIncome - 300000) * 0.15;
   } else {
-    return (500000 * 0.15) + (500000 * 0.20) + (3000000 * 0.30) + ((taxableIncome - 4000000) * 0.37);
+    return (2700000 * 0.15) + ((taxableIncome - 3000000) * 0.20);
   }
 }
 
 export function calculateCorporateIncomeTax(
   input: CorporateIncomeTaxInput,
 ): CorporateIncomeTaxResult {
+  const isSME = input.isSME ?? false;
   const taxableIncome = Math.max(0, input.grossIncome - input.deductibleExpenses + input.capitalGains);
-  const incomeTax = calculateIncomeTax(taxableIncome);
+  const incomeTax = calculateIncomeTax(taxableIncome, isSME);
 
   // Surtax for non-residents: 10-20% of net income (simplified)
   const surtax = !input.isResident ? Math.round(incomeTax * 0.10) : 0;
@@ -70,7 +83,7 @@ export function calculateCorporateIncomeTax(
     deductibleExpenses: input.deductibleExpenses,
     capitalGains: input.capitalGains,
     taxableIncome: Math.round(taxableIncome),
-    taxRate: 15, // Base rate
+    taxRate: isSME ? 0 : 20, // SME: 0%/15%/20% tiered; Standard: flat 20%
     incomeTax: Math.round(incomeTax),
     surtax: Math.round(surtax),
     totalTax: Math.round(totalTax),
