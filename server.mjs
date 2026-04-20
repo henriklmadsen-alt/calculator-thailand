@@ -121,7 +121,7 @@ async function serve(req, res) {
     const ext = extname(filePath);
     res.writeHead(200, {
       'Content-Type': mimeTypes[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable',
+      'Cache-Control': ext === '.html' ? 'public, max-age=3600, must-revalidate' : 'public, max-age=31536000, immutable',
     });
     res.end(data);
   } catch {
