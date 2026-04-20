@@ -3751,6 +3751,16 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'คำนวณเบี้ยประกันสุขภาพ',
+    desc: 'ประมาณการเบี้ยประกันสุขภาพรายเดือนและรายปี เปรียบเทียบแบบพื้นฐาน มาตรฐาน พรีเมียม',
+    href: '/คำนวณเบี้ยประกันสุขภาพ/',
+    icon: '💳',
+    categoryId: 'insurance',
+    secondaryCategories: ['health'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 ];
 
 /** Look up a category by its slug (used in dynamic routes). */
