@@ -53,11 +53,46 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่าไฟฟ้า MEA/PEA ปี 2569',
+  description: 'ขั้นตอนการใช้เครื่องคำนวณค่าไฟฟ้า แยกค่าไฟฐาน Ft ค่าบริการ และ VAT',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกผู้ให้บริการและประเภทผู้ใช้ไฟ',
+      text: 'ระบุว่ากำลังใช้ไฟจาก MEA (การไฟฟ้านครหลวง) หรือ PEA (การไฟฟ้าส่วนภูมิภาค) และเลือกประเภทผู้ใช้ (บ้านอยู่อาศัย หรือ ธุรกิจขนาดเล็ก)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกจำนวนหน่วยไฟที่ใช้',
+      text: 'ป้อนจำนวนหน่วยไฟฟ้า (kWh) ที่ใช้ในเดือนนี้ ซึ่งหาได้จากใบแจ้งค่าไฟหรือการอ่านมิเตอร์จริง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบค่า Ft สำหรับงวดปัจจุบัน',
+      text: 'ค่า Ft มีการเปลี่ยนแปลงตามรอบประกาศ (ม.ค.-เม.ย. ร.ค.-ส.ค. เป็นต้น) ค่าเริ่มต้นในระบบคือ 0.0972 บาท/หน่วย สำหรับงวด ม.ค.-เม.ย. 2569 หากต่างจากงวดปัจจุบัน ให้แก้ไขค่านี้',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดปุ่มคำนวณ',
+      text: 'หลังจากกรอกข้อมูลครบแล้ว ให้คลิกปุ่ม "คำนวณค่าไฟ" เพื่อให้ระบบทำการคำนวณ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบรายละเอียดค่าไฟ',
+      text: 'ดูผลลัพธ์ที่แสดง ประกอบด้วย ค่าไฟฟ้าฐาน ค่า Ft ค่าบริการรายเดือน VAT 7% และรวมทั้งหมด พร้อมตารางแสดงการคำนวณค่าไฟตามขั้นบันได',
+    },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าไฟฟ้า">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">

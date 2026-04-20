@@ -50,11 +50,51 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่าโอที (Overtime) ตามกฎหมายแรงงาน',
+  description: 'ขั้นตอนการคำนวณค่าล่วงเวลาแยกตามประเภท: OT วันธรรมดา วันหยุด และ OT วันหยุด',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกเงินเดือนรายเดือน',
+      text: 'ป้อนเงินเดือนรายเดือนของคุณเป็นจำนวนเต็มบาท (เช่น 35000) ซึ่งนี่จะใช้เป็นฐานในการคำนวณค่าแรงต่อชั่วโมง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุจำนวนวันทำงานต่อเดือน',
+      text: 'ป้อนจำนวนวันทำงานต่อเดือนของคุณ (มักจะ 20-22 วันขึ้นอยู่กับสัญญาจ้างและธุรกิจ) ค่านี้ใช้ในการคำนวณค่าแรงต่อชั่วโมง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุชั่วโมงทำงานต่อวัน',
+      text: 'ป้อนจำนวนชั่วโมงทำงานต่อวัน (มักจะ 8 ชั่วโมง) นี่จะใช้ร่วมกับวันทำงานต่อเดือนในการคำนวณค่าแรงต่อชั่วโมง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกชั่วโมงล่วงเวลาแต่ละประเภท',
+      text: 'ป้อนชั่วโมงล่วงเวลาที่มี: (1) OT วันธรรมดา (คิด 1.5 เท่า) (2) ทำงานในวันหยุด (คิด 2 เท่า) และ (3) OT ในวันหยุด (คิด 3 เท่า)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดปุ่มคำนวณค่าโอที',
+      text: 'หลังจากกรอกข้อมูลครบแล้ว ให้คลิกปุ่ม "คำนวณค่าโอที" เพื่อให้ระบบทำการคำนวณ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบผลการคำนวณ',
+      text: 'ดูผลลัพธ์ที่แสดง ประกอบด้วย ค่าแรงต่อชั่วโมง (hourly rate) และค่า OT แยกตามประเภท (OT วันธรรมดา ทำงานวันหยุด OT วันหยุด) รวมทั้ง OT ทั้งหมดเป็นจำนวนเงินบาท',
+    },
+  ],
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโอที">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
