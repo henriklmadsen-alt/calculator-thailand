@@ -1,0 +1,286 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ ค่าสร้างเนื้อหา 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณค่าสร้าง Content (Blog, Video, Social) ประเมินต้นทุน ROI และ Cost per Post';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่า-content-creation/`;
+
+const faqData = [
+  {
+    question: 'ค่าสร้าง Content แตกต่างกันไหม?',
+    answer: 'Blog Post 500 คำ = 500-2,000 บาท Video 1 นาที = 5,000-20,000 บาท Social Post = 100-500 บาท ขึ้นอยู่กับคุณภาพ และซับซ้อน',
+  },
+  {
+    question: 'Content ROI ประมาณเท่าไร?',
+    answer: 'Blog ได้ Traffic ไปนาน 2-3 ปี (ROI ยาวเนิ่นอย่างมาก) Video ได้ Views หลัก ๆ 3-6 เดือน Social ได้ Engagement ทันทีไม่เสถียร Content ดี = Evergreen Asset',
+  },
+  {
+    question: 'ควรใช้ Freelancer หรือ In-house?',
+    answer: 'Freelancer ยืดหยุ่น ต้นทุนต่ำ In-house คุณภาพสม่ำเสมอ ปริมาณสูง ส่วนใหญ่ Hybrid ดีที่สุด: In-house บางเนื้อหา Freelancer เพิ่มเติม',
+  },
+  {
+    question: 'Content Marketing ROI ขึ้นอยู่กับอะไร?',
+    answer: 'คุณภาพ Content SEO Optimization Distribution Channel Audience Relevance ลูกค้าต้องเรียนรู้กลวิธีดำเนินการ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าสร้างเนื้อหา',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าสร้างเนื้อหา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      ✍️ คำนวณค่าสร้างเนื้อหา
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าสร้าง Content (Blog, Video, Social)
+      ประเมินต้นทุน ROI และ Cost per Post
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="content-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="monthly-posts" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวน Post ต่อเดือน
+            </label>
+            <input
+              type="text"
+              id="monthly-posts"
+              inputmode="numeric"
+              placeholder="เช่น 4"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="cost-per-post" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าต่อ Post (บาท)
+            </label>
+            <input
+              type="text"
+              id="cost-per-post"
+              inputmode="numeric"
+              placeholder="เช่น 2000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="engagement-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              Engagement Rate (%)
+            </label>
+            <input
+              type="text"
+              id="engagement-rate"
+              inputmode="numeric"
+              placeholder="เช่น 5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="conversion-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              Conversion Rate (%)
+            </label>
+            <input
+              type="text"
+              id="conversion-rate"
+              inputmode="numeric"
+              placeholder="เช่น 2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="monthly-audience" class="block text-sm font-medium text-gray-700 mb-1">
+            ผู้ชมรายเดือน
+          </label>
+          <input
+            type="text"
+            id="monthly-audience"
+            inputmode="numeric"
+            placeholder="เช่น 10000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณค่า Content
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณค่า Content</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่า/เดือน</div>
+            <div id="res-monthly-cost" class="text-xl font-bold text-blue-600">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่า/ปี</div>
+            <div id="res-annual-cost" class="text-xl font-bold text-green-600">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">Cost per Engagement</div>
+            <div id="res-cpe" class="text-xl font-bold text-purple-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">Cost per Conversion</div>
+            <div id="res-cpc" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Post ต่อเดือน</span>
+            <span id="res-posts" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Engagement/เดือน</span>
+            <span id="res-engagement" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Conversions/เดือน</span>
+            <span id="res-conversions" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">Cost per Post</span>
+            <span id="res-per-post" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <GuardedAdSlot />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">Content Marketing: ลงทุนตั้งแต่เริ่มต้น</h2>
+
+      <p>
+        Content Marketing ต้องการลงทุนต่อเนื่อง แต่ ROI ยาวนาน
+        Content ดี = Asset ที่อยู่ได้นาน สร้าง Traffic และ Lead ต่อจากนั้น
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณ-ค่า-content-creation/" />
+    <RelatedCalculators currentHref="/คำนวณ-ค่า-content-creation/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ ขึ้นอยู่กับคุณภาพ Content
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('content-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const monthlyPosts = parseNum((document.getElementById('monthly-posts') as HTMLInputElement).value);
+      const costPerPost = parseNum((document.getElementById('cost-per-post') as HTMLInputElement).value);
+      const engagementRate = parseNum((document.getElementById('engagement-rate') as HTMLInputElement).value);
+      const conversionRate = parseNum((document.getElementById('conversion-rate') as HTMLInputElement).value);
+      const monthlyAudience = parseNum((document.getElementById('monthly-audience') as HTMLInputElement).value);
+
+      if (monthlyPosts <= 0) { (document.getElementById('monthly-posts') as HTMLInputElement).focus(); return; }
+      if (costPerPost <= 0) { (document.getElementById('cost-per-post') as HTMLInputElement).focus(); return; }
+      if (monthlyAudience <= 0) { (document.getElementById('monthly-audience') as HTMLInputElement).focus(); return; }
+
+      const monthlyCost = monthlyPosts * costPerPost;
+      const annualCost = monthlyCost * 12;
+      const engagement = (monthlyAudience * engagementRate) / 100;
+      const conversions = (engagement * conversionRate) / 100;
+      const cpe = engagement > 0 ? monthlyCost / engagement : 0;
+      const cpc = conversions > 0 ? monthlyCost / conversions : 0;
+
+      (document.getElementById('res-monthly-cost') as HTMLElement).textContent = fmt(monthlyCost) + ' บาท';
+      (document.getElementById('res-annual-cost') as HTMLElement).textContent = fmt(annualCost) + ' บาท';
+      (document.getElementById('res-cpe') as HTMLElement).textContent = fmt(cpe) + ' บาท';
+      (document.getElementById('res-cpc') as HTMLElement).textContent = fmt(cpc) + ' บาท';
+      (document.getElementById('res-posts') as HTMLElement).textContent = monthlyPosts.toFixed(0);
+      (document.getElementById('res-engagement') as HTMLElement).textContent = engagement.toFixed(0);
+      (document.getElementById('res-conversions') as HTMLElement).textContent = conversions.toFixed(0);
+      (document.getElementById('res-per-post') as HTMLElement).textContent = fmt(costPerPost) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('content-creation-cost');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('content-creation-cost');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

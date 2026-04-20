@@ -4219,6 +4219,24 @@ export const calculators: Calculator[] = [
     tag: 'KLC-0551',
     tagColor: 'bg-sky-50 text-sky-600',
   },
+  {
+    title: 'คำนวณค่าห้องแรม',
+    desc: 'คำนวณค่าห้องแรม ค่าบริการโรงแรม ค่าอากรประกอบการ ค่าเตียงเสริม ค่าคืนห้องก่อนเวลา',
+    href: '/คำนวณค่าห้องแรม/',
+    icon: '🏨',
+    categoryId: 'travel',
+    tag: 'KLC-0552',
+    tagColor: 'bg-sky-50 text-sky-600',
+  },
+  {
+    title: 'คำนวณค่าเช่ารถ',
+    desc: 'คำนวณค่าเช่ารถ ค่าประกัน ค่าเชื้อเพลิง ค่า GPS ค่าคืนรถช้า หลายประเภทรถ',
+    href: '/คำนวณค่าเช่ารถ/',
+    icon: '🚗',
+    categoryId: 'travel',
+    tag: 'KLC-0553',
+    tagColor: 'bg-sky-50 text-sky-600',
+  },
 ];
 
 
