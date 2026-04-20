@@ -214,6 +214,17 @@ export const categories: Category[] = [
     description: 'รวมเครื่องคำนวณค่าธรรมเนียมรัฐบาล: พาสปอร์ต ใบขับขี่ ค่าศาล ค่าโอนที่ดิน ภาษีอากร และค่ากฎหมาย ฟรีออนไลน์',
     sortOrder: 17,
   },
+  {
+    id: 'travel',
+    name: 'การเดินทาง/ขนส่ง',
+    nameEn: 'Travel & Transportation',
+    icon: '✈️',
+    slug: 'การเดินทาง',
+    color: 'bg-sky-100',
+    colorText: 'text-sky-700',
+    description: 'รวมเครื่องคำนวณค่าเดินทาง: ตั๋วเครื่องบิน โรงแรม เช่ารถ เชื้อเพลิง ประกันการเดินทาง และค่าขนส่ง ฟรีออนไลน์',
+    sortOrder: 18,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -4196,6 +4207,17 @@ export const calculators: Calculator[] = [
     categoryId: 'government',
     tag: 'KLC-0503',
     tagColor: 'bg-indigo-50 text-indigo-600',
+  },
+
+  // WAVE3 BATCH AA — Travel & Transportation (KLC-0551-0575)
+  {
+    title: 'คำนวณค่าตั๋วเครื่องบิน',
+    desc: 'คำนวณค่าตั๋วเครื่องบิน ค่าเชื้อเพลิง ค่าสนามบิน ประกันการเดินทาง เที่ยวบินในประเทศและต่างประเทศ',
+    href: '/คำนวณค่าตั๋วเครื่องบิน/',
+    icon: '✈️',
+    categoryId: 'travel',
+    tag: 'KLC-0551',
+    tagColor: 'bg-sky-50 text-sky-600',
   },
 ];
 

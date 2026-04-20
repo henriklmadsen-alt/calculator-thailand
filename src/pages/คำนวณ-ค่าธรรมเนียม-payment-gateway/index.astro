@@ -1,0 +1,305 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณ ค่าธรรมเนียม Payment Gateway 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณค่าธรรมเนียมจากบริการ Payment Gateway (2Checkout, Stripe, Paypal) ประเมินค่า E-commerce อย่างแม่นยำ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่าธรรมเนียม-payment-gateway/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียม Payment Gateway คิดอย่างไร?',
+    answer: 'ส่วนใหญ่ Payment Gateway คิดค่า 2 ส่วน: (1) ค่าต่อรายการ 5-20 บาท และ (2) ค่าเปอร์เซ็นต์ 2-4% ของยอดขาย ตัวอย่าง: ขาย 1,000 บาท = 30 บาท + 25 บาท (2.5%) = 55 บาท ค่า (รวม 5.5% ของยอด)',
+  },
+  {
+    question: 'ควรเลือก Payment Gateway ไหน?',
+    answer: '2Checkout — ค่ากลาง ใช้โลก Paypal — น่าเชื่อถือ แต่ค่าหนักกว่า Stripe — ถูก เหมาะ Startup Omise — สำหรับไทย ค่าแข่งขัน โปรดตรวจสอบค่า setup fee ก่อน',
+  },
+  {
+    question: 'ควรโฮสต์บัตรเครดิตเองหรือให้ Payment Gateway ทำ?',
+    answer: 'ห้ามโฮสต์บัตรเครดิตเอง ต้องปฏิบัติตาม PCI DSS ยืมยากและแพง Payment Gateway โฮสต์บัตรให้เป็นมาตรฐานจึงปลอดภัยและถูกกว่า ผู้ส่วนใหญ่เลือก Payment Gateway',
+  },
+  {
+    question: 'มีวิธีลดค่า Payment Gateway บ้าง?',
+    answer: 'ลดจำนวนรายการขายเล็กๆ โดยรวมเป็นแบทช์ขาย ต่อรองอัตราธรรมเนียมกับ Payment Gateway เมื่อยอดขายสูง ใช้บริการเสริมอย่าง Cash on Delivery ลดอัตราการปฏิเสธของบัตร',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียม Payment Gateway',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียม Payment Gateway">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      💳 คำนวณค่าธรรมเนียม Payment Gateway
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าธรรมเนียมจากบริการ Payment Gateway สำหรับขายของออนไลน์
+      ประเมินค่า E-commerce อย่างแม่นยำ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="pgw-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="monthly-revenue" class="block text-sm font-medium text-gray-700 mb-1">
+              ยอดขายต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="monthly-revenue"
+              inputmode="numeric"
+              placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="avg-transaction" class="block text-sm font-medium text-gray-700 mb-1">
+              ยอดค้นหาเฉลี่ยต่อรายการ (บาท)
+            </label>
+            <input
+              type="text"
+              id="avg-transaction"
+              inputmode="numeric"
+              placeholder="เช่น 500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="per-transaction-fee" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าต่อรายการ (บาท)
+            </label>
+            <input
+              type="text"
+              id="per-transaction-fee"
+              inputmode="numeric"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="percentage-fee" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าเปอร์เซ็นต์ (%/ยอด)
+            </label>
+            <input
+              type="text"
+              id="percentage-fee"
+              inputmode="numeric"
+              placeholder="เช่น 2.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="monthly-fee" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าสมาชิกรายเดือน (บาท)
+            <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+          </label>
+          <input
+            type="text"
+            id="monthly-fee"
+            inputmode="numeric"
+            placeholder="เช่น 0"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณค่าธรรมเนียม
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณค่าธรรมเนียม Payment Gateway</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าต่อรายการ</div>
+            <div id="res-per-tx-total" class="text-xl font-bold text-orange-600">-</div>
+          </div>
+          <div class="bg-yellow-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าเปอร์เซ็นต์</div>
+            <div id="res-percentage-total" class="text-xl font-bold text-yellow-600">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าสมาชิก</div>
+            <div id="res-membership-fee" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รวมค่าธรรมเนียม</div>
+            <div id="res-total-fee" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดขายต่อเดือน</span>
+            <span id="res-revenue" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนรายการต่อเดือน</span>
+            <span id="res-tx-count" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ร้อยละของยอด</span>
+            <span id="res-percentage" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">รายได้สุทธิต่อเดือน</span>
+            <span id="res-net-revenue" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <GuardedAdSlot />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าธรรมเนียม Payment Gateway ส่งผลต่อกำไร</h2>
+
+      <p>
+        ค่าธรรมเนียม Payment Gateway เป็นรายการค่าใช้จ่ายสำคัญสำหรับเว็บอีคอมเมิร์ส
+        อาจกินกำไรได้ 5-10% ของยอดขาย การเลือก Payment Gateway ที่เหมาะสมสามารถลดค่าธรรมเนียมลง 30-50%
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">Payment Gateway ทั่วไปในไทย</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>Omise</strong> — ค่า 2.3% + 10 บาท เหมาะสำหรับไทย ใช้ได้กับ บัตร/โอน</li>
+        <li><strong>2Checkout</strong> — ค่า 3% + $0.5 เข้าถึงตลาดโลก ต้อง KYC</li>
+        <li><strong>Stripe</strong> — ค่า 2.9% + $0.3 เหมาะ Startup ต้องบัญชีต่างประเทศ</li>
+        <li><strong>PayPal</strong> — ค่า 3.9% + 10 บาท ความไว้วางใจสูง แต่แพงกว่า</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีลดค่า Payment Gateway</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ต่อรองราคาเมื่อยอดขายสูง ทำหน้าสัญญาขายของเดือนจริง</li>
+        <li>ใช้หลายวิธีชำระ (Transfer ฟรี, บัตร 2.5%) ลด % บัตร</li>
+        <li>เลือก Payment Gateway ที่มี setup fee เพื่อติดตามเล็บด้วยค่านำหน้า</li>
+        <li>เพิ่มขายสุทธิแทนลดค่า (ต่อรองค่าธรรมเนียมอาจให้ผลจำกัด)</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณ-ค่าธรรมเนียม-payment-gateway/" />
+    <RelatedCalculators currentHref="/คำนวณ-ค่าธรรมเนียม-payment-gateway/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ค่าธรรมเนียมอาจแตกต่างขึ้นอยู่กับ Payment Gateway และข้อตกลง
+      ผลการคำนวณเป็นการประมาณการเท่านั้น ไม่ถือเป็นราคาแน่นอน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('pgw-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const monthlyRevenue = parseNum((document.getElementById('monthly-revenue') as HTMLInputElement).value);
+      const avgTransaction = parseNum((document.getElementById('avg-transaction') as HTMLInputElement).value);
+      const perTxFee = parseNum((document.getElementById('per-transaction-fee') as HTMLInputElement).value);
+      const percentageFee = parseNum((document.getElementById('percentage-fee') as HTMLInputElement).value);
+      const monthlyFee = parseNum((document.getElementById('monthly-fee') as HTMLInputElement).value);
+
+      if (monthlyRevenue <= 0) { (document.getElementById('monthly-revenue') as HTMLInputElement).focus(); return; }
+      if (avgTransaction <= 0) { (document.getElementById('avg-transaction') as HTMLInputElement).focus(); return; }
+      if (perTxFee < 0) { (document.getElementById('per-transaction-fee') as HTMLInputElement).focus(); return; }
+      if (percentageFee < 0) { (document.getElementById('percentage-fee') as HTMLInputElement).focus(); return; }
+
+      const txCount = monthlyRevenue / avgTransaction;
+      const perTxTotal = txCount * perTxFee;
+      const percentageTotal = (monthlyRevenue * percentageFee) / 100;
+      const totalFee = perTxTotal + percentageTotal + monthlyFee;
+      const netRevenue = monthlyRevenue - totalFee;
+      const totalPercentage = (totalFee / monthlyRevenue) * 100;
+
+      (document.getElementById('res-per-tx-total') as HTMLElement).textContent = fmt(perTxTotal) + ' บาท';
+      (document.getElementById('res-percentage-total') as HTMLElement).textContent = fmt(percentageTotal) + ' บาท';
+      (document.getElementById('res-membership-fee') as HTMLElement).textContent = fmt(monthlyFee) + ' บาท';
+      (document.getElementById('res-total-fee') as HTMLElement).textContent = fmt(totalFee) + ' บาท';
+      (document.getElementById('res-revenue') as HTMLElement).textContent = fmt(monthlyRevenue) + ' บาท';
+      (document.getElementById('res-tx-count') as HTMLElement).textContent = txCount.toFixed(0);
+      (document.getElementById('res-percentage') as HTMLElement).textContent = totalPercentage.toFixed(2) + '%';
+      (document.getElementById('res-net-revenue') as HTMLElement).textContent = fmt(netRevenue) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('payment-gateway');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('payment-gateway');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>
