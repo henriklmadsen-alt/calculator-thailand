@@ -181,6 +181,17 @@ export const categories: Category[] = [
     description: 'รวมเครื่องคำนวณค่าใช้จ่ายการศึกษา ค่าเรียน ทุนการศึกษา ค่าเช่าหอพัก บ้านเรียน และแผนออมเพื่อการศึกษา',
     sortOrder: 14,
   },
+  {
+    id: 'business',
+    name: 'ธุรกิจ/สตาร์ทอัพ',
+    nameEn: 'Business & Startup',
+    icon: '🏢',
+    slug: 'ธุรกิจ',
+    color: 'bg-slate-100',
+    colorText: 'text-slate-700',
+    description: 'รวมเครื่องคำนวณค่าใช้จ่ายธุรกิจ: ค่าจดทะเบียน ต้นทุนเงินเดือน บ่อฝาน ทำกำไร และวางแผนธุรกิจ ฟรีออนไลน์',
+    sortOrder: 15,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -1892,6 +1903,25 @@ export const calculators: Calculator[] = [
     icon: '✈️',
     categoryId: 'education',
     secondaryCategories: ['bills'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณค่าเรียนโรงเรียนนานาชาติ',
+    desc: 'คำนวณต้นทุนโรงเรียนนานาชาติ IB AP Cambridge: ค่าเรียน สอบ ค่าอื่นๆ',
+    href: '/คำนวณค่าเรียนโรงเรียนนานาชาติ/',
+    icon: '🌍',
+    categoryId: 'education',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณแผนออมเพื่อการศึกษา',
+    desc: 'วางแผนออมเพื่อการศึกษา คำนวณจำนวนออมต่อเดือน เพื่อบรรลุเป้าหมายค่าเรียน',
+    href: '/คำนวณแผนออมเพื่อการศึกษา/',
+    icon: '💰',
+    categoryId: 'education',
+    secondaryCategories: ['savings'],
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
@@ -3787,6 +3817,17 @@ export const calculators: Calculator[] = [
   { title: 'คำนวณภาษีที่ดินตามจังหวัด', desc: 'คำนวณภาษีประจำปีสำหรับที่ดิน ตามจังหวัด พื้นที่ และประเภท', href: '/คำนวณภาษีที่ดินตามจังหวัด/', icon: '🗺️', categoryId: 'realestate', secondaryCategories: ['tax'], tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณต้นทุนก่อสร้างอาคาร', desc: 'ประมาณการต้นทุนก่อสร้างตามพื้นที่และประเภทอาคาร', href: '/คำนวณต้นทุนก่อสร้างอาคาร/', icon: '🏢', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณประกันอสังหาฯ', desc: 'ประมาณการเบี้ยประกันบ้านและอสังหาฯอื่นตามมูลค่าและประเภท', href: '/คำนวณประกันอสังหาฯ/', icon: '🛡️', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+
+  // WAVE3 BATCH W — Business & Startup Costs (KLC-0451-0475)
+  {
+    title: 'คำนวณค่าจดทะเบียนบริษัท',
+    desc: 'คำนวณค่าจดทะเบียนบริษัท ค่าอากรแสตมป์ ค่าธรรมเนียม ตามอัตรา DBD ปี 2569',
+    href: '/คำนวณค่าจดทะเบียนบริษัท/',
+    icon: '📋',
+    categoryId: 'business',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 
   // WAVE3 BATCH U — Health & Medical Costs (KLC-0401-0425)
   {
