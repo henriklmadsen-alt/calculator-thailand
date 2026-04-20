@@ -192,6 +192,17 @@ export const categories: Category[] = [
     description: 'รวมเครื่องคำนวณค่าใช้จ่ายธุรกิจ: ค่าจดทะเบียน ต้นทุนเงินเดือน บ่อฝาน ทำกำไร และวางแผนธุรกิจ ฟรีออนไลน์',
     sortOrder: 15,
   },
+  {
+    id: 'agriculture',
+    name: 'เกษตร/เพาะปลูก',
+    nameEn: 'Agriculture',
+    icon: '🚜',
+    slug: 'เกษตร',
+    color: 'bg-lime-100',
+    colorText: 'text-lime-700',
+    description: 'รวมเครื่องคำนวณต้นทุนการเกษตร: ข้าว มันสำปะหลัง ยางพารา สัตว์เลี้ยง ประกันพืชผล และค่าใช้จ่ายการเกษตร ฟรีออนไลน์',
+    sortOrder: 16,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -3828,6 +3839,16 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'คำนวณ VAT สำหรับธุรกิจ',
+    desc: 'คำนวณภาษี VAT ที่ต้องนำส่ง Output VAT ลบ Input VAT รายเดือน',
+    href: '/คำนวณ-vat-สำหรับธุรกิจ/',
+    icon: '🧾',
+    categoryId: 'business',
+    secondaryCategories: ['tax'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 
   // WAVE3 BATCH U — Health & Medical Costs (KLC-0401-0425)
   {
@@ -3856,6 +3877,17 @@ export const calculators: Calculator[] = [
     icon: '🏥',
     categoryId: 'health',
     secondaryCategories: ['tax'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // WAVE3 BATCH X — Agriculture & Farming (KLC-0476-0500)
+  {
+    title: 'คำนวณต้นทุนการปลูกข้าว',
+    desc: 'คำนวณต้นทุนการปลูกข้าวต่อไร่ เตรียมพื้นที่ เมล็ด ปุ๋ย ยาเคมี แรงงาน ประมาณการกำไร',
+    href: '/คำนวณ-ต้นทุนการปลูกข้าว/',
+    icon: '🌾',
+    categoryId: 'agriculture',
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
