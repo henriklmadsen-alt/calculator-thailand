@@ -3900,7 +3900,7 @@ export const calculators: Calculator[] = [
     href: '/คำนวณต้นทุนโรงพยาบาล/',
     icon: '🏥',
     categoryId: 'health',
-    tag: 'ใหม่',
+    tag: 'KLC-0401',
     tagColor: 'bg-orange-50 text-orange-600',
   },
   {
@@ -3910,7 +3910,7 @@ export const calculators: Calculator[] = [
     icon: '💳',
     categoryId: 'insurance',
     secondaryCategories: ['health'],
-    tag: 'ใหม่',
+    tag: 'KLC-0402',
     tagColor: 'bg-orange-50 text-orange-600',
   },
   {
@@ -3920,7 +3920,7 @@ export const calculators: Calculator[] = [
     icon: '🏥',
     categoryId: 'health',
     secondaryCategories: ['tax'],
-    tag: 'ใหม่',
+    tag: 'KLC-0403',
     tagColor: 'bg-orange-50 text-orange-600',
   },
 
