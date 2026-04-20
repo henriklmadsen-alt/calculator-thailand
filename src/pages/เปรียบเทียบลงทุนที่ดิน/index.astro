@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+
+const pageTitle = 'เปรียบเทียบการลงทุนที่ดิน ปี 2569 | วิเคราะห์โครงการ | เครื่องคำนวณไทย';
+const pageDescription = 'เปรียบเทียบ ROI และผลตอบแทนระหว่างโครงการลงทุนที่ดินสองแห่ง ประเมินความคุ้มค่า ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/เปรียบเทียบลงทุนที่ดิน/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="เปรียบเทียบลงทุนที่ดิน">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">เปรียบเทียบการลงทุนที่ดิน ปี 2569</h1>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="comparison-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2 border-b pb-4 mb-4">
+          <h3 class="col-span-2 font-semibold text-gray-900">โครงการที่ 1</h3>
+          <div>
+            <label for="proj1-price" class="block text-sm font-medium text-gray-700 mb-1">ราคา (บาท)</label>
+            <input id="proj1-price" type="text" inputmode="numeric" placeholder="เช่น 5,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" />
+          </div>
+          <div>
+            <label for="proj1-rent" class="block text-sm font-medium text-gray-700 mb-1">รายได้เช่า/ปี (บาท)</label>
+            <input id="proj1-rent" type="text" inputmode="numeric" placeholder="เช่น 300,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 pb-4 mb-4">
+          <h3 class="col-span-2 font-semibold text-gray-900">โครงการที่ 2</h3>
+          <div>
+            <label for="proj2-price" class="block text-sm font-medium text-gray-700 mb-1">ราคา (บาท)</label>
+            <input id="proj2-price" type="text" inputmode="numeric" placeholder="เช่น 4,500,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" />
+          </div>
+          <div>
+            <label for="proj2-rent" class="block text-sm font-medium text-gray-700 mb-1">รายได้เช่า/ปี (บาท)</label>
+            <input id="proj2-rent" type="text" inputmode="numeric" placeholder="เช่น 280,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          เปรียบเทียบ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการเปรียบเทียบ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg bg-blue-50 p-4">
+            <div class="text-sm text-gray-600 mb-1">โครงการที่ 1: ROI</div>
+            <div id="res-proj1-roi" class="text-lg font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4">
+            <div class="text-sm text-gray-600 mb-1">โครงการที่ 2: ROI</div>
+            <div id="res-proj2-roi" class="text-lg font-bold text-purple-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-700 font-semibold">โครงการที่ดีกว่า</span>
+            <span id="res-better" class="font-bold">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <RelatedCalculators currentHref="/เปรียบเทียบลงทุนที่ดิน/" />
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  const form = document.querySelector('#comparison-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const p1price = parseNumber(document.querySelector('#proj1-price')?.value || '');
+    const p1rent = parseNumber(document.querySelector('#proj1-rent')?.value || '');
+    const p2price = parseNumber(document.querySelector('#proj2-price')?.value || '');
+    const p2rent = parseNumber(document.querySelector('#proj2-rent')?.value || '');
+
+    if (!(Number.isFinite(p1price) && p1price > 0 && Number.isFinite(p1rent) && p1rent > 0 && Number.isFinite(p2price) && p2price > 0 && Number.isFinite(p2rent) && p2rent > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const roi1 = (p1rent / p1price) * 100;
+    const roi2 = (p2rent / p2price) * 100;
+    const better = roi1 > roi2 ? 'โครงการที่ 1' : roi2 > roi1 ? 'โครงการที่ 2' : 'เท่ากัน';
+
+    document.querySelector('#res-proj1-roi').textContent = roi1.toFixed(2) + '%';
+    document.querySelector('#res-proj2-roi').textContent = roi2.toFixed(2) + '%';
+    document.querySelector('#res-better').textContent = better;
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

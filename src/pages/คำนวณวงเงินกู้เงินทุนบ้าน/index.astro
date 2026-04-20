@@ -1,0 +1,237 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณวงเงินกู้เงินทุนบ้าน 2569 | Home Equity Loan | kamnuanlek.com';
+const pageDescription = 'คำนวณวงเงินกู้จากส่วนได้เสีย (Home Equity) ตามมูลค่าบ้านปัจจุบันและยอดกู้คงเหลือ ออนไลน์ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณวงเงินกู้เงินทุนบ้าน/`;
+
+const faqData = [
+  {
+    question: 'Home Equity Loan (HELOC) คืออะไร?',
+    answer: 'Home Equity Loan คือเงินกู้ที่ใช้ส่วนได้เสีย (Home Equity) ของบ้านเป็นหลักประกัน ปกติได้วงเงินสูงสุด 70-80% ของส่วนได้เสีย',
+  },
+  {
+    question: 'วงเงินกู้จากส่วนได้เสียมีขีดจำกัดหรือ?',
+    answer: 'ใช่ ปกติธนาคารให้กู้ไม่เกิน 70-80% ของส่วนได้เสีย ขึ้นอยู่กับนโยบายแต่ละธนาคาร และการประเมินความน่าเชื่อถือ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณวงเงินกู้เงินทุนบ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวงเงินกู้เงินทุนบ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ใช้ส่วนได้เสียสร้างสินเชื่อ</p>
+      <p class="mt-1 text-sm text-slate-700">วงเงินกู้จากส่วนได้เสียบ้านของคุณ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ตามนโยบายธนาคาร</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณวงเงินกู้เงินทุนบ้าน
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณวงเงินสูงสุดที่สามารถกู้ได้จากส่วนได้เสีย (Home Equity) ของบ้านของคุณ
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลบ้านและสินเชื่อ</h2>
+
+      <form id="heloc-form" class="space-y-6">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="home-value" class="block text-sm font-medium text-gray-700 mb-1">
+              มูลค่าบ้านปัจจุบัน (บาท)
+            </label>
+            <input
+              type="text"
+              id="home-value"
+              inputmode="numeric"
+              placeholder="เช่น 3,500,000"
+              value="3500000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="remaining-loan" class="block text-sm font-medium text-gray-700 mb-1">
+              ยอดกู้คงเหลือ (บาท)
+            </label>
+            <input
+              type="text"
+              id="remaining-loan"
+              inputmode="numeric"
+              placeholder="เช่น 2,000,000"
+              value="2000000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="ltv-percent" class="block text-sm font-medium text-gray-700 mb-1">
+            อัตราส่วนกู้ต่อค่า (LTV %) ที่ธนาคารยอมรับ
+          </label>
+          <input
+            type="text"
+            id="ltv-percent"
+            inputmode="numeric"
+            placeholder="เช่น 80"
+            value="80"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">ปกติ 70-80%</p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณวงเงิน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">วงเงินกู้ที่สามารถได้</h2>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center border border-blue-100">
+            <div class="text-sm text-gray-600 mb-1">ส่วนได้เสีย</div>
+            <div id="result-equity" class="text-lg font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center border border-green-100">
+            <div class="text-sm text-gray-600 mb-1">วงเงินกู้สูงสุด</div>
+            <div id="result-max-loan" class="text-lg font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center border border-orange-100">
+            <div class="text-sm text-gray-600 mb-1">วงเงินกู้ได้อีก</div>
+            <div id="result-available" class="text-lg font-bold text-orange-700">-</div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 p-4">
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">รายละเอียด</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600">มูลค่าบ้านปัจจุบัน</span>
+              <span id="detail-value" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">ยอดกู้คงเหลือ</span>
+              <span id="detail-loan" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-t border-gray-200 pt-2 mt-2 font-semibold">
+              <span>ส่วนได้เสีย</span>
+              <span id="detail-equity" class="text-blue-700">-</span>
+            </div>
+            <div class="flex justify-between pt-2">
+              <span class="text-gray-600">วงเงินกู้สูงสุด (LTV)</span>
+              <span id="detail-max" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between font-semibold border-t border-gray-200 pt-2 mt-2">
+              <span>วงเงินกู้ได้เพิ่มเติม</span>
+              <span id="detail-available" class="text-orange-700">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณวงเงินกู้เงินทุนบ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณวงเงินกู้เงินทุนบ้าน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> วงเงินกู้ขึ้นอยู่กับการประเมินและนโยบายแต่ละธนาคาร
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(val: string): number {
+      return Math.max(0, parseFloat(val.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(num));
+    }
+
+    const form = document.getElementById('heloc-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const homeValue = parseNumber((document.getElementById('home-value') as HTMLInputElement).value);
+      const remainingLoan = parseNumber((document.getElementById('remaining-loan') as HTMLInputElement).value);
+      const ltvPercent = parseNumber((document.getElementById('ltv-percent') as HTMLInputElement).value) / 100;
+
+      const equity = homeValue - remainingLoan;
+      const maxLoan = homeValue * ltvPercent;
+      const available = Math.max(0, maxLoan - remainingLoan);
+
+      (document.getElementById('result-equity') as HTMLElement).textContent = `${formatThai(equity)} บาท`;
+      (document.getElementById('result-max-loan') as HTMLElement).textContent = `${formatThai(maxLoan)} บาท`;
+      (document.getElementById('result-available') as HTMLElement).textContent = `${formatThai(available)} บาท`;
+
+      (document.getElementById('detail-value') as HTMLElement).textContent = `${formatThai(homeValue)} บาท`;
+      (document.getElementById('detail-loan') as HTMLElement).textContent = `${formatThai(remainingLoan)} บาท`;
+      (document.getElementById('detail-equity') as HTMLElement).textContent = `${formatThai(equity)} บาท`;
+      (document.getElementById('detail-max') as HTMLElement).textContent = `${formatThai(maxLoan)} บาท`;
+      (document.getElementById('detail-available') as HTMLElement).textContent = `${formatThai(available)} บาท`;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('home_equity_loan');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('home_equity_loan');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('home_equity_loan');
+    }, { once: true });
+  </script>
+</BaseLayout>

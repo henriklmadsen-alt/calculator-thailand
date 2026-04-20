@@ -3622,6 +3622,37 @@ export const calculators: Calculator[] = [
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'คำนวณลดหย่อนภาษีที่ดิน',
+    desc: 'คำนวณลดหย่อนภาษีจากการซื้อบ้านหลัก รวมดอกเบี้ยจำนอง ค่าใช้จ่าย',
+    href: '/คำนวณลดหย่อนภาษีที่ดิน/',
+    icon: '📋',
+    categoryId: 'realestate',
+    secondaryCategories: ['tax'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณวงเงินกู้เงินทุนบ้าน',
+    desc: 'คำนวณวงเงินกู้สูงสุดจากส่วนได้เสีย (Home Equity Line of Credit)',
+    href: '/คำนวณวงเงินกู้เงินทุนบ้าน/',
+    icon: '💳',
+    categoryId: 'realestate',
+    secondaryCategories: ['loan'],
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+
+  // WAVE2 BATCH S — Home Utilities + Vehicles (KLC-0351-0380)
+  {
+    title: 'คำนวณต้นทุนสมาร์ทโฮม',
+    desc: 'คำนวณต้นทุนการติดตั้งระบบสมาร์ทโฮม รวมวัสดุ อุปกรณ์ แรงงาน และติดตั้งทั้งระบบ',
+    href: '/คำนวณต้นทุนสมาร์ทโฮม/',
+    icon: '🏠',
+    categoryId: 'construction',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 ];
 
 /** Look up a category by its slug (used in dynamic routes). */

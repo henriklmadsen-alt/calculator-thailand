@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+
+const pageTitle = 'คำนวณเงินดาวน์ที่ดิน ปี 2569 | วงเงินกู้ | ค่างวด | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณเงินดาวน์ที่ต้องจ่าย วงเงินกู้ และค่างวดสำหรับการซื้อที่ดิน บ้าน คอนโด ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินดาวน์ที่ดิน/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินดาวน์ที่ดิน">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณเงินดาวน์ที่ดิน ปี 2569</h1>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="downpayment-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="property-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาซื้อ (บาท)</label>
+            <input id="property-price" type="text" inputmode="numeric" placeholder="เช่น 5,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" />
+          </div>
+          <div>
+            <label for="downpay-percent" class="block text-sm font-medium text-gray-700 mb-1">เงินดาวน์ (%)</label>
+            <input id="downpay-percent" type="text" inputmode="numeric" placeholder="เช่น 20" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" value="20" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">ดอกเบี้ย (%)</label>
+            <input id="interest-rate" type="text" inputmode="numeric" placeholder="เช่น 3.5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" value="3.5" />
+          </div>
+          <div>
+            <label for="loan-term" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลา (ปี)</label>
+            <input id="loan-term" type="text" inputmode="numeric" placeholder="เช่น 20" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" value="20" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์</div>
+            <div id="res-downpay" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวด/เดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">วงเงินกู้</span>
+            <span id="res-loan" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ดอกเบี้ยรวม</span>
+            <span id="res-total-interest" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <RelatedCalculators currentHref="/คำนวณเงินดาวน์ที่ดิน/" />
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#downpayment-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const price = parseNumber(document.querySelector('#property-price')?.value || '');
+    const downPayPercent = parseNumber(document.querySelector('#downpay-percent')?.value || '');
+    const interestRate = parseNumber(document.querySelector('#interest-rate')?.value || '');
+    const loanTerm = parseNumber(document.querySelector('#loan-term')?.value || '');
+
+    if (!(Number.isFinite(price) && price > 0 && Number.isFinite(downPayPercent) && Number.isFinite(interestRate) && Number.isFinite(loanTerm) && loanTerm > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const downPay = price * (downPayPercent / 100);
+    const loanAmount = price - downPay;
+    const monthlyRate = interestRate / 12 / 100;
+    const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanTerm * 12)) / (Math.pow(1 + monthlyRate, loanTerm * 12) - 1);
+    const totalInterest = (monthlyPayment * loanTerm * 12) - loanAmount;
+
+    document.querySelector('#res-downpay').textContent = formatCurrency(downPay);
+    document.querySelector('#res-monthly').textContent = formatCurrency(monthlyPayment);
+    document.querySelector('#res-loan').textContent = formatCurrency(loanAmount);
+    document.querySelector('#res-total-interest').textContent = formatCurrency(totalInterest);
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
