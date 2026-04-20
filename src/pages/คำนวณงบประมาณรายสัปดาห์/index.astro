@@ -1,0 +1,291 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณงบประมาณรายสัปดาห์ ปี 2569 วงเงินใช้จ่ายต่อวัน จากงบรายเดือน | เครื่องคำนวณไทย';
+const pageDescription = 'แปลงงบประมาณรายเดือนเป็นรายสัปดาห์และรายวัน คำนวณวงเงินใช้จ่ายต่อวัน รายจ่ายคงที่-แปรผันรายสัปดาห์ เกินดุล/ขาดดุลรายสัปดาห์ ช่วยควบคุมการใช้เงิน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณรายสัปดาห์/`;
+
+const faqData = [
+  {
+    question: 'ทำไมต้องคำนวณงบรายสัปดาห์?',
+    answer: 'การมองงบรายสัปดาห์หรือรายวันช่วยให้ควบคุมการใช้จ่ายได้ดีกว่า เพราะสมองเราเข้าใจตัวเลขเล็กกว่าได้ง่ายกว่า เช่น รู้ว่าวันนี้ใช้ได้ 500 บาทง่ายกว่ารู้ว่าเดือนนี้ใช้ได้ 15,000 บาท',
+  },
+  {
+    question: 'ทำไมหาร 4.33 ไม่ใช่ 4?',
+    answer: 'เดือนหนึ่งมีเฉลี่ย 30.44 วัน หรือ 4.33 สัปดาห์ (365 ÷ 12 ÷ 7) หารด้วย 4 จะทำให้ตัวเลขรายสัปดาห์สูงเกินจริงและงบรายเดือนรวมกันได้มากกว่ารายได้จริง',
+  },
+  {
+    question: 'ควรใช้งบรายสัปดาห์หรือรายวัน?',
+    answer: 'ขึ้นอยู่กับพฤติกรรม คนที่ซื้อของใหญ่เป็นสัปดาห์ (เช่น ซื้ออาหาร groceries) ใช้งบรายสัปดาห์ดีกว่า คนที่ซื้อของทุกวัน เช่น ข้าว กาแฟ ใช้งบรายวันช่วยควบคุมได้ดีกว่า',
+  },
+  {
+    question: 'สัปดาห์ที่มีค่าใช้จ่ายพิเศษควรทำอย่างไร?',
+    answer: 'เช่น สัปดาห์ที่มีงานเลี้ยง ซื้อของขวัญ ควรลดค่าใช้จ่ายแปรผันในสัปดาห์ก่อนหรือหลังเพื่อให้งบรวมยังอยู่ในเป้าหมายรายเดือน วิธีนี้เรียกว่า "งบยืดหยุ่น"',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณรายสัปดาห์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณรายสัปดาห์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">แปลงงบประมาณรายเดือนเป็นรายสัปดาห์และรายวัน</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: งบรายสัปดาห์ = งบรายเดือน ÷ 4.33 | งบรายวัน = งบรายเดือน ÷ 30</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">ใช้ตัวหาร 4.33 สัปดาห์/เดือน (365 ÷ 12 ÷ 7)</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณรายสัปดาห์ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้และค่าใช้จ่ายรายเดือน ระบบจะแปลงเป็นงบรายสัปดาห์และวงเงินใช้จ่ายต่อวันสำหรับคุณ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="wk-form" class="space-y-5">
+        <p id="wk-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="wk-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้ต่อเดือน (บาท)</label>
+            <input type="text" id="wk-income" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="wk-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="wk-fixed" class="mb-1 block text-sm font-medium text-gray-700">รายจ่ายคงที่ต่อเดือน (บาท)</label>
+            <input type="text" id="wk-fixed" inputmode="numeric" placeholder="เช่น 12,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="wk-fixed-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="wk-variable" class="mb-1 block text-sm font-medium text-gray-700">รายจ่ายแปรผันต่อเดือน (อาหาร เดินทาง บันเทิง)</label>
+          <input type="text" id="wk-variable" inputmode="numeric" placeholder="เช่น 10,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:max-w-xs" />
+          <p id="wk-variable-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณงบรายสัปดาห์
+        </button>
+      </form>
+    </div>
+
+    <div id="wk-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-xs font-medium text-blue-600">รายรับต่อสัปดาห์</div>
+            <div id="res-wk-income-week" class="text-xl font-bold text-blue-700">-</div>
+            <div id="res-wk-income-day" class="mt-1 text-xs text-gray-500">-</div>
+          </div>
+          <div class="rounded-lg bg-gray-50 p-4 text-center">
+            <div class="mb-1 text-xs font-medium text-gray-600">คงที่ต่อสัปดาห์</div>
+            <div id="res-wk-fixed-week" class="text-xl font-bold text-gray-700">-</div>
+            <div id="res-wk-fixed-day" class="mt-1 text-xs text-gray-500">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-xs font-medium text-orange-600">แปรผันต่อสัปดาห์</div>
+            <div id="res-wk-variable-week" class="text-xl font-bold text-orange-700">-</div>
+            <div id="res-wk-variable-day" class="mt-1 text-xs text-gray-500">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 rounded-xl bg-emerald-50 p-6 text-center">
+          <div class="mb-1 text-sm font-medium text-emerald-700">วงเงินใช้จ่ายต่อวัน (แปรผันเท่านั้น)</div>
+          <div id="res-wk-daily-budget" class="text-3xl font-bold text-emerald-700">-</div>
+          <div class="mt-1 text-xs text-gray-500">= รายจ่ายแปรผัน ÷ 30 วัน</div>
+        </div>
+
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 text-left">
+              <th class="px-3 py-2 font-medium text-gray-700">รายการ</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">ต่อเดือน</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">ต่อสัปดาห์</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">ต่อวัน</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr>
+              <td class="px-3 py-2 text-gray-700">รายรับ</td>
+              <td id="tbl-wk-income-mo" class="px-3 py-2 text-right font-medium text-blue-700">-</td>
+              <td id="tbl-wk-income-wk" class="px-3 py-2 text-right text-blue-600">-</td>
+              <td id="tbl-wk-income-day" class="px-3 py-2 text-right text-blue-500">-</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-gray-700">รายจ่ายคงที่</td>
+              <td id="tbl-wk-fixed-mo" class="px-3 py-2 text-right font-medium text-gray-700">-</td>
+              <td id="tbl-wk-fixed-wk" class="px-3 py-2 text-right text-gray-600">-</td>
+              <td id="tbl-wk-fixed-day" class="px-3 py-2 text-right text-gray-500">-</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-gray-700">รายจ่ายแปรผัน</td>
+              <td id="tbl-wk-var-mo" class="px-3 py-2 text-right font-medium text-orange-700">-</td>
+              <td id="tbl-wk-var-wk" class="px-3 py-2 text-right text-orange-600">-</td>
+              <td id="tbl-wk-var-day" class="px-3 py-2 text-right text-orange-500">-</td>
+            </tr>
+            <tr class="bg-gray-50 font-semibold">
+              <td class="px-3 py-2 text-gray-900">เกินดุล/ขาดดุล</td>
+              <td id="tbl-wk-surplus-mo" class="px-3 py-2 text-right">-</td>
+              <td id="tbl-wk-surplus-wk" class="px-3 py-2 text-right">-</td>
+              <td id="tbl-wk-surplus-day" class="px-3 py-2 text-right">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>งบรายสัปดาห์ = งบรายเดือน ÷ 4.33 (สัปดาห์ต่อเดือน)</li>
+        <li>งบรายวัน = งบรายเดือน ÷ 30</li>
+        <li>เกินดุลรายสัปดาห์ = รายรับ/สัปดาห์ - คงที่/สัปดาห์ - แปรผัน/สัปดาห์</li>
+        <li>วงเงินต่อวัน = รายจ่ายแปรผัน ÷ 30</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+        <li><a href="/คำนวณส่วนต่างรายได้รายจ่าย/">คำนวณส่วนต่างรายได้รายจ่าย</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#wk-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณรายสัปดาห์/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณรายสัปดาห์/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นแนวทางการวางแผน บางเดือนมี 4 สัปดาห์บางเดือนมี 5 สัปดาห์ ตัวเลขจริงอาจแตกต่างเล็กน้อย
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const WEEKS_PER_MONTH = 4.33;
+    const DAYS_PER_MONTH = 30;
+
+    const form = document.getElementById('wk-form');
+    const formError = document.getElementById('wk-error');
+    const resultBox = document.getElementById('wk-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['wk-income-error','wk-fixed-error','wk-variable-error'].forEach(id => setErr(id, ''));
+
+      const income = parseNum(document.getElementById('wk-income').value);
+      const fixed = parseNum(document.getElementById('wk-fixed').value);
+      const variable = parseNum(document.getElementById('wk-variable').value);
+
+      let hasError = false;
+      if (!Number.isFinite(income) || income <= 0) { setErr('wk-income-error', 'กรอกรายได้มากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(fixed) || fixed < 0) { setErr('wk-fixed-error', 'กรอกรายจ่ายคงที่ (0 ถ้าไม่มี)'); hasError = true; }
+      if (!Number.isFinite(variable) || variable < 0) { setErr('wk-variable-error', 'กรอกรายจ่ายแปรผัน (0 ถ้าไม่มี)'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const surplus = income - fixed - variable;
+
+      const incomeWk = income / WEEKS_PER_MONTH;
+      const incomeDay = income / DAYS_PER_MONTH;
+      const fixedWk = fixed / WEEKS_PER_MONTH;
+      const fixedDay = fixed / DAYS_PER_MONTH;
+      const varWk = variable / WEEKS_PER_MONTH;
+      const varDay = variable / DAYS_PER_MONTH;
+      const surplusWk = surplus / WEEKS_PER_MONTH;
+      const surplusDay = surplus / DAYS_PER_MONTH;
+      const dailyBudget = variable / DAYS_PER_MONTH;
+
+      setText('res-wk-income-week', formatMoney(incomeWk));
+      setText('res-wk-income-day', `ต่อวัน: ${formatMoney(incomeDay)}`);
+      setText('res-wk-fixed-week', formatMoney(fixedWk));
+      setText('res-wk-fixed-day', `ต่อวัน: ${formatMoney(fixedDay)}`);
+      setText('res-wk-variable-week', formatMoney(varWk));
+      setText('res-wk-variable-day', `ต่อวัน: ${formatMoney(varDay)}`);
+      setText('res-wk-daily-budget', formatMoney(dailyBudget));
+
+      setText('tbl-wk-income-mo', formatMoney(income));
+      setText('tbl-wk-income-wk', formatMoney(incomeWk));
+      setText('tbl-wk-income-day', formatMoney(incomeDay));
+      setText('tbl-wk-fixed-mo', formatMoney(fixed));
+      setText('tbl-wk-fixed-wk', formatMoney(fixedWk));
+      setText('tbl-wk-fixed-day', formatMoney(fixedDay));
+      setText('tbl-wk-var-mo', formatMoney(variable));
+      setText('tbl-wk-var-wk', formatMoney(varWk));
+      setText('tbl-wk-var-day', formatMoney(varDay));
+
+      const surplusColor = surplus >= 0 ? 'text-green-700' : 'text-red-700';
+      const formatSurplus = (n) => n >= 0 ? `+${formatMoney(n)}` : formatMoney(n);
+
+      const surplusMoEl = document.getElementById('tbl-wk-surplus-mo');
+      const surplusWkEl = document.getElementById('tbl-wk-surplus-wk');
+      const surplusDayEl = document.getElementById('tbl-wk-surplus-day');
+      if (surplusMoEl) { surplusMoEl.textContent = formatSurplus(surplus); surplusMoEl.className = `px-3 py-2 text-right ${surplusColor}`; }
+      if (surplusWkEl) { surplusWkEl.textContent = formatSurplus(surplusWk); surplusWkEl.className = `px-3 py-2 text-right ${surplusColor}`; }
+      if (surplusDayEl) { surplusDayEl.textContent = formatSurplus(surplusDay); surplusDayEl.className = `px-3 py-2 text-right ${surplusColor}`; }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

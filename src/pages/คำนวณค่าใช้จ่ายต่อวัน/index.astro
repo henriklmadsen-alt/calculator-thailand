@@ -1,1 +1,184 @@
-placeholder
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณค่าใช้จ่ายต่อวัน 2569 | วางแผนงบรายวันจากรายได้เดือน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณวงเงินค่าใช้จ่ายต่อวันจากรายได้เดือนและรายจ่ายคงที่ พร้อมคำแนะนำสัดส่วน 50/30/20 เพื่อวางแผนการเงินรายวันอย่างมีประสิทธิภาพ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าใช้จ่ายต่อวัน/`;
+
+const faqData = [
+  {
+    question: 'วิธีคำนวณค่าใช้จ่ายต่อวันทำอย่างไร?',
+    answer: 'นำรายได้สุทธิต่อเดือนหักรายจ่ายคงที่ (ค่าเช่า ค่าผ่อน ค่าสาธารณูปโภค เงินออม) แล้วหารด้วย 30 วัน จะได้วงเงินที่สามารถใช้จ่ายได้ต่อวัน',
+  },
+  {
+    question: 'สัดส่วน 50/30/20 คืออะไร?',
+    answer: 'กฎ 50/30/20 คือการแบ่งรายได้เป็น 50% สำหรับความจำเป็น (ค่าเช่า อาหาร เดินทาง) 30% สำหรับความต้องการ (บันเทิง ช้อปปิ้ง) และ 20% สำหรับเงินออมและชำระหนี้',
+  },
+  {
+    question: 'ค่าใช้จ่ายต่อวันควรเท่าไรสำหรับรายได้ 25,000 บาท?',
+    answer: 'หากมีรายได้ 25,000 บาทและรายจ่ายคงที่ประมาณ 10,000 บาท จะมีวงเงินที่ใช้ได้ 15,000 บาท หรือประมาณ 500 บาทต่อวัน ซึ่งควรรวมค่าอาหาร ค่าเดินทาง และค่าใช้จ่ายเบ็ดเตล็ด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าใช้จ่ายต่อวัน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าใช้จ่ายต่อวัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าใช้จ่ายต่อวัน 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณวงเงินค่าใช้จ่ายต่อวันจากรายได้เดือนและรายจ่ายคงที่ เพื่อวางแผนการใช้เงินรายวันอย่างมีประสิทธิภาพ</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="daily-form" class="space-y-4">
+        <div>
+          <label for="income" class="mb-1 block text-sm font-medium text-gray-700">รายได้สุทธิต่อเดือน (บาท)</label>
+          <input id="income" type="text" inputmode="numeric" placeholder="เช่น 25,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="rent" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่า/ผ่อนบ้านต่อเดือน (บาท)</label>
+          <input id="rent" type="text" inputmode="numeric" placeholder="เช่น 5,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="car" class="mb-1 block text-sm font-medium text-gray-700">ค่าผ่อนรถต่อเดือน (บาท)</label>
+          <input id="car" type="text" inputmode="numeric" placeholder="เช่น 3,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="utility" class="mb-1 block text-sm font-medium text-gray-700">ค่าสาธารณูปโภคต่อเดือน (บาท)</label>
+          <input id="utility" type="text" inputmode="numeric" placeholder="เช่น 1,500"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="saving-pct" class="mb-1 block text-sm font-medium text-gray-700">เป้าหมายออมเงิน (%)</label>
+          <input id="saving-pct" type="text" inputmode="numeric" placeholder="เช่น 10"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">วงเงินที่ใช้ได้ต่อวัน</div>
+          <div id="res-daily" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">รายได้สุทธิต่อเดือน</span>
+            <span id="res-income" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">รายจ่ายคงที่รวม</span>
+            <span id="res-fixed" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">เงินออมต่อเดือน</span>
+            <span id="res-saving" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">วงเงินคงเหลือต่อเดือน</span>
+            <span id="res-monthly" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-gray-700">วงเงินต่อสัปดาห์</span>
+            <span id="res-weekly" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+        </div>
+        <div id="advice-box" class="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800"></div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
+            <p class="text-sm text-gray-600">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators currentHref="/คำนวณค่าใช้จ่ายต่อวัน/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('daily-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const income = parseNum((document.getElementById('income') as HTMLInputElement).value);
+    const rent = parseNum((document.getElementById('rent') as HTMLInputElement).value);
+    const car = parseNum((document.getElementById('car') as HTMLInputElement).value);
+    const utility = parseNum((document.getElementById('utility') as HTMLInputElement).value);
+    const savingPct = parseNum((document.getElementById('saving-pct') as HTMLInputElement).value);
+
+    if (!income) return;
+
+    const saving = income * (savingPct / 100);
+    const fixed = rent + car + utility;
+    const remaining = income - fixed - saving;
+    const daily = remaining / 30;
+    const weekly = remaining / 4;
+
+    document.getElementById('res-income')!.textContent = fmt(income);
+    document.getElementById('res-fixed')!.textContent = fmt(fixed);
+    document.getElementById('res-saving')!.textContent = fmt(saving);
+    document.getElementById('res-monthly')!.textContent = fmt(remaining);
+    document.getElementById('res-daily')!.textContent = fmt(daily);
+    document.getElementById('res-weekly')!.textContent = fmt(weekly);
+
+    const rentRatio = income > 0 ? (rent / income) * 100 : 0;
+    let advice = '';
+    if (remaining < 0) {
+      advice = 'รายจ่ายคงที่และเงินออมมากกว่ารายได้ ควรพิจารณาลดรายจ่ายหรือหารายได้เพิ่ม';
+    } else if (rentRatio > 40) {
+      advice = 'ค่าเช่า/ผ่อนบ้านสูงเกิน 40% ของรายได้ ซึ่งอาจเป็นภาระมากเกินไป ควรพิจารณาปรับลด';
+    } else if (savingPct >= 20) {
+      advice = 'ยอดเยี่ยม! คุณออมเงินได้ถึง ' + savingPct + '% ซึ่งเป็นสัดส่วนที่ดีมาก';
+    } else {
+      advice = 'แนะนำให้ออมเงินอย่างน้อย 20% ของรายได้ตามกฎ 50/30/20 เพื่อความมั่นคงทางการเงิน';
+    }
+    document.getElementById('advice-box')!.textContent = advice;
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>
