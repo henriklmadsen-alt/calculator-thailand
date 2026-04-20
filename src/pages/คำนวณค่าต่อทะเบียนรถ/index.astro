@@ -1,0 +1,609 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าต่อทะเบียนรถ 2569 | ภาษี + พ.ร.บ. + ตรวจสภาพ ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณค่าต่อทะเบียนรถประจำปี 2569 ฟรี รวมภาษีรถ พ.ร.บ. ค่าตรวจสภาพ ค่าปรับล่าช้า รถเก๋ง กระบะ มอเตอร์ไซค์ เตรียมเงินก่อนไปขนส่ง ผลลัพธ์ทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าต่อทะเบียนรถ/`;
+
+const faqData = [
+  {
+    question: 'ต่อทะเบียนรถต้องจ่ายอะไรบ้าง?',
+    answer: 'การต่อทะเบียนรถประจำปีต้องจ่าย 3 รายการหลัก ได้แก่ 1) ภาษีรถยนต์ประจำปี (คำนวณตาม CC หรือน้ำหนักรถ) 2) พ.ร.บ. คุ้มครองผู้ประสบภัยจากรถ (ประกันภาคบังคับ) 3) ค่าตรวจสภาพรถ (เฉพาะรถอายุ 7 ปีขึ้นไป) หากชำระล่าช้าจะมีค่าปรับเพิ่ม 1% ต่อเดือน',
+  },
+  {
+    question: 'ต่อทะเบียนรถล่าช้าปรับเท่าไร?',
+    answer: 'หากต่อทะเบียนรถล่าช้า จะถูกปรับ 1% ของภาษีรถประจำปีต่อเดือน สูงสุดไม่เกิน 100% ของภาษี เช่น ภาษีรถ 3,000 บาท ล่าช้า 3 เดือน ปรับ 90 บาท หากล่าช้าเกิน 3 ปี ทะเบียนจะถูกระงับต้องจดทะเบียนใหม่',
+  },
+  {
+    question: 'รถอายุเท่าไรต้องตรวจสภาพก่อนต่อทะเบียน?',
+    answer: 'รถยนต์ (เก๋ง กระบะ) อายุ 7 ปีขึ้นไป และรถจักรยานยนต์อายุ 5 ปีขึ้นไป ต้องนำไปตรวจสภาพที่ ตรอ. (สถานตรวจสภาพรถเอกชน) ก่อนต่อทะเบียน ค่าตรวจสภาพรถยนต์ 200 บาท รถจักรยานยนต์ 60 บาท',
+  },
+  {
+    question: 'ต่อทะเบียนรถใช้เอกสารอะไรบ้าง?',
+    answer: 'เอกสารที่ต้องเตรียม ได้แก่ 1) สมุดคู่มือจดทะเบียนรถ (เล่มทะเบียน) 2) กรมธรรม์ พ.ร.บ. ที่ยังไม่หมดอายุ 3) ใบรับรองการตรวจสภาพรถ (กรณีรถอายุ 7 ปีขึ้นไป) 4) บัตรประจำตัวประชาชนเจ้าของรถ',
+  },
+  {
+    question: 'ต่อทะเบียนรถได้ที่ไหนบ้าง?',
+    answer: 'สามารถต่อทะเบียนรถได้ที่ 1) สำนักงานขนส่ง 2) เคาน์เตอร์เซอร์วิส (7-Eleven) 3) ไปรษณีย์ไทย 4) ธนาคาร เช่น กรุงไทย ออมสิน 5) แอป DLT Vehicle Tax ของกรมการขนส่งทางบก 6) เว็บไซต์ eservice.dlt.go.th โดยช่องทาง 2-6 ไม่รับรถที่ต้องตรวจสภาพ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าต่อทะเบียนรถประจำปี 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าต่อทะเบียนรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตอัตรากรมการขนส่งทางบก ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าต่อทะเบียนรถ 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าใช้จ่ายต่อทะเบียนรถประจำปี รวมภาษีรถ พ.ร.บ. ค่าตรวจสภาพ
+      และค่าปรับกรณีล่าช้า เตรียมเงินก่อนไปขนส่ง ผลลัพธ์ทันที ใช้งานฟรี
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรถยนต์</h2>
+
+      <form id="reg-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลให้ครบถ้วน
+        </p>
+
+        <!-- Vehicle Type -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทรถ</label>
+          <div class="flex rounded-lg bg-gray-100 p-1">
+            <button type="button" data-type="car" class="vehicle-type-btn flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700">
+              🚗 รถเก๋ง
+            </button>
+            <button type="button" data-type="pickup" class="vehicle-type-btn flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors text-gray-600">
+              🛻 รถกระบะ
+            </button>
+            <button type="button" data-type="motorcycle" class="vehicle-type-btn flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors text-gray-600">
+              🏍️ มอเตอร์ไซค์
+            </button>
+          </div>
+        </div>
+
+        <!-- Engine CC (car & motorcycle) -->
+        <div id="cc-field">
+          <label for="engine-cc" class="block text-sm font-medium text-gray-700 mb-1">
+            ขนาดเครื่องยนต์ (CC)
+          </label>
+          <input
+            type="text"
+            id="engine-cc"
+            inputmode="numeric"
+            placeholder="เช่น 1,500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">ดูได้จากเล่มทะเบียนรถ หรือสเปครถ</p>
+        </div>
+
+        <!-- Weight (pickup) -->
+        <div id="weight-field" class="hidden">
+          <label for="weight-kg" class="block text-sm font-medium text-gray-700 mb-1">
+            น้ำหนักรถ (กิโลกรัม)
+          </label>
+          <input
+            type="text"
+            id="weight-kg"
+            inputmode="numeric"
+            placeholder="เช่น 1,500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">ดูน้ำหนักรถจากเล่มทะเบียน (น้ำหนักรถเปล่า)</p>
+        </div>
+
+        <!-- Vehicle Age -->
+        <div>
+          <label for="vehicle-age" class="block text-sm font-medium text-gray-700 mb-1">
+            อายุรถ (ปี)
+          </label>
+          <input
+            type="text"
+            id="vehicle-age"
+            inputmode="numeric"
+            placeholder="เช่น 5"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="age-hint" class="mt-1 text-xs text-gray-500">นับจากปีจดทะเบียนครั้งแรก (รถเก๋งอายุเกิน 6 ปี ได้ส่วนลดภาษี)</p>
+        </div>
+
+        <!-- Late Months -->
+        <div>
+          <label for="late-months" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนเดือนที่ล่าช้า (ถ้ามี)
+          </label>
+          <input
+            type="text"
+            id="late-months"
+            inputmode="numeric"
+            placeholder="0"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">ค่าปรับ 1% ของภาษีต่อเดือน (ไม่เกิน 100%) กรอก 0 หากต่อตรงเวลา</p>
+        </div>
+
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณค่าต่อทะเบียน
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+      <!-- Summary Cards -->
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+        <div class="bg-primary-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">ภาษีรถยนต์</div>
+          <div id="res-tax" class="text-xl font-bold text-primary-700">-</div>
+        </div>
+        <div class="bg-blue-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">พ.ร.บ.</div>
+          <div id="res-prb" class="text-xl font-bold text-blue-700">-</div>
+        </div>
+        <div class="bg-amber-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">ค่าตรวจสภาพ</div>
+          <div id="res-inspect" class="text-xl font-bold text-amber-700">-</div>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4 text-center border-2 border-green-200">
+          <div class="text-sm text-gray-600 mb-1">รวมค่าต่อทะเบียน</div>
+          <div id="res-total" class="text-xl font-bold text-green-700">-</div>
+        </div>
+      </div>
+
+      <!-- Detail Table -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <table class="w-full text-sm">
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ประเภทรถ</td>
+              <td id="detail-type" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="detail-cc-row" class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ขนาดเครื่องยนต์</td>
+              <td id="detail-cc" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="detail-weight-row" class="hidden border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">น้ำหนักรถ</td>
+              <td id="detail-weight" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">อายุรถ</td>
+              <td id="detail-age" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ภาษีฐาน</td>
+              <td id="detail-base" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="detail-discount-row" class="hidden border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ส่วนลดอายุรถ</td>
+              <td id="detail-discount" class="px-4 py-3 text-right font-medium text-green-600">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ภาษีรถยนต์สุทธิ</td>
+              <td id="detail-net-tax" class="px-4 py-3 text-right font-bold text-primary-700">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">พ.ร.บ. (ประกันภัยภาคบังคับ)</td>
+              <td id="detail-prb" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="detail-inspect-row" class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ค่าตรวจสภาพรถ</td>
+              <td id="detail-inspect" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="detail-late-row" class="hidden border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ค่าปรับล่าช้า</td>
+              <td id="detail-late" class="px-4 py-3 text-right font-medium text-red-600">-</td>
+            </tr>
+            <tr class="bg-green-50">
+              <td class="px-4 py-3 font-semibold text-gray-900">รวมค่าต่อทะเบียนทั้งหมด</td>
+              <td id="detail-total" class="px-4 py-3 text-right font-bold text-green-700 text-lg">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Late Warning -->
+      <div id="late-warning" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+        <strong>หมายเหตุ:</strong> หากทะเบียนรถขาดต่อเกิน 3 ปี ทะเบียนจะถูกระงับ
+        ต้องจดทะเบียนใหม่ซึ่งมีค่าใช้จ่ายเพิ่มเติม กรุณาต่อทะเบียนให้ตรงเวลา
+      </div>
+
+      <!-- Checklist -->
+      <div class="bg-blue-50 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-gray-900 mb-3">สิ่งที่ต้องเตรียมไปต่อทะเบียน</h3>
+        <ul id="checklist" class="space-y-2 text-sm text-gray-700">
+          <li class="flex items-start gap-2">
+            <span class="text-blue-500 mt-0.5">✓</span>
+            <span>สมุดคู่มือจดทะเบียนรถ (เล่มทะเบียน)</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-blue-500 mt-0.5">✓</span>
+            <span>กรมธรรม์ พ.ร.บ. ที่ยังไม่หมดอายุ</span>
+          </li>
+          <li id="check-inspect" class="hidden flex items-start gap-2">
+            <span class="text-blue-500 mt-0.5">✓</span>
+            <span>ใบรับรองการตรวจสภาพรถจาก ตรอ.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-blue-500 mt-0.5">✓</span>
+            <span>บัตรประจำตัวประชาชนเจ้าของรถ</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-blue-500 mt-0.5">✓</span>
+            <span id="check-amount">เงินสด / โอนจ่าย (ดูยอดรวมด้านบน)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าต่อทะเบียนรถคืออะไร?</h2>
+
+      <p>
+        ค่าต่อทะเบียนรถ คือค่าใช้จ่ายรวมที่เจ้าของรถต้องจ่ายเพื่อต่ออายุทะเบียนรถประจำปี
+        ให้กับกรมการขนส่งทางบก ประกอบด้วย ภาษีรถยนต์ประจำปี พ.ร.บ. (ประกันภาคบังคับ)
+        และค่าตรวจสภาพรถ (กรณีรถเก่า) โดยต้องต่อทะเบียนก่อนวันหมดอายุที่ระบุในป้ายวงกลม
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าใช้จ่ายต่อทะเบียนรถแต่ละประเภท</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-4 py-2 text-left border-b">รายการ</th>
+              <th class="px-4 py-2 text-right border-b">รถเก๋ง</th>
+              <th class="px-4 py-2 text-right border-b">รถกระบะ</th>
+              <th class="px-4 py-2 text-right border-b">มอเตอร์ไซค์</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-2">ภาษีประจำปี</td>
+              <td class="px-4 py-2 text-right">ตาม CC</td>
+              <td class="px-4 py-2 text-right">ตามน้ำหนัก</td>
+              <td class="px-4 py-2 text-right">100 บาท</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">พ.ร.บ.</td>
+              <td class="px-4 py-2 text-right">645.21 บาท</td>
+              <td class="px-4 py-2 text-right">967.28 บาท</td>
+              <td class="px-4 py-2 text-right">323.14 บาท</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">ค่าตรวจสภาพ</td>
+              <td class="px-4 py-2 text-right">200 บาท*</td>
+              <td class="px-4 py-2 text-right">200 บาท*</td>
+              <td class="px-4 py-2 text-right">60 บาท*</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">ส่วนลดอายุรถ</td>
+              <td class="px-4 py-2 text-right">10-50%**</td>
+              <td class="px-4 py-2 text-right">ไม่มี</td>
+              <td class="px-4 py-2 text-right">ไม่มี</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-xs text-gray-500 mt-2">
+        * เฉพาะรถยนต์อายุ 7 ปีขึ้นไป / มอเตอร์ไซค์อายุ 5 ปีขึ้นไป<br />
+        ** รถเก๋งอายุ 6 ปีขึ้นไปได้ส่วนลดภาษี ตั้งแต่ 10% (ปีที่ 6) ถึง 50% (ปีที่ 10+)
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าปรับต่อทะเบียนล่าช้า</h3>
+
+      <p>
+        หากไม่ต่อทะเบียนรถภายในกำหนด จะต้องจ่ายค่าปรับ <strong>1% ของภาษีรถต่อเดือน</strong>
+        (เศษของเดือนคิดเป็น 1 เดือน) สูงสุดไม่เกิน 100% ของภาษี
+      </p>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-4 py-2 text-left border-b">ระยะเวลาล่าช้า</th>
+              <th class="px-4 py-2 text-right border-b">ค่าปรับ</th>
+              <th class="px-4 py-2 text-right border-b">ตัวอย่าง (ภาษี 3,000 บ.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b"><td class="px-4 py-2">1 เดือน</td><td class="px-4 py-2 text-right">1%</td><td class="px-4 py-2 text-right">30 บาท</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">3 เดือน</td><td class="px-4 py-2 text-right">3%</td><td class="px-4 py-2 text-right">90 บาท</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">6 เดือน</td><td class="px-4 py-2 text-right">6%</td><td class="px-4 py-2 text-right">180 บาท</td></tr>
+            <tr class="border-b"><td class="px-4 py-2">12 เดือน</td><td class="px-4 py-2 text-right">12%</td><td class="px-4 py-2 text-right">360 บาท</td></tr>
+            <tr><td class="px-4 py-2">เกิน 3 ปี</td><td class="px-4 py-2 text-right">ทะเบียนถูกระงับ</td><td class="px-4 py-2 text-right">ต้องจดทะเบียนใหม่</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ช่องทางต่อทะเบียนรถ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>สำนักงานขนส่ง</strong> — รับทุกกรณี รวมรถที่ต้องตรวจสภาพ</li>
+        <li><strong>เคาน์เตอร์เซอร์วิส (7-Eleven)</strong> — สะดวก เฉพาะรถไม่ต้องตรวจสภาพ</li>
+        <li><strong>ไปรษณีย์ไทย</strong> — เฉพาะรถไม่ต้องตรวจสภาพ</li>
+        <li><strong>แอป DLT Vehicle Tax</strong> — ออนไลน์ เฉพาะรถไม่ต้องตรวจสภาพ</li>
+        <li><strong>เว็บไซต์ eservice.dlt.go.th</strong> — ออนไลน์ เฉพาะรถไม่ต้องตรวจสภาพ</li>
+      </ul>
+
+      <p class="mt-4">
+        เครื่องคำนวณนี้ช่วยให้คุณเตรียมค่าใช้จ่ายต่อทะเบียนรถประจำปีได้อย่างแม่นยำ
+        ทั้งภาษีรถ พ.ร.บ. ค่าตรวจสภาพ และค่าปรับล่าช้า เพื่อวางแผนการเงินก่อนไปต่อทะเบียน
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าต่อทะเบียนรถ/" />
+    <RelatedCalculators currentHref="/คำนวณค่าต่อทะเบียนรถ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      อัตราภาษีอ้างอิงจากกรมการขนส่งทางบก ค่า พ.ร.บ. อ้างอิงตาม พ.ร.บ.คุ้มครองผู้ประสบภัยจากรถ
+      ค่าใช้จ่ายจริงอาจแตกต่างเล็กน้อย กรุณาตรวจสอบกับกรมการขนส่งทางบกอีกครั้ง
+    </div>
+  </article>
+
+  <script>
+    import { calculateVehicleTax } from '../../lib/vehicle-tax-calculator';
+    import type { VehicleType } from '../../lib/vehicle-tax-calculator';
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function fmtInt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    let currentType: VehicleType = 'car';
+
+    const typeButtons = document.querySelectorAll('.vehicle-type-btn') as NodeListOf<HTMLButtonElement>;
+    const ccField = document.getElementById('cc-field') as HTMLDivElement;
+    const weightField = document.getElementById('weight-field') as HTMLDivElement;
+    const ageHint = document.getElementById('age-hint') as HTMLParagraphElement;
+    const ccInput = document.getElementById('engine-cc') as HTMLInputElement;
+    const weightInput = document.getElementById('weight-kg') as HTMLInputElement;
+    const ageInput = document.getElementById('vehicle-age') as HTMLInputElement;
+    const lateInput = document.getElementById('late-months') as HTMLInputElement;
+    const formError = document.getElementById('form-error') as HTMLParagraphElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    function setType(type: VehicleType) {
+      currentType = type;
+      typeButtons.forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.className = 'vehicle-type-btn flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700';
+        } else {
+          btn.className = 'vehicle-type-btn flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors text-gray-600';
+        }
+      });
+
+      ccField.classList.toggle('hidden', type === 'pickup');
+      weightField.classList.toggle('hidden', type !== 'pickup');
+
+      if (type === 'car') {
+        ageHint.textContent = 'นับจากปีจดทะเบียนครั้งแรก (รถเก๋งอายุเกิน 6 ปี ได้ส่วนลดภาษี)';
+      } else {
+        ageHint.textContent = 'นับจากปีจดทะเบียนครั้งแรก (ใช้คำนวณค่าตรวจสภาพ)';
+      }
+
+      resultsDiv.classList.add('hidden');
+      formError.classList.add('hidden');
+    }
+
+    typeButtons.forEach(btn => {
+      btn.addEventListener('click', () => setType(btn.dataset.type as VehicleType));
+    });
+
+    function doCalculate() {
+      formError.classList.add('hidden');
+
+      const engineCC = parseNum(ccInput.value);
+      const weightKg = parseNum(weightInput.value);
+      const vehicleAge = Math.max(0, Math.floor(parseNum(ageInput.value)));
+      const lateMonths = Math.max(0, Math.floor(parseNum(lateInput.value)));
+
+      // Validate
+      if (currentType === 'pickup' && weightKg <= 0) {
+        formError.textContent = 'กรุณากรอกน้ำหนักรถ';
+        formError.classList.remove('hidden');
+        weightInput.focus();
+        return;
+      }
+      if (currentType !== 'pickup' && engineCC <= 0) {
+        formError.textContent = 'กรุณากรอกขนาดเครื่องยนต์ (CC)';
+        formError.classList.remove('hidden');
+        ccInput.focus();
+        return;
+      }
+
+      trackCalculatorStart('vehicle_registration_renewal');
+
+      const result = calculateVehicleTax({
+        vehicleType: currentType,
+        engineCC,
+        weightKg,
+        vehicleAge,
+      });
+
+      // Late penalty: 1% per month, capped at 100%
+      const latePenaltyPercent = Math.min(lateMonths, 100);
+      const latePenalty = result.annualTax * (latePenaltyPercent / 100);
+      const grandTotal = result.totalCost + latePenalty;
+
+      // Summary cards
+      (document.getElementById('res-tax') as HTMLElement).textContent = fmt(result.annualTax) + ' บาท';
+      (document.getElementById('res-prb') as HTMLElement).textContent = fmt(result.prbInsurance) + ' บาท';
+      (document.getElementById('res-inspect') as HTMLElement).textContent = result.inspectionFee > 0 ? fmt(result.inspectionFee) + ' บาท' : 'ไม่ต้องตรวจ';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(grandTotal) + ' บาท';
+
+      // Detail table
+      const typeNames: Record<VehicleType, string> = { car: 'รถเก๋ง (ไม่เกิน 7 ที่นั่ง)', pickup: 'รถกระบะ/รถบรรทุก', motorcycle: 'รถจักรยานยนต์' };
+      (document.getElementById('detail-type') as HTMLElement).textContent = typeNames[currentType];
+
+      const ccRow = document.getElementById('detail-cc-row') as HTMLTableRowElement;
+      const weightRow = document.getElementById('detail-weight-row') as HTMLTableRowElement;
+      if (currentType === 'pickup') {
+        ccRow.classList.add('hidden');
+        weightRow.classList.remove('hidden');
+        (document.getElementById('detail-weight') as HTMLElement).textContent = fmtInt(weightKg) + ' กก.';
+      } else {
+        ccRow.classList.remove('hidden');
+        weightRow.classList.add('hidden');
+        (document.getElementById('detail-cc') as HTMLElement).textContent = fmtInt(engineCC) + ' CC';
+      }
+
+      (document.getElementById('detail-age') as HTMLElement).textContent = vehicleAge + ' ปี';
+      (document.getElementById('detail-base') as HTMLElement).textContent = fmt(result.baseTax) + ' บาท';
+
+      const discountRow = document.getElementById('detail-discount-row') as HTMLTableRowElement;
+      if (result.ageDiscountPercent > 0) {
+        discountRow.classList.remove('hidden');
+        (document.getElementById('detail-discount') as HTMLElement).textContent =
+          `-${fmt(result.ageDiscount)} บาท (${result.ageDiscountPercent * 100}%)`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+
+      (document.getElementById('detail-net-tax') as HTMLElement).textContent = fmt(result.annualTax) + ' บาท';
+      (document.getElementById('detail-prb') as HTMLElement).textContent = fmt(result.prbInsurance) + ' บาท';
+
+      const inspectRow = document.getElementById('detail-inspect-row') as HTMLTableRowElement;
+      if (result.inspectionFee > 0) {
+        inspectRow.classList.remove('hidden');
+        (document.getElementById('detail-inspect') as HTMLElement).textContent = fmt(result.inspectionFee) + ' บาท';
+      } else {
+        inspectRow.classList.add('hidden');
+      }
+
+      // Late penalty row
+      const lateRow = document.getElementById('detail-late-row') as HTMLTableRowElement;
+      if (latePenalty > 0) {
+        lateRow.classList.remove('hidden');
+        (document.getElementById('detail-late') as HTMLElement).textContent =
+          `+${fmt(latePenalty)} บาท (${latePenaltyPercent}%)`;
+      } else {
+        lateRow.classList.add('hidden');
+      }
+
+      (document.getElementById('detail-total') as HTMLElement).textContent = fmt(grandTotal) + ' บาท';
+
+      // Late warning
+      const lateWarning = document.getElementById('late-warning') as HTMLDivElement;
+      if (lateMonths > 30) {
+        lateWarning.classList.remove('hidden');
+      } else {
+        lateWarning.classList.add('hidden');
+      }
+
+      // Checklist: show inspection item if needed
+      const checkInspect = document.getElementById('check-inspect') as HTMLLIElement;
+      if (result.inspectionFee > 0) {
+        checkInspect.classList.remove('hidden');
+      } else {
+        checkInspect.classList.add('hidden');
+      }
+
+      // Update amount in checklist
+      (document.getElementById('check-amount') as HTMLElement).textContent =
+        `เงินสด / โอนจ่าย ประมาณ ${fmt(grandTotal)} บาท`;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      trackCalculatorUsed('vehicle_registration_renewal');
+      trackCalculatorComplete('vehicle_registration_renewal', grandTotal);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', doCalculate);
+
+    // Enter key support
+    [ccInput, weightInput, ageInput, lateInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); doCalculate(); }
+      });
+    });
+
+    // Track result viewed
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('vehicle_registration_renewal');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

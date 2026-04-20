@@ -1,0 +1,642 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import { destinations, visaTypeLabels } from '../../lib/visa-fee-calculator';
+
+const pageTitle = 'คำนวณค่าวีซ่า 2569 | ค่าธรรมเนียมวีซ่าทุกประเทศ ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณค่าวีซ่าสำหรับคนไทย 2569 ฟรี เลือกประเทศปลายทาง ประเภทวีซ่า ท่องเที่ยว ธุรกิจ นักเรียน ทำงาน พร้อมค่าธรรมเนียม ค่าบริการ ระยะเวลาดำเนินการ ผลลัพธ์ทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าวีซ่า/`;
+
+const faqData = [
+  {
+    question: 'คนไทยต้องขอวีซ่าไปประเทศอะไรบ้าง?',
+    answer: 'คนไทยต้องขอวีซ่าเดินทางไปหลายประเทศ เช่น สหรัฐอเมริกา สหราชอาณาจักร เชงเกน (ยุโรป) ออสเตรเลีย แคนาดา นิวซีแลนด์ เป็นต้น บางประเทศอย่างญี่ปุ่น เกาหลีใต้ จีน มีข้อตกลงยกเว้นวีซ่าสำหรับการเข้าพักระยะสั้น',
+  },
+  {
+    question: 'ค่าวีซ่าท่องเที่ยวยุโรป (เชงเกน) เท่าไร?',
+    answer: 'ค่าธรรมเนียมวีซ่าเชงเกนสำหรับผู้ใหญ่คือ 80 ยูโร (ประมาณ 2,960 บาท) บวกค่าบริการศูนย์รับยื่นวีซ่า (VFS/TLS) ประมาณ 1,100 บาท รวมประมาณ 4,060 บาท ระยะเวลาพิจารณาประมาณ 10-15 วันทำการ',
+  },
+  {
+    question: 'วีซ่าญี่ปุ่นสำหรับคนไทยฟรีจริงหรือ?',
+    answer: 'ใช่ ค่าธรรมเนียมวีซ่าญี่ปุ่นสำหรับคนไทยทุกประเภทไม่เสียค่าธรรมเนียม (ฟรี) ทั้งวีซ่าท่องเที่ยว ธุรกิจ นักเรียน และทำงาน นอกจากนี้คนไทยยังเข้าญี่ปุ่นได้โดยไม่ต้องขอวีซ่าสูงสุด 15 วัน',
+  },
+  {
+    question: 'ค่าวีซ่าอเมริกาเท่าไร?',
+    answer: 'ค่าธรรมเนียมวีซ่าท่องเที่ยว/ธุรกิจ (B1/B2) สหรัฐอเมริกาคือ $185 (ประมาณ 5,780 บาท) ต้องชำระก่อนนัดสัมภาษณ์ ไม่คืนเงินไม่ว่าผลจะอนุมัติหรือไม่ และต้องสัมภาษณ์ที่สถานทูตสหรัฐฯ กรุงเทพฯ',
+  },
+  {
+    question: 'ค่าวีซ่ารวมค่าอะไรบ้าง?',
+    answer: 'ค่าวีซ่าโดยทั่วไปประกอบด้วย: (1) ค่าธรรมเนียมวีซ่า (Visa Fee) ที่จ่ายให้สถานทูต/กงสุล (2) ค่าบริการศูนย์รับยื่นวีซ่า (Service Fee) เช่น VFS Global, TLS Contact (3) ค่าบริการด่วน (Express Fee) กรณีต้องการผลเร็วขึ้น บางประเทศอาจมีค่าใช้จ่ายเพิ่มเติม เช่น ค่า SEVIS (สหรัฐฯ) หรือ IHS (สหราชอาณาจักร)',
+  },
+  {
+    question: 'ขอวีซ่าใช้เวลากี่วัน?',
+    answer: 'ระยะเวลาขึ้นอยู่กับประเทศปลายทาง วีซ่าญี่ปุ่นประมาณ 5 วันทำการ เชงเกน 10-15 วันทำการ สหรัฐฯ 3-5 วันหลังสัมภาษณ์ ออสเตรเลีย 15-30 วันทำการ แคนาดา 20-30 วันทำการ แนะนำให้ยื่นล่วงหน้าอย่างน้อย 1-2 เดือนก่อนเดินทาง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าวีซ่า (Visa Fee Calculator) 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าวีซ่า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 10 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิงข้อมูลจากสถานทูต/สถานกงสุล และศูนย์รับยื่นวีซ่า ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าวีซ่า 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าธรรมเนียมวีซ่าสำหรับคนไทยเดินทางต่างประเทศ เลือกประเทศปลายทาง ประเภทวีซ่า
+      ท่องเที่ยว ธุรกิจ นักเรียน ทำงาน พร้อมค่าบริการศูนย์ยื่นวีซ่าและระยะเวลาดำเนินการ ใช้งานฟรี
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'สถานทูตและสถานกงสุลประจำประเทศไทย',
+        'ศูนย์รับยื่นวีซ่า VFS Global / TLS Contact',
+        'กระทรวงการต่างประเทศ',
+      ]}
+      assumptions={[
+        'ค่าธรรมเนียมเป็นอัตราโดยประมาณ แปลงเป็นเงินบาทตามอัตราแลกเปลี่ยนเฉลี่ย',
+        'ค่าบริการศูนย์รับยื่นวีซ่าอาจเปลี่ยนแปลงได้',
+        'ไม่รวมค่าแปลเอกสาร ค่าประกันเดินทาง หรือค่าใช้จ่ายอื่นนอกเหนือค่าวีซ่า',
+      ]}
+      references={[
+        {
+          label: 'กระทรวงการต่างประเทศ: ข้อมูลวีซ่า',
+          href: 'https://www.mfa.go.th/',
+        },
+        {
+          label: 'VFS Global Thailand',
+          href: 'https://www.vfsglobal.com/',
+        },
+      ]}
+    />
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">เลือกประเทศปลายทางและประเภทวีซ่า</h2>
+
+      <form id="visa-form" class="space-y-5">
+        <!-- Destination -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ประเทศปลายทาง</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {destinations.map((dest, i) => (
+              <button
+                type="button"
+                data-dest={dest.id}
+                class:list={[
+                  'dest-btn rounded-lg border-2 px-3 py-3 text-center text-sm font-semibold transition-colors',
+                  i === 0
+                    ? 'active-btn border-primary-500 bg-primary-50 text-primary-700'
+                    : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300',
+                ]}
+              >
+                <span class="block text-lg mb-1">{dest.icon}</span>
+                <span class="block text-xs">{dest.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Visa Exempt Notice -->
+        <div id="visa-exempt-notice" class="rounded-lg border border-green-200 bg-green-50 p-3">
+          <p class="text-sm font-semibold text-green-700" id="exempt-text">
+            คนไทยเข้าญี่ปุ่นได้โดยไม่ต้องขอวีซ่า สูงสุด 15 วัน
+          </p>
+          <p class="mt-1 text-xs text-green-600">หากต้องการอยู่นานกว่านี้หรือวีซ่าประเภทอื่น สามารถคำนวณค่าธรรมเนียมด้านล่าง</p>
+        </div>
+
+        <!-- Visa Type -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทวีซ่า</label>
+          <div id="visa-type-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <!-- Populated by script based on destination -->
+          </div>
+        </div>
+
+        <!-- Processing Speed -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ความเร็วดำเนินการ</label>
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" data-speed="regular" class="speed-btn active-btn rounded-lg border-2 border-primary-500 bg-primary-50 px-4 py-3 text-center text-sm font-semibold text-primary-700 transition-colors">
+              <span class="block">ปกติ</span>
+              <span class="block text-xs font-normal text-gray-500 mt-1" id="regular-days">-</span>
+            </button>
+            <button type="button" data-speed="express" class="speed-btn rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:border-gray-300">
+              <span class="block">ด่วน</span>
+              <span class="block text-xs font-normal text-gray-500 mt-1" id="express-days">-</span>
+            </button>
+          </div>
+          <p id="no-express-note" class="hidden mt-2 text-xs text-amber-600 font-medium">
+            * ประเทศนี้ไม่มีบริการด่วน — ระยะเวลาเท่ากับบริการปกติ
+          </p>
+        </div>
+
+        <!-- Number of Applicants -->
+        <div>
+          <label for="num-applicants" class="block text-sm font-medium text-gray-700 mb-2">จำนวนผู้ยื่นขอวีซ่า</label>
+          <input
+            type="number"
+            id="num-applicants"
+            min="1"
+            max="20"
+            value="1"
+            class="w-full sm:w-32 rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+          />
+        </div>
+
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าวีซ่า
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+      <!-- Summary Cards -->
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+        <div class="bg-primary-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายรวมทั้งหมด</div>
+          <div id="res-total" class="text-2xl font-bold text-primary-700">-</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">ค่าต่อคน</div>
+          <div id="res-per-person" class="text-xl font-bold text-gray-800">-</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">ระยะเวลาดำเนินการ</div>
+          <div id="res-processing" class="text-xl font-bold text-gray-800">-</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600 mb-1">จำนวนผู้ยื่น</div>
+          <div id="res-applicants" class="text-xl font-bold text-gray-800">-</div>
+        </div>
+      </div>
+
+      <!-- Fee Breakdown -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-200">
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">รายการ</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">จำนวนเงิน (บาท)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">ค่าธรรมเนียมวีซ่า</td>
+              <td id="res-visa-fee" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="row-original-fee" class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-500 text-xs pl-8" id="res-original-label">สกุลเงินเดิม</td>
+              <td id="res-original-fee" class="px-4 py-3 text-right text-xs text-gray-500">-</td>
+            </tr>
+            <tr id="row-service" class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">ค่าบริการศูนย์ยื่นวีซ่า</td>
+              <td id="res-service-fee" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr id="row-express" class="border-b border-gray-100 hidden">
+              <td class="px-4 py-3 text-gray-700">ค่าบริการด่วน</td>
+              <td id="res-express" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 font-semibold text-gray-900">รวมต่อคน</td>
+              <td id="res-per-person-table" class="px-4 py-3 text-right font-bold text-gray-900">-</td>
+            </tr>
+            <tr id="row-multi" class="hidden border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-500 text-xs pl-8" id="res-multi-label">x จำนวนผู้ยื่น</td>
+              <td class="px-4 py-3 text-right text-xs text-gray-500">-</td>
+            </tr>
+            <tr class="bg-primary-50">
+              <td class="px-4 py-3 font-semibold text-gray-900">รวมทั้งสิ้น</td>
+              <td id="res-total-table" class="px-4 py-3 text-right font-bold text-primary-700">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Notes -->
+      <div id="notes-section" class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
+        <h3 class="text-base font-semibold text-gray-900 mb-3">หมายเหตุ</h3>
+        <ul id="notes-list" class="space-y-2">
+          <!-- Populated by script -->
+        </ul>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- Educational Content -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2>วีซ่าคืออะไร?</h2>
+      <p>
+        วีซ่า (Visa) คือเอกสารหรือตราประทับในหนังสือเดินทางที่อนุญาตให้ผู้ถือเข้าประเทศปลายทาง
+        ออกโดยสถานทูตหรือสถานกงสุลของประเทศนั้น ๆ แต่ละประเทศมีข้อกำหนดและค่าธรรมเนียมแตกต่างกัน
+      </p>
+
+      <h3>ประเภทวีซ่าหลัก</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ประเภท</th>
+            <th>วัตถุประสงค์</th>
+            <th>ระยะเวลาพำนักโดยทั่วไป</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ท่องเที่ยว (Tourist)</td>
+            <td>เดินทางท่องเที่ยว เยี่ยมญาติ</td>
+            <td>15-90 วัน</td>
+          </tr>
+          <tr>
+            <td>ทรานซิท (Transit)</td>
+            <td>เปลี่ยนเครื่องบินผ่านประเทศ</td>
+            <td>24-72 ชั่วโมง</td>
+          </tr>
+          <tr>
+            <td>ธุรกิจ (Business)</td>
+            <td>ประชุม สัมมนา ติดต่อธุรกิจ</td>
+            <td>30-90 วัน</td>
+          </tr>
+          <tr>
+            <td>นักเรียน (Student)</td>
+            <td>ศึกษาต่อ ฝึกอบรม</td>
+            <td>ตามหลักสูตร</td>
+          </tr>
+          <tr>
+            <td>ทำงาน (Work)</td>
+            <td>จ้างงานในต่างประเทศ</td>
+            <td>1-3 ปี (ต่ออายุได้)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>ประเทศที่คนไทยไม่ต้องขอวีซ่า (ยกเว้นวีซ่า)</h3>
+      <p>
+        คนไทยสามารถเดินทางไปหลายประเทศโดยไม่ต้องขอวีซ่าล่วงหน้า เช่น
+      </p>
+      <ul>
+        <li><strong>ญี่ปุ่น</strong> — พำนักได้ 15 วัน</li>
+        <li><strong>เกาหลีใต้</strong> — พำนักได้ 90 วัน</li>
+        <li><strong>จีน</strong> — พำนักได้ 30 วัน (ถึง 31 ธ.ค. 2569)</li>
+        <li><strong>อาเซียน</strong> — พำนักได้ 14-30 วัน (แล้วแต่ประเทศ)</li>
+        <li><strong>ฮ่องกง มาเก๊า</strong> — พำนักได้ 30 วัน</li>
+      </ul>
+
+      <h3>เอกสารที่ต้องเตรียมสำหรับยื่นวีซ่า (โดยทั่วไป)</h3>
+      <ol>
+        <li>หนังสือเดินทาง (พาสปอร์ต) ที่มีอายุเหลืออย่างน้อย 6 เดือน</li>
+        <li>รูปถ่ายพื้นหลังขาว ขนาดตามที่สถานทูตกำหนด</li>
+        <li>แบบฟอร์มยื่นวีซ่าที่กรอกครบถ้วน</li>
+        <li>หลักฐานการเงิน (Bank Statement ย้อนหลัง 3-6 เดือน)</li>
+        <li>แผนการเดินทาง ตั๋วเครื่องบิน ที่พัก</li>
+        <li>ประกันเดินทาง (บางประเทศบังคับ เช่น เชงเกน)</li>
+        <li>หนังสือรับรองการทำงาน/หนังสือรับรองจากบริษัท</li>
+      </ol>
+
+      <h3>เคล็ดลับการยื่นขอวีซ่า</h3>
+      <ul>
+        <li>ยื่นล่วงหน้าอย่างน้อย 1-2 เดือนก่อนเดินทาง</li>
+        <li>เตรียมเอกสารให้ครบถ้วนและเป็นปัจจุบัน</li>
+        <li>หลักฐานการเงินควรแสดงยอดเงินสม่ำเสมอ ไม่โอนเข้าก้อนใหญ่ก่อนยื่น</li>
+        <li>ตรวจสอบข้อกำหนดล่าสุดจากสถานทูตโดยตรง เพราะอาจมีการเปลี่ยนแปลง</li>
+      </ul>
+    </section>
+
+    <!-- Fee Comparison Table -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">เปรียบเทียบค่าวีซ่าท่องเที่ยวยอดนิยม 2569</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm bg-white rounded-lg shadow-sm border border-gray-200">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-200">
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">ประเทศ</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">ค่าวีซ่า</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">ค่าบริการ</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รวม (บาท)</th>
+              <th class="px-4 py-3 text-center font-semibold text-gray-700">ระยะเวลา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">🇯🇵 ญี่ปุ่น</td>
+              <td class="px-4 py-3 text-right text-green-600 font-medium">ฟรี</td>
+              <td class="px-4 py-3 text-right text-green-600 font-medium">ฟรี</td>
+              <td class="px-4 py-3 text-right font-bold text-green-600">ฟรี</td>
+              <td class="px-4 py-3 text-center text-gray-600">5 วัน</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">🇰🇷 เกาหลีใต้</td>
+              <td class="px-4 py-3 text-right text-gray-900">1,360</td>
+              <td class="px-4 py-3 text-right text-gray-600">550</td>
+              <td class="px-4 py-3 text-right font-bold text-gray-900">1,910</td>
+              <td class="px-4 py-3 text-center text-gray-600">5-7 วัน</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">🇨🇳 จีน</td>
+              <td class="px-4 py-3 text-right text-gray-900">1,500</td>
+              <td class="px-4 py-3 text-right text-gray-600">800</td>
+              <td class="px-4 py-3 text-right font-bold text-gray-900">2,300</td>
+              <td class="px-4 py-3 text-center text-gray-600">4-5 วัน</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">🇪🇺 เชงเกน</td>
+              <td class="px-4 py-3 text-right text-gray-900">2,960</td>
+              <td class="px-4 py-3 text-right text-gray-600">1,100</td>
+              <td class="px-4 py-3 text-right font-bold text-gray-900">4,060</td>
+              <td class="px-4 py-3 text-center text-gray-600">10-15 วัน</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">🇬🇧 สหราชอาณาจักร</td>
+              <td class="px-4 py-3 text-right text-gray-900">4,300</td>
+              <td class="px-4 py-3 text-right text-gray-600">1,000</td>
+              <td class="px-4 py-3 text-right font-bold text-gray-900">5,300</td>
+              <td class="px-4 py-3 text-center text-gray-600">15 วัน</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-700">🇺🇸 สหรัฐอเมริกา</td>
+              <td class="px-4 py-3 text-right text-gray-900">5,780</td>
+              <td class="px-4 py-3 text-right text-gray-600">-</td>
+              <td class="px-4 py-3 text-right font-bold text-gray-900">5,780</td>
+              <td class="px-4 py-3 text-center text-gray-600">3-5 วัน*</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 text-gray-700">🇦🇺 ออสเตรเลีย</td>
+              <td class="px-4 py-3 text-right text-gray-900">5,500</td>
+              <td class="px-4 py-3 text-right text-gray-600">900</td>
+              <td class="px-4 py-3 text-right font-bold text-gray-900">6,400</td>
+              <td class="px-4 py-3 text-center text-gray-600">15-30 วัน</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-gray-500">* สหรัฐอเมริกา: ระยะเวลาหลังสัมภาษณ์ คิวสัมภาษณ์อาจใช้เวลาเพิ่มเติม</p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าวีซ่า/" />
+    <RelatedCalculators currentHref="/คำนวณค่าวีซ่า/" />
+
+    <!-- Disclaimer -->
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลคำนวณเป็นการประมาณตามข้อมูลจากสถานทูตและศูนย์รับยื่นวีซ่า
+      เพื่อใช้ในการวางแผนเท่านั้น ค่าธรรมเนียมจริงอาจมีการเปลี่ยนแปลงตามอัตราแลกเปลี่ยนและนโยบายของแต่ละประเทศ
+      กรุณาตรวจสอบกับสถานทูตหรือศูนย์รับยื่นวีซ่าอีกครั้งก่อนยื่น
+    </div>
+  </article>
+
+  <script>
+    import { calculateVisaFee, destinations, visaTypeLabels, getDestinationById } from '../../lib/visa-fee-calculator';
+    import type { VisaDestination, VisaType, ProcessingSpeed } from '../../lib/visa-fee-calculator';
+
+    /* ── helpers ── */
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    /* ── state ── */
+    let selectedDest: VisaDestination = 'japan';
+    let selectedVisaType: VisaType = 'tourist';
+    let selectedSpeed: ProcessingSpeed = 'regular';
+
+    /* ── DOM refs ── */
+    const destBtns = document.querySelectorAll<HTMLButtonElement>('.dest-btn');
+    const speedBtns = document.querySelectorAll<HTMLButtonElement>('.speed-btn');
+    const visaTypeGrid = document.getElementById('visa-type-grid')!;
+    const btnCalculate = document.getElementById('btn-calculate')!;
+    const resultsDiv = document.getElementById('results')!;
+    const exemptNotice = document.getElementById('visa-exempt-notice')!;
+    const exemptText = document.getElementById('exempt-text')!;
+    const noExpressNote = document.getElementById('no-express-note')!;
+
+    /* ── button toggle helper ── */
+    function activateBtn(group: NodeListOf<HTMLButtonElement> | HTMLButtonElement[], activeBtn: HTMLButtonElement) {
+      (group as NodeListOf<HTMLButtonElement>).forEach((b: HTMLButtonElement) => {
+        b.classList.remove('active-btn', 'border-primary-500', 'bg-primary-50', 'text-primary-700');
+        b.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
+      });
+      activeBtn.classList.add('active-btn', 'border-primary-500', 'bg-primary-50', 'text-primary-700');
+      activeBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
+    }
+
+    /* ── render visa type buttons for selected destination ── */
+    function renderVisaTypes(destId: VisaDestination) {
+      const dest = getDestinationById(destId);
+      if (!dest) return;
+
+      visaTypeGrid.innerHTML = dest.availableVisaTypes
+        .map((vt, i) => {
+          const isActive = i === 0;
+          const activeClass = isActive
+            ? 'active-btn border-primary-500 bg-primary-50 text-primary-700'
+            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300';
+          return `<button type="button" data-visatype="${vt}" class="visatype-btn rounded-lg border-2 px-3 py-3 text-center text-sm font-semibold transition-colors ${activeClass}">${visaTypeLabels[vt]}</button>`;
+        })
+        .join('');
+
+      // Set default visa type
+      selectedVisaType = dest.availableVisaTypes[0];
+
+      // Bind visa type events
+      const vtBtns = document.querySelectorAll<HTMLButtonElement>('.visatype-btn');
+      vtBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          selectedVisaType = btn.dataset.visatype as VisaType;
+          activateBtn(vtBtns, btn);
+        });
+      });
+    }
+
+    /* ── update exempt notice ── */
+    function updateExemptNotice(destId: VisaDestination) {
+      const dest = getDestinationById(destId);
+      if (!dest) return;
+
+      if (dest.visaExemptDays) {
+        exemptNotice.classList.remove('hidden');
+        exemptText.textContent = `คนไทยเข้า${dest.name}ได้โดยไม่ต้องขอวีซ่า สูงสุด ${dest.visaExemptDays} วัน`;
+      } else if (dest.visaOnArrivalDays) {
+        exemptNotice.classList.remove('hidden');
+        exemptText.textContent = `คนไทยขอ Visa on Arrival เข้า${dest.name}ได้ สูงสุด ${dest.visaOnArrivalDays} วัน`;
+      } else {
+        exemptNotice.classList.add('hidden');
+      }
+    }
+
+    /* ── destination click ── */
+    destBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedDest = btn.dataset.dest as VisaDestination;
+        activateBtn(destBtns, btn);
+        renderVisaTypes(selectedDest);
+        updateExemptNotice(selectedDest);
+      });
+    });
+
+    /* ── speed click ── */
+    speedBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedSpeed = btn.dataset.speed as ProcessingSpeed;
+        activateBtn(speedBtns, btn);
+      });
+    });
+
+    /* ── calculate ── */
+    btnCalculate.addEventListener('click', () => {
+      const numApplicants = Math.max(1, Math.min(20, parseInt((document.getElementById('num-applicants') as HTMLInputElement).value) || 1));
+
+      const result = calculateVisaFee({
+        destination: selectedDest,
+        visaType: selectedVisaType,
+        processingSpeed: selectedSpeed,
+        numberOfApplicants: numApplicants,
+      });
+
+      // Update summary cards
+      document.getElementById('res-total')!.textContent = fmt(result.totalAll) + ' บาท';
+      document.getElementById('res-per-person')!.textContent = fmt(result.totalPerPerson) + ' บาท';
+      document.getElementById('res-processing')!.textContent = result.processingDays;
+      document.getElementById('res-applicants')!.textContent = numApplicants + ' คน';
+
+      // Update breakdown table
+      document.getElementById('res-visa-fee')!.textContent = fmt(result.visaFee);
+
+      // Original currency
+      const rowOriginal = document.getElementById('row-original-fee')!;
+      if (result.currency !== 'THB' && result.originalFee > 0) {
+        rowOriginal.classList.remove('hidden');
+        document.getElementById('res-original-label')!.textContent = `(${result.currency} ${result.originalFee})`;
+        document.getElementById('res-original-fee')!.textContent = '';
+      } else {
+        rowOriginal.classList.add('hidden');
+      }
+
+      // Service fee
+      const rowService = document.getElementById('row-service')!;
+      if (result.serviceFee > 0) {
+        rowService.classList.remove('hidden');
+        document.getElementById('res-service-fee')!.textContent = fmt(result.serviceFee);
+      } else {
+        rowService.classList.add('hidden');
+      }
+
+      // Express surcharge
+      const rowExpress = document.getElementById('row-express')!;
+      if (result.expressSurcharge > 0) {
+        rowExpress.classList.remove('hidden');
+        document.getElementById('res-express')!.textContent = fmt(result.expressSurcharge);
+      } else {
+        rowExpress.classList.add('hidden');
+      }
+
+      document.getElementById('res-per-person-table')!.textContent = fmt(result.totalPerPerson);
+
+      // Multi applicant row
+      const rowMulti = document.getElementById('row-multi')!;
+      if (numApplicants > 1) {
+        rowMulti.classList.remove('hidden');
+        document.getElementById('res-multi-label')!.textContent = `x ${numApplicants} คน`;
+      } else {
+        rowMulti.classList.add('hidden');
+      }
+
+      document.getElementById('res-total-table')!.textContent = fmt(result.totalAll);
+
+      // Notes
+      const notesList = document.getElementById('notes-list')!;
+      notesList.innerHTML = result.notes
+        .map(
+          (note) =>
+            `<li class="flex items-start gap-2">
+              <span class="mt-0.5 flex-shrink-0 text-primary-500">•</span>
+              <span class="text-sm text-gray-700">${note}</span>
+            </li>`
+        )
+        .join('');
+
+      // Show results
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Analytics
+      if (typeof trackCalculatorUsed === 'function') {
+        trackCalculatorUsed('visa_fee');
+      }
+    });
+
+    /* ── analytics: track result view ── */
+    const resultObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (typeof trackResultViewed === 'function') {
+              trackResultViewed('visa_fee');
+            }
+            resultObserver.disconnect();
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    resultObserver.observe(resultsDiv);
+
+    /* ── initialize ── */
+    renderVisaTypes(selectedDest);
+    updateExemptNotice(selectedDest);
+  </script>
+</BaseLayout>

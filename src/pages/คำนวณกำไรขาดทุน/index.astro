@@ -1,0 +1,562 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณกำไรขาดทุน 2569 | Profit & Loss ออนไลน์ฟรี | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณกำไรขาดทุนธุรกิจออนไลน์ฟรี กำไรขั้นต้น กำไรจากการดำเนินงาน กำไรสุทธิ และอัตรากำไร (Profit Margin) เครื่องมือวิเคราะห์ผลประกอบการสำหรับ SME ไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกำไรขาดทุน/`;
+
+const faqData = [
+  {
+    question: 'กำไรขั้นต้น กำไรจากการดำเนินงาน กำไรสุทธิ ต่างกันอย่างไร?',
+    answer: 'กำไรขั้นต้น (Gross Profit) = รายได้ - ต้นทุนสินค้า เป็นกำไรก่อนหักค่าใช้จ่ายในการดำเนินงาน กำไรจากการดำเนินงาน (Operating Profit) = กำไรขั้นต้น - ค่าใช้จ่ายในการดำเนินงาน เป็นกำไรจากธุรกิจหลัก กำไรสุทธิ (Net Profit) = กำไรจากการดำเนินงาน + รายได้อื่น - ค่าใช้จ่ายอื่น เป็นกำไรสุดท้ายของกิจการ',
+  },
+  {
+    question: 'อัตรากำไรสุทธิ (Net Profit Margin) ที่ดีควรเป็นเท่าไร?',
+    answer: 'ขึ้นอยู่กับประเภทธุรกิจ ธุรกิจค้าปลีกมักมีอัตรากำไรสุทธิ 2-5% ธุรกิจบริการ 10-20% ธุรกิจเทคโนโลยี 15-30% โดยทั่วไปอัตรากำไรสุทธิ 10% ขึ้นไปถือว่าดี แต่ควรเปรียบเทียบกับค่าเฉลี่ยของอุตสาหกรรมเดียวกัน',
+  },
+  {
+    question: 'ต้นทุนสินค้าขาย (COGS) ประกอบด้วยอะไรบ้าง?',
+    answer: 'ต้นทุนสินค้าขาย (Cost of Goods Sold) คือต้นทุนโดยตรงในการผลิตหรือจัดหาสินค้า เช่น วัตถุดิบ ค่าแรงโดยตรง ค่าขนส่งสินค้าเข้า ค่าบรรจุภัณฑ์ สำหรับธุรกิจบริการจะเป็นต้นทุนให้บริการโดยตรง',
+  },
+  {
+    question: 'ค่าใช้จ่ายในการดำเนินงานต่างจากต้นทุนสินค้าอย่างไร?',
+    answer: 'ค่าใช้จ่ายในการดำเนินงาน (Operating Expenses) คือค่าใช้จ่ายในการบริหารจัดการธุรกิจ ไม่เกี่ยวกับการผลิตโดยตรง เช่น ค่าเช่าสำนักงาน เงินเดือนพนักงาน ค่าการตลาด ค่าสาธารณูปโภค ค่าเสื่อมราคา ขณะที่ต้นทุนสินค้าเป็นต้นทุนโดยตรงในการผลิตหรือจัดหาสินค้า',
+  },
+  {
+    question: 'ธุรกิจขาดทุนแปลว่าอะไร ควรทำอย่างไร?',
+    answer: 'ขาดทุนหมายถึงค่าใช้จ่ายรวมมากกว่ารายได้ อาจเกิดจากรายได้ไม่เพียงพอ ต้นทุนสูงเกินไป หรือค่าใช้จ่ายบริหารสูง ควรวิเคราะห์จากอัตรากำไรแต่ละระดับ: ถ้ากำไรขั้นต้นติดลบ ต้องปรับราคาหรือลดต้นทุน ถ้ากำไรขั้นต้นบวกแต่กำไรดำเนินงานติดลบ ต้องลดค่าใช้จ่ายบริหาร',
+  },
+  {
+    question: 'รายได้อื่นและค่าใช้จ่ายอื่นคืออะไร?',
+    answer: 'รายได้อื่น (Other Income) คือรายได้ที่ไม่ได้มาจากธุรกิจหลัก เช่น ดอกเบี้ยรับ เงินปันผล กำไรจากการขายสินทรัพย์ ค่าเช่ารับ ค่าใช้จ่ายอื่น (Other Expenses) เช่น ดอกเบี้ยจ่าย ค่าปรับ ขาดทุนจากอัตราแลกเปลี่ยน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกำไรขาดทุน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไรขาดทุน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณกำไร-ขาดทุน (Profit & Loss)
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      คำนวณกำไรขั้นต้น กำไรจากการดำเนินงาน กำไรสุทธิ และอัตรากำไร (Profit Margin)
+      สำหรับวิเคราะห์ผลประกอบการธุรกิจ ใช้งานง่าย เหมาะกับ SME และฟรีแลนซ์ไทย
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pnl-form" class="space-y-5">
+        <p id="pnl-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <!-- Revenue -->
+        <div>
+          <label for="revenue" class="mb-1 block text-sm font-medium text-gray-700">
+            รายได้ / ยอดขาย (บาท) <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="revenue"
+            inputmode="decimal"
+            placeholder="เช่น 500000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <p id="revenue-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <!-- COGS -->
+        <div>
+          <label for="cogs" class="mb-1 block text-sm font-medium text-gray-700">
+            ต้นทุนสินค้าขาย (บาท) <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="cogs"
+            inputmode="decimal"
+            placeholder="เช่น 200000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <p class="mt-1 text-xs text-gray-500">วัตถุดิบ ค่าแรงโดยตรง ค่าขนส่งเข้า ค่าบรรจุภัณฑ์</p>
+          <p id="cogs-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <!-- Operating Expenses -->
+        <div>
+          <label for="opex" class="mb-1 block text-sm font-medium text-gray-700">
+            ค่าใช้จ่ายในการดำเนินงาน (บาท) <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="opex"
+            inputmode="decimal"
+            placeholder="เช่น 100000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <p class="mt-1 text-xs text-gray-500">ค่าเช่า เงินเดือนพนักงาน ค่าการตลาด ค่าสาธารณูปโภค</p>
+          <p id="opex-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <!-- Other Income/Expenses Toggle -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="include-other" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm font-medium text-gray-700">รวมรายได้อื่น / ค่าใช้จ่ายอื่น</span>
+          </label>
+
+          <div id="other-fields" class="mt-4 hidden space-y-4">
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label for="other-income" class="mb-1 block text-sm font-medium text-gray-700">
+                  รายได้อื่น (บาท)
+                </label>
+                <input
+                  type="text"
+                  id="other-income"
+                  inputmode="decimal"
+                  placeholder="เช่น 10000"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p class="mt-1 text-xs text-gray-500">ดอกเบี้ยรับ เงินปันผล ค่าเช่ารับ</p>
+                <p id="other-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+              <div>
+                <label for="other-expenses" class="mb-1 block text-sm font-medium text-gray-700">
+                  ค่าใช้จ่ายอื่น (บาท)
+                </label>
+                <input
+                  type="text"
+                  id="other-expenses"
+                  inputmode="decimal"
+                  placeholder="เช่น 5000"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p class="mt-1 text-xs text-gray-500">ดอกเบี้ยจ่าย ค่าปรับ ขาดทุนอื่น</p>
+                <p id="other-expenses-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณกำไร-ขาดทุน
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="pnl-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">กำไรขั้นต้น</div>
+            <div id="res-gross-profit" class="text-xl font-bold text-blue-700">-</div>
+            <div id="res-gross-margin" class="text-sm text-gray-500">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">กำไรจากการดำเนินงาน</div>
+            <div id="res-operating-profit" class="text-xl font-bold text-purple-700">-</div>
+            <div id="res-operating-margin" class="text-sm text-gray-500">-</div>
+          </div>
+          <div id="res-net-card" class="rounded-lg bg-green-50 p-4 text-center sm:col-span-2 lg:col-span-1">
+            <div class="mb-1 text-sm text-gray-600">กำไรสุทธิ</div>
+            <div id="res-net-profit" class="text-xl font-bold text-green-700">-</div>
+            <div id="res-net-margin" class="text-sm text-gray-500">-</div>
+          </div>
+        </div>
+
+        <!-- P&L Breakdown -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">รายละเอียดงบกำไรขาดทุน</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">รายได้ / ยอดขาย</span>
+              <span id="res-revenue" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-red-600">หัก ต้นทุนสินค้าขาย</span>
+              <span id="res-cogs" class="font-medium text-red-600">-</span>
+            </div>
+            <div class="flex justify-between border-b-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">กำไรขั้นต้น (Gross Profit)</span>
+              <span id="res-gross-profit-line" class="font-bold">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-red-600">หัก ค่าใช้จ่ายดำเนินงาน</span>
+              <span id="res-opex" class="font-medium text-red-600">-</span>
+            </div>
+            <div class="flex justify-between border-b-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">กำไรจากการดำเนินงาน (Operating Profit)</span>
+              <span id="res-operating-profit-line" class="font-bold">-</span>
+            </div>
+            <div id="other-income-row" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-green-600">บวก รายได้อื่น</span>
+              <span id="res-other-income" class="font-medium text-green-600">-</span>
+            </div>
+            <div id="other-expenses-row" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-red-600">หัก ค่าใช้จ่ายอื่น</span>
+              <span id="res-other-expenses" class="font-medium text-red-600">-</span>
+            </div>
+            <div class="flex justify-between border-t-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">กำไรสุทธิ (Net Profit)</span>
+              <span id="res-net-profit-line" class="font-bold">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Margin Summary -->
+        <div class="mt-6 rounded-lg bg-gray-50 p-4">
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">อัตรากำไร (Profit Margins)</h3>
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div>
+              <div class="text-xs text-gray-500">Gross Margin</div>
+              <div id="res-gross-margin-pct" class="text-lg font-bold text-blue-700">-</div>
+            </div>
+            <div>
+              <div class="text-xs text-gray-500">Operating Margin</div>
+              <div id="res-operating-margin-pct" class="text-lg font-bold text-purple-700">-</div>
+            </div>
+            <div>
+              <div class="text-xs text-gray-500">Net Margin</div>
+              <div id="res-net-margin-pct" class="text-lg font-bold text-green-700">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#pnl-results" />
+
+    <!-- Quick Reference Table -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">ตัวอย่างอัตรากำไรสุทธิตามประเภทธุรกิจ</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50">
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">ประเภทธุรกิจ</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">อัตรากำไรขั้นต้น</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">อัตรากำไรสุทธิ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-gray-900">ร้านอาหาร / คาเฟ่</td>
+              <td class="px-4 py-3 text-right text-gray-700">60-70%</td>
+              <td class="px-4 py-3 text-right text-gray-700">5-15%</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-gray-900">ค้าปลีก / ร้านค้าออนไลน์</td>
+              <td class="px-4 py-3 text-right text-gray-700">25-50%</td>
+              <td class="px-4 py-3 text-right text-gray-700">2-10%</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-gray-900">บริการ / ที่ปรึกษา</td>
+              <td class="px-4 py-3 text-right text-gray-700">50-80%</td>
+              <td class="px-4 py-3 text-right text-gray-700">10-25%</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-gray-900">ผลิตสินค้า / โรงงาน</td>
+              <td class="px-4 py-3 text-right text-gray-700">20-40%</td>
+              <td class="px-4 py-3 text-right text-gray-700">5-15%</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 text-gray-900">เทคโนโลยี / ซอฟต์แวร์</td>
+              <td class="px-4 py-3 text-right text-gray-700">60-90%</td>
+              <td class="px-4 py-3 text-right text-gray-700">15-30%</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3 text-gray-900">ฟรีแลนซ์</td>
+              <td class="px-4 py-3 text-right text-gray-700">70-95%</td>
+              <td class="px-4 py-3 text-right text-gray-700">30-60%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#pnl-results" />
+
+    <!-- Formula Section -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่เครื่องมือนี้ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>กำไรขั้นต้น (Gross Profit) = รายได้ - ต้นทุนสินค้าขาย</li>
+        <li>กำไรจากการดำเนินงาน (Operating Profit) = กำไรขั้นต้น - ค่าใช้จ่ายดำเนินงาน</li>
+        <li>กำไรสุทธิ (Net Profit) = กำไรจากการดำเนินงาน + รายได้อื่น - ค่าใช้จ่ายอื่น</li>
+        <li>อัตรากำไรขั้นต้น (%) = (กำไรขั้นต้น ÷ รายได้) × 100</li>
+        <li>อัตรากำไรจากการดำเนินงาน (%) = (กำไรจากการดำเนินงาน ÷ รายได้) × 100</li>
+        <li>อัตรากำไรสุทธิ (%) = (กำไรสุทธิ ÷ รายได้) × 100</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่าง</h3>
+      <p>ร้านค้าออนไลน์มียอดขาย 500,000 บาท ต้นทุนสินค้า 200,000 บาท ค่าใช้จ่ายดำเนินงาน 150,000 บาท</p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>กำไรขั้นต้น = 500,000 - 200,000 = 300,000 บาท (60%)</li>
+        <li>กำไรจากการดำเนินงาน = 300,000 - 150,000 = 150,000 บาท (30%)</li>
+        <li>กำไรสุทธิ = 150,000 บาท (30%)</li>
+      </ul>
+    </section>
+
+    <!-- Related Content -->
+    <RelatedArticles currentHref="/คำนวณกำไรขาดทุน/" />
+    <RelatedCalculators currentHref="/คำนวณกำไรขาดทุน/" />
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณเบื้องต้นตามสูตรบัญชีทั่วไป
+      ไม่ใช่คำแนะนำทางการเงินหรือบัญชี ผลประกอบการจริงอาจแตกต่างตามมาตรฐานบัญชี
+      กรุณาปรึกษานักบัญชีหรือผู้เชี่ยวชาญทางการเงินสำหรับการตัดสินใจทางธุรกิจ
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculatePnL } from '../../lib/pnl-calculator.ts';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const num = Number(normalized);
+      return Number.isFinite(num) ? num : NaN;
+    }
+
+    function formatMoney(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num)} บาท`;
+    }
+
+    function formatPercent(num) {
+      return `${num.toFixed(2)}%`;
+    }
+
+    const form = document.getElementById('pnl-form');
+    const formError = document.getElementById('pnl-form-error');
+    const resultBox = document.getElementById('pnl-results');
+    const includeOtherCheckbox = document.getElementById('include-other');
+    const otherFields = document.getElementById('other-fields');
+
+    includeOtherCheckbox?.addEventListener('change', () => {
+      otherFields?.classList.toggle('hidden', !includeOtherCheckbox.checked);
+    });
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.textContent = '';
+    }
+
+    function setFieldError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearErrors() {
+      formError?.classList.add('hidden');
+      ['revenue-error', 'cogs-error', 'opex-error', 'other-income-error', 'other-expenses-error'].forEach(clearFieldError);
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const revenue = parseNum(document.getElementById('revenue')?.value);
+      const cogs = parseNum(document.getElementById('cogs')?.value);
+      const opex = parseNum(document.getElementById('opex')?.value);
+      const includeOther = includeOtherCheckbox?.checked ?? false;
+      const otherIncome = includeOther ? parseNum(document.getElementById('other-income')?.value) : 0;
+      const otherExpenses = includeOther ? parseNum(document.getElementById('other-expenses')?.value) : 0;
+
+      let hasError = false;
+
+      if (isNaN(revenue) || revenue < 0) {
+        setFieldError('revenue-error', 'กรุณากรอกรายได้ที่ถูกต้อง');
+        hasError = true;
+      }
+      if (isNaN(cogs) || cogs < 0) {
+        setFieldError('cogs-error', 'กรุณากรอกต้นทุนสินค้าที่ถูกต้อง');
+        hasError = true;
+      }
+      if (isNaN(opex) || opex < 0) {
+        setFieldError('opex-error', 'กรุณากรอกค่าใช้จ่ายดำเนินงานที่ถูกต้อง');
+        hasError = true;
+      }
+      if (includeOther) {
+        if (isNaN(otherIncome) || otherIncome < 0) {
+          setFieldError('other-income-error', 'กรุณากรอกรายได้อื่นที่ถูกต้อง');
+          hasError = true;
+        }
+        if (isNaN(otherExpenses) || otherExpenses < 0) {
+          setFieldError('other-expenses-error', 'กรุณากรอกค่าใช้จ่ายอื่นที่ถูกต้อง');
+          hasError = true;
+        }
+      }
+
+      if (hasError) {
+        formError?.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const result = calculatePnL({
+          revenue,
+          costOfGoodsSold: cogs,
+          operatingExpenses: opex,
+          otherIncome: isNaN(otherIncome) ? 0 : otherIncome,
+          otherExpenses: isNaN(otherExpenses) ? 0 : otherExpenses,
+        });
+
+        // Summary cards
+        setText('res-gross-profit', formatMoney(result.grossProfit));
+        setText('res-gross-margin', `Margin ${formatPercent(result.grossProfitMargin)}`);
+        setText('res-operating-profit', formatMoney(result.operatingProfit));
+        setText('res-operating-margin', `Margin ${formatPercent(result.operatingProfitMargin)}`);
+        setText('res-net-profit', formatMoney(result.netProfit));
+        setText('res-net-margin', `Margin ${formatPercent(result.netProfitMargin)}`);
+
+        // Color net profit card based on profit/loss
+        const netCard = document.getElementById('res-net-card');
+        const netProfitEl = document.getElementById('res-net-profit');
+        if (result.isLoss) {
+          netCard?.classList.remove('bg-green-50');
+          netCard?.classList.add('bg-red-50');
+          netProfitEl?.classList.remove('text-green-700');
+          netProfitEl?.classList.add('text-red-700');
+        } else {
+          netCard?.classList.remove('bg-red-50');
+          netCard?.classList.add('bg-green-50');
+          netProfitEl?.classList.remove('text-red-700');
+          netProfitEl?.classList.add('text-green-700');
+        }
+
+        // Breakdown lines
+        setText('res-revenue', formatMoney(result.revenue));
+        setText('res-cogs', `-${formatMoney(result.costOfGoodsSold)}`);
+        setText('res-gross-profit-line', formatMoney(result.grossProfit));
+        setText('res-opex', `-${formatMoney(result.operatingExpenses)}`);
+        setText('res-operating-profit-line', formatMoney(result.operatingProfit));
+
+        // Color breakdown lines
+        const grossLine = document.getElementById('res-gross-profit-line');
+        const opLine = document.getElementById('res-operating-profit-line');
+        const netLine = document.getElementById('res-net-profit-line');
+
+        grossLine?.classList.toggle('text-red-700', result.grossProfit < 0);
+        grossLine?.classList.toggle('text-green-700', result.grossProfit >= 0);
+        opLine?.classList.toggle('text-red-700', result.operatingProfit < 0);
+        opLine?.classList.toggle('text-green-700', result.operatingProfit >= 0);
+        netLine?.classList.toggle('text-red-700', result.netProfit < 0);
+        netLine?.classList.toggle('text-green-700', result.netProfit >= 0);
+
+        // Other income/expenses rows
+        const otherIncomeRow = document.getElementById('other-income-row');
+        const otherExpensesRow = document.getElementById('other-expenses-row');
+        if (includeOther && (result.otherIncome > 0 || result.otherExpenses > 0)) {
+          if (result.otherIncome > 0) {
+            otherIncomeRow?.classList.remove('hidden');
+            setText('res-other-income', `+${formatMoney(result.otherIncome)}`);
+          } else {
+            otherIncomeRow?.classList.add('hidden');
+          }
+          if (result.otherExpenses > 0) {
+            otherExpensesRow?.classList.remove('hidden');
+            setText('res-other-expenses', `-${formatMoney(result.otherExpenses)}`);
+          } else {
+            otherExpensesRow?.classList.add('hidden');
+          }
+        } else {
+          otherIncomeRow?.classList.add('hidden');
+          otherExpensesRow?.classList.add('hidden');
+        }
+
+        setText('res-net-profit-line', formatMoney(result.netProfit));
+
+        // Margin summary
+        setText('res-gross-margin-pct', formatPercent(result.grossProfitMargin));
+        setText('res-operating-margin-pct', formatPercent(result.operatingProfitMargin));
+        setText('res-net-margin-pct', formatPercent(result.netProfitMargin));
+
+        const netMarginEl = document.getElementById('res-net-margin-pct');
+        netMarginEl?.classList.toggle('text-red-700', result.isLoss);
+        netMarginEl?.classList.toggle('text-green-700', !result.isLoss);
+
+        resultBox?.classList.remove('hidden');
+
+        if (typeof window.trackCalculatorComplete === 'function') {
+          window.trackCalculatorComplete('pnl', result.netProfit);
+        }
+        if (typeof window.trackResultViewed === 'function') {
+          window.trackResultViewed('pnl');
+        }
+      } catch (err) {
+        formError.textContent = err.message;
+        formError?.classList.remove('hidden');
+      }
+    });
+
+    if (typeof window.trackCalculatorUsed === 'function') {
+      window.trackCalculatorUsed('pnl');
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,501 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณค่าเลี้ยงสัตว์ 2569 | ประเมินค่าใช้จ่ายสุนัขและแมวต่อเดือน | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณค่าเลี้ยงสัตว์เลี้ยงต่อเดือน สุนัขและแมว ค่าอาหาร ค่าสัตวแพทย์ ค่ากรูมมิ่ง ค่าทรายแมว ราคาตลาดไทยปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าเลี้ยงสัตว์/`;
+
+const faqData = [
+  {
+    question: 'เลี้ยงสุนัขต่อเดือนใช้เงินเท่าไร?',
+    answer: 'สุนัขพันธุ์เล็ก (ชิวาวา ปอมเมอเรเนียน) ค่าใช้จ่ายประมาณ 2,100–3,700 บาท/เดือน สุนัขพันธุ์กลาง (บีเกิล คอร์กี้) ประมาณ 3,100–5,550 บาท/เดือน สุนัขพันธุ์ใหญ่ (โกลเด้น ลาบราดอร์) ประมาณ 4,300–8,800 บาท/เดือน ขึ้นอยู่กับเกรดอาหารและบริการที่เลือก',
+  },
+  {
+    question: 'เลี้ยงแมวต่อเดือนใช้เงินเท่าไร?',
+    answer: 'แมวมีค่าใช้จ่ายประมาณ 1,700–3,550 บาท/เดือน รวมค่าอาหาร ค่าทรายแมว ค่าสัตวแพทย์ และอุปกรณ์ ถ้าเลือกอาหารเกรดพรีเมียมและมีประกันสัตว์เลี้ยง อาจสูงถึง 3,200–3,550 บาท/เดือน',
+  },
+  {
+    question: 'ค่าสัตวแพทย์ต่อเดือนโดยเฉลี่ยเท่าไร?',
+    answer: 'ค่าสัตวแพทย์เฉลี่ยต่อเดือน (คิดจากค่าตรวจสุขภาพประจำปี วัคซีน ถ่ายพยาธิ) สุนัขพันธุ์เล็ก ~500 บาท สุนัขพันธุ์กลาง ~700 บาท สุนัขพันธุ์ใหญ่ ~900 บาท แมว ~450 บาท ยังไม่รวมค่ารักษาเจ็บป่วยฉุกเฉิน',
+  },
+  {
+    question: 'ประกันสัตว์เลี้ยงในไทยเดือนละเท่าไร?',
+    answer: 'ประกันสัตว์เลี้ยงในไทยเบี้ยประมาณ 350–700 บาท/เดือน ขึ้นอยู่กับพันธุ์ อายุ และความคุ้มครอง ปัจจุบันมีหลายบริษัทให้บริการ เช่น แผนพื้นฐานคุ้มครองอุบัติเหตุ ไปจนถึงแผนครอบคลุมโรคทั่วไป',
+  },
+  {
+    question: 'เลี้ยงสุนัขหรือแมวประหยัดกว่ากัน?',
+    answer: 'โดยทั่วไปแมวมีค่าใช้จ่ายต่ำกว่าสุนัข เนื่องจากกินอาหารน้อยกว่า ไม่ต้องกรูมมิ่งบ่อย และไม่ต้องพาไปเดินเล่น แต่แมวมีค่าทรายแมวเพิ่มประมาณ 400 บาท/เดือน ค่าใช้จ่ายแมวใกล้เคียงสุนัขพันธุ์เล็ก',
+  },
+  {
+    question: 'ค่าใช้จ่ายแรกเข้าเลี้ยงสัตว์มีอะไรบ้าง?',
+    answer: 'ค่าใช้จ่ายแรกเข้า ได้แก่ ค่าตัวสัตว์เลี้ยง ค่าวัคซีนเข็มแรก (500–1,500 บาท) ค่าทำหมัน (1,500–5,000 บาท) อุปกรณ์เบื้องต้น (ชาม สายจูง กรง ที่นอน) ประมาณ 2,000–5,000 บาท รวมค่าแรกเข้าประมาณ 5,000–15,000 บาท ไม่รวมค่าตัวสัตว์',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเลี้ยงสัตว์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเลี้ยงสัตว์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าเลี้ยงสัตว์ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ประเมินค่าใช้จ่ายเลี้ยงสุนัขหรือแมวต่อเดือน
+      รวมค่าอาหาร ค่าสัตวแพทย์ ค่ากรูมมิ่ง ค่าอุปกรณ์ และค่าทรายแมว
+      อ้างอิงราคาตลาดในประเทศไทย ปี 2569
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pet-form" class="space-y-5">
+        <p id="pet-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <!-- Pet Type -->
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700">ประเภทสัตว์เลี้ยง</label>
+          <div class="flex gap-3">
+            <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-4 py-3 transition-colors hover:bg-gray-50 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+              <input type="radio" name="pet-type" value="dog" checked class="h-4 w-4 text-primary-600 focus:ring-primary-500" />
+              <span class="text-sm font-medium">🐕 สุนัข</span>
+            </label>
+            <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-4 py-3 transition-colors hover:bg-gray-50 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+              <input type="radio" name="pet-type" value="cat" class="h-4 w-4 text-primary-600 focus:ring-primary-500" />
+              <span class="text-sm font-medium">🐈 แมว</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dog Size (visible only for dogs) -->
+        <div id="dog-size-field">
+          <label for="dog-size" class="mb-1 block text-sm font-medium text-gray-700">
+            ขนาดสุนัข
+          </label>
+          <select
+            id="dog-size"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64"
+          >
+            <option value="small">พันธุ์เล็ก (ชิวาวา, ปอม, ชิสุ) &lt; 10 กก.</option>
+            <option value="medium" selected>พันธุ์กลาง (บีเกิล, คอร์กี้) 10–25 กก.</option>
+            <option value="large">พันธุ์ใหญ่ (โกลเด้น, ลาบราดอร์) &gt; 25 กก.</option>
+          </select>
+        </div>
+
+        <!-- Number of Pets -->
+        <div>
+          <label for="pet-count" class="mb-1 block text-sm font-medium text-gray-700">
+            จำนวนสัตว์เลี้ยง
+          </label>
+          <select
+            id="pet-count"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48"
+          >
+            <option value="1">1 ตัว</option>
+            <option value="2">2 ตัว</option>
+            <option value="3">3 ตัว</option>
+            <option value="4">4 ตัว</option>
+            <option value="5">5 ตัว</option>
+          </select>
+        </div>
+
+        <!-- Food Quality -->
+        <div>
+          <label for="food-quality" class="mb-1 block text-sm font-medium text-gray-700">
+            เกรดอาหาร
+          </label>
+          <select
+            id="food-quality"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64"
+          >
+            <option value="budget">ประหยัด (อาหารเม็ดทั่วไป)</option>
+            <option value="standard" selected>มาตรฐาน (แบรนด์คุณภาพ)</option>
+            <option value="premium">พรีเมียม (Grain-free / Holistic)</option>
+          </select>
+        </div>
+
+        <!-- Optional Costs -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+          <p class="text-sm font-medium text-gray-700">ค่าใช้จ่ายเพิ่มเติม</p>
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="include-grooming" checked class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm text-gray-700">รวมค่ากรูมมิ่ง (อาบน้ำ ตัดขน ตัดเล็บ)</span>
+          </label>
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="include-insurance" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm text-gray-700">รวมค่าประกันสัตว์เลี้ยง</span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          id="pet-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าเลี้ยงสัตว์
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="pet-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลประเมินค่าเลี้ยงสัตว์</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายรวมต่อเดือน</div>
+            <div id="res-total-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายต่อตัว/เดือน</div>
+            <div id="res-per-pet" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายรวมต่อปี</div>
+            <div id="res-total-annual" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">รายละเอียดค่าใช้จ่ายต่อตัว/เดือน</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">🍖 ค่าอาหาร</span>
+              <span id="res-food" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">🏥 ค่าสัตวแพทย์ (เฉลี่ย)</span>
+              <span id="res-vet" class="font-medium">-</span>
+            </div>
+            <div id="row-grooming" class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">✂️ ค่ากรูมมิ่ง</span>
+              <span id="res-grooming" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">🧸 ค่าอุปกรณ์/ของเล่น</span>
+              <span id="res-supplies" class="font-medium">-</span>
+            </div>
+            <div id="row-litter" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">🪣 ค่าทรายแมว</span>
+              <span id="res-litter" class="font-medium">-</span>
+            </div>
+            <div id="row-insurance" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">🛡️ ค่าประกันสัตว์เลี้ยง</span>
+              <span id="res-insurance" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between border-t-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">รวมต่อตัว/เดือน</span>
+              <span id="res-total-bottom" class="font-bold text-green-700">-</span>
+            </div>
+            <div id="row-multi" class="hidden flex justify-between py-1">
+              <span class="font-semibold text-gray-700">รวมทั้งหมด (<span id="res-count-label">1</span> ตัว)</span>
+              <span id="res-grand-total" class="font-bold text-green-700">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#pet-results" />
+
+    <!-- Reference Table -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">ตารางเปรียบเทียบค่าเลี้ยงสัตว์ต่อเดือน (อาหารเกรดมาตรฐาน)</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50">
+              <th class="px-4 py-3 text-left font-semibold text-gray-700">ประเภท</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">อาหาร</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">สัตวแพทย์</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">กรูมมิ่ง</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">อุปกรณ์</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รวม</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">🐕 สุนัขเล็ก</td>
+              <td class="px-4 py-3 text-right text-gray-700">1,500</td>
+              <td class="px-4 py-3 text-right text-gray-700">500</td>
+              <td class="px-4 py-3 text-right text-gray-700">500</td>
+              <td class="px-4 py-3 text-right text-gray-700">300</td>
+              <td class="px-4 py-3 text-right font-semibold text-green-700">2,800</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">🐕 สุนัขกลาง</td>
+              <td class="px-4 py-3 text-right text-gray-700">2,200</td>
+              <td class="px-4 py-3 text-right text-gray-700">700</td>
+              <td class="px-4 py-3 text-right text-gray-700">800</td>
+              <td class="px-4 py-3 text-right text-gray-700">400</td>
+              <td class="px-4 py-3 text-right font-semibold text-green-700">4,100</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">🐕 สุนัขใหญ่</td>
+              <td class="px-4 py-3 text-right text-gray-700">3,500</td>
+              <td class="px-4 py-3 text-right text-gray-700">900</td>
+              <td class="px-4 py-3 text-right text-gray-700">1,200</td>
+              <td class="px-4 py-3 text-right text-gray-700">500</td>
+              <td class="px-4 py-3 text-right font-semibold text-green-700">6,100</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">🐈 แมว</td>
+              <td class="px-4 py-3 text-right text-gray-700">1,200</td>
+              <td class="px-4 py-3 text-right text-gray-700">450</td>
+              <td class="px-4 py-3 text-right text-gray-700">350</td>
+              <td class="px-4 py-3 text-right text-gray-700">250 + 400*</td>
+              <td class="px-4 py-3 text-right font-semibold text-green-700">2,650</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-gray-500">* แมวมีค่าทรายแมวเพิ่มเติมประมาณ 400 บาท/เดือน | ราคาโดยประมาณ อาจแตกต่างตามพื้นที่และร้านค้า</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#pet-results" />
+
+    <!-- Formula / How It Works -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีประเมินค่าเลี้ยงสัตว์</h2>
+      <p class="text-gray-700">
+        เครื่องมือนี้ประเมินค่าใช้จ่ายรายเดือนจาก <strong>ราคาตลาดในประเทศไทย ปี 2569</strong>
+        โดยแบ่งค่าใช้จ่ายออกเป็นหมวดหมู่หลัก:
+      </p>
+      <ol class="list-decimal space-y-1 pl-6 text-gray-700">
+        <li><strong>ค่าอาหาร:</strong> คิดตามขนาดสัตว์และเกรดอาหาร (ประหยัด, มาตรฐาน, พรีเมียม)</li>
+        <li><strong>ค่าสัตวแพทย์:</strong> ค่าตรวจสุขภาพประจำปี วัคซีน ถ่ายพยาธิ เฉลี่ยเป็นรายเดือน</li>
+        <li><strong>ค่ากรูมมิ่ง:</strong> อาบน้ำ ตัดขน ตัดเล็บ ทำความสะอาดหู ตามความถี่ที่เหมาะสม</li>
+        <li><strong>ค่าอุปกรณ์:</strong> ของเล่น ที่นอน ชามอาหาร สายจูง เฉลี่ยรายเดือน</li>
+        <li><strong>ค่าทรายแมว:</strong> เฉพาะแมว ประมาณ 400 บาท/เดือน</li>
+        <li><strong>ค่าประกันสัตว์เลี้ยง:</strong> (ตัวเลือก) เบี้ยประกันรายเดือนตามประเภทสัตว์</li>
+      </ol>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">สูตรคำนวณ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าใช้จ่ายต่อตัว/เดือน = ค่าอาหาร + ค่าสัตวแพทย์ + ค่ากรูมมิ่ง + ค่าอุปกรณ์ + ค่าทราย + ค่าประกัน</li>
+        <li>ค่าใช้จ่ายรวม/เดือน = ค่าใช้จ่ายต่อตัว × จำนวนตัว</li>
+        <li>ค่าใช้จ่ายรวม/ปี = ค่าใช้จ่ายรวม/เดือน × 12</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่าง</h3>
+      <p>
+        เลี้ยงสุนัขพันธุ์กลาง 1 ตัว อาหารเกรดมาตรฐาน มีกรูมมิ่ง ไม่มีประกัน
+      </p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าอาหาร = 2,200 บาท</li>
+        <li>ค่าสัตวแพทย์ = 700 บาท</li>
+        <li>ค่ากรูมมิ่ง = 800 บาท</li>
+        <li>ค่าอุปกรณ์ = 400 บาท</li>
+        <li>รวมต่อเดือน = 4,100 บาท</li>
+        <li>รวมต่อปี = 49,200 บาท</li>
+      </ul>
+    </section>
+
+    <!-- Supporting Article -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">ค่าเลี้ยงสัตว์ 2569: สิ่งที่ต้องรู้ก่อนรับสัตว์เลี้ยง</h2>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">ค่าใช้จ่ายที่ต้องเตรียม</h3>
+      <p class="text-gray-700">
+        การเลี้ยงสัตว์เลี้ยงเป็นความรับผิดชอบระยะยาว สุนัขมีอายุเฉลี่ย 10–15 ปี และแมว 12–18 ปี
+        ค่าใช้จ่ายตลอดชีวิตสุนัขพันธุ์กลาง 1 ตัว อาจสูงถึง 500,000–700,000 บาท
+        จึงควรวางแผนการเงินให้พร้อมก่อนรับสัตว์เลี้ยง
+      </p>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">ปัจจัยที่มีผลต่อค่าใช้จ่าย</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><strong>ขนาดและพันธุ์:</strong> สัตว์ตัวใหญ่กินมากกว่า มีค่ารักษาพยาบาลสูงกว่า</li>
+        <li><strong>อายุ:</strong> ลูกสัตว์ต้องวัคซีนบ่อยกว่า สัตว์สูงอายุอาจมีค่ารักษาโรคเรื้อรัง</li>
+        <li><strong>คุณภาพอาหาร:</strong> อาหารพรีเมียมแพงกว่า 2–3 เท่า แต่อาจลดค่ารักษาพยาบาลในระยะยาว</li>
+        <li><strong>พื้นที่อยู่อาศัย:</strong> คอนโดอาจมีค่าธรรมเนียมสัตว์เลี้ยงเพิ่ม</li>
+        <li><strong>ที่ตั้ง:</strong> กรุงเทพฯ มีค่าบริการสัตวแพทย์และกรูมมิ่งสูงกว่าต่างจังหวัด</li>
+      </ul>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">เคล็ดลับประหยัดค่าเลี้ยงสัตว์</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><strong>ทำหมัน:</strong> ลดความเสี่ยงโรคมดลูก มะเร็ง และค่ารักษาที่ตามมา</li>
+        <li><strong>วัคซีนครบ:</strong> ป้องกันโรคร้ายแรงที่มีค่ารักษาสูง</li>
+        <li><strong>ซื้ออาหารขนาดใหญ่:</strong> ถูกกว่าถุงเล็ก แต่ต้องเก็บรักษาให้ดี</li>
+        <li><strong>เรียนกรูมมิ่งเบื้องต้น:</strong> อาบน้ำและตัดเล็บเองที่บ้านได้</li>
+        <li><strong>ประกันสัตว์เลี้ยง:</strong> คุ้มค่าหากสัตว์เลี้ยงเป็นพันธุ์ที่มีปัญหาสุขภาพบ่อย</li>
+      </ul>
+
+      <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">วางแผนงบประมาณครัวเรือน</h3>
+      <p class="text-gray-700">
+        ค่าเลี้ยงสัตว์เป็นส่วนหนึ่งของค่าใช้จ่ายครัวเรือน ลองใช้
+        <a href="/คำนวณค่าอาหารต่อเดือน/" class="text-primary-600 hover:underline">เครื่องคำนวณค่าอาหารต่อเดือน</a>
+        เพื่อวางแผนงบอาหารทั้งครอบครัว หรือ
+        <a href="/คำนวณเงินเดือนสุทธิ/" class="text-primary-600 hover:underline">คำนวณเงินเดือนสุทธิ</a>
+        เพื่อดูรายได้ที่เหลือหลังหักค่าใช้จ่าย
+      </p>
+      <p class="mt-2 text-gray-700">
+        หากมีค่าใช้จ่ายค่าที่พัก สามารถใช้
+        <a href="/คำนวณค่าห้องพัก/" class="text-primary-600 hover:underline">เครื่องคำนวณค่าห้องพัก</a>
+        เพื่อเปรียบเทียบค่าเช่าและค่าสาธารณูปโภค
+      </p>
+    </section>
+
+    <!-- Related Calculators -->
+    <RelatedArticles currentHref="/คำนวณค่าเลี้ยงสัตว์/" />
+    <RelatedCalculators currentHref="/คำนวณค่าเลี้ยงสัตว์/" />
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประเมินเบื้องต้นจากราคาตลาดทั่วไปในประเทศไทยเท่านั้น
+      ค่าใช้จ่ายจริงอาจแตกต่างตามพื้นที่ ร้านค้า คลินิก และสภาพสุขภาพของสัตว์เลี้ยง
+      ไม่รวมค่าใช้จ่ายฉุกเฉิน ค่าผ่าตัด หรือค่ารักษาโรคร้ายแรง
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculatePetCost } from '../../lib/pet-cost-calculator.ts';
+
+    function formatMoney(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num)} บาท`;
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    const form = document.getElementById('pet-form');
+    const formError = document.getElementById('pet-form-error');
+    const resultBox = document.getElementById('pet-results');
+    const dogSizeField = document.getElementById('dog-size-field');
+
+    // Show/hide dog size based on pet type
+    document.querySelectorAll('input[name="pet-type"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        const isDog = (document.querySelector('input[name="pet-type"]:checked')).value === 'dog';
+        if (dogSizeField) {
+          dogSizeField.style.display = isDog ? '' : 'none';
+        }
+      });
+    });
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      formError?.classList.add('hidden');
+
+      if (typeof window.trackCalculatorStart === 'function') {
+        window.trackCalculatorStart('pet_cost');
+      }
+
+      const petType = (document.querySelector('input[name="pet-type"]:checked'))?.value || 'dog';
+      const dogSize = document.getElementById('dog-size')?.value || 'medium';
+      const petCount = Number(document.getElementById('pet-count')?.value || '1');
+      const foodQuality = document.getElementById('food-quality')?.value || 'standard';
+      const includeGrooming = document.getElementById('include-grooming')?.checked || false;
+      const includeInsurance = document.getElementById('include-insurance')?.checked || false;
+
+      try {
+        const result = calculatePetCost({
+          petType,
+          dogSize: petType === 'dog' ? dogSize : undefined,
+          petCount,
+          foodQuality,
+          includeGrooming,
+          includeInsurance,
+        });
+
+        setText('res-total-monthly', formatMoney(result.totalMonthly));
+        setText('res-per-pet', formatMoney(result.totalPerPet));
+        setText('res-total-annual', formatMoney(result.totalAnnual));
+
+        setText('res-food', formatMoney(result.foodPerPet));
+        setText('res-vet', formatMoney(result.vetPerPet));
+        setText('res-grooming', formatMoney(result.groomingPerPet));
+        setText('res-supplies', formatMoney(result.suppliesPerPet));
+        setText('res-total-bottom', formatMoney(result.totalPerPet));
+
+        // Grooming row
+        const groomingRow = document.getElementById('row-grooming');
+        if (groomingRow) {
+          groomingRow.style.display = includeGrooming ? '' : 'none';
+        }
+
+        // Litter row (cats only)
+        const litterRow = document.getElementById('row-litter');
+        if (litterRow) {
+          litterRow.classList.toggle('hidden', petType !== 'cat');
+          setText('res-litter', formatMoney(result.litterPerPet));
+        }
+
+        // Insurance row
+        const insuranceRow = document.getElementById('row-insurance');
+        if (insuranceRow) {
+          insuranceRow.classList.toggle('hidden', !includeInsurance);
+          setText('res-insurance', formatMoney(result.insurancePerPet));
+        }
+
+        // Multi-pet row
+        const multiRow = document.getElementById('row-multi');
+        if (multiRow) {
+          multiRow.classList.toggle('hidden', petCount <= 1);
+          setText('res-count-label', String(petCount));
+          setText('res-grand-total', formatMoney(result.totalMonthly));
+        }
+
+        resultBox?.classList.remove('hidden');
+        resultBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (typeof window.trackCalculatorComplete === 'function') {
+          window.trackCalculatorComplete('pet_cost', result.totalMonthly);
+        }
+      } catch (_error) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+      }
+    });
+  </script>
+</BaseLayout>
