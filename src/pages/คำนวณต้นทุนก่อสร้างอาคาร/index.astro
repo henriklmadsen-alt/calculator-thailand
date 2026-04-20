@@ -1,0 +1,152 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนก่อสร้างอาคาร 2569 | ต้นทุนต่อตร.ม. | งบประมาณ | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณต้นทุนก่อสร้างทั่วไปสำหรับบ้าน อพาร์ทเมนต์ อาคารพาณิชย์ ตามพื้นที่และประเภทการก่อสร้าง ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนก่อสร้างอาคาร/`;
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนก่อสร้างอาคาร',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนก่อสร้าง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณต้นทุนก่อสร้างอาคาร ปี 2569</h1>
+    <p class="text-gray-600 mb-6">ประมาณการต้นทุนก่อสร้างทั้งหมด โดยพิจารณาจากพื้นที่ก่อสร้างและประเภทของอาคาร</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="construction-cost-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="building-area" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่ก่อสร้าง (ตร.ม.)</label>
+            <input id="building-area" type="text" inputmode="numeric" placeholder="เช่น 500" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="building-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทอาคาร</label>
+            <select id="building-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="house">บ้านเดี่ยว/ทาวน์โฮม</option>
+              <option value="apartment">อพาร์ทเมนต์</option>
+              <option value="commercial">อาคารพาณิชย์</option>
+              <option value="office">สำนักงาน</option>
+              <option value="warehouse">โกดัง</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="quality-level" class="block text-sm font-medium text-gray-700 mb-1">มาตรฐานการก่อสร้าง</label>
+          <select id="quality-level" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="economy">ประหยัด (Economy)</option>
+            <option value="standard">มาตรฐาน (Standard)</option>
+            <option value="premium">ระดับสูง (Premium)</option>
+            <option value="luxury">หรู (Luxury)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          คำนวณต้นทุน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="rounded-lg bg-primary-50 p-4 text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ต้นทุนทั้งหมด</div>
+          <div id="res-total-cost" class="text-2xl font-bold text-primary-700">-</div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">พื้นที่ก่อสร้าง</span>
+            <span id="res-area" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ประเภทอาคาร</span>
+            <span id="res-type" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">มาตรฐาน</span>
+            <span id="res-quality" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+            <span class="text-gray-600">ต้นทุน/ตร.ม.</span>
+            <span id="res-cost-per-sqm" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+            <span class="text-gray-700 font-semibold">ต้นทุนทั้งหมด</span>
+            <span id="res-calc-total" class="font-bold text-lg text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนก่อสร้างอาคาร/" />
+  </article>
+</BaseLayout>
+
+<script>
+  // ต้นทุนก่อสร้าง (บาท/ตร.ม.) ตัวอย่าง
+  const constructionCosts = {
+    house: { economy: 15000, standard: 25000, premium: 40000, luxury: 60000 },
+    apartment: { economy: 18000, standard: 28000, premium: 45000, luxury: 70000 },
+    commercial: { economy: 20000, standard: 32000, premium: 50000, luxury: 75000 },
+    office: { economy: 22000, standard: 35000, premium: 55000, luxury: 80000 },
+    warehouse: { economy: 12000, standard: 18000, premium: 28000, luxury: 40000 },
+  };
+
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#construction-cost-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const buildingArea = parseNumber(document.querySelector('#building-area')?.value || '');
+    const buildingType = document.querySelector('#building-type')?.value || 'house';
+    const qualityLevel = document.querySelector('#quality-level')?.value || 'standard';
+
+    if (!(Number.isFinite(buildingArea) && buildingArea > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const costPerSqm = constructionCosts[buildingType]?.[qualityLevel] || 25000;
+    const totalCost = buildingArea * costPerSqm;
+
+    document.querySelector('#res-total-cost').textContent = formatCurrency(totalCost);
+    document.querySelector('#res-area').textContent = `${buildingArea.toFixed(2)} ตร.ม.`;
+    document.querySelector('#res-type').textContent = document.querySelector('#building-type').options[document.querySelector('#building-type').selectedIndex].text;
+    document.querySelector('#res-quality').textContent = document.querySelector('#quality-level').options[document.querySelector('#quality-level').selectedIndex].text;
+    document.querySelector('#res-cost-per-sqm').textContent = formatCurrency(costPerSqm);
+    document.querySelector('#res-calc-total').textContent = formatCurrency(totalCost);
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

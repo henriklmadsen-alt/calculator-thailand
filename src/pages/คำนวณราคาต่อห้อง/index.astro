@@ -1,0 +1,115 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณราคาต่อห้อง 2569 | ราคาเฉลี่ยห้องนอน | เปรียบเทียบราคา | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณราคาเฉลี่ยต่อห้องนอนของโครงการสัญญา ใช้เปรียบเทียบความคุ้มค่าระหว่างโครงการบ้านอพาร์ทเมนต์ ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณราคาต่อห้อง/`;
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณราคาต่อห้อง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณราคาต่อห้อง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณราคาต่อห้องนอน ปี 2569</h1>
+    <p class="text-gray-600 mb-6">คำนวณราคาเฉลี่ยต่อห้องนอนของทรัพย์สิน เพื่อเปรียบเทียบความคุ้มค่ากับโครงการอื่น</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="price-per-room-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="total-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาทั้งหมด (บาท)</label>
+            <input id="total-price" type="text" inputmode="numeric" placeholder="เช่น 5,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="bedrooms" class="block text-sm font-medium text-gray-700 mb-1">จำนวนห้องนอน (ห้อง)</label>
+            <input id="bedrooms" type="text" inputmode="numeric" placeholder="เช่น 3" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          คำนวณราคาต่อห้อง
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="rounded-lg bg-primary-50 p-4 text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ราคา/ห้องนอน</div>
+          <div id="res-price-per-room" class="text-2xl font-bold text-primary-700">-</div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ราคาทั้งหมด</span>
+            <span id="res-total-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">จำนวนห้องนอน</span>
+            <span id="res-bedrooms" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+            <span class="text-gray-700 font-semibold">ราคา/ห้องนอน</span>
+            <span id="res-calc-price" class="font-bold text-lg text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <RelatedCalculators currentHref="/คำนวณราคาต่อห้อง/" />
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#price-per-room-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const totalPrice = parseNumber(document.querySelector('#total-price')?.value || '');
+    const bedrooms = parseNumber(document.querySelector('#bedrooms')?.value || '');
+
+    if (!(Number.isFinite(totalPrice) && totalPrice > 0 && Number.isFinite(bedrooms) && bedrooms > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const pricePerRoom = totalPrice / bedrooms;
+
+    document.querySelector('#res-price-per-room').textContent = formatCurrency(pricePerRoom);
+    document.querySelector('#res-total-price').textContent = formatCurrency(totalPrice);
+    document.querySelector('#res-bedrooms').textContent = `${bedrooms.toFixed(0)} ห้อง`;
+    document.querySelector('#res-calc-price').textContent = formatCurrency(pricePerRoom);
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

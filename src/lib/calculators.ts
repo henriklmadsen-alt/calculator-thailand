@@ -3715,6 +3715,11 @@ export const calculators: Calculator[] = [
   { title: 'คำนวณ IRR อสังหาฯ', desc: 'คำนวณ IRR (Internal Rate of Return) สำหรับการลงทุนอสังหาฯระยะยาว', href: '/คำนวณ-irr-อสังหาฯ/', icon: '📈', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณค่าบริหารจัดการอสังหาฯ', desc: 'คำนวณค่าบริหารจัดการและค่าสาธารณูปโภค สำหรับการให้เช่าทรัพย์สิน', href: '/คำนวณค่าบริหารจัดการอสังหาฯ/', icon: '🔑', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
   { title: 'คำนวณการเพิ่มมูลค่าคอนโด', desc: 'ประเมินมูลค่าคอนโดในอนาคต และกำไรจากการถือครองและขายคอนโด', href: '/คำนวณการเพิ่มมูลค่าคอนโด/', icon: '🏗️', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณราคาต่อห้อง', desc: 'คำนวณราคาเฉลี่ยต่อห้องนอน เพื่อเปรียบเทียบความคุ้มค่าระหว่างโครงการ', href: '/คำนวณราคาต่อห้อง/', icon: '🛏️', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณ Lot Coverage Ratio', desc: 'คำนวณอัตราการใช้พื้นที่ที่ดิน และการออกแบบพื้นที่ประสิทธิผล', href: '/คำนวณอัตราการใช้พื้นที่ที่ดิน/', icon: '📐', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณภาษีที่ดินตามจังหวัด', desc: 'คำนวณภาษีประจำปีสำหรับที่ดิน ตามจังหวัด พื้นที่ และประเภท', href: '/คำนวณภาษีที่ดินตามจังหวัด/', icon: '🗺️', categoryId: 'realestate', secondaryCategories: ['tax'], tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณต้นทุนก่อสร้างอาคาร', desc: 'ประมาณการต้นทุนก่อสร้างตามพื้นที่และประเภทอาคาร', href: '/คำนวณต้นทุนก่อสร้างอาคาร/', icon: '🏢', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
+  { title: 'คำนวณประกันอสังหาฯ', desc: 'ประมาณการเบี้ยประกันบ้านและอสังหาฯอื่นตามมูลค่าและประเภท', href: '/คำนวณประกันอสังหาฯ/', icon: '🛡️', categoryId: 'realestate', tag: 'ใหม่', tagColor: 'bg-orange-50 text-orange-600' },
 ];
 
 /** Look up a category by its slug (used in dynamic routes). */
