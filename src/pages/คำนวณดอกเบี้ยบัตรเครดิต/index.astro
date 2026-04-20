@@ -2,10 +2,37 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 
-const pageTitle = 'คำนวณ ดอกเบี้ยบัตรเครดิต ปี 2569 | รู้ดอกเบี้ยและยอดคงค้างก่อนจ่ายจริง | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณดอกเบี้ยบัตรเครดิตปี 2569 ตามเกณฑ์ ธปท. แบบรายวัน เห็นดอกเบี้ยก่อนครบกำหนด หลังชำระ และยอดคงค้างรอบถัดไป พร้อมยอดชำระขั้นต่ำ';
+interface Props {
+  pageTitleOverride?: string;
+  pageDescriptionOverride?: string;
+  canonicalPathOverride?: string;
+  pageNameOverride?: string;
+  headingOverride?: string;
+  introOverride?: string;
+  supportingArticleHrefOverride?: string;
+  supportingArticleLabelOverride?: string;
+}
+
+const {
+  pageTitleOverride,
+  pageDescriptionOverride,
+  canonicalPathOverride,
+  pageNameOverride,
+  headingOverride,
+  introOverride,
+  supportingArticleHrefOverride,
+  supportingArticleLabelOverride,
+} = Astro.props;
+
+const pageTitle = pageTitleOverride || 'คำนวณ ดอกเบี้ยบัตรเครดิต ปี 2569 | รู้ดอกเบี้ยและยอดคงค้างก่อนจ่ายจริง | เครื่องคำนวณไทย';
+const pageDescription = pageDescriptionOverride || 'คำนวณดอกเบี้ยบัตรเครดิตปี 2569 ตามเกณฑ์ ธปท. แบบรายวัน เห็นดอกเบี้ยก่อนครบกำหนด หลังชำระ และยอดคงค้างรอบถัดไป พร้อมยอดชำระขั้นต่ำ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
-const canonical = `${siteUrl}/คำนวณดอกเบี้ยบัตรเครดิต/`;
+const canonical = canonicalPathOverride ? `${siteUrl}${canonicalPathOverride}` : `${siteUrl}/คำนวณดอกเบี้ยบัตรเครดิต/`;
+const pageName = pageNameOverride || 'คำนวณดอกเบี้ยบัตรเครดิต';
+const heading = headingOverride || 'คำนวณดอกเบี้ยบัตรเครดิต ปี 2569';
+const intro = introOverride || 'กรอกยอดค้างชำระ ยอดที่จ่ายจริง และจำนวนวันในแต่ละช่วง เพื่อดูดอกเบี้ยรวมรอบถัดไป ยอดคงค้างใหม่ และยอดชำระขั้นต่ำที่ควรจ่าย';
+const supportingArticleHref = supportingArticleHrefOverride || '/บทความ/ดอกเบี้ยบัตรเครดิต-คิดยังไง-จ่ายขั้นต่ำ-2569/';
+const supportingArticleLabel = supportingArticleLabelOverride || 'บทความ: ดอกเบี้ยบัตรเครดิตคิดยังไง ปี 2569';
 
 const faqData = [
   {
@@ -29,7 +56,7 @@ const faqData = [
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'เครื่องคำนวณดอกเบี้ยบัตรเครดิต',
+  name: pageName,
   description: pageDescription,
   url: canonical,
   applicationCategory: 'FinanceApplication',
@@ -49,7 +76,7 @@ const jsonLdFaq = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยบัตรเครดิต">
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageName}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
@@ -61,11 +88,11 @@ const jsonLdFaq = {
     </div>
 
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-      คำนวณดอกเบี้ยบัตรเครดิต ปี 2569
+      {heading}
     </h1>
 
     <p class="text-gray-600 mb-6">
-      กรอกยอดค้างชำระ ยอดที่จ่ายจริง และจำนวนวันในแต่ละช่วง เพื่อดูดอกเบี้ยรวมรอบถัดไป ยอดคงค้างใหม่ และยอดชำระขั้นต่ำที่ควรจ่าย
+      {intro}
     </p>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
@@ -290,8 +317,8 @@ const jsonLdFaq = {
     <section class="mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">อ่านต่อและเครื่องคำนวณที่เกี่ยวข้อง</h2>
       <div class="grid gap-3 sm:grid-cols-2">
-        <a href="/บทความ/ดอกเบี้ยบัตรเครดิต-คิดยังไง-จ่ายขั้นต่ำ-2569/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
-          <span class="text-primary-600 font-medium">บทความ: ดอกเบี้ยบัตรเครดิตคิดยังไง ปี 2569</span>
+        <a href={supportingArticleHref} class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">{supportingArticleLabel}</span>
           <span class="text-gray-400 text-sm block">สรุปเกณฑ์ ธปท. และวิธีลดดอกเบี้ยให้ปิดหนี้ไวขึ้น</span>
         </a>
         <a href="/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
