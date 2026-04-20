@@ -1,0 +1,427 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณค่าเช่าคอนโด 2569 | Rental Yield & ROI | เครื่องคำนวณไทย';
+const pageDescription = 'คำนวณผลตอบแทนค่าเช่าคอนโด Gross Yield, Net Yield, Cash-on-Cash ROI กระแสเงินสดรายเดือน ระยะคืนทุน วิเคราะห์การลงทุนคอนโดปล่อยเช่า อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าเช่าคอนโด/`;
+
+const faqData = [
+  {
+    question: 'Gross Rental Yield คืออะไร?',
+    answer: 'Gross Rental Yield คือผลตอบแทนค่าเช่าขั้นต้น คำนวณจากค่าเช่ารายปีหารด้วยราคาซื้อคอนโด คูณ 100 ยังไม่หักค่าใช้จ่ายใด ๆ ใช้เปรียบเทียบเบื้องต้นระหว่างโครงการ โดยทั่วไปคอนโดในกรุงเทพฯ อยู่ที่ 4–7%',
+  },
+  {
+    question: 'Net Rental Yield ต่างจาก Gross อย่างไร?',
+    answer: 'Net Rental Yield หักค่าใช้จ่ายจริง เช่น ค่าส่วนกลาง ค่าซ่อมบำรุง ประกัน และช่วงห้องว่าง ออกจากรายได้ค่าเช่าก่อนหารด้วยราคาซื้อ ให้ภาพผลตอบแทนจริงที่แม่นยำกว่า',
+  },
+  {
+    question: 'Cash-on-Cash ROI คืออะไร?',
+    answer: 'Cash-on-Cash ROI วัดผลตอบแทนเทียบกับเงินที่จ่ายออกจริง (เงินดาวน์ + ค่าธรรมเนียมโอน) หลังหักค่าผ่อนแล้ว เหมาะสำหรับนักลงทุนที่ใช้สินเชื่อ เพราะแสดงว่าเงินที่ควักจ่ายจริงได้ผลตอบแทนกี่เปอร์เซ็นต์',
+  },
+  {
+    question: 'อัตราห้องว่าง (Vacancy Rate) ควรใส่เท่าไร?',
+    answer: 'ค่าเฉลี่ยอัตราห้องว่างคอนโดปล่อยเช่าในกรุงเทพฯ อยู่ที่ประมาณ 5–15% ขึ้นอยู่กับทำเลและราคา หากคอนโดอยู่ใกล้ BTS/MRT หรือย่านธุรกิจ อาจต่ำกว่า 5% สำหรับคอนโดชานเมืองอาจสูงถึง 15–20%',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเช่าคอนโด — Rental Yield & ROI',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าคอนโด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณค่าเช่าคอนโด 2569 วิเคราะห์ผลตอบแทนการลงทุน</p>
+      <p class="mt-1 text-sm text-slate-700">Gross Yield, Net Yield, Cash-on-Cash ROI, กระแสเงินสด, ระยะคืนทุน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับนักลงทุนอสังหาฯ ที่ต้องการวิเคราะห์คอนโดปล่อยเช่า</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าเช่าคอนโด 2569 — Rental Yield & ROI
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกราคาซื้อคอนโด ค่าเช่าที่คาดหวัง ค่าใช้จ่าย และข้อมูลสินเชื่อ
+      ระบบจะคำนวณผลตอบแทนค่าเช่า กระแสเงินสดรายเดือน และระยะเวลาคืนทุน
+      ช่วยตัดสินใจก่อนลงทุนซื้อคอนโดปล่อยเช่า
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'สูตร Gross/Net Rental Yield และ Cash-on-Cash ROI ตามมาตรฐานการประเมินอสังหาริมทรัพย์สากล',
+        'สูตรค่าผ่อนแบบลดต้นลดดอก (Reducing Balance) ตามมาตรฐานธนาคารพาณิชย์ไทย',
+      ]}
+      assumptions={[
+        'ค่าเช่าคงที่ตลอด ไม่มีปรับขึ้น — ค่าเช่าจริงอาจเปลี่ยนตามตลาด',
+        'ดอกเบี้ยคงที่ตลอดสัญญา — ดอกเบี้ยจริงอาจลอยตัว',
+        'ไม่รวมการเพิ่มขึ้นของราคาคอนโด (Capital Gain) ในผลตอบแทน',
+        'อัตราห้องว่างเป็นค่าเฉลี่ยต่อปี — ช่วงว่างจริงอาจกระจุกในบางเดือน',
+      ]}
+      references={[
+        {
+          label: 'ธนาคารแห่งประเทศไทย: รายงานตลาดอสังหาริมทรัพย์',
+          href: 'https://www.bot.or.th/th/statistics/real-estate.html',
+        },
+        {
+          label: 'สมาคมผู้ประเมินค่าทรัพย์สินแห่งประเทศไทย',
+          href: 'https://www.thaiappraisal.org/',
+        },
+      ]}
+    />
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="rental-yield-form" class="space-y-6">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <!-- Section: ข้อมูลคอนโดและค่าเช่า -->
+        <fieldset>
+          <legend class="mb-3 text-base font-semibold text-gray-900">ข้อมูลคอนโดและค่าเช่า</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="purchase-price" class="mb-1 block text-sm font-medium text-gray-700">ราคาซื้อคอนโด (บาท)</label>
+              <input id="purchase-price" type="text" inputmode="decimal" placeholder="เช่น 2,500,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="monthly-rent" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่ารายเดือน (บาท)</label>
+              <input id="monthly-rent" type="text" inputmode="decimal" placeholder="เช่น 12,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="vacancy-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราห้องว่าง (%)</label>
+              <input id="vacancy-rate" type="text" inputmode="decimal" value="8" placeholder="เช่น 8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Section: ค่าใช้จ่าย -->
+        <fieldset>
+          <legend class="mb-3 text-base font-semibold text-gray-900">ค่าใช้จ่าย</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="common-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าส่วนกลางรายเดือน (บาท)</label>
+              <input id="common-fee" type="text" inputmode="decimal" placeholder="เช่น 2,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="maintenance-annual" class="mb-1 block text-sm font-medium text-gray-700">ค่าซ่อมบำรุง/ประกันรายปี (บาท)</label>
+              <input id="maintenance-annual" type="text" inputmode="decimal" value="5000" placeholder="เช่น 5,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="transfer-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมโอนและภาษี (บาท)</label>
+              <input id="transfer-fee" type="text" inputmode="decimal" placeholder="เช่น 75,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Section: ข้อมูลสินเชื่อ -->
+        <fieldset>
+          <legend class="mb-3 text-base font-semibold text-gray-900">ข้อมูลสินเชื่อ (ใส่ 0 = ซื้อเงินสด)</legend>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label for="down-payment" class="mb-1 block text-sm font-medium text-gray-700">เงินดาวน์ (%)</label>
+              <input id="down-payment" type="text" inputmode="decimal" value="10" placeholder="เช่น 10" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="interest-rate" class="mb-1 block text-sm font-medium text-gray-700">ดอกเบี้ยต่อปี (%)</label>
+              <input id="interest-rate" type="text" inputmode="decimal" value="6.5" placeholder="เช่น 6.5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="loan-term" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลาผ่อน (ปี)</label>
+              <input id="loan-term" type="text" inputmode="decimal" value="30" placeholder="เช่น 30" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณผลตอบแทน
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณผลตอบแทนค่าเช่าคอนโด</h2>
+
+        <!-- Summary cards -->
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Gross Yield</div>
+            <div id="res-gross-yield" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Net Yield</div>
+            <div id="res-net-yield" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-indigo-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Cash-on-Cash ROI</div>
+            <div id="res-roi" class="text-xl font-bold text-indigo-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">กระแสเงินสด/เดือน</div>
+            <div id="res-cash-flow" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <!-- Yield analysis badge -->
+        <div id="yield-badge" class="mb-6 hidden rounded-lg p-4 text-center text-sm font-medium"></div>
+
+        <!-- Breakdown -->
+        <h3 class="mb-3 text-base font-semibold text-gray-900">รายละเอียดรายได้</h3>
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่ารายปี (ก่อนหักห้องว่าง)</span>
+            <span id="res-gross-annual" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่าสุทธิรายปี (หลังหักห้องว่าง)</span>
+            <span id="res-effective-annual" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าใช้จ่ายรวมรายปี</span>
+            <span id="res-annual-expenses" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-t-2 border-gray-300 py-2 font-semibold">
+            <span class="text-gray-900">รายได้สุทธิต่อปี (NOI)</span>
+            <span id="res-noi" class="text-emerald-700">-</span>
+          </div>
+        </div>
+
+        <!-- Loan & investment -->
+        <h3 class="mb-3 text-base font-semibold text-gray-900">ข้อมูลสินเชื่อและการลงทุน</h3>
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินดาวน์</span>
+            <span id="res-down-payment" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียมโอนและภาษี</span>
+            <span id="res-transfer-fee" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดกู้</span>
+            <span id="res-loan-amount" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าผ่อนต่อเดือน</span>
+            <span id="res-mortgage" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-t-2 border-gray-300 py-2 font-semibold">
+            <span class="text-gray-900">เงินลงทุนจริง (เงินสด)</span>
+            <span id="res-total-invested" class="text-indigo-700">-</span>
+          </div>
+        </div>
+
+        <!-- Payback -->
+        <h3 class="mb-3 text-base font-semibold text-gray-900">ระยะเวลาคืนทุน</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ระยะเวลาคืนทุน</span>
+            <span id="res-payback" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>Gross Rental Yield = (ค่าเช่ารายปี ÷ ราคาซื้อ) × 100</li>
+        <li>Net Rental Yield = ((ค่าเช่าสุทธิรายปี − ค่าใช้จ่ายรายปี) ÷ ราคาซื้อ) × 100</li>
+        <li>Cash-on-Cash ROI = ((รายได้สุทธิ − ค่าผ่อนรายปี) ÷ เงินลงทุนจริง) × 100</li>
+        <li>กระแสเงินสด/เดือน = (รายได้สุทธิ − ค่าผ่อนรายปี) ÷ 12</li>
+        <li>ระยะเวลาคืนทุน = เงินลงทุนจริง ÷ กระแสเงินสดรายปี</li>
+        <li>ค่าผ่อนรายเดือน (ลดต้นลดดอก) = P × [r(1+r)<sup>n</sup>] / [(1+r)<sup>n</sup> − 1]</li>
+      </ul>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าเช่าคอนโด/" />
+    <RelatedCalculators currentHref="/คำนวณค่าเช่าคอนโด/" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อประมาณการผลตอบแทนเบื้องต้นสำหรับวางแผนการลงทุน
+      ผลตอบแทนจริงขึ้นอยู่กับค่าเช่าตลาด อัตราดอกเบี้ย ค่าใช้จ่ายจริง และราคาคอนโดในอนาคต
+    </div>
+  </article>
+
+  <script>
+    import { calculateRentalYield } from '../../lib/condo-rental-yield-calculator';
+
+    const form = document.getElementById('rental-yield-form');
+    const formError = document.getElementById('form-error');
+    const results = document.getElementById('results');
+
+    const show = (el: HTMLElement | null) => el?.classList.remove('hidden');
+    const hide = (el: HTMLElement | null) => el?.classList.add('hidden');
+
+    const parseNumber = (value: string | undefined | null): number => {
+      const normalized = String(value ?? '').replace(/,/g, '').trim();
+      if (!normalized) return NaN;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    };
+
+    const formatMoney = (value: number): string =>
+      `${new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value)} บาท`;
+
+    const formatPercent = (value: number): string =>
+      `${value.toFixed(2)}%`;
+
+    const getVal = (id: string): number =>
+      parseNumber((document.getElementById(id) as HTMLInputElement)?.value);
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hide(formError);
+
+      const purchasePrice = getVal('purchase-price');
+      const monthlyRent = getVal('monthly-rent');
+      const vacancyRatePercent = getVal('vacancy-rate');
+      const commonFeeMonthly = getVal('common-fee');
+      const maintenanceAnnual = getVal('maintenance-annual');
+      const transferFeeTax = getVal('transfer-fee');
+      const downPaymentPercent = getVal('down-payment');
+      const annualInterestRate = getVal('interest-rate');
+      const loanTermYears = getVal('loan-term');
+
+      if (
+        !Number.isFinite(purchasePrice) || purchasePrice <= 0 ||
+        !Number.isFinite(monthlyRent) || monthlyRent <= 0 ||
+        !Number.isFinite(vacancyRatePercent) || vacancyRatePercent < 0 || vacancyRatePercent >= 100 ||
+        !Number.isFinite(commonFeeMonthly) || commonFeeMonthly < 0 ||
+        !Number.isFinite(maintenanceAnnual) || maintenanceAnnual < 0 ||
+        !Number.isFinite(transferFeeTax) || transferFeeTax < 0 ||
+        !Number.isFinite(downPaymentPercent) || downPaymentPercent < 0 || downPaymentPercent > 100 ||
+        !Number.isFinite(annualInterestRate) || annualInterestRate < 0 ||
+        !Number.isFinite(loanTermYears) || loanTermYears < 0
+      ) {
+        show(formError);
+        hide(results);
+        return;
+      }
+
+      const result = calculateRentalYield({
+        purchasePrice,
+        monthlyRent,
+        commonFeeMonthly,
+        maintenanceAnnual,
+        transferFeeTax,
+        downPaymentPercent,
+        annualInterestRate,
+        loanTermYears,
+        vacancyRatePercent,
+      });
+
+      // Summary cards
+      document.getElementById('res-gross-yield')!.textContent = formatPercent(result.grossYield);
+      document.getElementById('res-net-yield')!.textContent = formatPercent(result.netYield);
+      document.getElementById('res-roi')!.textContent = formatPercent(result.cashOnCashROI);
+
+      const cashFlowEl = document.getElementById('res-cash-flow')!;
+      cashFlowEl.textContent = formatMoney(result.monthlyCashFlow);
+      cashFlowEl.className = result.monthlyCashFlow >= 0
+        ? 'text-xl font-bold text-emerald-700'
+        : 'text-xl font-bold text-red-700';
+
+      // Yield badge
+      const badge = document.getElementById('yield-badge')!;
+      if (result.netYield >= 5) {
+        badge.textContent = 'ผลตอบแทนดี — Net Yield ≥ 5% ถือว่าน่าสนใจสำหรับคอนโดปล่อยเช่าในไทย';
+        badge.className = 'mb-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-center text-sm font-medium text-emerald-800';
+      } else if (result.netYield >= 3) {
+        badge.textContent = 'ผลตอบแทนปานกลาง — Net Yield 3–5% อยู่ในเกณฑ์เฉลี่ยของตลาดคอนโดไทย';
+        badge.className = 'mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-center text-sm font-medium text-amber-800';
+      } else {
+        badge.textContent = 'ผลตอบแทนต่ำ — Net Yield < 3% ควรพิจารณาทำเลหรือราคาซื้อใหม่';
+        badge.className = 'mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-800';
+      }
+      show(badge);
+
+      // Income breakdown
+      document.getElementById('res-gross-annual')!.textContent = formatMoney(result.grossAnnualRent);
+      document.getElementById('res-effective-annual')!.textContent = formatMoney(result.effectiveAnnualRent);
+      document.getElementById('res-annual-expenses')!.textContent = formatMoney(result.annualExpenses);
+      document.getElementById('res-noi')!.textContent = formatMoney(result.netOperatingIncome);
+
+      // Loan & investment
+      document.getElementById('res-down-payment')!.textContent = formatMoney(result.downPaymentAmount);
+      document.getElementById('res-transfer-fee')!.textContent = formatMoney(transferFeeTax);
+      document.getElementById('res-loan-amount')!.textContent = formatMoney(result.loanAmount);
+      document.getElementById('res-mortgage')!.textContent = formatMoney(result.mortgageMonthly);
+      document.getElementById('res-total-invested')!.textContent = formatMoney(result.totalCashInvested);
+
+      // Payback
+      const paybackEl = document.getElementById('res-payback')!;
+      if (!Number.isFinite(result.paybackYears) || result.paybackYears <= 0) {
+        paybackEl.textContent = 'ไม่สามารถคืนทุนได้ (กระแสเงินสดติดลบ)';
+        paybackEl.className = 'font-medium text-red-600';
+      } else {
+        const years = Math.floor(result.paybackYears);
+        const months = Math.round((result.paybackYears - years) * 12);
+        paybackEl.textContent = `${years} ปี ${months} เดือน`;
+        paybackEl.className = 'font-medium';
+      }
+
+      show(results);
+      results!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof (window as any).trackCalculatorStart === 'function') (window as any).trackCalculatorStart('condo_rental_yield');
+      if (typeof (window as any).trackCalculatorComplete === 'function') (window as any).trackCalculatorComplete('condo_rental_yield', result.netYield);
+      if (typeof (window as any).trackCalculatorUsed === 'function') (window as any).trackCalculatorUsed('condo_rental_yield');
+      if (typeof (window as any).trackResultViewed === 'function') (window as any).trackResultViewed('condo_rental_yield');
+    });
+  </script>
+</BaseLayout>
