@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณเบี้ยประกันพืชผล | Calculator Thailand';
+const pageDescription = 'ประมาณการเบี้ยประกันพืชผล ราคาประกัน ความเสี่ยง ข้าว มันสำปะหลัง ข้าวโพด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-เบี้ยประกันพืชผล/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันพืชผล">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเบี้ยประกันพืชผล</h1>
+    <div class="mb-4 inline-block rounded-lg border border-lime-200 bg-lime-50 px-3 py-2"><p class="text-xs font-semibold text-lime-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">ประมาณการเบี้ยประกันพืชผล ตามมูลค่าพืชและความเสี่ยง</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าพืช (บาท)</label><input type="text" id="value" inputmode="decimal" placeholder="เช่น 100000" value="100000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="risk" class="block text-sm font-medium text-gray-700 mb-1">ระดับความเสี่ยง</label><select id="risk" class="w-full px-3 py-2 border border-gray-300 rounded-md"><option value="low">ต่ำ (2.5%)</option><option value="medium" selected>ปานกลาง (5%)</option><option value="high">สูง (8%)</option></select></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-primary-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 grid grid-cols-2 gap-3"><div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">เบี้ยต่อปี</p><p id="annual" class="font-bold">-</p></div><div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">เบี้ยต่อเดือน</p><p id="monthly" class="font-bold">-</p></div></div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const value = parseFloat((document.getElementById('value') as HTMLInputElement).value) || 0;
+      const risk = (document.getElementById('risk') as HTMLSelectElement).value;
+      if (value <= 0) return;
+      const rates: Record<string, number> = { low: 2.5, medium: 5, high: 8 };
+      const rate = rates[risk] || 5;
+      const annual = (value * rate) / 100, monthly = annual / 12;
+      (document.getElementById('annual') as HTMLElement).textContent = new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(annual);
+      (document.getElementById('monthly') as HTMLElement).textContent = new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(monthly);
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('crop-insurance');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

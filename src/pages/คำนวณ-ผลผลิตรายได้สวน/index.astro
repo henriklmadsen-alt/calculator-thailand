@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณผลผลิตและรายได้จากสวน | Calculator Thailand';
+const pageDescription = 'ประมาณการผลผลิต รายได้จากการเพาะปลูก ข้าว มันสำปะหลัง ข้าวโพด ตามราคาตลาด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ผลผลิตรายได้สวน/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผลผลิตรายได้สวน">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณผลผลิตและรายได้จากสวน</h1>
+    <div class="mb-4 inline-block rounded-lg border border-lime-200 bg-lime-50 px-3 py-2">
+      <p class="text-xs font-semibold text-lime-800">[อัปเดตปี 2569]</p>
+    </div>
+    <p class="text-gray-600 mb-6">คำนวณผลผลิตและรายได้จากการเพาะปลูกพืชต่างๆ</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="crop" class="block text-sm font-medium text-gray-700 mb-1">ชนิดพืช</label>
+          <select id="crop" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="rice">ข้าว</option>
+            <option value="cassava">มันสำปะหลัง</option>
+            <option value="corn">ข้าวโพด</option>
+          </select>
+        </div>
+        <div>
+          <label for="rai" class="block text-sm font-medium text-gray-700 mb-1">ไร่</label>
+          <input type="text" id="rai" inputmode="decimal" placeholder="เช่น 10" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+        <div>
+          <label for="price" class="block text-sm font-medium text-gray-700 mb-1">ราคาต่อหน่วย (บาท)</label>
+          <input type="text" id="price" inputmode="decimal" placeholder="เช่น 6" value="6" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+      </div>
+      <button type="button" id="btn" class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-2"><p class="text-xs text-gray-600">ผลผลิต</p><p id="y" class="font-bold">-</p></div>
+          <div class="bg-green-50 rounded p-2"><p class="text-xs text-gray-600">รายได้</p><p id="inc" class="font-bold">-</p></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const crop = (document.getElementById('crop') as HTMLSelectElement).value;
+      const rai = parseFloat((document.getElementById('rai') as HTMLInputElement).value) || 0;
+      const price = parseFloat((document.getElementById('price') as HTMLInputElement).value) || 0;
+      if (rai <= 0) return;
+      const y: Record<string, number> = { rice: 450, cassava: 4000, corn: 800 };
+      const yield_ = rai * y[crop], income = yield_ * price;
+      (document.getElementById('y') as HTMLElement).textContent = Math.round(yield_).toLocaleString('th-TH') + ' กก.';
+      (document.getElementById('inc') as HTMLElement).textContent = new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(income);
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('crop-yield');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>
