@@ -47,11 +47,29 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณมูลค่าที่ดิน',
+  description: 'วิธีคำนวณมูลค่าของที่ดิน โดยใช้ราคาต่อตารางวา และพื้นที่ที่ดินทั้งหมด ตามมาตรฐานของสมาคมอสังหาริมทรัพย์ไทย',
+  author: { '@type': 'Organization', name: 'Kamnuanlek.com', url: 'https://kamnuanlek.com' },
+  totalTime: 'PT5M',
+  estimatedCost: '0 THB',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'ค้นหาราคาต่อตารางวา', text: 'ค้นหาราคาตลาดปัจจุบันของที่ดินในพื้นที่นั้นๆ ราคาโดยทั่วไปสูงขึ้นในพื้นที่ใจกลางเมืองและลดลงตามระยะห่างจากตัวเมือง ตรวจสอบจากสมาคมอสังหาริมทรัพย์ไทย (tarea.or.th) หรือสำนักงานที่ดิน (dol.go.th) เพื่อเห็นอัตราปัจจุบัน' },
+    { '@type': 'HowToStep', position: 2, name: 'วัดพื้นที่ที่ดิน', text: 'ค้นหาขนาดที่ดินในหน่วยตารางวาจากเอกสารโฉนดที่ดิน หรือหนังสือเสียภาษี หากพื้นที่อยู่ในหน่วยอื่น ให้แปลง: 100 ตร.ม. ≈ 24 ตารางวา' },
+    { '@type': 'HowToStep', position: 3, name: 'คำนวณมูลค่า', text: 'นำราคาต่อตารางวา คูณ พื้นที่ที่ดินทั้งหมด (วา²) เช่น ที่ดิน 400 ตร.วา @ 50,000 บาท/วา² = 20,000,000 บาท' },
+    { '@type': 'HowToStep', position: 4, name: 'ปรับสำหรับสภาพของที่ดิน', text: 'ลดหรือเพิ่มเปอร์เซ็นต์ตามสภาพที่ดิน: ที่ดินมุมคุ้มค่ากว่า (+5-10%), ติดถนนรองลดค่า (-5%), ติดห้วงน้ำลดค่า (-10-20%), เหมาะสำหรับแฟลตเท่านั้นลดค่า (-15%)' },
+    { '@type': 'HowToStep', position: 5, name: 'ตรวจสอบกับตัวแทนอสังหาริมทรัพย์', text: 'เปรียบเทียบมูลค่าที่คำนวณกับ 2-3 ตัวแทนนายหน้าอสังหาริมทรัพย์ในพื้นที่เดียวกัน เพื่อให้แน่ใจว่าราคาสอดคล้องกับตลาดปัจจุบัน' },
+  ],
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าที่ดิน">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
@@ -262,6 +280,16 @@ const jsonLdFaq = {
 
     <RelatedArticles currentHref="/คำนวณมูลค่าที่ดิน/" />
     <RelatedCalculators currentHref="/คำนวณมูลค่าที่ดิน/" />
+
+    <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">เครื่องคำนวณอสังหาริมทรัพย์ที่เกี่ยวข้อง</h2>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li>→ <a href="/คำนวณราคาต่อตารางวา/" class="text-primary-600 hover:underline font-medium">คำนวณราคาต่อตารางวา</a> — แปลงมูลค่าที่ดินเป็นราคาต่อหน่วย เพื่อ<a href="/คำนวณราคาต่อตารางวา/" class="text-primary-600 hover:underline">ดูราคาต่อตารางวา</a>และเปรียบเทียบกับโครงการอื่น</li>
+        <li>→ <a href="/คำนวณผ่อนบ้าน/" class="text-primary-600 hover:underline font-medium">คำนวณผ่อนบ้าน</a> — หลังประเมินมูลค่าแล้ว<a href="/คำนวณผ่อนบ้าน/" class="text-primary-600 hover:underline">คำนวณค่างวดผ่อนบ้าน</a>ที่เหมาะสมกับงบประมาณ</li>
+        <li>→ <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="text-primary-600 hover:underline font-medium">คำนวณภาษีเงินได้บุคคลธรรมดา</a> — ตรวจสอบผลกระทบต่อภาษีรายได้จากกำไรขายที่ดิน</li>
+        <li>→ <a href="/คำนวณค่าธรรมเนียมโอนบ้าน/" class="text-primary-600 hover:underline font-medium">คำนวณค่าธรรมเนียมโอนบ้าน</a> — รู้มูลค่าแล้วต้องรู้<a href="/คำนวณค่าธรรมเนียมโอนบ้าน/" class="text-primary-600 hover:underline">ค่าธรรมเนียมโอน</a>ที่ต้องจ่ายวันโอนกรรมสิทธิ์</li>
+      </ul>
+    </section>
 
     <section class="mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
