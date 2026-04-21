@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณค่าเช่าสถานที่จัดงาน ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณค่าเช่าสถานที่จัดงาน รวมค่าเช่าพื้นฐาน เงินประกัน และตกแต่ง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่าเช่าสถานที่จัดงาน/`;
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเช่าสถานที่จัดงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าสถานที่จัดงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณค่าเช่าสถานที่จัดงาน
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าเช่าสถานที่รวมถึงค่าเช่าพื้นฐาน เงินประกัน และตกแต่ง
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="baseRental" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเช่าพื้นฐาน (บาท)
+          </label>
+          <input
+            type="text"
+            id="baseRental"
+            inputmode="decimal"
+            placeholder="เช่น 15000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div>
+          <label for="deposit" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินประกัน (บาท)
+          </label>
+          <input
+            type="text"
+            id="deposit"
+            inputmode="decimal"
+            placeholder="เช่น 5000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <input type="checkbox" id="decorIncluded" class="mr-2" />
+            รวมตกแต่งแล้ว
+          </label>
+        </div>
+        <div id="decorDiv">
+          <label for="decorCost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าตกแต่งเพิ่มเติม (บาท)
+          </label>
+          <input
+            type="text"
+            id="decorCost"
+            inputmode="decimal"
+            placeholder="เช่น 5000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors"
+      >
+        คำนวณ
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <div class="bg-blue-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600 mb-1">ค่าเช่าสถานที่รวม</div>
+          <div id="totalCost" class="text-3xl font-bold text-blue-600">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณค่าเช่าสถานที่จัดงาน</h2>
+      <p class="text-gray-600">
+        ค่าเช่าสถานที่จัดงานมักประกอบไปด้วยค่าเช่าพื้นฐาน เงินประกัน และค่าตกแต่งเพิ่มเติมหากไม่รวมอยู่ในแพ็คเกจแล้ว
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  const decorIncluded = document.getElementById('decorIncluded') as HTMLInputElement;
+  const decorDiv = document.getElementById('decorDiv');
+  const form = {
+    baseRental: document.getElementById('baseRental') as HTMLInputElement,
+    deposit: document.getElementById('deposit') as HTMLInputElement,
+    decorCost: document.getElementById('decorCost') as HTMLInputElement,
+  };
+
+  const resultDiv = document.getElementById('result');
+  const btn = document.getElementById('btn-calculate');
+
+  decorIncluded?.addEventListener('change', () => {
+    if (decorIncluded.checked) {
+      decorDiv?.classList.add('hidden');
+    } else {
+      decorDiv?.classList.remove('hidden');
+    }
+  });
+
+  btn?.addEventListener('click', () => {
+    const baseRental = parseFloat(form.baseRental.value) || 0;
+    const deposit = parseFloat(form.deposit.value) || 0;
+    const decorCost = decorIncluded.checked ? 0 : (parseFloat(form.decorCost.value) || 0);
+    const totalCost = baseRental + deposit + decorCost;
+
+    (document.getElementById('totalCost') as HTMLElement).textContent =
+      totalCost.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' บาท';
+
+    resultDiv?.classList.remove('hidden');
+    resultDiv?.scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
