@@ -258,6 +258,17 @@ export const categories: Category[] = [
     description: 'รวมเครื่องคำนวณจัดงาน: งบประมาณปาร์ตี้ ค่าเลี้ยง ค่าเช่าสถานที่ ค่าตกแต่ง ค่าความบันเทิง และค่าใช้จ่ายอื่นๆ สำหรับการจัดงาน ฟรีออนไลน์',
     sortOrder: 21,
   },
+  {
+    id: 'fashion-beauty',
+    name: 'แฟชั่น/ความงาม',
+    nameEn: 'Fashion & Beauty',
+    icon: '💇',
+    slug: 'แฟชั่น-ความงาม',
+    color: 'bg-fuchsia-100',
+    colorText: 'text-fuchsia-700',
+    description: 'รวมเครื่องคำนวณแฟชั่นและความงาม: ค่าตัดผม ค่า spa นวด ค่าแต่งหน้า ค่าสปา ค่าเสริมสัน และค่าใช้จ่ายเพื่อความงามอื่นๆ ฟรีออนไลน์',
+    sortOrder: 22,
+  },
 ];
 
 export const calculators: Calculator[] = [
@@ -5876,6 +5887,16 @@ export const calculators: Calculator[] = [
     categoryId: 'event',
     tag: 'KLC-0750',
     tagColor: 'bg-pink-50 text-pink-600',
+  },
+  // WAVE4 BATCH AJ — Fashion & Beauty Services Calculators (KLC-0776-0800)
+  {
+    title: 'คำนวณค่าตัดผมและดูแลผม',
+    desc: 'คำนวณค่าตัดผม ดัดผม ย้อมผม และบริการดูแลผมต่อเดือนและต่อปี',
+    href: '/คำนวณ-hair-salon-cost/',
+    icon: '💇',
+    categoryId: 'fashion-beauty',
+    tag: 'KLC-0776',
+    tagColor: 'bg-fuchsia-50 text-fuchsia-600',
   },
 ];
 
