@@ -49,6 +49,24 @@ const mimeTypes = {
   '.txt': 'text/plain',
 };
 
+// Permanent 301 redirects served at the HTTP layer (before file serving).
+// Covers English calculator routes migrated to Thai-slug URLs and sitemap alias.
+const permanentRedirects = new Map([
+  ['/calculator/loan-payment/', '/คำนวณผ่อนกู้/'],
+  ['/calculator/loan-payment', '/คำนวณผ่อนกู้/'],
+  ['/calculator/property-transfer-tax/', '/คำนวณค่าธรรมเนียมโอนบ้าน/'],
+  ['/calculator/property-transfer-tax', '/คำนวณค่าธรรมเนียมโอนบ้าน/'],
+  ['/calculator/land-tax/', '/คำนวณภาษีที่ดิน/'],
+  ['/calculator/land-tax', '/คำนวณภาษีที่ดิน/'],
+  ['/calculator/unit-converter/', '/แปลงหน่วย/'],
+  ['/calculator/unit-converter', '/แปลงหน่วย/'],
+  ['/calculator/overtime-pay/', '/คำนวณค่าโอที/'],
+  ['/calculator/overtime-pay', '/คำนวณค่าโอที/'],
+  ['/calculator/electricity-bill/', '/คำนวณค่าไฟฟ้า/'],
+  ['/calculator/electricity-bill', '/คำนวณค่าไฟฟ้า/'],
+  ['/sitemap.xml', '/sitemap-index.xml'],
+]);
+
 const noIndexTag = 'noindex, nofollow, noarchive';
 const blockedPathPatterns = [
   /^\/(?:plans|reports|memory|scripts|node_modules|\.git|\.astro)(?:\/|$)/i,
@@ -90,6 +108,17 @@ async function serve(req, res) {
     url = decodeURIComponent(incomingUrl.pathname);
   } catch {
     url = incomingUrl.pathname;
+  }
+
+  const redirectTarget = permanentRedirects.get(url);
+  if (redirectTarget) {
+    const encodedTarget = redirectTarget.split('/').map(encodeURIComponent).join('/');
+    res.writeHead(301, {
+      Location: encodedTarget,
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    });
+    res.end();
+    return;
   }
 
   if (isBlockedPath(url)) {
