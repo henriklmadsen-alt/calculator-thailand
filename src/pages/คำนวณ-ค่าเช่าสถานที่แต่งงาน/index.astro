@@ -1,0 +1,271 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณค่าเช่าสถานที่แต่งงาน 2569 | โรงแรม ห้องจัดเลี้ยง | Calculator Thailand';
+const pageDescription = 'คำนวณค่าเช่าสถานที่จัดแต่งงาน รวมค่าตั้งค่า ค่าเช่าเก้าอี้โต๊ะ ออนไลน์ฟรี พร้อมราคาอ้างอิงสถานที่ในกรุงเทพและต่างจังหวัด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่าเช่าสถานที่แต่งงาน/`;
+
+const faqData = [
+  {
+    question: 'ค่าเช่าสถานที่แต่งงานเท่าไหร่?',
+    answer: 'ค่าเช่าสถานที่แต่งงานในกรุงเทพ อยู่ที่ 150,000-300,000 บาท ขึ้นอยู่กับขนาดและประเภท ห้องแขกโรงแรมราคา 150,000-250,000 บาท ส่วนรีสอร์ตหรูหราอยู่ที่ 250,000-500,000 บาท',
+  },
+  {
+    question: 'ค่าตั้งค่างานแต่งงานรวมอะไรบ้าง?',
+    answer: 'ค่าตั้งค่า (setup fee) รวมการจัดเตรียมห้อง การดำเนินการระหว่างงาน โต๊ะ เก้าอี้ ห่วงโซ่ไฟ และการหักสิ่งก่อสร้าง ค่าตั้งค่าปกติ 10,000-30,000 บาท เพิ่มเติมจากค่าเช่าพื้นที่',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเช่าสถานที่แต่งงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าสถานที่แต่งงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณค่าเช่าสถานที่แต่งงาน
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-pink-200 bg-pink-50 px-3 py-2">
+      <p class="text-xs font-semibold text-pink-800">[ราคาเช่าพื้นที่ 2569]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าเช่าสถานที่แต่งงาน รวมค่าตั้งค่าและค่าอื่นๆ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="base-rent" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเช่าพื้นที่ (บาท)
+          </label>
+          <input
+            type="text"
+            id="base-rent"
+            inputmode="decimal"
+            placeholder="เช่น 150000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="setup-fee" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าตั้งค่า (บาท)
+          </label>
+          <input
+            type="text"
+            id="setup-fee"
+            inputmode="decimal"
+            placeholder="เช่น 15000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="tables-chairs" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าโต๊ะ เก้าอี้ ผ้า (บาท)
+          </label>
+          <input
+            type="text"
+            id="tables-chairs"
+            inputmode="decimal"
+            placeholder="เช่น 20000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="lighting-power" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าไฟ/ไมโครโฟน (บาท)
+          </label>
+          <input
+            type="text"
+            id="lighting-power"
+            inputmode="decimal"
+            placeholder="เช่น 10000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="parking" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าที่จอดรถ (บาท)
+          </label>
+          <input
+            type="text"
+            id="parking"
+            inputmode="decimal"
+            placeholder="เช่น 5000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <div>
+          <label for="other-charges" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าอื่นๆ (บาท)
+          </label>
+          <input
+            type="text"
+            id="other-charges"
+            inputmode="decimal"
+            placeholder="เช่น 5000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-pink-600 text-white font-semibold rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณรวม
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-8 border-t pt-6">
+        <div class="bg-pink-50 rounded-lg p-6 text-center mb-6">
+          <div class="text-sm text-gray-600 mb-2">ค่าเช่าสถานที่รวม</div>
+          <div class="text-5xl font-bold text-pink-700 mb-2">
+            <span id="total">-</span>
+          </div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+
+        <div class="grid gap-4 text-sm">
+          <div class="flex justify-between border-b pb-2">
+            <span>ค่าเช่าพื้นที่</span>
+            <span class="font-medium" id="show-rent">-</span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span>ค่าตั้งค่า</span>
+            <span class="font-medium" id="show-setup">-</span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span>ค่าโต๊ะ เก้าอี้</span>
+            <span class="font-medium" id="show-tables">-</span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span>ค่าไฟ</span>
+            <span class="font-medium" id="show-light">-</span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span>ค่าที่จอด</span>
+            <span class="font-medium" id="show-parking">-</span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span>ค่าอื่นๆ</span>
+            <span class="font-medium" id="show-other">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference Prices -->
+    <section class="mb-10">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">ราคาอ้างอิงค่าเช่าสถานที่</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-3 text-left">ประเภทสถานที่</th>
+              <th class="border p-3 text-left">ราคา</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border p-3">ห้องจัดเลี้ยงโรงแรม (150 คน)</td>
+              <td class="border p-3">150,000-250,000 บาท</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="border p-3">ห้องจัดเลี้ยงสำนักงาน (200 คน)</td>
+              <td class="border p-3">100,000-200,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="border p-3">รีสอร์ต/วิลลา (100-150 คน)</td>
+              <td class="border p-3">250,000-500,000 บาท</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="border p-3">ร้านอาหาร/ร้านกาแฟ (80-100 คน)</td>
+              <td class="border p-3">50,000-150,000 บาท</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-10">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="group border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+            <summary class="font-semibold text-gray-900 flex items-center justify-between">
+              {faq.question}
+              <span class="ml-2 inline-block transition-transform group-open:rotate-180">▼</span>
+            </summary>
+            <p class="mt-3 text-gray-600 text-sm">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedCalculators />
+    <RelatedArticles />
+  </article>
+</BaseLayout>
+
+<script>
+  document.getElementById('btn-calculate')?.addEventListener('click', () => {
+    const rent = parseFloat(document.getElementById('base-rent')?.value || 0);
+    const setup = parseFloat(document.getElementById('setup-fee')?.value || 0);
+    const tables = parseFloat(document.getElementById('tables-chairs')?.value || 0);
+    const light = parseFloat(document.getElementById('lighting-power')?.value || 0);
+    const parking = parseFloat(document.getElementById('parking')?.value || 0);
+    const other = parseFloat(document.getElementById('other-charges')?.value || 0);
+
+    const total = rent + setup + tables + light + parking + other;
+
+    if (total === 0) {
+      alert('กรุณาป้อนค่าใช้จ่ายอย่างน้อยหนึ่งรายการ');
+      return;
+    }
+
+    document.getElementById('total').textContent = total.toLocaleString('th-TH');
+    document.getElementById('show-rent').textContent = rent.toLocaleString('th-TH');
+    document.getElementById('show-setup').textContent = setup.toLocaleString('th-TH');
+    document.getElementById('show-tables').textContent = tables.toLocaleString('th-TH');
+    document.getElementById('show-light').textContent = light.toLocaleString('th-TH');
+    document.getElementById('show-parking').textContent = parking.toLocaleString('th-TH');
+    document.getElementById('show-other').textContent = other.toLocaleString('th-TH');
+
+    document.getElementById('result').classList.remove('hidden');
+  });
+</script>
