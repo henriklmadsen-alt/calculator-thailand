@@ -1,0 +1,110 @@
+---
+/**
+ * /go/[affiliate] — affiliate redirect endpoint.
+ *
+ * Pre-generates one redirect page per partner slug defined in affiliate-config.ts.
+ * Each page does an immediate client-side redirect with a GA4 click event before leaving.
+ * All affiliate outbound links use rel="sponsored noopener" and this redirect for tracking.
+ */
+import { AFFILIATE_PARTNERS } from '../../data/affiliate-config';
+
+export function getStaticPaths() {
+  return Object.values(AFFILIATE_PARTNERS).map((partner) => ({
+    params: { affiliate: partner.slug },
+    props: { partner },
+  }));
+}
+
+const { partner } = Astro.props;
+const { partnerName, targetUrl, slug } = partner;
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="refresh" content={`0; url=${targetUrl}`} />
+    <title>กำลังพาคุณไปยัง {partnerName}…</title>
+    <link rel="canonical" href={`${siteUrl}/go/${slug}/`} />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #f9fafb;
+        color: #374151;
+        text-align: center;
+        padding: 1rem;
+      }
+      .card {
+        max-width: 480px;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 1px 6px rgb(0 0 0 / 0.08);
+      }
+      .spinner {
+        display: inline-block;
+        width: 2rem;
+        height: 2rem;
+        border: 3px solid #e5e7eb;
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+        margin-bottom: 1rem;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      a { color: #2563eb; }
+      p { margin: 0.5rem 0; font-size: 0.9375rem; }
+      .small { font-size: 0.8125rem; color: #6b7280; margin-top: 1rem; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="spinner"></div>
+      <p>กำลังพาคุณไปยัง <strong>{partnerName}</strong>…</p>
+      <p class="small">
+        หากไม่เปลี่ยนหน้าอัตโนมัติ
+        <a href={targetUrl} rel="sponsored noopener" target="_blank">คลิกที่นี่</a>
+      </p>
+      <p class="small">
+        เว็บไซต์นี้อาจได้รับค่าคอมมิชชันจากการซื้อผ่านลิงก์นี้ —
+        <a href="/affiliate-disclosure/">นโยบาย Affiliate</a>
+      </p>
+    </div>
+
+    <script define:vars={{ targetUrl, slug, partnerName }}>
+      // Fire GA4 affiliate_redirect event before leaving
+      function fireAndGo() {
+        function redirect() {
+          window.location.replace(targetUrl);
+        }
+
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'affiliate_redirect', {
+            affiliate_slug: slug,
+            affiliate_partner: partnerName,
+            page_path: window.location.pathname,
+          });
+          // Give GA4 ~300ms to flush, then redirect regardless
+          setTimeout(redirect, 300);
+        } else {
+          redirect();
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fireAndGo);
+      } else {
+        fireAndGo();
+      }
+    </script>
+  </body>
+</html>

@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณเบี้ยประกันชีวิต 2569 | เปรียบเทียบสะสมทรัพย์ ตลอดชีพ ชั่วระยะเวลา ฟรี | Calculator Thailand';
 const pageDescription = 'คำนวณเบี้ยประกันชีวิต 2569 เปรียบเทียบแผนสะสมทรัพย์ ตลอดชีพ ชั่วระยะเวลา ตามอายุ เพศ ทุนประกัน ระยะสัญญา ดูเบี้ยรายเดือน รายปี สิทธิลดหย่อนภาษี ฟรี';
@@ -235,6 +236,15 @@ const jsonLdFaq = {
         </table>
       </div>
     </div>
+
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="/go/rabbit-care-insurance/"
+      partnerName="Rabbit Care"
+      ctaText="เปรียบเทียบแผนประกันฟรี"
+      subtext="ดูเบี้ยจากหลายบริษัทใน 2 นาที"
+    />
 
     <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
 
@@ -511,6 +521,8 @@ const jsonLdFaq = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;
+      if (affiliateCard) affiliateCard.classList.remove('hidden');
 
       trackCalculatorUsed('life_insurance');
       trackCalculatorComplete('life_insurance', result.plans[0].annualPremium);

@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณดอกเบี้ยเงินฝาก 2569 | Calculator Thailand';
 const pageDescription = 'ดอกเบี้ยเงินฝาก ธนาคาร อัตราดอกเบี้ยทบต้น ซาวิงส์ เงินฝากประจำ 2569 ฟรี ทันที';
@@ -287,6 +288,15 @@ const jsonLdHowTo = {
         <a data-next-action-link href="/บทความ/เงินฝาก-vs-กองทุน-เปรียบเทียบ-2569/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: เงินฝาก vs กองทุน</a>
       </div>
     </div>
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="investment"
+      affiliateUrl="/go/kasikorn-savings/"
+      partnerName="KBank"
+      ctaText="ดูอัตราดอกเบี้ยประจำวันนี้"
+      subtext="เปรียบเทียบเงินฝากประจำและออมทรัพย์"
+    />
+
     <GuardedAdSlot
       templateType="calculator"
       slotId="C1"
@@ -660,6 +670,8 @@ const jsonLdHowTo = {
       resultsDiv.classList.remove('hidden');
       nextActionCard.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;
+      if (affiliateCard) affiliateCard.classList.remove('hidden');
       submitBtn.disabled = false;
       submitBtn.textContent = 'คำนวณทันที';
       trackCalculatorComplete('deposit');

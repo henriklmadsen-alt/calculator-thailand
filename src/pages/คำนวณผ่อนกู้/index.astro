@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณผ่อนกู้สินเชื่อ 2569 | Calculator Thailand';
 const pageDescription = 'คำนวณค่าผ่อนสินเชื่อ ดอกเบี้ยบ้าน สินเชื่อรถ สินเชื่อส่วนบุคคล ทั้งแบบลดต้นลดดอก (reducing balance) และแบบคงที่ (flat rate) พร้อมตารางผ่อนชำระ';
@@ -194,6 +195,15 @@ const jsonLdFaq = {
         </details>
       </div>
     </div>
+
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="personal-loan"
+      affiliateUrl="/go/rabbit-care-loan/"
+      partnerName="Rabbit Care"
+      ctaText="เปรียบเทียบสินเชื่อฟรี"
+      subtext="เปรียบเทียบข้อเสนอจากหลายธนาคารใน 3 นาที"
+    />
 
     <!-- AdSense placeholder -->
     <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
@@ -395,6 +405,8 @@ const jsonLdFaq = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;
+      if (affiliateCard) affiliateCard.classList.remove('hidden');
       trackCalculatorUsed('loan');
     });
 
