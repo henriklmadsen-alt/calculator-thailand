@@ -6823,6 +6823,15 @@ export const calculators: Calculator[] = [
     tag: 'KLC-0751',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'แคลอรี่จากการวิ่ง',
+    desc: 'Running Calorie Burn Calculator - เผาแคลอรี่ขณะวิ่ง',
+    href: '/แคลอรี่จากการวิ่ง/',
+    icon: '🔥',
+    categoryId: 'sports',
+    tag: 'KLC-0752',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 ];
 
 
