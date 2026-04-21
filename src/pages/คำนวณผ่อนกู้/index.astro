@@ -50,11 +50,26 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่างวดเงินกู้',
+  description: 'ขั้นตอนการคำนวณค่างวดผ่อนชำระเงินกู้รายเดือน สำหรับสินเชื่อบ้าน รถ หรือสินเชื่อส่วนบุคคล',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุวงเงินกู้', text: 'กรอกจำนวนเงินที่ต้องการกู้ เช่น 1,000,000 บาท (สินเชื่อบ้าน) หรือ 300,000 บาท (สินเชื่อรถยนต์) ตรวจสอบวงเงินที่ได้รับอนุมัติจากธนาคาร' },
+    { '@type': 'HowToStep', name: 'กรอกอัตราดอกเบี้ยต่อปี', text: 'ระบุอัตราดอกเบี้ยที่ธนาคารเสนอ เช่น MLR+1% = ประมาณ 6.5%/ปี (สินเชื่อบ้าน) หรือ 24-28%/ปี (สินเชื่อส่วนบุคคล) ตรวจสอบจากสัญญากู้' },
+    { '@type': 'HowToStep', name: 'เลือกระยะเวลาผ่อน', text: 'ระบุระยะเวลาผ่อนชำระเป็นปี เช่น 30 ปี (บ้าน) 5-7 ปี (รถ) หรือ 1-5 ปี (ส่วนบุคคล) ระยะเวลานานกว่า = ค่างวดต่ำกว่า แต่ดอกเบี้ยรวมสูงกว่า' },
+    { '@type': 'HowToStep', name: 'คำนวณค่างวดรายเดือน', text: 'สูตร PMT: ค่างวด = [P × r(1+r)^n] ÷ [(1+r)^n - 1] โดย P = เงินกู้, r = อัตราดอกเบี้ยรายเดือน, n = จำนวนงวด ตัวอย่าง: กู้ 1,000,000 บาท 6%/ปี 30 ปี = ค่างวด 5,996 บาท/เดือน' },
+    { '@type': 'HowToStep', name: 'วิเคราะห์ตารางผ่อนชำระ', text: 'ระบบแสดงตารางผ่อนชำระรายเดือน แยกส่วนเงินต้นและดอกเบี้ย ดอกเบี้ยรวมตลอดสัญญา และยอดหนี้คงเหลือแต่ละงวด ใช้เปรียบเทียบข้อเสนอจากหลายธนาคาร' },
+  ],
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนกู้สินเชื่อ">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

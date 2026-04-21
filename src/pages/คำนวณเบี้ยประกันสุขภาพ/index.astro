@@ -49,11 +49,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันสุขภาพ',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันสุขภาพส่วนบุคคล ตามอายุ ประวัติสุขภาพ และความครอบคลุมที่ต้องการ',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุอายุและเพศ', text: 'กรอกอายุปัจจุบัน เพศ (ชาย/หญิง) เบี้ยประกันสุขภาพเพิ่มขึ้นตามอายุ ควรทำประกันตั้งแต่อายุน้อยเพื่อเบี้ยต่ำกว่า โดยทั่วไปเบี้ยอายุ 20-30 ปี ต่ำกว่าอายุ 50+ ปี ถึง 3-5 เท่า' },
+    { '@type': 'HowToStep', name: 'เลือกระดับความครอบคลุม', text: 'เลือกแผนประกัน: แผนพื้นฐาน (ผู้ป่วยใน IPD อย่างเดียว) แผนกลาง (IPD + OPD บางส่วน) หรือแผนครอบคลุม (IPD + OPD + ทันตกรรม + แว่นตา) ยิ่งครอบคลุมมาก เบี้ยยิ่งสูง' },
+    { '@type': 'HowToStep', name: 'ระบุวงเงินคุ้มครองต่อปี', text: 'กำหนดวงเงินสูงสุดที่ต้องการต่อปี เช่น 1 ล้านบาท 3 ล้านบาท หรือ 5 ล้านบาท สำหรับห้องผู้ป่วยใน แนะนำวงเงินอย่างน้อย 1 ล้านบาทสำหรับโรงพยาบาลเอกชนในกรุงเทพ' },
+    { '@type': 'HowToStep', name: 'ตรวจสอบข้อยกเว้นโรคเดิม', text: 'แจ้งประวัติสุขภาพ (โรคเดิมที่เป็นก่อนทำประกัน) บริษัทประกันอาจไม่คุ้มครองโรคที่มีมาก่อน (Pre-existing conditions) หรือเพิ่มเบี้ยสำหรับบางโรค' },
+    { '@type': 'HowToStep', name: 'เปรียบเทียบและเลือกแผน', text: 'เปรียบเทียบเบี้ยและความครอบคลุมจากหลายบริษัท (AXA, MSIG, FWD, SE Life, Cigna) สามารถนำเบี้ยประกันสุขภาพไปลดหย่อนภาษีได้สูงสุด 25,000 บาทต่อปี (ตามกฎหมาย พ.ร.บ. ภาษีเงินได้)' },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันสุขภาพ">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">

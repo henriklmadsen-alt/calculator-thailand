@@ -50,11 +50,26 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันชีวิต',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันชีวิต ตามอายุ ทุนประกัน ระยะเวลา และประเภทประกัน',
+  step: [
+    { '@type': 'HowToStep', name: 'เลือกประเภทประกันชีวิต', text: 'เลือกประเภท: ประกันตลอดชีพ (Whole Life) ให้ความคุ้มครองตลอดชีวิต, ประกันสะสมทรัพย์ (Endowment) ได้เงินคืนเมื่อครบกำหนด, หรือประกันชั่วระยะเวลา (Term) เบี้ยถูกที่สุด' },
+    { '@type': 'HowToStep', name: 'ระบุอายุและเพศ', text: 'กรอกอายุปัจจุบัน เพศ (ชาย/หญิง) เบี้ยประกันชีวิตเพิ่มขึ้นตามอายุ ยิ่งทำประกันเร็วยิ่งดี เช่น อายุ 25 ปี เบี้ยต่ำกว่าอายุ 45 ปี ประมาณ 2-3 เท่าสำหรับทุนประกันเท่ากัน' },
+    { '@type': 'HowToStep', name: 'กำหนดทุนประกัน', text: 'ระบุจำนวนเงินที่ต้องการให้ผู้รับประโยชน์ได้รับ แนะนำทุนประกันอย่างน้อย 5-10 เท่าของรายได้ต่อปี เช่น เงินเดือน 40,000 บาท/เดือน = ทุนประกัน 2.4-4.8 ล้านบาท' },
+    { '@type': 'HowToStep', name: 'เลือกระยะเวลาชำระเบี้ย', text: 'ระบุระยะเวลาชำระเบี้ย เช่น 10 ปี 20 ปี หรือตลอดชีพ ระยะสั้นกว่า = เบี้ยรายปีสูงกว่า แต่จ่ายน้อยครั้ง เบี้ยประกันชีวิตนำไปลดหย่อนภาษีได้สูงสุด 100,000 บาทต่อปี' },
+    { '@type': 'HowToStep', name: 'คำนวณและเปรียบเทียบ', text: 'ระบบแสดงเบี้ยโดยประมาณ อัตราผลตอบแทน (IRR) และยอดเงินคืนเมื่อครบกำหนด เปรียบเทียบข้อเสนอจากหลายบริษัท (AIA, FWD, AXA, Muang Thai Life) ก่อนตัดสินใจ' },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันชีวิต">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">

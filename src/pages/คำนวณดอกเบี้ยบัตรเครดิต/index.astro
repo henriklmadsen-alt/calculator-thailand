@@ -80,11 +80,26 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณดอกเบี้ยบัตรเครดิต',
+  description: 'ขั้นตอนการคำนวณดอกเบี้ยบัตรเครดิต กรณีจ่ายขั้นต่ำหรือผ่อนชำระ ตามประกาศธนาคารแห่งประเทศไทย',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุยอดหนี้คงเหลือ', text: 'กรอกยอดหนี้บัตรเครดิตที่ค้างชำระ (Statement Balance) จากใบแจ้งยอด ยอดนี้คือฐานในการคำนวณดอกเบี้ย' },
+    { '@type': 'HowToStep', name: 'ตรวจสอบอัตราดอกเบี้ย', text: 'อัตราดอกเบี้ยบัตรเครดิตในไทยสูงสุดไม่เกิน 16% ต่อปี (ตามประกาศ ธปท. 2563) ตรวจสอบอัตราของบัตรคุณจากหลังบัตรหรือใบแจ้งยอด' },
+    { '@type': 'HowToStep', name: 'กรอกยอดชำระต่อเดือน', text: 'ระบุจำนวนที่ตั้งใจจะชำระต่อเดือน หากจ่ายขั้นต่ำ (5-10% ของยอด) ดอกเบี้ยจะสูงมาก แนะนำจ่ายมากกว่าขั้นต่ำเพื่อลดภาระดอกเบี้ย' },
+    { '@type': 'HowToStep', name: 'คำนวณดอกเบี้ยรายวัน', text: 'สูตร: ดอกเบี้ยต่อวัน = ยอดหนี้ × (อัตราดอกเบี้ยต่อปี ÷ 365) ตัวอย่าง: หนี้ 50,000 บาท อัตรา 16%/ปี = 50,000 × (16/365/100) = 21.92 บาท/วัน' },
+    { '@type': 'HowToStep', name: 'ดูระยะเวลาปลดหนี้', text: 'ระบบแสดงจำนวนเดือนที่ต้องใช้ปลดหนี้ ดอกเบี้ยรวมทั้งหมด และเปรียบเทียบกรณีจ่ายขั้นต่ำ vs จ่ายเต็มจำนวน ใช้วางแผนปิดหนี้ให้เร็วขึ้น' },
+  ],
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageName}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">

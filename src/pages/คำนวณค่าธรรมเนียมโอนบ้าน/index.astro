@@ -51,11 +51,26 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่าธรรมเนียมโอนบ้านและที่ดิน',
+  description: 'ขั้นตอนการคำนวณค่าธรรมเนียมโอนกรรมสิทธิ์ ค่าจดจำนอง และภาษีที่เกี่ยวข้อง ตามกรมที่ดิน',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุราคาซื้อขายหรือราคาประเมิน', text: 'กรอกราคาซื้อขายจริง และราคาประเมินจากกรมที่ดิน (ตรวจสอบได้ที่เว็บไซต์ treasury.go.th) ค่าธรรมเนียมคำนวณจากราคาที่สูงกว่าระหว่างสองราคานี้' },
+    { '@type': 'HowToStep', name: 'คำนวณค่าธรรมเนียมโอน 2%', text: 'ค่าธรรมเนียมโอนกรรมสิทธิ์ = ราคาอ้างอิง × 2% ตัวอย่าง: บ้านราคา 3,000,000 บาท = ค่าธรรมเนียมโอน 60,000 บาท (ปกติแบ่งกันจ่ายคนละครึ่งระหว่างผู้ซื้อและผู้ขาย)' },
+    { '@type': 'HowToStep', name: 'คำนวณค่าจดจำนอง 1%', text: 'หากกู้ธนาคาร ต้องชำระค่าจดจำนอง = วงเงินกู้ × 1% สูงสุด 200,000 บาท ตัวอย่าง: กู้ 2,400,000 บาท = ค่าจดจำนอง 24,000 บาท' },
+    { '@type': 'HowToStep', name: 'คำนวณภาษีธุรกิจเฉพาะหรืออากรแสตมป์', text: 'ถือครองน้อยกว่า 5 ปี หรือย้ายทะเบียนน้อยกว่า 1 ปี = ภาษีธุรกิจเฉพาะ 3.3% ถ้าถือครองนานกว่า = อากรแสตมป์ 0.5% (จ่ายอย่างใดอย่างหนึ่ง ไม่ใช่ทั้งคู่)' },
+    { '@type': 'HowToStep', name: 'รวมค่าใช้จ่ายทั้งหมด', text: 'รวมค่าธรรมเนียมโอน + ค่าจดจำนอง + ภาษีธุรกิจเฉพาะ/อากรแสตมป์ + ภาษีเงินได้หัก ณ ที่จ่าย (ผู้ขาย) นำไปเตรียมเงินก่อนวันโอนที่กรมที่ดิน' },
+  ],
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมโอนบ้าน">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
