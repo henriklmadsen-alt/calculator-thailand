@@ -43,11 +43,36 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณสัดส่วนค่าเช่าต่อรายได้ (30% Rule) ปี 2569",
+  "description": "ขั้นตอนการคำนวณเพื่อตรวจสอบว่าค่าเช่าที่จ่ายเหมาะสมหรือมากเกินไป โดยใช้หลักกฎ 30% (ค่าเช่าไม่ควรเกิน 30% ของรายได้สุทธิ)",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "บันทึกรายได้สุทธิรายเดือน",
+      "text": "รายได้ = เงินเดือนหรือรายได้จ้างหลัก หลังหักภาษีและประกันสังคม ตัวอย่าง: เงินเดือน 50,000 บาท (เต็มจำนวน) หรือสุทธิ 45,000 บาท (หลังหัก SSO)"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณค่าเช่า 30% ของรายได้",
+      "text": "ค่าเช่าเหมาะสม = รายได้สุทธิ × 30% ตัวอย่าง: 45,000 × 30% = 13,500 บาท/เดือน (ค่าเช่าที่เหมาะสม)"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ตรวจสอบสัดส่วนค่าเช่าปัจจุบัน",
+      "text": "สัดส่วน = ค่าเช่าปัจจุบัน ÷ รายได้สุทธิ × 100% ถ้า < 30% = ดี, 30-35% = โอเค, > 35% = เกินไป ตัวอย่าง: ค่าเช่า 15,000 ÷ 45,000 × 100% = 33.3% (เกินเล็กน้อย)"
+    }
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสัดส่วนค่าเช่าต่อรายได้">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณสัดส่วนค่าเช่าต่อรายได้ 2569</h1>

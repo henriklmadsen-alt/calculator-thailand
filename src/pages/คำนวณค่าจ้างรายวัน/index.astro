@@ -58,11 +58,36 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณค่าจ้างรายวัน ปี 2569",
+  "description": "ขั้นตอนการคำนวณค่าจ้างรายวันตามพระราชกฤษฎีกาจ้างแรงงาน โดยใช้เงินเดือนรายเดือน หรือเทียบอัตราค่าจ้างขั้นต่ำตามประกาศของกระทรวงแรงงาน",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ตรวจสอบเงินเดือนรายเดือน หรือค่าจ้างขั้นต่ำ",
+      "text": "ดูจากสัญญาจ้าง หรือประกาศค่าจ้างขั้นต่ำของกระทรวงแรงงาน (แตกต่างไปตามจังหวัด) ตัวอย่าง: เงินเดือน 15,000 บาท/เดือน หรือค่าจ้างขั้นต่ำ 336 บาท/วัน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณจำนวนวันทำงาน",
+      "text": "วันทำงานต่อเดือนโดยปกติ: ตั้งแต่ 1 ถึง 31 วัน แต่นั่นนับรวมวันหยุดสัปดาห์ (เสาร์-อาทิตย์) วันหยุดราชการ หนึ่งเดือนมีวันทำงานประมาณ 20-22 วัน ตัวอย่าง: 20 วัน/เดือน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณค่าจ้างรายวัน",
+      "text": "ค่าจ้างรายวัน = เงินเดือนรายเดือน ÷ จำนวนวันทำงาน ตัวอย่าง: 15,000 ÷ 20 วัน = 750 บาท/วัน (ถ้าต่ำกว่าค่าจ้างขั้นต่ำ ให้ใช้ค่าจ้างขั้นต่ำแทน)"
+    }
+  ]
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างรายวัน">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">

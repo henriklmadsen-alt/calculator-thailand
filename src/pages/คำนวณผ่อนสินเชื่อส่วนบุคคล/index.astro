@@ -49,11 +49,41 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณผ่อนสินเชื่อส่วนบุคคล ปี 2569",
+  "description": "ขั้นตอนการคำนวณเงินผ่อนรายเดือน อัตราดอกเบี้ย และเงินรวมทั้งสิ้นของสินเชื่อส่วนบุคคล ตามหลักการของธนาคารแห่งชาติไทย",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ระบุจำนวนเงินกู้ (Principal)",
+      "text": "บันทึกจำนวนเงินที่ต้องการกู้ยืม ตัวอย่าง: ต้องการกู้ 200,000 บาท (ซื้อรถยนต์ หรือทำบ้าน)"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ตรวจสอบอัตราดอกเบี้ยต่อปี",
+      "text": "ศึกษาอัตราดอกเบี้ยจากธนาคาร โดยปกติ 3.5%-6.5% ต่อปี ขึ้นอยู่กับสินเชื่อประเภท ตัวอย่าง: อัตราดอกเบี้ย 5% ต่อปี"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ระบุระยะเวลาการผ่อน (Loan Term)",
+      "text": "ระยะเวลาการผ่อนทั่วไป 1-7 ปี (12-84 เดือน) ตัวอย่าง: ผ่อน 5 ปี = 60 เดือน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณเงินผ่อนรายเดือน",
+      "text": "ใช้สูตร: PMT = P × [r(1+r)^n] / [(1+r)^n - 1] เมื่อ P=200,000, r=5%/12=0.4167%, n=60 เดือน PMT = 200,000 × [0.004167(1.004167)^60] / [(1.004167)^60 - 1] ≈ 3,864 บาท/เดือน เงินรวม = 3,864 × 60 = 231,840 บาท (ดอกเบี้ย 31,840 บาท)"
+    }
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนสินเชื่อส่วนบุคคล">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

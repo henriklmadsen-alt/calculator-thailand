@@ -48,11 +48,41 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณเป้าหมายเงินออม เพื่อเกษียณ ปี 2569",
+  "description": "ขั้นตอนการกำหนดเป้าหมายเงินออมประจำปี เพื่อให้มีเงินเพียงพอเมื่อเกษียณ โดยใช้วิธีหาจำนวนเงินที่ต้องออมต่อเดือน",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "กำหนดเป้าหมายเงินเกษียณทั้งสิ้น",
+      "text": "จากการคำนวณก่อนหน้า (CAL-KW43) บันทึกเงินเกษียณเป้าหมาย ตัวอย่าง: ต้องมีเงิน 15,000,000 บาท เมื่ออายุ 60 ปี"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ระบุเงินที่มีอยู่แล้ว",
+      "text": "เงินออมปัจจุบัน + การลงทุน + เงินประกันสังคมที่คาดหวัง ตัวอย่าง: มีออมแล้ว 2,000,000 บาท, เงิน SSO จะได้ประมาณ 500,000 บาท = เงินที่มี 2,500,000 บาท"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณเงินที่ยังต้องออม",
+      "text": "เงินต้องออม = เป้าหมาย - เงินที่มี = 15,000,000 - 2,500,000 = 12,500,000 บาท"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณจำนวนเงินที่ต้องออมต่อเดือน",
+      "text": "เงินต้องออมต่อเดือน = เงินต้องออม ÷ (จำนวนเดือนที่เหลือ - ส่วนของดอกเบี้ย) สมมติดอกเบี้ยจากการลงทุน 3.5% ต่อปี นำไปคำนวณด้วย ตัวอย่าง: ต้องออมประมาณ 20,000-25,000 บาท/เดือน (ขึ้นอยู่กับอัตราดอกเบี้ย)"
+    }
+  ]
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเป้าหมายเงินเกษียณ">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
