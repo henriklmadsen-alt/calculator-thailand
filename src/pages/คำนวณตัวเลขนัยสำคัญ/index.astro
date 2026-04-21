@@ -1,0 +1,274 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณตัวเลขนัยสำคัญ (Sig Fig) ปัดเศษให้ถูกต้อง ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณและปัดเลขนัยสำคัญ (significant figures) พร้อมบอกจำนวน sig figs ของตัวเลขใดก็ได้ ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณตัวเลขนัยสำคัญ/`;
+
+const faqData = [
+  {
+    question: 'ตัวเลขนัยสำคัญ (significant figures) คืออะไร?',
+    answer: 'ตัวเลขนัยสำคัญ (sig figs) คือตัวเลขที่แสดงความแม่นยำของการวัด กฎพื้นฐาน: (1) ตัวเลขที่ไม่ใช่ศูนย์ทุกตัวเป็น sig fig (2) ศูนย์ระหว่างตัวเลขที่ไม่ใช่ศูนย์เป็น sig fig (3) ศูนย์นำหน้าทศนิยมไม่เป็น sig fig (4) ศูนย์หลังทศนิยมเป็น sig fig',
+  },
+  {
+    question: '1200 มีกี่ตัวเลขนัยสำคัญ?',
+    answer: '1200 อาจมี 2, 3 หรือ 4 sig figs ขึ้นอยู่กับบริบท ถ้าไม่มีจุดทศนิยม ศูนย์ท้ายอาจเป็นหรือไม่เป็น sig fig ก็ได้ แต่ถ้าเขียน 1200. (มีจุด) = 4 sig figs, 1.2 × 10³ = 2 sig figs, 1.20 × 10³ = 3 sig figs',
+  },
+  {
+    question: '0.00450 มีกี่ตัวเลขนัยสำคัญ?',
+    answer: '0.00450 มี 3 sig figs คือ 4, 5 และ 0 ตัวสุดท้าย ศูนย์นำหน้า (0.00) ไม่นับเป็น sig fig แต่ศูนย์หลังตัวเลข (0 ท้าย) ที่อยู่หลังจุดทศนิยมนับเป็น sig fig',
+  },
+  {
+    question: 'ทำไมตัวเลขนัยสำคัญถึงสำคัญในวิทยาศาสตร์?',
+    answer: 'ตัวเลขนัยสำคัญแสดงความแม่นยำของการวัด เช่น 1.5 cm (2 sig figs) หมายถึงวัดได้แม่นถึง 0.1 cm แต่ 1.50 cm (3 sig figs) แม่นถึง 0.01 cm การรายงานผลที่มี sig figs มากเกินจริงถือว่าไม่ถูกต้องทางวิทยาศาสตร์',
+  },
+  {
+    question: 'กฎการปัดเศษในตัวเลขนัยสำคัญคืออะไร?',
+    answer: 'ปัดตัวเลขถัดจาก sig fig สุดท้าย: ถ้า ≥ 5 ให้ปัดขึ้น ถ้า < 5 ให้ตัดทิ้ง เช่น 3.456 ปัดให้เหลือ 3 sig figs = 3.46, ปัดให้เหลือ 2 sig figs = 3.5 มาตรฐาน "ปัด 5 ให้เป็นคู่" (banker\'s rounding) ใช้ในบางกรณี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณตัวเลขนัยสำคัญ (Significant Figures)',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณและปัดตัวเลขนัยสำคัญ',
+  description: 'ขั้นตอนการปัดตัวเลขให้เหลือ n ตัวเลขนัยสำคัญ และการนับจำนวน sig figs',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกโหมดการคำนวณ',
+      text: 'เลือก "ปัดเป็น n นัยสำคัญ" เพื่อปัดตัวเลข หรือ "นับ sig figs" เพื่อนับจำนวนตัวเลขนัยสำคัญ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกตัวเลข',
+      text: 'พิมพ์ตัวเลขที่ต้องการ สำหรับการนับ sig figs กรอกเป็นข้อความเพื่อรักษาศูนย์ท้าย เช่น "1.200" หรือ "0.00450"',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกจำนวน sig figs ที่ต้องการ (สำหรับการปัด)',
+      text: 'ใส่จำนวนตัวเลขนัยสำคัญที่ต้องการ เช่น 3 เพื่อปัดให้เหลือ 3 sig figs',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดคำนวณและอ่านผลลัพธ์',
+      text: 'กดปุ่ม "คำนวณ" ผลลัพธ์แสดงตัวเลขที่ปัดแล้ว หรือจำนวน sig figs พร้อมคำอธิบาย',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณตัวเลขนัยสำคัญ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ปัดตัวเลขนัยสำคัญและนับ sig figs ได้ในหน้าเดียว</p>
+      <p class="mt-1 text-sm text-slate-700">แสดงคำอธิบายกฎการนับ sig figs ทุกกรณี</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณตัวเลขนัยสำคัญ (Significant Figures) ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ปัดตัวเลขให้เหลือ n ตัวเลขนัยสำคัญ (sig figs) หรือนับว่าตัวเลขที่กรอกมี sig figs กี่ตัว
+      ใช้ในงานวิทยาศาสตร์ เคมี ฟิสิกส์ และงานวิจัยที่ต้องการความแม่นยำ
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'NIST: Guidelines for significant figures in measurement',
+        'สสวท. (SciMath): ตัวเลขนัยสำคัญและการปัดเศษ',
+      ]}
+      assumptions={[
+        'การนับ sig figs ใช้กฎมาตรฐานสากล',
+        'ตัวเลขที่มีจุดทศนิยม ศูนย์ท้ายนับเป็น sig figs',
+      ]}
+      references={[
+        {
+          label: 'NIST: Significant Figures in Measurement',
+          href: 'https://physics.nist.gov/cuu/Uncertainty/',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: Round to n sig figs -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) ปัดให้เหลือ n ตัวเลขนัยสำคัญ</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: 3.14159 ปัดให้เหลือ 3 sig figs = 3.14</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="sigfig-num" class="block text-sm font-medium text-gray-700 mb-1">ตัวเลข</label>
+          <input id="sigfig-num" type="text" inputmode="decimal" placeholder="เช่น 3.14159" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="sigfig-n" class="block text-sm font-medium text-gray-700 mb-1">จำนวน sig figs (n)</label>
+          <input id="sigfig-n" type="text" inputmode="numeric" placeholder="เช่น 3" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-sigfig-round" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">ปัดเศษ</button>
+        </div>
+      </div>
+      <p id="sigfig-round-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="sigfig-round-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="sigfig-round-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: Count sig figs -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) นับจำนวน Sig Figs ของตัวเลข</h2>
+      <p class="text-sm text-gray-500 mb-4">กรอกตัวเลขเป็นข้อความ (รักษาศูนย์ท้าย) เช่น "0.00450" หรือ "1.200"</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="sm:col-span-2">
+          <label for="sigfig-count-num" class="block text-sm font-medium text-gray-700 mb-1">ตัวเลข (กรอกแบบข้อความ)</label>
+          <input id="sigfig-count-num" type="text" placeholder="เช่น 0.00450 หรือ 1200." class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-sigfig-count" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">นับ</button>
+        </div>
+      </div>
+      <p id="sigfig-count-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="sigfig-count-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="sigfig-count-value" class="text-xl font-bold text-primary-700">-</p>
+        <p id="sigfig-count-explain" class="text-sm text-gray-600 mt-1">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#sigfig-count-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">กฎการนับตัวเลขนัยสำคัญ</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ตัวเลขที่ไม่ใช่ศูนย์ทุกตัว: นับเป็น sig fig เสมอ เช่น 1, 2, 3, ..., 9</li>
+        <li>ศูนย์ระหว่างตัวเลขที่ไม่ใช่ศูนย์: นับเป็น sig fig เช่น 1001 = 4 sig figs</li>
+        <li>ศูนย์นำหน้า (leading zeros): ไม่นับ เช่น 0.005 = 1 sig fig (แค่ 5)</li>
+        <li>ศูนย์ท้ายหลังจุดทศนิยม: นับเป็น sig fig เช่น 1.200 = 4 sig figs</li>
+        <li>ศูนย์ท้ายก่อนจุดทศนิยม: ไม่แน่ชัด ขึ้นอยู่กับบริบท เช่น 1200 อาจ 2-4 sig figs</li>
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณตัวเลขนัยสำคัญ/" />
+    <RelatedCalculators currentHref="/คำนวณตัวเลขนัยสำคัญ/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  document.getElementById('btn-sigfig-round')?.addEventListener('click', () => {
+    setError('sigfig-round-error', '');
+    const numStr = document.getElementById('sigfig-num')?.value || '';
+    const nStr = document.getElementById('sigfig-n')?.value || '';
+    const num = parseNum(numStr);
+    const n = parseInt(nStr.trim(), 10);
+    if (!Number.isFinite(num)) { setError('sigfig-round-error', 'กรุณากรอกตัวเลขที่ถูกต้อง'); return; }
+    if (!Number.isFinite(n) || n < 1 || n > 20) { setError('sigfig-round-error', 'จำนวน sig figs ต้องอยู่ระหว่าง 1 ถึง 20'); return; }
+    const result = parseFloat(num.toPrecision(n));
+    setText('sigfig-round-value', `${num} ปัดเป็น ${n} sig figs = ${result.toPrecision(n)}`);
+    document.getElementById('sigfig-round-result')?.classList.remove('hidden');
+  });
+
+  function countSigFigs(str) {
+    str = str.trim();
+    // Remove sign
+    const isNeg = str.startsWith('-');
+    if (isNeg) str = str.slice(1);
+    const hasDecimalPoint = str.includes('.');
+    // Remove decimal point for counting
+    const noPoint = str.replace('.', '');
+    // Find first non-zero digit
+    let firstNonZero = -1;
+    for (let i = 0; i < noPoint.length; i++) {
+      if (noPoint[i] !== '0') { firstNonZero = i; break; }
+    }
+    if (firstNonZero === -1) return { count: 1, explain: 'ตัวเลข 0 มี 1 sig fig' };
+    // Count from first non-zero to end
+    const sigPart = noPoint.slice(firstNonZero);
+    if (hasDecimalPoint) {
+      // All digits from first non-zero to end (including trailing zeros)
+      const count = sigPart.length;
+      return { count, explain: `นับจากตัวเลขที่ไม่ใช่ศูนย์ตัวแรก (${noPoint[firstNonZero]}) ถึงท้าย = ${count} sig figs` };
+    } else {
+      // Trailing zeros are ambiguous — count up to last non-zero
+      let lastNonZero = sigPart.length - 1;
+      while (lastNonZero > 0 && sigPart[lastNonZero] === '0') lastNonZero--;
+      const count = lastNonZero + 1;
+      const hasTrailingZeros = sigPart.length > count;
+      const explain = hasTrailingZeros
+        ? `ไม่มีจุดทศนิยม ศูนย์ท้ายไม่แน่ชัด นับได้อย่างน้อย ${count} sig figs (อาจถึง ${sigPart.length})`
+        : `นับจากตัวเลขที่ไม่ใช่ศูนย์ตัวแรกถึงท้าย = ${count} sig figs`;
+      return { count, explain };
+    }
+  }
+
+  document.getElementById('btn-sigfig-count')?.addEventListener('click', () => {
+    setError('sigfig-count-error', '');
+    const numStr = document.getElementById('sigfig-count-num')?.value || '';
+    if (!numStr.trim()) { setError('sigfig-count-error', 'กรุณากรอกตัวเลข'); return; }
+    if (!/^-?[\d.]+$/.test(numStr.trim())) { setError('sigfig-count-error', 'กรุณากรอกตัวเลขที่ถูกต้อง (ตัวเลขและจุดทศนิยมเท่านั้น)'); return; }
+    const { count, explain } = countSigFigs(numStr);
+    setText('sigfig-count-value', `"${numStr}" มี ${count} ตัวเลขนัยสำคัญ`);
+    setText('sigfig-count-explain', explain);
+    document.getElementById('sigfig-count-result')?.classList.remove('hidden');
+  });
+</script>

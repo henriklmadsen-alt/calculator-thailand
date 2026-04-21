@@ -1,0 +1,260 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'แปลงสัญกรณ์วิทยาศาสตร์ เลขยกกำลัง 10 ฟรี | Calculator Thailand';
+const pageDescription = 'แปลงตัวเลขเป็นสัญกรณ์วิทยาศาสตร์ (a × 10ⁿ) และแปลงกลับ พร้อมอธิบายขั้นตอน ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/แปลงสัญกรณ์วิทยาศาสตร์/`;
+
+const faqData = [
+  {
+    question: 'สัญกรณ์วิทยาศาสตร์คืออะไร?',
+    answer: 'สัญกรณ์วิทยาศาสตร์ (scientific notation) คือการเขียนตัวเลขในรูป a × 10ⁿ โดย 1 ≤ |a| < 10 และ n เป็นจำนวนเต็ม ใช้เพื่อแสดงตัวเลขที่ใหญ่มากหรือเล็กมากให้อ่านง่ายขึ้น เช่น ระยะจากโลกถึงดวงอาทิตย์ = 1.496 × 10⁸ กิโลเมตร',
+  },
+  {
+    question: 'วิธีแปลงตัวเลขเป็นสัญกรณ์วิทยาศาสตร์ทำอย่างไร?',
+    answer: 'เลื่อนจุดทศนิยมจนตัวเลขอยู่ระหว่าง 1 ถึง 10 นับจำนวนครั้งที่เลื่อนเป็นเลขชี้กำลัง ถ้าเลื่อนซ้าย n = บวก ถ้าเลื่อนขวา n = ลบ เช่น 0.000045 = 4.5 × 10⁻⁵ (เลื่อนขวา 5 ครั้ง)',
+  },
+  {
+    question: 'สัญกรณ์วิทยาศาสตร์ใช้ในด้านไหนบ้าง?',
+    answer: 'ใช้ในวิทยาศาสตร์ทุกแขนง เช่น ฟิสิกส์ (มวลอิเล็กตรอน = 9.11 × 10⁻³¹ kg), เคมี (เลขอาโวกาโดร = 6.022 × 10²³ mol⁻¹), ดาราศาสตร์ (ระยะทางดาว), ชีววิทยา (ขนาดเซลล์ = 10 × 10⁻⁶ m)',
+  },
+  {
+    question: '6.022 × 10²³ คืออะไร ทำไมถึงสำคัญ?',
+    answer: '6.022 × 10²³ คือเลขอาโวกาโดร (Avogadro\'s number) แสดงจำนวนอนุภาค (อะตอม โมเลกูล) ใน 1 โมล เป็นหนึ่งในค่าคงที่ที่สำคัญที่สุดในเคมี ตัวเลขนี้ใหญ่มากจนต้องใช้สัญกรณ์วิทยาศาสตร์',
+  },
+  {
+    question: 'สัญกรณ์วิทยาศาสตร์กับสัญกรณ์วิศวกรรมต่างกันอย่างไร?',
+    answer: 'สัญกรณ์วิทยาศาสตร์ใช้ 1 ≤ |a| < 10 ส่วนสัญกรณ์วิศวกรรม (engineering notation) ใช้เลขชี้กำลังที่หารด้วย 3 ลงตัว เช่น 10³, 10⁶, 10⁻³ ทำให้ตรงกับคำนำหน้าหน่วย SI เช่น kilo (k) = 10³, mega (M) = 10⁶, milli (m) = 10⁻³',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องแปลงสัญกรณ์วิทยาศาสตร์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีแปลงตัวเลขเป็นสัญกรณ์วิทยาศาสตร์',
+  description: 'ขั้นตอนการแปลงตัวเลขธรรมดาเป็นสัญกรณ์วิทยาศาสตร์และแปลงกลับ',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกทิศทางการแปลง',
+      text: 'เลือก "ตัวเลขธรรมดา → สัญกรณ์วิทยาศาสตร์" หรือ "สัญกรณ์วิทยาศาสตร์ → ตัวเลขธรรมดา"',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกตัวเลขที่ต้องการแปลง',
+      text: 'สำหรับแปลงไปสัญกรณ์วิทยาศาสตร์ กรอกตัวเลขใดก็ได้ เช่น 0.000045 หรือ 150000000 สำหรับแปลงกลับ กรอก mantissa (a) และ exponent (n)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดแปลง',
+      text: 'กดปุ่ม "แปลง" เพื่อดูผลลัพธ์ทั้งค่า mantissa และ exponent แยกกัน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'อ่านและตีความผลลัพธ์',
+      text: 'ผลลัพธ์แสดงในรูป a × 10ⁿ โดย 1 ≤ |a| < 10 พร้อมตัวเลขเต็มสำหรับโหมดแปลงกลับ',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="แปลงสัญกรณ์วิทยาศาสตร์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">แปลงสัญกรณ์วิทยาศาสตร์ได้ทั้งสองทิศทาง</p>
+      <p class="mt-1 text-sm text-slate-700">แสดง mantissa และ exponent แยกกัน รองรับตัวเลขทุกขนาด</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      แปลงสัญกรณ์วิทยาศาสตร์ (a × 10ⁿ) ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      แปลงตัวเลขธรรมดาเป็นสัญกรณ์วิทยาศาสตร์ (a × 10ⁿ) หรือแปลงกลับจากสัญกรณ์วิทยาศาสตร์
+      เป็นตัวเลขธรรมดา ใช้ในงานวิทยาศาสตร์ วิศวกรรม และการศึกษา
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'สสวท. (SciMath): สัญกรณ์วิทยาศาสตร์',
+        'ECMAScript: Number.prototype.toExponential',
+      ]}
+      assumptions={[
+        'ผลลัพธ์แสดง mantissa ทศนิยม 6 ตำแหน่ง',
+        'รองรับตัวเลขทุกขนาดที่ JavaScript สามารถแสดงได้',
+      ]}
+      references={[
+        {
+          label: 'SciMath: สัญกรณ์วิทยาศาสตร์และการประยุกต์',
+          href: 'https://www.scimath.org/article-mathematics/item/11474-3',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: Number to Scientific -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) ตัวเลขธรรมดา → สัญกรณ์วิทยาศาสตร์</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: 150000000 → 1.5 × 10⁸, 0.000045 → 4.5 × 10⁻⁵</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="sm:col-span-2">
+          <label for="sci-num" class="block text-sm font-medium text-gray-700 mb-1">ตัวเลขธรรมดา</label>
+          <input id="sci-num" type="text" inputmode="decimal" placeholder="เช่น 150000000 หรือ 0.000045" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-sci-to" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">แปลง</button>
+        </div>
+      </div>
+      <p id="sci-to-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="sci-to-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="sci-to-notation" class="text-xl font-bold text-primary-700">-</p>
+        <p id="sci-to-mantissa" class="text-sm text-gray-600">-</p>
+        <p id="sci-to-exponent" class="text-sm text-gray-600">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: Scientific to Number -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) สัญกรณ์วิทยาศาสตร์ → ตัวเลขธรรมดา</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: a = 6.022, n = 23 → 6.022 × 10²³ = 602200000000000000000000</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="sci-a" class="block text-sm font-medium text-gray-700 mb-1">Mantissa a (1 ≤ |a| &lt; 10)</label>
+          <input id="sci-a" type="text" inputmode="decimal" placeholder="เช่น 6.022" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="sci-n" class="block text-sm font-medium text-gray-700 mb-1">Exponent n</label>
+          <input id="sci-n" type="text" inputmode="decimal" placeholder="เช่น 23" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-sci-from" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">แปลง</button>
+        </div>
+      </div>
+      <p id="sci-from-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="sci-from-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="sci-from-notation" class="text-base font-bold text-primary-700">-</p>
+        <p id="sci-from-value" class="text-sm text-gray-600 break-all">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#sci-from-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ตัวอย่างสัญกรณ์วิทยาศาสตร์ที่ใช้บ่อย</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">ปริมาณ</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">ค่า</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">สัญกรณ์วิทยาศาสตร์</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="px-4 py-2">ระยะโลก-ดวงอาทิตย์</td><td class="px-4 py-2">149,600,000 km</td><td class="px-4 py-2">1.496 × 10⁸ km</td></tr>
+            <tr><td class="px-4 py-2">มวลอิเล็กตรอน</td><td class="px-4 py-2">0.000...911 kg</td><td class="px-4 py-2">9.11 × 10⁻³¹ kg</td></tr>
+            <tr><td class="px-4 py-2">เลขอาโวกาโดร</td><td class="px-4 py-2">602,200,000,000,000,000,000,000</td><td class="px-4 py-2">6.022 × 10²³</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/แปลงสัญกรณ์วิทยาศาสตร์/" />
+    <RelatedCalculators currentHref="/แปลงสัญกรณ์วิทยาศาสตร์/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  document.getElementById('btn-sci-to')?.addEventListener('click', () => {
+    setError('sci-to-error', '');
+    const num = parseNum(document.getElementById('sci-num')?.value);
+    if (!Number.isFinite(num)) { setError('sci-to-error', 'กรุณากรอกตัวเลขที่ถูกต้อง'); return; }
+    if (num === 0) {
+      setText('sci-to-notation', '0 = 0 × 10⁰');
+      setText('sci-to-mantissa', 'Mantissa a = 0');
+      setText('sci-to-exponent', 'Exponent n = 0');
+      document.getElementById('sci-to-result')?.classList.remove('hidden');
+      return;
+    }
+    const expStr = num.toExponential(6);
+    const parts = expStr.split('e');
+    const mantissa = parseFloat(parts[0]);
+    const exp = parseInt(parts[1], 10);
+    setText('sci-to-notation', `${num} = ${mantissa} × 10^${exp}`);
+    setText('sci-to-mantissa', `Mantissa a = ${mantissa}`);
+    setText('sci-to-exponent', `Exponent n = ${exp}`);
+    document.getElementById('sci-to-result')?.classList.remove('hidden');
+  });
+
+  document.getElementById('btn-sci-from')?.addEventListener('click', () => {
+    setError('sci-from-error', '');
+    const a = parseNum(document.getElementById('sci-a')?.value);
+    const n = parseNum(document.getElementById('sci-n')?.value);
+    if (!Number.isFinite(a) || !Number.isFinite(n)) { setError('sci-from-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    const result = a * Math.pow(10, n);
+    setText('sci-from-notation', `${a} × 10^${n} =`);
+    setText('sci-from-value', Number.isFinite(result) ? result.toPrecision(10).replace(/\.?0+$/, '') : 'ค่าเกินขีดจำกัด');
+    document.getElementById('sci-from-result')?.classList.remove('hidden');
+  });
+</script>

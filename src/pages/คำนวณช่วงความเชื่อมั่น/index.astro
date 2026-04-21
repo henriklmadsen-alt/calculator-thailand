@@ -1,0 +1,286 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณช่วงความเชื่อมั่น (Confidence Interval) ฟรี | Calculator Thailand';
+const pageDescription = 'คำนวณช่วงความเชื่อมั่น 90% 95% 99% สำหรับค่าเฉลี่ย สัดส่วน และผลสำรวจ ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณช่วงความเชื่อมั่น/`;
+
+const faqData = [
+  {
+    question: 'ช่วงความเชื่อมั่น (Confidence Interval) คืออะไร?',
+    answer: 'ช่วงความเชื่อมั่น (CI) คือช่วงตัวเลขที่เราเชื่อว่าค่าจริงของประชากรจะอยู่ในช่วงนั้น ด้วยความน่าจะเป็นที่กำหนด เช่น CI 95% หมายความว่าถ้าทำการสุ่มตัวอย่างซ้ำ 100 ครั้ง จะมีประมาณ 95 ครั้งที่ช่วงนี้ครอบคลุมค่าจริง',
+  },
+  {
+    question: 'CI 95% หมายความว่าอะไร?',
+    answer: 'CI 95% ใช้ z = 1.960 หมายความว่ามีโอกาส 95% ที่ช่วง [x̄-E, x̄+E] จะครอบคลุมค่าเฉลี่ยจริงของประชากร ไม่ได้หมายความว่าค่าจริงมีโอกาส 95% อยู่ในช่วงนี้ เพราะค่าจริงเป็นค่าคงที่ ไม่ใช่ตัวแปรสุ่ม',
+  },
+  {
+    question: 'Margin of Error คืออะไร?',
+    answer: 'Margin of Error (E) คือความคลาดเคลื่อนที่ยอมรับได้รอบๆ ค่าประมาณ สูตร: E = z × (σ/√n) สำหรับค่าเฉลี่ย หรือ E = z × √(p̂(1-p̂)/n) สำหรับสัดส่วน ยิ่ง n มาก E ยิ่งเล็ก ยิ่งมั่นใจในการประมาณค่า',
+  },
+  {
+    question: 'ทำไม CI 99% จึงกว้างกว่า CI 95%?',
+    answer: 'CI 99% ใช้ z = 2.576 ซึ่งมากกว่า z = 1.960 ของ CI 95% ทำให้ margin of error กว้างขึ้น เปรียบเหมือนการหว่านแหกว้างขึ้นเพื่อโอกาสจับปลาได้มากขึ้น ความเชื่อมั่นสูงขึ้นแต่ความแม่นยำในการระบุค่าลดลง',
+  },
+  {
+    question: 'ขนาดตัวอย่าง (sample size) ส่งผลต่อ CI อย่างไร?',
+    answer: 'ขนาดตัวอย่าง n ส่งผลต่อ margin of error โดยตรง เพราะ E ∝ 1/√n ถ้าต้องการ E ลดลงครึ่งหนึ่ง ต้องเพิ่ม n เป็น 4 เท่า เช่น จาก n=100 เป็น n=400 การเพิ่มตัวอย่างให้พอเหมาะจะช่วยให้ CI แคบลงและผลการวิจัยน่าเชื่อถือมากขึ้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณช่วงความเชื่อมั่น (Confidence Interval)',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณช่วงความเชื่อมั่นสำหรับค่าเฉลี่ยและสัดส่วน',
+  description: 'ขั้นตอนการคำนวณ CI 90% 95% 99% พร้อม margin of error',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกประเภทการคำนวณ',
+      text: 'เลือก "CI สำหรับค่าเฉลี่ย" หากมีข้อมูลตัวเลข หรือ "CI สำหรับสัดส่วน" สำหรับข้อมูลแบบ yes/no เช่น ผลสำรวจ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกข้อมูลทางสถิติ',
+      text: 'สำหรับค่าเฉลี่ย: กรอก x̄, s (std dev) และ n (ขนาดตัวอย่าง). สำหรับสัดส่วน: กรอก p̂ (0-1) และ n',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกระดับความเชื่อมั่น',
+      text: 'เลือก 90%, 95% หรือ 99% ระดับความเชื่อมั่นสูงขึ้นจะให้ช่วงกว้างขึ้น',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'อ่านผลลัพธ์',
+      text: 'ผลลัพธ์แสดง margin of error (E) และช่วง CI [ขอบล่าง, ขอบบน] พร้อมสูตรที่ใช้',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณช่วงความเชื่อมั่น">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณช่วงความเชื่อมั่น CI 90% 95% 99%</p>
+      <p class="mt-1 text-sm text-slate-700">สำหรับค่าเฉลี่ยและสัดส่วน พร้อม Margin of Error</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณช่วงความเชื่อมั่น (Confidence Interval) ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณช่วงความเชื่อมั่น (CI) สำหรับค่าเฉลี่ยของประชากร และสัดส่วน (proportion)
+      รองรับระดับความเชื่อมั่น 90%, 95% และ 99% ใช้ในงานวิจัย สถิติ และการวิเคราะห์ข้อมูล
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'NIST/SEMATECH: e-Handbook of Statistical Methods',
+        'สถิติศาสตร์มหาวิทยาลัยไทย: การประมาณค่าแบบช่วง',
+      ]}
+      assumptions={[
+        'ใช้ z-values: 90% = 1.645, 95% = 1.960, 99% = 2.576',
+        'สมมติว่าข้อมูลมีการแจกแจงแบบปกติ หรือ n มากพอ (Central Limit Theorem)',
+      ]}
+      references={[
+        {
+          label: 'NIST: Confidence Intervals',
+          href: 'https://www.itl.nist.gov/div898/handbook/prc/section1/prc14.htm',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: CI for mean -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) CI สำหรับค่าเฉลี่ย (x̄)</h2>
+      <p class="text-sm text-gray-500 mb-4">สูตร: E = z × (s/√n), CI = [x̄ − E, x̄ + E]</p>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label for="ci-mean" class="block text-sm font-medium text-gray-700 mb-1">ค่าเฉลี่ยตัวอย่าง x̄</label>
+          <input id="ci-mean" type="text" inputmode="decimal" placeholder="เช่น 170" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="ci-sd" class="block text-sm font-medium text-gray-700 mb-1">ค่าเบี่ยงเบนมาตรฐาน s</label>
+          <input id="ci-sd" type="text" inputmode="decimal" placeholder="เช่น 10" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="ci-n" class="block text-sm font-medium text-gray-700 mb-1">ขนาดตัวอย่าง n</label>
+          <input id="ci-n" type="text" inputmode="numeric" placeholder="เช่น 50" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="ci-conf" class="block text-sm font-medium text-gray-700 mb-1">ระดับความเชื่อมั่น</label>
+          <select id="ci-conf" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="1.960">95% (z = 1.960)</option>
+            <option value="1.645">90% (z = 1.645)</option>
+            <option value="2.576">99% (z = 2.576)</option>
+          </select>
+        </div>
+      </div>
+      <button id="btn-ci-mean" type="button" class="mt-3 w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700 sm:w-auto sm:px-6">คำนวณ</button>
+      <p id="ci-mean-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="ci-mean-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="ci-mean-e" class="text-base font-semibold text-primary-700">-</p>
+        <p id="ci-mean-range" class="text-xl font-bold text-primary-800">-</p>
+        <p id="ci-mean-formula" class="text-sm text-gray-600">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: CI for proportion -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) CI สำหรับสัดส่วน (p̂)</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: สำรวจ 500 คน เห็นด้วย 320 คน → p̂ = 0.64</p>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label for="ci-prop" class="block text-sm font-medium text-gray-700 mb-1">สัดส่วน p̂ (0 ถึง 1)</label>
+          <input id="ci-prop" type="text" inputmode="decimal" placeholder="เช่น 0.64" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="ci-prop-n" class="block text-sm font-medium text-gray-700 mb-1">ขนาดตัวอย่าง n</label>
+          <input id="ci-prop-n" type="text" inputmode="numeric" placeholder="เช่น 500" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="ci-prop-conf" class="block text-sm font-medium text-gray-700 mb-1">ระดับความเชื่อมั่น</label>
+          <select id="ci-prop-conf" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="1.960">95% (z = 1.960)</option>
+            <option value="1.645">90% (z = 1.645)</option>
+            <option value="2.576">99% (z = 2.576)</option>
+          </select>
+        </div>
+      </div>
+      <button id="btn-ci-prop" type="button" class="mt-3 w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700 sm:w-auto sm:px-6">คำนวณ</button>
+      <p id="ci-prop-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="ci-prop-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="ci-prop-e" class="text-base font-semibold text-primary-700">-</p>
+        <p id="ci-prop-range" class="text-xl font-bold text-primary-800">-</p>
+        <p id="ci-prop-pct" class="text-sm text-gray-600">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#ci-prop-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่า z ที่ใช้บ่อยในช่วงความเชื่อมั่น</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">ระดับความเชื่อมั่น</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">ค่า z</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">α (ระดับนัยสำคัญ)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="px-4 py-2">90%</td><td class="px-4 py-2">1.645</td><td class="px-4 py-2">0.10</td></tr>
+            <tr><td class="px-4 py-2">95%</td><td class="px-4 py-2">1.960</td><td class="px-4 py-2">0.05</td></tr>
+            <tr><td class="px-4 py-2">99%</td><td class="px-4 py-2">2.576</td><td class="px-4 py-2">0.01</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณช่วงความเชื่อมั่น/" />
+    <RelatedCalculators currentHref="/คำนวณช่วงความเชื่อมั่น/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  document.getElementById('btn-ci-mean')?.addEventListener('click', () => {
+    setError('ci-mean-error', '');
+    const xbar = parseNum(document.getElementById('ci-mean')?.value);
+    const s = parseNum(document.getElementById('ci-sd')?.value);
+    const n = parseNum(document.getElementById('ci-n')?.value);
+    const z = parseNum(document.getElementById('ci-conf')?.value);
+    if ([xbar, s, n].some(v => !Number.isFinite(v))) { setError('ci-mean-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    if (s <= 0) { setError('ci-mean-error', 'ค่าเบี่ยงเบนมาตรฐานต้องมากกว่า 0'); return; }
+    if (n < 1) { setError('ci-mean-error', 'ขนาดตัวอย่างต้องมากกว่า 0'); return; }
+    const E = z * (s / Math.sqrt(n));
+    const lower = xbar - E;
+    const upper = xbar + E;
+    const confPct = z === 1.645 ? '90%' : z === 2.576 ? '99%' : '95%';
+    setText('ci-mean-e', `Margin of Error (E) = ${z} × (${s}/√${n}) = ${E.toFixed(4)}`);
+    setText('ci-mean-range', `CI ${confPct}: [${lower.toFixed(4)}, ${upper.toFixed(4)}]`);
+    setText('ci-mean-formula', `สูตร: x̄ ± z × (s/√n) = ${xbar} ± ${E.toFixed(4)}`);
+    document.getElementById('ci-mean-result')?.classList.remove('hidden');
+  });
+
+  document.getElementById('btn-ci-prop')?.addEventListener('click', () => {
+    setError('ci-prop-error', '');
+    const phat = parseNum(document.getElementById('ci-prop')?.value);
+    const n = parseNum(document.getElementById('ci-prop-n')?.value);
+    const z = parseNum(document.getElementById('ci-prop-conf')?.value);
+    if (!Number.isFinite(phat) || !Number.isFinite(n)) { setError('ci-prop-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    if (phat < 0 || phat > 1) { setError('ci-prop-error', 'สัดส่วน p̂ ต้องอยู่ระหว่าง 0 ถึง 1'); return; }
+    if (n < 1) { setError('ci-prop-error', 'ขนาดตัวอย่างต้องมากกว่า 0'); return; }
+    const E = z * Math.sqrt(phat * (1 - phat) / n);
+    const lower = Math.max(0, phat - E);
+    const upper = Math.min(1, phat + E);
+    const confPct = z === 1.645 ? '90%' : z === 2.576 ? '99%' : '95%';
+    setText('ci-prop-e', `Margin of Error (E) = ${E.toFixed(4)} (±${(E * 100).toFixed(2)}%)`);
+    setText('ci-prop-range', `CI ${confPct}: [${lower.toFixed(4)}, ${upper.toFixed(4)}]`);
+    setText('ci-prop-pct', `เป็นเปอร์เซ็นต์: [${(lower * 100).toFixed(2)}%, ${(upper * 100).toFixed(2)}%]`);
+    document.getElementById('ci-prop-result')?.classList.remove('hidden');
+  });
+</script>
