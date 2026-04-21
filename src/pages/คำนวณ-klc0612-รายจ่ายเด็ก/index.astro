@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณรายจ่ายเด็ก | Calculator Thailand';
+const pageDescription = 'คำนวณค่าใช้จ่ายทั้งหมดสำหรับเด็กต่อปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0612-รายจ่ายเด็ก/`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณรายจ่ายเด็ก">
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณรายจ่ายเด็ก</h1>
+    <div class="mb-4 inline-block rounded-lg border border-rose-200 bg-rose-50 px-3 py-2"><p class="text-xs font-semibold text-rose-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณรายจ่ายทั้งหมดเลี้ยงเด็กต่อเดือน ต่อปี</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="food" class="block text-sm font-medium text-gray-700 mb-1">ค่าอาหาร (บาท/เดือน)</label><input type="text" id="food" inputmode="decimal" placeholder="เช่น 2000" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="education" class="block text-sm font-medium text-gray-700 mb-1">ค่าศึกษา (บาท/เดือน)</label><input type="text" id="education" inputmode="decimal" placeholder="เช่น 3000" value="3000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="health" class="block text-sm font-medium text-gray-700 mb-1">ค่ารักษา/ประกัน (บาท/เดือน)</label><input type="text" id="health" inputmode="decimal" placeholder="เช่น 500" value="500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="activities" class="block text-sm font-medium text-gray-700 mb-1">ค่ากิจกรรม/เสื้อผ้า (บาท/เดือน)</label><input type="text" id="activities" inputmode="decimal" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-rose-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-rose-50 rounded p-3">
+            <p class="text-sm text-gray-600">รวมต่อเดือน</p>
+            <p id="monthly" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3">
+            <p class="text-sm text-gray-600">รวมต่อปี</p>
+            <p id="yearly" class="font-bold">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">ค่ารวมเลี้ยงเด็ก 1 คน ประมาณเท่าไหร่?</h3>
+            <p class="text-gray-600 text-sm">ตามสำนักงาน สถิติ: เด็ก 0-5 ปี 4,000-5,000 บาท/เดือน เด็ก 6-12 ปี 5,000-8,000 บาท</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">ควรเก็บเงินสำรองเด็กเท่าไหร่?</h3>
+            <p class="text-gray-600 text-sm">ควรเก็บสำรอง 3-6 เดือนค่าเลี้ยงเด็ก เพื่อฉุกเฉิน โรค อุบัติเหตุ</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">ลดค่าเลี้ยงเด็กจากค่าใจได้หรือไม่?</h3>
+            <p class="text-gray-600 text-sm">ได้ ควรเปรียบเทียบ: หลักสูตรสอน บริหารจัดการ อัตราครู อื่นๆ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const food = parseFloat((document.getElementById('food') as HTMLInputElement).value) || 0;
+      const education = parseFloat((document.getElementById('education') as HTMLInputElement).value) || 0;
+      const health = parseFloat((document.getElementById('health') as HTMLInputElement).value) || 0;
+      const activities = parseFloat((document.getElementById('activities') as HTMLInputElement).value) || 0;
+
+      const monthlyTotal = food + education + health + activities;
+      const yearlyTotal = monthlyTotal * 12;
+
+      (document.getElementById('monthly') as HTMLElement).textContent = monthlyTotal.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('yearly') as HTMLElement).textContent = yearlyTotal.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('child-expenses');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>
