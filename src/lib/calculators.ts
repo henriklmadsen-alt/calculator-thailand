@@ -280,6 +280,17 @@ export const categories: Category[] = [
     description: 'คำนวณต้นทุนการผลิต ค่าแรงงาน ประสิทธิภาพ และการวางแผนโรงงานอุตสาหกรรม',
     sortOrder: 25,
   },
+  {
+    id: 'sports',
+    name: 'กีฬา/ฟิตเนส',
+    nameEn: 'Sports & Fitness',
+    icon: '⚽',
+    slug: 'กีฬา-ฟิตเนส',
+    color: 'bg-orange-100',
+    colorText: 'text-orange-700',
+    description: 'รวมเครื่องคำนวณกีฬาและฟิตเนส: เพซวิ่ง แคลอรี่ บริหารน้ำหนัก VO2 Max และโปรแกรมการออกกำลังกาย ฟรีออนไลน์',
+    sortOrder: 26,
+  },
 
 ];
 
@@ -6801,6 +6812,16 @@ export const calculators: Calculator[] = [
     categoryId: 'industrial',
     tag: 'KLC-1075',
     tagColor: 'bg-slate-50 text-slate-600',
+  },
+  // ── WAVE4 BATCH AI: Sports & Recreation ──
+  {
+    title: 'คำนวณเพซวิ่ง',
+    desc: 'Running Pace Calculator - ความเร็ว แคลอรี่ และเวลาประมาณการ',
+    href: '/คำนวณเพซวิ่ง/',
+    icon: '🏃',
+    categoryId: 'sports',
+    tag: 'KLC-0751',
+    tagColor: 'bg-orange-50 text-orange-600',
   },
 ];
 

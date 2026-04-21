@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculateRunningPace, EXAMPLE_1, EXAMPLE_2, EXAMPLE_3 } from '../../lib/running-pace-calculator';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+
+const pageTitle = 'คำนวณเพซวิ่ง ความเร็ว แคลอรี่ | Calculator Thailand';
+const pageDescription = 'เครื่องคำนวณเพซวิ่ง (Running Pace) - ความเร็ว แคลอรี่ที่เผา และเวลาประมาณการ 10K มาราธอน โดยใช้สูตรวิทยาศาสตร์ฟิตเนส';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเพซวิ่ง/`;
+
+const faqData = [
+  {
+    question: 'เพซหมายถึงอะไร?',
+    answer: 'เพซคือเวลาที่ใช้ในการวิ่งหนึ่งกิโลเมตร วัดเป็นนาทีต่อกิโลเมตร (นาที/กม.) เพซที่เร็วกว่าหมายความว่าคุณวิ่งเร็วขึ้น',
+  },
+  {
+    question: 'ความหมายของ MET คืออะไร?',
+    answer: 'MET (Metabolic Equivalent of Task) คือการวัดความเข้มข้นของการออกกำลังกาย โดยวิ่งแบบต่างๆ มี MET ต่างกัน เช่น วิ่งช้า = 6-8 MET วิ่งปานกลาง = 8-11 MET วิ่งเร็ว = 13-15 MET',
+  },
+  {
+    question: 'สูตร Riegel คืออะไร?',
+    answer: 'สูตร Riegel ใช้ประมาณเวลาวิ่งในระยะต่างๆ โดยพิจารณาจากประสิทธิภาพปัจจุบัน สูตร: เวลากำลังมา = เวลาปัจจุบัน × (ระยะใหม่÷ระยะปัจจุบัน)^1.06',
+  },
+  {
+    question: 'ความเข้มข้นของการวิ่งมีผลต่อแคลอรี่หรือไม่?',
+    answer: 'ใช่ แน่นอน การวิ่งเร็วจะเผาแคลอรี่มากกว่าการวิ่งช้า แม้ว่าระยะทางจะเท่ากัน',
+  },
+];
+
+const jsonLdSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['WebApplication', 'Calculator'],
+  name: 'Running Pace Calculator - คำนวณเพซวิ่ง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'HealthApplication',
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเพซวิ่ง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdSchema)} />
+
+  <article class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-4">คำนวณเพซวิ่ง (Running Pace Calculator)</h1>
+    <p class="text-lg text-gray-600 mb-8">
+      คำนวณเพซวิ่ง ความเร็ว แคลอรี่ที่เผา และเวลาประมาณการ 10K มาราธอน โดยใช้สูตรวิทยาศาสตร์ฟิตเนสที่ได้รับการยอมรับ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <h2 class="text-2xl font-bold mb-6">คำนวณเพซวิ่งของคุณ</h2>
+      <form id="paceForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="distance" class="block font-semibold mb-2">ระยะทาง (กิโลเมตร):</label>
+            <input
+              type="number"
+              id="distance"
+              name="distance"
+              step="0.1"
+              min="0.1"
+              placeholder="เช่น 5, 10, 21.1"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label for="timeMinutes" class="block font-semibold mb-2">เวลา (นาที):</label>
+            <input
+              type="number"
+              id="timeMinutes"
+              name="timeMinutes"
+              step="1"
+              min="1"
+              placeholder="เช่น 25, 60, 120"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label for="bodyWeight" class="block font-semibold mb-2">น้ำหนักตัว (กิโลกรัม):</label>
+            <input
+              type="number"
+              id="bodyWeight"
+              name="bodyWeight"
+              step="0.5"
+              min="30"
+              max="200"
+              placeholder="เช่น 60, 70, 80"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label for="intensity" class="block font-semibold mb-2">ความเข้มข้น:</label>
+            <select id="intensity" name="intensity" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="easy">ง่าย (Easy)</option>
+              <option value="moderate" selected>ปานกลาง (Moderate)</option>
+              <option value="hard">หนัก (Hard/Racing)</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition"
+        >
+          คำนวณ
+        </button>
+      </form>
+
+      <!-- Results -->
+      <div id="results" class="hidden mt-8 pt-8 border-t-2 border-gray-200">
+        <h3 class="text-2xl font-bold mb-6">ผลลัพธ์</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600 text-sm">เพซ (นาที/กม.)</p>
+            <p class="text-3xl font-bold text-blue-600" id="paceMinKm">-</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600 text-sm">ความเร็ว (กม./ชม.)</p>
+            <p class="text-3xl font-bold text-blue-600" id="speedKmh">-</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600 text-sm">แคลอรี่ที่เผา</p>
+            <p class="text-3xl font-bold text-green-600" id="caloriesBurned">-</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600 text-sm">MET Value</p>
+            <p class="text-3xl font-bold text-purple-600" id="metValue">-</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600 text-sm">เวลา 10K โดยประมาณ</p>
+            <p class="text-2xl font-bold text-orange-600" id="time10k">-</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600 text-sm">เวลา Marathon โดยประมาณ</p>
+            <p class="text-2xl font-bold text-red-600" id="timeMarathon">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Examples -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">ตัวอย่างการคำนวณ</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+          <p class="font-bold mb-2">ตัวอย่าง 1: วิ่ง 5 กม. ใน 25 นาที (70 กก.)</p>
+          <ul class="text-sm space-y-1">
+            <li>เพซ: {EXAMPLE_1.paceMinKm} นาที/กม.</li>
+            <li>ความเร็ว: {EXAMPLE_1.speedKmh} กม./ชม.</li>
+            <li>แคลอรี่: {EXAMPLE_1.caloriesBurned}</li>
+          </ul>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+          <p class="font-bold mb-2">ตัวอย่าง 2: วิ่ง 10 กม. ใน 60 นาที (65 กก.)</p>
+          <ul class="text-sm space-y-1">
+            <li>เพซ: {EXAMPLE_2.paceMinKm} นาที/กม.</li>
+            <li>ความเร็ว: {EXAMPLE_2.speedKmh} กม./ชม.</li>
+            <li>แคลอรี่: {EXAMPLE_2.caloriesBurned}</li>
+          </ul>
+        </div>
+        <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
+          <p class="font-bold mb-2">ตัวอย่าง 3: วิ่ง 3 กม. ใน 18 นาที (75 กก.)</p>
+          <ul class="text-sm space-y-1">
+            <li>เพซ: {EXAMPLE_3.paceMinKm} นาที/กม.</li>
+            <li>ความเร็ว: {EXAMPLE_3.speedKmh} กม./ชม.</li>
+            <li>แคลอรี่: {EXAMPLE_3.caloriesBurned}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map(faq => (
+          <details class="bg-gray-50 p-4 rounded-lg cursor-pointer">
+            <summary class="font-bold text-lg">{faq.question}</summary>
+            <p class="mt-2 text-gray-700">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <!-- Source Credits -->
+    <div class="bg-blue-50 p-4 rounded-lg mb-8 border-l-4 border-blue-500">
+      <h3 class="font-bold mb-2">แหล่งข้อมูล (Formula Sources)</h3>
+      <ul class="text-sm space-y-1 list-disc list-inside">
+        <li>Compendium of Physical Activities (Ainsworth et al., 2011)</li>
+        <li>American Heart Association - Max HR Haskell & Fox (220 − age)</li>
+        <li>Riegel Race Predictor (Riegel, P. 1981 American Scientist)</li>
+        <li>Karvonen HR Zones (Karvonen, Kentala & Mustala, 1957)</li>
+      </ul>
+      <p class="text-xs text-gray-600 mt-3">
+        ⓘ เครื่องคำนวณนี้ใช้สูตรวิทยาศาสตร์ฟิตเนสมาตรฐาน ผลลัพธ์เป็นการประมาณการ ตัวเลขจริงอาจแตกต่างไปตามปัจจัยส่วนบุคคล
+      </p>
+    </div>
+
+    <RelatedCalculators />
+  </article>
+
+  <script>
+    document.getElementById('paceForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const distance = parseFloat((document.getElementById('distance') as HTMLInputElement).value);
+      const timeMinutes = parseFloat((document.getElementById('timeMinutes') as HTMLInputElement).value);
+      const bodyWeight = parseFloat((document.getElementById('bodyWeight') as HTMLInputElement).value);
+      const intensity = (document.getElementById('intensity') as HTMLSelectElement).value as 'easy' | 'moderate' | 'hard';
+
+      // Import and call the calculator function
+      import('../../lib/running-pace-calculator').then(module => {
+        try {
+          const result = module.calculateRunningPace({ distance, timeMinutes, bodyWeight, intensity });
+
+          // Display results
+          (document.getElementById('paceMinKm') as HTMLElement).textContent = result.paceMinKm.toString();
+          (document.getElementById('speedKmh') as HTMLElement).textContent = result.speedKmh.toString();
+          (document.getElementById('caloriesBurned') as HTMLElement).textContent = result.caloriesBurned.toString();
+          (document.getElementById('metValue') as HTMLElement).textContent = result.metValue.toString();
+          (document.getElementById('time10k') as HTMLElement).textContent = `${Math.floor(result.estimatedTime10k)} นาที ${Math.round((result.estimatedTime10k % 1) * 60)} วินาที`;
+          (document.getElementById('timeMarathon') as HTMLElement).textContent = `${Math.floor(result.estimatedTimeMarathon / 60)} ชม. ${Math.round(result.estimatedTimeMarathon % 60)} นาที`;
+
+          (document.getElementById('results') as HTMLElement).classList.remove('hidden');
+        } catch (error) {
+          alert('เกิดข้อผิดพลาด: ' + (error as Error).message);
+        }
+      });
+    });
+  </script>
+</BaseLayout>
