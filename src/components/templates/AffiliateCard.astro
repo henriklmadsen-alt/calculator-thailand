@@ -1,0 +1,244 @@
+---
+type Category = 'car-loan' | 'home-loan' | 'personal-loan' | 'insurance' | 'investment';
+
+interface Props {
+  category: Category;
+  affiliateUrl: string;
+  partnerName: string;
+  ctaText: string;
+  subtext?: string;
+  isVisible?: boolean;
+}
+
+const {
+  category,
+  affiliateUrl,
+  partnerName,
+  ctaText,
+  subtext,
+  isVisible = false,
+} = Astro.props;
+
+const headlineMap: Record<Category, string> = {
+  'car-loan':       'พร้อมสมัครสินเชื่อรถแล้วหรือยัง?',
+  'home-loan':      'พร้อมสมัครสินเชื่อบ้านแล้วหรือยัง?',
+  'personal-loan':  'พร้อมสมัครสินเชื่อส่วนบุคคลแล้วหรือยัง?',
+  'insurance':      'สนใจเปรียบเทียบแผนประกันที่เหมาะกับคุณ?',
+  'investment':     'พร้อมเริ่มลงทุนให้เงินทำงานแทนคุณ?',
+};
+
+const headline = headlineMap[category];
+---
+
+{/* Wrapper — hidden by default; calculator scripts call classList.remove('hidden') to reveal */}
+<div
+  id="affiliate-card"
+  class:list={['affiliate-card-wrapper', { hidden: !isVisible }]}
+  data-affiliate-category={category}
+  data-affiliate-partner={partnerName}
+  data-affiliate-url={affiliateUrl}
+  role="complementary"
+  aria-label={`ข้อเสนอจาก ${partnerName}`}
+>
+  <div class="affiliate-card">
+    {/* Category icon */}
+    <div class="affiliate-card__icon" aria-hidden="true">
+      {category === 'car-loan' && (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+          <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+        </svg>
+      )}
+      {category === 'home-loan' && (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      )}
+      {category === 'personal-loan' && (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+          <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+        </svg>
+      )}
+      {category === 'insurance' && (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+        </svg>
+      )}
+      {category === 'investment' && (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+          <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+        </svg>
+      )}
+    </div>
+
+    {/* Content */}
+    <div class="affiliate-card__body">
+      <p class="affiliate-card__headline">{headline}</p>
+      {subtext && <p class="affiliate-card__subtext">{subtext}</p>}
+    </div>
+
+    {/* CTA */}
+    <a
+      href={affiliateUrl}
+      rel="sponsored noopener"
+      target="_blank"
+      class="affiliate-card__cta"
+      data-affiliate-category={category}
+      data-affiliate-partner={partnerName}
+    >
+      {ctaText}
+    </a>
+  </div>
+</div>
+
+<style>
+  /* Fade-in runs whenever the wrapper transitions from display:none to visible */
+  @keyframes affiliateFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .affiliate-card-wrapper {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    animation: affiliateFadeIn 0.35s ease-out both;
+  }
+
+  /* hidden utility — mirrors Tailwind's .hidden */
+  .affiliate-card-wrapper.hidden {
+    display: none;
+  }
+
+  .affiliate-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1rem 1.25rem;
+    background-color: #fffbeb; /* amber-50 */
+    border: 1.5px solid #f59e0b; /* amber-500 — matches spec */
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 4px 0 rgb(245 158 11 / 0.1);
+  }
+
+  .affiliate-card__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background-color: #fef3c7; /* amber-100 */
+    color: #b45309; /* amber-700 */
+  }
+
+  .affiliate-card__body {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .affiliate-card__headline {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #92400e; /* amber-900 */
+    line-height: 1.4;
+  }
+
+  .affiliate-card__subtext {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    color: #78350f; /* amber-800 */
+    line-height: 1.4;
+  }
+
+  .affiliate-card__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    background-color: #ea580c; /* orange-600 */
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .affiliate-card__cta:hover,
+  .affiliate-card__cta:focus-visible {
+    background-color: #c2410c; /* orange-700 */
+  }
+
+  .affiliate-card__cta:focus-visible {
+    outline: 2px solid #ea580c;
+    outline-offset: 2px;
+  }
+
+  /* Mobile: stack vertically, full-width CTA */
+  @media (max-width: 639px) {
+    .affiliate-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .affiliate-card__cta {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    function emit(eventName: string, payload: Record<string, string>) {
+      if (typeof (window as Window & { trackLanguageAwareEvent?: Function }).trackLanguageAwareEvent === 'function') {
+        (window as Window & { trackLanguageAwareEvent: Function }).trackLanguageAwareEvent(eventName, payload);
+        return;
+      }
+      if (typeof (window as Window & { gtag?: Function }).gtag === 'function') {
+        (window as Window & { gtag: Function }).gtag('event', eventName, payload);
+      }
+    }
+
+    function bindCard(card: HTMLElement) {
+      if (card.dataset.affiliateBound === '1') return;
+      card.dataset.affiliateBound = '1';
+
+      const link = card.querySelector<HTMLAnchorElement>('.affiliate-card__cta');
+      if (!link) return;
+
+      link.addEventListener('click', () => {
+        emit('affiliate_click', {
+          affiliate_category: card.dataset.affiliateCategory ?? '',
+          affiliate_partner:  card.dataset.affiliatePartner  ?? '',
+          affiliate_url:      card.dataset.affiliateUrl      ?? '',
+          page_path:          window.location.pathname,
+        });
+      });
+    }
+
+    function initAll() {
+      document.querySelectorAll<HTMLElement>('[data-affiliate-category][data-affiliate-partner]').forEach((el) => {
+        // Only bind to the wrapper (has data-affiliate-url), not the inner CTA link
+        if (el.dataset.affiliateUrl) bindCard(el);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+  })();
+</script>
