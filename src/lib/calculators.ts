@@ -6832,6 +6832,33 @@ export const calculators: Calculator[] = [
     tag: 'KLC-0752',
     tagColor: 'bg-orange-50 text-orange-600',
   },
+  {
+    title: 'แคลอรี่จากการว่ายน้ำ',
+    desc: 'Swimming Calorie Burn Calculator - เผาแคลอรี่ขณะว่ายน้ำ',
+    href: '/แคลอรี่จากการว่ายน้ำ/',
+    icon: '🏊',
+    categoryId: 'sports',
+    tag: 'KLC-0753',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'แคลอรี่จากการปั่นจักรยาน',
+    desc: 'Cycling Calorie Burn Calculator - เผาแคลอรี่ขณะปั่นจักรยาน',
+    href: '/แคลอรี่จากการปั่นจักรยาน/',
+    icon: '🚴',
+    categoryId: 'sports',
+    tag: 'KLC-0754',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'อัตราการเต้นหัวใจสูงสุด',
+    desc: 'Max Heart Rate Calculator - Haskell-Fox formula',
+    href: '/อัตราการเต้นหัวใจสูงสุด/',
+    icon: '❤️',
+    categoryId: 'sports',
+    tag: 'KLC-0755',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
 ];
 
 
