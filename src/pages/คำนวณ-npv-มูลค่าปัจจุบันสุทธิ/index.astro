@@ -1,0 +1,338 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+
+const pageTitle = 'คำนวณ NPV มูลค่าปัจจุบันสุทธิ ฟรี 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณ NPV (Net Present Value) มูลค่าปัจจุบันสุทธิ วิเคราะห์ความคุ้มค่าการลงทุน กระแสเงินสด 10 ปี อัตราคิดลด ฟรีทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/`;
+
+const faqData = [
+  {
+    question: 'NPV คืออะไร และใช้ทำอะไร?',
+    answer: 'NPV (Net Present Value) หรือมูลค่าปัจจุบันสุทธิ คือผลรวมของกระแสเงินสดในอนาคตทั้งหมดที่คิดลดกลับมาเป็นมูลค่าปัจจุบัน หักด้วยเงินลงทุนเริ่มต้น ใช้ตัดสินใจว่าโครงการลงทุนคุ้มค่าหรือไม่ ถ้า NPV > 0 แสดงว่าโครงการสร้างมูลค่าให้ผู้ลงทุน',
+  },
+  {
+    question: 'NPV บวกหรือลบ ควรลงทุนไหม?',
+    answer: 'ถ้า NPV > 0 ควรลงทุน เพราะโครงการสร้างมูลค่ามากกว่าต้นทุนเงินทุน ถ้า NPV = 0 โครงการคืนทุนพอดี ถ้า NPV < 0 ไม่ควรลงทุนเพราะทำลายมูลค่า อย่างไรก็ตามควรพิจารณาปัจจัยเชิงคุณภาพด้วย เช่น ความเสี่ยง ความยั่งยืน และกลยุทธ์องค์กร',
+  },
+  {
+    question: 'อัตราคิดลด (Discount Rate) ควรใช้เท่าไร?',
+    answer: 'อัตราคิดลดมักใช้ WACC (ต้นทุนเงินทุนถัวเฉลี่ย) ของบริษัท ซึ่งในไทยทั่วไปอยู่ที่ 8-15% หรืออาจใช้อัตราผลตอบแทนขั้นต่ำที่ยอมรับได้ (hurdle rate) ยิ่งความเสี่ยงสูง ควรใช้อัตราคิดลดสูงขึ้น',
+  },
+  {
+    question: 'NPV ต่างจาก IRR อย่างไร?',
+    answer: 'NPV แสดงมูลค่าสัมบูรณ์เป็นบาท ส่วน IRR แสดงอัตราผลตอบแทนเป็น% ทั้งสองใช้ประกอบกัน NPV บอกว่าโครงการสร้างมูลค่าเท่าไร ส่วน IRR บอกว่าผลตอบแทนต่อปีเท่าไร ถ้า IRR > WACC มักสอดคล้องกับ NPV > 0',
+  },
+  {
+    question: 'ข้อผิดพลาดทั่วไปในการคำนวณ NPV?',
+    answer: 'ข้อผิดพลาดที่พบบ่อย: (1) ใช้กระแสเงินสดก่อนภาษีแทนหลังภาษี (2) ลืมรวมค่าเสื่อมราคากลับเข้า (3) ใช้อัตราคิดลดต่ำเกินไปทำให้ NPV ดูดีเกินจริง (4) ไม่รวม Terminal Value สำหรับโครงการระยะยาว (5) ลืมเงินทุนหมุนเวียน (Working Capital)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ NPV มูลค่าปัจจุบันสุทธิ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณ NPV มูลค่าปัจจุบันสุทธิ',
+  description: 'ขั้นตอนการคำนวณ NPV เพื่อวิเคราะห์ความคุ้มค่าของโครงการลงทุน',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุเงินลงทุนเริ่มต้น',
+      text: 'กรอกจำนวนเงินลงทุนเริ่มต้น (Initial Investment) เป็นบาท เช่น 1,000,000 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กำหนดอัตราคิดลด',
+      text: 'กรอกอัตราคิดลด (Discount Rate) เป็น% ต่อปี มักใช้ WACC หรือ hurdle rate เช่น 10%',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกกระแสเงินสดรายปี',
+      text: 'กรอกกระแสเงินสดสุทธิ (Net Cash Flow) แต่ละปี สูงสุด 10 ปี โดยใช้มูลค่าหลังภาษี',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'อ่านผล NPV และตัดสินใจ',
+      text: 'ถ้า NPV > 0 ควรลงทุน ถ้า NPV < 0 ไม่ควรลงทุน ระบบจะแสดงผลรวม PV ของกระแสเงินสดแต่ละปีด้วย',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-npv-มูลค่าปัจจุบันสุทธิ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">วิเคราะห์ความคุ้มค่าการลงทุนด้วย NPV</p>
+      <p class="mt-1 text-sm text-slate-700">กระแสเงินสด 10 ปี คิดลดอัตโนมัติ ผลทันที</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณ NPV มูลค่าปัจจุบันสุทธิ (Net Present Value) 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณ NPV สำหรับโครงการลงทุน รองรับกระแสเงินสดสูงสุด 10 ปี พร้อมตารางแสดง Present Value แต่ละปีและผลการตัดสินใจลงทุน
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'หลักการเงินขององค์กร (Corporate Finance): Brealey, Myers & Allen',
+        'ตลาดหลักทรัพย์แห่งประเทศไทย (SET): แนวทางการวิเคราะห์การลงทุน',
+      ]}
+      assumptions={[
+        'กระแสเงินสดเกิดขึ้นปลายปี (End-of-year cash flows)',
+        'อัตราคิดลดคงที่ตลอดอายุโครงการ',
+        'ใช้สูตร: NPV = Σ [CF_t / (1+r)^t] − เงินลงทุนเริ่มต้น',
+      ]}
+      references={[
+        { label: 'SET: การวิเคราะห์มูลค่าหุ้น', href: 'https://www.set.or.th' },
+      ]}
+    />
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="npv-form" class="space-y-5">
+        <p id="npv-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="npv-investment" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนเริ่มต้น (บาท)
+            </label>
+            <input type="text" id="npv-investment" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p id="npv-investment-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="npv-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราคิดลด / WACC (% ต่อปี)
+            </label>
+            <input type="text" id="npv-rate" inputmode="decimal" placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p id="npv-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            กระแสเงินสดสุทธิรายปี (บาท) — กรอกสูงสุด 10 ปี
+          </label>
+          <div class="grid gap-2 sm:grid-cols-2" id="cf-inputs">
+            {[1,2,3,4,5,6,7,8,9,10].map(i => (
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500 w-10 shrink-0">ปีที่ {i}</span>
+                <input type="text" id={`npv-cf-${i}`} inputmode="numeric" placeholder="เช่น 300,000"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              </div>
+            ))}
+          </div>
+          <p class="mt-1 text-xs text-gray-500">ปล่อยว่างหากโครงการสั้นกว่า 10 ปี</p>
+        </div>
+
+        <button type="submit" id="npv-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ NPV
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="npv-results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ NPV</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div id="npv-decision-card" class="rounded-lg p-4 text-center bg-gray-50">
+            <div class="text-sm text-gray-600 mb-1">ผลการตัดสินใจ</div>
+            <div id="res-npv-decision" class="text-xl font-bold">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">NPV</div>
+            <div id="res-npv-value" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รวม PV กระแสเงินสด</div>
+            <div id="res-npv-pv-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-3">ปีที่</th>
+                <th class="py-2 pr-3 text-right">กระแสเงินสด (บาท)</th>
+                <th class="py-2 pr-3 text-right">ตัวคิดลด</th>
+                <th class="py-2 text-right">PV (บาท)</th>
+              </tr>
+            </thead>
+            <tbody id="npv-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#npv-results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณ NPV</h2>
+      <div class="bg-gray-50 rounded-lg p-4 my-4">
+        <p class="font-semibold mb-1">สูตร NPV:</p>
+        <p class="text-sm">NPV = Σ [CF_t ÷ (1+r)^t] − เงินลงทุนเริ่มต้น</p>
+        <p class="text-xs text-gray-500 mt-1">โดย CF_t = กระแสเงินสดปีที่ t, r = อัตราคิดลด, t = ปีที่ 1, 2, ..., n</p>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่าง: โครงการลงทุน 1,000,000 บาท อัตราคิดลด 10%</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ปีที่ 1: CF = 400,000 → PV = 400,000 ÷ 1.10 = 363,636 บาท</li>
+          <li>ปีที่ 2: CF = 400,000 → PV = 400,000 ÷ 1.21 = 330,579 บาท</li>
+          <li>ปีที่ 3: CF = 400,000 → PV = 400,000 ÷ 1.331 = 300,526 บาท</li>
+          <li>รวม PV = 994,741 บาท</li>
+          <li><strong>NPV = 994,741 − 1,000,000 = −5,259 บาท (ไม่ควรลงทุน)</strong></li>
+        </ul>
+      </div>
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.set.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">ตลาดหลักทรัพย์แห่งประเทศไทย (SET)</a>
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/" />
+    <RelatedCalculators currentHref="/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/" slugs={['คำนวณ-irr-อัตราผลตอบแทนภายใน', 'คำนวณ-wacc-ต้นทุนทุนถัวเฉลี่ย', 'คำนวณ-มูลค่าปัจจุบัน-present-value']} />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ ไม่ถือเป็นคำแนะนำทางการเงิน ควรปรึกษาผู้เชี่ยวชาญก่อนตัดสินใจลงทุน
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNum(v: string): number {
+    return parseFloat(String(v).replace(/,/g, '').trim()) || 0;
+  }
+  function fmt(n: number): string {
+    return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  }
+
+  const form = document.getElementById('npv-form') as HTMLFormElement;
+  const formError = document.getElementById('npv-form-error') as HTMLElement;
+  const resultsDiv = document.getElementById('npv-results') as HTMLElement;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    formError.classList.add('hidden');
+
+    const investment = parseNum((document.getElementById('npv-investment') as HTMLInputElement).value);
+    const rate = parseNum((document.getElementById('npv-rate') as HTMLInputElement).value) / 100;
+
+    if (investment <= 0 || rate <= 0) {
+      formError.classList.remove('hidden');
+      formError.textContent = 'กรุณากรอกเงินลงทุนและอัตราคิดลดให้ถูกต้อง';
+      return;
+    }
+
+    const cashFlows: number[] = [];
+    for (let i = 1; i <= 10; i++) {
+      const val = (document.getElementById(`npv-cf-${i}`) as HTMLInputElement).value.trim();
+      if (val !== '') cashFlows.push(parseNum(val));
+    }
+
+    if (cashFlows.length === 0) {
+      formError.classList.remove('hidden');
+      formError.textContent = 'กรุณากรอกกระแสเงินสดอย่างน้อย 1 ปี';
+      return;
+    }
+
+    let pvTotal = 0;
+    const rows: {year: number; cf: number; factor: number; pv: number}[] = [];
+
+    cashFlows.forEach((cf, idx) => {
+      const t = idx + 1;
+      const factor = Math.pow(1 + rate, t);
+      const pv = cf / factor;
+      pvTotal += pv;
+      rows.push({ year: t, cf, factor, pv });
+    });
+
+    const npv = pvTotal - investment;
+    const isPositive = npv >= 0;
+
+    (document.getElementById('res-npv-value') as HTMLElement).textContent = fmt(npv) + ' บาท';
+    (document.getElementById('res-npv-pv-total') as HTMLElement).textContent = fmt(pvTotal) + ' บาท';
+
+    const decisionEl = document.getElementById('res-npv-decision') as HTMLElement;
+    const decisionCard = document.getElementById('npv-decision-card') as HTMLElement;
+    if (isPositive) {
+      decisionEl.textContent = 'ควรลงทุน ✓';
+      decisionEl.className = 'text-xl font-bold text-green-700';
+      decisionCard.className = 'rounded-lg p-4 text-center bg-green-50';
+    } else {
+      decisionEl.textContent = 'ไม่ควรลงทุน ✗';
+      decisionEl.className = 'text-xl font-bold text-red-600';
+      decisionCard.className = 'rounded-lg p-4 text-center bg-red-50';
+    }
+
+    const tbody = document.getElementById('npv-table-body') as HTMLTableSectionElement;
+    tbody.innerHTML = '';
+    rows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-gray-100';
+      tr.innerHTML = `
+        <td class="py-2 pr-3 text-gray-600">${row.year}</td>
+        <td class="py-2 pr-3 text-right">${fmt(row.cf)}</td>
+        <td class="py-2 pr-3 text-right">${row.factor.toFixed(4)}</td>
+        <td class="py-2 text-right ${row.pv >= 0 ? 'text-green-700' : 'text-red-600'}">${fmt(row.pv)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
