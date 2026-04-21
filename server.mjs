@@ -1,7 +1,8 @@
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import webpush from 'web-push';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -35,6 +36,127 @@ const releaseMetadata = Object.freeze({
   generatedAt: new Date().toISOString(),
 });
 
+// ── Web Push configuration ────────────────────────────────────
+const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'gprQSYiSxVDck5s28oOrEFuSP-BBB-6yF5EhAuRGA6A';
+webpush.setVapidDetails('mailto:hello@kamnuanlek.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+
+// In-memory subscription store (survives server session, cleared on redeploy)
+// Subscribers who revisit re-register automatically via SW
+const pushSubscriptions = new Map(); // endpoint → subscription object
+const SUBS_FILE = join(__dirname, '..', 'tmp', 'push-subscriptions.json');
+
+async function loadSubscriptions() {
+  try {
+    const raw = await readFile(SUBS_FILE, 'utf-8');
+    const arr = JSON.parse(raw);
+    for (const sub of arr) {
+      if (sub?.endpoint) pushSubscriptions.set(sub.endpoint, sub);
+    }
+  } catch {
+    // File doesn't exist yet — fine
+  }
+}
+
+async function saveSubscriptions() {
+  try {
+    await mkdir(join(__dirname, '..', 'tmp'), { recursive: true });
+    await writeFile(SUBS_FILE, JSON.stringify([...pushSubscriptions.values()]), 'utf-8');
+  } catch {
+    // Non-fatal — in-memory store still works for current session
+  }
+}
+
+async function sendPushToAll(payload) {
+  const subs = [...pushSubscriptions.values()];
+  let sent = 0, failed = 0;
+  for (const sub of subs) {
+    try {
+      await webpush.sendNotification(sub, JSON.stringify(payload));
+      sent++;
+    } catch (err) {
+      failed++;
+      // 410 Gone = subscription expired/revoked — remove it
+      if (err.statusCode === 410) {
+        pushSubscriptions.delete(sub.endpoint);
+      }
+    }
+  }
+  if (sent + failed > 0) {
+    await saveSubscriptions();
+  }
+  return { sent, failed, total: subs.length };
+}
+
+// ── Automated notification scheduler ─────────────────────────
+// Fires every hour, checks if a scheduled notification should go out.
+// Schedule: 25th of month 9am, Mon-Fri weekly tip 8am, tax season (Jan-Mar) daily
+function getScheduledNotification() {
+  const now = new Date();
+  const bkk = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  const hour = bkk.getHours();
+  const day = bkk.getDate();
+  const month = bkk.getMonth() + 1; // 1-12
+  const weekday = bkk.getDay(); // 0=Sun
+
+  // Salary day reminder — 25th of each month at 9am BKK
+  if (day === 25 && hour === 9) {
+    return {
+      title: 'เงินเดือนออกแล้ว! 💰',
+      body: 'วางแผนการเงินเดือนนี้ใน 2 นาที — คำนวณภาษี ออม ลงทุน',
+      url: '/คำนวณเงินเดือนสุทธิ/',
+      tag: 'salary-day',
+    };
+  }
+
+  // Tax season (Jan-Mar) — reminder every Monday 8am
+  if (month >= 1 && month <= 3 && weekday === 1 && hour === 8) {
+    const deadline = new Date(bkk.getFullYear(), 2, 31); // March 31
+    const daysLeft = Math.ceil((deadline - bkk) / (1000 * 60 * 60 * 24));
+    return {
+      title: `ยื่นภาษีเหลืออีก ${daysLeft} วัน ⚠️`,
+      body: 'คำนวณภาษีเงินได้ของคุณก่อนถึงกำหนด 31 มีนาคม',
+      url: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+      tag: 'tax-deadline',
+    };
+  }
+
+  // Weekly Monday tip — 8am BKK (outside tax season)
+  if (weekday === 1 && hour === 8 && (month < 1 || month > 3)) {
+    const tips = [
+      { body: 'เช็คดอกเบี้ยเงินฝากปัจจุบัน — ฝากที่ไหนดีกว่า?', url: '/คำนวณดอกเบี้ยเงินฝาก/', tag: 'weekly-tip' },
+      { body: 'คำนวณ NPV ก่อนตัดสินใจลงทุน — ใช้เวลา 1 นาที', url: '/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/', tag: 'weekly-tip' },
+      { body: 'รู้หรือไม่? คุณสามารถลดหย่อนภาษีได้ถึง 300,000 บาท', url: '/คำนวณภาษีเงินได้บุคคลธรรมดา/', tag: 'weekly-tip' },
+      { body: 'ผ่อนกู้บ้าน/รถ — ลองคำนวณดอกเบี้ยที่จ่ายจริงตลอดสัญญา', url: '/คำนวณผ่อนกู้/', tag: 'weekly-tip' },
+    ];
+    const tip = tips[bkk.getWeek() % tips.length] || tips[0];
+    return { title: 'เคล็ดลับการเงินประจำสัปดาห์ 📊', ...tip };
+  }
+
+  return null;
+}
+
+// Patch Date for getWeek helper
+Date.prototype.getWeek = function() {
+  const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+};
+
+// Run scheduler every hour
+setInterval(async () => {
+  if (pushSubscriptions.size === 0) return;
+  const notification = getScheduledNotification();
+  if (notification) {
+    await sendPushToAll(notification);
+  }
+}, 60 * 60 * 1000);
+
+// Load persisted subscriptions on startup
+loadSubscriptions();
+
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -47,6 +169,7 @@ const mimeTypes = {
   '.woff2': 'font/woff2',
   '.xml': 'application/xml',
   '.txt': 'text/plain',
+  '.webmanifest': 'application/manifest+json',
 };
 
 // Permanent 301 redirects served at the HTTP layer (before file serving).
@@ -138,6 +261,54 @@ async function serve(req, res) {
       'X-Robots-Tag': noIndexTag,
     });
     res.end(JSON.stringify(releaseMetadata));
+    return;
+  }
+
+  // ── Push subscription API ──────────────────────────────────
+  if (url === '/api/push/subscribe' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const sub = JSON.parse(body);
+        if (sub?.endpoint) {
+          pushSubscriptions.set(sub.endpoint, sub);
+          await saveSubscriptions();
+          res.writeHead(201, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+          res.end(JSON.stringify({ ok: true, total: pushSubscriptions.size }));
+        } else {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'invalid subscription' }));
+        }
+      } catch {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'bad request' }));
+      }
+    });
+    return;
+  }
+
+  if (url === '/api/push/unsubscribe' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { endpoint } = JSON.parse(body);
+        if (endpoint) pushSubscriptions.delete(endpoint);
+        await saveSubscriptions();
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'bad request' }));
+      }
+    });
+    return;
+  }
+
+  if (url === '/api/push/stats' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
+    res.end(JSON.stringify({ subscribers: pushSubscriptions.size }));
     return;
   }
 

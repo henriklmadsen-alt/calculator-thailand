@@ -95,6 +95,14 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><rect x='20' y='15' width='60' height='25' rx='5' fill='white'/><rect x='20' y='50' width='17' height='17' rx='3' fill='white'/><rect x='41' y='50' width='17' height='17' rx='3' fill='white'/><rect x='62' y='50' width='17' height='17' rx='3' fill='white'/><rect x='20' y='72' width='17' height='17' rx='3' fill='white'/><rect x='41' y='72' width='17' height='17' rx='3' fill='white'/><rect x='62' y='72' width='38' height='17' rx='3' fill='%2360a5fa'/></svg>" />
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/></svg>" />
 
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="คำนวณเลข" />
+    <meta name="theme-color" content="#2563eb" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -483,6 +491,110 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         </div>
       </div>
     </footer>
+    <!-- PWA: Service Worker registration + Web Push subscription -->
+    <script is:inline>
+    (function initPWA() {
+      if (!('serviceWorker' in navigator)) return;
+
+      const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
+      const PUSH_ASKED_KEY = 'ct.push-asked.v1';
+      const PUSH_SUBSCRIBED_KEY = 'ct.push-subscribed.v1';
+
+      function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = atob(base64);
+        return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+      }
+
+      async function subscribeToPush(reg) {
+        try {
+          const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+          });
+          await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sub),
+          });
+          try { localStorage.setItem(PUSH_SUBSCRIBED_KEY, '1'); } catch {}
+        } catch {}
+      }
+
+      function showPushPrompt(reg) {
+        try {
+          if (localStorage.getItem(PUSH_ASKED_KEY) === '1') return;
+          if (localStorage.getItem(PUSH_SUBSCRIBED_KEY) === '1') return;
+          localStorage.setItem(PUSH_ASKED_KEY, '1');
+        } catch {}
+
+        // Show after 30s on the page (non-intrusive delay)
+        setTimeout(function() {
+          // Only prompt if user has been interacting (not a bounce)
+          if (document.hidden) return;
+
+          var banner = document.createElement('div');
+          banner.id = 'push-prompt';
+          banner.setAttribute('role', 'dialog');
+          banner.setAttribute('aria-label', 'รับการแจ้งเตือน');
+          banner.style.cssText = [
+            'position:fixed', 'bottom:16px', 'left:50%', 'transform:translateX(-50%)',
+            'background:#1e40af', 'color:white', 'border-radius:12px',
+            'padding:14px 18px', 'display:flex', 'align-items:center', 'gap:12px',
+            'box-shadow:0 8px 32px rgba(0,0,0,0.2)', 'z-index:9999',
+            'max-width:calc(100vw - 32px)', 'font-family:inherit', 'font-size:14px',
+            'animation:slideUp 0.3s ease',
+          ].join(';');
+
+          var style = document.createElement('style');
+          style.textContent = '@keyframes slideUp{from{transform:translateX(-50%) translateY(80px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}';
+          document.head.appendChild(style);
+
+          banner.innerHTML = [
+            '<span style="font-size:20px" aria-hidden="true">🔔</span>',
+            '<div>',
+            '<div style="font-weight:600;margin-bottom:2px">รับแจ้งเตือนวันคำนวณเงินเดือน</div>',
+            '<div style="opacity:0.85;font-size:12px">เตือนทุกวันที่ 25 และช่วงยื่นภาษี ฟรี</div>',
+            '</div>',
+            '<button id="push-allow" style="background:white;color:#1e40af;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap">เปิดรับ</button>',
+            '<button id="push-deny" style="background:transparent;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:18px;padding:4px;line-height:1" aria-label="ปิด">&times;</button>',
+          ].join('');
+
+          document.body.appendChild(banner);
+
+          document.getElementById('push-allow').addEventListener('click', function() {
+            banner.remove();
+            Notification.requestPermission().then(function(perm) {
+              if (perm === 'granted') subscribeToPush(reg);
+            });
+          });
+          document.getElementById('push-deny').addEventListener('click', function() {
+            banner.remove();
+          });
+        }, 30000);
+      }
+
+      navigator.serviceWorker.register('/sw.js').then(function(reg) {
+        // Check if already subscribed
+        reg.pushManager.getSubscription().then(function(sub) {
+          if (sub) {
+            // Re-register existing subscription with server (handles server restarts)
+            fetch('/api/push/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(sub),
+            }).catch(function() {});
+          } else if (Notification.permission === 'default') {
+            showPushPrompt(reg);
+          } else if (Notification.permission === 'granted') {
+            subscribeToPush(reg);
+          }
+        });
+      }).catch(function() {});
+    })();
+    </script>
+
     <script is:inline>
       (function trackRecentCalc() {
         var RECENT_KEY = 'ct.recent-calcs.v1';
