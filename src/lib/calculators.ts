@@ -5898,6 +5898,42 @@ export const calculators: Calculator[] = [
     tag: 'KLC-0776',
     tagColor: 'bg-fuchsia-50 text-fuchsia-600',
   },
+  {
+    title: 'คำนวณค่าย้อมผม',
+    desc: 'คำนวณค่าย้อมผม รูตแตน บำรุงผมต่อเดือนและต่อปี',
+    href: '/คำนวณ-hair-color-cost/',
+    icon: '🎨',
+    categoryId: 'fashion-beauty',
+    tag: 'KLC-0777',
+    tagColor: 'bg-fuchsia-50 text-fuchsia-600',
+  },
+  {
+    title: 'คำนวณค่าเชื่อมผม',
+    desc: 'คำนวณค่าเชื่อมผม ระยะเวลา ความยาว และค่าบำรุงต่อเดือนและต่อปี',
+    href: '/คำนวณ-hair-extension-cost/',
+    icon: '✨',
+    categoryId: 'fashion-beauty',
+    tag: 'KLC-0778',
+    tagColor: 'bg-fuchsia-50 text-fuchsia-600',
+  },
+  {
+    title: 'คำนวณค่า Spa ดูแลผม',
+    desc: 'คำนวณค่าบริการดูแลผมที่ Spa เช่น แมสผม อบไอน้ำ บำรุงลึก',
+    href: '/คำนวณ-hair-spa-cost/',
+    icon: '🧖',
+    categoryId: 'fashion-beauty',
+    tag: 'KLC-0779',
+    tagColor: 'bg-fuchsia-50 text-fuchsia-600',
+  },
+  {
+    title: 'คำนวณค่าสมาชิก Salon',
+    desc: 'คำนวณราคา Membership หรือ Package ที่ Salon เปรียบเทียบกับการจ่ายเงินสด',
+    href: '/คำนวณ-salon-membership-roi/',
+    icon: '💳',
+    categoryId: 'fashion-beauty',
+    tag: 'KLC-0780',
+    tagColor: 'bg-fuchsia-50 text-fuchsia-600',
+  },
 ];
 
 
