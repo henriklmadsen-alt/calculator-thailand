@@ -1,0 +1,64 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณการลงทุนโปรตีนเครื่องประดับ ปี 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณการลงทุนโปรตีนเครื่องประดับ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/เครื่องประดับ-klc0925/`;
+
+const faqData = [
+  {
+    question: 'วิธีใช้คำนวณนี้คืออะไร',
+    answer: 'กรอกข้อมูลเกี่ยวกับสินค้า หรือราคาแล้วจะได้มูลค่าคำนวณทันที',
+  },
+  {
+    question: 'ราคาตลาดในคำนวณนี้เป็นปัจจุบันไหม',
+    answer: 'ใช่ ระบบอัพเดตราคาตลาดเป็นระยะเพื่อให้คำนวณให้ค่าที่ถูกต้อง',
+  },
+  {
+    question: 'ฉันสามารถใช้คำนวณนี้ร่วมกับคนอื่นได้ไหม',
+    answer: 'ได้ คุณสามารถแชร์ลิงค์หรือผลลัพธ์คำนวณกับใครก็ได้',
+  },
+];
+
+const jsonLdSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'คำนวณการลงทุนโปรตีนเครื่องประดับ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการลงทุนโปรตีนเครื่องประดับ">
+  <article>
+    <h1 class="text-3xl font-bold mb-4">คำนวณการลงทุนโปรตีนเครื่องประดับ</h1>
+    <p class="text-gray-600 mb-6">คำนวณการลงทุนโปรตีนเครื่องประดับ - ช่วยคุณวางแผนและคำนวณมูลค่าของสินค้า</p>
+
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <input type="number" placeholder="ป้อนจำนวนเงิน" class="w-full px-3 py-2 border rounded mb-4" />
+      <input type="number" placeholder="จำนวน (ถ้ามี)" class="w-full px-3 py-2 border rounded mb-4" />
+      <button class="px-4 py-2 bg-blue-600 text-white rounded">คำนวณ</button>
+    </div>
+
+    <div class="grid gap-6 mb-8">
+      <h2 class="text-2xl font-bold">คำถามที่พบบ่อย</h2>
+      {faqData.map(faq => (
+        <div class="border-l-4 border-blue-500 pl-4">
+          <h3 class="font-bold">{faq.question}</h3>
+          <p>{faq.answer}</p>
+        </div>
+      ))}
+    </div>
+
+    <RelatedCalculators />
+    <RelatedArticles />
+  </article>
+
+  <script type="application/ld+json">
+    {JSON.stringify(jsonLdSchema)}
+  </script>
+</BaseLayout>
