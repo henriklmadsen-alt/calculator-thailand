@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const howtoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to File Thai Income Tax Online (e-Filing)',
+  description: 'Step-by-step guide to filing your Thai personal income tax return online through the Revenue Department e-Filing system.',
+  estimatedCost: { '@type': 'PriceSpecification', priceCurrency: 'THB', price: '0' },
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Gather Your Documents', text: 'Collect all income documents: withholding tax certificates (50 tawi), Form ND.1 from employer, and receipts for deductions.' },
+    { '@type': 'HowToStep', position: 2, name: 'Go to Revenue Department Website', text: 'Visit efiling.rd.go.th or the Revenue Department website.' },
+    { '@type': 'HowToStep', position: 3, name: 'Login or Register', text: 'Log in with your Tax ID (เลขประจำตัวผู้เสียภาษี) or register if first time. You can also use your Thai National ID.' },
+    { '@type': 'HowToStep', position: 4, name: 'Select Tax Form', text: 'Choose ภ.ง.ด.91 (employees with only salary income) or ภ.ง.ด.90 (self-employed or multiple income sources).' },
+    { '@type': 'HowToStep', position: 5, name: 'Enter Income and Deductions', text: 'Fill in your income, select all applicable deductions and allowances. The system calculates tax automatically.' },
+    { '@type': 'HowToStep', position: 6, name: 'Review and Submit', text: 'Review your return, verify calculations, then submit. If tax is owed, pay online via QR code, credit card, or bank transfer.' },
+  ]
+};
+---
+
+<BaseLayout
+  title="How to File Thai Income Tax Online (e-Filing) — Step by Step | Kamnuanlek"
+  description="How to file your Thai personal income tax return online. Step-by-step e-Filing guide: documents needed, where to file, how to pay."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(howtoSchema)} />
+
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">How to File Thai Income Tax Online</h1>
+
+    <div class="mb-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        Filing your personal income tax online (e-Filing) is easy and free. Follow these steps to file your ภ.ง.ด.91 or ภ.ง.ด.90 return correctly.
+      </p>
+      <div class="mt-4 flex gap-3">
+        <div class="p-3 bg-white rounded-lg border border-blue-200">
+          <p class="font-semibold text-gray-900 text-sm">Paper deadline</p>
+          <p class="text-gray-700 text-sm">March 31</p>
+        </div>
+        <div class="p-3 bg-white rounded-lg border border-blue-200">
+          <p class="font-semibold text-gray-900 text-sm">Online deadline</p>
+          <p class="text-gray-700 text-sm">April 8 (extended)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6 mb-12">
+      <h2 class="text-2xl font-bold text-gray-900">Step-by-Step Guide</h2>
+      {[
+        { num: 1, title: 'Gather Your Documents', content: ['Withholding tax certificates (หนังสือรับรองการหักภาษี ณ ที่จ่าย) from employer(s)', 'Income summary from employer (Form ND.1)', 'Receipts for deductions: insurance, RMF/SSF contributions, donations', 'Social security certificate from SSO'], icon: '📋' },
+        { num: 2, title: 'Go to Revenue Department e-Filing', content: ['Website: efiling.rd.go.th', 'Available January–April each year', 'Works on desktop and mobile browsers'], icon: '🌐' },
+        { num: 3, title: 'Login or Register', content: ['Use Tax ID (เลขประจำตัวผู้เสียภาษี) — 13 digits', 'Or register with Thai National ID (บัตรประชาชน)', 'First-time users: register in advance before deadline'], icon: '🔐' },
+        { num: 4, title: 'Select the Right Tax Form', content: ['ภ.ง.ด.91: Only if you have salary income ONLY from one employer', 'ภ.ง.ด.90: If you have freelance, rental, investment, or multiple employer income', 'When in doubt, choose ภ.ง.ด.90'], icon: '📝' },
+        { num: 5, title: 'Enter Income and Deductions', content: ['Enter gross salary from withholding certificate', 'Select all applicable deductions (system shows options)', 'Enter personal and dependent allowances', 'Add optional deductions: insurance, RMF, SSF, donations'], icon: '✏️' },
+        { num: 6, title: 'Review and Submit', content: ['Check that taxable income matches your calculation', 'Verify the tax owed amount', 'Submit the form', 'If tax owed: pay online via QR code, bank, or credit card'], icon: '✅' },
+      ].map((step) => (
+        <div class="flex gap-4 p-6 bg-white border border-gray-200 rounded-lg">
+          <div class="flex-shrink-0 text-3xl">{step.icon}</div>
+          <div class="flex-grow">
+            <div class="flex gap-3 items-center mb-3">
+              <span class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold text-sm">{step.num}</span>
+              <h3 class="text-lg font-bold text-gray-900">{step.title}</h3>
+            </div>
+            <ul class="space-y-1">
+              {step.content.map((item) => (
+                <li class="flex gap-2 text-gray-700 text-sm"><span class="text-primary-600">•</span>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="p-6 bg-green-50 border border-green-200 rounded-lg mb-12">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Calculate Before You File</h2>
+      <p class="text-gray-700 mb-4">Use our calculator to know your tax amount before going to e-Filing:</p>
+      <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-block px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium">
+        Calculate Income Tax →
+      </a>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Related Resources</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/อัตราภาษีเงินได้2569/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📊 Tax Brackets 2026</span>
+          <p class="text-gray-600 text-sm mt-2">All rates and allowances</p>
+        </a>
+        <a href="/ตรวจสอบหักลดหย่อนภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">✅ Deductions Checklist</span>
+          <p class="text-gray-600 text-sm mt-2">All eligible write-offs</p>
+        </a>
+        <a href="/ปฏิทินภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📅 Tax Calendar</span>
+          <p class="text-gray-600 text-sm mt-2">All filing deadlines</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
