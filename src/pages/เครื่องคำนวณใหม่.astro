@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+
+const newCalculators = [
+  // Corporate Finance (10)
+  { slug: '/คำนวณ-npv/', title: 'NPV Calculator', desc: 'Net Present Value for investment analysis' },
+  { slug: '/คำนวณ-irr/', title: 'IRR Calculator', desc: 'Internal Rate of Return for projects' },
+  { slug: '/คำนวณ-wacc/', title: 'WACC Calculator', desc: 'Weighted Average Cost of Capital' },
+  { slug: '/คำนวณ-roe/', title: 'ROE Calculator', desc: 'Return on Equity for businesses' },
+  { slug: '/คำนวณ-roa/', title: 'ROA Calculator', desc: 'Return on Assets analysis' },
+  { slug: '/คำนวณ-cagr/', title: 'CAGR Calculator', desc: 'Compound Annual Growth Rate' },
+  { slug: '/คำนวณ-break-even/', title: 'Break-Even Calculator', desc: 'Break-even point analysis' },
+  { slug: '/คำนวณ-debt-to-equity/', title: 'D/E Ratio Calculator', desc: 'Debt-to-Equity analysis' },
+  { slug: '/คำนวณ-ebitda/', title: 'EBITDA Calculator', desc: 'Earnings Before Interest & Tax' },
+  { slug: '/คำนวณ-cash-flow/', title: 'Cash Flow Projection', desc: 'Project cash flow forecasts' },
+
+  // Math & Statistics (11)
+  { slug: '/คำนวณ-mean/', title: 'Mean Calculator', desc: 'Calculate average values' },
+  { slug: '/คำนวณ-median/', title: 'Median Calculator', desc: 'Find the middle value' },
+  { slug: '/คำนวณ-mode/', title: 'Mode Calculator', desc: 'Find the most frequent value' },
+  { slug: '/คำนวณ-standard-deviation/', title: 'Std Dev Calculator', desc: 'Standard deviation analysis' },
+  { slug: '/คำนวณ-variance/', title: 'Variance Calculator', desc: 'Calculate variance' },
+  { slug: '/คำนวณ-correlation/', title: 'Correlation Calculator', desc: 'Correlation analysis' },
+  { slug: '/คำนวณ-regression/', title: 'Regression Calculator', desc: 'Linear regression analysis' },
+  { slug: '/คำนวณ-probability/', title: 'Probability Calculator', desc: 'Probability calculations' },
+  { slug: '/คำนวณ-z-score/', title: 'Z-Score Calculator', desc: 'Standard score calculations' },
+  { slug: '/คำนวณ-confidence-interval/', title: 'CI Calculator', desc: 'Confidence intervals' },
+  { slug: '/คำนวณ-hypothesis-test/', title: 'Hypothesis Test', desc: 'Statistical hypothesis testing' },
+];
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: siteUrl,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'New Calculators',
+      item: `${siteUrl}/เครื่องคำนวณใหม่/`,
+    },
+  ],
+};
+
+const jsonLdFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What are these new calculators?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A collection of 21 new calculators for finance, business, and statistics — all free and available in Thai.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Are they free to use?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, all calculators are 100% free. No signup required.',
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="New Calculators — Business, Finance & Statistics | Kamnuanlek"
+  description="21 new calculators for NPV, IRR, WACC, ROE, ROA, CAGR, break-even, statistics, and more. Free Thai calculator tools."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFAQ)} />
+
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <div class="mb-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-bold mb-4">
+        ⭐ NEW
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
+        New Calculators
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl">
+        21 new calculators for business analysis, investment evaluation, and statistical calculations — completely free for everyone.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      {newCalculators.map((calc) => (
+        <a
+          href={calc.slug}
+          class="group p-6 bg-white border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600">
+            {calc.title}
+          </h3>
+          <p class="text-gray-600 text-sm">{calc.desc}</p>
+          <div class="mt-4 flex items-center text-primary-600 text-sm font-medium group-hover:translate-x-1 transition">
+            Use Calculator →
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div class="bg-gradient-to-r from-primary-50 to-blue-50 p-8 rounded-2xl border border-primary-200 mb-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Why These Calculators?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">📊 Financial Analysis</h3>
+          <p class="text-gray-700">NPV, IRR, WACC, and ratio analysis tools to evaluate investments and business performance.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">📈 Statistical Tools</h3>
+          <p class="text-gray-700">Mean, median, standard deviation, correlation, and hypothesis testing for data analysis.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200 pt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-8">Common Questions</h2>
+      <div class="space-y-6">
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">How accurate are these calculators?</h3>
+          <p class="text-gray-600">All calculators are built with standard financial and statistical formulas. Results are accurate for planning and analysis purposes.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Do I need to create an account?</h3>
+          <p class="text-gray-600">No. Use any calculator immediately without signup, registration, or login.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">What can I do with the results?</h3>
+          <p class="text-gray-600">Use results for personal planning, business analysis, investment decisions, and more. Share results with colleagues, advisors, or partners.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
