@@ -1,11 +1,58 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const howtoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Calculate Thai Income Tax',
+  description: 'Step-by-step guide to calculating your Thai income tax with deductions and allowances.',
+  image: 'https://www.kamnuanlek.com/img/tax-guide.jpg',
+  estimatedCost: {
+    '@type': 'PriceSpecification',
+    priceCurrency: 'THB',
+    price: '0',
+  },
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Calculate Total Income',
+      text: 'Add all income from salary, freelance work, investments, and other sources for the entire tax year.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Deduct Allowances',
+      text: 'Subtract personal allowance (60,000 THB/year) and dependent allowances (20,000 THB each for dependents).',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Calculate Taxable Income',
+      text: 'Subtract all allowances from your total income to get your taxable income.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'Apply Tax Brackets',
+      text: 'Calculate tax using the progressive tax rate: 5% on first 150,000, 10% on 150k-300k, 15% on 300k-500k, 20% on 500k-750k, 25% on 750k-1M, and 30-37% on over 1M.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Verify with Calculator',
+      text: 'Use our income tax calculator to verify your calculation and ensure accuracy.',
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title="How to Calculate Thai Income Tax — Step-by-Step Guide | Kamnuanlek"
   description="Learn how to calculate Thai income tax step by step. Understand deductions, exemptions, and use our free calculator."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(howtoSchema)} />
+
   <div class="max-w-5xl mx-auto px-4 py-12">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-8">How to Calculate Thai Income Tax</h1>
 
