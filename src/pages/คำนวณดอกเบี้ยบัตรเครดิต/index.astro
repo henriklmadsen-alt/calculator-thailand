@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 interface Props {
   pageTitleOverride?: string;
@@ -310,6 +311,15 @@ const jsonLdHowTo = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="credit-card"
+      affiliateUrl="/go/uob-tmrw/"
+      partnerName="UOB TMRW"
+      ctaText="สมัครบัตร UOB TMRW"
+      subtext="บัตรเครดิตดิจิทัล สิทธิพิเศษมากมาย"
+    />
+
     <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
 
     <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
@@ -543,6 +553,7 @@ const jsonLdHowTo = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       submitBtn.disabled = false;
       submitBtn.textContent = 'คำนวณดอกเบี้ย';
       trackCalculatorComplete('credit_card_interest');
