@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Thai Tax Calendar 2026 — All Filing Deadlines | Kamnuanlek"
+  description="Complete Thai tax filing calendar for 2026. Income tax, VAT, withholding tax, social security deadlines. Never miss a tax deadline again."
+>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Thai Tax Filing Calendar 2026</h1>
+
+    <div class="mb-12 p-6 bg-amber-50 border border-amber-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        Missing tax deadlines in Thailand results in penalties and surcharges. Use this calendar to plan ahead and stay compliant.
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      {[
+        {
+          month: 'January',
+          deadlines: [
+            { date: 'Jan 7', tax: 'WHT on Dec payments', desc: 'Withholding tax on December payments due to Revenue Dept' },
+            { date: 'Jan 15', tax: 'Social Security (Dec)', desc: 'SSO contributions for December employees' },
+          ]
+        },
+        {
+          month: 'February',
+          deadlines: [
+            { date: 'Feb 7', tax: 'WHT on Jan payments', desc: 'Withholding tax on January payments' },
+            { date: 'Feb 15', tax: 'Social Security (Jan)', desc: 'SSO contributions for January employees' },
+            { date: 'Feb 28', tax: 'VAT (P.P.30)', desc: 'VAT return for January' },
+          ]
+        },
+        {
+          month: 'March',
+          deadlines: [
+            { date: 'Mar 31', tax: 'PIT (Paper filing)', desc: 'Personal income tax for prior year' },
+          ]
+        },
+        {
+          month: 'April',
+          deadlines: [
+            { date: 'Apr 8', tax: 'PIT (e-Filing)', desc: 'Personal income tax online filing extension' },
+            { date: 'Apr 30', tax: 'PND.50 (CIT)', desc: 'Corporate income tax return (fiscal year Dec 31)' },
+          ]
+        },
+        {
+          month: 'August',
+          deadlines: [
+            { date: 'Aug 31', tax: 'Half-Year CIT (PND.51)', desc: 'Corporate income tax half-year prepayment' },
+          ]
+        },
+        {
+          month: 'Monthly (7th of each month)',
+          deadlines: [
+            { date: '7th of month', tax: 'Withholding Tax', desc: 'WHT on previous month payments (PND.1, PND.3, PND.53)' },
+            { date: '15th of month', tax: 'Social Security', desc: 'SSO contributions for previous month' },
+            { date: 'Last day of month', tax: 'VAT (P.P.30)', desc: 'VAT return for previous month (registered businesses)' },
+          ]
+        },
+      ].map((section) => (
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div class="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3">
+            <h3 class="text-lg font-bold text-white">{section.month}</h3>
+          </div>
+          <div class="divide-y divide-gray-100">
+            {section.deadlines.map((d) => (
+              <div class="flex gap-4 p-4">
+                <div class="flex-shrink-0 w-24 text-center">
+                  <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold">{d.date}</span>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900">{d.tax}</p>
+                  <p class="text-gray-600 text-sm mt-1">{d.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 p-6 bg-red-50 border border-red-200 rounded-lg">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Late Filing Penalties</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 bg-white rounded-lg border border-red-100">
+          <h3 class="font-semibold text-gray-900 mb-2">Late Filing (CIT)</h3>
+          <p class="text-gray-700 text-sm">1.5% surcharge per month (max 1.5x tax owed) + 200 THB fine for non-filing</p>
+        </div>
+        <div class="p-4 bg-white rounded-lg border border-red-100">
+          <h3 class="font-semibold text-gray-900 mb-2">Late VAT Filing</h3>
+          <p class="text-gray-700 text-sm">1.5% surcharge per month + 300 THB fine. Interest on tax unpaid.</p>
+        </div>
+        <div class="p-4 bg-white rounded-lg border border-red-100">
+          <h3 class="font-semibold text-gray-900 mb-2">Late WHT Filing</h3>
+          <p class="text-gray-700 text-sm">1.5% per month surcharge + 100 THB per form fine</p>
+        </div>
+        <div class="p-4 bg-white rounded-lg border border-red-100">
+          <h3 class="font-semibold text-gray-900 mb-2">Late PIT Filing</h3>
+          <p class="text-gray-700 text-sm">1.5% per month surcharge on unpaid tax + 200 THB fine</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Tax Calculators</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📚 Income Tax Guide</span>
+          <p class="text-gray-600 text-sm mt-2">How to calculate PIT</p>
+        </a>
+        <a href="/เปรียบเทียบเครื่องคำนวณภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📊 Tax Comparison</span>
+          <p class="text-gray-600 text-sm mt-2">All tax types explained</p>
+        </a>
+        <a href="/ตรวจสอบหักลดหย่อนภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">✅ Deductions Checklist</span>
+          <p class="text-gray-600 text-sm mt-2">Don't miss write-offs</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
