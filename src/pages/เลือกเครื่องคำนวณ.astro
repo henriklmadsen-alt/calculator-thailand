@@ -1,157 +1,203 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const calculatorGuide = [
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/เลือกเครื่องคำนวณ/`;
+
+const scenarios = [
   {
-    scenario: 'I need to calculate my income tax',
-    answer: 'Use Income Tax Calculator',
+    q: 'ต้องการคำนวณภาษีเงินได้บุคคลธรรมดา',
+    a: 'เครื่องคำนวณภาษีเงินได้',
     link: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
-    reason: 'Calculates personal income tax with deductions and allowances for Thai residents.'
+    reason: 'คำนวณภาษีประจำปีพร้อมหักลดหย่อนทุกประเภท ค่าใช้จ่าย ประกัน กบข. และอื่นๆ',
+    icon: '🧾',
   },
   {
-    scenario: 'I want to know my net salary after tax',
-    answer: 'Use Salary Calculator',
+    q: 'อยากรู้เงินเดือนสุทธิที่รับมือจริง',
+    a: 'เครื่องคำนวณเงินเดือนสุทธิ',
     link: '/คำนวณเงินเดือนสุทธิ/',
-    reason: 'Shows your take-home pay after tax and social security deductions.'
+    reason: 'แสดงเงินที่รับจริงหลังหักประกันสังคมและภาษีเงินได้ ครบทุกมาตรา',
+    icon: '💰',
   },
   {
-    scenario: 'I\'m applying for a home loan',
-    answer: 'Use Home Loan Calculator',
+    q: 'กำลังพิจารณากู้ซื้อบ้าน',
+    a: 'เครื่องคำนวณผ่อนบ้าน',
     link: '/คำนวณผ่อนบ้าน/',
-    reason: 'Calculates monthly mortgage payments and total interest over the loan term.'
+    reason: 'คำนวณค่างวดรายเดือน ดอกเบี้ยรวม และรายได้ขั้นต่ำที่ต้องมีตามเกณฑ์ธนาคาร',
+    icon: '🏠',
   },
   {
-    scenario: 'I\'m buying a car and need financing',
-    answer: 'Use Car Loan Calculator',
+    q: 'อยากซื้อรถแต่ยังไม่รู้ค่างวด',
+    a: 'เครื่องคำนวณผ่อนรถ',
     link: '/คำนวณผ่อนรถ/',
-    reason: 'Calculates vehicle loan payments and compare different financing options.'
+    reason: 'คำนวณค่างวดรถยนต์ เปรียบเทียบดาวน์ต่างๆ และดูดอกเบี้ยที่แท้จริง',
+    icon: '🚗',
   },
   {
-    scenario: 'I want to compare different loans',
-    answer: 'Use Loan Comparison Guide',
+    q: 'ต้องการเปรียบเทียบสินเชื่อหลายแห่ง',
+    a: 'เปรียบเทียบสินเชื่อ',
     link: '/เปรียบเทียบสินเชื่อ/',
-    reason: 'Compares home, car, and personal loans side-by-side with interest rates and terms.'
+    reason: 'เทียบสินเชื่อบ้าน รถ และบุคคลคู่กัน ดูดอกเบี้ยและค่างวดแบบเข้าใจง่าย',
+    icon: '⚖️',
   },
   {
-    scenario: 'I have savings and want to calculate interest',
-    answer: 'Use Savings Interest Calculator',
+    q: 'มีเงินออม อยากรู้ดอกเบี้ยที่ได้',
+    a: 'เครื่องคำนวณดอกเบี้ยเงินฝาก',
     link: '/คำนวณดอกเบี้ยเงินฝาก/',
-    reason: 'Shows how much your savings will earn with different interest rates.'
+    reason: 'คำนวณดอกเบี้ยฝากประจำและออมทรัพย์ เปรียบเทียบผลตอบแทนก่อนตัดสินใจ',
+    icon: '🏦',
   },
   {
-    scenario: 'I run a business and need to calculate VAT',
-    answer: 'Use VAT Calculator',
+    q: 'ทำธุรกิจ ต้องการคำนวณ VAT',
+    a: 'เครื่องคำนวณภาษีมูลค่าเพิ่ม',
     link: '/คำนวณมูลค่าเพิ่ม/',
-    reason: 'Calculates Value Added Tax (7%) for business transactions.'
+    reason: 'บวก VAT 7% เข้าราคาหรือถอด VAT ออกจากราคารวม พร้อมแสดงรายละเอียดครบถ้วน',
+    icon: '🧮',
   },
   {
-    scenario: 'I use a credit card and want to understand interest charges',
-    answer: 'Use Credit Card Interest Calculator',
+    q: 'ใช้บัตรเครดิต อยากรู้ดอกเบี้ยที่แท้จริง',
+    a: 'เครื่องคำนวณดอกเบี้ยบัตรเครดิต',
     link: '/คำนวณดอกเบี้ยบัตรเครดิต/',
-    reason: 'Calculates credit card interest and shows impact of different payment amounts.'
+    reason: 'คำนวณดอกเบี้ยสะสมและเห็นว่าการจ่ายขั้นต่ำทำให้หนี้พอกได้อย่างไร',
+    icon: '💳',
   },
   {
-    scenario: 'I want to analyze my business performance',
-    answer: 'Use Business Tools',
-    link: '/เครื่องคำนวณธุรกิจ/',
-    reason: 'Access ROE, ROA, break-even, and other business analysis calculators.'
-  },
-  {
-    scenario: 'I need to do statistical analysis',
-    answer: 'Use Math & Statistics Tools',
-    link: '/เครื่องคำนวณคณิตศาสตร์/',
-    reason: 'Calculate mean, median, standard deviation, correlation, and probability.'
-  },
-  {
-    scenario: 'I don\'t know which tax calculator I need',
-    answer: 'Use Tax Calculator Comparison',
+    q: 'ไม่รู้ว่าต้องใช้เครื่องคำนวณภาษีตัวไหน',
+    a: 'คู่มือเปรียบเทียบเครื่องคำนวณภาษี',
     link: '/เปรียบเทียบเครื่องคำนวณภาษี/',
-    reason: 'Explains when to use income tax, VAT, corporate tax, and withholding tax calculators.'
+    reason: 'อธิบายความแตกต่างของภาษีเงินได้ VAT ภาษีนิติบุคคล และภาษีหัก ณ ที่จ่าย',
+    icon: '📊',
   },
   {
-    scenario: 'I want to learn how to calculate income tax step-by-step',
-    answer: 'Read Income Tax Guide',
+    q: 'อยากเรียนรู้วิธีคำนวณภาษีทีละขั้นตอน',
+    a: 'คู่มือคำนวณภาษีไทย',
     link: '/วิธีคำนวณภาษีเงินได้ไทย/',
-    reason: 'Step-by-step instructions with explanations and tax bracket tables.'
+    reason: 'คำแนะนำแบบ step-by-step พร้อมตารางขั้นภาษี ตัวอย่างจริง และเคล็ดลับลดหย่อน',
+    icon: '📚',
   },
   {
-    scenario: 'I\'m concerned about paying too much tax',
-    answer: 'Read Common Mistakes Guide',
+    q: 'กังวลว่าตัวเองเสียภาษีเกินจริง',
+    a: 'ข้อผิดพลาดภาษีที่พบบ่อย',
     link: '/ผิดพลาดภาษีทั่วไป/',
-    reason: 'Learn the 8 most common tax calculation mistakes and how to avoid them.'
+    reason: '8 ข้อผิดพลาดที่คนไทยทำบ่อยเมื่อคำนวณภาษี พร้อมวิธีแก้และประหยัดเงิน',
+    icon: '⚠️',
   },
   {
-    scenario: 'I want to know what deductions I can claim',
-    answer: 'Use Deductions Checklist',
+    q: 'ต้องการตรวจสอบว่าลดหย่อนได้อะไรบ้าง',
+    a: 'เช็กลิสต์หักลดหย่อนภาษี',
     link: '/ตรวจสอบหักลดหย่อนภาษี/',
-    reason: 'Complete checklist of all eligible personal, professional, and charitable deductions.'
+    reason: 'รายการลดหย่อนครบทุกประเภท ส่วนตัว ประกัน กองทุน และการกุศล อัปเดตปี 2569',
+    icon: '✅',
+  },
+  {
+    q: 'ต้องการคำนวณค่าโอนบ้าน',
+    a: 'เครื่องคำนวณค่าธรรมเนียมโอนบ้าน',
+    link: '/คำนวณค่าธรรมเนียมโอนบ้าน/',
+    reason: 'คำนวณค่าโอน ค่าจดจำนอง อากรแสตมป์ และภาษีธุรกิจเฉพาะ ครบในหน้าเดียว',
+    icon: '🔑',
+  },
+  {
+    q: 'อยากวางแผนเกษียณ',
+    a: 'เครื่องคำนวณเงินเกษียณ',
+    link: '/คำนวณเงินเกษียณ/',
+    reason: 'คำนวณเงินที่ต้องมีเมื่อเกษียณ เทียบกับเงินออมปัจจุบัน และดูว่าต้องออมเพิ่มเท่าไร',
+    icon: '🌅',
   },
 ];
+
+const categories = [
+  { name: 'ภาษีและการเงิน', href: '/หมวดหมู่/ภาษีและการเงิน/', icon: '🧾' },
+  { name: 'สินเชื่อและบ้าน', href: '/หมวดหมู่/สินเชื่อและบ้าน/', icon: '🏠' },
+  { name: 'เงินเดือนและแรงงาน', href: '/หมวดหมู่/เงินเดือนและแรงงาน/', icon: '💼' },
+  { name: 'ธุรกิจและการลงทุน', href: '/หมวดหมู่/ธุรกิจและการลงทุน/', icon: '📈' },
+  { name: 'สุขภาพและชีวิต', href: '/หมวดหมู่/สุขภาพและชีวิต/', icon: '❤️' },
+  { name: 'ยานพาหนะ', href: '/หมวดหมู่/ยานพาหนะ/', icon: '🚗' },
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: scenarios.map((s) => ({
+    '@type': 'Question',
+    name: s.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: `${s.a}: ${s.reason}`,
+    },
+  })),
+};
 ---
 
 <BaseLayout
-  title="Which Calculator Do You Need? Decision Guide | Kamnuanlek"
-  description="Find the right calculator for your financial situation. Tax, loans, savings, business analysis, and more. Quick decision guide."
+  title="ช่วยเลือกเครื่องคำนวณ — บอกสถานการณ์ แล้วเราจะแนะนำ | Kamnuanlek"
+  description="ไม่แน่ใจว่าต้องใช้เครื่องคำนวณตัวไหน? บอกสถานการณ์ของคุณแล้วเราแนะนำเครื่องคำนวณที่เหมาะสมที่สุด ภาษี สินเชื่อ เงินเดือน ธุรกิจ ครบทุกเรื่องการเงินไทย"
+  canonical={canonical}
+  pageName="เลือกเครื่องคำนวณ"
 >
-  <div class="max-w-5xl mx-auto px-4 py-12">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Which Calculator Do You Need?</h1>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
-    <div class="mb-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-      <p class="text-lg text-gray-800">
-        Find the right calculator for your financial situation. Answer the question that matches your needs and we'll guide you to the right tool.
-      </p>
-    </div>
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-1.5 flex-wrap">
+      <li><a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a></li>
+      <li class="text-gray-300">/</li>
+      <li class="text-gray-700 font-medium">ช่วยเลือกเครื่องคำนวณ</li>
+    </ol>
+  </nav>
 
-    <div class="space-y-4">
-      {calculatorGuide.map((item, idx) => (
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-          <div class="p-6">
-            <div class="flex gap-4">
-              <div class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold text-sm">
-                {idx + 1}
-              </div>
-              <div class="flex-grow">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">{item.scenario}</h3>
-                <p class="text-gray-600 mb-3">{item.reason}</p>
-                <a href={item.link} class="inline-block px-4 py-2 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 font-medium transition">
-                  → {item.answer}
-                </a>
-              </div>
-            </div>
+  <div class="max-w-4xl">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">ช่วยเลือกเครื่องคำนวณ</h1>
+    <p class="text-gray-600 mb-8 leading-relaxed">
+      ไม่แน่ใจว่าต้องใช้เครื่องคำนวณตัวไหน? เลือกสถานการณ์ที่ตรงกับคุณแล้วเราจะพาไปยังเครื่องมือที่เหมาะที่สุด
+    </p>
+
+    <!-- Scenario Cards -->
+    <div class="space-y-3 mb-12">
+      {scenarios.map((item, idx) => (
+        <a
+          href={item.link}
+          class="flex items-start gap-4 p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-primary-200 hover:shadow-md transition-all group"
+        >
+          <div class="flex-shrink-0 w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center text-xl">
+            {item.icon}
           </div>
-        </div>
+          <div class="flex-grow min-w-0">
+            <p class="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors mb-1">
+              {item.q}
+            </p>
+            <p class="text-sm text-gray-500 mb-2">{item.reason}</p>
+            <span class="inline-flex items-center gap-1 text-sm font-medium text-primary-600">
+              → {item.a}
+            </span>
+          </div>
+        </a>
       ))}
     </div>
 
-    <div class="mt-12 p-8 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Can't Find What You Need?</h2>
-      <p class="text-gray-700 mb-6">
-        Browse all our calculators and resources:
-      </p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="/ตัวช่วยคำนวณการเงิน/" class="p-4 bg-white rounded-lg border border-green-200 hover:border-primary-500 transition">
-          <span class="font-semibold text-gray-900">💳 Financial Hub</span>
-        </a>
-        <a href="/เครื่องคำนวณธุรกิจ/" class="p-4 bg-white rounded-lg border border-green-200 hover:border-primary-500 transition">
-          <span class="font-semibold text-gray-900">📊 Business Tools</span>
-        </a>
-        <a href="/เครื่องคำนวณคณิตศาสตร์/" class="p-4 bg-white rounded-lg border border-green-200 hover:border-primary-500 transition">
-          <span class="font-semibold text-gray-900">📐 Math & Stats</span>
-        </a>
+    <!-- Browse by Category -->
+    <div class="mb-10">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">หรือเรียกดูตามหมวดหมู่</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {categories.map((cat) => (
+          <a
+            href={cat.href}
+            class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-primary-200 hover:shadow-md transition-all"
+          >
+            <span class="text-2xl">{cat.icon}</span>
+            <span class="font-medium text-gray-800 text-sm">{cat.name}</span>
+          </a>
+        ))}
       </div>
     </div>
 
-    <div class="mt-12">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Links to All Categories</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <a href="/เครื่องคำนวณการเงินชั้นยอด/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
-          <span class="font-semibold text-gray-900">🌟 Top 10 Financial Tools</span>
-          <p class="text-gray-600 text-sm mt-2">Most important calculators ranked</p>
-        </a>
-        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
-          <span class="font-semibold text-gray-900">📚 Tax Calculation Guide</span>
-          <p class="text-gray-600 text-sm mt-2">Learn step-by-step</p>
-        </a>
+    <!-- Quick Links -->
+    <div class="p-6 bg-primary-50 rounded-2xl border border-primary-100">
+      <h2 class="font-bold text-gray-900 mb-3">ลิงก์ด่วน</h2>
+      <div class="flex flex-wrap gap-3">
+        <a href="/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">หน้าแรก — เครื่องคำนวณทั้งหมด</a>
+        <a href="/เปรียบเทียบเครื่องคำนวณภาษี/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">เปรียบเทียบเครื่องคำนวณภาษี</a>
+        <a href="/บทความ/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">บทความการเงิน</a>
+        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">คู่มือภาษีเงินได้</a>
       </div>
     </div>
   </div>
