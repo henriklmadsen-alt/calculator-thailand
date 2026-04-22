@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+
+const financialCalcs = [
+  { title: 'Income Tax Calculator', slug: '/คำนวณภาษีเงินได้บุคคลธรรมดา/', desc: 'Calculate personal income tax quickly' },
+  { title: 'Salary Calculator', slug: '/คำนวณเงินเดือนสุทธิ/', desc: 'Calculate net salary after deductions' },
+  { title: 'Loan Payment Calculator', slug: '/คำนวณผ่อนกู้/', desc: 'Calculate monthly loan payments' },
+  { title: 'Home Loan Calculator', slug: '/คำนวณผ่อนบ้าน/', desc: 'Calculate mortgage payments' },
+  { title: 'Car Loan Calculator', slug: '/คำนวณผ่อนรถ/', desc: 'Calculate vehicle loan payments' },
+  { title: 'Savings Interest Calculator', slug: '/คำนวณดอกเบี้ยเงินฝาก/', desc: 'Calculate savings returns' },
+  { title: 'Credit Card Interest', slug: '/คำนวณดอกเบี้ยบัตรเครดิต/', desc: 'Calculate credit card interest' },
+  { title: 'VAT Calculator', slug: '/คำนวณมูลค่าเพิ่ม/', desc: 'Calculate Value Added Tax' },
+  { title: 'NPV Calculator', slug: '/คำนวณ-npv/', desc: 'Investment analysis tool' },
+  { title: 'IRR Calculator', slug: '/คำนวณ-irr/', desc: 'Calculate internal rate of return' },
+];
+---
+
+<BaseLayout
+  title="Financial Calculators — Tax, Loans, Savings | Kamnuanlek"
+  description="Free Thai financial calculators: income tax, salary, loans, mortgages, savings interest, VAT, NPV, IRR, and more. Calculate instantly online."
+>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Financial Calculators</h1>
+    <p class="text-xl text-gray-600 mb-12">
+      Essential financial tools for personal planning, tax calculation, and investment analysis. All free, no signup required.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {financialCalcs.map((calc) => (
+        <a
+          href={calc.slug}
+          class="group p-6 bg-white border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600">{calc.title}</h3>
+          <p class="text-gray-600 text-sm mb-4">{calc.desc}</p>
+          <span class="text-primary-600 text-sm font-medium">Use Calculator →</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-12 p-8 bg-gradient-to-r from-primary-50 to-blue-50 rounded-2xl border border-primary-200">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Why Use These Calculators?</h2>
+      <ul class="space-y-3 text-gray-700">
+        <li>✓ Accurate formulas based on Thai tax & financial regulations</li>
+        <li>✓ Instant results - no waiting, no signup needed</li>
+        <li>✓ Plan ahead - see tax implications before year-end</li>
+        <li>✓ Compare options - evaluate different loan/savings scenarios</li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
