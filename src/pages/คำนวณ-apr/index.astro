@@ -152,7 +152,17 @@ const jsonLdFaq = {
     <!-- Results -->
     <div id="results" class="hidden mb-8">
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ APR</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">ผลการคำนวณ APR</h2>
+          <button
+            id="save-calc-btn"
+            type="button"
+            class="save-calc-btn"
+            aria-label="บันทึกการคำนวณนี้"
+          >
+            💾 บันทึก
+          </button>
+        </div>
 
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
           <div class="bg-red-50 rounded-lg p-4 text-center">
@@ -375,5 +385,94 @@ const jsonLdFaq = {
       });
     }, { threshold: 0.5 });
     resultObserver.observe(resultsDiv);
+
+    // ─── Save Calculation (CAL-962) ───────────────────────────────────
+    const STORAGE_KEY = 'ct.saved.calcs.v1';
+    const MAX_SAVED = 5;
+    const calculatorPath = window.location.pathname;
+    const calculatorName = 'คำนวณ APR';
+
+    function isLocalStorageAvailable() {
+      try {
+        const test = '__ct_storage_test__';
+        window.localStorage.setItem(test, test);
+        window.localStorage.removeItem(test);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function getSavedCalculations() {
+      if (!isLocalStorageAvailable()) return [];
+      try {
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        const data = stored ? JSON.parse(stored) : [];
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCalculation(inputs, result) {
+      if (!isLocalStorageAvailable()) return null;
+      try {
+        const saved = getSavedCalculations();
+        const id = `calc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const newCalc = {
+          id,
+          calculatorName,
+          calculatorPath,
+          inputs,
+          result,
+          timestamp: Date.now(),
+        };
+        saved.unshift(newCalc);
+        if (saved.length > MAX_SAVED) saved.length = MAX_SAVED;
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+        return newCalc;
+      } catch {
+        return null;
+      }
+    }
+
+    function showSaveSuccess() {
+      const feedback = document.createElement('div');
+      feedback.className = 'save-calc-feedback';
+      feedback.textContent = '✅ บันทึกการคำนวณเรียบร้อย';
+      document.body.appendChild(feedback);
+
+      setTimeout(() => {
+        feedback.classList.add('fade-out');
+        setTimeout(() => feedback.remove(), 300);
+      }, 2000);
+    }
+
+    const saveBtn = document.getElementById('save-calc-btn');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const P = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+        const PMT = parseNum((document.getElementById('monthly-payment') as HTMLInputElement).value);
+        const n = parseNum((document.getElementById('term-months') as HTMLInputElement).value);
+        const fees = parseNum((document.getElementById('fees') as HTMLInputElement).value);
+        const insurance = parseNum((document.getElementById('insurance') as HTMLInputElement).value);
+
+        if (!P || !PMT || !n) {
+          alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+          return;
+        }
+
+        const aprText = (document.getElementById('res-apr-annual') as HTMLElement).textContent || '-';
+        const saved = saveCalculation(
+          { principal: P, monthlyPayment: PMT, termMonths: n, fees, insurance },
+          aprText
+        );
+
+        if (saved) {
+          showSaveSuccess();
+          trackLanguageAwareEvent('calculation_saved', { calculator_type: 'apr' });
+        }
+      });
+    }
   </script>
 </BaseLayout>
