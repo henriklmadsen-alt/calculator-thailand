@@ -3,57 +3,57 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const deductionCategories = [
   {
-    category: 'Personal Allowances',
+    category: 'ค่าลดหย่อนส่วนบุคคล',
     items: [
-      { name: 'Personal Allowance', amount: '60,000 THB', status: 'Always claim' },
-      { name: 'Spouse Allowance', amount: '60,000 THB', status: 'If married' },
-      { name: 'Child Allowance (per child)', amount: '20,000 THB', status: 'Up to 5 children' },
-      { name: 'Parent/Grandparent Allowance (per person)', amount: '20,000 THB', status: 'If you support them' },
-      { name: 'Disability Allowance (self)', amount: '40,000 THB', status: 'If disabled' },
+      { name: 'ค่าลดหย่อนส่วนตัว', amount: '60,000 บาท', status: 'ใช้ได้ทุกราย' },
+      { name: 'ค่าลดหย่อนคู่สมรส', amount: '60,000 บาท', status: 'ถ้าสมรสแล้ว' },
+      { name: 'ค่าลดหย่อนบุตร (ต่อคน)', amount: '20,000 บาท', status: 'ไม่เกิน 5 คน' },
+      { name: 'ค่าลดหย่อนบิดามารดา (ต่อคน)', amount: '20,000 บาท', status: 'ถ้าเลี้ยงดู' },
+      { name: 'ค่าลดหย่อนคนพิการ (ตัวเอง)', amount: '40,000 บาท', status: 'กรณีพิการ' },
     ]
   },
   {
-    category: 'Work-Related Deductions',
+    category: 'ค่าใช้จ่ายที่เกี่ยวกับงาน',
     items: [
-      { name: 'Professional Fees & Licenses', amount: 'Actual cost', status: 'Keep receipts' },
-      { name: 'Education & Training', amount: 'Actual cost', status: 'Job-related only' },
-      { name: 'Home Office Depreciation', amount: 'Calculated', status: 'Fixed asset calculation' },
-      { name: 'Office Supplies', amount: 'Actual cost', status: 'Consumables' },
-      { name: 'Equipment & Tools', amount: 'Depreciated', status: 'Over useful life' },
-      { name: 'Professional Membership', amount: 'Actual cost', status: 'Industry associations' },
+      { name: 'ค่าวิชาชีพและใบอนุญาต', amount: 'ตามจริง', status: 'เก็บใบเสร็จไว้' },
+      { name: 'ค่าการศึกษาและฝึกอบรม', amount: 'ตามจริง', status: 'เฉพาะที่เกี่ยวกับงาน' },
+      { name: 'ค่าเสื่อมราคาสำนักงานที่บ้าน', amount: 'คำนวณแล้ว', status: 'คำนวณจากสินทรัพย์ถาวร' },
+      { name: 'อุปกรณ์สำนักงาน', amount: 'ตามจริง', status: 'วัสดุสิ้นเปลือง' },
+      { name: 'อุปกรณ์และเครื่องมือ', amount: 'หักค่าเสื่อม', status: 'ตลอดอายุการใช้งาน' },
+      { name: 'ค่าสมาชิกวิชาชีพ', amount: 'ตามจริง', status: 'สมาคมวิชาชีพ' },
     ]
   },
   {
-    category: 'Health & Life Insurance',
+    category: 'ประกันสุขภาพและชีวิต',
     items: [
-      { name: 'Health Insurance Premiums', amount: 'Up to 15,000 THB', status: 'Annual limit' },
-      { name: 'Life Insurance Premiums', amount: 'Up to 100,000 THB', status: 'Annual limit' },
-      { name: 'Disability Insurance', amount: 'Actual cost', status: 'if approved' },
+      { name: 'เบี้ยประกันสุขภาพ', amount: 'ไม่เกิน 15,000 บาท', status: 'วงเงินรายปี' },
+      { name: 'เบี้ยประกันชีวิต', amount: 'ไม่เกิน 100,000 บาท', status: 'วงเงินรายปี' },
+      { name: 'ประกันทุพพลภาพ', amount: 'ตามจริง', status: 'ถ้าได้รับอนุมัติ' },
     ]
   },
   {
-    category: 'Investment Savings',
+    category: 'การออมและการลงทุน',
     items: [
-      { name: 'Retirement Fund (RMF)', amount: 'Up to 500,000 THB', status: 'Annual contribution' },
-      { name: 'Social Security Fund (SSF)', amount: 'Actual contribution', status: 'Self-employed' },
-      { name: 'Provident Fund', amount: 'Actual contribution', status: 'Employer-matched' },
-      { name: 'Government Savings Bond', amount: 'Actual cost', status: 'Thai bonds only' },
+      { name: 'กองทุนรวมเพื่อการเลี้ยงชีพ (RMF)', amount: 'ไม่เกิน 500,000 บาท', status: 'เงินสมทบรายปี' },
+      { name: 'กองทุนรวมเพื่อการออม (SSF)', amount: 'ตามจริง', status: 'ผู้ประกอบอาชีพอิสระ' },
+      { name: 'กองทุนสำรองเลี้ยงชีพ', amount: 'ตามจริง', status: 'นายจ้างร่วมสมทบ' },
+      { name: 'พันธบัตรออมทรัพย์รัฐบาล', amount: 'ตามจริง', status: 'พันธบัตรไทยเท่านั้น' },
     ]
   },
   {
-    category: 'Charitable Donations',
+    category: 'การบริจาค',
     items: [
-      { name: 'Charity Donations', amount: 'Up to 2 years income', status: 'Approved organizations' },
-      { name: 'Religious Donations', amount: 'Unlimited', status: 'Temples, mosques, etc.' },
-      { name: 'Political/Disaster Donations', amount: 'Unlimited', status: 'If approved' },
+      { name: 'บริจาคการกุศล', amount: 'ไม่เกิน 2 เท่าของรายได้', status: 'องค์กรที่ได้รับอนุมัติ' },
+      { name: 'บริจาคศาสนา', amount: 'ไม่จำกัด', status: 'วัด มัสยิด ฯลฯ' },
+      { name: 'บริจาคการเมือง/ภัยพิบัติ', amount: 'ไม่จำกัด', status: 'ถ้าได้รับอนุมัติ' },
     ]
   },
   {
-    category: 'Interest Payments',
+    category: 'ดอกเบี้ยที่จ่าย',
     items: [
-      { name: 'Home Loan Interest', amount: 'Up to 100,000 THB', status: 'First home only' },
-      { name: 'Student Loan Interest', amount: 'Actual cost', status: 'Approved loans' },
-      { name: 'Mortgage Interest', amount: 'Up to 100,000 THB', status: 'Primary residence' },
+      { name: 'ดอกเบี้ยสินเชื่อบ้าน', amount: 'ไม่เกิน 100,000 บาท', status: 'เฉพาะบ้านหลังแรก' },
+      { name: 'ดอกเบี้ยเงินกู้การศึกษา', amount: 'ตามจริง', status: 'เงินกู้ที่ได้รับอนุมัติ' },
+      { name: 'ดอกเบี้ยจดจำนอง', amount: 'ไม่เกิน 100,000 บาท', status: 'ที่อยู่อาศัยหลัก' },
     ]
   },
 ];
@@ -76,7 +76,7 @@ const deductionCategories = [
 
     <div class="mb-12 p-6 bg-green-50 border border-green-200 rounded-lg">
       <p class="text-lg text-gray-800">
-        Don't leave money on the table! This checklist helps you claim every eligible deduction and reduce your tax bill.
+        อย่าปล่อยให้เงินหายไปโดยเปล่าประโยชน์! เช็กลิสต์นี้ช่วยให้คุณใช้สิทธิ์ลดหย่อนได้ครบถ้วนและลดภาษีที่ต้องชำระ
       </p>
     </div>
 
@@ -114,55 +114,55 @@ const deductionCategories = [
     </div>
 
     <div class="mt-12 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">⚠️ Important Reminders</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">⚠️ ข้อควรระวังสำคัญ</h2>
       <ul class="space-y-3 text-gray-700">
         <li class="flex gap-3">
           <span class="font-bold text-yellow-700">•</span>
-          <span>Keep ALL receipts and documentation for 5 years (Thai law requirement)</span>
+          <span>เก็บใบเสร็จและเอกสารประกอบทุกฉบับไว้ 5 ปี (ตามกฎหมายไทย)</span>
         </li>
         <li class="flex gap-3">
           <span class="font-bold text-yellow-700">•</span>
-          <span>Deductions must be expenses, not personal purchases</span>
+          <span>ค่าลดหย่อนต้องเป็นค่าใช้จ่ายที่เกิดขึ้นจริง ไม่ใช่การซื้อสินค้าส่วนตัว</span>
         </li>
         <li class="flex gap-3">
           <span class="font-bold text-yellow-700">•</span>
-          <span>Some deductions have annual limits — don't exceed them</span>
+          <span>บางรายการมีวงเงินสูงสุดรายปี อย่าเกินกว่าที่กำหนด</span>
         </li>
         <li class="flex gap-3">
           <span class="font-bold text-yellow-700">•</span>
-          <span>Not all health/insurance payments qualify — verify with Department of Revenue</span>
+          <span>ค่าสุขภาพ/ประกันไม่ใช่ทุกประเภทจะผ่านเกณฑ์ ตรวจสอบกับกรมสรรพากร</span>
         </li>
         <li class="flex gap-3">
           <span class="font-bold text-yellow-700">•</span>
-          <span>Charitable donations must be to approved organizations</span>
+          <span>การบริจาคต้องเป็นองค์กรที่ได้รับอนุมัติจากกรมสรรพากร</span>
         </li>
       </ul>
     </div>
 
     <div class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-200">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Calculate Your Tax Savings</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">คำนวณภาษีที่ประหยัดได้</h2>
       <p class="text-gray-700 mb-4">
-        Now that you've identified all your eligible deductions, calculate your actual tax liability:
+        เมื่อระบุสิทธิ์ลดหย่อนได้ครบแล้ว คำนวณภาษีที่ต้องชำระจริงของคุณ:
       </p>
       <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold">
-        Use Tax Calculator →
+        ใช้เครื่องคำนวณภาษี →
       </a>
     </div>
 
     <div class="mt-12">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Related Resources</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">แหล่งข้อมูลที่เกี่ยวข้อง</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
-          <span class="font-semibold text-gray-900">📚 How to Calculate Tax</span>
-          <p class="text-gray-600 text-sm mt-2">Step-by-step guide</p>
+          <span class="font-semibold text-gray-900">📚 วิธีคำนวณภาษี</span>
+          <p class="text-gray-600 text-sm mt-2">คู่มือทีละขั้นตอน</p>
         </a>
         <a href="/ผิดพลาดภาษีทั่วไป/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
-          <span class="font-semibold text-gray-900">❌ Common Mistakes</span>
-          <p class="text-gray-600 text-sm mt-2">Avoid overpaying</p>
+          <span class="font-semibold text-gray-900">❌ ข้อผิดพลาดที่พบบ่อย</span>
+          <p class="text-gray-600 text-sm mt-2">หลีกเลี่ยงการเสียภาษีเกิน</p>
         </a>
         <a href="/ตัวช่วยคำนวณการเงิน/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
-          <span class="font-semibold text-gray-900">💳 Finance Hub</span>
-          <p class="text-gray-600 text-sm mt-2">All financial tools</p>
+          <span class="font-semibold text-gray-900">💳 ศูนย์รวมการเงิน</span>
+          <p class="text-gray-600 text-sm mt-2">เครื่องมือการเงินทุกประเภท</p>
         </a>
       </div>
     </div>
