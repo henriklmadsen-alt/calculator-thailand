@@ -334,11 +334,11 @@ const jsonLdHowTo = {
       let totalInterest = 0;
 
       if (interestType === 'flat') {
-        // Flat rate formula: Monthly payment = [Principal + (Principal × Rate% × Years)] / Total months
-        const monthlyRate = (annualRate / 100) * (loanTermMonths / 12);
-        const totalWithInterest = loanAmount * (1 + monthlyRate);
-        monthlyPayment = totalWithInterest / loanTermMonths;
-        totalInterest = monthlyPayment * loanTermMonths - loanAmount;
+        // Flat rate: totalInterest = principal × (annualRate/100) × years
+        //            monthlyPayment = (principal + totalInterest) / months
+        const years = loanTermMonths / 12;
+        totalInterest = loanAmount * (annualRate / 100) * years;
+        monthlyPayment = (loanAmount + totalInterest) / loanTermMonths;
       } else {
         // Effective rate (reducing balance) formula
         const monthlyRate = annualRate / 100 / 12;
