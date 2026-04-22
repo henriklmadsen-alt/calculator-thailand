@@ -98,6 +98,52 @@ const jsonLdHowTo = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
+  <style>
+    /* Slide-in animation for result card (fade + slide up) */
+    @keyframes slideInResult {
+      0% {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Color pulse animation for BMI value — attention draw */
+    @keyframes colorPulse {
+      0%, 100% {
+        filter: brightness(1);
+      }
+      50% {
+        filter: brightness(1.15);
+      }
+    }
+
+    /* Subtle glow on gauge pointer */
+    @keyframes pointerGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0.2));
+      }
+      50% {
+        filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
+      }
+    }
+
+    .result-animate-in {
+      animation: slideInResult 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .bmi-value-pulse {
+      animation: colorPulse 1.2s ease-in-out 2;
+    }
+
+    #bmi-pointer {
+      animation: pointerGlow 1.5s ease-in-out infinite;
+    }
+  </style>
+
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
       คำนวณ BMI (ดัชนีมวลกาย)
@@ -519,8 +565,9 @@ const jsonLdHowTo = {
       const result = getBMICategory(bmi);
       const range = getHealthyWeightRange(height);
 
-      (document.getElementById('bmi-value') as HTMLElement).textContent = bmi.toFixed(1);
-      (document.getElementById('bmi-value') as HTMLElement).className = `text-5xl font-bold mb-2 ${result.colorClass.split(' ')[0]}`;
+      const bmiValueEl = document.getElementById('bmi-value') as HTMLElement;
+      bmiValueEl.textContent = bmi.toFixed(1);
+      bmiValueEl.className = `text-5xl sm:text-6xl lg:text-7xl font-bold mb-2 ${result.colorClass.split(' ')[0]} bmi-value-pulse`;
 
       const categoryEl = document.getElementById('bmi-category') as HTMLElement;
       categoryEl.textContent = result.category;
@@ -535,7 +582,9 @@ const jsonLdHowTo = {
       (document.getElementById('healthy-range') as HTMLElement).textContent =
         `สำหรับส่วนสูง ${height} ซม. น้ำหนักที่เหมาะสม (BMI 18.5–22.9) คือ ${fmt.format(range.min)} – ${fmt.format(range.max)} กก.`;
 
-      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      const resultEl = document.getElementById('result') as HTMLElement;
+      resultEl.classList.remove('hidden');
+      resultEl.classList.add('result-animate-in');
       document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('bmi');
     });
