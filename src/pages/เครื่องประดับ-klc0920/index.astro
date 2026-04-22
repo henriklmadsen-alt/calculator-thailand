@@ -22,6 +22,16 @@ const faqData = [
     answer: 'ได้ คุณสามารถแชร์ลิงค์หรือผลลัพธ์คำนวณกับใครก็ได้',
   },
 ];
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 
 const jsonLdSchema = {
   '@context': 'https://schema.org',
@@ -34,6 +44,7 @@ const jsonLdSchema = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการประหยัดจากสมาชิกแบรนด์หรู">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <article>
     <h1 class="text-3xl font-bold mb-4">คำนวณการประหยัดจากสมาชิกแบรนด์หรู</h1>
     <p class="text-gray-600 mb-6">คำนวณการประหยัดจากสมาชิกแบรนด์หรู - ช่วยคุณวางแผนและคำนวณมูลค่าของสินค้า</p>

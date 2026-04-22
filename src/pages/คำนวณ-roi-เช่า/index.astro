@@ -52,9 +52,28 @@ const jsonLdHowTo = {
     }
   ]
 };
+
+const faqData = [
+  { question: 'ROI คืออะไรและคำนวณอย่างไร?', answer: 'ROI (Return on Investment) = (กำไรสุทธิ / ต้นทุนรวม) x 100% ตัวอย่าง: ลงทุน 100,000 บาท ได้กำไร 20,000 บาท ROI = 20%' },
+  { question: 'ROI ที่ดีควรเป็นเท่าไร?', answer: 'ขึ้นอยู่กับอุตสาหกรรมและความเสี่ยง โดยทั่วไป ROI 10-20% ต่อปีถือว่าดีสำหรับการลงทุนทั่วไป ความเสี่ยงสูงต้องการ ROI สูงกว่า' },
+  { question: 'ความแตกต่างระหว่าง ROI และ IRR คืออะไร?', answer: 'ROI วัดผลตอบแทนรวม IRR (Internal Rate of Return) คำนึงถึงมูลค่าเงินตามเวลา เหมาะสำหรับโครงการระยะยาว' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกเงินลงทุนเริ่มต้นและผลตอบแทนที่คาดหวัง เครื่องคำนวณจะแสดง ROI และระยะเวลาคืนทุน' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ ROI เช่า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณ ROI การให้เช่าที่ดิน/บ้าน ปี 2569</h1>

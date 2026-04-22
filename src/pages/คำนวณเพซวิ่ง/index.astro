@@ -26,6 +26,16 @@ const faqData = [
     answer: 'ใช่ แน่นอน การวิ่งเร็วจะเผาแคลอรี่มากกว่าการวิ่งช้า แม้ว่าระยะทางจะเท่ากัน',
   },
 ];
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 
 const jsonLdSchema = {
   '@context': 'https://schema.org',
@@ -38,6 +48,7 @@ const jsonLdSchema = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเพซวิ่ง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdSchema)} />
 
   <article class="max-w-4xl mx-auto px-4 py-8">

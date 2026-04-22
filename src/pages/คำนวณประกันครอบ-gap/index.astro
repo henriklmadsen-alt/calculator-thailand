@@ -4,8 +4,27 @@ const pageTitle = 'คำนวณประกัน GAP รถยนต์ 2569
 const pageDescription = 'คำนวณต้นทุนรถยนต์';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/calc/`;
+
+const faqData = [
+  { question: 'เบี้ยประกันสุขภาพคำนวณจากอะไร?', answer: 'เบี้ยประกันขึ้นอยู่กับ อายุ เพศ สุขภาพปัจจุบัน วงเงินคุ้มครอง และบริษัทประกัน โดยทั่วไปอายุมากยิ่งเบี้ยสูง' },
+  { question: 'ควรซื้อประกันสุขภาพตั้งแต่อายุเท่าไร?', answer: 'ยิ่งซื้อเร็วยิ่งดี เบี้ยต่ำกว่าและโรคที่ยังไม่มีถือเป็นโรคใหม่ที่คุ้มครองได้ แนะนำเริ่มต้นตั้งแต่วัยทำงาน 25-35 ปี' },
+  { question: 'ประกันสุขภาพกับประกันสังคมต่างกันอย่างไร?', answer: 'ประกันสังคมบังคับโดยรัฐ คุ้มครองพื้นฐาน ประกันสุขภาพเพิ่มเติมซื้อเองเพื่อรับการรักษาที่ดีกว่า วงเงินสูงกว่า และเลือกโรงพยาบาลได้' },
+  { question: 'ค่าเบี้ยที่คำนวณได้ถูกต้องแค่ไหน?', answer: 'เป็นการประมาณการเบื้องต้น ราคาจริงขึ้นอยู่กับการตรวจสุขภาพ ประวัติการรักษา และเงื่อนไขของแต่ละบริษัท ควรขอใบเสนอราคาจริงก่อนตัดสินใจ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <article><h1>คำนวณต้นทุน</h1>
     <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
       <input type="number" id="amount" placeholder="0" value="100000" class="w-full px-3 py-2 border mb-4 rounded-md" />

@@ -4,9 +4,28 @@ const pageTitle = 'คำนวณค่าขัดคิ้ว | Kamnuanlek';
 const pageDescription = 'คำนวณค่าขัดคิ้ว - คำนวณออนไลน์ฟรี';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-eyebrow-eye-service-cost//`;
+
+const faqData = [
+  { question: 'ราคาเฉลี่ยของบริการนี้คือเท่าไร?', answer: 'ราคาขึ้นอยู่กับร้าน ทำเล และระดับบริการ ใช้เครื่องคำนวณด้านบนเพื่อประมาณค่าใช้จ่ายตามตัวเลือกที่ต้องการ' },
+  { question: 'ควรทำบริการนี้บ่อยแค่ไหน?', answer: 'ขึ้นอยู่กับประเภทบริการและสภาพของแต่ละคน โดยทั่วไปทุก 2-6 สัปดาห์ตามคำแนะนำของช่าง' },
+  { question: 'มีวิธีประหยัดค่าใช้จ่ายอย่างไร?', answer: 'เลือกแพ็กเกจ สมัครสมาชิก หรือจองล่วงหน้าในช่วงโปรโมชั่น บางร้านมีส่วนลดสำหรับลูกค้าประจำ' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกรายละเอียดบริการที่ต้องการ เช่น ประเภท จำนวนครั้ง และตัวเลือกเสริม เครื่องจะคำนวณค่าใช้จ่ายรวมให้ทันที' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าขัดคิ้ว">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าขัดคิ้ว</h1>
     <div class="mb-4 inline-block rounded-lg border border-fuchsia-200 bg-fuchsia-50 px-3 py-2">

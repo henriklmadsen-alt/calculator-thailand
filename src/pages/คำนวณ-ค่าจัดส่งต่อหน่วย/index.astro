@@ -22,6 +22,16 @@ const faqData = [
     answer: 'คำตอบที่มีความหมาย',
   },
 ];
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 
 const jsonLdSchema = {
   '@context': 'https://schema.org',
@@ -34,6 +44,7 @@ const jsonLdSchema = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจัดส่งต่อหน่วย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <article>
     <h1 class="text-3xl font-bold mb-4">คำนวณค่าจัดส่งต่อหน่วย</h1>
     <p class="text-gray-600 mb-6">คำนวณค่าจัดส่งต่อหน่วย</p>

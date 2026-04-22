@@ -13,6 +13,16 @@ const faqData = [
     answer: 'ขึ้นอยู่กับประเภทของงาน เช่น งานแบบจำนวน 200-800 บาทต่อคนสำหรับพิธีเลี้ยงในร่มหรือพื้นที่จำกัด'
   }
 ];
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
@@ -29,6 +39,7 @@ const jsonLdWebApp = {
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเลี้ยงต่อคน">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">

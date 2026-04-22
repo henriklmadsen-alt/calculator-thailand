@@ -4,9 +4,28 @@ const pageTitle = 'ต้นทุนตรวจสอบที่ดิน | K
 const pageDescription = 'คำนวณ ต้นทุนตรวจสอบที่ดิน - เครื่องคำนวณอสังหาริมทรัพย์ฟรีออนไลน์';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-klc0318-ตรวจสอบ/`;
+
+const faqData = [
+  { question: 'Cap Rate ที่ดีสำหรับอสังหาริมทรัพย์ไทยคือเท่าไร?', answer: 'Cap Rate ที่ดีในไทยมักอยู่ที่ 5-8% ต่อปี ขึ้นอยู่กับทำเลและประเภทอสังหาฯ ทำเลกรุงเทพฯ ชั้นในมักได้ cap rate ต่ำกว่าต่างจังหวัด' },
+  { question: 'ค่าใช้จ่ายแฝงในการซื้ออสังหาฯ มีอะไรบ้าง?', answer: 'ค่าโอน ค่าจดจำนอง ค่าอากรแสตมป์ ภาษีธุรกิจเฉพาะ ค่านายหน้า ค่าซ่อมแซม รวมกันอาจสูงถึง 3-7% ของราคาซื้อ' },
+  { question: 'ผลตอบแทนการลงทุนอสังหาฯ ที่ดีต้องเป็นเท่าไร?', answer: 'นักลงทุนส่วนใหญ่ต้องการ IRR อย่างน้อย 8-12% ต่อปี หรือ Yield ค่าเช่า 5-7% ขึ้นอยู่กับทำเลและเป้าหมาย' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกราคาซื้อ ค่าเช่า ค่าใช้จ่ายรายเดือน เครื่องจะคำนวณ Yield, Cash Flow และ Cap Rate ให้อัตโนมัติ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="ต้นทุนตรวจสอบที่ดิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">ต้นทุนตรวจสอบที่ดิน</h1>
     <div class="mb-4 inline-block rounded-lg border border-rose-200 bg-rose-50 px-3 py-2"><p class="text-xs font-semibold text-rose-800">[อัปเดตปี 2569]</p></div>
