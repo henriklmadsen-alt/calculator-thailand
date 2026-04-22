@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณต้นทุนแรงงาน | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนแรงงานรวม Labor Cost เงินเดือน ประกันสังคม โอที สวัสดิการ ต่อหน่วยผลิต';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0474-ต้นทุนแรงงาน/`;
+const faqData = [
+  { question: 'ต้นทุนแรงงานจริงคิดอย่างไร?', answer: 'ต้นทุนแรงงานจริง = เงินเดือน + ประกันสังคมนายจ้าง 5% + ค่าล่วงเวลา + โบนัส + สวัสดิการ เช่น ประกันสุขภาพ ค่าอาหาร เงินสมทบ PVD' },
+  { question: 'ค่าล่วงเวลาคำนวณอย่างไร?', answer: 'ค่าล่วงเวลา วันธรรมดา = 1.5 เท่าของค่าจ้างชั่วโมง วันหยุด = 3 เท่า วันหยุดนักขัตฤกษ์ = 3 เท่า ตาม พ.ร.บ. คุ้มครองแรงงาน' },
+  { question: 'ต้นทุนแรงงานต่อหน่วยผลิตสำคัญอย่างไร?', answer: 'ต้นทุนแรงงานต่อหน่วย = ค่าแรงงานรวม ÷ จำนวนหน่วยผลิต ใช้ประเมินประสิทธิภาพ กำหนดราคาขาย และเปรียบเทียบกับ automation' },
+  { question: 'แรงงานต่างด้าวในไทยมีค่าใช้จ่ายอะไรบ้าง?', answer: 'แรงงานต่างด้าว มีค่าธรรมเนียมใบอนุญาต 1,800-3,800 บาท/คน/ปี ค่าประกันสุขภาพ และต้องปฏิบัติตามกฎหมายแรงงานเช่นเดียวกับแรงงานไทย' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนแรงงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณต้นทุนแรงงาน</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนแรงงานรวมทั้งหมดรวม OT และสวัสดิการ</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="hourly_wage" class="block text-sm font-medium text-gray-700 mb-1">ค่าแรงต่อชั่วโมง (บาท)</label><input type="text" id="hourly_wage" inputmode="decimal" placeholder="เช่น 75" value="75" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="hours_month" class="block text-sm font-medium text-gray-700 mb-1">ชั่วโมงทำงานต่อเดือน</label><input type="number" id="hours_month" min="1" placeholder="เช่น 208" value="208" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="ot_hours" class="block text-sm font-medium text-gray-700 mb-1">ชั่วโมง OT ต่อเดือน</label><input type="number" id="ot_hours" min="0" placeholder="เช่น 20" value="20" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="workers_count" class="block text-sm font-medium text-gray-700 mb-1">จำนวนแรงงาน (คน)</label><input type="number" id="workers_count" min="1" placeholder="เช่น 10" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนแรงงาน/คน/เดือน</p><p id="labor_per_person" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนแรงงานรวม/เดือน</p><p id="total_labor_cost" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const hourlyWage = parseFloat((document.getElementById('hourly_wage') as HTMLInputElement).value) || 0;
+      const hoursMonth = parseInt((document.getElementById('hours_month') as HTMLInputElement).value) || 208;
+      const otHours = parseInt((document.getElementById('ot_hours') as HTMLInputElement).value) || 0;
+      const workers = parseInt((document.getElementById('workers_count') as HTMLInputElement).value) || 1;
+      const basePay = hourlyWage * hoursMonth;
+      const otPay = hourlyWage * 1.5 * otHours;
+      const sso = Math.min(basePay * 0.05, 750);
+      const laborPerPerson = basePay + otPay + sso;
+      const totalLabor = laborPerPerson * workers;
+      (document.getElementById('labor_per_person') as HTMLElement).textContent = Math.round(laborPerPerson).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total_labor_cost') as HTMLElement).textContent = Math.round(totalLabor).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('labor-cost');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

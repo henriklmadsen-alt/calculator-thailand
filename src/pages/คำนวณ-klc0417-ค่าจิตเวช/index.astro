@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณค่าจิตเวช | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจิตเวช ค่าปรึกษาจิตแพทย์ นักจิตวิทยา ค่ายาจิตเวช ต้นทุนรายเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0417-ค่าจิตเวช/`;
+
+const faqData = [
+  { question: 'ค่าพบจิตแพทย์เท่าไหร่?', answer: 'ค่าพบจิตแพทย์โรงพยาบาลรัฐ 200-500 บาทต่อครั้ง โรงพยาบาลเอกชน 1,500-4,000 บาทต่อครั้ง คลินิกจิตเวชเอกชน 1,000-3,000 บาทต่อครั้ง' },
+  { question: 'ค่านักจิตวิทยาต่างจากจิตแพทย์อย่างไร?', answer: 'นักจิตวิทยาทำการบำบัดด้วยการพูดคุย ราคา 1,000-3,000 บาทต่อชั่วโมง จิตแพทย์เป็นแพทย์ที่สั่งยาได้ด้วย ทั้งสองทำงานร่วมกันได้' },
+  { question: 'ประกันสังคมคลุมค่าจิตเวชไหม?', answer: 'ผู้ประกันตนได้รับการรักษาจิตเวชฟรีที่โรงพยาบาลตามสิทธิ์ รวมยาจิตเวช แต่อาจต้องรอนาน และการรักษาขึ้นอยู่กับแนวทางของโรงพยาบาล' },
+  { question: 'Online Therapy ราคาถูกกว่าไหม?', answer: 'Online Therapy หรือ Telepsychiatry ราคา 500-2,000 บาทต่อครั้ง ถูกกว่าโรงพยาบาลเอกชน สะดวก แต่อาจไม่เหมาะกับทุกอาการ โดยเฉพาะอาการรุนแรง' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจิตเวช">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าจิตเวช</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณค่าใช้จ่ายการรักษาจิตเวช รวมยาและการบำบัด</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="psychiatrist_fee" class="block text-sm font-medium text-gray-700 mb-1">ค่าพบจิตแพทย์ต่อครั้ง (บาท)</label><input type="text" id="psychiatrist_fee" inputmode="decimal" placeholder="เช่น 2000" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="psych_visits_month" class="block text-sm font-medium text-gray-700 mb-1">จำนวนครั้งต่อเดือน</label><input type="number" id="psych_visits_month" min="1" max="8" placeholder="เช่น 2" value="2" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="therapy_fee" class="block text-sm font-medium text-gray-700 mb-1">ค่านักจิตวิทยาต่อครั้ง (บาท)</label><input type="text" id="therapy_fee" inputmode="decimal" placeholder="เช่น 1500" value="1500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="therapy_sessions" class="block text-sm font-medium text-gray-700 mb-1">จำนวนครั้ง Therapy ต่อเดือน</label><input type="number" id="therapy_sessions" min="0" max="8" placeholder="เช่น 2" value="2" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="psych_meds" class="block text-sm font-medium text-gray-700 mb-1">ค่ายาจิตเวชต่อเดือน (บาท)</label><input type="text" id="psych_meds" inputmode="decimal" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าใช้จ่ายต่อเดือน</p>
+            <p id="monthly_psych" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าใช้จ่ายต่อปี</p>
+            <p id="yearly_psych" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const psychiatristFee = parseFloat((document.getElementById('psychiatrist_fee') as HTMLInputElement).value) || 0;
+      const visits = parseInt((document.getElementById('psych_visits_month') as HTMLInputElement).value) || 0;
+      const therapyFee = parseFloat((document.getElementById('therapy_fee') as HTMLInputElement).value) || 0;
+      const therapySessions = parseInt((document.getElementById('therapy_sessions') as HTMLInputElement).value) || 0;
+      const psychMeds = parseFloat((document.getElementById('psych_meds') as HTMLInputElement).value) || 0;
+
+      const monthlyPsych = (psychiatristFee * visits) + (therapyFee * therapySessions) + psychMeds;
+      const yearlyPsych = monthlyPsych * 12;
+
+      (document.getElementById('monthly_psych') as HTMLElement).textContent = monthlyPsych.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('yearly_psych') as HTMLElement).textContent = yearlyPsych.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('psychiatric-care-costs');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

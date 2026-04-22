@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณต้นทุนสินค้า COGS | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนสินค้าขาย COGS Cost of Goods Sold รวมวัตถุดิบ แรงงาน โสหุ้ย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0471-cogs/`;
+const faqData = [
+  { question: 'COGS คำนวณอย่างไร?', answer: 'COGS = สินค้าคงเหลือต้นงวด + ซื้อระหว่างงวด - สินค้าคงเหลือปลายงวด สำหรับธุรกิจผลิต COGS = วัตถุดิบ + แรงงานทางตรง + โสหุ้ยการผลิต' },
+  { question: 'COGS กับ OpEx ต่างกันอย่างไร?', answer: 'COGS คือต้นทุนโดยตรงของสินค้าที่ขาย OpEx คือค่าดำเนินงานทั่วไป เช่น ค่าเช่าสำนักงาน เงินเดือนฝ่ายขาย การตลาด ที่ไม่เกี่ยวกับการผลิต' },
+  { question: 'ลด COGS ได้อย่างไร?', answer: 'ลด COGS โดย สั่งซื้อปริมาณมาก (ราคาลง) ต่อรองซัพพลายเออร์ ลดของเสียในกระบวนการผลิต Outsource บางส่วน หาแหล่งวัตถุดิบใหม่' },
+  { question: 'COGS มีผลต่อภาษีอย่างไร?', answer: 'COGS เป็นรายจ่ายที่หักได้ในการคำนวณกำไรสุทธิ ยิ่ง COGS สูง กำไรยิ่งต่ำ ภาษีน้อยลง แต่ต้องมีหลักฐานชัดเจน บางรายการอาจถูกสรรพากรตรวจสอบ' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนสินค้า COGS">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณต้นทุนสินค้าขาย (COGS)</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณ COGS สำหรับธุรกิจค้าปลีกและธุรกิจผลิต</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="beg_inventory" class="block text-sm font-medium text-gray-700 mb-1">สินค้าคงเหลือต้นงวด (บาท)</label><input type="text" id="beg_inventory" inputmode="decimal" placeholder="เช่น 200000" value="200000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="purchases_cogs" class="block text-sm font-medium text-gray-700 mb-1">ซื้อสินค้า/วัตถุดิบระหว่างงวด (บาท)</label><input type="text" id="purchases_cogs" inputmode="decimal" placeholder="เช่น 800000" value="800000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="end_inventory" class="block text-sm font-medium text-gray-700 mb-1">สินค้าคงเหลือปลายงวด (บาท)</label><input type="text" id="end_inventory" inputmode="decimal" placeholder="เช่น 150000" value="150000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="direct_labor_cogs" class="block text-sm font-medium text-gray-700 mb-1">แรงงานทางตรง (บาท, สำหรับผลิต)</label><input type="text" id="direct_labor_cogs" inputmode="decimal" placeholder="เช่น 100000" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">COGS</p><p id="cogs_result" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3"><p class="text-sm text-gray-600">มูลค่าสต็อกที่ขาย</p><p id="goods_avail" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const begInventory = parseFloat((document.getElementById('beg_inventory') as HTMLInputElement).value) || 0;
+      const purchases = parseFloat((document.getElementById('purchases_cogs') as HTMLInputElement).value) || 0;
+      const endInventory = parseFloat((document.getElementById('end_inventory') as HTMLInputElement).value) || 0;
+      const directLabor = parseFloat((document.getElementById('direct_labor_cogs') as HTMLInputElement).value) || 0;
+      const goodsAvail = begInventory + purchases + directLabor;
+      const cogs = goodsAvail - endInventory;
+      (document.getElementById('cogs_result') as HTMLElement).textContent = cogs.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('goods_avail') as HTMLElement).textContent = goodsAvail.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('cogs');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

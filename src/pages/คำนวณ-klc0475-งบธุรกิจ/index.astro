@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณงบประมาณธุรกิจ | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณธุรกิจรายปี Business Budget รายได้ ค่าใช้จ่าย กำไรเป้าหมาย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0475-งบธุรกิจ/`;
+const faqData = [
+  { question: 'งบประมาณธุรกิจต้องวางแผนล่วงหน้ากี่เดือน?', answer: 'ควรวางแผนงบประมาณประจำปีอย่างน้อย 1-3 เดือนก่อนสิ้นปี ทบทวนทุกไตรมาส และปรับแผนทุกเดือนตามสถานการณ์จริง' },
+  { question: 'งบประมาณศูนย์ (Zero-Based Budgeting) คืออะไร?', answer: 'Zero-Based Budgeting คือการตั้งงบประมาณจาก 0 ทุกปี แทนที่จะปรับจากปีก่อน ทำให้ทุกรายจ่ายต้องพิสูจน์ความจำเป็น ช่วยลดค่าใช้จ่ายที่ไม่จำเป็น' },
+  { question: 'ควรมีงบฉุกเฉินกี่เปอร์เซ็นต์ของงบประมาณ?', answer: 'แนะนำจัดสรรงบฉุกเฉิน 5-10% ของงบประมาณทั้งหมด เพื่อรองรับค่าใช้จ่ายที่ไม่คาดคิด เช่น ซ่อมแซมฉุกเฉิน หรือโอกาสทางธุรกิจที่เกิดขึ้นกะทันหัน' },
+  { question: 'ควรแบ่งงบการตลาดเท่าไหร่?', answer: 'ธุรกิจใหม่ควรใช้งบการตลาด 15-25% ของรายได้คาด ธุรกิจที่เติบโตแล้ว 5-15% ขึ้นอยู่กับอุตสาหกรรมและเป้าหมายการเติบโต' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณธุรกิจ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณงบประมาณธุรกิจ</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">วางแผนงบประมาณธุรกิจประจำปี รายได้ ค่าใช้จ่าย กำไรเป้าหมาย</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="target_revenue_bud" class="block text-sm font-medium text-gray-700 mb-1">รายได้เป้าหมายต่อปี (บาท)</label><input type="text" id="target_revenue_bud" inputmode="decimal" placeholder="เช่น 10000000" value="10000000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="cogs_budget" class="block text-sm font-medium text-gray-700 mb-1">งบ COGS (บาท)</label><input type="text" id="cogs_budget" inputmode="decimal" placeholder="เช่น 6000000" value="6000000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="opex_budget" class="block text-sm font-medium text-gray-700 mb-1">งบดำเนินงาน OpEx (บาท)</label><input type="text" id="opex_budget" inputmode="decimal" placeholder="เช่น 2500000" value="2500000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="capex_budget" class="block text-sm font-medium text-gray-700 mb-1">งบลงทุน CapEx (บาท)</label><input type="text" id="capex_budget" inputmode="decimal" placeholder="เช่น 500000" value="500000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">กำไรขั้นต้นคาด</p><p id="gross_profit_bud" class="font-bold">-</p></div>
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">กำไรสุทธิคาด (ก่อนภาษี)</p><p id="net_profit_bud" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3 col-span-2"><p class="text-sm text-gray-600">งบรวมทั้งหมด (OpEx + CapEx)</p><p id="total_budget" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const revenue = parseFloat((document.getElementById('target_revenue_bud') as HTMLInputElement).value) || 0;
+      const cogs = parseFloat((document.getElementById('cogs_budget') as HTMLInputElement).value) || 0;
+      const opex = parseFloat((document.getElementById('opex_budget') as HTMLInputElement).value) || 0;
+      const capex = parseFloat((document.getElementById('capex_budget') as HTMLInputElement).value) || 0;
+      const grossProfit = revenue - cogs;
+      const netProfit = grossProfit - opex;
+      const totalBudget = opex + capex;
+      (document.getElementById('gross_profit_bud') as HTMLElement).textContent = grossProfit.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('net_profit_bud') as HTMLElement).textContent = netProfit.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total_budget') as HTMLElement).textContent = totalBudget.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('business-budget');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

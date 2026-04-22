@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณค่าตรวจสุขภาพเด็ก | Kamnuanlek';
+const pageDescription = 'คำนวณค่าตรวจสุขภาพเด็ก Pediatric checkup ค่าวัคซีน ค่าตรวจพัฒนาการ ค่าพบกุมารแพทย์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0423-ค่าตรวจเด็ก/`;
+
+const faqData = [
+  { question: 'ค่าพบกุมารแพทย์ต่อครั้งเท่าไหร่?', answer: 'กุมารแพทย์โรงพยาบาลรัฐ 200-400 บาทต่อครั้ง โรงพยาบาลเอกชน 800-2,000 บาทต่อครั้ง คลินิกเด็กเอกชน 500-1,200 บาทต่อครั้ง' },
+  { question: 'วัคซีนเด็กปีแรกมีค่าใช้จ่ายเท่าไหร่?', answer: 'วัคซีนพื้นฐานโรงพยาบาลรัฐฟรี วัคซีนเพิ่มเติม (Rotavirus, Varicella, PCV) ราคา 3,000-10,000 บาทต่อชุด ปีแรกรวมวัคซีนเพิ่มเติมประมาณ 15,000-25,000 บาท' },
+  { question: 'ตรวจพัฒนาการเด็กราคาเท่าไหร่?', answer: 'ตรวจพัฒนาการเด็กโดยกุมารแพทย์พัฒนาการ 1,000-3,000 บาทต่อครั้ง ตรวจ IQ และพัฒนาการโดยนักจิตวิทยา 2,000-5,000 บาทต่อชุด' },
+  { question: 'ค่าใช้จ่ายสุขภาพเด็กปีแรกประมาณเท่าไหร่?', answer: 'ปีแรกของลูก ค่าตรวจสุขภาพประมาณ 5,000-10,000 บาท วัคซีนพื้นฐาน+เพิ่มเติม 15,000-25,000 บาท รวมประมาณ 20,000-35,000 บาทในปีแรก' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าตรวจสุขภาพเด็ก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าตรวจสุขภาพเด็ก</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณค่าใช้จ่ายดูแลสุขภาพเด็ก ตรวจพัฒนาการ วัคซีน</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="checkup_fee" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจสุขภาพต่อครั้ง (บาท)</label><input type="text" id="checkup_fee" inputmode="decimal" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="checkup_times_year" class="block text-sm font-medium text-gray-700 mb-1">จำนวนครั้งต่อปี</label><input type="number" id="checkup_times_year" min="1" max="12" placeholder="เช่น 4" value="4" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="child_vaccines" class="block text-sm font-medium text-gray-700 mb-1">ค่าวัคซีนเพิ่มเติมต่อปี (บาท)</label><input type="text" id="child_vaccines" inputmode="decimal" placeholder="เช่น 8000" value="8000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="dental_child" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจฟันเด็กต่อปี (บาท)</label><input type="text" id="dental_child" inputmode="decimal" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าตรวจสุขภาพต่อปี</p>
+            <p id="yearly_checkup" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3">
+            <p class="text-sm text-gray-600">รวมค่าดูแลสุขภาพเด็กปีนี้</p>
+            <p id="total" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const checkupFee = parseFloat((document.getElementById('checkup_fee') as HTMLInputElement).value) || 0;
+      const checkupTimes = parseInt((document.getElementById('checkup_times_year') as HTMLInputElement).value) || 1;
+      const childVaccines = parseFloat((document.getElementById('child_vaccines') as HTMLInputElement).value) || 0;
+      const dentalChild = parseFloat((document.getElementById('dental_child') as HTMLInputElement).value) || 0;
+
+      const yearlyCheckup = checkupFee * checkupTimes;
+      const total = yearlyCheckup + childVaccines + dentalChild;
+
+      (document.getElementById('yearly_checkup') as HTMLElement).textContent = yearlyCheckup.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total') as HTMLElement).textContent = total.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('pediatric-checkup-costs');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

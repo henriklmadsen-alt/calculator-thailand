@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณค่าตรวจตา | Kamnuanlek';
+const pageDescription = 'คำนวณค่าตรวจตา ค่าวัดสายตา ตรวจต้อหิน ต้อกระจก ตามอัตราโรงพยาบาลไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0419-ค่าตรวจตา/`;
+
+const faqData = [
+  { question: 'ตรวจตาทั่วไปราคาเท่าไหร่?', answer: 'ตรวจสายตาทั่วไป 200-500 บาท ตรวจตาครบชุดรวมต้อหินต้อกระจก 1,500-3,000 บาท โรงพยาบาลจักษุเฉพาะทางอาจสูงกว่า' },
+  { question: 'ผ่าตัดต้อกระจกราคาเท่าไหร่?', answer: 'ผ่าตัดต้อกระจกโรงพยาบาลรัฐ 5,000-15,000 บาทต่อข้าง โรงพยาบาลเอกชน 30,000-80,000 บาทต่อข้าง ขึ้นอยู่กับชนิดเลนส์ที่ใส่' },
+  { question: 'ควรตรวจตาบ่อยแค่ไหน?', answer: 'ตรวจตาทุก 1-2 ปี สำหรับผู้ไม่มีปัญหาตา ผู้ป่วยเบาหวาน ความดัน ตรวจทุกปี ผู้สูงอายุ 60 ปีขึ้นไปตรวจทุกปีเพื่อดูต้อหิน' },
+  { question: 'คอนแทคเลนส์มีค่าใช้จ่ายต่อปีเท่าไหร่?', answer: 'คอนแทคเลนส์รายวัน 3,000-8,000 บาทต่อปี รายเดือน 1,500-4,000 บาทต่อปี รวมน้ำยาล้าง บวกค่าตรวจตาและแพทย์อีกปีละ 500-1,000 บาท' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าตรวจตา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าตรวจตา</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">ประมาณการค่าตรวจสุขภาพตา ตรวจสายตา และรักษาโรคตา</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="eye_exam_fee" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจสายตาและตา (บาท)</label><input type="text" id="eye_exam_fee" inputmode="decimal" placeholder="เช่น 400" value="400" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="glaucoma_test" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจต้อหิน (บาท)</label><input type="text" id="glaucoma_test" inputmode="decimal" placeholder="เช่น 600" value="600" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="cataract_surgery" class="block text-sm font-medium text-gray-700 mb-1">ค่าผ่าตัดต้อกระจก (บาท)</label><input type="text" id="cataract_surgery" inputmode="decimal" placeholder="เช่น 0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="eye_drops" class="block text-sm font-medium text-gray-700 mb-1">ค่ายาหยอดตาต่อเดือน (บาท)</label><input type="text" id="eye_drops" inputmode="decimal" placeholder="เช่น 300" value="300" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าตรวจและผ่าตัด</p>
+            <p id="procedure_cost" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3">
+            <p class="text-sm text-gray-600">รวมค่าตรวจตาปีแรก</p>
+            <p id="total" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const eyeExam = parseFloat((document.getElementById('eye_exam_fee') as HTMLInputElement).value) || 0;
+      const glaucomaTest = parseFloat((document.getElementById('glaucoma_test') as HTMLInputElement).value) || 0;
+      const cataractSurgery = parseFloat((document.getElementById('cataract_surgery') as HTMLInputElement).value) || 0;
+      const eyeDrops = parseFloat((document.getElementById('eye_drops') as HTMLInputElement).value) || 0;
+
+      const procedureCost = eyeExam + glaucomaTest + cataractSurgery;
+      const total = procedureCost + (eyeDrops * 12);
+
+      (document.getElementById('procedure_cost') as HTMLElement).textContent = procedureCost.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total') as HTMLElement).textContent = total.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('eye-exam-costs');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

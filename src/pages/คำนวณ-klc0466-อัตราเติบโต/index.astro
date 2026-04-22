@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณอัตราการเติบโตธุรกิจ | Kamnuanlek';
+const pageDescription = 'คำนวณอัตราการเติบโตธุรกิจ YoY Growth Rate CAGR Revenue Growth สำหรับ SME ไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0466-อัตราเติบโต/`;
+const faqData = [
+  { question: 'อัตราการเติบโตที่ดีสำหรับ SME ไทยคือเท่าไหร่?', answer: 'SME ที่ดีควรเติบโต 10-30% ต่อปี Startup ระยะแรก 50-100% ต่อปีถือว่าดี ธุรกิจที่โตเกินตลาด 3-5 เท่าถือว่าเป็น High Growth' },
+  { question: 'CAGR คืออะไร?', answer: 'CAGR (Compound Annual Growth Rate) คืออัตราการเติบโตเฉลี่ยต่อปีแบบทบต้น ใช้เปรียบเทียบการเติบโตในระยะยาว เช่น CAGR 5 ปี = (มูลค่าปัจจุบัน/มูลค่าเริ่มต้น)^(1/5) - 1' },
+  { question: 'YoY Growth ต่างจาก MoM Growth อย่างไร?', answer: 'YoY (Year-over-Year) เปรียบเทียบกับปีเดียวกันของปีก่อน เหมาะกับธุรกิจที่มี Seasonality MoM (Month-over-Month) เปรียบเทียบกับเดือนที่แล้ว เหมาะ Monitor Trend รายเดือน' },
+  { question: 'จะเร่งการเติบโตธุรกิจได้อย่างไร?', answer: 'กลยุทธ์เร่งการเติบโต ได้แก่ ขยายตลาดใหม่ พัฒนาสินค้าใหม่ M&A เพิ่มช่องทางขาย ลงทุน Marketing เพิ่มยอดลูกค้าปัจจุบัน (Upsell/Cross-sell)' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอัตราการเติบโตธุรกิจ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณอัตราการเติบโตธุรกิจ</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณอัตราการเติบโต YoY Growth และ CAGR</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="prev_revenue" class="block text-sm font-medium text-gray-700 mb-1">รายได้ปีก่อน (บาท)</label><input type="text" id="prev_revenue" inputmode="decimal" placeholder="เช่น 2000000" value="2000000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="curr_revenue" class="block text-sm font-medium text-gray-700 mb-1">รายได้ปีปัจจุบัน (บาท)</label><input type="text" id="curr_revenue" inputmode="decimal" placeholder="เช่น 2600000" value="2600000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="base_revenue" class="block text-sm font-medium text-gray-700 mb-1">รายได้ปีเริ่มต้น (สำหรับ CAGR, บาท)</label><input type="text" id="base_revenue" inputmode="decimal" placeholder="เช่น 1000000" value="1000000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="cagr_years" class="block text-sm font-medium text-gray-700 mb-1">จำนวนปี (สำหรับ CAGR)</label><input type="number" id="cagr_years" min="1" max="20" placeholder="เช่น 3" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">YoY Growth Rate</p><p id="yoy_growth" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3"><p class="text-sm text-gray-600">CAGR</p><p id="cagr" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const prev = parseFloat((document.getElementById('prev_revenue') as HTMLInputElement).value) || 0;
+      const curr = parseFloat((document.getElementById('curr_revenue') as HTMLInputElement).value) || 0;
+      const base = parseFloat((document.getElementById('base_revenue') as HTMLInputElement).value) || 0;
+      const years = parseInt((document.getElementById('cagr_years') as HTMLInputElement).value) || 1;
+      const yoyGrowth = prev > 0 ? ((curr - prev) / prev * 100) : 0;
+      const cagr = base > 0 && years > 0 ? (Math.pow(curr / base, 1 / years) - 1) * 100 : 0;
+      (document.getElementById('yoy_growth') as HTMLElement).textContent = yoyGrowth.toFixed(2) + '%';
+      (document.getElementById('cagr') as HTMLElement).textContent = cagr.toFixed(2) + '%';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('business-growth-rate');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

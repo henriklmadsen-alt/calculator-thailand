@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณค่าเอกซเรย์และ MRI | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเอกซเรย์ CT Scan MRI อัลตราซาวด์ ตามอัตราโรงพยาบาลไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0408-ค่าเอกซเรย์-mri/`;
+
+const faqData = [
+  { question: 'ค่า MRI สมองในไทยเท่าไหร่?', answer: 'ค่า MRI สมองโรงพยาบาลรัฐ 3,000-5,000 บาท โรงพยาบาลเอกชน 8,000-20,000 บาท ขึ้นอยู่กับส่วนที่ถ่าย และการใช้สารทึบแสง' },
+  { question: 'CT Scan ต่างจาก MRI อย่างไร?', answer: 'CT Scan ใช้รังสีเอกซ์ รวดเร็ว เหมาะหากกระดูก เลือดออก ราคา 3,000-10,000 บาท MRI ไม่มีรังสี ละเอียดกว่า เหมาะสมองและเนื้อเยื่อ ราคาสูงกว่า' },
+  { question: 'ค่าอัลตราซาวด์ราคาเท่าไหร่?', answer: 'ค่าอัลตราซาวด์ทั่วไป 500-1,500 บาท อัลตราซาวด์ครรภ์ 500-2,000 บาท ขึ้นอยู่กับโรงพยาบาลและส่วนที่ตรวจ' },
+  { question: 'ประกันสุขภาพครอบคลุมค่าถ่ายภาพทางการแพทย์ไหม?', answer: 'ส่วนใหญ่ประกันสุขภาพครอบคลุมการถ่ายภาพที่แพทย์สั่ง แต่อาจมีเพดานหรือต้อง pre-authorize ก่อน ควรตรวจสอบเงื่อนไขก่อน' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเอกซเรย์และ MRI">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าเอกซเรย์และ MRI</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">ประมาณการค่าถ่ายภาพทางการแพทย์ เอกซเรย์ CT MRI และอัลตราซาวด์</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="imaging_type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทการถ่ายภาพ</label>
+          <select id="imaging_type" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="400">เอกซเรย์ทั่วไป (~400 บาท)</option>
+            <option value="1200">อัลตราซาวด์ (~1,200 บาท)</option>
+            <option value="6000" selected>CT Scan (~6,000 บาท)</option>
+            <option value="12000">MRI (~12,000 บาท)</option>
+          </select>
+        </div>
+        <div><label for="imaging_qty" class="block text-sm font-medium text-gray-700 mb-1">จำนวนส่วนที่ถ่าย</label><input type="number" id="imaging_qty" min="1" max="10" placeholder="เช่น 1" value="1" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="contrast" class="block text-sm font-medium text-gray-700 mb-1">ค่าสารทึบแสง (ถ้ามี, บาท)</label><input type="text" id="contrast" inputmode="decimal" placeholder="เช่น 2000" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="radiologist" class="block text-sm font-medium text-gray-700 mb-1">ค่าอ่านผลรังสีแพทย์ (บาท)</label><input type="text" id="radiologist" inputmode="decimal" placeholder="เช่น 500" value="500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าถ่ายภาพ</p>
+            <p id="imaging_cost" class="font-bold">-</p>
+          </div>
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าสารและอ่านผล</p>
+            <p id="extra_cost" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3 col-span-2">
+            <p class="text-sm text-gray-600">รวมค่าถ่ายภาพทางการแพทย์</p>
+            <p id="total" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const imagingRate = parseFloat((document.getElementById('imaging_type') as HTMLSelectElement).value) || 0;
+      const qty = parseInt((document.getElementById('imaging_qty') as HTMLInputElement).value) || 1;
+      const contrast = parseFloat((document.getElementById('contrast') as HTMLInputElement).value) || 0;
+      const radiologist = parseFloat((document.getElementById('radiologist') as HTMLInputElement).value) || 0;
+
+      const imagingCost = imagingRate * qty;
+      const extraCost = contrast + radiologist;
+      const total = imagingCost + extraCost;
+
+      (document.getElementById('imaging_cost') as HTMLElement).textContent = imagingCost.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('extra_cost') as HTMLElement).textContent = extraCost.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total') as HTMLElement).textContent = total.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('xray-mri-costs');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณจุดคุ้มทุน | Kamnuanlek';
+const pageDescription = 'คำนวณจุดคุ้มทุน Break-even Point ต้องขายกี่หน่วย รายได้ถึงจุดคุ้มทุน ธุรกิจไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0455-จุดคุ้มทุน/`;
+
+const faqData = [
+  { question: 'จุดคุ้มทุนคืออะไร?', answer: 'จุดคุ้มทุน (Break-even Point) คือระดับการขายที่รายได้เท่ากับต้นทุนทั้งหมด ไม่กำไรไม่ขาดทุน ขายเกินนี้คือกำไร ขายน้อยกว่านี้คือขาดทุน' },
+  { question: 'สูตรคำนวณจุดคุ้มทุนคืออะไร?', answer: 'จุดคุ้มทุน (หน่วย) = ต้นทุนคงที่ ÷ (ราคาขาย - ต้นทุนผันแปรต่อหน่วย) หรือ จุดคุ้มทุน (บาท) = ต้นทุนคงที่ ÷ Contribution Margin Ratio' },
+  { question: 'ต้นทุนคงที่และต้นทุนผันแปรต่างกันอย่างไร?', answer: 'ต้นทุนคงที่ (Fixed Cost) ไม่เปลี่ยนตามปริมาณ เช่น ค่าเช่า เงินเดือน ต้นทุนผันแปร (Variable Cost) เปลี่ยนตามปริมาณ เช่น วัตถุดิบ ค่าแพ็กเกจ' },
+  { question: 'จะลดจุดคุ้มทุนได้อย่างไร?', answer: 'ลดจุดคุ้มทุนได้โดย ลดต้นทุนคงที่ (ประหยัดค่าเช่า) ลดต้นทุนผันแปร (ต่อรองซัพพลายเออร์) หรือเพิ่มราคาขาย ต้องสมดุลกับความต้องการตลาด' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณจุดคุ้มทุน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณจุดคุ้มทุน (Break-even Point)</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณจุดคุ้มทุน ต้องขายกี่หน่วยหรือรายได้เท่าไหร่ถึงจะไม่ขาดทุน</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="fixed_cost" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนคงที่ต่อเดือน (บาท)</label><input type="text" id="fixed_cost" inputmode="decimal" placeholder="เช่น 50000" value="50000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="selling_price" class="block text-sm font-medium text-gray-700 mb-1">ราคาขายต่อหน่วย (บาท)</label><input type="text" id="selling_price" inputmode="decimal" placeholder="เช่น 500" value="500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="variable_cost" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนผันแปรต่อหน่วย (บาท)</label><input type="text" id="variable_cost" inputmode="decimal" placeholder="เช่น 200" value="200" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3">
+            <p class="text-sm text-gray-600">จุดคุ้มทุน (หน่วย/เดือน)</p>
+            <p id="bep_units" class="font-bold">-</p>
+          </div>
+          <div class="bg-blue-50 rounded p-3">
+            <p class="text-sm text-gray-600">Contribution Margin</p>
+            <p id="contrib_margin" class="font-bold">-</p>
+          </div>
+          <div class="bg-indigo-50 rounded p-3 col-span-2">
+            <p class="text-sm text-gray-600">จุดคุ้มทุน (รายได้/เดือน)</p>
+            <p id="bep_revenue" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const fixedCost = parseFloat((document.getElementById('fixed_cost') as HTMLInputElement).value) || 0;
+      const sellingPrice = parseFloat((document.getElementById('selling_price') as HTMLInputElement).value) || 0;
+      const variableCost = parseFloat((document.getElementById('variable_cost') as HTMLInputElement).value) || 0;
+
+      const contribMargin = sellingPrice - variableCost;
+      const bepUnits = contribMargin > 0 ? Math.ceil(fixedCost / contribMargin) : 0;
+      const bepRevenue = bepUnits * sellingPrice;
+
+      (document.getElementById('bep_units') as HTMLElement).textContent = bepUnits.toLocaleString('th-TH') + ' หน่วย';
+      (document.getElementById('contrib_margin') as HTMLElement).textContent = contribMargin.toLocaleString('th-TH') + ' บาท/หน่วย';
+      (document.getElementById('bep_revenue') as HTMLElement).textContent = bepRevenue.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('break-even-point');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณค่าตรวจสุขภาพประจำปี | Kamnuanlek';
+const pageDescription = 'คำนวณค่าตรวจสุขภาพประจำปี ตรวจเลือด เอกซเรย์ ตรวจหัวใจ ตามแพ็กเกจโรงพยาบาลไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0404-ค่าตรวจสุขภาพ/`;
+
+const faqData = [
+  { question: 'ควรตรวจสุขภาพประจำปีบ่อยแค่ไหน?', answer: 'แนะนำตรวจสุขภาพประจำปีอย่างน้อยปีละ 1 ครั้ง สำหรับผู้อายุ 40 ปีขึ้นไปอาจตรวจปีละ 2 ครั้ง เพื่อดูแลสุขภาพเชิงป้องกัน' },
+  { question: 'แพ็กเกจตรวจสุขภาพทั่วไปราคาเท่าไหร่?', answer: 'แพ็กเกจพื้นฐาน 1,500-3,000 บาท แพ็กเกจมาตรฐาน 3,000-8,000 บาท แพ็กเกจครบครัน 8,000-20,000 บาท ขึ้นอยู่กับโรงพยาบาล' },
+  { question: 'ค่าตรวจสุขภาพลดหย่อนภาษีได้ไหม?', answer: 'ค่าตรวจสุขภาพไม่สามารถลดหย่อนภาษีได้โดยตรง แต่ค่าประกันสุขภาพที่ครอบคลุมการตรวจสุขภาพลดหย่อนได้สูงสุด 25,000 บาท' },
+  { question: 'ตรวจสุขภาพที่ไหนดีกว่ากัน รัฐหรือเอกชน?', answer: 'โรงพยาบาลรัฐราคาถูกกว่าแต่รอนาน โรงพยาบาลเอกชนสะดวกกว่า ได้ผลเร็ว แต่ราคาสูงกว่า 2-5 เท่า ขึ้นอยู่กับความต้องการ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าตรวจสุขภาพ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าตรวจสุขภาพประจำปี</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">ประมาณการค่าตรวจสุขภาพประจำปี ตามรายการตรวจที่เลือก</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="blood_test" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจเลือดทั่วไป (บาท)</label><input type="text" id="blood_test" inputmode="decimal" placeholder="เช่น 800" value="800" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="xray" class="block text-sm font-medium text-gray-700 mb-1">ค่าเอกซเรย์ปอด (บาท)</label><input type="text" id="xray" inputmode="decimal" placeholder="เช่น 400" value="400" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="ecg" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจคลื่นหัวใจ ECG (บาท)</label><input type="text" id="ecg" inputmode="decimal" placeholder="เช่น 500" value="500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="urine" class="block text-sm font-medium text-gray-700 mb-1">ค่าตรวจปัสสาวะ (บาท)</label><input type="text" id="urine" inputmode="decimal" placeholder="เช่น 200" value="200" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="doctor_fee" class="block text-sm font-medium text-gray-700 mb-1">ค่าแพทย์และค่าบริการ (บาท)</label><input type="text" id="doctor_fee" inputmode="decimal" placeholder="เช่น 500" value="500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าตรวจและแล็บ</p>
+            <p id="lab_total" class="font-bold">-</p>
+          </div>
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าแพทย์และบริการ</p>
+            <p id="doctor_total" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3 col-span-2">
+            <p class="text-sm text-gray-600">รวมค่าตรวจสุขภาพ</p>
+            <p id="total" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const bloodTest = parseFloat((document.getElementById('blood_test') as HTMLInputElement).value) || 0;
+      const xray = parseFloat((document.getElementById('xray') as HTMLInputElement).value) || 0;
+      const ecg = parseFloat((document.getElementById('ecg') as HTMLInputElement).value) || 0;
+      const urine = parseFloat((document.getElementById('urine') as HTMLInputElement).value) || 0;
+      const doctorFee = parseFloat((document.getElementById('doctor_fee') as HTMLInputElement).value) || 0;
+
+      const labTotal = bloodTest + xray + ecg + urine;
+      const total = labTotal + doctorFee;
+
+      (document.getElementById('lab_total') as HTMLElement).textContent = labTotal.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('doctor_total') as HTMLElement).textContent = doctorFee.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total') as HTMLElement).textContent = total.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('health-checkup');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'คำนวณต้นทุนต่อหน่วย | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนต่อหน่วยสินค้า Unit Cost รวมวัตถุดิบ แรงงาน ค่าโสหุ้ยต่อหน่วยผลิต';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0457-ต้นทุนต่อหน่วย/`;
+const faqData = [
+  { question: 'ต้นทุนต่อหน่วยคำนวณอย่างไร?', answer: 'ต้นทุนต่อหน่วย = (ต้นทุนรวมทั้งหมด) ÷ (จำนวนหน่วยผลิต) รวมทั้งวัตถุดิบ แรงงานทางตรง และโสหุ้ยการผลิต' },
+  { question: 'โสหุ้ยการผลิต Overhead คืออะไร?', answer: 'โสหุ้ยการผลิต ได้แก่ ค่าเช่าโรงงาน ไฟฟ้า น้ำประปา ค่าเสื่อมเครื่องจักร ค่าซ่อมบำรุง เป็นต้นทุนทางอ้อมที่จัดสรรต่อหน่วยผลิต' },
+  { question: 'ต้นทุนต่อหน่วยสำคัญอย่างไร?', answer: 'ต้นทุนต่อหน่วยใช้กำหนดราคาขาย วิเคราะห์กำไร เปรียบเทียบประสิทธิภาพ และตัดสินใจว่าผลิตเองหรือซื้อดีกว่า' },
+  { question: 'จะลดต้นทุนต่อหน่วยได้อย่างไร?', answer: 'ลดต้นทุนต่อหน่วยโดย ผลิตในปริมาณมากขึ้น (Economy of Scale) ลดของเสีย เจรจาซัพพลายเออร์ ปรับปรุงกระบวนการผลิต' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนต่อหน่วย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณต้นทุนต่อหน่วย</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนต่อหน่วยผลิต รวมวัตถุดิบ แรงงาน และโสหุ้ย</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="materials_total" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนวัตถุดิบรวม (บาท)</label><input type="text" id="materials_total" inputmode="decimal" placeholder="เช่น 300000" value="300000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="labor_total" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนแรงงานทางตรงรวม (บาท)</label><input type="text" id="labor_total" inputmode="decimal" placeholder="เช่น 100000" value="100000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="overhead_total" class="block text-sm font-medium text-gray-700 mb-1">โสหุ้ยการผลิตรวม (บาท)</label><input type="text" id="overhead_total" inputmode="decimal" placeholder="เช่น 50000" value="50000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="units_produced" class="block text-sm font-medium text-gray-700 mb-1">จำนวนหน่วยที่ผลิต</label><input type="number" id="units_produced" min="1" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนรวม</p><p id="total_cost" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนต่อหน่วย</p><p id="unit_cost" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const materials = parseFloat((document.getElementById('materials_total') as HTMLInputElement).value) || 0;
+      const labor = parseFloat((document.getElementById('labor_total') as HTMLInputElement).value) || 0;
+      const overhead = parseFloat((document.getElementById('overhead_total') as HTMLInputElement).value) || 0;
+      const units = parseInt((document.getElementById('units_produced') as HTMLInputElement).value) || 1;
+      const totalCost = materials + labor + overhead;
+      const unitCost = totalCost / units;
+      (document.getElementById('total_cost') as HTMLElement).textContent = totalCost.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('unit_cost') as HTMLElement).textContent = unitCost.toLocaleString('th-TH', {maximumFractionDigits: 2}) + ' บาท/หน่วย';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('unit-cost');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>
