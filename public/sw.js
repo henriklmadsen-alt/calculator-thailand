@@ -64,7 +64,7 @@ self.addEventListener('fetch', (event) => {
 
 // ── Push: show notification ───────────────────────────────────
 self.addEventListener('push', (event) => {
-  let data = { title: 'เครื่องคำนวณไทย', body: 'มีอัปเดตใหม่สำหรับคุณ', url: '/' };
+  let data = { title: 'คำนวณเลข', body: 'มีอัปเดตใหม่สำหรับคุณ', url: '/' };
   try {
     data = event.data ? event.data.json() : data;
   } catch {
