@@ -50,11 +50,27 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณทุนประกันชีวิตที่ต้องการด้วย DIME Method',
+  description: 'ขั้นตอนการคำนวณทุนประกันชีวิตที่เหมาะสมสำหรับตัวคุณและครอบครัว โดยใช้สูตร DIME ที่ได้รับการยอมรับในระดับสากล',
+  step: [
+    { '@type': 'HowToStep', name: 'รวมหนี้สินทั้งหมด (D — Debt)', text: 'บวกหนี้บัตรเครดิต สินเชื่อส่วนบุคคล และหนี้อื่นๆ ทั้งหมดที่ครอบครัวต้องรับผิดชอบหากคุณเสียชีวิต' },
+    { '@type': 'HowToStep', name: 'คำนวณรายได้ทดแทน (I — Income)', text: 'คูณรายได้ต่อปีด้วยจำนวนปีที่ครอบครัวต้องพึ่งพารายได้ของคุณ โดยทั่วไปใช้ 10–20 ปีหรือจนถึงอายุเกษียณ' },
+    { '@type': 'HowToStep', name: 'ระบุหนี้บ้านคงค้าง (M — Mortgage)', text: 'ใส่ยอดสินเชื่อบ้านที่ยังค้างชำระทั้งหมด เพื่อให้ครอบครัวสามารถชำระบ้านได้โดยไม่ต้องขาย' },
+    { '@type': 'HowToStep', name: 'ประมาณค่าเล่าเรียนบุตร (E — Education)', text: 'รวมค่าใช้จ่ายการศึกษาบุตรทุกคนตั้งแต่ปัจจุบันจนถึงระดับอุดมศึกษา รวมค่าหอพักและค่าครองชีพ' },
+    { '@type': 'HowToStep', name: 'หักสินทรัพย์ปัจจุบัน', text: 'หักเงินออม กองทุนสำรองเลี้ยงชีพ กองทุนรวม และทุนประกันชีวิตที่มีอยู่แล้วออกจากผลรวม D+I+M+E' },
+    { '@type': 'HowToStep', name: 'สรุปทุนประกันที่ต้องการ', text: 'ทุนประกัน = D + I + M + E − สินทรัพย์ปัจจุบัน เปรียบเทียบกับเกณฑ์ขั้นต่ำ 5 เท่าของรายได้ต่อปี และเลือกค่าที่สูงกว่าเป็นทุนประกันที่ควรซื้อ' },
+  ],
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณทุนประกันชีวิต">
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
@@ -177,6 +193,14 @@ const jsonLdFaq = {
         ))}
       </div>
     </section>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/life" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">สำนักงานคณะกรรมการกำกับและส่งเสริมการประกอบธุรกิจประกันภัย (คปภ.)</a> — ข้อมูลประกันชีวิตสำหรับผู้บริโภค</li>
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/life/life-insurance-knowledge" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ความรู้เรื่องประกันชีวิต — คปภ.</a></li>
+      </ul>
+    </div>
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ทุนประกันที่เหมาะสมขึ้นอยู่กับสถานการณ์ส่วนตัว ควรปรึกษาผู้เชี่ยวชาญด้านการวางแผนทางการเงิน
