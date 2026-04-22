@@ -4,7 +4,7 @@ import { getCalculatorLinks } from '../../lib/internal-links';
 
 interface Props {
   /** Current calculator href — used to auto-look up related links. */
-  currentHref: string;
+  currentHref?: string;
   /** Override the auto-lookup with explicit links. */
   calculators?: RelatedLink[];
   /** Section heading override. */
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const {
-  currentHref,
+  currentHref = Astro.url.pathname,
   calculators: explicitCalcs,
   heading = 'เครื่องคำนวณที่เกี่ยวข้อง',
 } = Astro.props;
