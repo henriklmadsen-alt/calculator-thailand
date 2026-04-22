@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 ฟรี — รวมค่าธรรมเนียมทุกอย่าง รู้ต้นทุนสินเชื่อที่แท้จริงก่อนเซ็นสัญญา';
@@ -201,6 +202,15 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="personal-loan"
+      affiliateUrl="/go/ttb-cash2go/?sub_id=คำนวณ-apr"
+      partnerName="TTB Cash 2 Go"
+      ctaText="สมัครสินเชื่อ TTB Cash 2 Go"
+      subtext="วงเงินสูง อนุมัติเร็ว ดอกเบี้ยคงที่"
+    />
+
     <!-- Ad -->
     <GuardedAdSlot />
 
@@ -344,6 +354,7 @@ const jsonLdFaq = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('apr');
     });
 

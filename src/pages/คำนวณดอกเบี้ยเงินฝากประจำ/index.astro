@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณดอกเบี้ยเงินฝากประจำ 2569 | หักภาษี 15% อัตโนมัติ | Kamnuanlek';
 const pageDescription = 'คำนวณดอกเบี้ยเงินฝากประจำปี 2569 หักภาษี ณ ที่จ่าย 15% อัตโนมัติ เปรียบเทียบหลายระยะ 3, 6, 12, 24 เดือน และดูผลตอบแทนสุทธิที่ได้รับจริง';
@@ -178,6 +179,15 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="savings"
+      affiliateUrl="/go/kept-krungsri/?sub_id=คำนวณดอกเบี้ยเงินฝากประจำ"
+      partnerName="Kept by Krungsri"
+      ctaText="เปิดบัญชี Kept by Krungsri"
+      subtext="ดอกเบี้ยสูงกว่าออมทรัพย์ทั่วไป ถอนได้ทุกวัน"
+    />
+
     <GuardedAdSlot
       templateType="calculator"
       slotId="C1"
@@ -334,6 +344,7 @@ const jsonLdFaq = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       submitBtn.disabled = false;
       submitBtn.textContent = 'คำนวณทันที';
       trackCalculatorComplete('fixed-deposit');

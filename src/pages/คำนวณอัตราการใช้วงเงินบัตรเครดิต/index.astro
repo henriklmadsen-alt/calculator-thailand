@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณอัตราการใช้วงเงินบัตรเครดิต (Credit Utilization) 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณ Credit Utilization Ratio อัตราการใช้วงเงินบัตรเครดิต เพื่อรักษาเครดิตสกอร์ที่ดี ควรไม่เกิน 30% ของวงเงินทั้งหมด';
@@ -136,6 +137,15 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="credit-card"
+      affiliateUrl="/go/uob-tmrw/?sub_id=คำนวณอัตราการใช้วงเงินบัตรเครดิต"
+      partnerName="UOB TMRW"
+      ctaText="สมัครบัตร UOB TMRW"
+      subtext="บัตรเครดิตดิจิทัล สิทธิพิเศษมากมาย วงเงินสูง"
+    />
+
     <GuardedAdSlot />
 
     <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
@@ -231,6 +241,7 @@ const jsonLdFaq = {
 
       document.getElementById('results')!.classList.remove('hidden');
       document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('credit-utilization');
     });
   </script>
