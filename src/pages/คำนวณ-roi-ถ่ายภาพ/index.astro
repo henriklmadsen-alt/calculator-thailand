@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TransparencyPanel from '../../components/templates/TransparencyPanel.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+
+const pageTitle = 'คำนวณ ROI อุปกรณ์ถ่ายภาพและคาเมรา 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณอัตราผลตอบแทนจากการลงทุนอุปกรณ์ถ่ายภาพ ระหว่างเวลาคืนทุน สำหรับช่างภาพมืออาชีพ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-roi-ถ่ายภาพ/`;
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ ROI อุปกรณ์ถ่ายภาพ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
+  pageName="คำนวณ ROI อุปกรณ์ถ่ายภาพ"
+  categoryId="hobby"
+  categoryName="งานอดิเรก/ศิลปะ"
+  categorySlug="งานอดิเรก"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">คำนวณ ROI อุปกรณ์ถ่ายภาพ</h1>
+
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">ราคาคาเมรา (บาท)</label>
+          <input type="number" id="camera" placeholder="15000" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ราคาเลนส์ (บาท)</label>
+          <input type="number" id="lens" placeholder="8000" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ราคาขาตั้งและอุปกรณ์อื่น (บาท)</label>
+          <input type="number" id="other" placeholder="7000" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ต้นทุนซอฟต์แวร์ต่อปี (บาท)</label>
+          <input type="number" id="software" placeholder="3000" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">งานที่รับต่อเดือน (จำนวน)</label>
+          <input type="number" id="sessions" placeholder="4" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ราคาต่องาน (บาท)</label>
+          <input type="number" id="price" placeholder="5000" class="w-full border rounded px-3 py-2" />
+        </div>
+      </div>
+      <button class="mt-6 w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">
+        คำนวณ
+      </button>
+    </div>
+
+    <div id="result" class="hidden bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4">ผลลัพธ์</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">ต้นทุนอุปกรณ์รวม</p>
+          <p class="text-2xl font-bold text-blue-600" id="totalEquipment">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">รายได้เดือนละ</p>
+          <p class="text-2xl font-bold text-green-600" id="monthlyIncome">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">กำไรเดือนละ</p>
+          <p class="text-2xl font-bold text-green-600" id="monthlyProfit">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">คืนทุนประมาณ</p>
+          <p class="text-2xl font-bold text-orange-600" id="breakEven">0</p>
+          <p class="text-xs text-gray-500">เดือน</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">ROI ต่อปี</p>
+          <p class="text-2xl font-bold text-purple-600" id="roi">0%</p>
+          <p class="text-xs text-gray-500">เปอร์เซ็นต์</p>
+        </div>
+      </div>
+    </div>
+
+    <TransparencyPanel
+      dataOrigin="การคำนวณ ROI จากต้นทุนอุปกรณ์และรายได้ที่ผู้ใช้ป้อนเข้า"
+      lastUpdated="2026-04-22"
+      accuracy="ความแม่นยำขึ้นอยู่กับข้อมูลรายได้และค่าใช้จ่ายที่แท้จริง"
+    />
+
+    <GuardedAdSlot adUnitId="photography-roi-calculator" position="bottom" />
+    <RelatedCalculators />
+  </div>
+
+  <script is:inline>
+    function calculate() {
+      const totalEquipment = Math.round(
+        (parseFloat(document.getElementById('camera').value) || 0) +
+        (parseFloat(document.getElementById('lens').value) || 0) +
+        (parseFloat(document.getElementById('other').value) || 0) +
+        (parseFloat(document.getElementById('software').value) || 0)
+      );
+
+      const monthlyRevenue = Math.round((parseFloat(document.getElementById('sessions').value) || 0) * (parseFloat(document.getElementById('price').value) || 0));
+      const monthlyCost = Math.round(totalEquipment / 24);
+      const monthlyProfit = Math.round(monthlyRevenue - monthlyCost);
+      const breakEven = monthlyProfit > 0 ? Math.round(totalEquipment / monthlyProfit) : 999;
+      const roi = monthlyProfit > 0 ? Math.round((monthlyProfit * 12 / totalEquipment) * 100) : 0;
+
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('totalEquipment').textContent = totalEquipment.toLocaleString('th-TH');
+      document.getElementById('monthlyIncome').textContent = monthlyRevenue.toLocaleString('th-TH');
+      document.getElementById('monthlyProfit').textContent = monthlyProfit.toLocaleString('th-TH');
+      document.getElementById('breakEven').textContent = breakEven;
+      document.getElementById('roi').textContent = roi + '%';
+    }
+
+    document.querySelector('button').addEventListener('click', calculate);
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
+      });
+    });
+
+    window.addEventListener('load', () => {
+      document.getElementById('camera').value = '15000';
+      document.getElementById('lens').value = '8000';
+      document.getElementById('other').value = '7000';
+      document.getElementById('software').value = '3000';
+      document.getElementById('sessions').value = '4';
+      document.getElementById('price').value = '5000';
+      calculate();
+    });
+  </script>
+</BaseLayout>
