@@ -16,13 +16,11 @@ try {
 }
 const primaryHost = primarySiteUrl.hostname.toLowerCase();
 const apexHost = primaryHost.startsWith('www.') ? primaryHost.slice(4) : primaryHost;
+// Only redirect apex → www. Railway internal domains are excluded intentionally:
+// Railway's healthcheck hits the service using its own domain and does NOT follow
+// 301 redirects — including those domains in redirectHosts causes healthcheck failure.
 const redirectHosts = new Set(
-  [
-    apexHost,
-    'calculator-thailand-production.up.railway.app',
-    process.env.RAILWAY_PUBLIC_DOMAIN,
-    process.env.RAILWAY_STATIC_URL,
-  ]
+  [apexHost]
     .filter(Boolean)
     .map((host) => String(host).toLowerCase())
 );
@@ -213,6 +211,13 @@ async function serve(req, res) {
     incomingUrl = new URL(req.url, `http://localhost:${port}`);
   } catch {
     incomingUrl = new URL('/', `http://localhost:${port}`);
+  }
+
+  // Railway / load-balancer health checks — always 200 before any redirect logic.
+  if (url === '/__health' || url === '/healthz' || url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' });
+    res.end('ok');
+    return;
   }
 
   const requestHost = getRequestHost(req);
