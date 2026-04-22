@@ -341,6 +341,17 @@ const jsonLdItemList = {
       });
     }
 
+    // ── URL param search (supports ?q= and ?search= for SearchAction / Sitelinks Searchbox) ──
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get('q') || params.get('search') || '';
+      if (q && searchInput) {
+        searchInput.value = q;
+        handleSearch();
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    })();
+
     function handleSearch() {
       var query = (searchInput.value || '').trim().toLowerCase();
       if (!query) {
