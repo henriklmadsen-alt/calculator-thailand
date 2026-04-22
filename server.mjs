@@ -329,6 +329,7 @@ async function serve(req, res) {
     res.writeHead(200, {
       'Content-Type': mimeTypes[ext] || 'application/octet-stream',
       'Cache-Control': ext === '.html' ? 'public, max-age=3600, must-revalidate' : 'public, max-age=31536000, immutable',
+      'X-Served-File': Buffer.from(url).toString('base64'),
     });
     res.end(data);
   } catch {

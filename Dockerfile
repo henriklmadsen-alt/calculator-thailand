@@ -1,4 +1,6 @@
 FROM node:20-alpine AS build
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -34,6 +36,8 @@ ENV PUBLIC_ADSENSE_VARIANT_ID=$PUBLIC_ADSENSE_VARIANT_ID
 RUN npm run build
 
 FROM node:20-alpine AS runtime
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 WORKDIR /app
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/package-lock.json ./package-lock.json
