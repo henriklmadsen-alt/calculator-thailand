@@ -214,7 +214,9 @@ async function serve(req, res) {
   }
 
   // Railway / load-balancer health checks — always 200 before any redirect logic.
-  if (url === '/__health' || url === '/healthz' || url === '/health') {
+  // Use incomingUrl.pathname here (url is declared later to avoid TDZ error).
+  const rawPath = incomingUrl.pathname;
+  if (rawPath === '/__health' || rawPath === '/healthz' || rawPath === '/health') {
     res.writeHead(200, { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' });
     res.end('ok');
     return;
