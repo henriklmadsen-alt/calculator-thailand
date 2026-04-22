@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const calculatorGuide = [
+  {
+    scenario: 'I need to calculate my income tax',
+    answer: 'Use Income Tax Calculator',
+    link: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+    reason: 'Calculates personal income tax with deductions and allowances for Thai residents.'
+  },
+  {
+    scenario: 'I want to know my net salary after tax',
+    answer: 'Use Salary Calculator',
+    link: '/คำนวณเงินเดือนสุทธิ/',
+    reason: 'Shows your take-home pay after tax and social security deductions.'
+  },
+  {
+    scenario: 'I\'m applying for a home loan',
+    answer: 'Use Home Loan Calculator',
+    link: '/คำนวณผ่อนบ้าน/',
+    reason: 'Calculates monthly mortgage payments and total interest over the loan term.'
+  },
+  {
+    scenario: 'I\'m buying a car and need financing',
+    answer: 'Use Car Loan Calculator',
+    link: '/คำนวณผ่อนรถ/',
+    reason: 'Calculates vehicle loan payments and compare different financing options.'
+  },
+  {
+    scenario: 'I want to compare different loans',
+    answer: 'Use Loan Comparison Guide',
+    link: '/เปรียบเทียบสินเชื่อ/',
+    reason: 'Compares home, car, and personal loans side-by-side with interest rates and terms.'
+  },
+  {
+    scenario: 'I have savings and want to calculate interest',
+    answer: 'Use Savings Interest Calculator',
+    link: '/คำนวณดอกเบี้ยเงินฝาก/',
+    reason: 'Shows how much your savings will earn with different interest rates.'
+  },
+  {
+    scenario: 'I run a business and need to calculate VAT',
+    answer: 'Use VAT Calculator',
+    link: '/คำนวณมูลค่าเพิ่ม/',
+    reason: 'Calculates Value Added Tax (7%) for business transactions.'
+  },
+  {
+    scenario: 'I use a credit card and want to understand interest charges',
+    answer: 'Use Credit Card Interest Calculator',
+    link: '/คำนวณดอกเบี้ยบัตรเครดิต/',
+    reason: 'Calculates credit card interest and shows impact of different payment amounts.'
+  },
+  {
+    scenario: 'I want to analyze my business performance',
+    answer: 'Use Business Tools',
+    link: '/เครื่องคำนวณธุรกิจ/',
+    reason: 'Access ROE, ROA, break-even, and other business analysis calculators.'
+  },
+  {
+    scenario: 'I need to do statistical analysis',
+    answer: 'Use Math & Statistics Tools',
+    link: '/เครื่องคำนวณคณิตศาสตร์/',
+    reason: 'Calculate mean, median, standard deviation, correlation, and probability.'
+  },
+  {
+    scenario: 'I don\'t know which tax calculator I need',
+    answer: 'Use Tax Calculator Comparison',
+    link: '/เปรียบเทียบเครื่องคำนวณภาษี/',
+    reason: 'Explains when to use income tax, VAT, corporate tax, and withholding tax calculators.'
+  },
+  {
+    scenario: 'I want to learn how to calculate income tax step-by-step',
+    answer: 'Read Income Tax Guide',
+    link: '/วิธีคำนวณภาษีเงินได้ไทย/',
+    reason: 'Step-by-step instructions with explanations and tax bracket tables.'
+  },
+  {
+    scenario: 'I\'m concerned about paying too much tax',
+    answer: 'Read Common Mistakes Guide',
+    link: '/ผิดพลาดภาษีทั่วไป/',
+    reason: 'Learn the 8 most common tax calculation mistakes and how to avoid them.'
+  },
+  {
+    scenario: 'I want to know what deductions I can claim',
+    answer: 'Use Deductions Checklist',
+    link: '/ตรวจสอบหักลดหย่อนภาษี/',
+    reason: 'Complete checklist of all eligible personal, professional, and charitable deductions.'
+  },
+];
+---
+
+<BaseLayout
+  title="Which Calculator Do You Need? Decision Guide | Kamnuanlek"
+  description="Find the right calculator for your financial situation. Tax, loans, savings, business analysis, and more. Quick decision guide."
+>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Which Calculator Do You Need?</h1>
+
+    <div class="mb-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        Find the right calculator for your financial situation. Answer the question that matches your needs and we'll guide you to the right tool.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      {calculatorGuide.map((item, idx) => (
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="p-6">
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold text-sm">
+                {idx + 1}
+              </div>
+              <div class="flex-grow">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">{item.scenario}</h3>
+                <p class="text-gray-600 mb-3">{item.reason}</p>
+                <a href={item.link} class="inline-block px-4 py-2 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 font-medium transition">
+                  → {item.answer}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 p-8 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Can't Find What You Need?</h2>
+      <p class="text-gray-700 mb-6">
+        Browse all our calculators and resources:
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/ตัวช่วยคำนวณการเงิน/" class="p-4 bg-white rounded-lg border border-green-200 hover:border-primary-500 transition">
+          <span class="font-semibold text-gray-900">💳 Financial Hub</span>
+        </a>
+        <a href="/เครื่องคำนวณธุรกิจ/" class="p-4 bg-white rounded-lg border border-green-200 hover:border-primary-500 transition">
+          <span class="font-semibold text-gray-900">📊 Business Tools</span>
+        </a>
+        <a href="/เครื่องคำนวณคณิตศาสตร์/" class="p-4 bg-white rounded-lg border border-green-200 hover:border-primary-500 transition">
+          <span class="font-semibold text-gray-900">📐 Math & Stats</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Links to All Categories</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/เครื่องคำนวณการเงินชั้นยอด/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">🌟 Top 10 Financial Tools</span>
+          <p class="text-gray-600 text-sm mt-2">Most important calculators ranked</p>
+        </a>
+        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📚 Tax Calculation Guide</span>
+          <p class="text-gray-600 text-sm mt-2">Learn step-by-step</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
