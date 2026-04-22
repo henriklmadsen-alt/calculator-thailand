@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'ธุรกิจขนาดเล็กต้องจดทะเบียน VAT ไหม?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ต้องจดทะเบียน VAT เมื่อรายได้เกิน 1.8 ล้านบาทต่อปี ถ้ารายได้ต่ำกว่านี้ไม่จำเป็นต้องจด แต่สามารถจดทะเบียนโดยสมัครใจได้'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'ภาษีเงินได้นิติบุคคลคิดอัตราเท่าไหร่?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SME ที่มีทุนจดทะเบียนไม่เกิน 5 ล้านบาท: 15% บนกำไรสุทธิ 300,000-3,000,000 บาท และ 20% บนกำไรเกิน 3 ล้านบาท บริษัทขนาดใหญ่: 20% flat rate'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'SME ไทยมีสิทธิประโยชน์ภาษีอะไรบ้าง?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SME ได้รับ: อัตราภาษีพิเศษ 15% สำหรับกำไรสุทธิ 300,000-3,000,000 บาท, ยกเว้นภาษีกำไรสุทธิ 300,000 บาทแรก, และสิทธิหักค่าเสื่อมเร็วกว่าปกติ'
+      }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="Small Business Tax Guide Thailand — SME Tax Rates, VAT, Corporate Tax | Kamnuanlek"
+  description="Complete small business tax guide for Thailand. SME corporate tax rates, VAT registration, withholding tax, and deductions. Use our free business calculators."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Small Business Tax Guide</h1>
+
+    <div class="mb-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        Running a small business in Thailand? This guide covers all the taxes you need to know: corporate income tax, VAT, withholding tax, and available SME benefits.
+      </p>
+    </div>
+
+    <div class="space-y-10">
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">SME Corporate Tax Rates (2026)</h2>
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+              <tr>
+                <th class="text-left px-4 py-3">Net Profit (THB)</th>
+                <th class="text-left px-4 py-3">Rate</th>
+                <th class="text-left px-4 py-3">Applies to</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t">
+                <td class="px-4 py-3 text-gray-900">First 300,000</td>
+                <td class="px-4 py-3 font-bold text-green-600">Exempt (0%)</td>
+                <td class="px-4 py-3 text-gray-600">SME only</td>
+              </tr>
+              <tr class="border-t bg-gray-50">
+                <td class="px-4 py-3 text-gray-900">300,001 – 3,000,000</td>
+                <td class="px-4 py-3 font-bold text-blue-600">15%</td>
+                <td class="px-4 py-3 text-gray-600">SME (≤5M THB registered capital)</td>
+              </tr>
+              <tr class="border-t">
+                <td class="px-4 py-3 text-gray-900">Over 3,000,000</td>
+                <td class="px-4 py-3 font-bold text-orange-600">20%</td>
+                <td class="px-4 py-3 text-gray-600">All companies</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-gray-600 text-sm mt-2">* SME = Company with registered capital ≤ 5 million THB AND annual revenue ≤ 30 million THB</p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Key Business Taxes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-5 bg-white border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">VAT (7%)</h3>
+            <p class="text-gray-700 text-sm mb-2">Register when annual revenue exceeds 1.8M THB. Collect VAT on sales, claim VAT back on purchases.</p>
+            <a href="/คำนวณมูลค่าเพิ่ม/" class="text-primary-600 text-sm font-medium hover:underline">VAT Calculator →</a>
+          </div>
+          <div class="p-5 bg-white border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Withholding Tax (WHT)</h3>
+            <p class="text-gray-700 text-sm mb-2">Deduct 3-5% from payments to service providers above 1,000 THB. Remit to Revenue Department monthly.</p>
+          </div>
+          <div class="p-5 bg-white border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Social Security</h3>
+            <p class="text-gray-700 text-sm mb-2">Employer pays 5% on each employee's salary (max 750 THB/employee/month). File monthly with SSO.</p>
+          </div>
+          <div class="p-5 bg-white border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Annual Filing</h3>
+            <p class="text-gray-700 text-sm mb-2">Corporate tax return due 150 days after fiscal year end. Half-year prepayment due by August 31.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ธุรกิจขนาดเล็กต้องจดทะเบียน VAT ไหม?</h3>
+            <p class="text-gray-700 text-sm">ต้องจดทะเบียน VAT เมื่อรายได้เกิน 1.8 ล้านบาทต่อปี ถ้าต่ำกว่านี้ไม่จำเป็น แต่จดสมัครใจได้</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ภาษีเงินได้นิติบุคคลคิดอัตราเท่าไหร่?</h3>
+            <p class="text-gray-700 text-sm">SME (ทุนจดทะเบียน ≤ 5M THB): ยกเว้นกำไร 300k แรก, 15% บน 300k-3M, 20% บนส่วนเกิน</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">SME ไทยมีสิทธิประโยชน์ภาษีอะไรบ้าง?</h3>
+            <p class="text-gray-700 text-sm">อัตราภาษีพิเศษ 15%, ยกเว้นกำไร 300,000 บาทแรก, หักค่าเสื่อมเร็ว, หักค่าฝึกอบรมพนักงาน 200%</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Business Calculators</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/เครื่องคำนวณธุรกิจ/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📊 Business Analysis</span>
+          <p class="text-gray-600 text-sm mt-2">Break-even, ROE, ROA, WACC</p>
+        </a>
+        <a href="/เปรียบเทียบเครื่องคำนวณภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">💼 Tax Comparison</span>
+          <p class="text-gray-600 text-sm mt-2">CIT vs VAT vs WHT explained</p>
+        </a>
+        <a href="/ตัวช่วยคำนวณการเงิน/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">💳 Financial Hub</span>
+          <p class="text-gray-600 text-sm mt-2">All financial calculators</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
