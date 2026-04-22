@@ -3,6 +3,8 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import ResultCardHub from '../../components/templates/ResultCardHub.astro';
+import TransparencyPanel from '../../components/templates/TransparencyPanel.astro';
 
 const pageTitle = 'คำนวณ BMI ดัชนีมวลกาย 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณค่า BMI ตามมาตรฐาน WHO ฟรี — ใส่ส่วนสูงและน้ำหนัก รู้ระดับสุขภาพทันที พร้อมคำแนะนำน้ำหนักที่เหมาะสมสำหรับคนไทย';
@@ -93,7 +95,15 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ BMI ดัชนีมวลกาย">
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
+  pageName="คำนวณ BMI ดัชนีมวลกาย"
+  categoryId="health"
+  categoryName="สุขภาพ/ชีวิต"
+  categorySlug="สุขภาพ"
+>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
@@ -255,6 +265,32 @@ const jsonLdHowTo = {
             <p>• ควรใช้ร่วมกับการวัดเส้นรอบเอว และการตรวจสุขภาพโดยแพทย์</p>
           </div>
         </details>
+
+        <!-- Feature 2: Transparency Panel -->
+        <TransparencyPanel
+          formula="BMI = น้ำหนัก (กก.) ÷ [ส่วนสูง (ม.)]²"
+          formulaNote="ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย (ต่ำกว่าเกณฑ์สากล)"
+          sourceUrl="https://www.who.int/westernpacific"
+          sourceName="WHO Western Pacific Regional Office"
+          panelId="bmi-transparency"
+        />
+
+        <!-- Feature 1: Result Card Hub -->
+        <ResultCardHub
+          calcId="bmi"
+          calcTitle="BMI ดัชนีมวลกาย"
+          calcEmoji="⚖️"
+          relatedCalcs={[
+            { href: '/คำนวณแคลอรี/', title: 'คำนวณแคลอรี', desc: 'ปริมาณแคลอรีต่อวัน', emoji: '🔥' },
+            { href: '/คำนวณน้ำหนักที่เหมาะสม/', title: 'น้ำหนักที่เหมาะสม', desc: 'ตามเพศและส่วนสูง', emoji: '⚖️' },
+            { href: '/คำนวณเบี้ยประกันสุขภาพ-รายบุคคล/', title: 'ประกันสุขภาพ', desc: 'วางแผนค่าเบี้ยตามวัย', emoji: '🏥' },
+          ]}
+          nextSteps={[
+            'ปรึกษาแพทย์หาก BMI อยู่นอกเกณฑ์ปกติ',
+            'ออกกำลังกาย 150 นาที/สัปดาห์ตามคำแนะนำกรมอนามัย',
+            'ตรวจสุขภาพประจำปีเพื่อติดตามผลลัพธ์',
+          ]}
+        />
       </div>
     </div>
 
@@ -581,6 +617,7 @@ const jsonLdHowTo = {
       (document.getElementById('tips-text') as HTMLElement).textContent = result.tips;
 
       const fmt = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+      const heightM = height / 100;
       (document.getElementById('healthy-range') as HTMLElement).textContent =
         `สำหรับส่วนสูง ${height} ซม. น้ำหนักที่เหมาะสม (BMI 18.5–22.9) คือ ${fmt.format(range.min)} – ${fmt.format(range.max)} กก.`;
 
@@ -589,6 +626,41 @@ const jsonLdHowTo = {
       resultEl.classList.add('result-animate-in');
       document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('bmi');
+
+      // Phase 2: Populate transparency panel
+      if (typeof (window as any).ctUpdateTransparency === 'function') {
+        (window as any).ctUpdateTransparency('bmi-transparency', {
+          inputs: [
+            { label: 'น้ำหนัก', value: `${weight} กก.` },
+            { label: 'ส่วนสูง', value: `${height} ซม. (${heightM.toFixed(2)} ม.)` },
+          ],
+          steps: [
+            `แปลงส่วนสูง: ${height} ซม. ÷ 100 = ${heightM.toFixed(2)} ม.`,
+            `ยกกำลังสอง: ${heightM.toFixed(2)} × ${heightM.toFixed(2)} = ${(heightM * heightM).toFixed(4)} ตร.ม.`,
+            `หาร BMI: ${weight} ÷ ${(heightM * heightM).toFixed(4)} = ${bmi.toFixed(2)}`,
+            `ผลลัพธ์: BMI ${bmi.toFixed(1)} = ${result.category}`,
+          ],
+        });
+      }
+
+      // Phase 2: Set current calc data for save button
+      (window as any).__ctCurrentCalcData = {
+        calcId: 'bmi',
+        calcTitle: 'BMI ดัชนีมวลกาย',
+        calcEmoji: '⚖️',
+        resultLabel: 'ค่า BMI',
+        resultValue: bmi.toFixed(1),
+        resultCategory: result.category,
+        inputs: [
+          { label: 'น้ำหนัก', value: `${weight} กก.` },
+          { label: 'ส่วนสูง', value: `${height} ซม.` },
+        ],
+        url: '/คำนวณ-bmi/',
+      };
+
+      // Show FAB if save/compare drawer available
+      const fab = document.getElementById('ct-open-drawer-fab');
+      if (fab) fab.classList.remove('ct-fab-hidden');
     });
 
     // Allow Enter key

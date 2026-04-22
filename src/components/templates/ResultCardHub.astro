@@ -1,0 +1,260 @@
+---
+// Result Card Hub — Phase 2 Feature 1
+// Decision panel shown below calculator results.
+// Provides: Save button, Share button, Related calculators, Next steps.
+
+interface RelatedCalc {
+  href: string;
+  title: string;
+  desc?: string;
+  emoji?: string;
+}
+
+interface Props {
+  /** Unique calculator identifier, matches calcId in ctSaveCalculation */
+  calcId: string;
+  /** Thai display title for save/share */
+  calcTitle: string;
+  /** Emoji icon shown in the saved card */
+  calcEmoji?: string;
+  /** 3–5 related calculators to surface */
+  relatedCalcs?: RelatedCalc[];
+  /** Text for Web Share API (auto-generated from calcTitle if omitted) */
+  shareText?: string;
+  /** Optional next-steps list */
+  nextSteps?: string[];
+}
+
+const {
+  calcId,
+  calcTitle,
+  calcEmoji = '🔢',
+  relatedCalcs = [],
+  shareText,
+  nextSteps = [],
+} = Astro.props;
+
+const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ที่ kamnuanlek.com`;
+---
+
+<div class="ct-hub" id={`ct-hub-${calcId}`}>
+  <!-- Action bar -->
+  <div class="ct-hub-actions">
+    <button
+      type="button"
+      class="ct-hub-btn ct-hub-save"
+      id={`ct-save-btn-${calcId}`}
+      data-calc-id={calcId}
+      aria-label={`บันทึก${calcTitle}`}
+    >
+      <span aria-hidden="true">💾</span>
+      <span>บันทึก</span>
+    </button>
+
+    <button
+      type="button"
+      class="ct-hub-btn ct-hub-share"
+      id={`ct-share-btn-${calcId}`}
+      data-share-text={defaultShareText}
+      data-share-url={Astro.url.pathname}
+      data-share-title={calcTitle}
+      aria-label={`แชร์${calcTitle}`}
+    >
+      <span aria-hidden="true">📤</span>
+      <span>แชร์</span>
+    </button>
+  </div>
+
+  <!-- Related calculators -->
+  {relatedCalcs.length > 0 && (
+    <div class="ct-hub-related">
+      <div class="ct-hub-section-title">เครื่องคำนวณที่เกี่ยวข้อง</div>
+      <div class="ct-hub-related-grid">
+        {relatedCalcs.map((calc) => (
+          <a href={calc.href} class="ct-hub-related-card" data-preserve-utm>
+            {calc.emoji && <span class="ct-hub-related-emoji" aria-hidden="true">{calc.emoji}</span>}
+            <div class="ct-hub-related-body">
+              <span class="ct-hub-related-title">{calc.title}</span>
+              {calc.desc && <span class="ct-hub-related-desc">{calc.desc}</span>}
+            </div>
+            <svg class="ct-hub-related-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Next steps -->
+  {nextSteps.length > 0 && (
+    <div class="ct-hub-nextsteps">
+      <div class="ct-hub-section-title">ขั้นตอนต่อไป</div>
+      <ul class="ct-hub-steps-list">
+        {nextSteps.map((step) => (
+          <li>{step}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<style>
+  .ct-hub {
+    margin-top: 1.25rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+
+  /* ── Action bar ──────────────────────────────────────────── */
+  .ct-hub-actions {
+    display: flex; gap: 0.6rem; flex-wrap: wrap;
+  }
+  .ct-hub-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1rem; border-radius: 0.6rem;
+    font-size: 0.875rem; font-weight: 600;
+    cursor: pointer; border: 1.5px solid;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .ct-hub-btn:active { transform: scale(0.97); }
+
+  .ct-hub-save {
+    background: #2563eb; color: #fff;
+    border-color: #2563eb;
+  }
+  .ct-hub-save:hover { background: #1d4ed8; border-color: #1d4ed8; }
+  .ct-hub-save.ct-saved {
+    background: #16a34a; border-color: #16a34a;
+  }
+
+  .ct-hub-share {
+    background: transparent; color: #374151;
+    border-color: #d1d5db;
+  }
+  .ct-hub-share:hover { background: #f9fafb; }
+
+  /* ── Related calculators ─────────────────────────────────── */
+  .ct-hub-section-title {
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #6b7280; margin-bottom: 0.5rem;
+  }
+
+  .ct-hub-related-grid {
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+
+  .ct-hub-related-card {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    background: #f9fafb; border: 1px solid #e5e7eb;
+    border-radius: 0.6rem; text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .ct-hub-related-card:hover {
+    border-color: #2563eb; background: #eff6ff;
+  }
+
+  .ct-hub-related-emoji { font-size: 1.25rem; flex-shrink: 0; }
+  .ct-hub-related-body { flex: 1; min-width: 0; }
+  .ct-hub-related-title {
+    display: block; font-size: 0.875rem; font-weight: 600; color: #1f2937;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ct-hub-related-desc {
+    display: block; font-size: 0.75rem; color: #6b7280;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ct-hub-related-arrow { color: #9ca3af; flex-shrink: 0; }
+
+  /* ── Next steps ──────────────────────────────────────────── */
+  .ct-hub-nextsteps { }
+  .ct-hub-steps-list {
+    margin: 0; padding: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .ct-hub-steps-list li {
+    font-size: 0.85rem; color: #374151;
+    display: flex; align-items: flex-start; gap: 0.5rem;
+  }
+  .ct-hub-steps-list li::before {
+    content: "→"; color: #2563eb; font-weight: 700; flex-shrink: 0;
+  }
+</style>
+
+<script is:inline>
+(function initResultCardHub() {
+  function bindHub() {
+    // Save buttons
+    document.querySelectorAll('.ct-hub-save[data-calc-id]').forEach(function(btn) {
+      if (btn.dataset.hubBound === '1') return;
+      btn.dataset.hubBound = '1';
+
+      btn.addEventListener('click', function() {
+        // Collect current result data from the page
+        // Pages that use this component should set window.__ctCurrentCalcData before showing result
+        if (typeof window.__ctCurrentCalcData === 'object' && window.__ctCurrentCalcData) {
+          if (typeof window.ctSaveCalculation === 'function') {
+            window.ctSaveCalculation(window.__ctCurrentCalcData);
+          }
+          btn.innerHTML = '<span aria-hidden="true">✅</span><span>บันทึกแล้ว</span>';
+          btn.classList.add('ct-saved');
+          setTimeout(function() {
+            btn.innerHTML = '<span aria-hidden="true">💾</span><span>บันทึก</span>';
+            btn.classList.remove('ct-saved');
+          }, 2500);
+        }
+      });
+    });
+
+    // Share buttons
+    document.querySelectorAll('.ct-hub-share').forEach(function(btn) {
+      if (btn.dataset.shareBound === '1') return;
+      btn.dataset.shareBound = '1';
+
+      btn.addEventListener('click', function() {
+        var shareTitle = btn.dataset.shareTitle || document.title;
+        var shareText  = btn.dataset.shareText  || document.title;
+        var shareUrl   = btn.dataset.shareUrl
+          ? (window.location.origin + btn.dataset.shareUrl)
+          : window.location.href;
+
+        if (navigator.share) {
+          navigator.share({ title: shareTitle, text: shareText, url: shareUrl }).catch(function() {});
+        } else {
+          // Fallback: copy URL to clipboard
+          try {
+            navigator.clipboard.writeText(shareUrl).then(function() {
+              btn.innerHTML = '<span aria-hidden="true">✅</span><span>คัดลอก URL แล้ว</span>';
+              setTimeout(function() {
+                btn.innerHTML = '<span aria-hidden="true">📤</span><span>แชร์</span>';
+              }, 2000);
+            });
+          } catch(e) {
+            // Ignore silently
+          }
+        }
+
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('result_shared', {
+            calculator_type: btn.closest('[id^="ct-hub-"]')
+              ? btn.closest('[id^="ct-hub-"]').id.replace('ct-hub-', '')
+              : '',
+          });
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindHub);
+  } else {
+    bindHub();
+  }
+  // Re-bind on potential dynamic DOM updates
+  window.ctBindResultHub = bindHub;
+})();
+</script>

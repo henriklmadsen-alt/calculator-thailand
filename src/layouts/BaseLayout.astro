@@ -1,5 +1,6 @@
 ---
 import '../styles/theme.css';
+import SaveCompareDrawer from '../components/templates/SaveCompareDrawer.astro';
 
 interface Props {
   title: string;
@@ -8,9 +9,15 @@ interface Props {
   ogImage?: string;
   pageName?: string;
   alternateLocales?: Array<{ hreflang: string; href: string }>;
+  /** Category ID for visual breadcrumb — e.g. "health", "tax", "loan" */
+  categoryId?: string;
+  /** Thai display name for the category — e.g. "สุขภาพ/ชีวิต" */
+  categoryName?: string;
+  /** URL slug for the category page — e.g. "สุขภาพ" */
+  categorySlug?: string;
 }
 
-const { title, description, canonical, ogImage, pageName, alternateLocales = [] } = Astro.props;
+const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug } = Astro.props;
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
@@ -455,6 +462,26 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         transform: translateY(-2px);
       }
 
+      /* ── Breadcrumb (Phase 2 Feature 4) ───────────────────── */
+      .ct-breadcrumb {
+        margin-bottom: 0.75rem;
+      }
+      .ct-breadcrumb-list {
+        display: flex; align-items: center; flex-wrap: wrap;
+        gap: 0.15rem; list-style: none; margin: 0; padding: 0;
+        font-size: 0.8rem;
+      }
+      .ct-breadcrumb-link {
+        color: #2563eb; text-decoration: none; font-weight: 500;
+        transition: color 0.15s;
+      }
+      .ct-breadcrumb-link:hover { color: #1d4ed8; text-decoration: underline; }
+      .ct-breadcrumb-sep { color: #9ca3af; padding: 0 0.15rem; }
+      .ct-breadcrumb-current {
+        color: #6b7280; font-weight: 400;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 200px; display: inline-block; vertical-align: bottom;
+      }
     </style>
   </head>
   <body class="font-thai text-gray-900 flex flex-col">
@@ -490,6 +517,24 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     </header>
 
     <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
+      {categoryId && categoryName && (
+        <nav aria-label="Breadcrumb" class="ct-breadcrumb">
+          <ol class="ct-breadcrumb-list">
+            <li><a href="/" class="ct-breadcrumb-link">หน้าแรก</a></li>
+            <li aria-hidden="true" class="ct-breadcrumb-sep">›</li>
+            <li>
+              {categorySlug
+                ? <a href={`/หมวดหมู่/${categorySlug}/`} class="ct-breadcrumb-link">{categoryName}</a>
+                : <span class="ct-breadcrumb-link">{categoryName}</span>
+              }
+            </li>
+            {pageName && <>
+              <li aria-hidden="true" class="ct-breadcrumb-sep">›</li>
+              <li><span class="ct-breadcrumb-current" aria-current="page">{pageName}</span></li>
+            </>}
+          </ol>
+        </nav>
+      )}
       <slot />
     </main>
 
@@ -697,5 +742,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         syncButtons(currentPref);
       })();
     </script>
+    <!-- Phase 2: Save & Compare Drawer (global) -->
+    <SaveCompareDrawer />
   </body>
 </html>
