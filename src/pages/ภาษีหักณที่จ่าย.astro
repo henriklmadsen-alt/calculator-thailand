@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Withholding Tax Guide Thailand — Rates, When to Deduct, How to File | Kamnuanlek"
+  description="Complete guide to Thai withholding tax (WHT). Rates for services, rent, professional fees. When to deduct, how to file PND.3 and PND.53."
+>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Withholding Tax Guide (ภาษีหัก ณ ที่จ่าย)</h1>
+
+    <div class="mb-12 p-6 bg-orange-50 border border-orange-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        Withholding tax (WHT) is deducted from payments to service providers. If you pay for services, rent, or professional fees, you may need to withhold tax and remit it to the Revenue Department.
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">WHT Rates by Payment Type</h2>
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-900">Payment Type</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-900">Rate</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-900">Form</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              {[
+                { type: 'Salary / Wages', rate: 'Progressive (PIT rate)', form: 'PND.1' },
+                { type: 'Service Fees (Individual)', rate: '3%', form: 'PND.3' },
+                { type: 'Service Fees (Company)', rate: '3%', form: 'PND.53' },
+                { type: 'Rental Income (Individual)', rate: '5%', form: 'PND.3' },
+                { type: 'Professional Fees (Doctor, Lawyer, etc.)', rate: '3%', form: 'PND.3' },
+                { type: 'Commissions', rate: '3%', form: 'PND.3 / PND.53' },
+                { type: 'Transportation/Freight', rate: '1%', form: 'PND.53' },
+                { type: 'Prizes / Lottery', rate: '5%', form: 'PND.3' },
+                { type: 'Interest', rate: '15%', form: 'PND.3 / PND.53' },
+                { type: 'Dividends', rate: '10%', form: 'PND.3 / PND.53' },
+                { type: 'Royalties', rate: '3%', form: 'PND.3 / PND.53' },
+              ].map((row, i) => (
+                <tr class={i % 2 === 0 ? '' : 'bg-gray-50'}>
+                  <td class="px-4 py-3 text-gray-900">{row.type}</td>
+                  <td class="px-4 py-3 font-semibold text-primary-600">{row.rate}</td>
+                  <td class="px-4 py-3 text-gray-600">{row.form}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">How WHT Works</h2>
+        <div class="space-y-4">
+          <div class="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg">
+            <div class="flex-shrink-0 w-8 h-8 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center font-bold text-sm">1</div>
+            <div>
+              <p class="font-semibold text-gray-900">Make Payment to Service Provider</p>
+              <p class="text-gray-600 text-sm">If payment exceeds 1,000 THB per transaction</p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg">
+            <div class="flex-shrink-0 w-8 h-8 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center font-bold text-sm">2</div>
+            <div>
+              <p class="font-semibold text-gray-900">Deduct WHT</p>
+              <p class="text-gray-600 text-sm">Withhold the applicable WHT rate from the gross amount</p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg">
+            <div class="flex-shrink-0 w-8 h-8 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center font-bold text-sm">3</div>
+            <div>
+              <p class="font-semibold text-gray-900">Issue WHT Certificate</p>
+              <p class="text-gray-600 text-sm">Give the service provider a หนังสือรับรองหักภาษี ณ ที่จ่าย certificate</p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg">
+            <div class="flex-shrink-0 w-8 h-8 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center font-bold text-sm">4</div>
+            <div>
+              <p class="font-semibold text-gray-900">File and Remit by 7th of Next Month</p>
+              <p class="text-gray-600 text-sm">Submit PND.3 or PND.53 form and pay withheld tax to Revenue Department</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Example Calculation</h2>
+        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <p class="font-semibold text-gray-900 mb-3">Hiring a freelance designer for 30,000 THB</p>
+          <div class="space-y-2 text-gray-700">
+            <div class="flex justify-between border-b pb-2">
+              <span>Invoice amount</span><span class="font-semibold">30,000 THB</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+              <span>WHT at 3%</span><span class="text-orange-600">- 900 THB</span>
+            </div>
+            <div class="flex justify-between font-bold pt-1">
+              <span>Net payment to designer</span><span class="text-primary-600">29,100 THB</span>
+            </div>
+          </div>
+          <p class="text-gray-600 text-sm mt-3">The 900 THB WHT must be remitted to Revenue Dept by the 7th of next month with PND.3 form.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Related Resources</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/ปฏิทินภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📅 Tax Calendar</span>
+          <p class="text-gray-600 text-sm mt-2">Filing deadlines for all taxes</p>
+        </a>
+        <a href="/ภาษีธุรกิจขนาดเล็ก/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">🏢 SME Tax Guide</span>
+          <p class="text-gray-600 text-sm mt-2">All taxes for small businesses</p>
+        </a>
+        <a href="/เปรียบเทียบเครื่องคำนวณภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📊 Tax Comparison</span>
+          <p class="text-gray-600 text-sm mt-2">All tax types explained</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
