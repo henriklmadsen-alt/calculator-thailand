@@ -178,6 +178,7 @@ export const CALCULATOR_AFFILIATE_MAP: Record<string, string> = {
   '/คำนวณเบี้ยประกันรถยนต์/': 'tipinsure',
   '/คำนวณค่าประกันรถยนต์/': 'tipinsure',
   '/คำนวณ-deductible-ประกันรถ/': 'tipinsure',
+  '/คำนวณประกันรถพาณิชย์/': 'tipinsure',
 
   // Involve Asia — health/medical (Rabbit Care CPL)
   '/คำนวณเบี้ยประกันสุขภาพ/': 'rabbit-care-health-cpl',
