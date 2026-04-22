@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TransparencyPanel from '../../components/templates/TransparencyPanel.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณต้นทุนด้ายไหมพรมและอุปกรณ์ถัก 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนเต็มสำหรับเสื้อถัก: ด้ายไหมพรม เข็มถัก อื่นๆ รู้ราคาขายที่เหมาะสมฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ต้นทุน-หนังสือและด้ายไหมพรม/`;
+
+const faqData = [
+  {
+    question: 'ด้ายไหมพรมมีความแตกต่างกันอย่างไร?',
+    answer: 'ด้ายไหมพรมมีหลายชนิด: (1) ด้ายฐาน: ราคาประหยัด เหมาะสำหรับเด็ก (2) ด้ายเนื้อ: คุณภาพกลาง ใช้งานทั่วไป (3) ด้ายสูง: ด้ายตัวหนา ทำงานเร็ว แต่แพงกว่า (4) ด้ายพิเศษ: เรียวบาง หรือสีแปลก ใช้โครงการเฉพาะ ราคาแพง',
+  },
+  {
+    question: 'จะเลือกเข็มถักอย่างไร?',
+    answer: 'เข็มถักควรจับคู่กับความหนาของด้าย: (1) ด้ายบาง (0.5-1 มม.): เข็มเบอร์ 2-3.5 (2) ด้ายกลาง (1-2 มม.): เข็มเบอร์ 4-6 (3) ด้ายหนา (2-3 มม.): เข็มเบอร์ 7-9 (4) ด้ายหนามาก (3+ มม.): เข็มเบอร์ 10+ เข็มที่ตรงกันช่วยให้ผลงานสวย และหักได้ดี',
+  },
+  {
+    question: 'เมตร ต้องเท่าไร?',
+    answer: 'ความยาวของเสื้อถักแตกต่างกันไป: (1) เสื้อแฟชั่นเด็ก: 300-400 เมตร (2) เสื้อแฟชั่นผู้ใหญ่ขนาดM: 700-900 เมตร (3) เสื้อแฟชั่นผู้ใหญ่ขนาดL/XL: 900-1200 เมตร (4) เสื้อทำงาน: 1000-1500 เมตร อ่านรายละเอียดรูปแบบเสมอ เพื่อทราบปริมาณสเกตที่แน่นอน',
+  },
+  {
+    question: 'ราคาขายเสื้อถักควรเท่าไร?',
+    answer: 'วิธีคิดราคา: (1) วิธีคูณต้นทุน: ต้นทุน × 2-3 เท่า (2) วิธีค่าแรง: ต้นทุน + ค่าแรง (50-200 บาท/ชม.) (3) ตลาด: เปรียบเทียบกับเสื้อถักอื่น ทำให้เหมาะสม (4) ชื่อเสียง: หากเป็นศิลปินดี ราคาสูง (5) ลักษณะเสื้อ: เสื้อขั้นสูง (สีมิกส์ หรือหลายเฟสค): ราคาสูง',
+  },
+  {
+    question: 'เสื้อถักสามารถล้างได้อย่างไร?',
+    answer: 'การดูแลเสื้อถัก: (1) ล้างด้วยน้ำเย็นเล็กน้อย ใช้สบู่เหลว (2) ไม่ควรสับ ควรโยกเบา (3) ไม่ใช้น้ำขุ่น หลังล้าง (4) ซักเพียง 1-2 นาที (5) บีบเบาให้น้ำออกและแพร่บนผ้ากว้าง (6) ตากแห้งหรือให้ลม ไม่โดยตรงมือ (7) เก็บไว้ระบายลมดี (8) ไม่ควรแขวนเพราะจะยืด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนด้ายไหมพรม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
+  pageName="คำนวณต้นทุนด้ายไหมพรมและอุปกรณ์ถัก"
+  categoryId="hobby"
+  categoryName="งานอดิเรก/ศิลปะ"
+  categorySlug="งานอดิเรก"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">คำนวณต้นทุนด้ายไหมพรมและอุปกรณ์ถัก</h1>
+
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">ราคาด้ายต่อม้วน (บาท)</label>
+          <input type="number" id="yarnCost" placeholder="250" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">จำนวนม้วนทั้งหมด</label>
+          <input type="number" id="spools" placeholder="8" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ต้นทุนเข็มถัก (บาท)</label>
+          <input type="number" id="needles" placeholder="150" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ต้นทุนรูปแบบ (บาท)</label>
+          <input type="number" id="pattern" placeholder="100" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ต้นทุนกระดุม/อุปกรณ์อื่น (บาท)</label>
+          <input type="number" id="buttons" placeholder="50" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">ต้นทุนอื่นๆ (บาท)</label>
+          <input type="number" id="other" placeholder="100" class="w-full border rounded px-3 py-2" />
+        </div>
+      </div>
+      <button class="mt-6 w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">
+        คำนวณ
+      </button>
+    </div>
+
+    <div id="result" class="hidden bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4">ผลลัพธ์</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">ต้นทุนรวม</p>
+          <p class="text-3xl font-bold text-blue-600" id="totalCost">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">ราคาขายแนะนำ</p>
+          <p class="text-3xl font-bold text-green-600" id="suggestedPrice">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">กำไรโดยประมาณ</p>
+          <p class="text-3xl font-bold text-green-600" id="profit">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+        <div class="bg-white rounded p-4">
+          <p class="text-sm text-gray-600">ต้นทุนด้ายไหมพรม</p>
+          <p class="text-xl font-bold text-blue-600" id="yarnTotal">0</p>
+          <p class="text-xs text-gray-500">บาท</p>
+        </div>
+      </div>
+    </div>
+
+    <TransparencyPanel
+      dataOrigin="การคำนวณจากต้นทุนอุปกรณ์ถักที่ผู้ใช้ป้อนเข้า"
+      lastUpdated="2026-04-22"
+      accuracy="ความแม่นยำขึ้นอยู่กับต้นทุนที่ป้อนเข้า"
+    />
+
+    <div class="my-12">
+      <h2 class="text-2xl font-bold mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="border rounded p-4 cursor-pointer hover:bg-gray-50">
+            <summary class="font-bold text-lg">{faq.question}</summary>
+            <p class="mt-2 text-gray-700">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <GuardedAdSlot adUnitId="knitting-cost-calculator" position="bottom" />
+    <RelatedCalculators />
+  </div>
+
+  <script is:inline>
+    function calculate() {
+      const yarnCost = (parseFloat(document.getElementById('yarnCost').value) || 0) * (parseFloat(document.getElementById('spools').value) || 0);
+      const othersCost = (parseFloat(document.getElementById('needles').value) || 0) +
+        (parseFloat(document.getElementById('pattern').value) || 0) +
+        (parseFloat(document.getElementById('buttons').value) || 0) +
+        (parseFloat(document.getElementById('other').value) || 0);
+      const totalCost = Math.round(yarnCost + othersCost);
+      const suggestedPrice = Math.round(totalCost * 2.5);
+      const profit = Math.round(suggestedPrice - totalCost);
+
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('totalCost').textContent = totalCost.toLocaleString('th-TH');
+      document.getElementById('yarnTotal').textContent = Math.round(yarnCost).toLocaleString('th-TH');
+      document.getElementById('suggestedPrice').textContent = suggestedPrice.toLocaleString('th-TH');
+      document.getElementById('profit').textContent = profit.toLocaleString('th-TH');
+    }
+
+    document.querySelector('button').addEventListener('click', calculate);
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
+      });
+    });
+
+    window.addEventListener('load', () => {
+      document.getElementById('yarnCost').value = '250';
+      document.getElementById('spools').value = '8';
+      document.getElementById('needles').value = '150';
+      document.getElementById('pattern').value = '100';
+      document.getElementById('buttons').value = '50';
+      document.getElementById('other').value = '100';
+      calculate();
+    });
+  </script>
+</BaseLayout>
