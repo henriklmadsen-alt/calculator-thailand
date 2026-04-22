@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const howtoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Buy Your First Home in Thailand',
+  description: 'Step-by-step guide to buying your first home in Thailand, including financing, fees, and taxes.',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Check Your Budget', text: 'Calculate how much home you can afford. Rule of thumb: monthly payment should not exceed 30% of your gross income.' },
+    { '@type': 'HowToStep', position: 2, name: 'Save for Down Payment', text: 'Thai banks typically require 10-30% down payment. First-time buyers may qualify for 90% LTV loans.' },
+    { '@type': 'HowToStep', position: 3, name: 'Get Pre-Approved', text: 'Apply for a home loan pre-approval from 2-3 banks to compare rates and terms.' },
+    { '@type': 'HowToStep', position: 4, name: 'Calculate Total Transfer Costs', text: 'Budget for transfer fees (2%), specific business tax (3.3%), stamp duty, and withholding tax on top of purchase price.' },
+    { '@type': 'HowToStep', position: 5, name: 'Sign Sales Agreement', text: 'Review the sale and purchase agreement carefully. Pay 10% deposit.' },
+    { '@type': 'HowToStep', position: 6, name: 'Complete Transfer at Land Office', text: 'Both parties meet at Land Department to complete the transfer and pay all fees.' },
+  ]
+};
+---
+
+<BaseLayout
+  title="First-Time Home Buyer Guide Thailand — Costs, Fees, Loans | Kamnuanlek"
+  description="Complete first-time home buyer guide for Thailand. Calculate all costs, understand fees, compare mortgages, and plan your home purchase."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(howtoSchema)} />
+
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">First-Time Home Buyer Guide</h1>
+
+    <div class="mb-10 p-6 bg-rose-50 border border-rose-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        Buying your first home in Thailand? This step-by-step guide covers everything — budget, loans, legal fees, and the transfer process.
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Step-by-Step Guide</h2>
+        <div class="space-y-4">
+          {[
+            { num: 1, title: 'Check Your Budget', desc: 'Calculate how much home you can afford. Monthly payment should be max 30% of gross income. Use our mortgage calculator.', cta: 'Calculate Mortgage', link: '/คำนวณผ่อนบ้าน/' },
+            { num: 2, title: 'Save for Down Payment', desc: 'Thai banks require 10-30% down payment. First-time buyers may qualify for 90% LTV loans under BOT guidelines.' },
+            { num: 3, title: 'Get Pre-Approved', desc: 'Apply for pre-approval from 2-3 banks to compare rates. Interest rates vary from 2-5% depending on credit profile.' },
+            { num: 4, title: 'Calculate Total Transfer Costs', desc: 'Budget an extra 5-8% on top of purchase price for government fees.', cta: 'Calculate Transfer Fees', link: '/คำนวณค่าโอนบ้าน/' },
+            { num: 5, title: 'Sign Sales Agreement', desc: 'Review the sale and purchase agreement carefully. Pay 10% deposit. Verify title deed at Land Department.' },
+            { num: 6, title: 'Complete Transfer', desc: 'Meet at Land Department with all documents, pay all fees and taxes, and receive title deed.' },
+          ].map((step) => (
+            <div class="flex gap-4 p-5 bg-white border border-gray-200 rounded-lg">
+              <div class="flex-shrink-0 w-10 h-10 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold text-sm">{step.num}</div>
+              <div class="flex-grow">
+                <h3 class="font-bold text-gray-900 mb-1">{step.title}</h3>
+                <p class="text-gray-700 text-sm mb-2">{step.desc}</p>
+                {step.cta && <a href={step.link} class="text-primary-600 text-sm font-medium hover:underline">{step.cta} →</a>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Typical Home Purchase Costs</h2>
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-900">Cost Item</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-900">Rate</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-900">On 2M THB home</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t">
+                <td class="px-4 py-3 text-gray-900">Transfer Fee</td>
+                <td class="px-4 py-3 text-gray-600">2%</td>
+                <td class="px-4 py-3 font-semibold">40,000 THB</td>
+              </tr>
+              <tr class="border-t bg-gray-50">
+                <td class="px-4 py-3 text-gray-900">Specific Business Tax</td>
+                <td class="px-4 py-3 text-gray-600">3.3%</td>
+                <td class="px-4 py-3 font-semibold">66,000 THB</td>
+              </tr>
+              <tr class="border-t">
+                <td class="px-4 py-3 text-gray-900">Mortgage Fees</td>
+                <td class="px-4 py-3 text-gray-600">1% of loan</td>
+                <td class="px-4 py-3 font-semibold">18,000 THB</td>
+              </tr>
+              <tr class="border-t bg-gray-50 font-bold">
+                <td class="px-4 py-3">Total Extra Costs</td>
+                <td class="px-4 py-3">~6-8%</td>
+                <td class="px-4 py-3 text-primary-600">~124,000 THB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Calculators You Need</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/คำนวณผ่อนบ้าน/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">🏦 Mortgage Calculator</span>
+          <p class="text-gray-600 text-sm mt-2">Monthly payment calculations</p>
+        </a>
+        <a href="/เครื่องคำนวณอสังหาริมทรัพย์/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">🏠 Property Cost Calculator</span>
+          <p class="text-gray-600 text-sm mt-2">Transfer fees and property taxes</p>
+        </a>
+        <a href="/เปรียบเทียบสินเชื่อ/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">🔍 Loan Comparison</span>
+          <p class="text-gray-600 text-sm mt-2">Compare home loan options</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
