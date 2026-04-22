@@ -24,23 +24,45 @@ const localeAlternates = [
   ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
 ];
 
+const organizationSchema = {
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: 'Kamnuanlek',
+  alternateName: ['คำนวณเลข', 'เครื่องคำนวณไทย', 'kamnuanlek.com'],
+  url: siteUrl,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.svg`,
+    width: 1200,
+    height: 630,
+  },
+  description: 'แพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีสำหรับคนไทย — คำนวณภาษี สินเชื่อ เงินเดือน ค่าไฟ และอีก 800+ รายการ อัปเดตอัตราราชการปี 2569',
+  foundingDate: '2024',
+  inLanguage: 'th-TH',
+  areaServed: { '@type': 'Country', name: 'Thailand' },
+  knowsAbout: ['Thai tax calculation', 'loan calculators', 'salary calculation', 'Thai financial tools', 'เครื่องคำนวณภาษี', 'คำนวณสินเชื่อ'],
+};
+
 const jsonLdWebPage = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebPage',
+  '@id': `${pageUrl}#webpage`,
   url: pageUrl,
   name: title,
   description,
   inLanguage: 'th-TH',
   isPartOf: {
     '@type': 'WebSite',
-    name: 'kamnuanlek — เครื่องคำนวณไทย',
+    '@id': `${siteUrl}/#website`,
+    name: 'Kamnuanlek — เครื่องคำนวณไทย',
     url: siteUrl,
   },
-  sourceOrganization: {
-    '@type': 'Organization',
-    name: 'kamnuanlek — เครื่องคำนวณไทย',
-    url: siteUrl,
-  },
+  sourceOrganization: organizationSchema,
+});
+
+const jsonLdOrganization = JSON.stringify({
+  '@context': 'https://schema.org',
+  ...organizationSchema,
 });
 
 const breadcrumbJsonLd = pageName ? JSON.stringify({
@@ -111,6 +133,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       rel="stylesheet"
     />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={jsonLdOrganization} />
     <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
 
