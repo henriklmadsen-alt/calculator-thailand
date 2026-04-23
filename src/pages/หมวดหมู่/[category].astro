@@ -51,6 +51,25 @@ const jsonLdWebApp = {
   description: cat.description,
   inLanguage: 'th',
 };
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'หน้าแรก',
+      item: `${siteUrl}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: cat.name,
+      item: `${siteUrl}/หมวดหมู่/${cat.slug}/`,
+    },
+  ],
+};
 ---
 
 <BaseLayout
@@ -60,6 +79,7 @@ const jsonLdWebApp = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
 
   <!-- Breadcrumb -->
   <nav class="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
