@@ -223,6 +223,16 @@ const permanentRedirects = new Map([
   ['/en/calculators/vehicle', '/คำนวณผ่อนรถ/'],
 
   // Legacy /calculator/* routes
+  ['/calculator/bmi/', '/คำนวณ-bmi/'],
+  ['/calculator/bmi', '/คำนวณ-bmi/'],
+  ['/calculator/apr/', '/คำนวณ-apr/'],
+  ['/calculator/apr', '/คำนวณ-apr/'],
+  ['/calculator/mortgage/', '/คำนวณผ่อนบ้าน/'],
+  ['/calculator/mortgage', '/คำนวณผ่อนบ้าน/'],
+  ['/calculator/salary/', '/คำนวณเงินเดือนสุทธิ/'],
+  ['/calculator/salary', '/คำนวณเงินเดือนสุทธิ/'],
+  ['/calculator/vehicle/', '/คำนวณผ่อนรถ/'],
+  ['/calculator/vehicle', '/คำนวณผ่อนรถ/'],
   ['/calculator/loan-payment/', '/คำนวณผ่อนกู้/'],
   ['/calculator/loan-payment', '/คำนวณผ่อนกู้/'],
   ['/calculator/property-transfer-tax/', '/คำนวณค่าธรรมเนียมโอนบ้าน/'],
