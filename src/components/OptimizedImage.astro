@@ -1,0 +1,90 @@
+---
+/**
+ * OptimizedImage.astro
+ *
+ * Reusable component for optimized images with WebP conversion, lazy loading,
+ * responsive images (srcset), and explicit dimensions to prevent CLS.
+ *
+ * Uses Astro's built-in image optimization (sharp) to automatically:
+ * - Convert PNG/JPG to WebP
+ * - Generate responsive versions (1x, 2x)
+ * - Optimize for web (compress, resize)
+ *
+ * Props:
+ * - src: Image source path (required)
+ * - alt: Alt text for accessibility (required)
+ * - width: Width in pixels (required for CLS prevention)
+ * - height: Height in pixels (required for CLS prevention)
+ * - lazy: Enable lazy loading? (default: true for below-fold)
+ * - sizes: CSS sizes attribute for responsive images (optional)
+ * - class: Additional CSS classes (optional)
+ */
+
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string | ImageMetadata;
+  alt: string;
+  width?: number | string;
+  height?: number | string;
+  lazy?: boolean;
+  sizes?: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'auto' | 'sync' | 'async';
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  lazy = true,
+  sizes,
+  class: className = '',
+  loading,
+  decoding = 'async',
+} = Astro.props;
+
+// Determine loading strategy: use explicit loading prop if set, otherwise use lazy prop
+const loadingStrategy = loading || (lazy ? 'lazy' : 'eager');
+
+// Calculate aspect ratio for responsive images
+let aspectRatio: string | undefined;
+if (width && height) {
+  const w = typeof width === 'string' ? parseInt(width) : width;
+  const h = typeof height === 'string' ? parseInt(height) : height;
+  aspectRatio = `${w} / ${h}`;
+}
+---
+
+<Image
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loadingStrategy}
+  decoding={decoding}
+  sizes={sizes}
+  class:list={[
+    'optimized-image',
+    {
+      'optimized-image--lazy': loadingStrategy === 'lazy',
+    },
+    className,
+  ]}
+  style={aspectRatio ? `aspect-ratio: ${aspectRatio}; object-fit: cover;` : undefined}
+/>
+
+<style>
+  .optimized-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Lazy-loaded images get a slight fade-in transition when loaded */
+  .optimized-image--lazy {
+    transition: opacity 0.2s ease-in;
+  }
+</style>

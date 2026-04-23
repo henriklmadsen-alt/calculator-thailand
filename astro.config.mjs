@@ -38,6 +38,11 @@ export default defineConfig({
       },
     }),
   ],
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
+  },
   site: process.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com',
   redirects: {
     // Article slug renames
