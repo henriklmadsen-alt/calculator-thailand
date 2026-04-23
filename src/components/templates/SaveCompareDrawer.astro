@@ -317,6 +317,9 @@
     if (typeof window.trackLanguageAwareEvent === 'function') {
       window.trackLanguageAwareEvent('calculation_saved', { calculator_type: entry.calcId });
     }
+
+    // Notify EmailCapture component so it can offer email opt-in
+    window.dispatchEvent(new CustomEvent('ct:calculation-saved', { detail: entry }));
   };
 
   // ── Toast ─────────────────────────────────────────────────
