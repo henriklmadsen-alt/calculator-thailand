@@ -1,3 +1,7 @@
+- [CAL-1463 Trust signal baseline audit spec](cal_1463_baseline_audit_spec.md) — 11 pages with trust components audited; Phase 0 baseline spec + 3 subtasks (CTO URL, Content FAQ, Release QA mobile) due 2026-04-27
+- [CAL-1479 Heartbeat 2026-04-24](cal_1479_heartbeat_2026_04_24.md) — Phase 1 audit unblock; CAL-1463→UXDesigner, CAL-1468→CTO in_progress. SEO specialist agent error flagged.
+- [CAL-1471 Sprint Heartbeat Complete](cal_1471_heartbeat_complete.md) — Phase 1 audit consolidation done; 5 implementation subtasks created (due 2026-04-27 to 2026-05-02)
+- [CAL-1462 Template consistency audit complete](cal_1462_audit_complete.md) — 921-page site has critical template fragmentation; 99.7% of pages missing key components. FAIL result with implementation plan.
 - [Site Recovery Complete (Apr 23)](site_recovery_apr23.md) — Production operational; CAL-918 TLS resolved; normal hourly smoke resumed
 - [QA smoke must verify kamnuanlek.com explicitly](feedback_qa_smoke_verification.md) — Never use Railway service URL as substitute; CAL-902 false closure caused CAL-918 outage
 - [CEO dispatch log](ceo_dispatch_log.md) — Hourly trust QA dispatch routine (CAL-618 → CAL-620; now CAL-950+)
