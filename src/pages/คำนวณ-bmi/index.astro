@@ -206,7 +206,7 @@ const jsonLdHowTo = {
       </button>
 
       <!-- Result -->
-      <div id="result" class="hidden mt-6 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+      <div id="result" class="hidden mt-6 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm result-card">
         <!-- BMI Value -->
         <div class="text-center mb-6">
           <div class="text-base sm:text-lg text-gray-600 mb-2 font-medium">ค่า BMI ของคุณ</div>
@@ -520,6 +520,71 @@ const jsonLdHowTo = {
     // Overweight: 23.0 - 24.9
     // Obese: >= 25.0
 
+    // CAL-974: Status indicator for color coding
+    interface StatusIndicator {
+      colorClass: string;
+      icon: string;
+      label: string;
+      ariaLabel: string;
+    }
+
+    function getBMIStatus(bmi: number): StatusIndicator {
+      if (bmi < 18.5) {
+        return {
+          colorClass: 'result-card--status-blue',
+          icon: 'ℹ️',
+          label: 'ข้อมูล',
+          ariaLabel: 'น้ำหนักน้อย',
+        };
+      }
+      if (bmi < 23) {
+        return {
+          colorClass: 'result-card--status-green',
+          icon: '✅',
+          label: 'ปกติ',
+          ariaLabel: 'ปกติ',
+        };
+      }
+      if (bmi < 25) {
+        return {
+          colorClass: 'result-card--status-yellow',
+          icon: '⚠️',
+          label: 'เตือน',
+          ariaLabel: 'น้ำหนักเกิน',
+        };
+      }
+      return {
+        colorClass: 'result-card--status-red',
+        icon: '❌',
+        label: 'เร่งด่วน',
+        ariaLabel: 'อ้วน',
+      };
+    }
+
+    function applyResultCardColoring(elementId: string, status: StatusIndicator): void {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      // Remove any existing status classes and add new ones
+      el.className = (el.className || '')
+        .replace(/result-card--status-\w+/g, '')
+        .trim();
+      el.classList.add('result-card', status.colorClass);
+
+      // Remove existing badge if any
+      const existingBadge = el.querySelector('.result-status-badge');
+      if (existingBadge) existingBadge.remove();
+
+      // Create status badge
+      const badge = document.createElement('div');
+      badge.className = 'result-status-badge';
+      badge.innerHTML = `
+        <span class="result-status-icon" aria-label="${status.ariaLabel}">${status.icon}</span>
+        <span class="result-status-label">${status.label}</span>
+      `;
+      el.insertBefore(badge, el.firstChild);
+    }
+
     function calculateBMI(weightKg: number, heightCm: number): number {
       const heightM = heightCm / 100;
       return weightKg / (heightM * heightM);
@@ -620,6 +685,11 @@ const jsonLdHowTo = {
       const resultEl = document.getElementById('result') as HTMLElement;
       resultEl.classList.remove('hidden');
       resultEl.classList.add('result-animate-in');
+
+      // CAL-974: Apply color-coded status indicator
+      const status = getBMIStatus(bmi);
+      applyResultCardColoring('result', status);
+
       document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('bmi');
 

@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 ฟรี — รวมค่าธรรมเนียมทุกอย่าง รู้ต้นทุนสินเชื่อที่แท้จริงก่อนเซ็นสัญญา';
@@ -41,15 +42,6 @@ const jsonLdWebApp = {
   inLanguage: 'th',
 };
 
-const jsonLdFaq = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqData.map((faq) => ({
-    '@type': 'Question',
-    name: faq.question,
-    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
-  })),
-};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ APR">
@@ -267,22 +259,7 @@ const jsonLdFaq = {
       </ul>
     </section>
 
-    <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
 
     <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
