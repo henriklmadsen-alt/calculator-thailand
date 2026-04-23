@@ -8,11 +8,15 @@ const OUTPUT_DIR = 'public';
 const OUTPUT_FILE = `${OUTPUT_DIR}/__release.json`;
 
 function getCurrentSha() {
+  // Railway injects RAILWAY_GIT_COMMIT_SHA at build time — use it when git binary isn't available
+  if (process.env.RAILWAY_GIT_COMMIT_SHA) {
+    return process.env.RAILWAY_GIT_COMMIT_SHA;
+  }
   try {
     return execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-  } catch (error) {
-    console.error('Failed to get current git SHA:', error.message);
-    process.exit(1);
+  } catch {
+    console.warn('git not available and RAILWAY_GIT_COMMIT_SHA not set — using "unknown"');
+    return 'unknown';
   }
 }
 
