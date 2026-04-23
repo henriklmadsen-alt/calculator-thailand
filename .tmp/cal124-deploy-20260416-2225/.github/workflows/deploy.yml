@@ -1,0 +1,93 @@
+name: Railway Release Confirmation Gate
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Production URL to verify (defaults to Railway production hostname)
+        required: false
+        default: https://calculator-thailand-production.up.railway.app
+      expected_sha:
+        description: Commit SHA expected in production (defaults to triggering SHA)
+        required: false
+      timeout_minutes:
+        description: Maximum minutes to wait for Railway rollout
+        required: false
+        default: '15'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: railway-release-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEFAULT_SITE_URL: https://calculator-thailand-production.up.railway.app
+
+jobs:
+  build:
+    name: Build Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  release_confirmation:
+    name: Release Confirmation
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.resolve.outputs.site_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Resolve verification parameters
+        id: resolve
+        env:
+          INPUT_SITE_URL: ${{ github.event.inputs.site_url }}
+          INPUT_EXPECTED_SHA: ${{ github.event.inputs.expected_sha }}
+          INPUT_TIMEOUT_MINUTES: ${{ github.event.inputs.timeout_minutes }}
+          DEFAULT_EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          SITE_URL="${INPUT_SITE_URL:-$DEFAULT_SITE_URL}"
+          EXPECTED_SHA="${INPUT_EXPECTED_SHA:-$DEFAULT_EXPECTED_SHA}"
+          TIMEOUT_MINUTES="${INPUT_TIMEOUT_MINUTES:-15}"
+
+          if ! [[ "$TIMEOUT_MINUTES" =~ ^[0-9]+$ ]]; then
+            echo "timeout_minutes must be an integer. Received: $TIMEOUT_MINUTES" >&2
+            exit 1
+          fi
+
+          echo "site_url=$SITE_URL" >> "$GITHUB_OUTPUT"
+          echo "expected_sha=$EXPECTED_SHA" >> "$GITHUB_OUTPUT"
+          echo "timeout_ms=$((TIMEOUT_MINUTES * 60 * 1000))" >> "$GITHUB_OUTPUT"
+      - name: Verify Railway production commit
+        run: |
+          node scripts/verify-railway-release.mjs \
+            --site-url "${{ steps.resolve.outputs.site_url }}" \
+            --expected-sha "${{ steps.resolve.outputs.expected_sha }}" \
+            --timeout-ms "${{ steps.resolve.outputs.timeout_ms }}" \
+            --interval-ms 15000
+      - name: Publish gate summary
+        if: always()
+        run: |
+          {
+            echo "### Railway Release Confirmation"
+            echo ""
+            echo "- Site URL: \`${{ steps.resolve.outputs.site_url }}\`"
+            echo "- Expected SHA: \`${{ steps.resolve.outputs.expected_sha }}\`"
+            echo "- Timeout: \`${{ steps.resolve.outputs.timeout_ms }} ms\`"
+          } >> "$GITHUB_STEP_SUMMARY"

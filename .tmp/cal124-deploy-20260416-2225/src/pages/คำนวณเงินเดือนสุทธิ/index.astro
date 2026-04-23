@@ -1,0 +1,521 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'คำนวณเงินเดือนสุทธิ เช็กเงินรับจริง 2569 (2026) | Calculator Thailand';
+const pageDescription = 'คำนวณเงินเดือนสุทธิ อัปเดตปี 2569 (2026) ฟรี เช็กเงินรับจริงหลังหักภาษี ณ ที่จ่ายและประกันสังคม พร้อมตารางสรุปรายเดือนและรายปีเพื่อเปรียบเทียบรายได้ก่อนเปลี่ยนงาน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://calculator-thailand-production.up.railway.app').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินเดือนสุทธิ/`;
+
+const faqData = [
+  {
+    question: 'เงินเดือนสุทธิคำนวณอย่างไร?',
+    answer: 'เงินเดือนสุทธิ = เงินเดือน − ภาษีเงินได้หัก ณ ที่จ่าย − เงินสมทบประกันสังคม โดยภาษีคำนวณจากรายได้ทั้งปีตามขั้นบันไดภาษี หารเฉลี่ย 12 เดือน ส่วนประกันสังคมหัก 5% ของเงินเดือน สูงสุดไม่เกิน 750 บาทต่อเดือน',
+  },
+  {
+    question: 'ประกันสังคมหักเท่าไร?',
+    answer: 'ลูกจ้างสมทบประกันสังคม 5% ของเงินเดือน โดยคำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท จึงหักขั้นต่ำ 83 บาท สูงสุด 750 บาทต่อเดือน',
+  },
+  {
+    question: 'ภาษีหัก ณ ที่จ่ายคำนวณยังไง?',
+    answer: 'นายจ้างประมาณภาษีทั้งปีจากเงินเดือน × 12 หักค่าใช้จ่าย 50% (สูงสุด 100,000 บาท) หักค่าลดหย่อนส่วนตัว 60,000 บาท และประกันสังคม แล้วคำนวณภาษีตามขั้นบันได หาร 12 เป็นภาษีหักต่อเดือน',
+  },
+  {
+    question: 'เงินเดือนเท่าไรไม่ต้องเสียภาษี?',
+    answer: 'หากมีรายได้จากเงินเดือนเพียงอย่างเดียว และไม่มีลดหย่อนอื่น เงินเดือนประมาณ 26,583 บาทต่อเดือน (319,000 บาทต่อปี) จึงจะเริ่มเสียภาษี เนื่องจากหักค่าใช้จ่าย 100,000 + ลดหย่อนส่วนตัว 60,000 + ประกันสังคม 9,000 = 169,000 บาท ทำให้รายได้สุทธิ 150,000 บาทแรกได้รับยกเว้นภาษี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเงินเดือนสุทธิ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือนสุทธิ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเงินเดือนสุทธิ เช็กเงินรับจริง 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเงินเดือนหลังหักภาษี ณ ที่จ่าย และประกันสังคม แสดงรายละเอียดทุกรายการหัก
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <p id="net-salary-form-error" class="mb-4 hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+        กรอกข้อมูลให้ครบก่อนคำนวณ
+      </p>
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="gross-salary" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินเดือน (บาท/เดือน)
+          </label>
+          <input
+            type="text"
+            id="gross-salary"
+            inputmode="numeric"
+            placeholder="เช่น 35,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="gross-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <details class="text-sm">
+          <summary class="cursor-pointer text-primary-600 font-medium hover:text-primary-700">
+            ตั้งค่าลดหย่อนเพิ่มเติม (ไม่บังคับ)
+          </summary>
+          <div class="mt-3 space-y-3 p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="has-spouse" class="rounded border-gray-300" />
+              <label for="has-spouse" class="text-gray-700">คู่สมรส (ไม่มีรายได้) +60,000 บาท</label>
+            </div>
+            <div>
+              <label for="child-count" class="block text-gray-700 mb-1">จำนวนบุตร (คนละ 30,000 บาท)</label>
+              <input
+                type="number"
+                id="child-count"
+                min="0"
+                max="10"
+                value="0"
+                class="w-20 px-2 py-1 border border-gray-300 rounded-md text-sm"
+              />
+            </div>
+            <div>
+              <label for="extra-deductions" class="block text-gray-700 mb-1">ลดหย่อนอื่นๆ (บาท/ปี)</label>
+              <input
+                type="text"
+                id="extra-deductions"
+                inputmode="numeric"
+                placeholder="เช่น ประกันชีวิต กองทุนสำรองฯ"
+                class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+              />
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณทันที
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินเดือนสุทธิ</div>
+            <div id="res-net" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดหักรวม</div>
+            <div id="res-total-deductions" class="text-2xl font-bold text-red-600">-</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="space-y-2 text-sm mb-6">
+          <h3 class="font-semibold text-gray-900">รายละเอียดการหัก (ต่อเดือน)</h3>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">เงินเดือน</span>
+            <span id="res-gross" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">ประกันสังคม (5% สูงสุด 750 บาท)</span>
+            <span id="res-ss" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">ภาษีเงินได้ หัก ณ ที่จ่าย</span>
+            <span id="res-tax" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-300 font-semibold text-base">
+            <span class="text-gray-900">เงินเดือนสุทธิ</span>
+            <span id="res-net-bottom" class="text-green-700">-</span>
+          </div>
+        </div>
+
+        <!-- Annual Summary -->
+        <div class="bg-gray-50 rounded-lg p-4 text-sm">
+          <h3 class="font-semibold text-gray-900 mb-2">สรุปรายปี</h3>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600">รายได้รวม/ปี</span>
+              <span id="res-annual-gross" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">ภาษีรวม/ปี</span>
+              <span id="res-annual-tax" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">ประกันสังคมรวม/ปี</span>
+              <span id="res-annual-ss" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">อัตราภาษีที่แท้จริง</span>
+              <span id="res-effective-rate" class="font-medium">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Link to detailed tax calculator -->
+        <div class="mt-4 p-3 bg-primary-50 rounded-lg text-sm">
+          <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="text-primary-600 font-medium hover:text-primary-700">
+            → คำนวณภาษีเงินได้ละเอียด พร้อมลดหย่อนทุกรายการ
+          </a>
+        </div>
+      </div>
+    </div>
+    <div id="net-salary-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณภาษีเงินได้บุคคลธรรมดา</p>
+      <p class="mt-1 text-sm text-primary-700">ขยายการคำนวณด้วยค่าลดหย่อนละเอียดเพื่อวางแผนภาษีทั้งปี</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณภาษีเงินได้บุคคลธรรมดา</a>
+        <a data-next-action-link href="/บทความ/ภาษีเงินได้-2569-คำนวณ-วิธีลดหย่อน/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: วิธีลดหย่อนภาษี</a>
+      </div>
+    </div>
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#result"
+    />
+<!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณเงินเดือนสุทธิ</h2>
+
+      <p>
+        เงินเดือนสุทธิ คือจำนวนเงินที่ลูกจ้างได้รับจริงหลังหักรายการต่างๆ ออกจากเงินเดือน
+        รายการหลักที่ถูกหักประจำทุกเดือนคือ ภาษีเงินได้หัก ณ ที่จ่าย และเงินสมทบประกันสังคม
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">1. เงินสมทบประกันสังคม</h3>
+
+      <p>
+        ลูกจ้างต้องจ่ายเงินสมทบประกันสังคม 5% ของค่าจ้าง
+        โดยคำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท และสูงสุด 15,000 บาท
+        ดังนั้นจำนวนเงินสมทบจะอยู่ระหว่าง 83 บาท ถึง 750 บาทต่อเดือน
+        นายจ้างจ่ายสมทบอีก 5% เท่ากัน
+      </p>
+
+      <div class="bg-gray-50 rounded-lg p-4 my-4">
+        <p class="font-semibold">สูตร: ประกันสังคม = เงินเดือน × 5% (สูงสุด 750 บาท)</p>
+        <p class="text-sm text-gray-500 mt-1">ตัวอย่าง: เงินเดือน 30,000 บาท → 30,000 × 5% = 1,500 → หัก 750 บาท (เนื่องจากเกินเพดาน)</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">2. ภาษีเงินได้หัก ณ ที่จ่าย</h3>
+
+      <p>
+        นายจ้างมีหน้าที่หักภาษี ณ ที่จ่ายจากเงินเดือนลูกจ้างทุกเดือน
+        โดยประมาณการรายได้ทั้งปี หักค่าใช้จ่าย (50% สูงสุด 100,000 บาท)
+        หักค่าลดหย่อนส่วนตัว (60,000 บาท) และหักประกันสังคม
+        แล้วคำนวณภาษีตามอัตราขั้นบันไดของปีภาษีนั้น หารด้วย 12 เดือน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราภาษีเงินได้บุคคลธรรมดา (ขั้นบันได)</h3>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-gray-300">
+              <th class="py-2 pr-4">รายได้สุทธิ (บาท)</th>
+              <th class="py-2">อัตราภาษี</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">0 — 150,000</td><td class="py-2">ยกเว้น</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">150,001 — 300,000</td><td class="py-2">5%</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">300,001 — 500,000</td><td class="py-2">10%</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">500,001 — 750,000</td><td class="py-2">15%</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">750,001 — 1,000,000</td><td class="py-2">20%</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">1,000,001 — 2,000,000</td><td class="py-2">25%</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">2,000,001 — 5,000,000</td><td class="py-2">30%</td></tr>
+            <tr><td class="py-2 pr-4">5,000,001 ขึ้นไป</td><td class="py-2">35%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        สมมติเงินเดือน 35,000 บาท ไม่มีลดหย่อนอื่นนอกจากส่วนตัว:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>รายได้ต่อปี: 35,000 × 12 = 420,000 บาท</li>
+        <li>หักค่าใช้จ่าย: 100,000 บาท</li>
+        <li>หักลดหย่อนส่วนตัว: 60,000 บาท</li>
+        <li>หักประกันสังคม: 750 × 12 = 9,000 บาท</li>
+        <li>รายได้สุทธิ: 420,000 − 100,000 − 60,000 − 9,000 = 251,000 บาท</li>
+        <li>ภาษี: 150,000 แรกยกเว้น + 101,000 × 5% = 5,050 บาท/ปี</li>
+        <li>ภาษีต่อเดือน: 5,050 ÷ 12 ≈ 421 บาท</li>
+        <li>เงินเดือนสุทธิ: 35,000 − 750 − 421 = 33,829 บาท</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
+          <span class="text-gray-400 text-sm block">ภาษีเงินได้ตามขั้นบันได พร้อมลดหย่อนครบ</span>
+        </a>
+        <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณ VAT 7%</span>
+          <span class="text-gray-400 text-sm block">บวก VAT หรือแยก VAT จากราคารวม</span>
+        </a>
+        <a href="/คำนวณผ่อนรถ/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณผ่อนรถ</span>
+          <span class="text-gray-400 text-sm block">ค่างวดรถยนต์ ดอกเบี้ย เงินดาวน์</span>
+        </a>
+        <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยเงินฝาก</span>
+          <span class="text-gray-400 text-sm block">ดอกเบี้ยเงินฝากประจำและออมทรัพย์</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ภาษีจริงอาจแตกต่างกันขึ้นอยู่กับรายการลดหย่อนและสิทธิประโยชน์ทางภาษีอื่นๆ
+      กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    const TAX_BRACKETS = [
+      { min: 0, max: 150_000, rate: 0 },
+      { min: 150_000, max: 300_000, rate: 0.05 },
+      { min: 300_000, max: 500_000, rate: 0.10 },
+      { min: 500_000, max: 750_000, rate: 0.15 },
+      { min: 750_000, max: 1_000_000, rate: 0.20 },
+      { min: 1_000_000, max: 2_000_000, rate: 0.25 },
+      { min: 2_000_000, max: 5_000_000, rate: 0.30 },
+      { min: 5_000_000, max: Infinity, rate: 0.35 },
+    ];
+
+    const SS_RATE = 0.05;
+    const SS_MAX_MONTHLY = 750;
+    const EXPENSE_CAP = 100_000;
+    const PERSONAL_ALLOWANCE = 60_000;
+    const SPOUSE_ALLOWANCE = 60_000;
+    const CHILD_ALLOWANCE = 30_000;
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function calculateAnnualTax(netIncome: number): number {
+      let remaining = netIncome;
+      let tax = 0;
+      for (const bracket of TAX_BRACKETS) {
+        const width = bracket.max === Infinity ? Infinity : bracket.max - bracket.min;
+        const taxable = Math.min(remaining, width);
+        tax += taxable * bracket.rate;
+        remaining -= taxable;
+        if (remaining <= 0) break;
+      }
+      return tax;
+    }
+
+    function calculate(grossMonthly: number, hasSpouse: boolean, childCount: number, extraDeductions: number) {
+      // Social Security
+      const ssMonthly = Math.min(grossMonthly * SS_RATE, SS_MAX_MONTHLY);
+      const ssAnnual = ssMonthly * 12;
+
+      // Annual income
+      const annualGross = grossMonthly * 12;
+
+      // Expense deduction (50% capped at 100,000)
+      const expenseDeduction = Math.min(annualGross * 0.5, EXPENSE_CAP);
+
+      // Allowances
+      let allowances = PERSONAL_ALLOWANCE;
+      if (hasSpouse) allowances += SPOUSE_ALLOWANCE;
+      allowances += childCount * CHILD_ALLOWANCE;
+      allowances += Math.min(ssAnnual, 9_000);
+      allowances += extraDeductions;
+
+      // Net taxable income
+      const netTaxable = Math.max(0, annualGross - expenseDeduction - allowances);
+
+      // Tax
+      const annualTax = calculateAnnualTax(netTaxable);
+      const monthlyTax = annualTax / 12;
+
+      // Net salary
+      const netMonthly = grossMonthly - ssMonthly - monthlyTax;
+      const totalDeductions = ssMonthly + monthlyTax;
+      const effectiveRate = annualGross > 0 ? (annualTax / annualGross) * 100 : 0;
+
+      return { grossMonthly, ssMonthly, monthlyTax, netMonthly, totalDeductions, annualGross, annualTax, ssAnnual, effectiveRate };
+    }
+
+    const grossInput = document.getElementById('gross-salary') as HTMLInputElement;
+    const submitBtn = document.getElementById('btn-calculate') as HTMLButtonElement;
+    const formError = document.getElementById('net-salary-form-error') as HTMLElement;
+    const grossError = document.getElementById('gross-salary-error') as HTMLElement;
+    const nextActionCard = document.getElementById('net-salary-next-action') as HTMLElement;
+    const resultDiv = document.getElementById('result') as HTMLElement;
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      grossError.textContent = '';
+      grossError.classList.add('hidden');
+    }
+
+    function updateSubmitState() {
+      const ready = parseNum(grossInput.value) > 0;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    grossInput.addEventListener('input', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+    updateSubmitState();
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      clearValidation();
+
+      if (hasInvalidNumber(grossInput.value)) {
+        formError.classList.remove('hidden');
+        grossError.textContent = 'รูปแบบข้อมูลไม่ถูกต้อง';
+        grossError.classList.remove('hidden');
+        grossInput.focus();
+        updateSubmitState();
+        return;
+      }
+
+      const gross = parseNum(grossInput.value);
+      if (gross <= 0) {
+        formError.classList.remove('hidden');
+        grossError.textContent = 'กรุณากรอกจำนวนเงินมากกว่า 0';
+        grossError.classList.remove('hidden');
+        grossInput.focus();
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('net_salary');
+
+      const hasSpouse = (document.getElementById('has-spouse') as HTMLInputElement).checked;
+      const childCount = parseInt((document.getElementById('child-count') as HTMLInputElement).value) || 0;
+      const extraDeductions = parseNum((document.getElementById('extra-deductions') as HTMLInputElement).value);
+
+      const r = calculate(gross, hasSpouse, childCount, extraDeductions);
+
+      (document.getElementById('res-net') as HTMLElement).textContent = fmt(r.netMonthly) + ' บาท';
+      (document.getElementById('res-total-deductions') as HTMLElement).textContent = '−' + fmt(r.totalDeductions) + ' บาท';
+      (document.getElementById('res-gross') as HTMLElement).textContent = fmt(r.grossMonthly) + ' บาท';
+      (document.getElementById('res-ss') as HTMLElement).textContent = '−' + fmt(r.ssMonthly) + ' บาท';
+      (document.getElementById('res-tax') as HTMLElement).textContent = '−' + fmt(r.monthlyTax) + ' บาท';
+      (document.getElementById('res-net-bottom') as HTMLElement).textContent = fmt(r.netMonthly) + ' บาท';
+      (document.getElementById('res-annual-gross') as HTMLElement).textContent = fmt(r.annualGross) + ' บาท';
+      (document.getElementById('res-annual-tax') as HTMLElement).textContent = fmt(r.annualTax) + ' บาท';
+      (document.getElementById('res-annual-ss') as HTMLElement).textContent = fmt(r.ssAnnual) + ' บาท';
+      (document.getElementById('res-effective-rate') as HTMLElement).textContent = r.effectiveRate.toFixed(2) + '%';
+
+      resultDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('net_salary');
+      trackCalculatorUsed('net_salary');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'net_salary',
+            target_href: href,
+          });
+        }
+      });
+    });
+
+    // Allow Enter key
+    grossInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btn-calculate')!.click();
+      }
+    });
+
+    // Track when result section enters viewport
+    const salaryResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('net_salary');
+          salaryResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    salaryResultObserver.observe(document.getElementById('result')!);
+  </script>
+</BaseLayout>
+

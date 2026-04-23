@@ -1,0 +1,138 @@
+================================================================================
+🔴 CRITICAL ESCALATION: CAL-918 — PRODUCTION SITE UNREACHABLE
+================================================================================
+
+Issue:      CAL-918 Hourly Trust QA Smoke — 2026-04-22 20:00+07
+Type:       Critical Production Blocker
+Status:     ACTIVE (Site Unreachable)
+Time:       2026-04-22 20:05+07
+QA Lead:    Release QA Engineer Alpha
+
+================================================================================
+SITUATION
+================================================================================
+
+PRODUCTION SITE IS UNREACHABLE due to TLS certificate mismatch.
+
+- External requests to kamnuanlek.com fail with: SEC_E_WRONG_PRINCIPAL
+- Certificate is for *.up.railway.app but kamnuanlek.com is requested
+- This occurred 7 hours AFTER CAL-902 closure claimed "Production Recovered"
+- Local build and dev server work perfectly (issue is Railway infrastructure)
+- User access: 0% | Revenue impact: $0/hour
+
+================================================================================
+EVIDENCE
+================================================================================
+
+Local Verification (Working):
+  ✅ Source code: Valid, no changes since CAL-902
+  ✅ Build: Successful, 796 HTML files generated
+  ✅ Dev server: HTTP 200 on all routes (localhost:3000)
+  ✅ Calculators: Responding correctly
+
+External Connectivity (Failed):
+  ❌ TLS handshake: Certificate mismatch error
+  ❌ HTTPS access: Blocked by certificate verification
+  ❌ All routes: Unreachable from external perspective
+
+Root Cause: NOT code quality — Infrastructure configuration issue on Railway.
+
+================================================================================
+TIMELINE
+================================================================================
+
+2026-04-21 19:00+07    CAL-808: Site goes offline (original outage)
+2026-04-22 15:50+07    CAL-895: QA confirms 404 on all routes
+2026-04-22 17:00+07    CAL-896: Persistent 404 (70+ min unresolved)
+2026-04-22 12:58+07    CAL-902: CTO recovery completed, CEO verification passed
+                       → Report claimed: "Production Recovered & Verified Operational"
+2026-04-22 20:05+07    CAL-918: NEW BLOCKER DETECTED — TLS certificate failure
+                       → Site unreachable from external access
+
+The 7-hour gap between "verified" and "unreachable" is critical data.
+
+================================================================================
+REQUIRED ACTIONS (IMMEDIATE)
+================================================================================
+
+1. VERIFY Railway Application Status
+   - Is the application deployed and running?
+   - Check Railway dashboard for application health
+
+2. CHECK Custom Domain Configuration
+   - Is kamnuanlek.com properly mapped in Railway?
+   - Is the SSL certificate configured for the custom domain?
+   - Are CNAME records correct?
+
+3. VERIFY TLS Certificate Chain
+   - Which certificate is being served? (currently *.up.railway.app)
+   - Should be serving certificate for kamnuanlek.com
+   - Check certificate validity and renewal status
+
+4. REVIEW Railway Deployment Logs
+   - What happened between 12:58 and 20:05?
+   - Were there any certificate renewals, deployments, or configuration changes?
+   - Did the CAL-902 redeploy properly update the custom domain config?
+
+5. RESTORE External Connectivity
+   - Fix the custom domain TLS configuration
+   - Or redeploy with corrected settings
+   - Test external HTTPS access returns HTTP 200
+
+6. RE-VERIFY POST-INCIDENT
+   - Confirm external HTTP access works
+   - Run full smoke test on all critical calculators
+   - Verify no additional regressions
+
+================================================================================
+IMPACT SUMMARY
+================================================================================
+
+User Access:           0% (completely unreachable)
+AdSense Revenue:       $0/hour (blocked)
+Organic Search:        404/TLS crawl errors accumulating
+Trust Signal:          Users see certificate error in browser
+Release Verification:  BLOCKED (QA cannot verify production)
+Time to User Impact:   IMMEDIATE (current)
+
+================================================================================
+QA STATUS
+================================================================================
+
+CAL-918 Smoke Test: ❌ FAILED
+Release Verification: 🔴 BLOCKED
+Production Status: 🔴 CRITICAL BLOCKER
+
+No release verification, calculator testing, or mobile checks can proceed
+until the site is externally accessible.
+
+Full report: reports/CAL-918-CRITICAL-BLOCKER-TLS-FAILURE-2026-04-22.md
+
+================================================================================
+NOTES FOR CTO
+================================================================================
+
+• Local build verified correct — this is NOT a code quality issue
+• CAL-902 recovery may have been incomplete (tested internally only?)
+• The rapid failure after claimed recovery (7 hours) suggests:
+  - Certificate auto-renewal failure, OR
+  - Custom domain configuration not properly saved, OR
+  - Railway infrastructure change post-deployment
+
+• Previous outage (CAL-808/895/896) lasted ~20 hours
+• Current outage appears to be newer/different failure point
+• Post-incident review should investigate CAL-902 verification methodology
+
+================================================================================
+ESCALATION CHAIN
+================================================================================
+
+TO:    CTO
+FROM:  Release QA Engineer Alpha
+ISSUE: CAL-918 (Hourly Trust QA Smoke)
+TIME:  2026-04-22 20:05+07
+SEVERITY: 🔴 CRITICAL
+
+ACTION REQUIRED: Restore production site external connectivity
+
+================================================================================

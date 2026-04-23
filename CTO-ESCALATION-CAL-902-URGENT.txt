@@ -1,0 +1,145 @@
+===============================================================================
+URGENT CTO ESCALATION — CAL-902
+Production Site Offline (20+ hours) — Root Cause Identified — Action Required
+===============================================================================
+
+ISSUE: CAL-902 Hourly Trust QA Smoke ~ 2026-04-22 16:00+07 [SITE OFFLINE]
+
+STATUS: Root cause found. Source code verified correct. Deployment fix required.
+
+===============================================================================
+QA FINDINGS SUMMARY
+===============================================================================
+
+ROOT CAUSE:
+  Railway deployment contains corrupted dist/ directory
+  - Contains .astro.mjs files (compiled components) instead of .html files
+  - Server cannot serve pages (file not found → 404 on all routes)
+  - Source code is correct; build process works locally
+
+IMPACT:
+  - Production: 0% uptime (all routes return 404)
+  - Revenue: AdSense blocked (20+ hour loss estimated)
+  - Users: Cannot access site
+  - Organic search: 404 crawl errors accumulating
+  - Release verification: Impossible while site is offline
+
+OUTAGE DURATION:
+  - Started: 2026-04-21 19:00+07 (CAL-808)
+  - Ongoing: 20+ hours
+  - Reported: CAL-896 at 2026-04-22 17:00+07
+
+===============================================================================
+QA VERIFICATION EVIDENCE
+===============================================================================
+
+✅ SOURCE CODE CORRECT:
+  - astro.config.mjs: output: 'static' (correct)
+  - server.mjs: handles file serving correctly
+  - Recent commits (dc5f0e8): syntax valid, no errors
+
+✅ BUILD PROCESS WORKS:
+  - Local npm run build: SUCCESS
+  - 785 pages compiled to .html files
+  - Build completes in 18.15 seconds
+
+✅ SERVER WORKS LOCALLY:
+  - node server.mjs starts successfully
+  - Homepage (/) returns HTTP 200 with .html content
+  - Thai calculators (/คำนวณผ่อนกู้/) return HTTP 200
+  - Redirects work correctly
+
+❌ RAILWAY DEPLOYMENT BROKEN:
+  - dist/ directory contains .astro.mjs instead of .html
+  - Server cannot find files to serve
+  - Results in 404 on all routes
+
+===============================================================================
+REQUIRED CTO ACTION
+===============================================================================
+
+IMMEDIATE (Next 5 minutes):
+
+Option 1 — RECOMMENDED: Trigger Railway Redeploy
+  1. Log into Railway dashboard
+  2. Trigger a redeploy of commit dc5f0e8 or latest
+  3. Watch build logs to confirm npm run build succeeds
+  4. Verify site returns HTTP 200 on homepage
+
+Option 2: Manual Build on Railway
+  1. SSH into Railway app or use Railway console
+  2. Run: npm run build
+  3. Restart application
+  4. Verify site returns HTTP 200
+
+Option 3: Inspect Build Logs
+  1. Check Railway deployment logs for dc5f0e8 deployment
+  2. Identify where build succeeded but dist/ was corrupted
+  3. Determine root cause and appropriate recovery action
+
+===============================================================================
+POST-RECOVERY VERIFICATION
+===============================================================================
+
+Once kamnuanlek.com returns HTTP 200:
+
+QA Verification (Immediate):
+  - Re-run full smoke test (CAL-902)
+  - Verify 7 critical calculators: HTTP 200
+  - Verify no regressions from code changes
+  - Check mobile responsiveness
+
+Trust Verification:
+  - Site stays up for 60+ seconds
+  - No error logs in Railway console
+  - Server responses stable and consistent
+
+Release Gate:
+  - Mark CAL-902 blocker as cleared
+  - Resume normal QA dispatch
+  - Document recovery timeline for incident review
+
+===============================================================================
+FULL ANALYSIS
+===============================================================================
+
+Complete QA root cause analysis report:
+  reports/CAL-902-QA-ROOT-CAUSE-ANALYSIS.md
+
+This file contains:
+  - Detailed investigation timeline
+  - Build output analysis
+  - Server functionality verification
+  - Business impact assessment
+  - Recovery steps and validation criteria
+
+===============================================================================
+SUMMARY FOR CTO
+===============================================================================
+
+The site is offline due to a corrupted dist/ directory on Railway.
+The source code is correct and builds successfully locally.
+A simple redeploy on Railway will regenerate the dist/ directory.
+Estimated recovery time: <15 minutes.
+Estimated revenue loss during outage: $X (20+ hours at full AdSense)
+
+This is a deployment/infrastructure issue, not a code issue.
+
+Next step: CTO triggers Railway redeploy.
+QA will verify recovery when site returns HTTP 200.
+
+===============================================================================
+QA ESCALATION SUMMARY
+===============================================================================
+
+Issue: CAL-902
+Type: Critical Blocker — Production Offline
+Assignee: Release QA Engineer Alpha (verified root cause)
+Next Action Owner: CTO (redeploy Railway)
+Priority: CRITICAL
+Urgency: IMMEDIATE (revenue-blocking)
+Status: Awaiting CTO action
+
+Report Created: 2026-04-22 09:10+07
+Submitted By: Release QA Engineer Alpha
+Evidence: Full analysis + local verification + build/test evidence

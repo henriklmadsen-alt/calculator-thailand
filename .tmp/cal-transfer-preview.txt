@@ -1,0 +1,468 @@
+﻿---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'à¸„à¸³à¸™à¸§à¸“ à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™ à¸›à¸µ 2569 | à¸£à¸¹à¹‰à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡à¹à¸¥à¸°à¸ à¸²à¸©à¸µà¸à¹ˆà¸­à¸™à¸§à¸±à¸™à¹‚à¸­à¸™ | à¹€à¸„à¸£à¸·à¹ˆà¸­à¸‡à¸„à¸³à¸™à¸§à¸“à¹„à¸—à¸¢';
+const pageDescription = 'à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™à¸›à¸µ 2569 à¸žà¸£à¹‰à¸­à¸¡à¹à¸¢à¸à¸„à¹ˆà¸²à¹‚à¸­à¸™ 2% à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° 3.3% à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ 0.5% à¹à¸¥à¸°à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢à¹à¸šà¸šà¸¥à¸°à¹€à¸­à¸µà¸¢à¸”à¸à¹ˆà¸­à¸™à¸—à¸³à¸ªà¸±à¸à¸à¸²';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://calculator-thailand-production.up.railway.app').replace(/\/$/, '');
+const canonical = `${siteUrl}/à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™/`;
+
+const faqData = [
+  {
+    question: 'à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™ 2% à¸„à¸´à¸”à¸ˆà¸²à¸à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸«à¸£à¸·à¸­à¸£à¸²à¸„à¸²à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢?',
+    answer: 'à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡à¹‚à¸­à¸™à¸„à¸´à¸” 2% à¸ˆà¸²à¸à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸—à¸¸à¸™à¸—à¸£à¸±à¸žà¸¢à¹Œà¸•à¸²à¸¡à¸—à¸µà¹ˆà¸à¸£à¸¡à¸—à¸µà¹ˆà¸”à¸´à¸™à¸à¸³à¸«à¸™à¸”',
+  },
+  {
+    question: 'à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° 3.3% à¹ƒà¸Šà¹‰à¸•à¸­à¸™à¹„à¸«à¸™?',
+    answer: 'à¹‚à¸”à¸¢à¸—à¸±à¹ˆà¸§à¹„à¸›à¹ƒà¸Šà¹‰à¸à¸±à¸šà¸à¸²à¸£à¸‚à¸²à¸¢à¸—à¸µà¹ˆà¹€à¸‚à¹‰à¸²à¸«à¸¥à¸±à¸à¹€à¸à¸“à¸‘à¹Œà¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° à¹€à¸Šà¹ˆà¸™ à¸‚à¸²à¸¢à¸ à¸²à¸¢à¹ƒà¸™ 5 à¸›à¸µà¸™à¸±à¸šà¹à¸•à¹ˆà¹„à¸”à¹‰à¸¡à¸² à¹€à¸¡à¸·à¹ˆà¸­à¹€à¸ªà¸µà¸¢à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸°à¹à¸¥à¹‰à¸§à¸ˆà¸°à¸¢à¸à¹€à¸§à¹‰à¸™à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ',
+  },
+  {
+    question: 'à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢à¸„à¸³à¸™à¸§à¸“à¸­à¸¢à¹ˆà¸²à¸‡à¹„à¸£?',
+    answer: 'à¸à¸£à¸“à¸µà¸šà¸¸à¸„à¸„à¸¥à¸˜à¸£à¸£à¸¡à¸”à¸² à¸£à¸°à¸šà¸šà¸ˆà¸°à¸„à¸³à¸™à¸§à¸“à¸•à¸²à¸¡à¹à¸™à¸§à¸—à¸²à¸‡à¸à¸£à¸¡à¸—à¸µà¹ˆà¸”à¸´à¸™à¹‚à¸”à¸¢à¸«à¸±à¸à¸„à¹ˆà¸²à¹ƒà¸Šà¹‰à¸ˆà¹ˆà¸²à¸¢à¸•à¸²à¸¡à¸›à¸µà¸–à¸·à¸­à¸„à¸£à¸­à¸‡ à¹à¸¥à¹‰à¸§à¹€à¸‰à¸¥à¸µà¹ˆà¸¢à¸£à¸²à¸¢à¸›à¸µà¹€à¸žà¸·à¹ˆà¸­à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µà¸‚à¸±à¹‰à¸™à¸šà¸±à¸™à¹„à¸” à¸à¹ˆà¸­à¸™à¸„à¸¹à¸“à¸à¸¥à¸±à¸šà¸•à¸²à¸¡à¸ˆà¸³à¸™à¸§à¸™à¸›à¸µà¸–à¸·à¸­à¸„à¸£à¸­à¸‡',
+  },
+  {
+    question: 'à¸œà¸¥à¸„à¸³à¸™à¸§à¸“à¸™à¸µà¹‰à¹ƒà¸Šà¹‰à¸¢à¸·à¹ˆà¸™à¸ˆà¸£à¸´à¸‡à¸—à¸µà¹ˆà¸ªà¸³à¸™à¸±à¸à¸‡à¸²à¸™à¸—à¸µà¹ˆà¸”à¸´à¸™à¹„à¸”à¹‰à¹€à¸¥à¸¢à¸«à¸£à¸·à¸­à¹„à¸¡à¹ˆ?',
+    answer: 'à¹ƒà¸Šà¹‰à¹€à¸žà¸·à¹ˆà¸­à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸‡à¸šà¸›à¸£à¸°à¸¡à¸²à¸“à¹€à¸šà¸·à¹‰à¸­à¸‡à¸•à¹‰à¸™à¹€à¸—à¹ˆà¸²à¸™à¸±à¹‰à¸™ à¸¢à¸­à¸”à¸ˆà¸£à¸´à¸‡à¸‚à¸¶à¹‰à¸™à¸à¸±à¸šà¹€à¸­à¸à¸ªà¸²à¸£ à¸ªà¸´à¸—à¸˜à¸´à¸¢à¸à¹€à¸§à¹‰à¸™ à¹à¸¥à¸°à¸à¸²à¸£à¸žà¸´à¸ˆà¸²à¸£à¸“à¸²à¸‚à¸­à¸‡à¹€à¸ˆà¹‰à¸²à¸žà¸™à¸±à¸à¸‡à¸²à¸™à¹ƒà¸™à¸§à¸±à¸™à¸ˆà¸”à¸—à¸°à¹€à¸šà¸µà¸¢à¸™',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'à¹€à¸„à¸£à¸·à¹ˆà¸­à¸‡à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">à¸­à¸±à¸›à¹€à¸”à¸•à¸«à¸¥à¸±à¸à¹€à¸à¸“à¸‘à¹Œà¸›à¸µ 2569</p>
+      <p class="mt-1 text-sm text-slate-700">à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹ƒà¸Šà¹‰à¸ˆà¹ˆà¸²à¸¢à¸§à¸±à¸™à¹‚à¸­à¸™à¸ˆà¸²à¸à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™ à¸£à¸²à¸„à¸²à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢ à¹à¸¥à¸°à¸›à¸µà¸–à¸·à¸­à¸„à¸£à¸­à¸‡ à¹€à¸žà¸·à¹ˆà¸­à¸§à¸²à¸‡à¸‡à¸šà¸à¹ˆà¸­à¸™à¹€à¸‚à¹‰à¸²à¸à¸£à¸¡à¸—à¸µà¹ˆà¸”à¸´à¸™</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">à¸ªà¸¹à¸•à¸£à¸­à¹‰à¸²à¸‡à¸­à¸´à¸‡à¸ˆà¸²à¸à¸„à¸¹à¹ˆà¸¡à¸·à¸­à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡ à¸ à¸²à¸©à¸µ à¹à¸¥à¸°à¸­à¸²à¸à¸£à¸‚à¸­à¸‡à¸à¸£à¸¡à¸—à¸µà¹ˆà¸”à¸´à¸™</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™ à¸›à¸µ 2569</h1>
+
+    <p class="mb-6 text-gray-600">
+      à¸à¸£à¸­à¸à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸˜à¸¸à¸£à¸à¸£à¸£à¸¡à¸­à¸ªà¸±à¸‡à¸«à¸²à¸£à¸´à¸¡à¸—à¸£à¸±à¸žà¸¢à¹Œà¹€à¸žà¸·à¹ˆà¸­à¸”à¸¹à¸¢à¸­à¸”à¸›à¸£à¸°à¸¡à¸²à¸“à¸à¸²à¸£à¸„à¹ˆà¸²à¹‚à¸­à¸™ à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ à¹à¸¥à¸°à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢à¹à¸šà¸šà¹à¸¢à¸à¸£à¸²à¸¢à¸à¸²à¸£
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="property-transfer-form" class="space-y-5">
+        <p id="property-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          à¸à¸£à¸¸à¸“à¸²à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¹ƒà¸«à¹‰à¸„à¸£à¸šà¹à¸¥à¸°à¹€à¸›à¹‡à¸™à¸•à¸±à¸§à¹€à¸¥à¸‚à¸—à¸µà¹ˆà¸–à¸¹à¸à¸•à¹‰à¸­à¸‡à¸à¹ˆà¸­à¸™à¸„à¸³à¸™à¸§à¸“
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="appraised-value" class="mb-1 block text-sm font-medium text-gray-700">à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸—à¸¸à¸™à¸—à¸£à¸±à¸žà¸¢à¹Œ (à¸šà¸²à¸—)</label>
+            <input
+              type="text"
+              id="appraised-value"
+              inputmode="numeric"
+              placeholder="à¹€à¸Šà¹ˆà¸™ 3,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="appraised-value-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="sale-price" class="mb-1 block text-sm font-medium text-gray-700">à¸£à¸²à¸„à¸²à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢ (à¸šà¸²à¸—)</label>
+            <input
+              type="text"
+              id="sale-price"
+              inputmode="numeric"
+              placeholder="à¹€à¸Šà¹ˆà¸™ 3,200,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="sale-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="buyer-type" class="mb-1 block text-sm font-medium text-gray-700">à¸›à¸£à¸°à¹€à¸ à¸—à¸œà¸¹à¹‰à¸‹à¸·à¹‰à¸­</label>
+            <select
+              id="buyer-type"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">à¹€à¸¥à¸·à¸­à¸à¸›à¸£à¸°à¹€à¸ à¸—</option>
+              <option value="individual">à¸šà¸¸à¸„à¸„à¸¥à¸˜à¸£à¸£à¸¡à¸”à¸²</option>
+              <option value="company">à¸™à¸´à¸•à¸´à¸šà¸¸à¸„à¸„à¸¥</option>
+            </select>
+            <p class="mt-1 text-xs text-gray-500">à¹ƒà¸Šà¹‰à¸›à¸£à¸°à¸à¸­à¸šà¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸à¸²à¸£à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢</p>
+            <p id="buyer-type-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="ownership-years" class="mb-1 block text-sm font-medium text-gray-700">à¸£à¸°à¸¢à¸°à¹€à¸§à¸¥à¸²à¸–à¸·à¸­à¸„à¸£à¸­à¸‡ (à¸›à¸µ)</label>
+            <input
+              type="text"
+              id="ownership-years"
+              inputmode="decimal"
+              placeholder="à¹€à¸Šà¹ˆà¸™ 3.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p class="mt-1 text-xs text-gray-500">à¸£à¸°à¸šà¸šà¸›à¸±à¸”à¹€à¸¨à¸©à¸›à¸µà¸‚à¸¶à¹‰à¸™à¹€à¸›à¹‡à¸™à¸ˆà¸³à¸™à¸§à¸™à¹€à¸•à¹‡à¸¡à¸•à¸²à¸¡à¸«à¸¥à¸±à¸à¹€à¸à¸“à¸‘à¹Œà¸à¸£à¸¡à¸—à¸µà¹ˆà¸”à¸´à¸™</p>
+            <p id="ownership-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="transfer-type" class="mb-1 block text-sm font-medium text-gray-700">à¸›à¸£à¸°à¹€à¸ à¸—à¸à¸²à¸£à¹‚à¸­à¸™</label>
+          <select
+            id="transfer-type"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">à¹€à¸¥à¸·à¸­à¸à¸›à¸£à¸°à¹€à¸ à¸—à¸à¸²à¸£à¹‚à¸­à¸™</option>
+            <option value="sale">à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢</option>
+            <option value="gift">à¹ƒà¸«à¹‰à¹€à¸›à¹‡à¸™à¸‚à¸­à¸‡à¸‚à¸§à¸±à¸</option>
+            <option value="inheritance">à¸¡à¸£à¸”à¸</option>
+          </select>
+          <p id="transfer-type-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <button
+          type="submit"
+          id="property-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">à¸œà¸¥à¸à¸²à¸£à¸„à¸³à¸™à¸§à¸“</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">à¸¢à¸­à¸”à¸£à¸§à¸¡à¸›à¸£à¸°à¸¡à¸²à¸“à¸à¸²à¸£</div>
+            <div id="res-total-fee" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡à¹‚à¸­à¸™</div>
+            <div id="res-transfer-fee" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸°</div>
+            <div id="res-sbt" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-gray-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢</div>
+            <div id="res-withholding" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸—à¸¸à¸™à¸—à¸£à¸±à¸žà¸¢à¹Œ</span>
+            <span id="res-appraised" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸£à¸²à¸„à¸²à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢</span>
+            <span id="res-sale" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸à¸²à¸™à¸ à¸²à¸©à¸µ SBT/à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ (à¹ƒà¸Šà¹‰à¸£à¸²à¸„à¸²à¸ªà¸¹à¸‡à¸à¸§à¹ˆà¸²)</span>
+            <span id="res-tax-base" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ</span>
+            <span id="res-stamp-duty" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸›à¸µà¸–à¸·à¸­à¸„à¸£à¸­à¸‡à¸—à¸µà¹ˆà¹ƒà¸Šà¹‰à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µ</span>
+            <span id="res-holding-years" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸­à¸±à¸•à¸£à¸²à¸«à¸±à¸à¸„à¹ˆà¸²à¹ƒà¸Šà¹‰à¸ˆà¹ˆà¸²à¸¢</span>
+            <span id="res-expense-rate" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¹€à¸‡à¸´à¸™à¹„à¸”à¹‰à¹€à¸‰à¸¥à¸µà¹ˆà¸¢à¸•à¹ˆà¸­à¸›à¸µ (à¹€à¸žà¸·à¹ˆà¸­à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µ)</span>
+            <span id="res-annual-taxable" class="font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">à¸ à¸²à¸©à¸µà¹€à¸‰à¸¥à¸µà¹ˆà¸¢à¸•à¹ˆà¸­à¸›à¸µ</span>
+            <span id="res-annual-tax" class="font-medium text-gray-900">-</span>
+          </div>
+        </div>
+
+        <p id="result-note" class="rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800"></p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">à¸ªà¸¹à¸•à¸£à¸—à¸µà¹ˆà¹ƒà¸Šà¹‰à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡à¹‚à¸­à¸™ = à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸—à¸¸à¸™à¸—à¸£à¸±à¸žà¸¢à¹Œ x 2%</li>
+        <li>à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° = à¸à¸²à¸™à¸£à¸²à¸„à¸²à¸—à¸µà¹ˆà¸ªà¸¹à¸‡à¸à¸§à¹ˆà¸² (à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™/à¸£à¸²à¸„à¸²à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢) x 3.3% à¹€à¸¡à¸·à¹ˆà¸­à¹€à¸‚à¹‰à¸²à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚</li>
+        <li>à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ = à¸à¸²à¸™à¸£à¸²à¸„à¸²à¸—à¸µà¹ˆà¸ªà¸¹à¸‡à¸à¸§à¹ˆà¸² x 0.5% (à¸à¸£à¸“à¸µà¹„à¸¡à¹ˆà¹€à¸ªà¸µà¸¢à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸°)</li>
+        <li>à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢ (à¸šà¸¸à¸„à¸„à¸¥à¸˜à¸£à¸£à¸¡à¸”à¸²) = à¸„à¸³à¸™à¸§à¸“à¸‚à¸±à¹‰à¸™à¸šà¸±à¸™à¹„à¸”à¸ˆà¸²à¸à¹€à¸‡à¸´à¸™à¹„à¸”à¹‰à¹€à¸‰à¸¥à¸µà¹ˆà¸¢à¸•à¹ˆà¸­à¸›à¸µ à¹à¸¥à¹‰à¸§à¸„à¸¹à¸“à¸›à¸µà¸–à¸·à¸­à¸„à¸£à¸­à¸‡</li>
+      </ul>
+      <p>
+        à¹à¸«à¸¥à¹ˆà¸‡à¸­à¹‰à¸²à¸‡à¸­à¸´à¸‡à¸—à¸²à¸‡à¸à¸²à¸£:
+        <a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/fees-taxes-duties/" target="_blank" rel="noopener noreferrer">à¸à¸£à¸¡à¸—à¸µà¹ˆà¸”à¸´à¸™: à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡ à¸ à¸²à¸©à¸µ à¹à¸¥à¸°à¸­à¸²à¸à¸£</a>
+        à¹à¸¥à¸°
+        <a href="https://www.dol.go.th/media/716929789247754240/migration/2025/10/dxtE3FP9oCjV4ThN86z5Jm0n.pdf" target="_blank" rel="noopener noreferrer">à¸•à¸±à¸§à¸­à¸¢à¹ˆà¸²à¸‡à¸à¸²à¸£à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µà¹€à¸‡à¸´à¸™à¹„à¸”à¹‰à¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢</a>
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">à¸­à¹ˆà¸²à¸™à¸•à¹ˆà¸­à¹à¸¥à¸°à¹€à¸„à¸£à¸·à¹ˆà¸­à¸‡à¸„à¸³à¸™à¸§à¸“à¸—à¸µà¹ˆà¹€à¸à¸µà¹ˆà¸¢à¸§à¸‚à¹‰à¸­à¸‡</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/à¸šà¸—à¸„à¸§à¸²à¸¡/à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™-2569-à¸¡à¸µà¸­à¸°à¹„à¸£à¸šà¹‰à¸²à¸‡-à¸„à¸³à¸™à¸§à¸“à¸­à¸¢à¹ˆà¸²à¸‡à¹„à¸£/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">à¸šà¸—à¸„à¸§à¸²à¸¡: à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™ 2569 à¸¡à¸µà¸­à¸°à¹„à¸£à¸šà¹‰à¸²à¸‡</span>
+          <span class="block text-sm text-gray-400">à¸ªà¸£à¸¸à¸›à¸„à¹ˆà¸²à¹ƒà¸Šà¹‰à¸ˆà¹ˆà¸²à¸¢à¸§à¸±à¸™à¹‚à¸­à¸™ à¸žà¸£à¹‰à¸­à¸¡à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸ à¸²à¸©à¸µà¹à¸šà¸šà¸­à¹ˆà¸²à¸™à¸‡à¹ˆà¸²à¸¢</span>
+        </a>
+        <a href="/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">à¸à¸¥à¸±à¸šà¸«à¸™à¹‰à¸²à¹à¸£à¸</span>
+          <span class="block text-sm text-gray-400">à¸”à¸¹à¹€à¸„à¸£à¸·à¹ˆà¸­à¸‡à¸„à¸³à¸™à¸§à¸“à¸—à¸±à¹‰à¸‡à¸«à¸¡à¸”à¸‚à¸­à¸‡ Calculator Thailand</span>
+        </a>
+        <a href="/à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸šà¹‰à¸²à¸™/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸šà¹‰à¸²à¸™</span>
+          <span class="block text-sm text-gray-400">à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸„à¹ˆà¸²à¸‡à¸§à¸”à¹à¸¥à¸°à¸”à¸­à¸à¹€à¸šà¸µà¹‰à¸¢à¸£à¸§à¸¡à¸à¹ˆà¸­à¸™à¸•à¸±à¸”à¸ªà¸´à¸™à¹ƒà¸ˆà¸à¸¹à¹‰</span>
+        </a>
+        <a href="/à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸à¸¹à¹‰/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸à¸¹à¹‰</span>
+          <span class="block text-sm text-gray-400">à¹ƒà¸Šà¹‰à¹€à¸—à¸µà¸¢à¸šà¹à¸œà¸™à¸à¸¹à¹‰à¸«à¸¥à¸²à¸¢à¸£à¸°à¸¢à¸°à¹€à¸§à¸¥à¸²à¹ƒà¸™à¸«à¸™à¹‰à¸²à¹€à¸”à¸µà¸¢à¸§</span>
+        </a>
+        <a href="/à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µà¹€à¸‡à¸´à¸™à¹„à¸”à¹‰à¸šà¸¸à¸„à¸„à¸¥à¸˜à¸£à¸£à¸¡à¸”à¸²/" class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-primary-500">
+          <span class="font-medium text-primary-600">à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µà¹€à¸‡à¸´à¸™à¹„à¸”à¹‰à¸šà¸¸à¸„à¸„à¸¥à¸˜à¸£à¸£à¸¡à¸”à¸²</span>
+          <span class="block text-sm text-gray-400">à¸•à¸£à¸§à¸ˆà¸Šà¹ˆà¸§à¸‡à¸ à¸²à¸©à¸µà¹à¸¥à¸°à¸§à¸²à¸‡à¹à¸œà¸™à¹€à¸‡à¸´à¸™à¸ªà¸”à¸—à¸±à¹‰à¸‡à¸›à¸µ</span>
+        </a>
+        <a href="/à¸„à¸³à¸™à¸§à¸“à¸”à¸­à¸à¹€à¸šà¸µà¹‰à¸¢à¸šà¸±à¸•à¸£à¹€à¸„à¸£à¸”à¸´à¸•/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">à¸„à¸³à¸™à¸§à¸“à¸”à¸­à¸à¹€à¸šà¸µà¹‰à¸¢à¸šà¸±à¸•à¸£à¹€à¸„à¸£à¸”à¸´à¸•</span>
+          <span class="text-gray-400 text-sm block">à¸„à¸³à¸™à¸§à¸“à¸”à¸­à¸à¹€à¸šà¸µà¹‰à¸¢à¸£à¸²à¸¢à¸§à¸±à¸™à¹à¸¥à¸°à¸¢à¸­à¸”à¸Šà¸³à¸£à¸°à¸‚à¸±à¹‰à¸™à¸•à¹ˆà¸³à¸•à¸²à¸¡à¹€à¸à¸“à¸‘à¹Œà¸›à¸µ 2569</span>
+        </a>
+
+        <a href="/คำนวณดอกเบี้ยบัตรเครดิต/" class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยบัตรเครดิต ปี 2569</span>
+          <span class="text-gray-400 text-sm block">คำนวณดอกเบี้ยบัตรเครดิต ปี 2569</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">à¸„à¸³à¸–à¸²à¸¡à¸—à¸µà¹ˆà¸žà¸šà¸šà¹ˆà¸­à¸¢</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
+            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>à¸‚à¹‰à¸­à¸ˆà¸³à¸à¸±à¸”à¸„à¸§à¸²à¸¡à¸£à¸±à¸šà¸œà¸´à¸”à¸Šà¸­à¸š:</strong> à¸œà¸¥à¸„à¸³à¸™à¸§à¸“à¸™à¸µà¹‰à¹€à¸›à¹‡à¸™à¸„à¹ˆà¸²à¸›à¸£à¸°à¸¡à¸²à¸“à¹€à¸žà¸·à¹ˆà¸­à¸§à¸²à¸‡à¹à¸œà¸™à¸à¹ˆà¸­à¸™à¸ˆà¸”à¸—à¸°à¹€à¸šà¸µà¸¢à¸™à¸ªà¸´à¸—à¸˜à¸´à¹à¸¥à¸°à¸™à¸´à¸•à¸´à¸à¸£à¸£à¸¡ à¸¢à¸­à¸”à¸ˆà¸£à¸´à¸‡à¸­à¸²à¸ˆà¸•à¹ˆà¸²à¸‡à¸ˆà¸²à¸à¸œà¸¥à¸„à¸³à¸™à¸§à¸“à¸•à¸²à¸¡à¸ªà¸´à¸—à¸˜à¸´à¸¢à¸à¹€à¸§à¹‰à¸™ à¹€à¸­à¸à¸ªà¸²à¸£à¸›à¸£à¸°à¸à¸­à¸š à¹à¸¥à¸°à¸”à¸¸à¸¥à¸žà¸´à¸™à¸´à¸ˆà¹€à¸ˆà¹‰à¸²à¸žà¸™à¸±à¸à¸‡à¸²à¸™
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculatePropertyTransferFee } from '../../lib/property-transfer-fee';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return 0;
+      const n = Number(normalized);
+      return Number.isFinite(n) ? Math.max(0, n) : NaN;
+    }
+
+    function hasInvalidNumber(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function fmtMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} à¸šà¸²à¸—`;
+    }
+
+    const form = document.getElementById('property-transfer-form');
+    const submitBtn = document.getElementById('property-submit-btn');
+    const formError = document.getElementById('property-form-error');
+    const resultsDiv = document.getElementById('results');
+
+    const fields = {
+      appraisedValue: document.getElementById('appraised-value'),
+      salePrice: document.getElementById('sale-price'),
+      buyerType: document.getElementById('buyer-type'),
+      ownershipYears: document.getElementById('ownership-years'),
+      transferType: document.getElementById('transfer-type'),
+    };
+
+    function setFieldError(id, message) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    function clearFieldError(id) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.textContent = '';
+      element.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError('appraised-value-error');
+      clearFieldError('sale-price-error');
+      clearFieldError('buyer-type-error');
+      clearFieldError('ownership-years-error');
+      clearFieldError('transfer-type-error');
+    }
+
+    function updateSubmitState() {
+      const requiredFilled = [
+        fields.appraisedValue.value,
+        fields.salePrice.value,
+        fields.buyerType.value,
+        fields.ownershipYears.value,
+        fields.transferType.value,
+      ].every((value) => String(value).trim() !== '');
+
+      const hasInvalid = [
+        hasInvalidNumber(fields.appraisedValue.value),
+        hasInvalidNumber(fields.salePrice.value),
+        hasInvalidNumber(fields.ownershipYears.value),
+      ].some(Boolean);
+
+      const ready = requiredFilled && !hasInvalid;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™' : 'à¸à¸£à¸­à¸à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¹ƒà¸«à¹‰à¸„à¸£à¸š';
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+      submitBtn.classList.toggle('opacity-70', !ready);
+    }
+
+    Object.values(fields).forEach((field) => {
+      field.addEventListener('input', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+      field.addEventListener('change', () => {
+        clearValidation();
+        updateSubmitState();
+      });
+    });
+
+    updateSubmitState();
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearValidation();
+
+      const appraisedValue = parseNum(fields.appraisedValue.value);
+      const salePrice = parseNum(fields.salePrice.value);
+      const ownershipYears = parseNum(fields.ownershipYears.value);
+      const buyerType = String(fields.buyerType.value || '');
+      const transferType = String(fields.transferType.value || '');
+
+      const validity = {
+        appraisedValue: !hasInvalidNumber(fields.appraisedValue.value) && appraisedValue > 0,
+        salePrice: !hasInvalidNumber(fields.salePrice.value) && salePrice > 0,
+        buyerType: buyerType === 'individual' || buyerType === 'company',
+        ownershipYears: !hasInvalidNumber(fields.ownershipYears.value) && ownershipYears > 0,
+        transferType: transferType === 'sale' || transferType === 'gift' || transferType === 'inheritance',
+      };
+
+      if (!validity.appraisedValue) setFieldError('appraised-value-error', 'à¸à¸£à¸­à¸à¸£à¸²à¸„à¸²à¸›à¸£à¸°à¹€à¸¡à¸´à¸™à¸¡à¸²à¸à¸à¸§à¹ˆà¸² 0 à¸šà¸²à¸—');
+      if (!validity.salePrice) setFieldError('sale-price-error', 'à¸à¸£à¸­à¸à¸£à¸²à¸„à¸²à¸‹à¸·à¹‰à¸­à¸‚à¸²à¸¢à¸¡à¸²à¸à¸à¸§à¹ˆà¸² 0 à¸šà¸²à¸—');
+      if (!validity.buyerType) setFieldError('buyer-type-error', 'à¹€à¸¥à¸·à¸­à¸à¸›à¸£à¸°à¹€à¸ à¸—à¸œà¸¹à¹‰à¸‹à¸·à¹‰à¸­');
+      if (!validity.ownershipYears) setFieldError('ownership-years-error', 'à¸à¸£à¸­à¸à¸ˆà¸³à¸™à¸§à¸™à¸›à¸µà¸–à¸·à¸­à¸„à¸£à¸­à¸‡à¸¡à¸²à¸à¸à¸§à¹ˆà¸² 0 à¸›à¸µ');
+      if (!validity.transferType) setFieldError('transfer-type-error', 'à¹€à¸¥à¸·à¸­à¸à¸›à¸£à¸°à¹€à¸ à¸—à¸à¸²à¸£à¹‚à¸­à¸™');
+
+      if (!Object.values(validity).every(Boolean)) {
+        formError.classList.remove('hidden');
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'à¸à¸³à¸¥à¸±à¸‡à¸„à¸³à¸™à¸§à¸“...';
+      trackCalculatorStart('property_transfer_fee');
+
+      const result = calculatePropertyTransferFee({
+        appraisedValue,
+        salePrice,
+        buyerType,
+        ownershipYears,
+        transferType,
+      });
+
+      document.getElementById('res-total-fee').textContent = fmtMoney(result.totalFee);
+      document.getElementById('res-transfer-fee').textContent = fmtMoney(result.transferFee);
+      document.getElementById('res-sbt').textContent = fmtMoney(result.specificBusinessTax);
+      document.getElementById('res-stamp-duty').textContent = fmtMoney(result.stampDuty);
+      document.getElementById('res-withholding').textContent = fmtMoney(result.withholdingTax);
+      document.getElementById('res-appraised').textContent = fmtMoney(appraisedValue);
+      document.getElementById('res-sale').textContent = fmtMoney(salePrice);
+      document.getElementById('res-tax-base').textContent = fmtMoney(result.taxBaseForSbtAndStamp);
+      document.getElementById('res-holding-years').textContent = `${result.holdingYearsForTax} à¸›à¸µ`;
+      document.getElementById('res-expense-rate').textContent = `${new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 }).format(result.expenseDeductionRate)}%`;
+      document.getElementById('res-annual-taxable').textContent = fmtMoney(result.annualTaxableIncome);
+      document.getElementById('res-annual-tax').textContent = fmtMoney(result.annualWithholdingTax);
+
+      const notes = [];
+      notes.push(result.isSpecificBusinessTaxApplied
+        ? 'à¹€à¸„à¸ªà¸™à¸µà¹‰à¹€à¸‚à¹‰à¸²à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° 3.3% à¸ˆà¸¶à¸‡à¹„à¸¡à¹ˆà¸„à¸´à¸”à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œ'
+        : 'à¹€à¸„à¸ªà¸™à¸µà¹‰à¹„à¸¡à¹ˆà¹€à¸‚à¹‰à¸²à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸ à¸²à¸©à¸µà¸˜à¸¸à¸£à¸à¸´à¸ˆà¹€à¸‰à¸žà¸²à¸° à¸ˆà¸¶à¸‡à¹ƒà¸Šà¹‰à¸­à¸²à¸à¸£à¹à¸ªà¸•à¸¡à¸›à¹Œà¹à¸—à¸™à¸•à¸²à¸¡à¸«à¸¥à¸±à¸à¹€à¸à¸“à¸‘à¹Œ');
+
+      if (transferType !== 'sale') {
+        notes.push('à¸à¸²à¸£à¹‚à¸­à¸™à¹à¸šà¸šà¹ƒà¸«à¹‰à¸«à¸£à¸·à¸­à¸¡à¸£à¸”à¸à¸­à¸²à¸ˆà¸¡à¸µà¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸¢à¸à¹€à¸§à¹‰à¸™à¹€à¸‰à¸žà¸²à¸°à¸à¸£à¸“à¸µà¹€à¸žà¸´à¹ˆà¸¡à¹€à¸•à¸´à¸¡ à¸„à¸§à¸£à¸•à¸£à¸§à¸ˆà¹€à¸­à¸à¸ªà¸²à¸£à¸ªà¸´à¸—à¸˜à¸´à¹Œà¸à¸±à¸šà¸ªà¸³à¸™à¸±à¸à¸‡à¸²à¸™à¸—à¸µà¹ˆà¸”à¸´à¸™à¸à¹ˆà¸­à¸™à¸§à¸±à¸™à¹‚à¸­à¸™');
+      }
+
+      if (buyerType === 'company') {
+        notes.push('à¸£à¸°à¸šà¸šà¹ƒà¸Šà¹‰à¹à¸‚à¸™à¸‡à¸ à¸²à¸©à¸µà¸«à¸±à¸ à¸“ à¸—à¸µà¹ˆà¸ˆà¹ˆà¸²à¸¢à¹à¸šà¸š 1% à¸•à¸²à¸¡à¹à¸™à¸§à¸—à¸²à¸‡à¸à¸£à¸“à¸µà¸™à¸´à¸•à¸´à¸šà¸¸à¸„à¸„à¸¥');
+      }
+
+      document.getElementById('result-note').textContent = notes.join(' | ');
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹‚à¸­à¸™à¸šà¹‰à¸²à¸™';
+      trackCalculatorComplete('property_transfer_fee', result.totalFee);
+      trackCalculatorUsed('property_transfer_fee');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('property_transfer_fee');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>
+

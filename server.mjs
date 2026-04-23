@@ -25,13 +25,34 @@ const redirectHosts = new Set(
     .filter(Boolean)
     .map((host) => String(host).toLowerCase())
 );
-const releaseMetadata = Object.freeze({
-  gitCommit:
-    process.env.RAILWAY_GIT_COMMIT_SHA ||
-    process.env.SOURCE_COMMIT ||
-    process.env.GITHUB_SHA ||
-    'unknown',
-  deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || null,
+
+async function loadReleaseMetadata() {
+  const releaseMetadataFile = join(distDir, '__release.json');
+  try {
+    const raw = await readFile(releaseMetadataFile, 'utf-8');
+    const data = JSON.parse(raw);
+    return Object.freeze({
+      gitCommit: data.gitCommit || 'unknown',
+      deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || null,
+      generatedAt: data.timestamp || new Date().toISOString(),
+    });
+  } catch (error) {
+    console.warn(`[release-metadata] Failed to load ${releaseMetadataFile}, falling back to env vars:`, error.message);
+    return Object.freeze({
+      gitCommit:
+        process.env.RAILWAY_GIT_COMMIT_SHA ||
+        process.env.SOURCE_COMMIT ||
+        process.env.GITHUB_SHA ||
+        'unknown',
+      deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || null,
+      generatedAt: new Date().toISOString(),
+    });
+  }
+}
+
+let releaseMetadata = Object.freeze({
+  gitCommit: 'loading...',
+  deploymentId: null,
   generatedAt: new Date().toISOString(),
 });
 
@@ -501,6 +522,16 @@ async function serve(req, res) {
   }
 }
 
-createServer(serve).listen(port, () => {
-  // Server running.
+async function start() {
+  releaseMetadata = await loadReleaseMetadata();
+  console.log(`[release-metadata] Loaded commit: ${releaseMetadata.gitCommit}`);
+
+  createServer(serve).listen(port, () => {
+    console.log(`[server] listening on port ${port}`);
+  });
+}
+
+start().catch((error) => {
+  console.error('[server] Failed to start:', error);
+  process.exit(1);
 });

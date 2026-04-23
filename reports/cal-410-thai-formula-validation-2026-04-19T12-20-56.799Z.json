@@ -1,0 +1,147 @@
+{
+  "generatedAt": "2026-04-19T12:20:56.880Z",
+  "scenarioCount": 8,
+  "failures": 0,
+  "scenarios": [
+    {
+      "domain": "Revenue Department",
+      "calculator": "Personal income tax",
+      "case": "Baseline progressive-tax with capped expense deduction",
+      "expected": {
+        "annualTax": 10600,
+        "netIncome": 331000,
+        "totalAllowances": 69000
+      },
+      "actual": {
+        "annualTax": 10600,
+        "netIncome": 331000,
+        "totalAllowances": 69000
+      },
+      "pass": true
+    },
+    {
+      "domain": "Revenue Department",
+      "calculator": "Personal income tax",
+      "case": "Edge: income below exempt bracket",
+      "expected": {
+        "annualTax": 0
+      },
+      "actual": {
+        "annualTax": 0
+      },
+      "pass": true
+    },
+    {
+      "domain": "MEA/PEA",
+      "calculator": "Electricity bill",
+      "case": "Baseline: residential over 150 units",
+      "expected": {
+        "tariffCode": "1.2",
+        "energyCharge": 698.35,
+        "ftCharge": 19.44,
+        "serviceCharge": 24.62,
+        "subtotalBeforeVat": 742.41,
+        "vatAmount": 51.97,
+        "totalBill": 794.38
+      },
+      "actual": {
+        "tariffCode": "1.2",
+        "energyCharge": 698.35,
+        "ftCharge": 19.44,
+        "serviceCharge": 24.62,
+        "subtotalBeforeVat": 742.41,
+        "vatAmount": 51.97,
+        "totalBill": 794.38
+      },
+      "pass": true
+    },
+    {
+      "domain": "MEA/PEA",
+      "calculator": "Electricity bill",
+      "case": "Edge: zero-unit month still charges service fee and VAT",
+      "expected": {
+        "tariffCode": "1.1",
+        "totalBill": 8.76
+      },
+      "actual": {
+        "tariffCode": "1.1",
+        "totalBill": 8.76
+      },
+      "pass": true
+    },
+    {
+      "domain": "Land Department",
+      "calculator": "Property transfer fee",
+      "case": "Baseline: individual sale under 5-year holding",
+      "expected": {
+        "transferFee": 60000,
+        "specificBusinessTax": 105600,
+        "stampDuty": 0,
+        "withholdingTax": 34500,
+        "totalFee": 200100,
+        "isSpecificBusinessTaxApplied": true,
+        "isStampDutyApplied": false
+      },
+      "actual": {
+        "transferFee": 60000,
+        "specificBusinessTax": 105600,
+        "stampDuty": 0,
+        "withholdingTax": 34500,
+        "totalFee": 200100,
+        "isSpecificBusinessTaxApplied": true,
+        "isStampDutyApplied": false
+      },
+      "pass": true
+    },
+    {
+      "domain": "Land Department",
+      "calculator": "Property transfer fee",
+      "case": "Edge: company seller uses 1% withholding branch",
+      "expected": {
+        "withholdingTax": 55000,
+        "isSpecificBusinessTaxApplied": true
+      },
+      "actual": {
+        "withholdingTax": 55000,
+        "isSpecificBusinessTaxApplied": true
+      },
+      "pass": true
+    },
+    {
+      "domain": "BOT",
+      "calculator": "Deposit interest",
+      "case": "Baseline: fixed-deposit annual interest with 15% withholding tax",
+      "expected": {
+        "grossInterest": 4500,
+        "withholdingTax": 675,
+        "netInterest": 3825,
+        "totalAmount": 203825,
+        "effectiveRate": 1.91
+      },
+      "actual": {
+        "grossInterest": 4500,
+        "withholdingTax": 675,
+        "netInterest": 3825,
+        "totalAmount": 203825,
+        "effectiveRate": 1.91
+      },
+      "pass": true
+    },
+    {
+      "domain": "SSO",
+      "calculator": "Salary tax/social-security allowance cap",
+      "case": "Edge: annual social-security input is capped at 9,000",
+      "expected": {
+        "totalAllowances": 69000,
+        "netIncome": 481000,
+        "annualTax": 25600
+      },
+      "actual": {
+        "totalAllowances": 69000,
+        "netIncome": 481000,
+        "annualTax": 25600
+      },
+      "pass": true
+    }
+  ]
+}

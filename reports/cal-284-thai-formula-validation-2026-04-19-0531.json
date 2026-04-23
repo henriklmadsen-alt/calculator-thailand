@@ -1,0 +1,109 @@
+{
+  "generatedAt": "2026-04-18T22:31:13.145Z",
+  "scenarioCount": 6,
+  "failures": 0,
+  "scenarios": [
+    {
+      "domain": "Revenue Department",
+      "calculator": "Personal income tax",
+      "case": "Baseline progressive-tax with capped expense deduction",
+      "expected": {
+        "annualTax": 14600,
+        "netIncome": 371000
+      },
+      "actual": {
+        "annualTax": 14600,
+        "netIncome": 371000
+      },
+      "pass": true
+    },
+    {
+      "domain": "Revenue Department",
+      "calculator": "Personal income tax",
+      "case": "Edge: income below exempt bracket",
+      "expected": {
+        "annualTax": 0
+      },
+      "actual": {
+        "annualTax": 0
+      },
+      "pass": true
+    },
+    {
+      "domain": "MEA/PEA",
+      "calculator": "Electricity bill",
+      "case": "Baseline: residential over 150 units",
+      "expected": {
+        "energyCharge": 698.35,
+        "ftCharge": 19.44,
+        "serviceCharge": 24.62,
+        "subtotalBeforeVat": 742.41,
+        "vatAmount": 51.97,
+        "totalBill": 794.38,
+        "tariffCode": "1.2"
+      },
+      "actual": {
+        "energyCharge": 698.35,
+        "ftCharge": 19.44,
+        "serviceCharge": 24.62,
+        "subtotalBeforeVat": 742.41,
+        "vatAmount": 51.97,
+        "totalBill": 794.38,
+        "tariffCode": "1.2"
+      },
+      "pass": true
+    },
+    {
+      "domain": "MEA/PEA",
+      "calculator": "Electricity bill",
+      "case": "Edge: zero-unit month still charges service fee and VAT",
+      "expected": {
+        "totalBill": 8.76,
+        "tariffCode": "1.1"
+      },
+      "actual": {
+        "totalBill": 8.76,
+        "tariffCode": "1.1"
+      },
+      "pass": true
+    },
+    {
+      "domain": "Land Department",
+      "calculator": "Property transfer fee",
+      "case": "Baseline: individual sale under 5-year holding",
+      "expected": {
+        "transferFee": 60000,
+        "specificBusinessTax": 105600,
+        "stampDuty": 0,
+        "withholdingTax": 34500,
+        "totalFee": 200100,
+        "isSpecificBusinessTaxApplied": true,
+        "isStampDutyApplied": false
+      },
+      "actual": {
+        "transferFee": 60000,
+        "specificBusinessTax": 105600,
+        "stampDuty": 0,
+        "withholdingTax": 34500,
+        "totalFee": 200100,
+        "isSpecificBusinessTaxApplied": true,
+        "isStampDutyApplied": false
+      },
+      "pass": true
+    },
+    {
+      "domain": "Land Department",
+      "calculator": "Property transfer fee",
+      "case": "Edge: company seller uses 1% withholding branch",
+      "expected": {
+        "withholdingTax": 25000,
+        "isSpecificBusinessTaxApplied": true
+      },
+      "actual": {
+        "withholdingTax": 25000,
+        "isSpecificBusinessTaxApplied": true
+      },
+      "pass": true
+    }
+  ]
+}

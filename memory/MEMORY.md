@@ -1,0 +1,3 @@
+- [Site Recovery Complete (Apr 23)](site_recovery_apr23.md) — Production operational; CAL-918 TLS resolved; normal hourly smoke resumed
+- [QA smoke must verify kamnuanlek.com explicitly](feedback_qa_smoke_verification.md) — Never use Railway service URL as substitute; CAL-902 false closure caused CAL-918 outage
+- [CEO dispatch log](ceo_dispatch_log.md) — Hourly trust QA dispatch routine (CAL-618 → CAL-620; now CAL-950+)

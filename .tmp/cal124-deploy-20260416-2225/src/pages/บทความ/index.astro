@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'บทความการเงิน | เคล็ดลับภาษี เงินออม และการลงทุน | เครื่องคำนวณไทย';
+const pageDescription = 'รวมบทความการเงินไทย เคล็ดลับวางแผนภาษี คำนวณเงินเดือน ผ่อนรถ ดอกเบี้ยเงินฝาก และสุขภาพ อัปเดตปี 2569';
+const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const canonical = `${siteUrl}/บทความ/`;
+
+const articles = [
+  {
+    title: 'รีไฟแนนซ์บ้าน 2569 คุ้มไหม: ดอกเบี้ยใหม่ต้องลดเท่าไรถึงคุ้มค่าปิดเก่า',
+    slug: 'รีไฟแนนซ์บ้าน-2569-คุ้มไหม-ดอกเบี้ยใหม่ต้องลดเท่าไร',
+    description: 'เช็กลิสต์รีไฟแนนซ์บ้านปี 2569 พร้อมตัวอย่าง 3 สถานการณ์และวิธีคำนวณจุดคุ้มก่อนย้ายสัญญา',
+    date: '2026-04-14',
+    calculator: '/คำนวณผ่อนกู้/',
+    calculatorName: 'คำนวณผ่อนกู้',
+    category: 'สินเชื่อบ้าน',
+  },
+  {
+    title: 'ภาษีมูลค่าเพิ่ม 7% คิดยังไง: สูตรบวกภาษี ถอดภาษี และตั้งราคาขายให้ไม่ขาดทุน',
+    slug: 'ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน',
+    description: 'รวมสูตรคิด VAT 7% แบบใช้งานจริง พร้อมข้อผิดพลาดที่พบบ่อยและตารางราคาตัวอย่าง 10 จุด',
+    date: '2026-04-14',
+    calculator: '/คำนวณภาษีมูลค่าเพิ่ม/',
+    calculatorName: 'คำนวณภาษีมูลค่าเพิ่ม',
+    category: 'VAT',
+  },
+  {
+    title: 'ภาษีเงินได้ 2569 คำนวณ พร้อมวิธีลดหย่อน',
+    slug: 'ภาษีเงินได้-2569-คำนวณ-วิธีลดหย่อน',
+    description: 'เรียนรู้วิธีคำนวณภาษีเงินได้บุคคลธรรมดาปี 2569 อัตราภาษีขั้นบันได ค่าลดหย่อนที่ใช้ได้ และเคล็ดลับประหยัดภาษีอย่างถูกกฎหมาย',
+    date: '2026-04-12',
+    calculator: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+    calculatorName: 'คำนวณภาษี',
+    category: 'ภาษี',
+  },
+  {
+    title: 'เงินเดือนสุทธิ 2569 คำนวณหัก ประกันสังคม ภาษี',
+    slug: 'เงินเดือนสุทธิ-2569-คำนวณหัก-ประกันสังคม-ภาษี',
+    description: 'คำนวณเงินเดือนสุทธิหลังหักประกันสังคมและภาษี ณ ที่จ่าย ปี 2569 พร้อมตารางเปรียบเทียบรายได้ทุกระดับ',
+    date: '2026-04-12',
+    calculator: '/คำนวณเงินเดือนสุทธิ/',
+    calculatorName: 'คำนวณเงินเดือนสุทธิ',
+    category: 'เงินเดือน',
+  },
+  {
+    title: 'คำนวณ ค่างวดรถยนต์ 2569 ผ่อนเท่าไร',
+    slug: 'คำนวณ-ค่างวดรถยนต์-2569-ผ่อนเท่าไร',
+    description: 'คำนวณค่างวดผ่อนรถยนต์ปี 2569 เปรียบเทียบดอกเบี้ยคงที่และลดต้นลดดอก พร้อมเทคนิคเลือกระยะเวลาผ่อนที่คุ้มค่าที่สุด',
+    date: '2026-04-12',
+    calculator: '/คำนวณผ่อนรถ/',
+    calculatorName: 'คำนวณผ่อนรถ',
+    category: 'สินเชื่อ',
+  },
+  {
+    title: 'BMI คำนวณค่าดัชนีมวลกาย วิธีลดน้ำหนัก',
+    slug: 'bmi-คำนวณค่าดัชนีมวลกาย-วิธีลดน้ำหนัก',
+    description: 'คำนวณ BMI ค่าดัชนีมวลกายตามเกณฑ์คนไทย พร้อมคำแนะนำเรื่องน้ำหนักและสุขภาพจากผู้เชี่ยวชาญ',
+    date: '2026-04-12',
+    calculator: '/คำนวณ-bmi/',
+    calculatorName: 'คำนวณ BMI',
+    category: 'สุขภาพ',
+  },
+  {
+    title: 'เงินฝาก vs กองทุน เปรียบเทียบ 2569',
+    slug: 'เงินฝาก-vs-กองทุน-เปรียบเทียบ-2569',
+    description: 'เปรียบเทียบผลตอบแทนเงินฝากประจำกับกองทุนรวมปี 2569 ข้อดีข้อเสีย และวิธีเลือกให้เหมาะกับเป้าหมายการเงิน',
+    date: '2026-04-12',
+    calculator: '/คำนวณดอกเบี้ยเงินฝาก/',
+    calculatorName: 'คำนวณดอกเบี้ยเงินฝาก',
+    category: 'การออม',
+  },
+];
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'หน้าแรก',
+      item: siteUrl + '/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'บทความ',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="บทความ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+    บทความการเงินไทย
+  </h1>
+  <p class="text-gray-600 mb-8">
+    เคล็ดลับวางแผนภาษี คำนวณเงินเดือน ผ่อนรถ ดอกเบี้ยเงินฝาก และสุขภาพ อัปเดตล่าสุดปี 2569
+  </p>
+
+  <div class="space-y-6">
+    {articles.map((article) => (
+      <a href={`/บทความ/${article.slug}/`} class="block bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6 hover:shadow-md hover:border-primary-200 transition-all group">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-medium px-2 py-0.5 bg-primary-50 text-primary-700 rounded-full">{article.category}</span>
+          <time class="text-xs text-gray-400" datetime={article.date}>
+            {new Date(article.date).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+        </div>
+        <h2 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-2">
+          {article.title}
+        </h2>
+        <p class="text-sm text-gray-600 leading-relaxed mb-3">
+          {article.description}
+        </p>
+        <span class="inline-flex items-center text-sm text-primary-600 font-medium">
+          อ่านบทความ
+          <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </a>
+    ))}
+  </div>
+
+  <!-- AdSense placeholder -->
+  <div class="my-8 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200 text-center text-sm text-gray-400">
+    <!-- AdSense ad unit will go here -->
+  </div>
+
+  <!-- Link back to calculators -->
+  <div class="mt-8">
+    <h2 class="text-lg font-bold text-gray-900 mb-4">เครื่องคำนวณยอดนิยม</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">คำนวณภาษี</a>
+      <a href="/คำนวณเงินเดือนสุทธิ/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">เงินเดือนสุทธิ</a>
+      <a href="/คำนวณผ่อนรถ/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">ผ่อนรถ</a>
+      <a href="/คำนวณ-bmi/" class="p-3 bg-white rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all text-sm font-medium text-gray-700 text-center">คำนวณ BMI</a>
+    </div>
+  </div>
+</BaseLayout>
