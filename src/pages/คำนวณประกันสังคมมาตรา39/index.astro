@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณประกันสังคมมาตรา 39 ปี 2569 ฐาน 4,800 บาท สมทบ 432 บาท/เดือน | Kamnuanlek';
 const pageDescription = 'คำนวณเงินสมทบประกันสังคมมาตรา 39 สำหรับผู้ที่ลาออกจากงานแต่ต้องการรักษาสิทธิ์ ฐานคิด 4,800 บาท สมทบ 9% = 432 บาท/เดือน';
@@ -57,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคมมาตรา 39">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ประกันสังคมมาตรา 39 — ฐาน 4,800 บาท × 9% = 432 บาท/เดือน</p>
       <p class="mt-1 text-sm text-slate-700">สำหรับผู้ที่ลาออกจากงานแต่ต้องการรักษาสิทธิ์ประกันสังคม 5 กรณี</p>
@@ -166,19 +164,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณประกันสังคมมาตรา39/" />
     <RelatedCalculators currentHref="/คำนวณประกันสังคมมาตรา39/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราและเงื่อนไขอาจเปลี่ยนแปลงตามประกาศของสำนักงานประกันสังคม ควรตรวจสอบข้อมูลล่าสุดที่ sso.go.th

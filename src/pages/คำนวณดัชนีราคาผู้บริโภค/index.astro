@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import { THAI_CPI_DATA, getAvailableYears } from '../../lib/cpi-calculator.ts';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณดัชนีราคาผู้บริโภค CPI เงินเฟ้อไทย 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณดัชนีราคาผู้บริโภค เทียบมูลค่าเงินบาทในอดีตกับปัจจุบัน ดูว่าเงิน X บาทจากปี Y มีค่าเท่าไรวันนี้ อัปเดตข้อมูล CPI ล่าสุดปี 2569 ฟรี';
@@ -59,10 +60,7 @@ const cpiDataJson = JSON.stringify(THAI_CPI_DATA);
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดัชนีราคาผู้บริโภค">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">เทียบค่าเงินบาทข้ามปี ด้วยข้อมูล CPI จริง</p>
       <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
@@ -297,21 +295,7 @@ const cpiDataJson = JSON.stringify(THAI_CPI_DATA);
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณดัชนีราคาผู้บริโภค/" />

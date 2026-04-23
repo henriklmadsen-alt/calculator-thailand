@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณเบี้ยประกันโรคร้ายแรง ปี 2569 Critical Illness ค่าเบี้ยตามอายุ | Kamnuanlek';
 const pageDescription = 'ประมาณเบี้ยประกันโรคร้ายแรง (CI) ตามอายุ เพศ และวงเงินคุ้มครอง สำหรับโรคมะเร็ง หัวใจ หลอดเลือดสมอง และโรคร้ายแรงอื่นๆ';
@@ -53,10 +54,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันโรคร้ายแรง">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
       <p class="text-sm font-semibold text-red-700">🏥 ประมาณเบี้ยประกันโรคร้ายแรง (CI)</p>
       <p class="mt-1 text-sm text-slate-700">เบี้ย CI อิงจากอายุ เพศ วงเงิน และประเภทโรคที่คุ้มครอง</p>
@@ -154,17 +152,7 @@ const jsonLdFaq = {
       <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
     </div>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ราคาจริงขึ้นอยู่กับบริษัทประกันและเงื่อนไขกรมธรรม์

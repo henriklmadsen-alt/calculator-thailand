@@ -1,6 +1,7 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณแผนออมเพื่อการศึกษา ปี 2569 | เป้าหมายออม | Kamnuanlek';
 const pageDescription = 'วางแผนออมเพื่อการศึกษา: คำนวณจำนวนออมต่อเดือน เพื่อให้เพียงพอกับเป้าหมายค่าเรียน';
@@ -47,10 +48,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแผนออมเพื่อการศึกษา">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณแผนออมเพื่อการศึกษา ปี 2569</h1>
 
     <p class="text-gray-600 mb-6">
@@ -157,19 +155,7 @@ const jsonLdFaq = {
 
     <RelatedCalculators currentHref="/คำนวณแผนออมเพื่อการศึกษา/" />
 
-    <section class="mb-8 mt-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-blue-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
   </article>
 </BaseLayout>
 

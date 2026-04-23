@@ -53,18 +53,45 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
       <span>บันทึก</span>
     </button>
 
-    <button
-      type="button"
-      class="ct-hub-btn ct-hub-share"
-      id={`ct-share-btn-${calcId}`}
-      data-share-text={defaultShareText}
-      data-share-url={Astro.url.pathname}
-      data-share-title={calcTitle}
-      aria-label={`แชร์${calcTitle}`}
-    >
-      <span aria-hidden="true">📤</span>
-      <span>แชร์</span>
-    </button>
+    <!-- Share button + dropdown panel -->
+    <div class="ct-share-wrap" id={`ct-share-wrap-${calcId}`}>
+      <button
+        type="button"
+        class="ct-hub-btn ct-hub-share"
+        id={`ct-share-btn-${calcId}`}
+        data-share-text={defaultShareText}
+        data-share-url={Astro.url.pathname}
+        data-share-title={calcTitle}
+        data-calc-id={calcId}
+        aria-label={`แชร์${calcTitle}`}
+        aria-expanded="false"
+        aria-haspopup="true"
+      >
+        <span aria-hidden="true">📤</span>
+        <span>แชร์</span>
+      </button>
+
+      <div class="ct-share-panel" id={`ct-share-panel-${calcId}`} role="menu" aria-label="ตัวเลือกแชร์" hidden>
+        <button type="button" class="ct-share-option ct-share-copy" data-action="copy" role="menuitem">
+          <span class="ct-share-icon" aria-hidden="true">📋</span>
+          <span>คัดลอก URL</span>
+        </button>
+        <a href="#" class="ct-share-option ct-share-line" data-action="line" role="menuitem"
+           target="_blank" rel="noopener noreferrer" aria-label="แชร์ผ่าน LINE">
+          <svg class="ct-share-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+          </svg>
+          <span>LINE</span>
+        </a>
+        <a href="#" class="ct-share-option ct-share-fb" data-action="facebook" role="menuitem"
+           target="_blank" rel="noopener noreferrer" aria-label="แชร์ผ่าน Facebook">
+          <svg class="ct-share-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          <span>Facebook</span>
+        </a>
+      </div>
+    </div>
   </div>
 
   <!-- Related calculators -->
@@ -115,6 +142,7 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
   /* ── Action bar ──────────────────────────────────────────── */
   .ct-hub-actions {
     display: flex; gap: 0.6rem; flex-wrap: wrap;
+    align-items: flex-start;
   }
   .ct-hub-btn {
     display: inline-flex; align-items: center; gap: 0.4rem;
@@ -140,6 +168,29 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
     border-color: #d1d5db;
   }
   .ct-hub-share:hover { background: #f9fafb; }
+  .ct-hub-share[aria-expanded="true"] { background: #f3f4f6; border-color: #9ca3af; }
+
+  /* Share panel */
+  .ct-share-wrap { position: relative; display: inline-block; }
+  .ct-share-panel {
+    position: absolute; top: calc(100% + 6px); left: 0;
+    background: #fff; border: 1.5px solid #e5e7eb;
+    border-radius: 0.75rem; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    min-width: 175px; z-index: 200; overflow: hidden; padding: 0.3rem 0;
+  }
+  .ct-share-panel[hidden] { display: none; }
+  .ct-share-option {
+    display: flex; align-items: center; gap: 0.55rem;
+    padding: 0.6rem 1rem; font-size: 0.875rem; font-weight: 600;
+    cursor: pointer; background: none; border: none;
+    color: #374151; text-decoration: none; width: 100%; text-align: left;
+    transition: background 0.12s; white-space: nowrap;
+  }
+  .ct-share-option:hover { background: #f3f4f6; }
+  .ct-share-icon { font-size: 1rem; flex-shrink: 0; }
+  .ct-share-svg  { width: 18px; height: 18px; flex-shrink: 0; }
+  .ct-share-line { color: #06c755; }
+  .ct-share-fb   { color: #1877f2; }
 
   /* ── Related calculators ─────────────────────────────────── */
   .ct-hub-section-title {

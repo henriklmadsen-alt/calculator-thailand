@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณดอกเบี้ยทบต้น 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณดอกเบี้ยทบต้น (Compound Interest) ฟรี 2569 — ใส่เงินต้น ดอกเบี้ย ระยะเวลา รู้ว่าเงินจะเติบโตเป็นเท่าไรในอนาคต';
@@ -90,9 +91,7 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-ดอกเบี้ยทบต้น">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -233,19 +232,7 @@ const jsonLdHowTo = {
       </p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณ-ดอกเบี้ยทบต้น/" />
     <RelatedCalculators currentHref="/คำนวณ-ดอกเบี้ยทบต้น/" slugs={['คำนวณ-มูลค่าอนาคต-future-value', 'คำนวณ-cagr-อัตราเติบโตทบต้นรายปี', 'คำนวณดอกเบี้ยเงินฝาก']} />

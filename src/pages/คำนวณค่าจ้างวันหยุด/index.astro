@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณค่าจ้างวันหยุด ปี 2569 ตามพ.ร.บ.คุ้มครองแรงงาน มาตรา 62-63 | Kamnuanlek';
 const pageDescription = 'คำนวณค่าจ้างวันหยุด ทำงานวันหยุด 2 เท่า โอทีวันหยุด 3 เท่า ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ.2541 มาตรา 62-63 อัปเดตปี 2569';
@@ -57,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างวันหยุด">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">อัปเดตปี 2569 — ตาม พ.ร.บ.คุ้มครองแรงงาน</p>
       <p class="mt-1 text-sm text-slate-700">ทำงานวันหยุด 2 เท่า (มาตรา 62) | โอทีวันหยุด 3 เท่า (มาตรา 63)</p>
@@ -176,19 +174,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณค่าจ้างวันหยุด/" />
     <RelatedCalculators currentHref="/คำนวณค่าจ้างวันหยุด/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณตามกฎหมายแรงงานขั้นต่ำ นายจ้างบางรายอาจจ่ายสูงกว่ากฎหมายกำหนด ควรตรวจสอบสัญญาจ้างและข้อบังคับภายในองค์กร

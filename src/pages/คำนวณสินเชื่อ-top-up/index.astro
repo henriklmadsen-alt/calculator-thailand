@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณสินเชื่อ Top-Up 2569 — กู้เพิ่มบนบ้านเดิม | Kamnuanlek';
 const pageDescription = 'คำนวณวงเงิน Top-Up สินเชื่อบ้านเพิ่มเติมบนหลักประกันเดิม ค่างวดใหม่รวมทั้งหมด และดอกเบี้ยรวมที่เพิ่มขึ้น ช่วยตัดสินใจกู้เพิ่มอย่างรอบคอบ';
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อ Top-Up">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณสินเชื่อ Top-Up — กู้เพิ่มบนบ้านเดิม
     </h1>
@@ -139,17 +137,7 @@ const jsonLdFaq = {
       <p>ธนาคารจะประเมินราคาทรัพย์สินใหม่ แล้วคำนวณ LTV รวม (หนี้เดิม + Top-Up) ไม่เกิน 70-80% ของราคาประเมิน นอกจากนี้ยังพิจารณา DTI รวมค่างวดทั้งหมดไม่เกิน 40% ของรายได้</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
 
     <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">

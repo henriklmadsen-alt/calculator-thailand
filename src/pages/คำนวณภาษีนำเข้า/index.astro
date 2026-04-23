@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณภาษีนำเข้า อากรศุลกากร 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณภาษีนำเข้า + VAT 2569 ฟรี — ใส่มูลค่า CIF อัตราอากร รู้ต้นทุนรวมสินค้านำเข้าทันที';
@@ -66,9 +67,7 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีนำเข้า">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -197,19 +196,7 @@ const jsonLdHowTo = {
       <p>ผู้นำเข้าสินค้าจากต่างประเทศต้องเสียภาษีนำเข้า ตามอัตราที่กำหนดตามประเภทสินค้า ภาษีนี้ช่วยปกป้องธุรกิจในประเทศและเก็บรายได้รัฐ</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.customs.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมศุลกากร: ภาษีนำเข้า</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณภาษีนำเข้า/" />
     <RelatedCalculators currentHref="/คำนวณภาษีนำเข้า/" />

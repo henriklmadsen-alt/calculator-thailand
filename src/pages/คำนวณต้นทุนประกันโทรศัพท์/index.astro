@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณต้นทุนประกันโทรศัพท์มือถือ 2569 | Phone Insurance Cost ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนประกันโทรศัพท์มือถือ 2569 เปรียบเทียบเบี้ยประกันกับค่าซ่อม/เปลี่ยนเครื่อง วิเคราะห์ว่าประกันโทรศัพท์คุ้มค่าหรือไม่';
@@ -20,9 +21,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนประกันโทรศัพท์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">วิเคราะห์ความคุ้มค่าประกันโทรศัพท์</p>
       <p class="mt-1 text-sm text-slate-700">เปรียบเทียบต้นทุนประกันกับค่าซ่อม/เปลี่ยน</p>
@@ -76,12 +75,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
       <p>ค่าเปลี่ยนหน้าจอ iPhone รุ่นใหม่ในไทยอยู่ที่ 5,000-15,000 บาท ค่าซ่อมกล้อง 3,000-8,000 บาท และหากต้องเปลี่ยนเครื่องใหม่ราคาเต็มอาจสูงถึง 30,000-50,000 บาท ประกันช่วยลดความเสี่ยงเหล่านี้</p>
     </section>
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
     <RelatedCalculators currentHref="/คำนวณต้นทุนประกันโทรศัพท์/" />
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงขึ้นกับผู้ให้บริการประกัน</div>
   </article>

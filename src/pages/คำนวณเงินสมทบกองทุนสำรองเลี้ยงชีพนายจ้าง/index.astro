@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณเงินสมทบกองทุนสำรองเลี้ยงชีพนายจ้าง อัตรา 2-15% รวม PVD ปี 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณเงินสมทบกองทุนสำรองเลี้ยงชีพ (PVD) ฝั่งนายจ้าง อัตราสมทบ 2-15% คำนวณเงินสมทบพนักงาน นายจ้าง และรวม PVD ต่อเดือนและต่อปี';
@@ -52,10 +53,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินสมทบกองทุนสำรองเลี้ยงชีพนายจ้าง">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">🏢 กองทุนสำรองเลี้ยงชีพนายจ้าง (PVD) อัตรา 2-15%</p>
       <p class="mt-1 text-sm text-slate-700">นายจ้างสมทบอย่างน้อยเท่ากับพนักงาน สูงสุดไม่เกิน 15% ของค่าจ้าง</p>
@@ -159,19 +157,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณเงินสมทบกองทุนสำรองเลี้ยงชีพนายจ้าง/" />
     <RelatedCalculators currentHref="/คำนวณเงินสมทบกองทุนสำรองเลี้ยงชีพนายจ้าง/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเบื้องต้น อัตราสมทบจริงขึ้นอยู่กับข้อบังคับกองทุนและนโยบายบริษัท กรุณาตรวจสอบกับฝ่ายทรัพยากรบุคคลและที่ปรึกษากองทุนของบริษัท

@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณประกันคุ้มครองรายได้ (Income Protection) 2569 | ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณเบี้ยประกันคุ้มครองรายได้ 2569 สำหรับผู้ที่ไม่สามารถทำงานได้จากการเจ็บป่วยหรืออุบัติเหตุ รับเงินทดแทนรายได้รายเดือนจนกลับมาทำงานได้';
@@ -20,9 +21,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันคุ้มครองรายได้">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">คำนวณประกันคุ้มครองรายได้ / Income Protection</p>
       <p class="mt-1 text-sm text-slate-700">อ้างอิงตลาดประกันภัยไทยปี 2569</p>
@@ -82,12 +81,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
       <p>ทุกคนที่รายได้มาจากการทำงาน โดยเฉพาะ: freelancer และผู้ประกอบอาชีพอิสระที่ไม่มีสวัสดิการจากนายจ้าง ผู้มีภาระหนี้หรือครอบครัวพึ่งพา และผู้ที่ทำงานในอาชีพเสี่ยงสูง</p>
     </section>
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
     <RelatedCalculators currentHref="/คำนวณประกันคุ้มครองรายได้/" />
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงขึ้นกับบริษัทประกันและอาชีพ</div>
   </article>

@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณภาษีคืน หรือจ่ายเพิ่ม 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'เช็กก่อนยื่น ภ.ง.ด.91 — คำนวณว่าปีนี้ได้ภาษีคืนหรือต้องจ่ายเพิ่มเท่าไร จากรายได้ ลดหย่อน และภาษีหัก ณ ที่จ่ายตลอดปี 2569';
@@ -71,9 +72,7 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีคืน-ภาษีจ่ายเพิ่ม">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -197,17 +196,7 @@ const jsonLdHowTo = {
       <p>ภาษีคืนเกิดขึ้นเมื่อภาษีที่ถูกหัก ณ ที่จ่ายตลอดปีมากกว่าภาษีที่ต้องชำระจริง ผู้มีสิทธิต้องยื่นแบบ ภ.ง.ด.91 ภายในกำหนด ระบบ e-Filing ของกรมสรรพากรช่วยให้ยื่นได้สะดวก</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ระบบการคืนภาษี</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณภาษีคืน-ภาษีจ่ายเพิ่ม/" />
     <RelatedCalculators currentHref="/คำนวณภาษีคืน-ภาษีจ่ายเพิ่ม/" />

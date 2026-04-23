@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณ พ.ร.บ. รถยนต์ ปี 2569 ค่าเบี้ยประกันภาคบังคับทุกประเภท | Kamnuanlek';
 const pageDescription = 'คำนวณค่า พ.ร.บ. รถยนต์ภาคบังคับ (ประกันภัยรถยนต์ภาคบังคับ) สำหรับรถทุกประเภท ตามที่กฎหมายกำหนด';
@@ -52,10 +53,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-พรบ-รถยนต์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
       <p class="text-sm font-semibold text-blue-700">📋 คำนวณ พ.ร.บ. รถยนต์ภาคบังคับ</p>
       <p class="mt-1 text-sm text-slate-700">อัตรา พ.ร.บ. กำหนดโดยกรมธุรกิจประกันภัย ตามประเภทรถและขนาดเครื่องยนต์</p>
@@ -136,19 +134,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณ-พรบ-รถยนต์/" />
     <RelatedCalculators currentHref="/คำนวณ-พรบ-รถยนต์/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตรา พ.ร.บ. อิงจากประกาศกรมธุรกิจประกันภัย อาจมีการปรับปรุง ควรตรวจสอบกับบริษัทประกันเพื่อความแม่นยำ

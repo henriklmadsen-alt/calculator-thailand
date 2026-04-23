@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณผ่อนบ้าน ค่างวด ดอกเบี้ย 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณผ่อนบ้านทุกธนาคาร 2569 ฟรี — ระบุวงเงิน ดอกเบี้ย ระยะเวลา รู้ค่างวดรายเดือนทันที พร้อมตารางผ่อนและเปรียบเทียบสินเชื่อ';
@@ -108,9 +109,7 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนบ้านและรีไฟแนนซ์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -552,21 +551,7 @@ const jsonLdHowTo = {
       <p class="text-sm text-gray-500 mt-2">ก่อนผ่อนบ้าน ตรวจสอบ → <a href="/คำนวณค่าธรรมเนียมโอนบ้าน/" class="text-primary-600 hover:underline">ค่าธรรมเนียมโอนบ้าน</a> ที่ต้องจ่ายวันโอนกรรมสิทธิ์</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณผ่อนบ้าน/" />
     <RelatedCalculators currentHref="/คำนวณผ่อนบ้าน/" />

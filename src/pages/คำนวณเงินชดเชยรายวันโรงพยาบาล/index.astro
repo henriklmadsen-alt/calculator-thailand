@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณเงินชดเชยรายวันโรงพยาบาล (Hospital Cash Plan) 2569 | ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณเงินชดเชยรายวันโรงพยาบาลจากประกัน Hospital Cash Plan 2569 จำนวนวันนอนรพ. × เงินชดเชย/วัน และเบี้ยประกันที่ต้องจ่าย';
@@ -25,9 +26,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินชดเชยรายวันโรงพยาบาล">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">คำนวณเงินชดเชยรายวัน Hospital Cash Plan</p>
       <p class="mt-1 text-sm text-slate-700">ทั้งการคำนวณเงินที่จะได้รับและเบี้ยประกัน</p>
@@ -78,12 +77,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
       <p>ขณะนอนโรงพยาบาล รายได้หยุด แต่ค่าใช้จ่ายยังดำเนินต่อ เงินชดเชยรายวันช่วยให้คุณมีเงินจ่ายค่าเช่า ค่าผ่อน ค่าอาหารครอบครัว โดยไม่ต้องกังวลเรื่องการเงินระหว่างรักษาตัว</p>
     </section>
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
       <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>

@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณมูลค่าอสังหาฯเชิงพาณิชย์ 2569 | วิธี Income Approach | Kamnuanlek';
 const pageDescription = 'คำนวณมูลค่าอสังหาฯเชิงพาณิชย์ด้วยวิธี Income Approach โดยใช้ Net Operating Income และ Cap Rate ฟรี';
@@ -54,10 +55,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าอสังหาฯเชิงพาณิชย์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
       <p class="text-sm font-semibold text-emerald-700">ประเมินมูลค่าอสังหาฯเชิงพาณิชย์</p>
       <p class="mt-1 text-sm text-slate-700">วิธี Income Approach คำนวณจาก NOI และ Cap Rate สำหรับอาคารพาณิชย์ ห้องเช่า สำนักงาน</p>
@@ -175,21 +173,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณมูลค่าอสังหาฯเชิงพาณิชย์/" />
     <RelatedCalculators currentHref="/คำนวณมูลค่าอสังหาฯเชิงพาณิชย์/" />
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
   </article>
 </BaseLayout>
 

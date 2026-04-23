@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี 2569 | หาลดหย่อนที่คุ้มสุด | Kamnuanlek';
 const pageDescription = 'วิเคราะห์ว่าควรเพิ่มค่าลดหย่อนประเภทใดก่อนเพื่อประหยัดภาษีสูงสุด แสดงอัตราภาษีส่วนเพิ่ม (Marginal Rate) และมูลค่าภาษีที่ประหยัดได้ต่อบาทที่ลดหย่อนเพิ่ม ปี 2569';
@@ -56,10 +57,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">วิเคราะห์การลดหย่อนอย่างชาญฉลาด</p>
       <p class="mt-1 text-sm text-slate-700">ดูว่าควรเพิ่มลดหย่อนประเภทใดก่อนเพื่อประหยัดภาษีสูงสุด</p>
@@ -172,17 +170,7 @@ const jsonLdFaq = {
       </ol>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
 
     <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">

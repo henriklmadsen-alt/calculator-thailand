@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณค่าธรรมเนียมโอนที่ดิน 2569 | ค่าจดจำนอง | Kamnuanlek';
 const pageDescription = 'คำนวณค่าจดทะเบียนโอนที่ดิน บ้าน ค่าจดจำนอง ตามอัตรา กรมที่ดิน อัปเดตปี 2569 ฟรี';
@@ -54,10 +55,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมโอนที่ดิน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
       <p class="text-sm font-semibold text-emerald-700">ค่าธรรมเนียมโอนที่ดิน</p>
       <p class="mt-1 text-sm text-slate-700">รวมค่าจดทะเบียนโอน + ค่าจดจำนอง ตามอัตราของ กรมที่ดิน</p>
@@ -155,21 +153,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณค่าธรรมเนียมโอนที่ดิน/" />
     <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมโอนที่ดิน/" />
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
   </article>
 </BaseLayout>
 

@@ -1,6 +1,7 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณ Burn Rate Startup รายเดือน 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณ Burn Rate 2569 ฟรี — ใส่รายจ่ายและเงินสำรอง รู้ว่าเงินจะหมดในกี่เดือน วางแผน Runway ก่อนระดมทุนรอบถัดไป';
@@ -46,10 +47,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-burn-rate-รายเดือน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณ Burn Rate รายเดือน 2569</h1>
     <p class="mb-6 text-gray-600">กรอกรายจ่ายรายเดือนและเงินสำรองที่มีอยู่ เพื่อดูว่าเงินจะหมดในกี่เดือน สามารถดูภาพรวมการออมได้ที่ <a href="/คำนวณอัตราออม/" class="text-primary-600 underline hover:text-primary-800">คำนวณอัตราการออม</a> หรือ <a href="/คำนวณเป้าลดค่าใช้จ่าย/" class="text-primary-600 underline hover:text-primary-800">คำนวณเป้าลดค่าใช้จ่าย</a></p>
 
@@ -89,17 +87,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณ-burn-rate-รายเดือน/" categoryId="budget" maxItems={4} />
   </article>

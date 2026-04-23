@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณเวลาฟื้นฟูเครดิตสกอร์ 2569 | Kamnuanlek';
 const pageDescription = 'ประมาณเวลาที่ต้องใช้ในการฟื้นฟูเครดิตสกอร์หลังมีประวัติค้างชำระ ล้มละลาย หรือถูกฟ้อง พร้อมแผนการปรับปรุงเครดิตตามสถานการณ์';
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเวลาฟื้นฟูเครดิต">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณเวลาฟื้นฟูเครดิตสกอร์ — ต้องรอนานแค่ไหน?
     </h1>
@@ -149,17 +147,7 @@ const jsonLdFaq = {
       <p>ระยะเวลาฟื้นฟูเครดิตขึ้นอยู่กับความรุนแรงของปัญหา ค้างชำระ 1-30 วันอาจฟื้นตัวใน 6-12 เดือน NPL ใช้เวลา 2-5 ปี การล้มละลายอาจใช้เวลา 5-7 ปี นอกจากเวลาแล้ว พฤติกรรมการชำระหนี้ที่ดีในอนาคตเป็นปัจจัยสำคัญที่สุด</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณเวลาฟื้นฟูเครดิต/" />
     <RelatedCalculators currentHref="/คำนวณเวลาฟื้นฟูเครดิต/" />

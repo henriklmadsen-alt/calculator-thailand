@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณวันครบกำหนดชำระ Invoice ปี 2569 — Due Date Calculator | Kamnuanlek';
 const pageDescription = 'คำนวณวันครบกำหนดชำระ Invoice จากวันที่ออกและเทอมการชำระ เช่น Net 30, Net 60, Net 90 ทราบวันครบกำหนดและวันเตือนล่วงหน้า';
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวันครบกำหนด-invoice">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 p-4">
       <p class="text-sm font-semibold text-indigo-700">คำนวณวันครบกำหนดชำระ Invoice — Due Date</p>
       <p class="mt-1 text-sm text-slate-700">สูตร: Due Date = วันที่ Invoice + เทอมการชำระ (วัน)</p>
@@ -147,19 +145,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณวันครบกำหนด-invoice/" />
     <RelatedCalculators currentHref="/คำนวณวันครบกำหนด-invoice/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
   </article>
 
   <script type="module">

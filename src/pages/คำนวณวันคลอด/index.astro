@@ -4,6 +4,7 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณวันคลอด อายุครรภ์ 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณวันคลอดและอายุครรภ์ 2569 ฟรี — ใส่วันแรกของประจำเดือน รู้วันครบกำหนดคลอด อายุครรภ์เป็นสัปดาห์ และไตรมาสทันที';
@@ -54,10 +55,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวันคลอด">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">คำนวณวันคลอดและอายุครรภ์ใน 1 หน้า</p>
       <p class="mt-1 text-sm text-slate-700">เลือกคำนวณจาก LMP หรือวันปฏิสนธิ แล้วดูผลเป็นวันที่กำหนดคลอด + อายุครรภ์ปัจจุบัน</p>
@@ -220,19 +218,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณวันคลอด/" />
     <RelatedCalculators currentHref="/คำนวณวันคลอด/" />
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg border border-gray-200 shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นค่าประมาณเพื่อการวางแผนเท่านั้น ไม่ใช่ข้อสรุปทางการแพทย์

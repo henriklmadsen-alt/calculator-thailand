@@ -3,6 +3,7 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณสินเชื่อค้ำประกัน 2569 — วงเงิน ค่างวด ดอกเบี้ย | Kamnuanlek';
 const pageDescription = 'คำนวณสินเชื่อที่ใช้หลักประกัน ทั้งอสังหาริมทรัพย์ สลากออมทรัพย์ หรือหุ้นกู้ ดูวงเงินสูงสุด ค่างวด และเปรียบเทียบกับสินเชื่อไม่มีหลักประกัน';
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อค้ำประกัน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณสินเชื่อค้ำประกัน — วงเงิน ค่างวด และดอกเบี้ย
     </h1>
@@ -120,17 +118,7 @@ const jsonLdFaq = {
       <p>สินเชื่อที่มีหลักประกันให้ดอกเบี้ยต่ำกว่าสินเชื่อส่วนบุคคลมาก เนื่องจากธนาคารมีความเสี่ยงต่ำกว่า ผู้กู้จึงได้ประโยชน์จากดอกเบี้ยที่ต่ำกว่าและวงเงินที่สูงกว่า เหมาะสำหรับความต้องการเงินก้อนใหญ่ระยะยาว</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
 
     <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">

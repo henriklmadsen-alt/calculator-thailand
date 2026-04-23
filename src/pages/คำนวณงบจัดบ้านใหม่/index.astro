@@ -1,6 +1,7 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณงบจัดบ้านใหม่ 2569 | เฟอร์นิเจอร์ เครื่องใช้ไฟฟ้า ของตกแต่ง | Kamnuanlek';
 const pageDescription = 'ประมาณค่าใช้จ่ายจัดบ้านใหม่ เฟอร์นิเจอร์หลัก เครื่องใช้ไฟฟ้า ของตกแต่ง ตามขนาดบ้านและระดับคุณภาพ';
@@ -46,10 +47,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบจัดบ้านใหม่">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบจัดบ้านใหม่ 2569</h1>
     <p class="mb-6 text-gray-600">ประมาณค่าใช้จ่ายจัดบ้านใหม่ เฟอร์นิเจอร์หลัก เครื่องใช้ไฟฟ้า และของตกแต่ง</p>
 
@@ -118,17 +116,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
 
     <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">

@@ -1,6 +1,7 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณงบเดินทาง 2569 | ค่าเดินทางรายเดือน รถสาธารณะ รถยนต์ | Kamnuanlek';
 const pageDescription = 'คำนวณค่าเดินทางรายเดือน ทั้งรถสาธารณะ รถยนต์ส่วนตัว และมอเตอร์ไซค์ รวมค่าน้ำมัน ค่าทางด่วน เพื่อวางแผนงบเดินทางที่เหมาะสม';
@@ -46,10 +47,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบเดินทาง">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบเดินทาง 2569</h1>
     <p class="mb-6 text-gray-600">คำนวณค่าเดินทางรายเดือน รถสาธารณะ รถยนต์ และมอเตอร์ไซค์ รวมค่าน้ำมัน</p>
 
@@ -108,17 +106,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณงบเดินทาง/" categoryId="bills" maxItems={4} />
   </article>

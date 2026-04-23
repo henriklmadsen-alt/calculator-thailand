@@ -2,6 +2,7 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 const pageTitle = 'คำนวณค่าจ้างแม่บ้าน 2569 | ค่าทำความสะอาด รายวัน รายเดือน | Kamnuanlek';
 const pageDescription = 'คำนวณค่าจ้างแม่บ้านออนไลน์ฟรี คิดค่าบริการทำความสะอาดบ้าน รายวัน รายสัปดาห์ รายเดือน ตามขนาดพื้นที่และประเภทบริการ เปรียบเทียบจ้างประจำ vs เรียกครั้งคราว อัปเดตปี 2569';
@@ -56,10 +57,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างแม่บ้าน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
       คำนวณค่าจ้างแม่บ้าน (Maid Service Cost)
     </h1>
@@ -255,20 +253,7 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      {faqData.map((faq) => (
-        <details class="group bg-white rounded-lg shadow-sm border border-gray-200 mb-3">
-          <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-gray-900 font-medium text-sm hover:bg-gray-50 transition-colors">
-            {faq.question}
-            <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div class="px-4 pb-3 text-gray-600 text-sm">{faq.answer}</div>
-        </details>
-      ))}
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related Content -->
     <RelatedArticles currentHref="/คำนวณค่าจ้างแม่บ้าน/" />
