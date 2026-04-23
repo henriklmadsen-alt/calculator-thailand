@@ -367,3 +367,36 @@ function redirectWithError(res, code) {
   res.writeHead(302, { Location: `/ai-advisor?error=${code}` });
   res.end();
 }
+
+// ── Dev-mode login bypass (CAL-1205) ─────────────────────────────────────────
+// Only active when DEV_AUTH_ENABLED=true. Never set this in production.
+
+export async function handleDevLogin(req, res) {
+  if (process.env.DEV_AUTH_ENABLED !== 'true') {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'dev_auth_disabled' }));
+    return;
+  }
+
+  const qs = new URL(req.url, 'http://localhost').searchParams;
+  const email = qs.get('email') || 'dev@kamnuanlek.com';
+  const name = qs.get('name') || 'Dev User';
+
+  try {
+    const user = await getOrCreateUser({
+      provider: 'dev',
+      providerId: `dev_${email}`,
+      email,
+      name,
+      avatarUrl: null,
+    });
+    const jwt = signJwt({ userId: user.id, email: user.email, tier: user.tier });
+    setSessionCookie(res, jwt);
+    res.writeHead(302, { Location: '/ai-advisor' });
+    res.end();
+  } catch (err) {
+    console.error('[auth/dev] login error:', err);
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'dev_auth_error', message: err.message }));
+  }
+}

@@ -8,7 +8,7 @@ import {
   handleGoogleLogin, handleGoogleCallback,
   handleFacebookLogin, handleFacebookCallback,
   handleAppleLogin, handleAppleCallback,
-  handleLogout, handleApiMe,
+  handleLogout, handleApiMe, handleDevLogin,
 } from './app/auth.mjs';
 import { initDb } from './app/db.mjs';
 import { handleAiAdvisorMessage } from './app/ai-advisor.mjs';
@@ -515,6 +515,7 @@ async function serve(req, res) {
   if (url === '/auth/facebook' || url === '/auth/facebook/') { handleFacebookLogin(req, res); return; }
   if (url === '/auth/apple' || url === '/auth/apple/') { handleAppleLogin(req, res); return; }
   if (url === '/auth/logout' || url === '/auth/logout/') { handleLogout(req, res); return; }
+  if (url.startsWith('/auth/dev-login')) { handleDevLogin(req, res); return; }
   if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
 
   // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
