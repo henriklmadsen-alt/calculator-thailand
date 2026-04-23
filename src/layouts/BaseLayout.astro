@@ -323,10 +323,14 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         }
         window.gtag('event', 'calculator_complete', withLanguageContext(payload));
       }
-      function trackCalculatorUsed(calculatorType) {
+      function trackCalculatorUsed(calculatorType, resultValue) {
         if (typeof window.gtag !== 'function') return;
         window.__ctCalculatorType = calculatorType;
-        window.gtag('event', 'calculator_used', withLanguageContext({ calculator_type: calculatorType }));
+        const payload = { calculator_type: calculatorType };
+        if (typeof resultValue === 'number' && Number.isFinite(resultValue)) {
+          payload.result_value = resultValue;
+        }
+        window.gtag('event', 'calculator_used', withLanguageContext(payload));
       }
       function trackResultViewed(calculatorType) {
         if (typeof window.gtag !== 'function') return;

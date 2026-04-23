@@ -370,6 +370,13 @@
         } else {
           compareSelected = compareSelected.filter(function(id) { return id !== entry.id; });
         }
+        // Track scenario_compared event when selections change
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('scenario_compared', {
+            calculator_type: entry.calcId,
+            selected_count: compareSelected.length
+          });
+        }
         renderDrawer();
       });
       card.appendChild(cb);
@@ -410,6 +417,15 @@
     link.className = 'ct-card-link';
     link.href = entry.url;
     link.textContent = '↗ ไปยังเครื่องคำนวณ';
+    link.addEventListener('click', function() {
+      // Track history_restored event when user restores a saved calculation
+      if (typeof window.trackLanguageAwareEvent === 'function') {
+        window.trackLanguageAwareEvent('history_restored', {
+          calculator_type: entry.calcId,
+          calculator_name: entry.calcTitle
+        });
+      }
+    });
     body.appendChild(link);
 
     card.appendChild(body);
@@ -656,6 +672,13 @@
       isCompareMode = !isCompareMode;
       compareToggle.setAttribute('aria-pressed', isCompareMode ? 'true' : 'false');
       if (!isCompareMode) compareSelected = [];
+      // Track scenario_compared event when compare mode is toggled
+      if (typeof window.trackLanguageAwareEvent === 'function') {
+        window.trackLanguageAwareEvent('scenario_compared', {
+          compare_mode_enabled: isCompareMode,
+          selected_count: compareSelected.length
+        });
+      }
       renderDrawer();
     });
 
