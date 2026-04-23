@@ -7,6 +7,7 @@ import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import ResultCardHub from '../../components/templates/ResultCardHub.astro';
 import TransparencyPanel from '../../components/templates/TransparencyPanel.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+import PresetButtons from '../../components/templates/PresetButtons.astro';
 
 const pageTitle = 'คำนวณ BMI ดัชนีมวลกาย 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณค่า BMI ตามมาตรฐาน WHO ฟรี — ใส่ส่วนสูงและน้ำหนัก รู้ระดับสุขภาพทันที พร้อมคำแนะนำน้ำหนักที่เหมาะสมสำหรับคนไทย';
@@ -169,6 +170,15 @@ const jsonLdHowTo = {
 
     <!-- Calculator -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- CAL-992: Preset Buttons -->
+      <PresetButtons
+        presets={[
+          { label: 'สตรี ส่วนสูง 160 ซม.', fields: { weight: '60', height: '160' } },
+          { label: 'ชาย ส่วนสูง 175 ซม.', fields: { weight: '75', height: '175' } },
+          { label: 'ส่วนสูง 170 ซม.', fields: { weight: '70', height: '170' } },
+        ]}
+      />
+
       <div class="grid gap-4 sm:grid-cols-2 mb-6">
         <div>
           <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">
@@ -466,6 +476,37 @@ const jsonLdHowTo = {
         <a href="https://www.anamai.moph.go.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">กรมอนามัย: เกณฑ์ BMI และการประเมินสุขภาพ 2569</a> [อัปเดต 2569] ·
         <a href="https://www.who.int/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">WHO: Global BMI Classification Guidelines</a>
       </p>
+    </section>
+
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณ BMI</h2>
+      <p class="text-gray-700 mb-4">
+        ในการคำนวณ BMI มีข้อผิดพลาดหลายประการที่ผู้ใช้มักตกหลุมพระเล้า เรียนรู้เพื่อให้ได้ผลลัพธ์ที่แม่นยำ:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ใช้ความสูงเป็นเซนติเมตรแทนเมตร</strong><br/>
+          หากส่วนสูง 170 ซม. แต่ใส่ 170 แทน 1.70 ผลลัพธ์ BMI จะคำนวณผิด ต้องแปลงเป็น 1.70 เมตรก่อน จากนั้นใช้ในสูตร BMI = น้ำหนัก ÷ (1.70)² เท่านั้น
+        </li>
+        <li>
+          <strong>ไม่แปลงหน่วยเมื่อใช้ฟุต นิ้ว หรือหน่วยอื่น</strong><br/>
+          ถ้าวัดส่วนสูงเป็น 5 ฟุต 8 นิ้ว ต้องแปลงเป็นเมตร (ประมาณ 1.73 ม.) ก่อน ใช้อัตโนมัติหรือเครื่องคำนวณที่แปลงหน่วยได้จะช่วยลดข้อผิดพลาด
+        </li>
+        <li>
+          <strong>ชั่งน้ำหนักพร้อมเสื้อผ้าหนักหรือเครื่องประดับ</strong><br/>
+          เสื้อผ้า นาฬิกา แหวน รองเท้า รวมน้ำหนัก 2-3 กิโลกรัม ถ้าชั่งแล้ว BMI จะสูงกว่าความเป็นจริง ควรชั่งเมื่อเช้าก่อนรับประทานอาหาร สวมเสื้อผ้าน้อยที่สุด
+        </li>
+        <li>
+          <strong>ไม่คำนึงถึงการเป็นนักกีฬาหรือกล้ามเนื้อเยอะ</strong><br/>
+          นักกีฬาหรือคนที่ออกกำลังกายมาก BMI อาจสูง แต่ไม่ได้อ้วน เพราะกล้ามเนื้อหนักกว่าไขมัน ถ้า BMI สูง แต่เสื้อตัวใหญ่พอดี ไขมันไม่เยอะ ควรวัดเส้นรอบเอวเพิ่มเติม และปรึกษาแพทย์
+        </li>
+        <li>
+          <strong>ใช้เกณฑ์สากล (25+) แทนเกณฑ์เอเชีย (23+)</strong><br/>
+          เกณฑ์สากลบอกว่าน้ำหนักเกินเริ่มที่ 25+ แต่เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย (ไทย) ถือว่าน้ำหนักเกินตั้งแต่ 23+ ตรวจสอบว่าเครื่องคำนวณใช้เกณฑ์ที่เหมาะกับสภาวะของคุณ
+        </li>
+      </ul>
     </section>
 
     <!-- FAQ -->

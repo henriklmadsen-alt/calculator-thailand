@@ -1,0 +1,89 @@
+---
+/**
+ * PresetButtons Component (CAL-992)
+ *
+ * Displays 2-3 quick-fill preset buttons above calculator forms.
+ * Clicking a preset populates all form fields and triggers calculation.
+ *
+ * Usage:
+ * ```astro
+ * <PresetButtons
+ *   presets={[
+ *     { label: 'พนักงาน 25,000/เดือน', fields: { income: '25000' } },
+ *     { label: 'พนักงาน 50,000/เดือน', fields: { income: '50000' } },
+ *     { label: 'ฟรีแลนซ์ 80,000/เดือน', fields: { income: '80000' } },
+ *   ]}
+ * />
+ * ```
+ *
+ * Props:
+ * - presets: Array of preset buttons. Each preset has:
+ *   - label: String displayed on the button (e.g., 'พนักงาน 25,000/เดือน')
+ *   - fields: Object mapping field IDs to values (e.g., { income: '25000', age: '30' })
+ *
+ * Behavior:
+ * - Click preset → fills matching form fields by ID
+ * - Automatically triggers the #btn-calculate click
+ * - Fields not in the preset are left unchanged
+ * - Shows validation feedback if inputs are invalid
+ */
+
+interface Preset {
+  label: string;
+  fields: Record<string, string>;
+}
+
+interface Props {
+  presets: Preset[];
+}
+
+const { presets } = Astro.props;
+---
+
+<div class="mb-6">
+  <p class="text-sm font-medium text-gray-700 mb-2">ลองใช้ตัวอย่าง:</p>
+  <div class="flex flex-wrap gap-2">
+    {presets.map((preset, idx) => (
+      <button
+        type="button"
+        data-preset-index={idx}
+        data-preset-fields={JSON.stringify(preset.fields)}
+        class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-md transition-colors border border-gray-300 hover:border-gray-400"
+      >
+        {preset.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+<script define:vars={{ presets }}>
+  // Preset buttons handler
+  document.querySelectorAll('[data-preset-fields]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const fieldsJson = btn.getAttribute('data-preset-fields');
+      const fields = JSON.parse(fieldsJson);
+
+      // Populate form fields
+      Object.entries(fields).forEach(([fieldId, value]) => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+          input.value = value;
+        }
+      });
+
+      // Trigger calculation
+      const calculateBtn = document.getElementById('btn-calculate');
+      if (calculateBtn) {
+        calculateBtn.click();
+      }
+
+      // Scroll to result (optional, nice UX)
+      setTimeout(() => {
+        const resultEl = document.getElementById('result');
+        if (resultEl && !resultEl.classList.contains('hidden')) {
+          resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 100);
+    });
+  });
+</script>
