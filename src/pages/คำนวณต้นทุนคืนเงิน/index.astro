@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณต้นทุนการคืนเงิน ปี 2569 — Refund Processing Cost สำหรับร้านค้า | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณต้นทุนการคืนเงิน ปี 2569 — Refund Processing Cost สำหรับร้านค้า | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนรวมการคืนเงินสำหรับร้านค้า รวมค่าธรรมเนียมที่ไม่ได้คืน ต้นทุนดำเนินการ และผลกระทบต่อกำไร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณต้นทุนคืนเงิน/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนคืนเงิน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
       <p class="text-sm font-semibold text-red-700">คำนวณต้นทุนการคืนเงิน — Refund Processing Cost</p>
       <p class="mt-1 text-sm text-slate-700">สูตร: ต้นทุน = MDR ที่ไม่ได้คืน + ค่า Processing + ต้นทุนดำเนินการ</p>
@@ -151,19 +149,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณต้นทุนคืนเงิน/" />
     <RelatedCalculators currentHref="/คำนวณต้นทุนคืนเงิน/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> นโยบายการคืน MDR แตกต่างตามธนาคาร ควรตรวจสอบเงื่อนไขกับธนาคารที่ใช้บริการ

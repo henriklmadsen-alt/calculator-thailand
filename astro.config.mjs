@@ -2,9 +2,47 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
+function classifySitemapUrl(url) {
+  const decoded = decodeURIComponent(url);
+
+  // Car loan / installment calculators → priority 1.0
+  if (decoded.includes('ผ่อนรถ') || decoded.includes('สินเชื่อรถ') || decoded.includes('เปรียบเทียบซื้อรถ')) {
+    return { priority: 1.0, changefreq: 'monthly' };
+  }
+
+  // Insurance calculators (ประกัน) → priority 1.0
+  // ประกันสังคม (SSO / social security) is a tax deduction tool → 0.9 below
+  if (decoded.includes('ประกัน') && !decoded.includes('ประกันสังคม')) {
+    return { priority: 1.0, changefreq: 'monthly' };
+  }
+
+  // Tax calculators (income tax, VAT, SSO) → priority 0.9
+  if (decoded.includes('ภาษี') || /vat/i.test(decoded) || decoded.includes('ประกันสังคม')) {
+    return { priority: 0.9, changefreq: 'monthly' };
+  }
+
+  // All other pages
+  return { priority: 0.5, changefreq: 'monthly' };
+}
+
 export default defineConfig({
   output: 'static',
-  integrations: [tailwind(), sitemap()],
+  integrations: [
+    tailwind(),
+    sitemap({
+      serialize(item) {
+        const { priority, changefreq } = classifySitemapUrl(item.url);
+        item.priority = priority;
+        item.changefreq = changefreq;
+        return item;
+      },
+    }),
+  ],
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
+  },
   site: process.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com',
   redirects: {
     // Article slug renames

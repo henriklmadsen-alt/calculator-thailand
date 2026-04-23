@@ -2,9 +2,10 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีมูลค่าเพิ่ม VAT 7% ปี 2569 | บวก/แยก VAT ฟรี | Calculator Thailand';
-const pageDescription = 'คำนวณ VAT 7% ออนไลน์ฟรี บวก VAT จากราคาสินค้า หรือแยก VAT จากราคารวม คำนวณทีละหลายรายการ ผลลัพธ์แม่นยำทันที อัปเดตปี 2569';
+const pageTitle = 'คำนวณ VAT ภาษีมูลค่าเพิ่ม 7% 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณ VAT 7% ฟรี 2569 — บวก VAT จากราคาก่อนภาษี หรือแยก VAT จากราคารวม รู้ยอดชำระและภาษีแยกรายการทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`;
 
@@ -25,6 +26,11 @@ const faqData = [
     question: 'VAT 7% หรือ 10% กันแน่?',
     answer: 'อัตราภาษีมูลค่าเพิ่มตามกฎหมายคือ 10% แต่มีพระราชกฤษฎีกาลดอัตราเหลือ 7% (รวมภาษีท้องถิ่น) ซึ่งได้รับการต่ออายุเรื่อยมาจนถึงปัจจุบัน',
   },
+,
+  { question: 'ธุรกิจขนาดไหนต้องจดทะเบียน VAT?', answer: 'ผู้ประกอบการที่มีรายได้จากการขายสินค้าหรือบริการเกิน 1,800,000 บาทต่อปี ต้องจดทะเบียนภาษีมูลค่าเพิ่มภายใน 30 วันนับแต่วันที่รายได้เกิน' },
+  { question: 'VAT Input และ Output Tax คืออะไร?', answer: 'Output VAT: ภาษีที่เรียกเก็บจากลูกค้า | Input VAT: ภาษีที่จ่ายให้ซัพพลายเออร์ | ภาษีที่ต้องนำส่งกรมสรรพากร = Output VAT - Input VAT ถ้าติดลบได้รับคืนหรือนำไปเครดิตเดือนถัดไป' },
+  { question: 'สินค้าและบริการอะไรได้รับการยกเว้น VAT?', answer: 'อาหารสด พืชผักผลไม้ที่ยังไม่แปรรูป, สัตว์ที่ยังมีชีวิต, ปุ๋ยและยาป้องกันแมลง, หนังสือพิมพ์/นิตยสาร, บริการสุขภาพ/การศึกษา, การขนส่งผู้โดยสารภายในประเทศ' },
+  { question: 'VAT Zero Rate ต่างจาก VAT Exempt อย่างไร?', answer: 'Zero Rate (0%): เสีย VAT แต่อัตรา 0% เช่น ส่งออกสินค้า — ยังขอคืน Input VAT ได้ | Exempt (ยกเว้น): ไม่ต้องเสีย VAT แต่ขอคืน Input VAT ไม่ได้ สำคัญมากสำหรับการวางแผนภาษี' }
 ];
 
 const jsonLdWebApp = {
@@ -65,10 +71,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีมูลค่าเพิ่ม VAT 7%">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีมูลค่าเพิ่ม VAT 7%">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -271,21 +275,7 @@ const jsonLdHowTo = {
       <p>ผู้ประกอบการส่วนใหญ่ต้องรับผิดชอบเสียภาษี VAT ตามระเบียบของกรมสรรพากร บางประเภทสินค้าอาจได้รับการยกเว้น เช่น อาหารสด ยารักษาโรคบางชนิด</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ภาษีมูลค่าเพิ่ม VAT</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <section class="mb-8 rounded-xl border border-primary-200 bg-primary-50 p-4 sm:p-5">
       <h2 class="text-lg font-semibold text-primary-900 mb-2">บทความสูตร VAT 7% สำหรับใช้งานจริง</h2>

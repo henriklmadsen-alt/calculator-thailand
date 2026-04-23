@@ -1,8 +1,9 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเป้าลดค่าใช้จ่าย 2569 | วางแผนตัดงบ | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณเป้าลดค่าใช้จ่าย 2569 | วางแผนตัดงบ | Kamnuanlek';
 const pageDescription = 'คำนวณเป้าหมายลดค่าใช้จ่ายเพื่อเพิ่มการออม กำหนดยอดที่ต้องตัดในแต่ละหมวด';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเป้าลดค่าใช้จ่าย/`;
@@ -52,10 +53,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเป้าลดค่าใช้จ่าย">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณเป้าลดค่าใช้จ่าย 2569</h1>
     <p class="mb-6 text-gray-600">กรอกค่าใช้จ่ายปัจจุบันและเป้าออมที่ต้องการเพิ่ม เพื่อดูว่าต้องลดหมวดไหนเท่าไร สามารถดูอัตราออมปัจจุบันได้ที่ <a href="/คำนวณอัตราออม/" class="text-primary-600 underline hover:text-primary-800">คำนวณอัตราการออม</a> หรือ <a href="/คำนวณ-burn-rate-รายเดือน/" class="text-primary-600 underline hover:text-primary-800">คำนวณ Burn Rate รายเดือน</a></p>
 
@@ -107,17 +105,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณเป้าลดค่าใช้จ่าย/" categoryId="budget" maxItems={4} />
   </article>

@@ -4,9 +4,10 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีที่ดิน 2569 | อัตราและวิธีคำนวณ | Calculator Thailand';
-const pageDescription = 'คำนวณภาษีที่ดินและสิ่งปลูกสร้างปี 2569 แบบขั้นมูลค่า แยกที่อยู่อาศัย เกษตร พาณิชย์ และที่ดินว่างเปล่า พร้อมตัวอย่างเป็นเงินบาท';
+const pageTitle = 'คำนวณภาษีที่ดินและสิ่งปลูกสร้าง 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีที่ดินและสิ่งปลูกสร้าง 2569 ฟรี — ที่อยู่อาศัย เกษตร พาณิชย์ รู้ยอดภาษีที่ต้องจ่ายทันที ตามมูลค่าประเมินกรมธนารักษ์';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีที่ดิน/`;
 
@@ -31,6 +32,10 @@ const faqData = [
     question: 'กำหนดชำระภาษีที่ดินและสิ่งปลูกสร้างเมื่อไร?',
     answer: 'โดยปกติกำหนดชำระภายในเดือนเมษายนของทุกปี แต่ท้องถิ่นอาจขยายเวลาออกไปได้ หากไม่ชำระตามกำหนดจะมีเบี้ยปรับ 40% ของภาษีที่ค้าง บวกเงินเพิ่มอีก 1% ต่อเดือน ควรติดตามประกาศจากองค์กรปกครองส่วนท้องถิ่นในพื้นที่',
   },
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' }
 ];
 
 const jsonLdWebApp = {
@@ -71,10 +76,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีที่ดิน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีที่ดิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -249,21 +252,7 @@ const jsonLdHowTo = {
       <p>ภาษีที่ดินเป็นภาษีประจำปีที่ต้องชำระให้กับกรมสรรพากร ผู้ที่เป็นเจ้าของที่ดินลงทะเบียนต้องรับผิดชอบ การไม่ชำระ ณ กำหนดอาจมีบทลงโทษเพิ่มเติม</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ภาษีที่ดิน</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้เป็นการคำนวณเพื่อวางแผนเบื้องต้นตามข้อมูลที่กรอก

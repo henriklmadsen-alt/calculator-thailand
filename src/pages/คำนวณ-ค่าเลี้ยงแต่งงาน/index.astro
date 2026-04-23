@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าเลี้ยงแต่งงาน 2569 | ราคาเมนูต่อคน | Calculator Thailand';
+const pageTitle = 'คำนวณค่าเลี้ยงแต่งงาน 2569 | ราคาเมนูต่อคน | Kamnuanlek';
 const pageDescription = 'คำนวณค่าเลี้ยงแต่งงาน โดยป้อนจำนวนแขก และราคาต่อหัว ออนไลน์ฟรี พร้อมคำแนะนำเลือกเมนูและสัดส่วนอาหาร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ค่าเลี้ยงแต่งงาน/`;
@@ -43,10 +44,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเลี้ยงแต่งงาน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
       คำนวณค่าเลี้ยงแต่งงาน
     </h1>
@@ -163,20 +161,7 @@ const jsonLdFaq = {
     </div>
 
     <!-- FAQ -->
-    <section class="mb-10">
-      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="group border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
-            <summary class="font-semibold text-gray-900 flex items-center justify-between">
-              {faq.question}
-              <span class="ml-2 inline-block transition-transform group-open:rotate-180">▼</span>
-            </summary>
-            <p class="mt-3 text-gray-600 text-sm">{faq.answer}</p>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators />
     <RelatedArticles />

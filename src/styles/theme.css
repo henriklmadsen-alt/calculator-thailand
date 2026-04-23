@@ -147,6 +147,191 @@ html[data-theme='dark'] .bg-slate-50\/70 {
   background-color: rgba(15, 23, 42, 0.9) !important;
 }
 
+/* Mobile-friendly sticky result card — Win #1 CAL-961 */
+#results {
+  position: relative;
+}
+
+@media (max-width: 767px) {
+  #results {
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+    background: linear-gradient(to top, #ffffff 80%, rgba(255, 255, 255, 0.95) 95%, rgba(255, 255, 255, 0));
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #results.hidden {
+    position: relative;
+    bottom: auto;
+  }
+
+  /* Dark mode support for sticky result card */
+  html[data-theme='dark'] #results {
+    background: linear-gradient(to top, #0f172a 80%, rgba(15, 23, 42, 0.95) 95%, rgba(15, 23, 42, 0));
+  }
+}
+
+/* Save Calculation Button — Win #2 CAL-962 */
+.save-calc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #065f46;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-calc-btn:hover {
+  background-color: #dcfce7;
+  border-color: #86efac;
+}
+
+.save-calc-btn:active {
+  transform: scale(0.98);
+}
+
+.save-calc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+html[data-theme='dark'] .save-calc-btn {
+  background-color: #064e23;
+  border-color: #059669;
+  color: #86efac;
+}
+
+html[data-theme='dark'] .save-calc-btn:hover {
+  background-color: #065f46;
+  border-color: #10b981;
+}
+
+/* Save calculation success feedback */
+.save-calc-feedback {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border: 2px solid #10b981;
+  border-radius: 0.5rem;
+  padding: 1.5rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #059669;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  text-align: center;
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.save-calc-feedback.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+html[data-theme='dark'] .save-calc-feedback {
+  background-color: #064e23;
+  border-color: #10b981;
+  color: #86efac;
+}
+
+/* Recent calculations list */
+.save-calc-recent {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+html[data-theme='dark'] .save-calc-recent {
+  border-top-color: #334155;
+}
+
+.save-calc-recent-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+html[data-theme='dark'] .save-calc-recent-title {
+  color: #9ca3af;
+}
+
+.save-calc-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.save-calc-recent-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  color: #4b5563;
+  transition: background-color 0.2s ease;
+}
+
+.save-calc-recent-item:hover {
+  background-color: #f3f4f6;
+  cursor: pointer;
+}
+
+html[data-theme='dark'] .save-calc-recent-item {
+  background-color: #1e293b;
+  color: #cbd5e1;
+}
+
+html[data-theme='dark'] .save-calc-recent-item:hover {
+  background-color: #293548;
+}
+
+.save-calc-recent-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-left: 0.5rem;
+}
+
+html[data-theme='dark'] .save-calc-recent-time {
+  color: #6b7280;
+}
+
 html[data-theme='dark'] .bg-primary-50 {
   background-color: #0a273f !important;
 }
@@ -596,4 +781,62 @@ html[data-theme='dark'] .bg-amber-50 .text-amber-800,
 html[data-theme='dark'] .bg-amber-50 .text-amber-700,
 html[data-theme='dark'] .bg-amber-50 .text-amber-600 {
   color: #fef3c7 !important;
+}
+
+/* ─── INPUT VALIDATION WITH FRIENDLY THAI ERROR MESSAGES (CAL-996) ─────────── */
+
+/* Amber highlight for invalid fields (not red — amber is friendlier) */
+input.is-invalid-thai {
+  border-color: #f59e0b !important;
+  background-color: #fffbf0 !important;
+  color: #92400e !important;
+}
+
+input.is-invalid-thai:focus {
+  outline: none;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1) !important;
+}
+
+input.is-invalid-thai::placeholder {
+  color: #d97706;
+  opacity: 0.7;
+}
+
+/* Valid state (optional visual feedback) */
+input.is-valid {
+  border-color: #d1d5db;
+  background-color: #ffffff;
+}
+
+/* Error message styling — Thai-friendly, not harsh */
+.error-message-thai {
+  display: block;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #d97706;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/* Dark mode support for validation */
+html[data-theme='dark'] input.is-invalid-thai {
+  border-color: #f59e0b !important;
+  background-color: #3f2a00 !important;
+  color: #fde68a !important;
+}
+
+html[data-theme='dark'] input.is-invalid-thai:focus {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2) !important;
+}
+
+html[data-theme='dark'] input.is-invalid-thai::placeholder {
+  color: #fbbf24;
+  opacity: 0.8;
+}
+
+html[data-theme='dark'] .error-message-thai {
+  color: #fcd34d;
 }

@@ -1,8 +1,9 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าธรรมเนียมเช็คธนาคาร 2569 | ค่าเรียกเก็บเช็ค | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณค่าธรรมเนียมเช็คธนาคาร 2569 | ค่าเรียกเก็บเช็ค | Kamnuanlek';
 const pageDescription = 'คำนวณค่าธรรมเนียมเรียกเก็บเช็คธนาคาร เช็คในพื้นที่และต่างพื้นที่ พร้อมระยะเวลาเรียกเก็บ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมเช็คธนาคาร/`;
@@ -46,10 +47,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมเช็คธนาคาร">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าธรรมเนียมเช็คธนาคาร 2569</h1>
     <p class="mb-6 text-gray-600">คำนวณค่าธรรมเนียมเรียกเก็บเช็คในพื้นที่และต่างพื้นที่รวมต่อเดือนและต่อปี</p>
 
@@ -101,17 +99,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมเช็คธนาคาร/" categoryId="bills" maxItems={4} />
   </article>

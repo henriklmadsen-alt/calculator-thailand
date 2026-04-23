@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculateSolarROI } from '../../lib/klc-0576-solar-panel-roi';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณผลตอบแทน Solar Panel (ROI) ปี 2569 | ระยะคืนทุน | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณผลตอบแทน Solar Panel (ROI) ปี 2569 | ระยะคืนทุน | Kamnuanlek';
 const pageDescription = 'คำนวณผลตอบแทนจากการติดตั้งแผง Solar เซลล์ การประหยัด ROI ระยะเวลาคืนทุน ตามอัตรา MEA/PEA ปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-klc0576-โซลาร์-roi/`;
@@ -43,7 +44,7 @@ const jsonLdWebApp = {
   inLanguage: 'th',
   author: {
     '@type': 'Organization',
-    name: 'เครื่องคำนวณไทย',
+    name: 'Kamnuanlek',
     url: siteUrl,
   },
 };
@@ -60,10 +61,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="klc0576-solar-roi">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
       <p class="text-sm font-semibold text-green-700">คำนวณผลตอบแทน Solar Panel</p>
       <p class="mt-1 text-sm text-slate-700">ตามอัตรา MEA/PEA และข้อมูล TISO ปี 2569</p>
@@ -222,4 +220,12 @@ const jsonLdFaq = {
       resultsDiv.scrollIntoView({ behavior: 'smooth' });
     });
   </script>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.mea.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">การไฟฟ้านครหลวง MEA (mea.or.th)</a> — อัตราค่าไฟฟ้าและโครงสร้างราคา</li>
+        <li><a href="https://www.pea.co.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">การไฟฟ้าส่วนภูมิภาค PEA (pea.co.th)</a> — อัตราค่าไฟฟ้าต่างจังหวัด</li>
+      </ul>
+    </div>
 </BaseLayout>

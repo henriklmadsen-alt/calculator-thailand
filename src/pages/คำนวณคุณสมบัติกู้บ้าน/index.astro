@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณคุณสมบัติกู้บ้าน 2569 | เช็กสิทธิ์ก่อนยื่นกู้ | Calculator Thailand';
+const pageTitle = 'คำนวณคุณสมบัติกู้บ้าน 2569 | เช็กสิทธิ์ก่อนยื่นกู้ | Kamnuanlek';
 const pageDescription = 'ประเมินคุณสมบัติกู้บ้านปี 2569 ฟรี เช็ก DTI อายุ รายได้ ว่าผ่านเกณฑ์ธนาคารไหม ดูวงเงินกู้สูงสุดที่น่าจะได้รับ พร้อมคำแนะนำเพิ่มโอกาสอนุมัติ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณคุณสมบัติกู้บ้าน/`;
@@ -26,6 +27,11 @@ const faqData = [
     question: 'รายได้ประเภทใดธนาคารนับรวมได้บ้าง?',
     answer: 'รายได้ประจำ: เงินเดือน โอที โบนัส (เฉลี่ย 12 เดือน) รายได้ธุรกิจ: ต้องมีหลักฐาน เช่น บัญชีย้อนหลัง 6–12 เดือน หรืองบการเงิน รายได้ค่าเช่า: อาจนับได้ 70–80% หากมีหลักฐาน',
   },
+,
+  { question: 'กู้บ้านได้สูงสุดกี่เท่าของรายได้?', answer: 'ธนาคารส่วนใหญ่อนุมัติให้ผ่อนได้ไม่เกิน 40% ของรายได้สุทธิต่อเดือน เช่น รายได้ 50,000 บาท ผ่อนได้สูงสุด 20,000 บาท/เดือน วงเงินกู้สูงสุดขึ้นกับอัตราดอกเบี้ยและระยะเวลา' },
+  { question: 'อัตราดอกเบี้ยสินเชื่อบ้านปัจจุบันอยู่ที่เท่าไร?', answer: 'MRR ของธนาคารพาณิชย์ส่วนใหญ่อยู่ที่ 6.25-7.00% ต่อปี สินเชื่อบ้านทั่วไปได้รับส่วนลด เช่น MRR-1% ถึง MRR-2% ตรวจสอบอัตราปัจจุบันได้จากเว็บไซต์ธนาคารหรือ bot.or.th' },
+  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' },
+  { question: 'รีไฟแนนซ์บ้านคุ้มค่าเมื่อไร?', answer: 'คุ้มค่าเมื่อดอกเบี้ยใหม่ต่ำกว่าเดิมอย่างน้อย 0.5-1% และยังมีระยะเวลาผ่อนเหลืออีกนาน คำนวณจุดคืนทุน: ค่าใช้จ่ายรีไฟแนนซ์ ÷ เงินที่ประหยัดได้/เดือน = จำนวนเดือนที่คุ้มทุน' }
 ];
 
 const jsonLdWebApp = {
@@ -52,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณคุณสมบัติกู้บ้าน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">✅ รู้ผลทันที — ไม่บันทึกข้อมูล</p>
       <p class="mt-1 text-sm text-slate-700">ประเมินเบื้องต้นก่อนยื่นกู้จริง เพื่อเตรียมพร้อมและเพิ่มโอกาสอนุมัติ</p>
@@ -240,21 +243,7 @@ const jsonLdFaq = {
       </ul>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณคุณสมบัติกู้บ้าน/" />
     <RelatedCalculators currentHref="/คำนวณคุณสมบัติกู้บ้าน/" />

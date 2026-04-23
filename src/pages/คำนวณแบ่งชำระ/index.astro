@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณแบ่งชำระ ปี 2569 — Split Payment Calculator | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณแบ่งชำระ ปี 2569 — Split Payment Calculator | Kamnuanlek';
 const pageDescription = 'คำนวณยอดแบ่งชำระเท่าๆ กัน หรือแบ่งตามสัดส่วน เหมาะสำหรับการแบ่งชำระค่าสินค้าระหว่างหลายคน หรือแบ่งจ่ายหลายงวด';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณแบ่งชำระ/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแบ่งชำระ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-teal-100 bg-teal-50 p-4">
       <p class="text-sm font-semibold text-teal-700">คำนวณแบ่งชำระ — Split Payment</p>
       <p class="mt-1 text-sm text-slate-700">แบ่งเท่าๆ กัน หรือตามสัดส่วน สำหรับหลายคนหรือหลายงวด</p>
@@ -137,19 +135,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณแบ่งชำระ/" />
     <RelatedCalculators currentHref="/คำนวณแบ่งชำระ/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
   </article>
 
   <script type="module">

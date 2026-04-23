@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FavoriteCalculators from '../components/templates/FavoriteCalculators.astro';
 import { categories, calculators, getCategoryCounts, getPopularCalculators } from '../lib/calculators';
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
@@ -9,9 +10,18 @@ const popular = getPopularCalculators();
 const jsonLdWebsite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'เครื่องคำนวณไทย',
+  name: 'Kamnuanlek',
+  alternateName: 'คำนวณเลข',
   url: siteUrl,
   inLanguage: 'th',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteUrl}/?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
 };
 
 const jsonLdItemList = {
@@ -28,8 +38,8 @@ const jsonLdItemList = {
 ---
 
 <BaseLayout
-  title="เครื่องคำนวณไทย 2569 — ภาษี ผ่อนบ้าน ผ่อนรถ ค่าไฟ ฟรี"
-  description="รวม 40+ เครื่องคำนวณออนไลน์ฟรี อัปเดตปี 2569: คำนวณภาษีเงินได้ ผ่อนรถ ผ่อนบ้าน ค่าไฟ ประกันสังคม VAT สำหรับคนไทย ใช้ง่ายได้ผลลัพธ์ทันที"
+  title="Kamnuanlek — เครื่องคำนวณออนไลน์ฟรีสำหรับคนไทย 2569"
+  description="คำนวณภาษีเงินได้ ผ่อนบ้าน ผ่อนรถ เงินเดือนสุทธิ ค่าไฟ และอีก 800+ รายการ ฟรี ไม่ต้องสมัคร อัปเดตปี 2569 ถูกต้องตามกฎหมายไทย"
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebsite)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} />
@@ -83,12 +93,15 @@ const jsonLdItemList = {
     <div id="recent-row" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin"></div>
   </div>
 
+  <!-- Favorite Calculators (populated by JS) -->
+  <FavoriteCalculators />
+
   <!-- Main content wrapper (hidden during search) -->
   <div id="main-content">
     <!-- Category Icon Grid -->
     <div class="mb-10">
       <h2 class="text-lg font-bold text-gray-900 mb-5 text-center">หมวดหมู่เครื่องคำนวณ</h2>
-      <div class="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-4">
+      <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4 md:gap-4">
         {categories.map((cat) => (
           <a
             href={`/หมวดหมู่/${cat.slug}/`}
@@ -103,6 +116,38 @@ const jsonLdItemList = {
               </span>
               <span class="text-[10px] text-gray-400">{counts[cat.id]} รายการ</span>
             </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- New Calculators Section -->
+    <div class="mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-gray-900">เครื่องคำนวณใหม่ล่าสุด</h2>
+        <a href="/เครื่องคำนวณใหม่/" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+          ดูทั้งหมด →
+        </a>
+      </div>
+      <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {[
+          { title: 'คำนวณ CAGR', icon: '📈', href: '/คำนวณ-cagr-อัตราเติบโตทบต้นรายปี/' },
+          { title: 'คำนวณ IRR', icon: '💹', href: '/คำนวณ-irr-อัตราผลตอบแทนภายใน/' },
+          { title: 'คำนวณ NPV', icon: '🏦', href: '/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/' },
+          { title: 'คำนวณจุดคุ้มทุน', icon: '🎯', href: '/คำนวณ-จุดคุ้มทุน-break-even/' },
+          { title: 'ดอกเบี้ยทบต้น', icon: '💰', href: '/คำนวณ-ดอกเบี้ยทบต้น/' },
+          { title: 'มูลค่าปัจจุบัน', icon: '⏮️', href: '/คำนวณ-มูลค่าปัจจุบัน-present-value/' },
+          { title: 'มูลค่าอนาคต', icon: '⏭️', href: '/คำนวณ-มูลค่าอนาคต-future-value/' },
+          { title: 'คำนวณ ROE', icon: '📊', href: '/คำนวณ-roe-ผลตอบแทนผู้ถือหุ้น/' },
+          { title: 'รากที่สอง', icon: '√', href: '/คำนวณรากที่สอง/' },
+          { title: 'พีทาโกรัส', icon: '📏', href: '/คำนวณทฤษฎีพีทาโกรัส/' },
+        ].map((c) => (
+          <a
+            href={c.href}
+            class="group flex items-center gap-2.5 p-3 bg-white rounded-xl border border-gray-100 hover:border-primary-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <span class="text-xl flex-shrink-0">{c.icon}</span>
+            <span class="text-xs font-semibold text-gray-800 group-hover:text-primary-600 transition-colors leading-tight">{c.title}</span>
           </a>
         ))}
       </div>
@@ -130,6 +175,79 @@ const jsonLdItemList = {
             </div>
           </a>
         ))}
+      </div>
+    </div>
+
+    <!-- Guides & Hub Pages -->
+    <div class="mb-10">
+      <h2 class="text-lg font-bold text-gray-900 mb-5">คู่มือและข้อมูลที่มีประโยชน์</h2>
+
+      <!-- Tax Guides row -->
+      <div class="mb-4">
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">คู่มือภาษีและการเงิน</h3>
+        <div class="flex flex-wrap gap-2">
+          {[
+            { href: '/วิธีคำนวณภาษีเงินได้ไทย/', label: '📋 วิธีคำนวณภาษีเงินได้ไทย' },
+            { href: '/วิธียื่นภาษีออนไลน์/', label: '💻 ยื่นภาษีออนไลน์ทีละขั้น' },
+            { href: '/ตรวจสอบหักลดหย่อนภาษี/', label: '✅ เช็คลิสต์ลดหย่อนภาษี 2569' },
+            { href: '/อัตราภาษีเงินได้2569/', label: '📊 อัตราภาษีเงินได้ 2569' },
+            { href: '/ปฏิทินภาษี/', label: '📅 ปฏิทินภาษีประจำปี' },
+            { href: '/ลดภาษีถูกกฎหมาย/', label: '💡 วิธีลดภาษีถูกกฎหมาย' },
+            { href: '/ภาษีหักณที่จ่าย/', label: '🏷️ ภาษีหัก ณ ที่จ่าย' },
+            { href: '/ภาษีฟรีแลนซ์/', label: '🧑‍💻 ภาษีฟรีแลนซ์' },
+            { href: '/ภาษีธุรกิจขนาดเล็ก/', label: '🏪 ภาษีธุรกิจขนาดเล็ก' },
+            { href: '/ผิดพลาดภาษีทั่วไป/', label: '⚠️ ข้อผิดพลาดภาษีที่พบบ่อย' },
+          ].map((g) => (
+            <a href={g.href} class="inline-flex items-center px-3 py-1.5 bg-amber-50 text-amber-800 rounded-full text-sm font-medium hover:bg-amber-100 transition-colors border border-amber-200">
+              {g.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Hub pages row -->
+      <div class="mb-4">
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">ศูนย์รวมเครื่องคำนวณ</h3>
+        <div class="flex flex-wrap gap-2">
+          {[
+            { href: '/ตัวช่วยคำนวณการเงิน/', label: '💰 การเงิน' },
+            { href: '/เครื่องคำนวณเงินเดือนและค่าแรง/', label: '💼 เงินเดือนและค่าแรง' },
+            { href: '/เครื่องคำนวณอสังหาริมทรัพย์/', label: '🏠 อสังหาริมทรัพย์' },
+            { href: '/เครื่องคำนวณสุขภาพ/', label: '🏥 สุขภาพ' },
+            { href: '/เครื่องคำนวณค่าใช้จ่ายบ้าน/', label: '🔧 ค่าใช้จ่ายบ้าน' },
+            { href: '/เครื่องคำนวณออมเงินและการลงทุน/', label: '💹 ออมเงินและการลงทุน' },
+            { href: '/เครื่องคำนวณรถยนต์/', label: '🚗 รถยนต์' },
+            { href: '/เครื่องคำนวณคณิตศาสตร์/', label: '🔢 คณิตศาสตร์' },
+            { href: '/เครื่องคำนวณธุรกิจ/', label: '🏢 ธุรกิจ' },
+            { href: '/เครื่องคำนวณการเงินชั้นยอด/', label: '⭐ ยอดนิยม' },
+          ].map((h) => (
+            <a href={h.href} class="inline-flex items-center px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full text-sm font-medium hover:bg-primary-100 transition-colors border border-primary-200">
+              {h.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Comparison & Specialist guides row -->
+      <div>
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">เปรียบเทียบและคู่มือเฉพาะทาง</h3>
+        <div class="flex flex-wrap gap-2">
+          {[
+            { href: '/เปรียบเทียบเครื่องคำนวณภาษี/', label: '📊 เปรียบเทียบเครื่องคำนวณภาษี' },
+            { href: '/เปรียบเทียบสินเชื่อ/', label: '🏦 เปรียบเทียบสินเชื่อ' },
+            { href: '/เปรียบเทียบบัตรเครดิต/', label: '💳 เปรียบเทียบบัตรเครดิต' },
+            { href: '/คู่มือซื้อบ้านครั้งแรก/', label: '🔑 คู่มือซื้อบ้านครั้งแรก' },
+            { href: '/แผนการเกษียณ/', label: '🌴 แผนการเกษียณ' },
+            { href: '/ประกันสังคมไทย/', label: '🛡️ ประกันสังคมไทย' },
+            { href: '/คำนวณภาษีที่ดินและสิ่งปลูกสร้าง/', label: '🏗️ ภาษีที่ดินและสิ่งปลูกสร้าง' },
+            { href: '/คำนวณค่าส่งพัสดุ/', label: '📦 คำนวณค่าส่งพัสดุ' },
+            { href: '/เลือกเครื่องคำนวณ/', label: '🔍 ช่วยเลือกเครื่องคำนวณ' },
+          ].map((g) => (
+            <a href={g.href} class="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-medium hover:bg-green-100 transition-colors border border-green-200">
+              {g.label}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
 
@@ -226,6 +344,17 @@ const jsonLdItemList = {
         debounceTimer = setTimeout(handleSearch, 150);
       });
     }
+
+    // ── URL param search (supports ?q= and ?search= for SearchAction / Sitelinks Searchbox) ──
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get('q') || params.get('search') || '';
+      if (q && searchInput) {
+        searchInput.value = q;
+        handleSearch();
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    })();
 
     function handleSearch() {
       var query = (searchInput.value || '').trim().toLowerCase();

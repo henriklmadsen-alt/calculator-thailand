@@ -3,9 +3,13 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+import TooltipIcon from '../../components/TooltipIcon.astro';
+import { getFieldTooltip } from '../../utils/input-field-tooltips';
 
-const pageTitle = 'คำนวณ APR / อัตราดอกเบี้ยที่แท้จริง (EIR) 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณ APR (Annual Percentage Rate) หรืออัตราดอกเบี้ยที่แท้จริง รวมค่าธรรมเนียมและค่าประกัน ช่วยเปรียบเทียบต้นทุนสินเชื่อที่แท้จริงก่อนตัดสินใจกู้';
+const pageTitle = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 ฟรี — รวมค่าธรรมเนียมทุกอย่าง รู้ต้นทุนสินเชื่อที่แท้จริงก่อนเซ็นสัญญา';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-apr/`;
 
@@ -40,22 +44,10 @@ const jsonLdWebApp = {
   inLanguage: 'th',
 };
 
-const jsonLdFaq = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqData.map((faq) => ({
-    '@type': 'Question',
-    name: faq.question,
-    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
-  })),
-};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ APR">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
       📈 คำนวณ APR / อัตราดอกเบี้ยที่แท้จริง (EIR)
     </h1>
@@ -72,6 +64,7 @@ const jsonLdFaq = {
           <div>
             <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
               เงินกู้ (บาท)
+              <TooltipIcon text={getFieldTooltip('apr', 'principal')} fieldName="principal" />
             </label>
             <input
               type="text"
@@ -84,6 +77,7 @@ const jsonLdFaq = {
           <div>
             <label for="monthly-payment" class="block text-sm font-medium text-gray-700 mb-1">
               ค่างวดต่อเดือน (บาท)
+              <TooltipIcon text={getFieldTooltip('apr', 'monthly-payment')} fieldName="monthly-payment" />
             </label>
             <input
               type="text"
@@ -98,6 +92,7 @@ const jsonLdFaq = {
         <div>
           <label for="term-months" class="block text-sm font-medium text-gray-700 mb-1">
             จำนวนงวด (เดือน)
+            <TooltipIcon text={getFieldTooltip('apr', 'term-months')} fieldName="term-months" />
           </label>
           <input
             type="text"
@@ -113,6 +108,7 @@ const jsonLdFaq = {
             <label for="fees" class="block text-sm font-medium text-gray-700 mb-1">
               ค่าธรรมเนียมทั้งหมด (บาท)
               <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+              <TooltipIcon text={getFieldTooltip('apr', 'other-fees')} fieldName="fees" />
             </label>
             <input
               type="text"
@@ -151,7 +147,17 @@ const jsonLdFaq = {
     <!-- Results -->
     <div id="results" class="hidden mb-8">
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ APR</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">ผลการคำนวณ APR</h2>
+          <button
+            id="save-calc-btn"
+            type="button"
+            class="save-calc-btn"
+            aria-label="บันทึกการคำนวณนี้"
+          >
+            💾 บันทึก
+          </button>
+        </div>
 
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
           <div class="bg-red-50 rounded-lg p-4 text-center">
@@ -201,8 +207,20 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <!-- Ad -->
+    <!-- Related Calculators Card (below result, above ad) -->
+    <RelatedCalculators currentHref="/คำนวณ-apr/" />
+
+    <!-- Ad (Win #7: Mobile Ad Placement) — moved below result + related calculators -->
     <GuardedAdSlot />
+
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="personal-loan"
+      affiliateUrl="/go/ttb-cash2go/?sub_id=คำนวณ-apr"
+      partnerName="TTB Cash 2 Go"
+      ctaText="สมัครสินเชื่อ TTB Cash 2 Go"
+      subtext="วงเงินสูง อนุมัติเร็ว ดอกเบี้ยคงที่"
+    />
 
     <!-- SEO Content -->
     <section class="prose prose-gray max-w-none mb-8">
@@ -244,25 +262,17 @@ const jsonLdFaq = {
       </ul>
     </section>
 
-    <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณ-apr/" />
-    <RelatedCalculators currentHref="/คำนวณ-apr/" />
 
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ
@@ -344,6 +354,7 @@ const jsonLdFaq = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('apr');
     });
 
@@ -356,5 +367,94 @@ const jsonLdFaq = {
       });
     }, { threshold: 0.5 });
     resultObserver.observe(resultsDiv);
+
+    // ─── Save Calculation (CAL-962) ───────────────────────────────────
+    const STORAGE_KEY = 'ct.saved.calcs.v1';
+    const MAX_SAVED = 5;
+    const calculatorPath = window.location.pathname;
+    const calculatorName = 'คำนวณ APR';
+
+    function isLocalStorageAvailable() {
+      try {
+        const test = '__ct_storage_test__';
+        window.localStorage.setItem(test, test);
+        window.localStorage.removeItem(test);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function getSavedCalculations() {
+      if (!isLocalStorageAvailable()) return [];
+      try {
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        const data = stored ? JSON.parse(stored) : [];
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCalculation(inputs, result) {
+      if (!isLocalStorageAvailable()) return null;
+      try {
+        const saved = getSavedCalculations();
+        const id = `calc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const newCalc = {
+          id,
+          calculatorName,
+          calculatorPath,
+          inputs,
+          result,
+          timestamp: Date.now(),
+        };
+        saved.unshift(newCalc);
+        if (saved.length > MAX_SAVED) saved.length = MAX_SAVED;
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+        return newCalc;
+      } catch {
+        return null;
+      }
+    }
+
+    function showSaveSuccess() {
+      const feedback = document.createElement('div');
+      feedback.className = 'save-calc-feedback';
+      feedback.textContent = '✅ บันทึกการคำนวณเรียบร้อย';
+      document.body.appendChild(feedback);
+
+      setTimeout(() => {
+        feedback.classList.add('fade-out');
+        setTimeout(() => feedback.remove(), 300);
+      }, 2000);
+    }
+
+    const saveBtn = document.getElementById('save-calc-btn');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const P = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+        const PMT = parseNum((document.getElementById('monthly-payment') as HTMLInputElement).value);
+        const n = parseNum((document.getElementById('term-months') as HTMLInputElement).value);
+        const fees = parseNum((document.getElementById('fees') as HTMLInputElement).value);
+        const insurance = parseNum((document.getElementById('insurance') as HTMLInputElement).value);
+
+        if (!P || !PMT || !n) {
+          alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+          return;
+        }
+
+        const aprText = (document.getElementById('res-apr-annual') as HTMLElement).textContent || '-';
+        const saved = saveCalculation(
+          { principal: P, monthlyPayment: PMT, termMonths: n, fees, insurance },
+          aprText
+        );
+
+        if (saved) {
+          showSaveSuccess();
+          trackLanguageAwareEvent('calculation_saved', { calculator_type: 'apr' });
+        }
+      });
+    }
   </script>
 </BaseLayout>

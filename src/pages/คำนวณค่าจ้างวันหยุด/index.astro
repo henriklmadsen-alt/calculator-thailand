@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าจ้างวันหยุด ปี 2569 ตามพ.ร.บ.คุ้มครองแรงงาน มาตรา 62-63 | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณค่าจ้างวันหยุด ปี 2569 ตามพ.ร.บ.คุ้มครองแรงงาน มาตรา 62-63 | Kamnuanlek';
 const pageDescription = 'คำนวณค่าจ้างวันหยุด ทำงานวันหยุด 2 เท่า โอทีวันหยุด 3 เท่า ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ.2541 มาตรา 62-63 อัปเดตปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าจ้างวันหยุด/`;
@@ -26,6 +27,11 @@ const faqData = [
     question: 'พนักงานรายเดือนคำนวณค่าแรงต่อชั่วโมงอย่างไร?',
     answer: 'ค่าแรง/ชั่วโมง = เงินเดือน ÷ (วันทำงาน/เดือน × ชั่วโมงทำงาน/วัน) แล้วนำไปคูณด้วย 2 หรือ 3 ตามประเภทชั่วโมงวันหยุด',
   },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
 ];
 
 const jsonLdWebApp = {
@@ -52,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างวันหยุด">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">อัปเดตปี 2569 — ตาม พ.ร.บ.คุ้มครองแรงงาน</p>
       <p class="mt-1 text-sm text-slate-700">ทำงานวันหยุด 2 เท่า (มาตรา 62) | โอทีวันหยุด 3 เท่า (มาตรา 63)</p>
@@ -171,19 +174,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณค่าจ้างวันหยุด/" />
     <RelatedCalculators currentHref="/คำนวณค่าจ้างวันหยุด/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณตามกฎหมายแรงงานขั้นต่ำ นายจ้างบางรายอาจจ่ายสูงกว่ากฎหมายกำหนด ควรตรวจสอบสัญญาจ้างและข้อบังคับภายในองค์กร

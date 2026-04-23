@@ -2,9 +2,10 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณอายุจากวันเกิด 2569 | ปี เดือน วัน ฟรี | Calculator Thailand';
-const pageDescription = 'คำนวณอายุจากวันเกิดออนไลน์ฟรี แสดงผลเป็นปี เดือน วัน รองรับปฏิทินไทย (พ.ศ.) พร้อมนับถอยหลังวันเกิดถัดไป ราศี และรุ่น Generation ใช้ง่ายได้ทันที';
+const pageTitle = 'คำนวณอายุจากวันเกิด 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณอายุจากวันเกิด 2569 ฟรี — แสดงปี เดือน วัน รองรับ พ.ศ. พร้อมนับถอยหลังวันเกิดครั้งหน้าและราศีประจำตัว';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณอายุ/`;
 
@@ -57,11 +58,24 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณอายุจากวันเกิด',
+  description: 'ขั้นตอนการคำนวณอายุที่แน่นอน เป็นปี เดือน และวัน จากวันเกิด',
+  step: [
+    { '@type': 'HowToStep', name: 'กรอกวันเกิด', text: 'ระบุวันเกิดของคุณในรูปแบบ วัน/เดือน/ปี เช่น 15/06/2533 (ปี พ.ศ.) หรือ 15/06/1990 (ปี ค.ศ.)' },
+    { '@type': 'HowToStep', name: 'เลือกวันที่อ้างอิง', text: 'ระบุวันที่ที่ต้องการคำนวณอายุ (ค่าเริ่มต้นคือวันนี้) เช่น ต้องการรู้อายุ ณ วันสมัครงาน หรือวันครบรอบ' },
+    { '@type': 'HowToStep', name: 'คำนวณผลต่างวัน', text: 'ระบบคำนวณจำนวนวันทั้งหมดระหว่างวันเกิดและวันอ้างอิง โดยคำนึงถึงปีอธิกสุรทิน (366 วัน) อย่างถูกต้อง' },
+    { '@type': 'HowToStep', name: 'แปลงเป็นปี เดือน วัน', text: 'แปลงจำนวนวันทั้งหมดเป็น ปี (365 หรือ 366 วัน) เดือน (28-31 วัน) และวันที่เหลือ ตัวอย่าง: อายุ 33 ปี 6 เดือน 15 วัน' },
+    { '@type': 'HowToStep', name: 'ตรวจสอบผลลัพธ์', text: 'ระบบแสดงอายุแบบละเอียด พร้อมจำนวนวันรวม สัปดาห์ เดือน และปีครบรอบถัดไป ใช้เปรียบเทียบกับบัตรประชาชนหรือเอกสารราชการ' },
+  ],
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอายุ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอายุ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -243,21 +257,7 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณอายุ/" />

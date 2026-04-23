@@ -3,9 +3,12 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import TrustBadge from '../../components/templates/TrustBadge.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีเงินได้บุคคล 2569 ฟรี | Calculator Thailand';
-const pageDescription = 'คำนวณภาษีเงินได้ 2569 ฟรี ตามขั้นบันได พร้อมลดหย่อน SSO ประกันสังคม สรุปรายปี';
+const pageTitle = 'คำนวณภาษีเงินได้บุคคลธรรมดา 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีเงินได้บุคคลธรรมดา 2569 ฟรี — ใส่รายได้ เลือกลดหย่อน รู้ภาษีที่ต้องจ่ายทันที พร้อมวิธีประหยัดภาษีถูกกฎหมาย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีเงินได้บุคคลธรรมดา/`;
 
@@ -34,6 +37,9 @@ const faqData = [
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณภาษีที่ต้องหลีกเลี่ยง?',
     answer: 'ข้อผิดพลาดทั่วไปคือ: (1) ลืมหักค่าลดหย่อนคู่สมรส (2) คิดค่าลดหย่อนบุตรมากเกินจำนวน (3) หักประกันสังคมเกิน 9,000 บาท (4) ใช้อัตราภาษีคงที่แทนระบบขั้นบันได (5) ลืมหักค่าใช้จ่ายเหมา 50% ของรายได้ คำนวณในเครื่องคำนวณนี้เพื่อหลีกเลี่ยงข้อผิดพลาด',
   },
+,
+  { question: 'อัตราภาษีเงินได้บุคคลธรรมดาปี 2569 มีกี่ขั้น?', answer: '7 ขั้น: ไม่เกิน 150,000 บาท (ยกเว้น), 150,001-300,000 บาท (5%), 300,001-500,000 บาท (10%), 500,001-750,000 บาท (15%), 750,001-1,000,000 บาท (20%), 1,000,001-2,000,000 บาท (25%), 2,000,001-5,000,000 บาท (30%), มากกว่า 5,000,000 บาท (35%)' },
+  { question: 'เงินเดือนเท่าไรถึงต้องเสียภาษีเงินได้?', answer: 'รายได้สุทธิเกิน 150,000 บาทต่อปีต้องเสียภาษี สำหรับผู้มีรายได้จากเงินเดือนอย่างเดียว มีค่าลดหย่อนขั้นต่ำ 60,000 + 100,000 (ค่าใช้จ่าย) = 160,000 บาท จึงต้องเสียภาษีเมื่อรายได้เกิน 310,000 บาท/ปี หรือราว 25,833 บาท/เดือน' }
 ];
 
 const jsonLdWebApp = {
@@ -106,10 +112,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีเงินได้บุคคลธรรมดา">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีเงินได้บุคคลธรรมดา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -130,6 +134,19 @@ const jsonLdHowTo = {
       คำนวณภาษีเงินได้ตามอัตราขั้นบันไดปี 2569 (2026) พร้อมค่าลดหย่อนครบถ้วน
       ดูผลลัพธ์ทันที ใช้งานฟรี ไม่ต้องสมัครสมาชิก
     </p>
+
+    <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm">
+      <div class="font-semibold text-amber-900 mb-1">📊 อัตราภาษีเงินได้ปี 2569 (ฉบับย่อ)</div>
+      <div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-amber-800 text-xs">
+        <span>0 – 150,000 บ.</span><span class="font-medium">0% (ยกเว้น)</span>
+        <span>150,001 – 300,000 บ.</span><span class="font-medium">5%</span>
+        <span>300,001 – 500,000 บ.</span><span class="font-medium">10%</span>
+        <span>500,001 – 750,000 บ.</span><span class="font-medium">15%</span>
+        <span>750,001 – 1,000,000 บ.</span><span class="font-medium">20%</span>
+        <span>1,000,001 – 2,000,000 บ.</span><span class="font-medium">25%</span>
+        <span>2,000,001+ บ.</span><span class="font-medium">30–35%</span>
+      </div>
+    </div>
 
     <!-- Calculator Form -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
@@ -359,6 +376,7 @@ const jsonLdHowTo = {
         <a data-next-action-link href="/บทความ/ภาษีเงินได้-2569-คำนวณ-วิธีลดหย่อน/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: วิธีลดหย่อนภาษี 2569</a>
       </div>
     </div>
+    <TrustBadge ministry="กรมสรรพากร (rd.go.th) — อัตราภาษีเงินได้บุคคลธรรมดา 2569" url="https://www.rd.go.th" updatedDate="2569" />
     <GuardedAdSlot
       templateType="calculator"
       slotId="C1"
@@ -404,20 +422,24 @@ const jsonLdHowTo = {
             <tr>
               <th class="px-3 py-2 text-left border-b">รายได้สุทธิ (บาท)</th>
               <th class="px-3 py-2 text-right border-b">อัตราภาษี</th>
+              <th class="px-3 py-2 text-right border-b">ภาษีสูงสุดในช่วง</th>
+              <th class="px-3 py-2 text-right border-b">ภาษีสะสม</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td class="px-3 py-2 border-b">0 — 150,000</td><td class="px-3 py-2 text-right border-b">ยกเว้น</td></tr>
-            <tr><td class="px-3 py-2 border-b">150,001 — 300,000</td><td class="px-3 py-2 text-right border-b">5%</td></tr>
-            <tr><td class="px-3 py-2 border-b">300,001 — 500,000</td><td class="px-3 py-2 text-right border-b">10%</td></tr>
-            <tr><td class="px-3 py-2 border-b">500,001 — 750,000</td><td class="px-3 py-2 text-right border-b">15%</td></tr>
-            <tr><td class="px-3 py-2 border-b">750,001 — 1,000,000</td><td class="px-3 py-2 text-right border-b">20%</td></tr>
-            <tr><td class="px-3 py-2 border-b">1,000,001 — 2,000,000</td><td class="px-3 py-2 text-right border-b">25%</td></tr>
-            <tr><td class="px-3 py-2 border-b">2,000,001 — 5,000,000</td><td class="px-3 py-2 text-right border-b">30%</td></tr>
-            <tr><td class="px-3 py-2">5,000,001 ขึ้นไป</td><td class="px-3 py-2 text-right">35%</td></tr>
+            <tr><td class="px-3 py-2 border-b">0 — 150,000</td><td class="px-3 py-2 text-right border-b">ยกเว้น</td><td class="px-3 py-2 text-right border-b">0</td><td class="px-3 py-2 text-right border-b font-medium">0</td></tr>
+            <tr class="bg-gray-50"><td class="px-3 py-2 border-b">150,001 — 300,000</td><td class="px-3 py-2 text-right border-b">5%</td><td class="px-3 py-2 text-right border-b">7,500</td><td class="px-3 py-2 text-right border-b font-medium">7,500</td></tr>
+            <tr><td class="px-3 py-2 border-b">300,001 — 500,000</td><td class="px-3 py-2 text-right border-b">10%</td><td class="px-3 py-2 text-right border-b">20,000</td><td class="px-3 py-2 text-right border-b font-medium">27,500</td></tr>
+            <tr class="bg-gray-50"><td class="px-3 py-2 border-b">500,001 — 750,000</td><td class="px-3 py-2 text-right border-b">15%</td><td class="px-3 py-2 text-right border-b">37,500</td><td class="px-3 py-2 text-right border-b font-medium">65,000</td></tr>
+            <tr><td class="px-3 py-2 border-b">750,001 — 1,000,000</td><td class="px-3 py-2 text-right border-b">20%</td><td class="px-3 py-2 text-right border-b">50,000</td><td class="px-3 py-2 text-right border-b font-medium">115,000</td></tr>
+            <tr class="bg-gray-50"><td class="px-3 py-2 border-b">1,000,001 — 2,000,000</td><td class="px-3 py-2 text-right border-b">25%</td><td class="px-3 py-2 text-right border-b">250,000</td><td class="px-3 py-2 text-right border-b font-medium">365,000</td></tr>
+            <tr><td class="px-3 py-2 border-b">2,000,001 — 5,000,000</td><td class="px-3 py-2 text-right border-b">30%</td><td class="px-3 py-2 text-right border-b">900,000</td><td class="px-3 py-2 text-right border-b font-medium">1,265,000</td></tr>
+            <tr class="bg-gray-50"><td class="px-3 py-2">5,000,001 ขึ้นไป</td><td class="px-3 py-2 text-right">35%</td><td class="px-3 py-2 text-right">—</td><td class="px-3 py-2 text-right font-medium">1,265,000+</td></tr>
           </tbody>
         </table>
       </div>
+
+      <p class="text-sm text-gray-500 mt-1">ที่มา: <a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">กรมสรรพากร (rd.go.th)</a> อัตราภาษี พ.ร.บ. แก้ไขเพิ่มเติมประมวลรัษฎากร</p>
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าลดหย่อนที่นิยมใช้ ปี 2569</h3>
 
@@ -549,23 +571,47 @@ const jsonLdHowTo = {
       </p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณภาษีเงินได้</h2>
+      <p class="text-gray-700 mb-4">
+        ในการคำนวณภาษีเงินได้บุคคลธรรมดา ผู้เสียภาษีหลายคนตกหลุมพระเล้าเดียวกัน โปรดตรวจสอบว่าไม่ได้ทำข้อผิดพลาดเหล่านี้:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ลืมรวมรายได้จากทุกแหล่ง</strong><br/>
+          นักเรียน/นักสอนมักคิดภาษีเพียงจากเงินเดือนหลัก ลืมรวมรายได้เสริมจากสอนพิเศษ ป้อมโปรแกรม หรือรายได้จากการลงทุน สรุปรายได้ทั้งหมดตามแบบบัญชี 91 ของสรรพากร
+        </li>
+        <li>
+          <strong>ใช้ลดหย่อนได้ไม่ถูกต้อง</strong><br/>
+          หลายคนไม่เข้าใจว่าลดหย่อนใดใช้ได้จริง เช่น ลดหย่อนค่าเบี้ยประกัน ค่าเบี้ยประกันสุขภาพ เงินบำนาญ เก็บใบรับรองทุกอย่าง และตรวจสอบจำนวนเงินลดหย่อนสูงสุด (ปี 2567 ประกัน/สุขภาพสูงสุด 100,000 บาท)
+        </li>
+        <li>
+          <strong>ไม่นำชำระแล้วไปหักจากภาษี</strong><br/>
+          หลังจากชำระระหว่างปี (เงินเดือนถูกหักไป) แต่ไม่นำไปหักจากภาษีที่ต้องชำระ รวบรวมใบ 1154 จากนายจ้าง และใบ 1087 จากสรรพากร
+        </li>
+        <li>
+          <strong>นับหักค่าใช้จ่ายส่วนตัวผิด</strong><br/>
+          นิยมหักค่าใช้จ่ายที่เป็นส่วนตัว เช่น อาหาร เสื้อผ้า ค่ามือถือ สรรพากรไม่ยอมให้หัก หักไดเฉพาะค่าใช้จ่ายที่เกี่ยวข้องกับการหารายได้เท่านั้น
+        </li>
+        <li>
+          <strong>คิดผลกำไรสูงไปจากการลงทุน</strong><br/>
+          กำไรจากการขายหุ้นหรือรายได้จากการปล่อยเช่า ประเมินราคาสูงเกินความเป็นจริง ใช้หลักฐานจริง เช่น ใบตราสารการขาย หนังสือรับรองราคาทรัพย์สิน และบัญชีรายรับ-รายจ่ายที่ชัดเจน
+        </li>
+      </ul>
     </section>
 
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
     <!-- Related Calculators -->
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
+      partnerName="EasySunday"
+      ctaText="เปรียบเทียบประกันชีวิต"
+      subtext="ประกันชีวิตลดหย่อนภาษีได้สูงสุด 100,000 บาท"
+    />
     <RelatedArticles currentHref="/คำนวณภาษีเงินได้บุคคลธรรมดา/" />
     <RelatedCalculators currentHref="/คำนวณภาษีเงินได้บุคคลธรรมดา/" />
 
@@ -812,6 +858,7 @@ const jsonLdHowTo = {
       }
 
       resultsDiv.classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       nextActionCard.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
       submitBtn.disabled = false;

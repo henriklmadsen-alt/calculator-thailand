@@ -1,8 +1,9 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณดอกเบี้ย Overdraft 2569 | ดอกเบี้ยเบิกเกินบัญชี | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณดอกเบี้ย Overdraft 2569 | ดอกเบี้ยเบิกเกินบัญชี | Kamnuanlek';
 const pageDescription = 'คำนวณดอกเบี้ยเบิกเกินบัญชี (Overdraft) ตามยอดที่เบิกเกินและระยะเวลา';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณดอกเบี้ยเบิกเกินบัญชี/`;
@@ -20,6 +21,11 @@ const faqData = [
     question: 'ควรใช้ Overdraft หรือกู้ยืมส่วนบุคคลดีกว่า?',
     answer: 'สำหรับความต้องการเงินระยะสั้นมาก (ไม่กี่วัน) Overdraft อาจคุ้มกว่าเพราะดอกเบี้ยคำนวณรายวัน แต่ถ้าต้องการเงินระยะกลาง-ยาว สินเชื่อส่วนบุคคลหรือบัตรกดเงินสดอาจมีดอกเบี้ยต่ำกว่า ควรคำนวณต้นทุนรวมก่อนตัดสินใจ',
   },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
 ];
 
 const jsonLdWebApp = {
@@ -46,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยเบิกเกินบัญชี">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณดอกเบี้ย Overdraft 2569</h1>
     <p class="mb-6 text-gray-600">คำนวณดอกเบี้ยเบิกเกินบัญชี (OD) ตามยอดที่เบิกเกินและจำนวนวัน</p>
 
@@ -97,17 +100,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณดอกเบี้ยเบิกเกินบัญชี/" categoryId="loan" maxItems={4} />
   </article>

@@ -1,14 +1,32 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าเช่าเต๊นท์และหลังคา ฟรี | Calculator Thailand';
+const pageTitle = 'คำนวณค่าเช่าเต๊นท์และหลังคา ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณค่าเช่าเต๊นท์และหลังคา ได้ผลลัพธ์ทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ค่าเช่าเต๊นท์และหลังคา/`;
+
+const faqData = [
+  { question: 'Cap Rate ที่ดีสำหรับอสังหาริมทรัพย์ไทยคือเท่าไร?', answer: 'Cap Rate ที่ดีในไทยมักอยู่ที่ 5-8% ต่อปี ขึ้นอยู่กับทำเลและประเภทอสังหาฯ ทำเลกรุงเทพฯ ชั้นในมักได้ cap rate ต่ำกว่าต่างจังหวัด' },
+  { question: 'ค่าใช้จ่ายแฝงในการซื้ออสังหาฯ มีอะไรบ้าง?', answer: 'ค่าโอน ค่าจดจำนอง ค่าอากรแสตมป์ ภาษีธุรกิจเฉพาะ ค่านายหน้า ค่าซ่อมแซม รวมกันอาจสูงถึง 3-7% ของราคาซื้อ' },
+  { question: 'ผลตอบแทนการลงทุนอสังหาฯ ที่ดีต้องเป็นเท่าไร?', answer: 'นักลงทุนส่วนใหญ่ต้องการ IRR อย่างน้อย 8-12% ต่อปี หรือ Yield ค่าเช่า 5-7% ขึ้นอยู่กับทำเลและเป้าหมาย' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกราคาซื้อ ค่าเช่า ค่าใช้จ่ายรายเดือน เครื่องจะคำนวณ Yield, Cash Flow และ Cap Rate ให้อัตโนมัติ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าเต๊นท์และหลังคา">
-  <article>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าเต๊นท์และหลังคา">  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าเช่าเต๊นท์และหลังคา</h1>
     <p class="text-gray-600 mb-6">เครื่องคำนวณออนไลน์ ค่าเช่าเต๊นท์และหลังคา</p>
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">

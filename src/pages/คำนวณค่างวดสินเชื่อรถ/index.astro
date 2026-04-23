@@ -4,8 +4,9 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่างวดสินเชื่อรถ 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณค่างวดสินเชื่อรถ 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณค่างวดรถ ดอกเบี้ย flat rate และ effective rate ค่างวดรายเดือน ดอกเบี้ยรวม 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่างวดสินเชื่อรถ/`;
@@ -98,10 +99,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่างวดสินเชื่อรถ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่างวดสินเชื่อรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -273,14 +272,14 @@ const jsonLdHowTo = {
       </ul>
     </div>
 
-    <RelatedCalculators />
+    <RelatedCalculators currentHref="/คำนวณค่างวดสินเชื่อรถ/" />
 
     <AffiliateCard
       category="car-loan"
-      affiliateUrl="https://tidjai.link/r/dkgrz"
-      partnerName="ทิดลอร์"
-      ctaText="ดูรายละเอียดสินเชื่อ"
-      subtext="สินเชื่อรถยนต์และมอเตอร์ไซค์ อนุมัติไว ไม่ต้องค้ำประกัน"
+      affiliateUrl="PLACEHOLDER_URL"
+      partnerName="Rabbit Finance"
+      ctaText="เปรียบเทียบสินเชื่อรถจริง"
+      subtext="รวมข้อเสนอจากกว่า 10 ธนาคาร — ไม่มีค่าธรรมเนียม"
     />
 
     <GuardedAdSlot />
@@ -298,7 +297,15 @@ const jsonLdHowTo = {
       ))}
     </div>
 
-    <RelatedArticles />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณค่างวดสินเชื่อรถ/" />
   </article>
 
   <script>
@@ -326,11 +333,11 @@ const jsonLdHowTo = {
       let totalInterest = 0;
 
       if (interestType === 'flat') {
-        // Flat rate formula: Monthly payment = [Principal + (Principal × Rate% × Years)] / Total months
-        const monthlyRate = (annualRate / 100) * (loanTermMonths / 12);
-        const totalWithInterest = loanAmount * (1 + monthlyRate);
-        monthlyPayment = totalWithInterest / loanTermMonths;
-        totalInterest = monthlyPayment * loanTermMonths - loanAmount;
+        // Flat rate: totalInterest = principal × (annualRate/100) × years
+        //            monthlyPayment = (principal + totalInterest) / months
+        const years = loanTermMonths / 12;
+        totalInterest = loanAmount * (annualRate / 100) * years;
+        monthlyPayment = (loanAmount + totalInterest) / loanTermMonths;
       } else {
         // Effective rate (reducing balance) formula
         const monthlyRate = annualRate / 100 / 12;

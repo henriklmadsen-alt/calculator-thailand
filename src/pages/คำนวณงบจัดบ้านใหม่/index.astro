@@ -1,8 +1,9 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณงบจัดบ้านใหม่ 2569 | เฟอร์นิเจอร์ เครื่องใช้ไฟฟ้า ของตกแต่ง | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณงบจัดบ้านใหม่ 2569 | เฟอร์นิเจอร์ เครื่องใช้ไฟฟ้า ของตกแต่ง | Kamnuanlek';
 const pageDescription = 'ประมาณค่าใช้จ่ายจัดบ้านใหม่ เฟอร์นิเจอร์หลัก เครื่องใช้ไฟฟ้า ของตกแต่ง ตามขนาดบ้านและระดับคุณภาพ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณงบจัดบ้านใหม่/`;
@@ -46,10 +47,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบจัดบ้านใหม่">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบจัดบ้านใหม่ 2569</h1>
     <p class="mb-6 text-gray-600">ประมาณค่าใช้จ่ายจัดบ้านใหม่ เฟอร์นิเจอร์หลัก เครื่องใช้ไฟฟ้า และของตกแต่ง</p>
 
@@ -118,18 +116,16 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
     <RelatedCalculators currentHref="/คำนวณงบจัดบ้านใหม่/" categoryId="bills" maxItems={4} />
   </article>
 </BaseLayout>

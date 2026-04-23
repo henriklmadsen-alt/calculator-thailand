@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณต้นทุนประกันกลุ่มนายจ้าง 2569 | Group Insurance Employer Cost ฟรี | Calculator Thailand';
+const pageTitle = 'คำนวณต้นทุนประกันกลุ่มนายจ้าง 2569 | Group Insurance Employer Cost ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนประกันกลุ่มสำหรับนายจ้าง 2569 เบี้ยประกันสุขภาพกลุ่ม ประกันชีวิตกลุ่ม ต่อหัวพนักงาน รวมต้นทุนทั้งหมดต่อปีและต่อเดือน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณต้นทุนประกันกลุ่มนายจ้าง/`;
@@ -20,9 +21,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนประกันกลุ่มนายจ้าง">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">คำนวณต้นทุนประกันกลุ่มพนักงาน</p>
       <p class="mt-1 text-sm text-slate-700">สำหรับนายจ้างและฝ่าย HR ในการวางแผนงบสวัสดิการ</p>
@@ -80,12 +79,7 @@ const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
       <p>ประกันกลุ่มเป็นสวัสดิการที่พนักงานให้ความสำคัญลำดับต้นๆ การมีประกันสุขภาพกลุ่มดีช่วยดึงดูดบุคลากรคุณภาพ และลดอัตราการลาออก ทำให้ต้นทุนการสรรหาพนักงานลดลงในระยะยาว</p>
     </section>
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (<details class="bg-white rounded-lg shadow-sm border border-gray-200"><summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary><div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div></details>))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
     <RelatedCalculators currentHref="/คำนวณต้นทุนประกันกลุ่มนายจ้าง/" />
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงขึ้นกับบริษัทประกันและองค์ประกอบกลุ่มพนักงาน</div>
   </article>

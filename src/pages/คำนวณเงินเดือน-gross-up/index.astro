@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเงินเดือน Gross-up ปี 2569 ต้องรับ Gross เท่าไรให้ได้ Net ที่ต้องการ | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณเงินเดือน Gross-up ปี 2569 ต้องรับ Gross เท่าไรให้ได้ Net ที่ต้องการ | Kamnuanlek';
 const pageDescription = 'คำนวณ Gross-up เงินเดือน หาเงินเดือน Gross ที่ต้องได้รับเพื่อให้ได้ยอด Net หลังหักภาษีและประกันสังคมตามที่ต้องการ อัปเดตอัตราภาษีปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเงินเดือน-gross-up/`;
@@ -26,6 +27,11 @@ const faqData = [
     question: 'SSC มาตรา 33 คิดอย่างไร?',
     answer: 'ประกันสังคมมาตรา 33 คิด 5% ของค่าจ้างจริง แต่ฐานขั้นต่ำ 1,650 บาท และสูงสุด 15,000 บาท ดังนั้นเงินสมทบสูงสุดคือ 750 บาท/เดือน',
   },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
 ];
 
 const jsonLdWebApp = {
@@ -52,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือน Gross-up">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">อัปเดตเกณฑ์ปี 2569</p>
       <p class="mt-1 text-sm text-slate-700">คำนวณตามอัตราภาษีเงินได้บุคคลธรรมดาขั้นบันได 0-35% และประกันสังคมมาตรา 33 สูงสุด 750 บาท/เดือน</p>
@@ -126,45 +129,57 @@ const jsonLdFaq = {
       </form>
     </div>
 
-    <div id="grossup-results" class="mb-8 hidden">
-      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ Gross-up</h2>
+    <div id="grossup-results" class="mb-8 hidden border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ Gross-up</h2>
 
-        <div class="mb-6 grid gap-3 sm:grid-cols-3">
-          <div class="rounded-lg bg-green-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">เงินเดือน Gross ที่ต้องการ</div>
-            <div id="res-gross" class="text-xl font-bold text-green-700">-</div>
-          </div>
-          <div class="rounded-lg bg-primary-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">เงินเดือนสุทธิ (Net)</div>
-            <div id="res-net" class="text-xl font-bold text-primary-700">-</div>
-          </div>
-          <div class="rounded-lg bg-amber-50 p-4 text-center">
-            <div class="mb-1 text-sm text-gray-600">ยอดหักรวม</div>
-            <div id="res-total-deduction" class="text-xl font-bold text-amber-700">-</div>
-          </div>
+      <div class="mb-6 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-lg bg-white p-4 text-center border border-gray-200">
+          <div class="mb-1 text-sm text-gray-600">เงินเดือน Gross ที่ต้องการ</div>
+          <div id="res-gross" class="text-lg sm:text-2xl lg:text-3xl font-bold text-green-700">-</div>
         </div>
-
-        <div class="space-y-2 text-sm">
-          <div class="flex justify-between border-b border-gray-100 py-1">
-            <span class="text-gray-600">เงินเดือน Gross</span>
-            <span id="res-gross2" class="font-medium">-</span>
-          </div>
-          <div class="flex justify-between border-b border-gray-100 py-1">
-            <span class="text-gray-600">ประกันสังคม (5% สูงสุด 750 บาท)</span>
-            <span id="res-ssc" class="font-medium text-red-600">-</span>
-          </div>
-          <div class="flex justify-between border-b border-gray-100 py-1">
-            <span class="text-gray-600">ภาษีเงินได้หัก ณ ที่จ่าย (ต่อเดือน)</span>
-            <span id="res-tax" class="font-medium text-red-600">-</span>
-          </div>
-          <div class="flex justify-between border-b border-gray-100 py-1 font-semibold">
-            <span class="text-gray-800">เงินเดือนสุทธิ</span>
-            <span id="res-net2" class="text-green-700">-</span>
-          </div>
+        <div class="rounded-lg bg-white p-4 text-center border border-gray-200">
+          <div class="mb-1 text-sm text-gray-600">เงินเดือนสุทธิ (Net)</div>
+          <div id="res-net" class="text-lg sm:text-2xl lg:text-3xl font-bold text-primary-700">-</div>
+        </div>
+        <div class="rounded-lg bg-white p-4 text-center border border-gray-200">
+          <div class="mb-1 text-sm text-gray-600">ยอดหักรวม</div>
+          <div id="res-total-deduction" class="text-lg sm:text-2xl lg:text-3xl font-bold text-amber-700">-</div>
         </div>
       </div>
+
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between border-b border-gray-100 py-1">
+          <span class="text-gray-600">เงินเดือน Gross</span>
+          <span id="res-gross2" class="font-medium">-</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-100 py-1">
+          <span class="text-gray-600">ประกันสังคม (5% สูงสุด 750 บาท)</span>
+          <span id="res-ssc" class="font-medium text-red-600">-</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-100 py-1">
+          <span class="text-gray-600">ภาษีเงินได้หัก ณ ที่จ่าย (ต่อเดือน)</span>
+          <span id="res-tax" class="font-medium text-red-600">-</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-100 py-1 font-semibold">
+          <span class="text-gray-800">เงินเดือนสุทธิ</span>
+          <span id="res-net2" class="text-green-700">-</span>
+        </div>
+      </div>
+
+      <details class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <summary class="font-semibold text-yellow-900 cursor-pointer select-none hover:text-yellow-800 transition-colors">
+          ⚠️ สำคัญ: หมายเหตุเกี่ยวกับการคำนวณ
+        </summary>
+        <div class="mt-3 text-sm text-yellow-800 space-y-2">
+          <p>• ผลการคำนวณนี้เป็นการประมาณการเพื่อวางแผนเบื้องต้น ตัวเลขจริงอาจต่างตามค่าลดหย่อนส่วนบุคคลและรายได้อื่น</p>
+          <p>• ระบบคำนวณตามอัตราภาษีเงินได้บุคคลธรรมดาปี 2569 และประกันสังคมมาตรา 33</p>
+          <p>• หากมีค่าลดหย่อนพิเศษเพิ่มเติม (ประกันชีวิต SSF/RMF บุตร) ผลลัพธ์อาจเปลี่ยนแปลง</p>
+          <p>• สำหรับการวางแผนเงินเดือนที่แม่นยำ ปรึกษาผู้เชี่ยวชาญด้านภาษีหรือบัญชี</p>
+        </div>
+      </details>
     </div>
+
+    <div class="my-8 border-t-2 border-gray-200"></div>
 
     <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
       <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีคำนวณ Gross-up</h2>
@@ -205,19 +220,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณเงินเดือน-gross-up/" />
     <RelatedCalculators currentHref="/คำนวณเงินเดือน-gross-up/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการเพื่อวางแผนเบื้องต้น ตัวเลขจริงอาจต่างกันตามค่าลดหย่อนส่วนบุคคลและรายได้อื่น ควรปรึกษาผู้เชี่ยวชาญด้านภาษีเพื่อการวางแผนที่แม่นยำ

@@ -3,8 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณอัตราการใช้วงเงินบัตรเครดิต (Credit Utilization) 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณอัตราการใช้วงเงินบัตรเครดิต (Credit Utilization) 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณ Credit Utilization Ratio อัตราการใช้วงเงินบัตรเครดิต เพื่อรักษาเครดิตสกอร์ที่ดี ควรไม่เกิน 30% ของวงเงินทั้งหมด';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณอัตราการใช้วงเงินบัตรเครดิต/`;
@@ -48,10 +50,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอัตราการใช้วงเงินบัตรเครดิต">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณอัตราการใช้วงเงินบัตรเครดิต (Credit Utilization)
     </h1>
@@ -136,6 +135,15 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="credit-card"
+      affiliateUrl="/go/uob-tmrw/?sub_id=คำนวณอัตราการใช้วงเงินบัตรเครดิต"
+      partnerName="UOB TMRW"
+      ctaText="สมัครบัตร UOB TMRW"
+      subtext="บัตรเครดิตดิจิทัล สิทธิพิเศษมากมาย วงเงินสูง"
+    />
+
     <GuardedAdSlot />
 
     <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
@@ -143,17 +151,7 @@ const jsonLdFaq = {
       <p>ในระบบ FICO Score ที่ใช้กันทั่วโลก Credit Utilization มีน้ำหนักประมาณ 30% ของคะแนน ในไทย เครดิตบูโร (NCB) ใช้หลักการคล้ายกัน ยิ่ง Utilization ต่ำยิ่งแสดงถึงการบริหารหนี้ที่ดี ส่งผลให้เครดิตสกอร์สูงและมีโอกาสได้รับสินเชื่อมากขึ้น</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณอัตราการใช้วงเงินบัตรเครดิต/" />
     <RelatedCalculators currentHref="/คำนวณอัตราการใช้วงเงินบัตรเครดิต/" />
@@ -231,6 +229,7 @@ const jsonLdFaq = {
 
       document.getElementById('results')!.classList.remove('hidden');
       document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('credit-utilization');
     });
   </script>

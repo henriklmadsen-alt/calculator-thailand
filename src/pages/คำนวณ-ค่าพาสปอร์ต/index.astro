@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculatePassportFee, EXAMPLE_1, EXAMPLE_2, EXAMPLE_3 } from '../../lib/passport-fee-calculator';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าพาสปอร์ต 2569 | ค่าธรรมเนียมพาสปอร์ตไทย | Calculator Thailand';
+const pageTitle = 'คำนวณค่าพาสปอร์ต 2569 | ค่าธรรมเนียมพาสปอร์ตไทย | Kamnuanlek';
 const pageDescription = 'คำนวณค่าพาสปอร์ต (หนังสือเดินทาง) ออนไลน์ฟรี สำหรับผู้ใหญ่และเด็ก โดยระบบจะคำนวณค่าธรรมเนียมตามประเภท ระยะเวลา บริการด่วน ตามอัตรา 2569 ที่ทำการต่างประเทศ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ค่าพาสปอร์ต/`;
@@ -88,10 +89,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าพาสปอร์ต">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าพาสปอร์ต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">

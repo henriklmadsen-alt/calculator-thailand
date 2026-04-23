@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const deductionCategories = [
+  {
+    category: 'ค่าลดหย่อนส่วนบุคคล',
+    items: [
+      { name: 'ค่าลดหย่อนส่วนตัว', amount: '60,000 บาท', status: 'ใช้ได้ทุกราย' },
+      { name: 'ค่าลดหย่อนคู่สมรส', amount: '60,000 บาท', status: 'ถ้าสมรสแล้ว' },
+      { name: 'ค่าลดหย่อนบุตร (ต่อคน)', amount: '20,000 บาท', status: 'ไม่เกิน 5 คน' },
+      { name: 'ค่าลดหย่อนบิดามารดา (ต่อคน)', amount: '20,000 บาท', status: 'ถ้าเลี้ยงดู' },
+      { name: 'ค่าลดหย่อนคนพิการ (ตัวเอง)', amount: '40,000 บาท', status: 'กรณีพิการ' },
+    ]
+  },
+  {
+    category: 'ค่าใช้จ่ายที่เกี่ยวกับงาน',
+    items: [
+      { name: 'ค่าวิชาชีพและใบอนุญาต', amount: 'ตามจริง', status: 'เก็บใบเสร็จไว้' },
+      { name: 'ค่าการศึกษาและฝึกอบรม', amount: 'ตามจริง', status: 'เฉพาะที่เกี่ยวกับงาน' },
+      { name: 'ค่าเสื่อมราคาสำนักงานที่บ้าน', amount: 'คำนวณแล้ว', status: 'คำนวณจากสินทรัพย์ถาวร' },
+      { name: 'อุปกรณ์สำนักงาน', amount: 'ตามจริง', status: 'วัสดุสิ้นเปลือง' },
+      { name: 'อุปกรณ์และเครื่องมือ', amount: 'หักค่าเสื่อม', status: 'ตลอดอายุการใช้งาน' },
+      { name: 'ค่าสมาชิกวิชาชีพ', amount: 'ตามจริง', status: 'สมาคมวิชาชีพ' },
+    ]
+  },
+  {
+    category: 'ประกันสุขภาพและชีวิต',
+    items: [
+      { name: 'เบี้ยประกันสุขภาพ', amount: 'ไม่เกิน 15,000 บาท', status: 'วงเงินรายปี' },
+      { name: 'เบี้ยประกันชีวิต', amount: 'ไม่เกิน 100,000 บาท', status: 'วงเงินรายปี' },
+      { name: 'ประกันทุพพลภาพ', amount: 'ตามจริง', status: 'ถ้าได้รับอนุมัติ' },
+    ]
+  },
+  {
+    category: 'การออมและการลงทุน',
+    items: [
+      { name: 'กองทุนรวมเพื่อการเลี้ยงชีพ (RMF)', amount: 'ไม่เกิน 500,000 บาท', status: 'เงินสมทบรายปี' },
+      { name: 'กองทุนรวมเพื่อการออม (SSF)', amount: 'ตามจริง', status: 'ผู้ประกอบอาชีพอิสระ' },
+      { name: 'กองทุนสำรองเลี้ยงชีพ', amount: 'ตามจริง', status: 'นายจ้างร่วมสมทบ' },
+      { name: 'พันธบัตรออมทรัพย์รัฐบาล', amount: 'ตามจริง', status: 'พันธบัตรไทยเท่านั้น' },
+    ]
+  },
+  {
+    category: 'การบริจาค',
+    items: [
+      { name: 'บริจาคการกุศล', amount: 'ไม่เกิน 2 เท่าของรายได้', status: 'องค์กรที่ได้รับอนุมัติ' },
+      { name: 'บริจาคศาสนา', amount: 'ไม่จำกัด', status: 'วัด มัสยิด ฯลฯ' },
+      { name: 'บริจาคการเมือง/ภัยพิบัติ', amount: 'ไม่จำกัด', status: 'ถ้าได้รับอนุมัติ' },
+    ]
+  },
+  {
+    category: 'ดอกเบี้ยที่จ่าย',
+    items: [
+      { name: 'ดอกเบี้ยสินเชื่อบ้าน', amount: 'ไม่เกิน 100,000 บาท', status: 'เฉพาะบ้านหลังแรก' },
+      { name: 'ดอกเบี้ยเงินกู้การศึกษา', amount: 'ตามจริง', status: 'เงินกู้ที่ได้รับอนุมัติ' },
+      { name: 'ดอกเบี้ยจดจำนอง', amount: 'ไม่เกิน 100,000 บาท', status: 'ที่อยู่อาศัยหลัก' },
+    ]
+  },
+];
+---
+
+<BaseLayout
+  title="เช็กลิสต์หักลดหย่อนภาษีครบทุกประเภท ปี 2569 อย่าลืมสิทธิ์ | Kamnuanlek"
+  description="รายการหักลดหย่อนภาษีเงินได้ครบทุกประเภท ส่วนตัว ประกันชีวิต กองทุน RMF LTF การกุศล และอื่นๆ อัปเดตปี 2569 พร้อมจำนวนเงินสูงสุดแต่ละรายการ"
+>
+  <script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "หน้าหลัก", "item": "https://www.kamnuanlek.com/"},
+      {"@type": "ListItem", "position": 2, "name": "เช็กลิสต์หักลดหย่อนภาษีครบทุกประเภท ปี 2569 อย่าลืมสิทธิ์", "item": "https://www.kamnuanlek.com/ตรวจสอบหักลดหย่อนภาษี/"}
+    ]
+  }</script>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">เช็กลิสต์หักลดหย่อนภาษีครบทุกประเภท ปี 2569</h1>
+
+    <div class="mb-12 p-6 bg-green-50 border border-green-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        อย่าปล่อยให้เงินหายไปโดยเปล่าประโยชน์! เช็กลิสต์นี้ช่วยให้คุณใช้สิทธิ์ลดหย่อนได้ครบถ้วนและลดภาษีที่ต้องชำระ
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      {deductionCategories.map((section) => (
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
+            <h3 class="text-xl font-bold text-white">{section.category}</h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              {section.items.map((item) => (
+                <div class="flex items-start gap-4 pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+                  <input
+                    type="checkbox"
+                    class="mt-1 w-5 h-5 text-primary-600 rounded"
+                  />
+                  <div class="flex-grow">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <h4 class="font-semibold text-gray-900">{item.name}</h4>
+                        <p class="text-sm text-gray-600 mt-1">{item.status}</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-semibold text-primary-600">{item.amount}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">⚠️ ข้อควรระวังสำคัญ</h2>
+      <ul class="space-y-3 text-gray-700">
+        <li class="flex gap-3">
+          <span class="font-bold text-yellow-700">•</span>
+          <span>เก็บใบเสร็จและเอกสารประกอบทุกฉบับไว้ 5 ปี (ตามกฎหมายไทย)</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="font-bold text-yellow-700">•</span>
+          <span>ค่าลดหย่อนต้องเป็นค่าใช้จ่ายที่เกิดขึ้นจริง ไม่ใช่การซื้อสินค้าส่วนตัว</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="font-bold text-yellow-700">•</span>
+          <span>บางรายการมีวงเงินสูงสุดรายปี อย่าเกินกว่าที่กำหนด</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="font-bold text-yellow-700">•</span>
+          <span>ค่าสุขภาพ/ประกันไม่ใช่ทุกประเภทจะผ่านเกณฑ์ ตรวจสอบกับกรมสรรพากร</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="font-bold text-yellow-700">•</span>
+          <span>การบริจาคต้องเป็นองค์กรที่ได้รับอนุมัติจากกรมสรรพากร</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-200">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">คำนวณภาษีที่ประหยัดได้</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อระบุสิทธิ์ลดหย่อนได้ครบแล้ว คำนวณภาษีที่ต้องชำระจริงของคุณ:
+      </p>
+      <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold">
+        ใช้เครื่องคำนวณภาษี →
+      </a>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">แหล่งข้อมูลที่เกี่ยวข้อง</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📚 วิธีคำนวณภาษี</span>
+          <p class="text-gray-600 text-sm mt-2">คู่มือทีละขั้นตอน</p>
+        </a>
+        <a href="/ผิดพลาดภาษีทั่วไป/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">❌ ข้อผิดพลาดที่พบบ่อย</span>
+          <p class="text-gray-600 text-sm mt-2">หลีกเลี่ยงการเสียภาษีเกิน</p>
+        </a>
+        <a href="/ตัวช่วยคำนวณการเงิน/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">💳 ศูนย์รวมการเงิน</span>
+          <p class="text-gray-600 text-sm mt-2">เครื่องมือการเงินทุกประเภท</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

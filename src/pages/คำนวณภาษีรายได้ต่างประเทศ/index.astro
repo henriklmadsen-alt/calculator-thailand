@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีรายได้จากต่างประเทศ 2567/2569 | กฎใหม่โอนปีเดียวกัน | Calculator Thailand';
+const pageTitle = 'คำนวณภาษีรายได้จากต่างประเทศ 2567/2569 | กฎใหม่โอนปีเดียวกัน | Kamnuanlek';
 const pageDescription = 'คำนวณภาษีเงินได้บุคคลธรรมดาจากรายได้ต่างประเทศที่นำเข้าไทย ตามกฎใหม่ปี 2567: รายได้ที่โอนมาในปีเดียวกันต้องเสียภาษี อัปเดตปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีรายได้ต่างประเทศ/`;
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีรายได้ต่างประเทศ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
       <p class="text-sm font-semibold text-amber-700">⚠️ กฎใหม่ปี 2567 — รายได้ต่างประเทศที่โอนเข้าไทยปีเดียวกันต้องเสียภาษี</p>
       <p class="mt-1 text-sm text-slate-700">อ้างอิงคำสั่งกรมสรรพากร ป.161/2566</p>
@@ -158,18 +156,16 @@ const jsonLdFaq = {
       </ul>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณภาษีรายได้ต่างประเทศ/" />
     <RelatedCalculators currentHref="/คำนวณภาษีรายได้ต่างประเทศ/" />
 

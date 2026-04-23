@@ -1,8 +1,9 @@
 ---
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณงบแต่งงาน 2569 | ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณงบแต่งงาน 2569 | ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย | Kamnuanlek';
 const pageDescription = 'ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย สินสอด ของหมั้น ค่าสถานที่ ค่าชุด ค่าถ่ายรูป ค่าอาหารเลี้ยงแขก แยกตามขนาดและระดับงาน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณงบแต่งงาน/`;
@@ -46,10 +47,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบแต่งงาน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบแต่งงาน 2569</h1>
     <p class="mb-6 text-gray-600">ประมาณค่าใช้จ่ายงานแต่งงานแบบไทย สินสอด ของหมั้น งานเลี้ยง แยกตามขนาดและระดับงาน</p>
 
@@ -136,17 +134,7 @@ const jsonLdFaq = {
       </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <div class="rounded-lg border border-gray-200 p-4">
-            <h3 class="mb-2 font-semibold text-gray-900">{faq.question}</h3>
-            <p class="text-sm text-gray-600">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณงบแต่งงาน/" categoryId="bills" maxItems={4} />
   </article>

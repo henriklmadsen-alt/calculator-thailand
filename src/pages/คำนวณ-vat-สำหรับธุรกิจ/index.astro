@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณ VAT สำหรับธุรกิจ 2569 | Output VAT ลบ Input VAT | Calculator Thailand';
+const pageTitle = 'คำนวณ VAT สำหรับธุรกิจ 2569 | Output VAT ลบ Input VAT | Kamnuanlek';
 const pageDescription = 'คำนวณภาษี VAT ที่ต้องนำส่ง Output VAT - Input VAT รายเดือน ตามกฎหมายประเทศไทย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-vat-สำหรับธุรกิจ/`;
@@ -23,6 +24,11 @@ const faqData = [
     question: 'ถ้า Input VAT มากกว่า Output VAT ทำไง?',
     answer: 'จะได้เครดิต VAT ที่สามารถนำไปหักในเดือนถัดไป หรือขอคืนหากมีการส่งออกสินค้า',
   },
+,
+  { question: 'ธุรกิจขนาดไหนต้องจดทะเบียน VAT?', answer: 'ผู้ประกอบการที่มีรายได้จากการขายสินค้าหรือบริการเกิน 1,800,000 บาทต่อปี ต้องจดทะเบียนภาษีมูลค่าเพิ่มภายใน 30 วันนับแต่วันที่รายได้เกิน' },
+  { question: 'VAT Input และ Output Tax คืออะไร?', answer: 'Output VAT: ภาษีที่เรียกเก็บจากลูกค้า | Input VAT: ภาษีที่จ่ายให้ซัพพลายเออร์ | ภาษีที่ต้องนำส่งกรมสรรพากร = Output VAT - Input VAT ถ้าติดลบได้รับคืนหรือนำไปเครดิตเดือนถัดไป' },
+  { question: 'สินค้าและบริการอะไรได้รับการยกเว้น VAT?', answer: 'อาหารสด พืชผักผลไม้ที่ยังไม่แปรรูป, สัตว์ที่ยังมีชีวิต, ปุ๋ยและยาป้องกันแมลง, หนังสือพิมพ์/นิตยสาร, บริการสุขภาพ/การศึกษา, การขนส่งผู้โดยสารภายในประเทศ' },
+  { question: 'VAT Zero Rate ต่างจาก VAT Exempt อย่างไร?', answer: 'Zero Rate (0%): เสีย VAT แต่อัตรา 0% เช่น ส่งออกสินค้า — ยังขอคืน Input VAT ได้ | Exempt (ยกเว้น): ไม่ต้องเสีย VAT แต่ขอคืน Input VAT ไม่ได้ สำคัญมากสำหรับการวางแผนภาษี' }
 ];
 
 const jsonLdWebApp = {
@@ -49,10 +55,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ VAT สำหรับธุรกิจ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
       คำนวณ VAT สำหรับธุรกิจ
     </h1>
@@ -176,6 +179,14 @@ const jsonLdFaq = {
       </ul>
     </section>
   </article>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — ระบบภาษีมูลค่าเพิ่ม (VAT) 7%</li>
+        <li><a href="https://www.rd.go.th/publish/27415.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">คู่มือ VAT สำหรับผู้ประกอบการ — กรมสรรพากร</a></li>
+      </ul>
+    </div>
 </BaseLayout>
 
 <script>

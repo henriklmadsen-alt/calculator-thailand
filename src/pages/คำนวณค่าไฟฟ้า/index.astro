@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าไฟฟ้า PEA MEA 2569 | Calculator Thailand';
-const pageDescription = 'ค่าไฟฟ้า PEA MEA ตัวอักษร kWh ประเมิน อัตราค่าไฟ ตารางการใช้ 2569 ฟรี ตรวจสอบ';
+const pageTitle = 'คำนวณค่าไฟฟ้า PEA MEA 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณค่าไฟฟ้า PEA และ MEA 2569 ฟรี — ใส่หน่วยที่ใช้ รู้ค่าไฟแม่นยำพร้อมค่า Ft ล่าสุด ประหยัดค่าไฟได้อีกเท่าไร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าไฟฟ้า/`;
 
@@ -34,6 +35,10 @@ const faqData = [
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณค่าไฟฟ้าที่ต้องหลีกเลี่ยง?',
     answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ใช้ค่า Ft จากรอบเดือนที่ผ่านมา (2) ลุกสูงลืมรวม Ft เข้าไปในการคิด VAT (3) ไม่ใช้ตารางอัตราขั้นบันไดที่ถูกต้อง (4) นำค่าไฟเดือนก่อนมาเปรียบเทียบโดยไม่คิด Ft ที่ต่างกัน (5) ลืมว่าค่าไฟเกิน 150 หน่วยเปลี่ยนค่าบริการ และ (6) ไม่อ่านใบแจ้งค่าไฟสำหรับค่าบริการเพิ่มเติมอื่น',
   },
+,
+  { question: 'ค่าไฟฟ้าในไทยใช้อัตราแบบไหน?', answer: 'ใช้อัตราก้าวหน้า (Progressive Rate) — ยิ่งใช้มากยิ่งแพงต่อหน่วย MEA/PEA มีอัตรา 3 ช่วง ตามประกาศคณะกรรมการกำกับกิจการพลังงาน (กกพ.) บวกค่า FT (Fuel Tariff) ที่เปลี่ยนทุก 4 เดือน' },
+  { question: 'ค่า FT คืออะไรและส่งผลต่อค่าไฟอย่างไร?', answer: 'FT (Fuel Adjustment Charge) คือค่าปรับตามต้นทุนเชื้อเพลิง ปรับทุก 4 เดือน ถ้า FT เป็นบวกหมายถึงค่าไฟแพงขึ้น ถ้าเป็นลบถูกลง ส่งผลให้ค่าไฟรายเดือนเปลี่ยนแปลงได้ 5-15%' },
+  { question: 'ประหยัดค่าไฟได้อย่างไรบ้าง?', answer: 'ปิดอุปกรณ์ที่ไม่ใช้งาน (standby กิน 5-10% ของค่าไฟ), ใช้หลอด LED แทนหลอดเก่า, ตั้งแอร์ที่ 25-26°C, ซักผ้าครั้งเดียวให้เต็มถัง, ตรวจสอบฉนวนและซีลประตูตู้เย็น' }
 ];
 
 const jsonLdWebApp = {
@@ -93,10 +98,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าไฟฟ้า">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าไฟฟ้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -350,17 +353,38 @@ const jsonLdHowTo = {
       </p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณค่าไฟฟ้า</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อประมาณค่าไฟฟ้า:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ใช้เลขกำลังไฟฟ้า (Watt) หรือ Kilowatt (kW) ผิด</strong><br/>
+          เครื่องปรับอากาศ 1,200 วัตต์ ≠ 1,200 kW ต้องแปลงเป็น 1.2 kW พลังงาน = (Watt ÷ 1,000) × ชั่วโมง = kWh
+        </li>
+        <li>
+          <strong>ไม่รู้ว่าค่าไฟฟ้ามีค่าแรกเรียว (Lifeline Rate)</strong><br/>
+          0-150 kWh = 3 บาท/kWh, 150-400 = 4 บาท/kWh, 400+ = 5 บาท/kWh ขอตารางอัตราจาก MEA/PEA แล้วคำนวณแยกแต่ละชั้นอัตรา
+        </li>
+        <li>
+          <strong>ลืมรวมค่าบำรุงไฟฟ้า</strong><br/>
+          ใช้ไฟ 100 kWh × 4 บาท/kWh = 400 แต่จ่ายจริง 480 เพราะมีค่าบำรุง ~80 บาท/เดือน ดูใบแจกแจง มีค่าบำรุงรวมอยู่แล้ว
+        </li>
+        <li>
+          <strong>ไม่คิดพัก ฤดูร้อน ฤดูเย็น</strong><br/>
+          ประมาณค่าไฟเดือนมาเก" 300 kWh แต่ฤดูร้อน (มี.ค.-พ.ค.) ใช้แอร์หนัก อาจถึง 600+ kWh ตรวจดูค่าไฟปีที่ผ่านมา แล้วหาเฉลี่ยโดยแยกตามฤดูกาล
+        </li>
+        <li>
+          <strong>ไม่เข้าใจหน่วยคิด (kWh vs kVA)</strong><br/>
+          ขนาดแอมป์ 30 A = 30 × 220V = 6.6 kVA ≠ kWh kVA คือพลังงานสูงสุด kWh คือพลังงานที่ใช้จริง (คิดค่าไฟ)
+        </li>
+      </ul>
     </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
       <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h2>

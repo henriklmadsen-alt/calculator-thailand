@@ -2,9 +2,10 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณกำจัดหนี้ Avalanche 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณแผนปลดหนี้แบบ Avalanche — ชำระหนี้ดอกเบี้ยสูงก่อน ประหยัดดอกเบี้ยรวมสูงสุด เปรียบเทียบกับวิธี Snowball ได้ทันที';
+const pageTitle = 'คำนวณปลดหนี้ Avalanche 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณแผนปลดหนี้แบบ Avalanche 2569 ฟรี — ชำระดอกเบี้ยสูงก่อน ประหยัดดอกเบี้ยรวมได้มากที่สุด เปรียบเทียบกับวิธี Snowball';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณกำจัดหนี้-avalanche/`;
 
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำจัดหนี้ Avalanche 🏔️">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
       🏔️ คำนวณกำจัดหนี้ — วิธี Avalanche (ดอกเบี้ยสูงก่อน)
     </h1>
@@ -202,21 +200,7 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณกำจัดหนี้-avalanche/" />
     <RelatedCalculators currentHref="/คำนวณกำจัดหนี้-avalanche/" />

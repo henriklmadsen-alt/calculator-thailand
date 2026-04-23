@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณประกันสังคม มาตรา 33 39 40 อัปเดต 2569 (2026) | Calculator Thailand';
-const pageDescription = 'คำนวณเงินสมทบประกันสังคม มาตรา 33 39 40 ฟรี อัปเดตปี 2569 แสดงส่วนลูกจ้าง นายจ้าง และรัฐบาล พร้อมสรุปรายเดือนและรายปี ใช้อัตราจาก สำนักงานประกันสังคม (SSO)';
+const pageTitle = 'คำนวณประกันสังคม มาตรา 33 39 40 ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณเงินสมทบประกันสังคม 2569 ฟรี — มาตรา 33 39 40 รู้ส่วนที่หักจากเงินเดือนและที่นายจ้างจ่าย พร้อมสิทธิประโยชน์ที่ได้รับ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณประกันสังคม/`;
 
@@ -26,6 +27,11 @@ const faqData = [
     question: 'ประกันสังคมมาตรา 33 39 40 ต่างกันอย่างไร?',
     answer: 'มาตรา 33 สำหรับลูกจ้างที่มีนายจ้าง จ่าย 5% ของเงินเดือน คุ้มครอง 7 กรณี มาตรา 39 สำหรับผู้ที่ลาออกแต่ต้องการรักษาสิทธิ์ จ่ายเดือนละ 432 บาท คุ้มครอง 6 กรณี มาตรา 40 สำหรับผู้ประกอบอาชีพอิสระ จ่าย 70-300 บาท คุ้มครอง 3-5 กรณี',
   },
+,
+  { question: 'ผู้ประกันตนมาตรา 33 จ่ายเงินสมทบเท่าไรต่อเดือน?', answer: 'จ่าย 5% ของค่าจ้าง (ฐานคำนวณ 1,650-15,000 บาท) สูงสุด 750 บาท/เดือน นายจ้างจ่ายเพิ่ม 5% และรัฐบาลสมทบ 2.75% เงินสมทบรวม 3 ฝ่ายเข้ากองทุนประกันสังคม' },
+  { question: 'สิทธิ์ประกันสังคมมาตรา 33 ครอบคลุมอะไรบ้าง?', answer: '7 กรณี: เจ็บป่วย, คลอดบุตร, ทุพพลภาพ, เสียชีวิต, ชราภาพ (บำนาญ/บำเหน็จ), สงเคราะห์บุตร 800 บาท/เดือน (สูงสุด 3 คน), ว่างงาน (70% ของค่าจ้าง สูงสุด 180 วัน)' },
+  { question: 'ส่งประกันสังคมต่อเนื่องกี่ปีถึงได้รับบำนาญเกษียณ?', answer: 'ต้องส่งเงินสมทบไม่น้อยกว่า 180 เดือน (15 ปี) จึงได้รับบำนาญชราภาพ 20% ของค่าจ้างเฉลี่ย 60 เดือนสุดท้าย + 1.5% ต่อปีสำหรับปีที่เกิน 15 ปี ถ้าส่งไม่ถึง 180 เดือนได้รับบำเหน็จแทน' },
+  { question: 'ลาออกจากงานแล้วสิทธิ์ประกันสังคมจะเป็นอย่างไร?', answer: 'สามารถสมัครต่อเองได้ในฐานะผู้ประกันตนมาตรา 39 ภายใน 6 เดือนหลังออกจากงาน จ่ายเงินสมทบ 432 บาท/เดือน (9% ของฐาน 4,800 บาท) รักษาสิทธิ์ 6 กรณีเดิม (ยกเว้นว่างงาน)' }
 ];
 
 const jsonLdWebApp = {
@@ -66,10 +72,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคม">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -85,6 +89,16 @@ const jsonLdHowTo = {
     <p class="text-gray-600 mb-6">
       คำนวณเงินสมทบประกันสังคมรายเดือนและรายปี แสดงส่วนที่ลูกจ้าง นายจ้าง และรัฐบาลจ่าย
     </p>
+
+    <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm">
+      <div class="font-semibold text-green-900 mb-1">📋 อัตราประกันสังคม 2569 (ฉบับย่อ)</div>
+      <div class="text-green-800 text-xs space-y-0.5">
+        <div>ลูกจ้าง: <span class="font-medium">5% ของเงินเดือน สูงสุด 750 บาท/เดือน</span></div>
+        <div>นายจ้าง: <span class="font-medium">5% ของเงินเดือน สูงสุด 750 บาท/เดือน</span></div>
+        <div>ฐานคำนวณ: <span class="font-medium">1,650 – 15,000 บาท/เดือน</span></div>
+        <div>สิทธิ์ 7 กรณี: เจ็บป่วย คลอดบุตร ทุพพลภาพ ชราภาพ ตาย สงเคราะห์บุตร ว่างงาน</div>
+      </div>
+    </div>
 
     <!-- Calculator -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
@@ -264,6 +278,91 @@ const jsonLdHowTo = {
         ทุพพลภาพ เสียชีวิต สงเคราะห์บุตร ชราภาพ และว่างงาน โดยมี 3 มาตราหลักคือ มาตรา 33, 39 และ 40
       </p>
 
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เปรียบเทียบประกันสังคม มาตรา 33 vs 39 vs 40</h3>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left border-b border-r font-semibold">รายการ</th>
+              <th class="px-3 py-2 text-center border-b border-r font-semibold">มาตรา 33</th>
+              <th class="px-3 py-2 text-center border-b border-r font-semibold">มาตรา 39</th>
+              <th class="px-3 py-2 text-center border-b font-semibold">มาตรา 40</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">ผู้มีสิทธิ</td>
+              <td class="px-3 py-2 border-r text-center">ลูกจ้างที่มีนายจ้าง</td>
+              <td class="px-3 py-2 border-r text-center">อดีตผู้ประกันตน ม.33</td>
+              <td class="px-3 py-2 text-center">ผู้ประกอบอาชีพอิสระ</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">เงินสมทบ/เดือน</td>
+              <td class="px-3 py-2 border-r text-center">5% ของเงินเดือน<br/>(สูงสุด 750 บาท)</td>
+              <td class="px-3 py-2 border-r text-center">432 บาท (คงที่)</td>
+              <td class="px-3 py-2 text-center">70 / 100 / 300 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">นายจ้างร่วมจ่าย</td>
+              <td class="px-3 py-2 border-r text-center text-green-600 font-medium">✓ 5%</td>
+              <td class="px-3 py-2 border-r text-center text-red-500">✗</td>
+              <td class="px-3 py-2 text-center text-red-500">✗</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">จำนวนสิทธิประโยชน์</td>
+              <td class="px-3 py-2 border-r text-center font-semibold text-green-700">7 กรณี</td>
+              <td class="px-3 py-2 border-r text-center font-semibold text-blue-700">6 กรณี</td>
+              <td class="px-3 py-2 text-center font-semibold text-amber-700">3-5 กรณี</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">เจ็บป่วย</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-green-600">✓</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">คลอดบุตร</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-red-500">✗</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">ทุพพลภาพ</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-green-600">✓</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">เสียชีวิต</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-green-600">✓</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">ชราภาพ (บำนาญ)</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-amber-600">เฉพาะทางเลือก 2, 3</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">สงเคราะห์บุตร</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-amber-600">เฉพาะทางเลือก 3</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border-r font-medium">ว่างงาน</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-red-500">✗</td>
+              <td class="px-3 py-2 text-center text-red-500">✗</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-sm text-gray-500 mt-1">ที่มา: <a href="https://www.sso.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">สำนักงานประกันสังคม (sso.go.th)</a> อัปเดต 2569</p>
+
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">มาตรา 33 — ลูกจ้างที่มีนายจ้าง</h3>
 
       <p>
@@ -380,21 +479,12 @@ const jsonLdHowTo = {
       <p>ประกันสังคมเป็นสิทธิหลักของพนักงาน เงินสมทบนี้จะไปเก็บไว้เพื่อใช้เมื่อเกษียณอายุ บาดเจ็บ หรือพิการ การสมทบนี้ถือเป็นหนึ่งในค่าลดหย่อนภาษีทั้งปีด้วย</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.sso.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">สำนักงานประกันสังคม: อัตราการสมทบประกันสังคม</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณประกันสังคม/" />
     <RelatedCalculators currentHref="/คำนวณประกันสังคม/" />

@@ -1,14 +1,32 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าประกันการจัดงาน ฟรี | Calculator Thailand';
+const pageTitle = 'คำนวณค่าประกันการจัดงาน ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณค่าประกันการจัดงาน ได้ผลลัพธ์ทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ค่าประกันการจัดงาน/`;
+
+const faqData = [
+  { question: 'เบี้ยประกันสุขภาพคำนวณจากอะไร?', answer: 'เบี้ยประกันขึ้นอยู่กับ อายุ เพศ สุขภาพปัจจุบัน วงเงินคุ้มครอง และบริษัทประกัน โดยทั่วไปอายุมากยิ่งเบี้ยสูง' },
+  { question: 'ควรซื้อประกันสุขภาพตั้งแต่อายุเท่าไร?', answer: 'ยิ่งซื้อเร็วยิ่งดี เบี้ยต่ำกว่าและโรคที่ยังไม่มีถือเป็นโรคใหม่ที่คุ้มครองได้ แนะนำเริ่มต้นตั้งแต่วัยทำงาน 25-35 ปี' },
+  { question: 'ประกันสุขภาพกับประกันสังคมต่างกันอย่างไร?', answer: 'ประกันสังคมบังคับโดยรัฐ คุ้มครองพื้นฐาน ประกันสุขภาพเพิ่มเติมซื้อเองเพื่อรับการรักษาที่ดีกว่า วงเงินสูงกว่า และเลือกโรงพยาบาลได้' },
+  { question: 'ค่าเบี้ยที่คำนวณได้ถูกต้องแค่ไหน?', answer: 'เป็นการประมาณการเบื้องต้น ราคาจริงขึ้นอยู่กับการตรวจสุขภาพ ประวัติการรักษา และเงื่อนไขของแต่ละบริษัท ควรขอใบเสนอราคาจริงก่อนตัดสินใจ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าประกันการจัดงาน">
-  <article>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าประกันการจัดงาน">  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าประกันการจัดงาน</h1>
     <p class="text-gray-600 mb-6">เครื่องคำนวณออนไลน์ ค่าประกันการจัดงาน</p>
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">

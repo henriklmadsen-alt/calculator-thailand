@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณมูลค่า Cashback ปี 2569 — บัตรเครดิต คืนเงิน | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณมูลค่า Cashback จากบัตรเครดิตหรือบัตรเดบิต ป้อนยอดใช้จ่ายและอัตราคืนเงิน ทราบเงินคืนต่อเดือนและต่อปี เปรียบเทียบได้ทันที';
+const pageTitle = 'คำนวณ Cashback บัตรเครดิต 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเงินคืน Cashback จากบัตรเครดิต 2569 ฟรี — ใส่ยอดใช้จ่ายและอัตราคืนเงิน รู้ว่าได้เงินคืนต่อเดือนและต่อปีเท่าไร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-cashback/`;
 
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-cashback">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
       <p class="text-sm font-semibold text-green-700">คำนวณมูลค่า Cashback — เงินคืนจากบัตรเครดิต</p>
       <p class="mt-1 text-sm text-slate-700">สูตร: Cashback = ยอดใช้จ่าย × อัตรา% (ไม่เกินเพดาน)</p>
@@ -138,19 +136,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณ-cashback/" />
     <RelatedCalculators currentHref="/คำนวณ-cashback/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราและเพดาน Cashback อาจแตกต่างตามบัตรและโปรโมชัน ควรตรวจสอบเงื่อนไขจริงกับธนาคาร

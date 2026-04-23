@@ -3,8 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเบี้ยประกันสุขภาพ ประมาณการค่าเบี้ยรายเดือน 2569 | ฟรี';
+const pageTitle = 'คำนวณเบี้ยประกันสุขภาพ ประมาณการค่าเบี้ยรายเดือน 2569 | ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณค่าเบี้ยประกันสุขภาพออนไลน์ฟรี ประมาณการเบี้ยรายเดือนและรายปี เปรียบเทียบแบบพื้นฐาน มาตรฐาน พรีเมียม';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเบี้ยประกันสุขภาพ/`;
@@ -49,11 +50,24 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันสุขภาพ',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันสุขภาพส่วนบุคคล ตามอายุ ประวัติสุขภาพ และความครอบคลุมที่ต้องการ',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุอายุและเพศ', text: 'กรอกอายุปัจจุบัน เพศ (ชาย/หญิง) เบี้ยประกันสุขภาพเพิ่มขึ้นตามอายุ ควรทำประกันตั้งแต่อายุน้อยเพื่อเบี้ยต่ำกว่า โดยทั่วไปเบี้ยอายุ 20-30 ปี ต่ำกว่าอายุ 50+ ปี ถึง 3-5 เท่า' },
+    { '@type': 'HowToStep', name: 'เลือกระดับความครอบคลุม', text: 'เลือกแผนประกัน: แผนพื้นฐาน (ผู้ป่วยใน IPD อย่างเดียว) แผนกลาง (IPD + OPD บางส่วน) หรือแผนครอบคลุม (IPD + OPD + ทันตกรรม + แว่นตา) ยิ่งครอบคลุมมาก เบี้ยยิ่งสูง' },
+    { '@type': 'HowToStep', name: 'ระบุวงเงินคุ้มครองต่อปี', text: 'กำหนดวงเงินสูงสุดที่ต้องการต่อปี เช่น 1 ล้านบาท 3 ล้านบาท หรือ 5 ล้านบาท สำหรับห้องผู้ป่วยใน แนะนำวงเงินอย่างน้อย 1 ล้านบาทสำหรับโรงพยาบาลเอกชนในกรุงเทพ' },
+    { '@type': 'HowToStep', name: 'ตรวจสอบข้อยกเว้นโรคเดิม', text: 'แจ้งประวัติสุขภาพ (โรคเดิมที่เป็นก่อนทำประกัน) บริษัทประกันอาจไม่คุ้มครองโรคที่มีมาก่อน (Pre-existing conditions) หรือเพิ่มเบี้ยสำหรับบางโรค' },
+    { '@type': 'HowToStep', name: 'เปรียบเทียบและเลือกแผน', text: 'เปรียบเทียบเบี้ยและความครอบคลุมจากหลายบริษัท (AXA, MSIG, FWD, SE Life, Cigna) สามารถนำเบี้ยประกันสุขภาพไปลดหย่อนภาษีได้สูงสุด 25,000 บาทต่อปี (ตามกฎหมาย พ.ร.บ. ภาษีเงินได้)' },
+  ],
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันสุขภาพ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันสุขภาพ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
@@ -247,30 +261,20 @@ const jsonLdFaq = {
       </p>
     </section>
 
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related -->
     <AffiliateCard
       category="insurance"
-      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
-      partnerName="EasySunday"
-      ctaText="เปรียบเทียบประกันสุขภาพ"
-      subtext="เปรียบเทียบแผนประกันสุขภาพจากหลายบริษัท AXA, MSIG, Cigna และอื่น ๆ"
+      affiliateUrl="/go/rabbit-care-health-cpl/?sub_id=คำนวณเบี้ยประกันสุขภาพ"
+      partnerName="Rabbit Care"
+      ctaText="เปรียบเทียบประกันสุขภาพฟรี"
+      subtext="รับใบเสนอราคาจากหลายบริษัทภายใน 2 นาที"
     />
     <RelatedArticles currentHref="/คำนวณเบี้ยประกันสุขภาพ/" />
     <RelatedCalculators currentHref="/คำนวณเบี้ยประกันสุขภาพ/" />

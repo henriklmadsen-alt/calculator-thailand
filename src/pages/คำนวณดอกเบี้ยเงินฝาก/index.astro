@@ -4,8 +4,9 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณดอกเบี้ยเงินฝาก 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณดอกเบี้ยเงินฝาก 2569 | Kamnuanlek';
 const pageDescription = 'ดอกเบี้ยเงินฝาก ธนาคาร อัตราดอกเบี้ยทบต้น ซาวิงส์ เงินฝากประจำ 2569 ฟรี ทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณดอกเบี้ยเงินฝาก/`;
@@ -31,6 +32,10 @@ const faqData = [
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณดอกเบี้ยเงินฝากที่ต้องหลีกเลี่ยง?',
     answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ไม่ลบภาษี 15% ออกจากดอกเบี้ยที่ได้รับ (2) ลืมว่าดอกเบี้ยออมทรัพย์ไม่เกิน 20,000 ต่อปีได้ยกเว้นภาษี (3) ใช้ Simple Interest แทน Compound Interest (4) นำอัตราดอกเบี้ยเก่าที่ติดตัวจากสัญญา (5) ไม่คิดการฝากเพิ่มรายเดือนอย่างถูกต้อง และ (6) ลืมการหักดอกเบี้ยเมื่อถอนก่อนครบกำหนด (ฝากประจำ)',
   },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' }
 ];
 
 const jsonLdWebApp = {
@@ -90,10 +95,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยเงินฝาก">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยเงินฝาก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -290,11 +293,11 @@ const jsonLdHowTo = {
     </div>
     <!-- Affiliate CTA — hidden until result shown -->
     <AffiliateCard
-      category="investment"
-      affiliateUrl="/go/kasikorn-savings/"
-      partnerName="KBank"
-      ctaText="ดูอัตราดอกเบี้ยประจำวันนี้"
-      subtext="เปรียบเทียบเงินฝากประจำและออมทรัพย์"
+      category="insurance"
+      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
+      partnerName="EasySunday"
+      ctaText="เปรียบเทียบประกันออมทรัพย์"
+      subtext="ประกันออมทรัพย์ ผลตอบแทนสูงกว่าเงินฝากธนาคาร"
     />
 
     <GuardedAdSlot
@@ -427,22 +430,39 @@ const jsonLdHowTo = {
       </p>
     </section>
 
-    <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณดอกเบี้ยเงินฝาก</h2>
+      <p class="text-gray-700 mb-4">
+        ในการคำนวณดอกเบี้ยเงินฝาก:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ไม่รู้ว่าธนาคารบางแห่งหักภาษีจากดอกเบี้ย</strong><br/>
+          ฝาก 1,000,000 บาท ได้ดอกเบี้ย 1% = 10,000 บาท แต่ต้องเสียภาษี 15% = 1,500 บาท ที่ได้จริง = 8,500 บาท ตรวจสอบว่าธนาคารหักภาษีหรือไม่
+        </li>
+        <li>
+          <strong>ลืมว่าอัตราดอกเบี้ย "โปรโมชั่น" มีวาระจำกัด</strong><br/>
+          ธนาคารเสนออัตรา 2.5% ต่อปี เฉพาะ 6 เดือนแรก หลังจากนั้นลดเหลือ 0.5% ขอรายละเอียดอัตราดอกเบี้ยที่ชัดเจน
+        </li>
+        <li>
+          <strong>คำนวณดอกเบี้ยแบบ Simple Interest เมื่อควรเป็น Compound Interest</strong><br/>
+          ฝาก 100,000 บาท อัตรา 2% ต่อปี 2 ปี Simple = 4,000 แต่ Compound = 4,040 บาท ตรวจสอบว่าธนาคารคิดดอกเบี้ยทบต้นเมื่อไร
+        </li>
+        <li>
+          <strong>ลืมว่ามีดอกเบี้ย Penalty ถ้าถอนก่อนครบงวด</strong><br/>
+          ฝากประจำ 12 เดือน อัตรา 3% แต่ต้องถอนที่เดือนที่ 6 ธนาคารเรียกเก็บค่าปรับหรือคิดดอกเบี้ยแบบออมทรัพย์ 0.5% แทน
+        </li>
+        <li>
+          <strong>ไม่เปรียบเทียบ APR (อัตราร้อยละต่อปี) ระหว่างธนาคาร</strong><br/>
+          ธนาคาร A ให้ 2% คิดทบต้นรายปี ธนาคาร B ให้ 2% คิดทบต้นรายเดือน APR ไม่เท่ากัน ขอ APY เพื่อเปรียบเทียบตรง
+        </li>
+      </ul>
     </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณดอกเบี้ยเงินฝาก/" />

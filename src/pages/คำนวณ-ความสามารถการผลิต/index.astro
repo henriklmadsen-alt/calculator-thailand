@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณความสามารถการผลิต ปี 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณความสามารถการผลิต ปี 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณความสามารถการผลิต';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ความสามารถการผลิต/`;
@@ -22,6 +23,16 @@ const faqData = [
     answer: 'คำตอบที่มีความหมาย',
   },
 ];
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 
 const jsonLdSchema = {
   '@context': 'https://schema.org',
@@ -33,8 +44,7 @@ const jsonLdSchema = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณความสามารถการผลิต">
-  <article>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณความสามารถการผลิต">  <article>
     <h1 class="text-3xl font-bold mb-4">คำนวณความสามารถการผลิต</h1>
     <p class="text-gray-600 mb-6">คำนวณความสามารถการผลิต</p>
 

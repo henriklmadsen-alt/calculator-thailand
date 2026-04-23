@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageUrl = `${siteUrl}/เครื่องคำนวณใหม่/`;
+
+const newCalcs = [
+  // Corporate Finance (10)
+  {
+    title: 'คำนวณ CAGR อัตราเติบโตทบต้นรายปี',
+    desc: 'คำนวณ CAGR (Compound Annual Growth Rate) อัตราการเติบโตทบต้นรายปีของการลงทุน',
+    href: '/คำนวณ-cagr-อัตราเติบโตทบต้นรายปี/',
+    icon: '📈',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณ IRR อัตราผลตอบแทนภายใน',
+    desc: 'คำนวณ IRR (Internal Rate of Return) อัตราผลตอบแทนภายในของโครงการลงทุน',
+    href: '/คำนวณ-irr-อัตราผลตอบแทนภายใน/',
+    icon: '💹',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณ NPV มูลค่าปัจจุบันสุทธิ',
+    desc: 'คำนวณ NPV (Net Present Value) มูลค่าปัจจุบันสุทธิของกระแสเงินสดในอนาคต',
+    href: '/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/',
+    icon: '🏦',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณ ROA ผลตอบแทนสินทรัพย์',
+    desc: 'คำนวณ ROA (Return on Assets) ผลตอบแทนต่อสินทรัพย์รวม',
+    href: '/คำนวณ-roa-ผลตอบแทนสินทรัพย์/',
+    icon: '🏢',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณ ROE ผลตอบแทนผู้ถือหุ้น',
+    desc: 'คำนวณ ROE (Return on Equity) ผลตอบแทนต่อส่วนของผู้ถือหุ้น',
+    href: '/คำนวณ-roe-ผลตอบแทนผู้ถือหุ้น/',
+    icon: '📊',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณ WACC ต้นทุนทุนถัวเฉลี่ย',
+    desc: 'คำนวณ WACC (Weighted Average Cost of Capital) ต้นทุนเงินทุนถัวเฉลี่ยขององค์กร',
+    href: '/คำนวณ-wacc-ต้นทุนทุนถัวเฉลี่ย/',
+    icon: '⚖️',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณจุดคุ้มทุน Break-even',
+    desc: 'คำนวณจุดคุ้มทุน (Break-even Point) จำนวนหน่วยที่ต้องขายเพื่อคืนทุน',
+    href: '/คำนวณ-จุดคุ้มทุน-break-even/',
+    icon: '🎯',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณดอกเบี้ยทบต้น (Compound Interest)',
+    desc: 'คำนวณดอกเบี้ยทบต้น A = P(1+r/n)^nt รายปี รายเดือน หรือต่อเนื่อง',
+    href: '/คำนวณ-ดอกเบี้ยทบต้น/',
+    icon: '💰',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณมูลค่าปัจจุบัน Present Value',
+    desc: 'คำนวณมูลค่าปัจจุบัน (Present Value) เงินในอนาคตมีค่าเท่าไรในวันนี้',
+    href: '/คำนวณ-มูลค่าปัจจุบัน-present-value/',
+    icon: '⏮️',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  {
+    title: 'คำนวณมูลค่าอนาคต Future Value',
+    desc: 'คำนวณมูลค่าอนาคต (Future Value) เงินวันนี้จะงอกเป็นเท่าไรในอนาคต',
+    href: '/คำนวณ-มูลค่าอนาคต-future-value/',
+    icon: '⏭️',
+    group: 'การเงิน / ธุรกิจ',
+  },
+  // Math & Stats (11)
+  {
+    title: 'คำนวณรากที่สอง รากที่สาม',
+    desc: 'คำนวณรากที่สอง รากที่สาม และรากที่ n ของจำนวนใดก็ได้ พร้อมแสดงขั้นตอน',
+    href: '/คำนวณรากที่สอง/',
+    icon: '√',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณยกกำลัง aⁿ',
+    desc: 'คำนวณยกกำลัง aⁿ เลขชี้กำลัง กฎเลขยกกำลัง พร้อมแสดงขั้นตอน',
+    href: '/คำนวณยกกำลัง/',
+    icon: '🔢',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณลอการิทึม log ln',
+    desc: 'คำนวณลอการิทึม log₁₀ (log), ลอการิทึมธรรมชาติ (ln), log₂ และ logₙ',
+    href: '/คำนวณลอการิทึม/',
+    icon: '📐',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณทฤษฎีพีทาโกรัส',
+    desc: 'คำนวณทฤษฎีพีทาโกรัส a²+b²=c² หาด้านที่ขาดของสามเหลี่ยมมุมฉาก',
+    href: '/คำนวณทฤษฎีพีทาโกรัส/',
+    icon: '📏',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณเส้นรอบวง พื้นที่วงกลม',
+    desc: 'คำนวณเส้นรอบวง พื้นที่วงกลม เส้นผ่านศูนย์กลาง และรัศมีจากค่าที่ทราบ',
+    href: '/คำนวณเส้นรอบวง/',
+    icon: '⭕',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณความชัน slope',
+    desc: 'คำนวณความชัน (slope) ของเส้นตรง จากสองจุดพร้อมสมการเส้นตรง y=mx+b',
+    href: '/คำนวณความชัน/',
+    icon: '📉',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'แปลงสัญกรณ์วิทยาศาสตร์',
+    desc: 'แปลงตัวเลขเป็นสัญกรณ์วิทยาศาสตร์ (Scientific Notation) และกลับมาเป็นตัวเลข',
+    href: '/แปลงสัญกรณ์วิทยาศาสตร์/',
+    icon: '🔬',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณตัวเลขนัยสำคัญ (Sig Fig)',
+    desc: 'คำนวณและปัดเลขนัยสำคัญ (significant figures) ให้ถูกต้องตามกฎ',
+    href: '/คำนวณตัวเลขนัยสำคัญ/',
+    icon: '🔟',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณเกรด คะแนน GPA',
+    desc: 'คำนวณเกรดจากคะแนน หาเปอร์เซ็นต์ที่ได้ และ GPA ตามระบบมหาวิทยาลัยไทย',
+    href: '/คำนวณเกรด/',
+    icon: '🎓',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณ p-value จาก Z-score / T-score',
+    desc: 'คำนวณ p-value สำหรับ z-test และ t-test (one-tail, two-tail) พร้อมตัดสินใจ H0',
+    href: '/คำนวณ-p-value/',
+    icon: '📊',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+  {
+    title: 'คำนวณช่วงความเชื่อมั่น (Confidence Interval)',
+    desc: 'คำนวณช่วงความเชื่อมั่น 90% 95% 99% สำหรับค่าเฉลี่ยของประชากร',
+    href: '/คำนวณช่วงความเชื่อมั่น/',
+    icon: '📉',
+    group: 'คณิตศาสตร์ / สถิติ',
+  },
+];
+
+const groups = [...new Set(newCalcs.map((c) => c.group))];
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: siteUrl + '/' },
+    { '@type': 'ListItem', position: 2, name: 'เครื่องคำนวณใหม่', item: pageUrl },
+  ],
+};
+
+const jsonLdItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'เครื่องคำนวณใหม่ล่าสุด — kamnuanlek.com',
+  url: pageUrl,
+  numberOfItems: newCalcs.length,
+  itemListElement: newCalcs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.title,
+    url: siteUrl + c.href,
+  })),
+};
+
+const faqData = [
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลที่ต้องการในช่องที่กำหนด แล้วกดปุ่มคำนวณ ผลลัพธ์จะแสดงทันทีพร้อมรายละเอียด' },
+  { question: 'ผลลัพธ์ที่ได้ถูกต้องแค่ไหน?', answer: 'เครื่องคำนวณใช้สูตรมาตรฐานและข้อมูลอัปเดต ผลลัพธ์เป็นการประมาณการเพื่อช่วยวางแผน ควรปรึกษาผู้เชี่ยวชาญสำหรับการตัดสินใจสำคัญ' },
+  { question: 'ข้อมูลที่ใช้คำนวณมาจากไหน?', answer: 'อิงจากกฎหมายและระเบียบปัจจุบันของประเทศไทย อัตราที่ประกาศโดยหน่วยงานรัฐ และสูตรมาตรฐานที่ใช้กันทั่วไป' },
+  { question: 'มีค่าใช้จ่ายในการใช้งานไหม?', answer: 'ใช้งานฟรีทั้งหมด ไม่ต้องสมัครสมาชิก ไม่มีค่าธรรมเนียม เครื่องคำนวณทั้งหมดบน Kamnuanlek ให้บริการฟรี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout
+  title="เครื่องคำนวณใหม่ล่าสุด 2569 — การเงิน คณิตศาสตร์ สถิติ | kamnuanlek.com"
+  description={`รวม ${newCalcs.length} เครื่องคำนวณใหม่ล่าสุด: CAGR IRR NPV ROA ROE WACC ดอกเบี้ยทบต้น มูลค่าปัจจุบัน และคณิตศาสตร์ รากที่สอง ลอการิทึม พีทาโกรัส ฟรี ใช้งานได้ทันที`}
+  canonical={pageUrl}
+  pageName="เครื่องคำนวณใหม่"
+>  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} />
+
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="mb-6 text-sm text-gray-500">
+    <ol class="flex items-center gap-1.5 flex-wrap">
+      <li><a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a></li>
+      <li class="flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-gray-900 font-medium">เครื่องคำนวณใหม่</span>
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Hero -->
+  <div class="text-center mb-10">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-medium mb-5">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+      เพิ่มใหม่ เมษายน 2569
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+      เครื่องคำนวณใหม่ล่าสุด
+    </h1>
+    <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+      รวม {newCalcs.length} เครื่องคำนวณใหม่สำหรับการเงิน ธุรกิจ คณิตศาสตร์ และสถิติ — ฟรี ใช้งานได้ทันที ไม่ต้องสมัครสมาชิก
+    </p>
+  </div>
+
+  <!-- Groups -->
+  {groups.map((group) => (
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 mb-5 pb-2 border-b border-gray-100">
+        {group}
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {newCalcs.filter((c) => c.group === group).map((calc) => (
+          <a
+            href={calc.href}
+            class="group block p-5 bg-white rounded-2xl shadow-sm hover:shadow-md border border-gray-100 hover:border-primary-200 transition-all"
+          >
+            <div class="flex items-start gap-3">
+              <span class="text-3xl flex-shrink-0">{calc.icon}</span>
+              <div class="min-w-0">
+                <h3 class="text-sm font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1">
+                  {calc.title}
+                </h3>
+                <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">{calc.desc}</p>
+              </div>
+            </div>
+            <div class="mt-3 flex items-center text-primary-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              เปิดเครื่องคำนวณ
+              <svg class="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <!-- Back to homepage -->
+  <div class="text-center pt-4 border-t border-gray-100">
+    <a href="/" class="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      ดูเครื่องคำนวณทั้งหมด
+    </a>
+  </div>
+</BaseLayout>

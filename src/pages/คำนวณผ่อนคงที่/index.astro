@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณผ่อนคงที่ (Flat Rate) 2569 — สินเชื่อรถ สินเชื่อส่วนบุคคล | Calculator Thailand';
+const pageTitle = 'คำนวณผ่อนคงที่ (Flat Rate) 2569 — สินเชื่อรถ สินเชื่อส่วนบุคคล | Kamnuanlek';
 const pageDescription = 'คำนวณค่างวดและดอกเบี้ยรวมแบบผ่อนคงที่ (Flat Rate) สำหรับสินเชื่อรถยนต์และสินเชื่อส่วนบุคคล เทียบกับอัตราดอกเบี้ยที่แท้จริง (EIR)';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนคงที่/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนคงที่">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณผ่อนคงที่ (Flat Rate) — สินเชื่อรถ สินเชื่อส่วนบุคคล
     </h1>
@@ -114,18 +112,16 @@ const jsonLdFaq = {
       <p>Flat Rate คือการคำนวณดอกเบี้ยจากเงินต้นเต็มจำนวนตลอดสัญญา ค่างวดจะเท่ากันทุกเดือน สูตร: ค่างวด = (เงินต้น + เงินต้น × flat rate × ปี) ÷ จำนวนงวด ใช้กับสินเชื่อรถและสินเชื่อส่วนบุคคลเป็นหลัก ดอกเบี้ยที่แท้จริง (EIR) จะสูงกว่า flat rate ประมาณ 1.8-1.9 เท่า</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณผ่อนคงที่/" />
     <RelatedCalculators currentHref="/คำนวณผ่อนคงที่/" />
 

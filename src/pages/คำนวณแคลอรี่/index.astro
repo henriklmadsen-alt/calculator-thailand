@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณแคลอรี่ BMR TDEE 2569 | ความต้องการแคลอรี่รายวัน ฟรี | Calculator Thailand';
+const pageTitle = 'คำนวณแคลอรี่ BMR TDEE 2569 | ความต้องการแคลอรี่รายวัน ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณแคลอรี่ BMR TDEE ออนไลน์ฟรี วางแผนน้ำหนักด้วยสูตร Mifflin-St Jeor ที่แม่นยำ พร้อมฐานข้อมูลอาหารไทย ผลลัพธ์ทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณแคลอรี่/`;
@@ -88,10 +89,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแคลอรี่">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแคลอรี่">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
@@ -389,21 +388,7 @@ const jsonLdHowTo = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณแคลอรี่/" />

@@ -1,0 +1,283 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลอการิทึม log ln log₂ ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณลอการิทึม log₁₀ (log), ลอการิทึมธรรมชาติ ln, log₂ และ logₙ ฟรี พร้อมสูตรและตัวอย่าง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลอการิทึม/`;
+
+const faqData = [
+  {
+    question: 'ลอการิทึมคืออะไร และใช้ทำอะไร?',
+    answer: 'ลอการิทึมเป็นการดำเนินการผกผันของการยกกำลัง ถ้า aⁿ = x แล้ว logₐ(x) = n ใช้ในการแก้สมการเลขชี้กำลัง วัดความเข้มของแผ่นดินไหว (Richter scale) ความดังเสียง (dB) ความเป็นกรด-ด่าง (pH) และการคำนวณดอกเบี้ยทบต้น',
+  },
+  {
+    question: 'log กับ ln ต่างกันอย่างไร?',
+    answer: 'log (หรือ log₁₀) คือลอการิทึมฐาน 10 ใช้ในวิทยาศาสตร์ทั่วไปและวิศวกรรม ส่วน ln คือลอการิทึมธรรมชาติ ฐาน e ≈ 2.71828 ใช้ในแคลคูลัส ฟิสิกส์ และชีววิทยา ทั้งสองเชื่อมกันด้วยสูตร ln(x) = log(x) / log(e) ≈ log(x) × 2.302585',
+  },
+  {
+    question: 'ทำไมลอการิทึมของ 0 หรือจำนวนลบจึงไม่มีค่า?',
+    answer: 'เพราะไม่มีเลขชี้กำลังใดที่ทำให้ a^n = 0 หรือ a^n เป็นจำนวนลบ (เมื่อ a > 0) ดังนั้นลอการิทึมของ 0 หรือจำนวนลบในระบบจำนวนจริงจึงไม่นิยาม',
+  },
+  {
+    question: 'กฎการคำนวณลอการิทึมที่ควรจำมีอะไรบ้าง?',
+    answer: 'กฎสำคัญ: (1) log(a×b) = log(a) + log(b), (2) log(a/b) = log(a) - log(b), (3) log(aⁿ) = n×log(a), (4) log_a(x) = log(x)/log(a) (เปลี่ยนฐาน), (5) log_a(a) = 1, (6) log_a(1) = 0',
+  },
+  {
+    question: 'log₂ ใช้ในด้านอะไรบ้าง?',
+    answer: 'ลอการิทึมฐาน 2 ใช้มากในวิทยาการคอมพิวเตอร์ เช่น การวิเคราะห์อัลกอริทึม Binary Search ใช้ log₂(n) ขั้นตอน การเข้ารหัสข้อมูล ทฤษฎีสารสนเทศ (Shannon entropy) และการวัดความซับซ้อนเชิงคำนวณ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลอการิทึม log ln log₂',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณลอการิทึม log และ ln',
+  description: 'ขั้นตอนการคำนวณลอการิทึมฐานต่างๆ ด้วยเครื่องคำนวณออนไลน์',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกฐานของลอการิทึม',
+      text: 'เลือกระหว่าง log₁₀ (ฐาน 10), ln (ฐาน e), log₂ (ฐาน 2) หรือ logₙ (ฐานที่กำหนดเอง)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกค่า x ที่ต้องการหาลอการิทึม',
+      text: 'พิมพ์ตัวเลข x ที่ต้องการ โดย x ต้องมากกว่า 0 เสมอ เช่น 100, 1000, หรือ 2.71828',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกค่าฐาน (สำหรับ logₙ)',
+      text: 'หากเลือก logₙ ให้กรอกฐาน b ที่ต้องการ โดย b ต้องมากกว่า 0 และไม่เท่ากับ 1',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดคำนวณและตีความผลลัพธ์',
+      text: 'กดปุ่ม "คำนวณ" ผลลัพธ์คือเลขชี้กำลังที่ต้องยกฐานเพื่อให้ได้ค่า x ตัวอย่าง: log₁₀(1000) = 3 หมายความว่า 10³ = 1000',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลอการิทึม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณลอการิทึม log, ln, log₂ และ logₙ ในหน้าเดียว</p>
+      <p class="mt-1 text-sm text-slate-700">ตรวจสอบค่า x > 0 อัตโนมัติ พร้อมสูตรเปลี่ยนฐาน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณลอการิทึม log ln log₂ ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณลอการิทึมทุกฐาน ทั้ง log₁₀ สำหรับงานวิทยาศาสตร์ ln สำหรับแคลคูลัส log₂ สำหรับคอมพิวเตอร์
+      และ logₙ สำหรับฐานที่กำหนดเอง เหมาะสำหรับนักเรียน นักศึกษา และวิศวกร
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'สสวท. (SciMath): ลอการิทึมและเลขชี้กำลัง',
+        'ECMAScript: Math.log, Math.log10, Math.log2',
+      ]}
+      assumptions={[
+        'x ต้องมากกว่า 0 เสมอ ไม่เช่นนั้นลอการิทึมไม่มีนิยาม',
+        'ฐานต้องมากกว่า 0 และไม่เท่ากับ 1',
+      ]}
+      references={[
+        {
+          label: 'SciMath: ลอการิทึมและการประยุกต์',
+          href: 'https://www.scimath.org/article-mathematics/item/11474-3',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: log10 -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) log₁₀(x) — ลอการิทึมฐาน 10</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: log₁₀(100) = 2, log₁₀(1000) = 3, log₁₀(1) = 0</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="sm:col-span-2">
+          <label for="log10-x" class="block text-sm font-medium text-gray-700 mb-1">ค่า x (x > 0)</label>
+          <input id="log10-x" type="text" inputmode="decimal" placeholder="เช่น 100" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-log10" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="log10-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="log10-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="log10-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: ln -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) ln(x) — ลอการิทึมธรรมชาติ (ฐาน e)</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: ln(e) = 1, ln(1) = 0, ln(7.389) ≈ 2</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="sm:col-span-2">
+          <label for="ln-x" class="block text-sm font-medium text-gray-700 mb-1">ค่า x (x > 0)</label>
+          <input id="ln-x" type="text" inputmode="decimal" placeholder="เช่น 2.71828" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-ln" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="ln-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="ln-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="ln-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 3: log2 -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">3) log₂(x) — ลอการิทึมฐาน 2</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: log₂(8) = 3, log₂(1024) = 10, log₂(1) = 0</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="sm:col-span-2">
+          <label for="log2-x" class="block text-sm font-medium text-gray-700 mb-1">ค่า x (x > 0)</label>
+          <input id="log2-x" type="text" inputmode="decimal" placeholder="เช่น 8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-log2" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="log2-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="log2-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="log2-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 4: logN -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">4) logₙ(x) — ลอการิทึมฐานที่กำหนดเอง</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: log₃(81) = 4, log₅(125) = 3</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="logn-x" class="block text-sm font-medium text-gray-700 mb-1">ค่า x (x > 0)</label>
+          <input id="logn-x" type="text" inputmode="decimal" placeholder="เช่น 81" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="logn-b" class="block text-sm font-medium text-gray-700 mb-1">ฐาน b (b > 0, b ≠ 1)</label>
+          <input id="logn-b" type="text" inputmode="decimal" placeholder="เช่น 3" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-logn" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="logn-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="logn-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="logn-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#logn-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">กฎลอการิทึมที่ควรจำ</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>log(a × b) = log(a) + log(b)</li>
+        <li>log(a / b) = log(a) − log(b)</li>
+        <li>log(aⁿ) = n × log(a)</li>
+        <li>เปลี่ยนฐาน: log_b(x) = ln(x) / ln(b) = log(x) / log(b)</li>
+        <li>log_a(a) = 1 และ log_a(1) = 0</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณลอการิทึม/" />
+    <RelatedCalculators currentHref="/คำนวณลอการิทึม/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const showResult = (containerId, valueId, text) => {
+    const c = document.getElementById(containerId);
+    const v = document.getElementById(valueId);
+    if (!c || !v) return;
+    v.textContent = text;
+    c.classList.remove('hidden');
+  };
+
+  document.getElementById('btn-log10')?.addEventListener('click', () => {
+    setError('log10-error', '');
+    const x = parseNum(document.getElementById('log10-x')?.value);
+    if (!Number.isFinite(x)) { setError('log10-error', 'กรุณากรอกตัวเลขที่ถูกต้อง'); return; }
+    if (x <= 0) { setError('log10-error', 'x ต้องมากกว่า 0'); return; }
+    showResult('log10-result', 'log10-result-value', `log₁₀(${x}) = ${Math.log10(x).toFixed(8).replace(/\.?0+$/, '')}`);
+  });
+
+  document.getElementById('btn-ln')?.addEventListener('click', () => {
+    setError('ln-error', '');
+    const x = parseNum(document.getElementById('ln-x')?.value);
+    if (!Number.isFinite(x)) { setError('ln-error', 'กรุณากรอกตัวเลขที่ถูกต้อง'); return; }
+    if (x <= 0) { setError('ln-error', 'x ต้องมากกว่า 0'); return; }
+    showResult('ln-result', 'ln-result-value', `ln(${x}) = ${Math.log(x).toFixed(8).replace(/\.?0+$/, '')}`);
+  });
+
+  document.getElementById('btn-log2')?.addEventListener('click', () => {
+    setError('log2-error', '');
+    const x = parseNum(document.getElementById('log2-x')?.value);
+    if (!Number.isFinite(x)) { setError('log2-error', 'กรุณากรอกตัวเลขที่ถูกต้อง'); return; }
+    if (x <= 0) { setError('log2-error', 'x ต้องมากกว่า 0'); return; }
+    showResult('log2-result', 'log2-result-value', `log₂(${x}) = ${Math.log2(x).toFixed(8).replace(/\.?0+$/, '')}`);
+  });
+
+  document.getElementById('btn-logn')?.addEventListener('click', () => {
+    setError('logn-error', '');
+    const x = parseNum(document.getElementById('logn-x')?.value);
+    const b = parseNum(document.getElementById('logn-b')?.value);
+    if (!Number.isFinite(x) || !Number.isFinite(b)) { setError('logn-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    if (x <= 0) { setError('logn-error', 'x ต้องมากกว่า 0'); return; }
+    if (b <= 0) { setError('logn-error', 'ฐาน b ต้องมากกว่า 0'); return; }
+    if (Math.abs(b - 1) < 1e-10) { setError('logn-error', 'ฐาน b ต้องไม่เท่ากับ 1'); return; }
+    const result = Math.log(x) / Math.log(b);
+    showResult('logn-result', 'logn-result-value', `log₍${b}₎(${x}) = ${result.toFixed(8).replace(/\.?0+$/, '')}`);
+  });
+</script>

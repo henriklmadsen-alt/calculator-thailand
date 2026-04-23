@@ -5,7 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
 
-const pageTitle = 'แปลงหน่วย 2569 | เมตร กิโลกรัม เซลเซียส ไร่ | เครื่องคำนวณไทย';
+const pageTitle = 'แปลงหน่วย 2569 | เมตร กิโลกรัม เซลเซียส ไร่ | Kamnuanlek';
 const pageDescription = 'แปลงหน่วยวัดออนไลน์ปี 2569 รองรับความยาว มวล อุณหภูมิ และพื้นที่ เช่น m-cm-km-ft-in-mi, kg-g-lb-oz, C-F-K, ตร.ม.-ตร.วา-ไร่-งาน-เอเคอร์ พร้อมใช้ต่อกับเครื่องคำนวณยอดนิยมได้ทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/แปลงหน่วย/`;
@@ -63,11 +63,24 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีแปลงหน่วยวัดต่างๆ',
+  description: 'ขั้นตอนการแปลงหน่วยวัด เช่น ความยาว น้ำหนัก อุณหภูมิ และพื้นที่ ระหว่างระบบเมตริกและอิมพีเรียล',
+  step: [
+    { '@type': 'HowToStep', name: 'เลือกประเภทหน่วยที่ต้องการแปลง', text: 'เลือกประเภทการแปลง เช่น ความยาว (เมตร/ฟุต/นิ้ว) น้ำหนัก (กิโลกรัม/ปอนด์) อุณหภูมิ (เซลเซียส/ฟาเรนไฮต์) หรือพื้นที่ (ตารางเมตร/ไร่/เอเคอร์)' },
+    { '@type': 'HowToStep', name: 'เลือกหน่วยต้นทาง', text: 'ระบุหน่วยที่มีอยู่แล้ว เช่น กิโลกรัม เมตร หรือเซลเซียส ตรวจสอบให้แน่ใจว่าเลือกถูกต้อง เช่น ไม่สับสนระหว่าง กิโลเมตร และ ไมล์' },
+    { '@type': 'HowToStep', name: 'กรอกค่าตัวเลข', text: 'ใส่ตัวเลขที่ต้องการแปลง เช่น 100 (กิโลกรัม) หรือ 37.5 (เซลเซียส) ระบบรองรับทศนิยมและตัวเลขขนาดใหญ่' },
+    { '@type': 'HowToStep', name: 'เลือกหน่วยปลายทาง', text: 'เลือกหน่วยที่ต้องการแปลงเป็น เช่น ปอนด์ ฟุต หรือฟาเรนไฮต์ สำหรับการแปลงอุณหภูมิ: °C × 9/5 + 32 = °F' },
+    { '@type': 'HowToStep', name: 'อ่านผลการแปลง', text: 'ระบบแสดงผลการแปลงทันที พร้อมสูตรที่ใช้ในการคำนวณ สามารถคัดลอกผลลัพธ์หรือแปลงหน่วยอื่นๆ ในครั้งเดียว' },
+  ],
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="แปลงหน่วย">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="แปลงหน่วย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">

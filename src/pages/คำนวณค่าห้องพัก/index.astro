@@ -4,8 +4,9 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าห้องพัก 2569 | เปรียบเทียบรายเดือน-รายวัน ค่ามัดจำ ค่าสาธารณูปโภค';
+const pageTitle = 'คำนวณค่าห้องพัก 2569 | เปรียบเทียบรายเดือน-รายวัน ค่ามัดจำ ค่าสาธารณูปโภค | Kamnuanlek';
 const pageDescription = 'คำนวณค่าเช่าห้องพักรายเดือนและรายวัน ค่ามัดจำ ค่าล่วงหน้า ค่าไฟ ค่าน้ำ ค่าอินเทอร์เน็ต ค่าส่วนกลาง รวมค่าใช้จ่ายทั้งหมดสำหรับผู้เช่าในไทย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าห้องพัก/`;
@@ -54,10 +55,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าห้องพัก">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">คำนวณค่าห้องพัก 2569 — เปรียบเทียบรายเดือน/รายวัน พร้อมค่าสาธารณูปโภค</p>
       <p class="mt-1 text-sm text-slate-700">คำนวณค่ามัดจำ ค่าเช่าล่วงหน้า ค่าไฟ ค่าน้ำ และค่าใช้จ่ายทั้งหมดก่อนตัดสินใจเช่า</p>
@@ -86,11 +84,11 @@ const jsonLdFaq = {
       ]}
       references={[
         {
-          label: 'คำนวณค่าไฟฟ้า — เครื่องคำนวณไทย',
+          label: 'คำนวณค่าไฟฟ้า — Kamnuanlek',
           href: '/คำนวณค่าไฟฟ้า/',
         },
         {
-          label: 'คำนวณค่าน้ำ — เครื่องคำนวณไทย',
+          label: 'คำนวณค่าน้ำ — Kamnuanlek',
           href: '/คำนวณค่าน้ำ/',
         },
       ]}
@@ -235,21 +233,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณค่าห้องพัก/" />
     <RelatedCalculators currentHref="/คำนวณค่าห้องพัก/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อช่วยประมาณการค่าใช้จ่ายห้องพักเบื้องต้น

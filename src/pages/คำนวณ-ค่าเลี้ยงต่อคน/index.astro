@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculateCateringPerPerson } from '../../lib/catering-per-person-cost-calculator';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าเลี้ยงต่อคน ฟรี | Calculator Thailand';
+const pageTitle = 'คำนวณค่าเลี้ยงต่อคน ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณค่าเลี้ยงต่อคนแขก โดยหารงบประมาณเลี้ยงรวมด้วยจำนวนแขก ได้ผลลัพธ์ทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ค่าเลี้ยงต่อคน/`;
@@ -13,6 +14,16 @@ const faqData = [
     answer: 'ขึ้นอยู่กับประเภทของงาน เช่น งานแบบจำนวน 200-800 บาทต่อคนสำหรับพิธีเลี้ยงในร่มหรือพื้นที่จำกัด'
   }
 ];
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 
 const jsonLdWebApp = {
   '@context': 'https://schema.org',
@@ -28,9 +39,7 @@ const jsonLdWebApp = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเลี้ยงต่อคน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
       คำนวณค่าเลี้ยงต่อคน
     </h1>

@@ -4,9 +4,10 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าน้ำประปา 2569 | Calculator Thailand';
-const pageDescription = 'ค่าน้ำประปา MWA PWA ท้องถิ่น อัตราค่าน้ำ หน่วยใช้ ตารางสรุป 2569 ฟรี ตรวจสอบ ตอนนี้';
+const pageTitle = 'คำนวณค่าน้ำประปา MWA PWA 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณค่าน้ำประปา MWA และ PWA 2569 ฟรี — ใส่หน่วยที่ใช้ รู้ค่าน้ำที่ต้องจ่ายแม่นยำตามอัตราล่าสุด';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าน้ำ/`;
 
@@ -90,10 +91,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าน้ำ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าน้ำ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -325,21 +324,38 @@ const jsonLdHowTo = {
       </p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณค่าน้ำ</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อคำนวณค่าน้ำท่อ:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ไม่เข้าใจหน่วย "ลบ.ม." (ลูกบาศก์เมตร)</strong><br/>
+          บ้านใช้น้ำ 10 ลบ.ม./เดือน = 10,000 ลิตร (ใหญ่มาก) คน 1 คน ควรใช้ 5-10 ลบ.ม./เดือน 1 ลบ.ม. = 1,000 ลิตร ดูหน่วยจากใบแจกแจง MWA/PWA
+        </li>
+        <li>
+          <strong>ไม่รู้ว่ามีค่า Fixed Charge (ค่าบำรุง)</strong><br/>
+          ใช้น้ำ 8 ลบ.ม. × อัตราน้ำ = ได้เลขหนึ่ง แต่จ่ายจริงมากกว่า เพราะมีค่าบำรุง (~25-30 บาท/เดือน) ค่าน้ำทั้งหมด = (ลบ.ม. × อัตรา) + ค่าบำรุง
+        </li>
+        <li>
+          <strong>ใช้อัตราน้ำแรกเรียว (Tiered Pricing) ผิด</strong><br/>
+          0-10 ลบ.ม. = 5 บาท/ลบ.ม., 11-20 = 7 บาท/ลบ.ม., 20+ = 9 บาท/ลบ.ม. ถ้าใช้ 25 ลบ.ม. ไม่ใช่ 25 × 9 = (10 × 5) + (10 × 7) + (5 × 9) = 165 บาท แยกคำนวณตามชั้นอัตรา
+        </li>
+        <li>
+          <strong>ไม่เข้าใจสูตรการอ่านมิเตอร์</strong><br/>
+          มิเตอร์เดือนที่แล้ว 1,234 ลบ.ม. เดือนนี้ 1,245 ลบ.ม. ใช้น้ำ = 1,245 - 1,234 = 11 ลบ.ม. (ง่าย ตรงไปตรงมา)
+        </li>
+        <li>
+          <strong>ลืมว่ามีค่าเสียหาย ค่าปรับ ถ้าไม่จ่ายหรือมิเตอร์เสีย</strong><br/>
+          ไม่จ่ายค่าน้ำ 2-3 เดือน MWA/PWA จะคิดเสียหาย ดอกเบี้ยจำนวนมาก จ่ายค่าน้ำตรงเวลา หากมีปัญหาติดต่อ MWA/PWA เพื่อหารือ
+        </li>
+      </ul>
     </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อช่วยประมาณการค่าน้ำเบื้องต้นสำหรับการวางแผนงบประมาณ

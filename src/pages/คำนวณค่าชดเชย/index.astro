@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าชดเชย ปี 2569 ตามพ.ร.บ.คุ้มครองแรงงาน มาตรา 118 เลิกจ้าง | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณค่าชดเชยเลิกจ้างตามพ.ร.บ.คุ้มครองแรงงาน พ.ศ.2541 แก้ไขปี 2560 และ 2562 มาตรา 118 ตามอายุงาน ตั้งแต่ 30 วัน ถึง 400 วัน อัปเดตปี 2569';
+const pageTitle = 'คำนวณค่าชดเชยเลิกจ้าง 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณค่าชดเชยเลิกจ้าง 2569 ฟรี ตามมาตรา 118 — ใส่เงินเดือนและอายุงาน รู้ค่าชดเชยที่ได้รับตามกฎหมายคุ้มครองแรงงานทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าชดเชย/`;
 
@@ -26,6 +27,11 @@ const faqData = [
     question: 'ลูกจ้างอายุงาน 20 ปีขึ้นไปได้ค่าชดเชยกี่วัน?',
     answer: 'ตามการแก้ไขปี 2562 ลูกจ้างที่มีอายุงานตั้งแต่ 20 ปีขึ้นไปมีสิทธิ์ได้รับค่าชดเชยไม่น้อยกว่า 400 วัน (เพิ่มจาก 300 วันของกฎหมายเดิม)',
   },
+,
+  { question: 'ค่าชดเชยตามกฎหมายแรงงานคำนวณอย่างไร?', answer: 'ทำงาน 120 วัน-1 ปี: 30 วัน | 1-3 ปี: 90 วัน | 3-6 ปี: 180 วัน | 6-10 ปี: 240 วัน | 10-20 ปี: 300 วัน | 20 ปีขึ้นไป: 400 วัน (ล่าสุดแก้ไข ปี 2562) คิดจากค่าจ้างอัตราสุดท้าย' },
+  { question: 'เลิกจ้างเพราะปิดกิจการได้รับค่าชดเชยเพิ่มพิเศษไหม?', answer: 'ใช่ กรณีนายจ้างย้ายสถานประกอบการ ลูกจ้างได้รับค่าชดเชยพิเศษเพิ่มอีก 50% ของค่าชดเชยปกติ กรณีเลิกจ้างโดยไม่แจ้งล่วงหน้า 30-60 วัน ลูกจ้างได้รับค่าชดเชยแทนการบอกกล่าวล่วงหน้าด้วย' },
+  { question: 'ค่าชดเชยเสียภาษีไหม?', answer: 'ค่าชดเชยได้รับการยกเว้นภาษีสำหรับส่วนที่ไม่เกิน 300 วันสุดท้าย และต้องคำนวณตามอายุงาน ส่วนเกินต้องนำมารวมคำนวณภาษีหักค่าใช้จ่ายได้ 50% แต่ไม่เกิน 100,000 บาท' },
+  { question: 'นายจ้างไม่จ่ายค่าชดเชยต้องทำอย่างไร?', answer: 'ยื่นเรื่องที่สำนักงานสวัสดิการและคุ้มครองแรงงาน (กรมสวัสดิการและคุ้มครองแรงงาน) ในพื้นที่ หรือฟ้องศาลแรงงาน มีอายุความ 2 ปีนับจากวันที่ถูกเลิกจ้าง' }
 ];
 
 const jsonLdWebApp = {
@@ -80,10 +86,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าชดเชย">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าชดเชย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -194,19 +198,7 @@ const jsonLdHowTo = {
     <RelatedArticles currentHref="/คำนวณค่าชดเชย/" />
     <RelatedCalculators currentHref="/คำนวณค่าชดเชย/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณตาม พ.ร.บ.คุ้มครองแรงงานขั้นต่ำ กรณีเลิกจ้างอาจมีสิทธิ์ได้รับค่าบอกกล่าวล่วงหน้าและค่าเสียหายเพิ่มเติม ควรปรึกษาทนายความด้านแรงงาน

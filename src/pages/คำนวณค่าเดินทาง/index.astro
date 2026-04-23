@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าเดินทาง 2569 | ประมาณงบเที่ยวต่างประเทศ ตั๋ว ที่พัก อาหาร | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณค่าเดินทางออนไลน์ ประมาณงบเที่ยวต่างประเทศ รวมตั๋วเครื่องบิน ที่พัก อาหาร ขนส่ง ประกัน สำหรับคนไทย อัปเดตปี 2569';
+const pageTitle = 'คำนวณงบเที่ยวต่างประเทศ 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเดินทางและงบเที่ยวต่างประเทศ 2569 ฟรี — ประมาณตั๋ว ที่พัก อาหาร ขนส่ง รู้งบรวมก่อนจองทริป';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าเดินทาง/`;
 
@@ -66,9 +67,7 @@ const jsonLdBreadcrumb = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเดินทาง">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -342,17 +341,7 @@ const jsonLdBreadcrumb = {
     <RelatedArticles currentHref="/คำนวณค่าเดินทาง/" />
     <RelatedCalculators currentHref="/คำนวณค่าเดินทาง/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
       <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งอ้างอิง</h2>

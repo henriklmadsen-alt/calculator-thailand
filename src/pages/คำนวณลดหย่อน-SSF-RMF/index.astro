@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณลดหย่อน SSF RMF 2569 | กองทุนเพื่อการออม ลดภาษี | Calculator Thailand';
+const pageTitle = 'คำนวณลดหย่อน SSF RMF 2569 | กองทุนเพื่อการออม ลดภาษี | Kamnuanlek';
 const pageDescription = 'คำนวณค่าลดหย่อน SSF (กองทุนรวมเพื่อการออม) และ RMF (กองทุนรวมเพื่อการเลี้ยงชีพ) สูงสุด 200,000 และ 500,000 บาท อัปเดตปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณลดหย่อน-SSF-RMF/`;
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อน SSF/RMF">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">SSF สูงสุด 200,000 บาท | RMF รวมกลุ่มสูงสุด 500,000 บาท</p>
       <p class="mt-1 text-sm text-slate-700">อัปเดตเกณฑ์ปี 2569</p>
@@ -149,17 +147,7 @@ const jsonLdFaq = {
       <p class="mt-3"><strong>RMF (Retirement Mutual Fund)</strong> หรือกองทุนรวมเพื่อการเลี้ยงชีพ เป็นกองทุนสำหรับออมเงินเพื่อเกษียณอายุ อยู่ในกลุ่มเพดานรวม 500,000 บาท (รวมกับ PVD กบข. และประกันบำนาญ)</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณลดหย่อน-SSF-RMF/" />
     <RelatedCalculators currentHref="/คำนวณลดหย่อน-SSF-RMF/" />

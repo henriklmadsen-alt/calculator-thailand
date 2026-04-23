@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณลดหย่อนบุตร 2569 | 60,000 บาท/คน ลูกคนที่ 2+ เกิดปี 2561 | Calculator Thailand';
+const pageTitle = 'คำนวณลดหย่อนบุตร 2569 | 60,000 บาท/คน ลูกคนที่ 2+ เกิดปี 2561 | Kamnuanlek';
 const pageDescription = 'คำนวณค่าลดหย่อนบุตร 60,000 บาทต่อคน บุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 ได้รับ 60,000 บาทเพิ่มเติม ตามกฎหมายภาษีไทยปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณลดหย่อนบุตร/`;
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนบุตร">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">บุตรคนที่ 2+ เกิดปี 2561 ได้รับลดหย่อนเพิ่มอีก 60,000 บาท</p>
       <p class="mt-1 text-sm text-slate-700">อัปเดตเกณฑ์ปี 2569</p>
@@ -128,17 +126,7 @@ const jsonLdFaq = {
       </ul>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณลดหย่อนบุตร/" />
     <RelatedCalculators currentHref="/คำนวณลดหย่อนบุตร/" />

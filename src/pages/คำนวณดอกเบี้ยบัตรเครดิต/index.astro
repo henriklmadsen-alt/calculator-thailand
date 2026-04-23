@@ -3,6 +3,8 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
 interface Props {
   pageTitleOverride?: string;
@@ -28,7 +30,7 @@ const {
   relatedHrefOverride,
 } = Astro.props;
 
-const pageTitle = pageTitleOverride || 'คำนวณ ดอกเบี้ยบัตรเครดิต ปี 2569 | รู้ดอกเบี้ยและยอดคงค้างก่อนจ่ายจริง | เครื่องคำนวณไทย';
+const pageTitle = pageTitleOverride || 'คำนวณ ดอกเบี้ยบัตรเครดิต ปี 2569 | รู้ดอกเบี้ยและยอดคงค้างก่อนจ่ายจริง | Kamnuanlek';
 const pageDescription = pageDescriptionOverride || 'คำนวณดอกเบี้ยบัตรเครดิตปี 2569 ตามเกณฑ์ ธปท. แบบรายวัน เห็นดอกเบี้ยก่อนครบกำหนด หลังชำระ และยอดคงค้างรอบถัดไป พร้อมยอดชำระขั้นต่ำ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = canonicalPathOverride ? `${siteUrl}${canonicalPathOverride}` : `${siteUrl}/คำนวณดอกเบี้ยบัตรเครดิต/`;
@@ -56,6 +58,11 @@ const faqData = [
     question: 'เบิกเงินสดจากบัตรเครดิตมีค่าใช้จ่ายอะไรเพิ่ม?',
     answer: 'มีค่าธรรมเนียมเบิกเงินสดไม่เกิน 3% ของยอดเบิก และมี VAT 7% บนค่าธรรมเนียมดังกล่าว รวมถึงดอกเบี้ยที่เริ่มคิดตั้งแต่วันเบิกเงินสด',
   },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
 ];
 
 const jsonLdWebApp = {
@@ -80,11 +87,24 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณดอกเบี้ยบัตรเครดิต',
+  description: 'ขั้นตอนการคำนวณดอกเบี้ยบัตรเครดิต กรณีจ่ายขั้นต่ำหรือผ่อนชำระ ตามประกาศธนาคารแห่งประเทศไทย',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุยอดหนี้คงเหลือ', text: 'กรอกยอดหนี้บัตรเครดิตที่ค้างชำระ (Statement Balance) จากใบแจ้งยอด ยอดนี้คือฐานในการคำนวณดอกเบี้ย' },
+    { '@type': 'HowToStep', name: 'ตรวจสอบอัตราดอกเบี้ย', text: 'อัตราดอกเบี้ยบัตรเครดิตในไทยสูงสุดไม่เกิน 16% ต่อปี (ตามประกาศ ธปท. 2563) ตรวจสอบอัตราของบัตรคุณจากหลังบัตรหรือใบแจ้งยอด' },
+    { '@type': 'HowToStep', name: 'กรอกยอดชำระต่อเดือน', text: 'ระบุจำนวนที่ตั้งใจจะชำระต่อเดือน หากจ่ายขั้นต่ำ (5-10% ของยอด) ดอกเบี้ยจะสูงมาก แนะนำจ่ายมากกว่าขั้นต่ำเพื่อลดภาระดอกเบี้ย' },
+    { '@type': 'HowToStep', name: 'คำนวณดอกเบี้ยรายวัน', text: 'สูตร: ดอกเบี้ยต่อวัน = ยอดหนี้ × (อัตราดอกเบี้ยต่อปี ÷ 365) ตัวอย่าง: หนี้ 50,000 บาท อัตรา 16%/ปี = 50,000 × (16/365/100) = 21.92 บาท/วัน' },
+    { '@type': 'HowToStep', name: 'ดูระยะเวลาปลดหนี้', text: 'ระบบแสดงจำนวนเดือนที่ต้องใช้ปลดหนี้ ดอกเบี้ยรวมทั้งหมด และเปรียบเทียบกรณีจ่ายขั้นต่ำ vs จ่ายเต็มจำนวน ใช้วางแผนปิดหนี้ให้เร็วขึ้น' },
+  ],
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageName}>
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageName}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -295,6 +315,15 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="credit-card"
+      affiliateUrl="/go/uob-tmrw/"
+      partnerName="UOB TMRW"
+      ctaText="สมัครบัตร UOB TMRW"
+      subtext="บัตรเครดิตดิจิทัล สิทธิพิเศษมากมาย"
+    />
+
     <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
 
     <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
@@ -323,21 +352,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref={relatedHref} />
     <RelatedCalculators currentHref={relatedHref} />
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลคำนวณนี้เป็นค่าประมาณเพื่อวางแผนการเงินเท่านั้น เงื่อนไขจริงอาจต่างกันตามผู้ออกบัตรและรายการใช้จ่ายของแต่ละคน
@@ -528,6 +543,7 @@ const jsonLdFaq = {
 
       resultsDiv.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       submitBtn.disabled = false;
       submitBtn.textContent = 'คำนวณดอกเบี้ย';
       trackCalculatorComplete('credit_card_interest');

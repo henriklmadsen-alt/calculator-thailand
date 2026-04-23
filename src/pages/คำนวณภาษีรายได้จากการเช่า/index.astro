@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีรายได้จากการให้เช่า 2569 | 40(5) เหมา 30% หรือจริง | Calculator Thailand';
-const pageDescription = 'คำนวณภาษีรายได้จากการให้เช่าทรัพย์สิน ประเภท 40(5) เปรียบเทียบหักค่าใช้จ่ายเหมา 30% กับค่าใช้จ่ายจริง พร้อมภาษีหัก ณ ที่จ่าย 5% ปี 2569';
+const pageTitle = 'คำนวณภาษีรายได้จากการให้เช่า 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีให้เช่าทรัพย์สิน 40(5) 2569 ฟรี — เปรียบเทียบหักเหมา 30% กับจริง รู้ว่าแบบไหนประหยัดกว่า พร้อมภาษีหัก ณ ที่จ่าย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีรายได้จากการเช่า/`;
 
@@ -56,10 +57,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีรายได้จากการเช่า">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">สำหรับเจ้าของทรัพย์สินให้เช่า</p>
       <p class="mt-1 text-sm text-slate-700">รายได้ประเภท 40(5) หักค่าใช้จ่ายเหมา 30% หรือตามจริง</p>
@@ -173,18 +171,16 @@ const jsonLdFaq = {
       </ol>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณภาษีรายได้จากการเช่า/" />
     <RelatedCalculators currentHref="/คำนวณภาษีรายได้จากการเช่า/" />
 

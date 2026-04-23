@@ -1,0 +1,339 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ p-value จาก Z-score และ T-score ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณ p-value สำหรับ z-test และ t-test (one-tail, two-tail) ใช้ในงานวิจัยและสถิติ ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-p-value/`;
+
+const faqData = [
+  {
+    question: 'p-value คืออะไร และตีความอย่างไร?',
+    answer: 'p-value คือความน่าจะเป็นที่จะได้ผลลัพธ์รุนแรงเท่านี้หรือรุนแรงกว่า ถ้าสมมติฐานหลัก (H₀) เป็นจริง ถ้า p < 0.05 มักถือว่ามีนัยสำคัญทางสถิติ (significant) แต่ p-value ไม่ได้บอกขนาดผล (effect size) หรือความสำคัญในทางปฏิบัติ',
+  },
+  {
+    question: 'Z-test กับ T-test ต่างกันอย่างไร?',
+    answer: 'Z-test ใช้เมื่อทราบค่าเบี่ยงเบนมาตรฐานของประชากร หรือตัวอย่างมีขนาดใหญ่ (n > 30) ส่วน T-test ใช้เมื่อไม่ทราบค่าเบี่ยงเบนมาตรฐานของประชากรหรือตัวอย่างเล็ก T-distribution มีหางหนากว่า Normal distribution ยิ่ง df น้อย ยิ่งหนา',
+  },
+  {
+    question: 'One-tail กับ Two-tail test ต่างกันอย่างไร?',
+    answer: 'One-tail test ทดสอบว่าค่าเฉลี่ยมากกว่าหรือน้อยกว่าค่าอ้างอิง (ทิศทางเดียว) เช่น H₁: μ > μ₀ ส่วน Two-tail test ทดสอบว่าค่าเฉลี่ยแตกต่างจากค่าอ้างอิง (ทั้งสองทิศ) เช่น H₁: μ ≠ μ₀ Two-tail มี p-value = 2 × one-tail',
+  },
+  {
+    question: 'ระดับนัยสำคัญ 0.05 หมายความว่าอะไร?',
+    answer: 'ระดับนัยสำคัญ (α = 0.05) หมายถึงยอมรับความเสี่ยง 5% ที่จะปฏิเสธสมมติฐานหลักทั้งที่เป็นจริง (Type I error) ถ้า p < 0.05 ปฏิเสธ H₀ ถ้า p ≥ 0.05 ยอมรับ H₀ งานวิจัยทางการแพทย์บางอย่างใช้ α = 0.01 เพื่อความเข้มงวดมากขึ้น',
+  },
+  {
+    question: 'Degrees of freedom (df) คืออะไร?',
+    answer: 'Degrees of freedom (df) คือจำนวนค่าที่เป็นอิสระในการคำนวณสถิติ สำหรับ one-sample t-test: df = n - 1 สำหรับ two-sample t-test: df = n₁ + n₂ - 2 ค่า df ส่งผลต่อรูปร่างของ t-distribution ยิ่ง df มาก ยิ่งใกล้เคียง Normal distribution',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ p-value จาก Z-score และ T-score',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณ p-value สำหรับการทดสอบสมมติฐาน',
+  description: 'ขั้นตอนการคำนวณ p-value จาก z-score หรือ t-statistic สำหรับ one-tail และ two-tail test',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกประเภทการทดสอบ',
+      text: 'เลือก Z-test สำหรับตัวอย่างขนาดใหญ่หรือทราบ σ ของประชากร หรือ T-test สำหรับตัวอย่างขนาดเล็ก',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกค่า test statistic',
+      text: 'สำหรับ Z-test กรอก z-score เช่น 1.96 สำหรับ T-test กรอก t-statistic และ degrees of freedom',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เลือก one-tail หรือ two-tail',
+      text: 'เลือก one-tail ถ้าสมมติฐานทดแทนระบุทิศทาง (> หรือ <) เลือก two-tail ถ้าสมมติฐานทดแทนระบุว่าแตกต่าง (≠)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'อ่านและตีความ p-value',
+      text: 'p < 0.05 = มีนัยสำคัญทางสถิติ, p < 0.01 = มีนัยสำคัญสูง, p ≥ 0.05 = ไม่มีนัยสำคัญทางสถิติ',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-p-value">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณ p-value สำหรับ Z-test และ T-test</p>
+      <p class="mt-1 text-sm text-slate-700">รองรับ one-tail และ two-tail พร้อมตีความผลทางสถิติ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ p-value จาก Z-score และ T-score ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณ p-value สำหรับการทดสอบสมมติฐานทางสถิติ ทั้ง Z-test และ T-test
+      รองรับทั้ง one-tail และ two-tail พร้อมแปลผลว่ามีนัยสำคัญทางสถิติหรือไม่
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'Abramowitz & Stegun: Error function approximation',
+        'สถิติศาสตร์มหาวิทยาลัยไทย: การทดสอบสมมติฐาน',
+      ]}
+      assumptions={[
+        'Z-test ใช้การประมาณ erf ด้วยสูตร Horner polynomial (ความคลาดเคลื่อน < 1.5 × 10⁻⁷)',
+        'T-test ใช้ normalizing approximation สำหรับ df ≥ 3',
+      ]}
+      references={[
+        {
+          label: 'NIST: Normal Distribution CDF',
+          href: 'https://www.itl.nist.gov/div898/handbook/eda/section3/eda3661.htm',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: Z-test -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) Z-test p-value</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: z = 1.96, two-tail → p ≈ 0.05 (ระดับนัยสำคัญ 5%)</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="z-score" class="block text-sm font-medium text-gray-700 mb-1">Z-score</label>
+          <input id="z-score" type="text" inputmode="decimal" placeholder="เช่น 1.96" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="z-tail" class="block text-sm font-medium text-gray-700 mb-1">ประเภท</label>
+          <select id="z-tail" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="two">Two-tail (H₁: μ ≠ μ₀)</option>
+            <option value="one">One-tail (H₁: μ > μ₀)</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <button id="btn-z" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="z-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="z-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="z-pvalue" class="text-xl font-bold text-primary-700">-</p>
+        <p id="z-interp" class="text-sm font-semibold">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: T-test -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) T-test p-value</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: t = 2.5, df = 10, two-tail → p ≈ 0.031</p>
+      <div class="grid gap-3 sm:grid-cols-4">
+        <div>
+          <label for="t-score" class="block text-sm font-medium text-gray-700 mb-1">T-statistic</label>
+          <input id="t-score" type="text" inputmode="decimal" placeholder="เช่น 2.5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="t-df" class="block text-sm font-medium text-gray-700 mb-1">df (n-1)</label>
+          <input id="t-df" type="text" inputmode="numeric" placeholder="เช่น 10" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="t-tail" class="block text-sm font-medium text-gray-700 mb-1">ประเภท</label>
+          <select id="t-tail" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="two">Two-tail</option>
+            <option value="one">One-tail</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <button id="btn-t" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="t-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="t-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="t-pvalue" class="text-xl font-bold text-primary-700">-</p>
+        <p id="t-interp" class="text-sm font-semibold">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#t-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">เกณฑ์ตีความ p-value</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">p-value</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">การตีความ</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="px-4 py-2">p &lt; 0.001</td><td class="px-4 py-2">มีนัยสำคัญสูงมาก (***)</td></tr>
+            <tr><td class="px-4 py-2">p &lt; 0.01</td><td class="px-4 py-2">มีนัยสำคัญสูง (**)</td></tr>
+            <tr><td class="px-4 py-2">p &lt; 0.05</td><td class="px-4 py-2">มีนัยสำคัญทางสถิติ (*)</td></tr>
+            <tr><td class="px-4 py-2">p ≥ 0.05</td><td class="px-4 py-2">ไม่มีนัยสำคัญทางสถิติ (ns)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณ-p-value/" />
+    <RelatedCalculators currentHref="/คำนวณ-p-value/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  function erf(x) {
+    const t = 1 / (1 + 0.3275911 * Math.abs(x));
+    const poly = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429))));
+    return (1 - poly * Math.exp(-x * x)) * Math.sign(x);
+  }
+
+  function normCDF(z) {
+    return 0.5 * (1 + erf(z / Math.sqrt(2)));
+  }
+
+  function interpretPValue(p) {
+    if (p < 0.001) return { text: 'มีนัยสำคัญสูงมาก (p < 0.001) ***', color: 'text-green-700' };
+    if (p < 0.01) return { text: 'มีนัยสำคัญสูง (p < 0.01) **', color: 'text-green-600' };
+    if (p < 0.05) return { text: 'มีนัยสำคัญทางสถิติ (p < 0.05) *', color: 'text-yellow-700' };
+    return { text: 'ไม่มีนัยสำคัญทางสถิติ (p ≥ 0.05)', color: 'text-red-600' };
+  }
+
+  document.getElementById('btn-z')?.addEventListener('click', () => {
+    setError('z-error', '');
+    const z = parseNum(document.getElementById('z-score')?.value);
+    const tail = document.getElementById('z-tail')?.value || 'two';
+    if (!Number.isFinite(z)) { setError('z-error', 'กรุณากรอก Z-score ที่ถูกต้อง'); return; }
+    const pOneTail = 1 - normCDF(Math.abs(z));
+    const p = tail === 'two' ? 2 * pOneTail : pOneTail;
+    const { text, color } = interpretPValue(p);
+    setText('z-pvalue', `p-value = ${p.toFixed(6)}`);
+    const interpEl = document.getElementById('z-interp');
+    if (interpEl) { interpEl.textContent = text; interpEl.className = `text-sm font-semibold ${color}`; }
+    document.getElementById('z-result')?.classList.remove('hidden');
+  });
+
+  // T-distribution approximation using Cornish-Fisher / normalizing transform
+  function tCDF(t, df) {
+    // Use approximation: normalize t to z for large df, or use beta incomplete function approx
+    if (df >= 30) {
+      // For large df, approximate with normal
+      return normCDF(t);
+    }
+    // Use Abramowitz & Stegun approximation for t-distribution
+    // p(T <= t) via regularized incomplete beta function approximation
+    const x = df / (df + t * t);
+    // Incomplete beta using continued fraction (simple approximation)
+    // I_x(a, b) where a = df/2, b = 0.5
+    const a = df / 2;
+    const b = 0.5;
+    const betaInc = incompleteBeta(x, a, b);
+    if (t >= 0) {
+      return 1 - betaInc / 2;
+    } else {
+      return betaInc / 2;
+    }
+  }
+
+  function lnGamma(z) {
+    // Lanczos approximation
+    const g = 7;
+    const c = [0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lnGamma(1 - z);
+    z -= 1;
+    let x = c[0];
+    for (let i = 1; i < g + 2; i++) x += c[i] / (z + i);
+    const t2 = z + g + 0.5;
+    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t2) - t2 + Math.log(x);
+  }
+
+  function incompleteBeta(x, a, b) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    const lbeta = lnGamma(a) + lnGamma(b) - lnGamma(a + b);
+    const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lbeta) / a;
+    // continued fraction
+    let result = 0;
+    const maxIter = 200;
+    const eps = 3e-7;
+    let aa = 1, b1 = 1, c = 1, d = 1 - (a + b) * x / (a + 1);
+    if (Math.abs(d) < 1e-30) d = 1e-30;
+    d = 1 / d;
+    result = d;
+    for (let m = 1; m <= maxIter; m++) {
+      let m2 = 2 * m;
+      let num = m * (b - m) * x / ((a + m2 - 1) * (a + m2));
+      d = 1 + num * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + num / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d; result *= d * c;
+      num = -(a + m) * (a + b + m) * x / ((a + m2) * (a + m2 + 1));
+      d = 1 + num * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + num / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d;
+      const delta = d * c;
+      result *= delta;
+      if (Math.abs(delta - 1) < eps) break;
+    }
+    return front * result;
+  }
+
+  document.getElementById('btn-t')?.addEventListener('click', () => {
+    setError('t-error', '');
+    const t = parseNum(document.getElementById('t-score')?.value);
+    const df = parseInt((document.getElementById('t-df')?.value || '').trim(), 10);
+    const tail = document.getElementById('t-tail')?.value || 'two';
+    if (!Number.isFinite(t)) { setError('t-error', 'กรุณากรอก T-statistic ที่ถูกต้อง'); return; }
+    if (!Number.isFinite(df) || df < 1) { setError('t-error', 'Degrees of freedom ต้องเป็นจำนวนเต็มมากกว่า 0'); return; }
+    const cdf = tCDF(t, df);
+    const pOneTail = t >= 0 ? 1 - cdf : cdf;
+    const p = tail === 'two' ? 2 * Math.min(pOneTail, 1 - pOneTail) : pOneTail;
+    const pClamped = Math.max(0, Math.min(1, p));
+    const { text, color } = interpretPValue(pClamped);
+    setText('t-pvalue', `p-value = ${pClamped.toFixed(6)}`);
+    const interpEl = document.getElementById('t-interp');
+    if (interpEl) { interpEl.textContent = text; interpEl.className = `text-sm font-semibold ${color}`; }
+    document.getElementById('t-result')?.classList.remove('hidden');
+  });
+</script>

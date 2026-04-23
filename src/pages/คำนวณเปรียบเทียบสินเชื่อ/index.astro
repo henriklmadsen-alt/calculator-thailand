@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเปรียบเทียบสินเชื่อ 2569 — เลือกข้อเสนอที่คุ้มที่สุด | Calculator Thailand';
+const pageTitle = 'คำนวณเปรียบเทียบสินเชื่อ 2569 — เลือกข้อเสนอที่คุ้มที่สุด | Kamnuanlek';
 const pageDescription = 'เปรียบเทียบสินเชื่อ 2 ข้อเสนอพร้อมกัน คำนวณค่างวด ดอกเบี้ยรวม และต้นทุนแท้จริง (EIR) ช่วยตัดสินใจเลือกสินเชื่อบ้าน รถ หรือส่วนบุคคลที่ประหยัดที่สุด';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเปรียบเทียบสินเชื่อ/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเปรียบเทียบสินเชื่อ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณเปรียบเทียบสินเชื่อ — หาข้อเสนอที่คุ้มที่สุด
     </h1>
@@ -162,18 +160,16 @@ const jsonLdFaq = {
       <p>การเปรียบเทียบสินเชื่อควรดูที่ต้นทุนรวมทั้งหมด ไม่ใช่แค่ค่างวดรายเดือน ปัจจัยที่ควรพิจารณา ได้แก่ อัตราดอกเบี้ยที่แท้จริง (EIR) ค่าธรรมเนียมแรกเข้า ค่าธรรมเนียมปิดก่อนกำหนด และเงื่อนไขพิเศษช่วงต้น</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณเปรียบเทียบสินเชื่อ/" />
     <RelatedCalculators currentHref="/คำนวณเปรียบเทียบสินเชื่อ/" />
 

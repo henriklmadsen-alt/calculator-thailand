@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่าเบี้ยประกันภัยพืชผลการเกษตร | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันพืชผล ข้าว อ้อย มัน ค่าชดเชยจากภัยธรรมชาติ ประกันภัยเกษตร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0498-ประกันพืชผล/`;
+const faqData = [
+  { question: 'ประกันภัยข้าวนาปีคุ้มครองอะไรบ้าง?', answer: 'ประกันภัยข้าวนาปีคุ้มครองภัยน้ำท่วม ฝนแล้ง พายุ ลูกเห็บ ไฟไหม้ แมลงศัตรูพืช และโรคพืช วงเงินคุ้มครอง 1,190 บาท/ไร่ เบี้ยประกัน 80-100 บาท/ไร่' },
+  { question: 'รัฐบาลช่วยเหลือค่าเบี้ยประกันเกษตรกรไหม?', answer: 'รัฐบาลสนับสนุนค่าเบี้ยประกันข้าว ระดับ 1 (Basic) รัฐอุดหนุน 100% เกษตรกรไม่ต้องจ่าย ระดับ 2 (Plus) รัฐอุดหนุน 60% เกษตรกรจ่าย 40% ของเบี้ย' },
+  { question: 'สมัครประกันภัยพืชผลได้ที่ไหน?', answer: 'สมัครผ่าน ธ.ก.ส. ทุกสาขา หรือบริษัทประกันภัยที่ร่วมโครงการ เช่น อาคเนย์ประกันภัย เมืองไทยประกันภัย ต้องสมัครก่อนปลูก หรือภายใน 30 วันหลังปลูก' },
+  { question: 'เรียกร้องค่าสินไหมทดแทนต้องทำอะไรบ้าง?', answer: 'แจ้งความเสียหายต่อบริษัทประกันภัยหรือ ธ.ก.ส. ภายใน 30 วัน หลังเกิดความเสียหาย มีเจ้าหน้าที่ประเมิน จ่ายชดเชยตามสัดส่วนความเสียหายที่ประเมินได้' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเบี้ยประกันภัยพืชผลการเกษตร">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าเบี้ยประกันภัยพืชผล</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณค่าเบี้ยประกันพืชผลและวงเงินคุ้มครองรวม</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="crop_ins_area" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่ทำประกัน (ไร่)</label><input type="number" id="crop_ins_area" min="1" placeholder="เช่น 20" value="20" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="premium_per_rai" class="block text-sm font-medium text-gray-700 mb-1">เบี้ยประกันต่อไร่ (บาท)</label><input type="text" id="premium_per_rai" inputmode="decimal" placeholder="เช่น 90" value="90" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="govt_subsidy_pct" class="block text-sm font-medium text-gray-700 mb-1">ส่วนลดรัฐบาล (%)</label><input type="text" id="govt_subsidy_pct" inputmode="decimal" placeholder="เช่น 60" value="60" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="coverage_per_rai" class="block text-sm font-medium text-gray-700 mb-1">วงเงินคุ้มครองต่อไร่ (บาท)</label><input type="text" id="coverage_per_rai" inputmode="decimal" placeholder="เช่น 1190" value="1190" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">เบี้ยที่เกษตรกรจ่ายจริง</p><p id="farmer_premium" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3"><p class="text-sm text-gray-600">วงเงินคุ้มครองรวม</p><p id="total_coverage" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const area = parseFloat((document.getElementById('crop_ins_area') as HTMLInputElement).value) || 0;
+      const premiumRai = parseFloat((document.getElementById('premium_per_rai') as HTMLInputElement).value) || 0;
+      const subsidyPct = parseFloat((document.getElementById('govt_subsidy_pct') as HTMLInputElement).value) || 0;
+      const coverageRai = parseFloat((document.getElementById('coverage_per_rai') as HTMLInputElement).value) || 0;
+      const totalPremium = area * premiumRai;
+      const farmerPremium = totalPremium * (1 - subsidyPct / 100);
+      const totalCoverage = area * coverageRai;
+      (document.getElementById('farmer_premium') as HTMLElement).textContent = Math.round(farmerPremium).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('total_coverage') as HTMLElement).textContent = Math.round(totalCoverage).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('crop-insurance-premium');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าปรับล่าช้าชำระหนี้ 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณค่าปรับล่าช้าชำระหนี้ 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณค่าปรับชำระหนี้ล่าช้า ดอกเบี้ยผิดนัด ค่าธรรมเนียมการติดตามหนี้ สำหรับสินเชื่อบ้าน รถ บัตรเครดิต และสินเชื่อส่วนบุคคล ตามกฎหมายไทย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าปรับล่าช้าชำระหนี้/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าปรับล่าช้าชำระหนี้">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณค่าปรับล่าช้าชำระหนี้ — ดอกเบี้ยผิดนัดและค่าธรรมเนียม
     </h1>
@@ -116,17 +114,7 @@ const jsonLdFaq = {
       <p>ตาม พ.ร.บ. แก้ไขเพิ่มเติมประมวลกฎหมายแพ่งและพาณิชย์ (ฉบับที่ 20) พ.ศ. 2557 อัตราดอกเบี้ยผิดนัดกำหนดสูงสุดที่ 7.5% ต่อปี แต่สัญญาเอกชนอาจตกลงสูงกว่าได้ตามที่กฎหมายเฉพาะอนุญาต ผู้บริโภคมีสิทธิ์ต่อรองและขอปรับโครงสร้างหนี้</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณค่าปรับล่าช้าชำระหนี้/" />
     <RelatedCalculators currentHref="/คำนวณค่าปรับล่าช้าชำระหนี้/" />

@@ -4,9 +4,10 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณผ่อนรถ ดอกเบี้ย 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณผ่อนรถ ดอกเบี้ย งวด จำนวนเงิน สูง ผ่อน ตามอัตราจริง กสิกรไทย ธนาคาร 2569';
+const pageTitle = 'คำนวณผ่อนรถ ค่างวด ดอกเบี้ย 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณผ่อนรถยนต์ 2569 ฟรี — ใส่ราคา เงินดาวน์ ดอกเบี้ย รู้ค่างวดและดอกเบี้ยรวมทันที เปรียบเทียบสินเชื่อรถทุกธนาคาร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนรถ/`;
 
@@ -103,10 +104,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนรถ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -292,10 +291,10 @@ const jsonLdHowTo = {
     <!-- Affiliate CTA — hidden until result shown -->
     <AffiliateCard
       category="car-loan"
-      affiliateUrl="/go/rabbit-care-car/"
-      partnerName="Rabbit Care"
-      ctaText="เปรียบเทียบสินเชื่อรถฟรี"
-      subtext="ดูดอกเบี้ยและเงื่อนไขจากหลายบริษัทเช่าซื้อ"
+      affiliateUrl="/go/ktc-brother-berm/?sub_id=คำนวณผ่อนรถ"
+      partnerName="KTC Brother Berm"
+      ctaText="สมัครสินเชื่อรถ KTC Brother Berm"
+      subtext="สินเชื่อรถใหม่และรถมือสอง ดอกเบี้ยพิเศษ"
     />
 
     <GuardedAdSlot
@@ -344,6 +343,47 @@ const jsonLdHowTo = {
         <li><strong>รถมือสอง:</strong> 4-7% ต่อปี</li>
         <li><strong>รถ EV:</strong> 1.99-3% ต่อปี (โปรโมชันพิเศษ)</li>
       </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">เปรียบเทียบดอกเบี้ยสินเชื่อรถยนต์แต่ละธนาคาร 2569</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[480px] border-collapse border border-gray-200 text-sm">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="border border-gray-200 px-3 py-2 text-left">ธนาคาร</th>
+              <th class="border border-gray-200 px-3 py-2 text-left">ดอกเบี้ย flat rate</th>
+              <th class="border border-gray-200 px-3 py-2 text-left">ระยะเวลาสูงสุด</th>
+              <th class="border border-gray-200 px-3 py-2 text-left">หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-200 px-3 py-2 font-medium">กรุงไทย</td>
+              <td class="border border-gray-200 px-3 py-2">2.25–3.50%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">รถใหม่</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="border border-gray-200 px-3 py-2 font-medium">กสิกรไทย</td>
+              <td class="border border-gray-200 px-3 py-2">2.25–3.50%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">รถใหม่/มือสอง</td>
+            </tr>
+            <tr>
+              <td class="border border-gray-200 px-3 py-2 font-medium">ไทยพาณิชย์</td>
+              <td class="border border-gray-200 px-3 py-2">2.25–3.75%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">รถใหม่</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="border border-gray-200 px-3 py-2 font-medium">TTB</td>
+              <td class="border border-gray-200 px-3 py-2">2.00–3.25%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">โปรโมชั่น</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-gray-500">* อัตราดอกเบี้ยเป็นข้อมูลประมาณการ อาจเปลี่ยนแปลงตามนโยบายธนาคาร ตรวจสอบล่าสุดกับธนาคารโดยตรง</p>
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับการผ่อนรถ</h3>
 
@@ -413,23 +453,49 @@ const jsonLdHowTo = {
       </p>
     </section>
 
-    <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณสินเชื่อรถยนต์</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อคำนวณเงินผ่อนรถ เพื่อทำให้การตัดสินใจชาญฉลาด โปรดหลีกเลี่ยงข้อผิดพลาดเหล่านี้:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ไม่นำค่าประกันรถและค่าจดทะเบียนรวม</strong><br/>
+          รถราคา 600,000 บาท ธนาคารให้กู้ 90% = 540,000 แต่ลืมว่าต้องจ่ายค่าประกัน ค่าจดทะเบียน ค่าธรรมเนียมบวกกันหลายหมื่น ขอใบประมาณการที่มีทุกค่าใช้จ่าย
+        </li>
+        <li>
+          <strong>เลือกงวดผ่อนที่เกินความสามารถ</strong><br/>
+          เงินผ่อน 15,000 บาท/เดือน แต่เงินเดือนตัวเองเพียง 30,000 บาท ต้องเหลือเงินจ่ายค่ารักษารถ ค่าน้ำมัน ค่าประกัน เงินผ่อนรถควรไม่เกิน 20% ของเงินเดือน
+        </li>
+        <li>
+          <strong>ไม่เปรียบเทียบอัตราดอกเบี้ยระหว่างธนาคารและบริษัทสินเชื่อ</strong><br/>
+          ยินดีกู้จากตัวแทนจำหน่ายรถที่มีดอกเบี้ย 3.99% แต่ไม่ลองถามธนาคารที่ให้ 2.99% ปลายปีจะประหยัดแตกต่างกันมาก สอบถาม 3 ที่ขึ้นไป
+        </li>
+        <li>
+          <strong>ลืมรวมค่าดำเนินการและดอกเบี้ยเร็วๆ (Front Load Interest)</strong><br/>
+          เงินผ่อน 10,000 บาท แต่งวดแรก 12,000 บาท เนื่องจากดอกเบี้ยหนักเร็วไป ขอทราบอัตราแบบ "ลดต้นลดดอก" ซึ่งดีกว่าแบบ "Flat"
+        </li>
+        <li>
+          <strong>ไม่คิดปัญหากรณีขาดงานหรือเงินเดือนลด</strong><br/>
+          คำนวณเงินผ่อนได้แล้ว แต่ไม่คิดว่ากรณีเงินเดือนลด หรือสถานการณ์ฉุกเฉิน จะหาเงินมาจ่าย 15,000 บาท/เดือนได้ยาก ประกันอัมนัยชีวิตรถจะให้ความปลอดภัย
+        </li>
+      </ul>
     </section>
 
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <section class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
+      <h3 class="mb-3 text-base font-semibold text-gray-900">เครื่องมือเกี่ยวกับรถยนต์ที่น่าสนใจ</h3>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li><a href="/คำนวณเบี้ยประกันรถยนต์/" class="text-primary-600 hover:underline">คำนวณเบี้ยประกันรถยนต์</a> — อย่าลืมบวกค่าประกันในงบรายปี</li>
+        <li><a href="/คำนวณค่าภาษีรถยนต์/" class="text-primary-600 hover:underline">คำนวณภาษีรถยนต์ประจำปี</a> — ค่าใช้จ่ายรถรายปีครบถ้วน</li>
+        <li><a href="/คำนวณค่าต่อทะเบียนรถ/" class="text-primary-600 hover:underline">คำนวณค่าต่อทะเบียนรถ</a> — ต่อทะเบียนและประกันพร้อมกัน</li>
+      </ul>
+    </section>
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณผ่อนรถ/" />
     <RelatedCalculators currentHref="/คำนวณผ่อนรถ/" />

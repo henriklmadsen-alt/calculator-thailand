@@ -83,14 +83,21 @@ const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com'
     <script define:vars={{ targetUrl, slug, partnerName }}>
       // Fire GA4 affiliate_redirect event before leaving
       function fireAndGo() {
+        // Append sub_id from query param to targetUrl for per-page attribution
+        const params = new URLSearchParams(window.location.search);
+        const subId = params.get('sub_id');
+        const sep = targetUrl.includes('?') ? '&' : '?';
+        const destination = subId ? targetUrl + sep + 'sub_id=' + encodeURIComponent(subId) : targetUrl;
+
         function redirect() {
-          window.location.replace(targetUrl);
+          window.location.replace(destination);
         }
 
         if (typeof window.gtag === 'function') {
           window.gtag('event', 'affiliate_redirect', {
             affiliate_slug: slug,
             affiliate_partner: partnerName,
+            affiliate_sub_id: subId ?? '',
             page_path: window.location.pathname,
           });
           // Give GA4 ~300ms to flush, then redirect regardless

@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณต้นทุนชั่วโมงแรงงาน รวม SSF กองทุนสำรองเลี้ยงชีพ สวัสดิการ ปี 2569 | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณต้นทุนชั่วโมงแรงงาน รวม SSF กองทุนสำรองเลี้ยงชีพ สวัสดิการ ปี 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนชั่วโมงแรงงานที่แท้จริง รวมเงินเดือน ประกันสังคมฝั่งนายจ้าง 5% กองทุนสำรองเลี้ยงชีพ และสวัสดิการรายเดือน แยกรายการชัดเจน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณต้นทุนชั่วโมงแรงงาน/`;
@@ -52,10 +53,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนชั่วโมงแรงงาน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">🔧 ต้นทุนชั่วโมงแรงงานที่แท้จริงสำหรับนายจ้าง</p>
       <p class="mt-1 text-sm text-slate-700">รวม SSF นายจ้าง 5% + กองทุนสำรองเลี้ยงชีพ + สวัสดิการ ÷ ชั่วโมงทำงาน</p>
@@ -190,22 +188,18 @@ const jsonLdFaq = {
     </section>
 
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#labor-cost-results" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.mol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กระทรวงแรงงาน (mol.go.th)</a> — อัตราค่าจ้างขั้นต่ำและสิทธิแรงงาน</li>
+        <li><a href="https://www.labour.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กรมสวัสดิการและคุ้มครองแรงงาน — พ.ร.บ.คุ้มครองแรงงาน 2541</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณต้นทุนชั่วโมงแรงงาน/" />
     <RelatedCalculators currentHref="/คำนวณต้นทุนชั่วโมงแรงงาน/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการต้นทุนแรงงาน ไม่รวมต้นทุนทางอ้อมอื่น เช่น พื้นที่สำนักงาน อุปกรณ์ การฝึกอบรม กรุณาปรึกษาผู้เชี่ยวชาญด้านบัญชีสำหรับการวางแผนงบประมาณจริง

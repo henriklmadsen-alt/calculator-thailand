@@ -2,8 +2,9 @@
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเปรียบเทียบ Deductible กับเบี้ย 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณเปรียบเทียบ Deductible กับเบี้ย 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณและเปรียบเทียบระหว่างเบี้ยประกับและเงินหักตัวเอง (deductible) เพื่อเลือกตัวเลือกที่เหมาะสมกับงบประมาณและความต้องการ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเปรียบเทียบ-deductible-กับเบี้ย/`;
@@ -47,10 +48,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเปรียบเทียบ Deductible กับเบี้ย">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณเปรียบเทียบ Deductible กับเบี้ย</h1>
     <p class="text-gray-600 mb-6">เปรียบเทียบระหว่างเบี้ยประกันและเงินหักตัวเอง เพื่อหาตัวเลือกที่ดีที่สุด</p>
 
@@ -136,21 +134,7 @@ const jsonLdFaq = {
       </ul>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณเปรียบเทียบ-deductible-กับเบี้ย/" />
     <RelatedCalculators currentHref="/คำนวณเปรียบเทียบ-deductible-กับเบี้ย/" />

@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณต้นทุนรวมต่อทะเบียนรถ 2569 | ภาษี+พ.ร.บ.+ตรวจสภาพ | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณต้นทุนรวมต่อทะเบียนรถ 2569 | ภาษี+พ.ร.บ.+ตรวจสภาพ | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนรวมการต่อทะเบียนรถยนต์ประจำปี รวมภาษีรถ เบี้ย พ.ร.บ. ค่าตรวจสภาพ และค่าธรรมเนียม';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณต้นทุนต่อทะเบียนรถ/`;
@@ -47,10 +48,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนต่อทะเบียนรถ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ประมาณค่าใช้จ่ายต่อทะเบียนรถ 2569</p>
       <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการประมาณการเท่านั้น</p>
@@ -142,17 +140,7 @@ const jsonLdFaq = {
       <p>ภาษีรถยนต์ขึ้นอยู่กับขนาดซีซีและอายุรถ สำหรับรถเก๋ง: ≤600cc = 0.5 บาท/cc, 601-1800cc = 1.5 บาท/cc, 1801-3000cc = 4 บาท/cc, >3000cc = 10 บาท/cc รถอายุมากกว่าได้รับส่วนลด</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedCalculators currentHref="/คำนวณต้นทุนต่อทะเบียนรถ/" />
 

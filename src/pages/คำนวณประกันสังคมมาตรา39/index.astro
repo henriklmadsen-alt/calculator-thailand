@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณประกันสังคมมาตรา 39 ปี 2569 ฐาน 4,800 บาท สมทบ 432 บาท/เดือน | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณประกันสังคมมาตรา 39 ปี 2569 ฐาน 4,800 บาท สมทบ 432 บาท/เดือน | Kamnuanlek';
 const pageDescription = 'คำนวณเงินสมทบประกันสังคมมาตรา 39 สำหรับผู้ที่ลาออกจากงานแต่ต้องการรักษาสิทธิ์ ฐานคิด 4,800 บาท สมทบ 9% = 432 บาท/เดือน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณประกันสังคมมาตรา39/`;
@@ -26,6 +27,11 @@ const faqData = [
     question: 'มาตรา 39 ต้องจ่ายเดือนละเท่าไร?',
     answer: 'จ่าย 9% ของฐาน 4,800 บาท = 432 บาท/เดือน จ่ายเองทั้งหมด ไม่มีนายจ้างหรือรัฐบาลสมทบ',
   },
+,
+  { question: 'ผู้ประกันตนมาตรา 33 จ่ายเงินสมทบเท่าไรต่อเดือน?', answer: 'จ่าย 5% ของค่าจ้าง (ฐานคำนวณ 1,650-15,000 บาท) สูงสุด 750 บาท/เดือน นายจ้างจ่ายเพิ่ม 5% และรัฐบาลสมทบ 2.75% เงินสมทบรวม 3 ฝ่ายเข้ากองทุนประกันสังคม' },
+  { question: 'สิทธิ์ประกันสังคมมาตรา 33 ครอบคลุมอะไรบ้าง?', answer: '7 กรณี: เจ็บป่วย, คลอดบุตร, ทุพพลภาพ, เสียชีวิต, ชราภาพ (บำนาญ/บำเหน็จ), สงเคราะห์บุตร 800 บาท/เดือน (สูงสุด 3 คน), ว่างงาน (70% ของค่าจ้าง สูงสุด 180 วัน)' },
+  { question: 'ส่งประกันสังคมต่อเนื่องกี่ปีถึงได้รับบำนาญเกษียณ?', answer: 'ต้องส่งเงินสมทบไม่น้อยกว่า 180 เดือน (15 ปี) จึงได้รับบำนาญชราภาพ 20% ของค่าจ้างเฉลี่ย 60 เดือนสุดท้าย + 1.5% ต่อปีสำหรับปีที่เกิน 15 ปี ถ้าส่งไม่ถึง 180 เดือนได้รับบำเหน็จแทน' },
+  { question: 'ลาออกจากงานแล้วสิทธิ์ประกันสังคมจะเป็นอย่างไร?', answer: 'สามารถสมัครต่อเองได้ในฐานะผู้ประกันตนมาตรา 39 ภายใน 6 เดือนหลังออกจากงาน จ่ายเงินสมทบ 432 บาท/เดือน (9% ของฐาน 4,800 บาท) รักษาสิทธิ์ 6 กรณีเดิม (ยกเว้นว่างงาน)' }
 ];
 
 const jsonLdWebApp = {
@@ -52,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคมมาตรา 39">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ประกันสังคมมาตรา 39 — ฐาน 4,800 บาท × 9% = 432 บาท/เดือน</p>
       <p class="mt-1 text-sm text-slate-700">สำหรับผู้ที่ลาออกจากงานแต่ต้องการรักษาสิทธิ์ประกันสังคม 5 กรณี</p>
@@ -161,19 +164,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณประกันสังคมมาตรา39/" />
     <RelatedCalculators currentHref="/คำนวณประกันสังคมมาตรา39/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราและเงื่อนไขอาจเปลี่ยนแปลงตามประกาศของสำนักงานประกันสังคม ควรตรวจสอบข้อมูลล่าสุดที่ sso.go.th

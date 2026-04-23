@@ -1,5 +1,9 @@
 ---
 import '../styles/theme.css';
+import SaveCompareDrawer from '../components/templates/SaveCompareDrawer.astro';
+import RecentCalculations from '../components/templates/RecentCalculations.astro';
+import CategoryNav from '../components/templates/CategoryNav.astro';
+import EmailCapture from '../components/templates/EmailCapture.astro';
 
 interface Props {
   title: string;
@@ -8,9 +12,17 @@ interface Props {
   ogImage?: string;
   pageName?: string;
   alternateLocales?: Array<{ hreflang: string; href: string }>;
+  /** Category ID for visual breadcrumb — e.g. "health", "tax", "loan" */
+  categoryId?: string;
+  /** Thai display name for the category — e.g. "สุขภาพ/ชีวิต" */
+  categoryName?: string;
+  /** URL slug for the category page — e.g. "สุขภาพ" */
+  categorySlug?: string;
+  /** Set true on pages that define their own custom HowTo JSON-LD to suppress the generic BaseLayout HowTo */
+  noGenericHowTo?: boolean;
 }
 
-const { title, description, canonical, ogImage, pageName, alternateLocales = [] } = Astro.props;
+const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false } = Astro.props;
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
@@ -24,23 +36,57 @@ const localeAlternates = [
   ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
 ];
 
+const organizationSchema = {
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: 'Kamnuanlek',
+  alternateName: ['คำนวณเลข', 'คำนวณเลข', 'kamnuanlek.com'],
+  url: siteUrl,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.svg`,
+    width: 1200,
+    height: 630,
+  },
+  description: 'แพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีสำหรับคนไทย — คำนวณภาษี สินเชื่อ เงินเดือน ค่าไฟ และอีก 800+ รายการ อัปเดตอัตราราชการปี 2569',
+  foundingDate: '2024',
+  inLanguage: 'th-TH',
+  areaServed: { '@type': 'Country', name: 'Thailand' },
+  email: 'info@kamnuanlek.com',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@kamnuanlek.com',
+    contactType: 'customer support',
+    availableLanguage: ['Thai', 'English'],
+    url: `${siteUrl}/ติดต่อเรา/`,
+  },
+  knowsAbout: ['Thai tax calculation', 'loan calculators', 'salary calculation', 'Thai financial tools', 'เครื่องคำนวณภาษี', 'คำนวณสินเชื่อ'],
+};
+
 const jsonLdWebPage = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebPage',
+  '@id': `${pageUrl}#webpage`,
   url: pageUrl,
   name: title,
   description,
   inLanguage: 'th-TH',
   isPartOf: {
     '@type': 'WebSite',
-    name: 'kamnuanlek — เครื่องคำนวณไทย',
+    '@id': `${siteUrl}/#website`,
+    name: 'Kamnuanlek — คำนวณเลข',
     url: siteUrl,
   },
-  sourceOrganization: {
-    '@type': 'Organization',
-    name: 'kamnuanlek — เครื่องคำนวณไทย',
-    url: siteUrl,
+  sourceOrganization: organizationSchema,
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.ai-quick-answer', 'h2', '.faq-answer-content'],
   },
+});
+
+const jsonLdOrganization = JSON.stringify({
+  '@context': 'https://schema.org',
+  ...organizationSchema,
 });
 
 const breadcrumbJsonLd = pageName ? JSON.stringify({
@@ -53,12 +99,61 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       "name": "หน้าแรก",
       "item": siteUrl + "/"
     },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": pageName
-    }
+    ...(categorySlug && categoryName ? [
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": categoryName,
+        "item": `${siteUrl}/หมวดหมู่/${categorySlug}/`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": pageName,
+        "item": pageUrl
+      }
+    ] : [
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": pageName,
+        "item": pageUrl
+      }
+    ])
   ]
+}) : null;
+
+const genericHowToJsonLd = !noGenericHowTo ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  'name': title,
+  'description': description,
+  'author': {
+    '@type': 'Organization',
+    'name': 'Kamnuanlek.com',
+    'url': siteUrl,
+  },
+  'totalTime': 'PT2M',
+  'step': [
+    {
+      '@type': 'HowToStep',
+      'position': 1,
+      'name': 'กรอกข้อมูล',
+      'text': 'กรอกตัวเลขหรือข้อมูลที่ต้องการลงในช่องรับข้อมูลบนหน้าเครื่องคำนวณ',
+    },
+    {
+      '@type': 'HowToStep',
+      'position': 2,
+      'name': 'กดคำนวณ',
+      'text': 'กดปุ่มคำนวณ เครื่องคำนวณจะประมวลผลทันทีและแสดงผลลัพธ์',
+    },
+    {
+      '@type': 'HowToStep',
+      'position': 3,
+      'name': 'อ่านผลลัพธ์',
+      'text': 'ดูผลลัพธ์ที่แสดงในการ์ดผลลัพธ์ พร้อมคำอธิบายและคำแนะนำที่เกี่ยวข้อง',
+    },
+  ],
 }) : null;
 ---
 
@@ -76,7 +171,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="เครื่องคำนวณไทย" />
+    <meta property="og:site_name" content="คำนวณเลข" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
@@ -95,6 +190,14 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><rect x='20' y='15' width='60' height='25' rx='5' fill='white'/><rect x='20' y='50' width='17' height='17' rx='3' fill='white'/><rect x='41' y='50' width='17' height='17' rx='3' fill='white'/><rect x='62' y='50' width='17' height='17' rx='3' fill='white'/><rect x='20' y='72' width='17' height='17' rx='3' fill='white'/><rect x='41' y='72' width='17' height='17' rx='3' fill='white'/><rect x='62' y='72' width='38' height='17' rx='3' fill='%2360a5fa'/></svg>" />
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/></svg>" />
 
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="คำนวณเลข" />
+    <meta name="theme-color" content="#2563eb" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -103,8 +206,10 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       rel="stylesheet"
     />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={jsonLdOrganization} />
     <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
+    {genericHowToJsonLd && <script type="application/ld+json" set:html={genericHowToJsonLd} />}
 
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
@@ -259,10 +364,14 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         }
         window.gtag('event', 'calculator_complete', withLanguageContext(payload));
       }
-      function trackCalculatorUsed(calculatorType) {
+      function trackCalculatorUsed(calculatorType, resultValue) {
         if (typeof window.gtag !== 'function') return;
         window.__ctCalculatorType = calculatorType;
-        window.gtag('event', 'calculator_used', withLanguageContext({ calculator_type: calculatorType }));
+        const payload = { calculator_type: calculatorType };
+        if (typeof resultValue === 'number' && Number.isFinite(resultValue)) {
+          payload.result_value = resultValue;
+        }
+        window.gtag('event', 'calculator_used', withLanguageContext(payload));
       }
       function trackResultViewed(calculatorType) {
         if (typeof window.gtag !== 'function') return;
@@ -416,6 +525,43 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         transform: translateY(-2px);
       }
 
+      /* ── Breadcrumb (Phase 2 Feature 4) ───────────────────── */
+      .ct-breadcrumb {
+        margin-bottom: 0.75rem;
+      }
+      .ct-breadcrumb-list {
+        display: flex; align-items: center; flex-wrap: wrap;
+        gap: 0.15rem; list-style: none; margin: 0; padding: 0;
+        font-size: 0.8rem;
+      }
+      .ct-breadcrumb-link {
+        color: #2563eb; text-decoration: none; font-weight: 500;
+        transition: color 0.15s;
+      }
+      .ct-breadcrumb-link:hover { color: #1d4ed8; text-decoration: underline; }
+      .ct-breadcrumb-sep { color: #9ca3af; padding: 0 0.15rem; }
+      /* ── Category nav 2-column layout ──────────────────── */
+      .ct-layout-wrapper {
+        display: flex; gap: 0; padding-top: 0; padding-bottom: 0;
+        align-items: flex-start;
+      }
+      .ct-layout-main {
+        padding-left: 0;
+      }
+      @media (min-width: 1024px) {
+        .ct-layout-wrapper { gap: 1.5rem; }
+        .ct-layout-main { padding-left: 0; }
+      }
+      /* Extra bottom padding on mobile to clear the sticky bottom tabs */
+      @media (max-width: 1023px) {
+        .ct-layout-main { padding-bottom: 80px; }
+      }
+
+      .ct-breadcrumb-current {
+        color: #6b7280; font-weight: 400;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 200px; display: inline-block; vertical-align: bottom;
+      }
     </style>
   </head>
   <body class="font-thai text-gray-900 flex flex-col">
@@ -428,7 +574,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
             </svg>
           </div>
           <div>
-            <span class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors">เครื่องคำนวณไทย</span>
+            <span class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors">คำนวณเลข</span>
             <span class="hidden sm:block text-xs text-gray-400 -mt-0.5">kamnuanlek.com</span>
           </div>
         </a>
@@ -450,9 +596,33 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       </nav>
     </header>
 
-    <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
-      <slot />
-    </main>
+    <!-- Category nav wrapper: sidebar on desktop, bottom tabs on mobile -->
+    <div class="ct-layout-wrapper max-w-6xl mx-auto px-4 sm:px-6 py-0 w-full flex">
+      <CategoryNav />
+      <main class="ct-layout-main flex-1 min-w-0 py-8">
+      {categoryId && categoryName && (
+        <nav aria-label="Breadcrumb" class="ct-breadcrumb">
+          <ol class="ct-breadcrumb-list">
+            <li><a href="/" class="ct-breadcrumb-link">หน้าแรก</a></li>
+            <li aria-hidden="true" class="ct-breadcrumb-sep">›</li>
+            <li>
+              {categorySlug
+                ? <a href={`/หมวดหมู่/${categorySlug}/`} class="ct-breadcrumb-link">{categoryName}</a>
+                : <span class="ct-breadcrumb-link">{categoryName}</span>
+              }
+            </li>
+            {pageName && <>
+              <li aria-hidden="true" class="ct-breadcrumb-sep">›</li>
+              <li><span class="ct-breadcrumb-current" aria-current="page">{pageName}</span></li>
+            </>}
+          </ol>
+        </nav>
+      )}
+        <slot />
+        <!-- Phase 3 Feature 1: Recent Calculations history auto-save -->
+        <RecentCalculations />
+      </main>
+    </div><!-- /ct-layout-wrapper -->
 
     <footer class="mt-auto border-t border-gray-100 bg-white/60">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
@@ -463,9 +633,9 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <span class="text-sm font-semibold text-gray-700">เครื่องคำนวณไทย</span>
+            <span class="text-sm font-semibold text-gray-700">คำนวณเลข</span>
           </div>
-          <nav class="flex flex-wrap gap-4 text-sm text-gray-500">
+          <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
             <a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a>
             <a href="/บทความ/" class="hover:text-primary-600 transition-colors">บทความ</a>
             <a href="/คำนวณค่าไฟฟ้า/" class="hover:text-primary-600 transition-colors">ค่าไฟฟ้า</a>
@@ -475,14 +645,213 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
             <a href="/คำนวณผ่อนรถ/" class="hover:text-primary-600 transition-colors">ผ่อนรถ</a>
             <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="hover:text-primary-600 transition-colors">ดอกเบี้ยเงินฝาก</a>
             <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
-            <a href="/คำนวณอายุ/" class="hover:text-primary-600 transition-colors">คำนวณอายุ</a>
             <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
+            <span class="w-full sm:w-px sm:h-4 border-t sm:border-t-0 sm:border-l border-gray-200"></span>
+            <a href="/เกี่ยวกับ-kamnuanlek/" class="hover:text-primary-600 transition-colors">เกี่ยวกับเรา</a>
+            <a href="/ติดต่อเรา/" class="hover:text-primary-600 transition-colors">ติดต่อเรา</a>
+            <a href="/นโยบายความเป็นส่วนตัว/" class="hover:text-primary-600 transition-colors">นโยบายความเป็นส่วนตัว</a>
+            <a href="/ข้อกำหนดการใช้งาน/" class="hover:text-primary-600 transition-colors">ข้อกำหนด</a>
             <a href="/affiliate-disclosure/" class="hover:text-primary-600 transition-colors">Affiliate</a>
           </nav>
-          <p class="text-xs text-gray-400">© 2026 เครื่องคำนวณไทย — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+          <p class="text-xs text-gray-400">© 2026 Kamnuanlek (คำนวณเลข) — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
         </div>
       </div>
     </footer>
+    <!-- PWA: Service Worker registration + Web Push subscription -->
+    <script is:inline>
+    (function initPWA() {
+      if (!('serviceWorker' in navigator)) return;
+
+      const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
+      const PUSH_ASKED_KEY = 'ct.push-asked.v1';
+      const PUSH_SUBSCRIBED_KEY = 'ct.push-subscribed.v1';
+
+      function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = atob(base64);
+        return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+      }
+
+      async function subscribeToPush(reg) {
+        try {
+          const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+          });
+          await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sub),
+          });
+          try { localStorage.setItem(PUSH_SUBSCRIBED_KEY, '1'); } catch {}
+        } catch {}
+      }
+
+      function showPushPrompt(reg) {
+        try {
+          if (localStorage.getItem(PUSH_ASKED_KEY) === '1') return;
+          if (localStorage.getItem(PUSH_SUBSCRIBED_KEY) === '1') return;
+          localStorage.setItem(PUSH_ASKED_KEY, '1');
+        } catch {}
+
+        // Show after 30s on the page (non-intrusive delay)
+        setTimeout(function() {
+          // Only prompt if user has been interacting (not a bounce)
+          if (document.hidden) return;
+
+          var banner = document.createElement('div');
+          banner.id = 'push-prompt';
+          banner.setAttribute('role', 'dialog');
+          banner.setAttribute('aria-label', 'รับการแจ้งเตือน');
+          banner.style.cssText = [
+            'position:fixed', 'bottom:16px', 'left:50%', 'transform:translateX(-50%)',
+            'background:#1e40af', 'color:white', 'border-radius:12px',
+            'padding:14px 18px', 'display:flex', 'align-items:center', 'gap:12px',
+            'box-shadow:0 8px 32px rgba(0,0,0,0.2)', 'z-index:9999',
+            'max-width:calc(100vw - 32px)', 'font-family:inherit', 'font-size:14px',
+            'animation:slideUp 0.3s ease',
+          ].join(';');
+
+          var style = document.createElement('style');
+          style.textContent = '@keyframes slideUp{from{transform:translateX(-50%) translateY(80px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}';
+          document.head.appendChild(style);
+
+          banner.innerHTML = [
+            '<span style="font-size:20px" aria-hidden="true">🔔</span>',
+            '<div>',
+            '<div style="font-weight:600;margin-bottom:2px">รับแจ้งเตือนวันคำนวณเงินเดือน</div>',
+            '<div style="opacity:0.85;font-size:12px">เตือนทุกวันที่ 25 และช่วงยื่นภาษี ฟรี</div>',
+            '</div>',
+            '<button id="push-allow" style="background:white;color:#1e40af;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap">เปิดรับ</button>',
+            '<button id="push-deny" style="background:transparent;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:18px;padding:4px;line-height:1" aria-label="ปิด">&times;</button>',
+          ].join('');
+
+          document.body.appendChild(banner);
+
+          document.getElementById('push-allow').addEventListener('click', function() {
+            banner.remove();
+            Notification.requestPermission().then(function(perm) {
+              if (perm === 'granted') subscribeToPush(reg);
+            });
+          });
+          document.getElementById('push-deny').addEventListener('click', function() {
+            banner.remove();
+          });
+        }, 30000);
+      }
+
+      navigator.serviceWorker.register('/sw.js').then(function(reg) {
+        // Check if already subscribed
+        reg.pushManager.getSubscription().then(function(sub) {
+          if (sub) {
+            // Re-register existing subscription with server (handles server restarts)
+            fetch('/api/push/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(sub),
+            }).catch(function() {});
+          } else if (Notification.permission === 'default') {
+            showPushPrompt(reg);
+          } else if (Notification.permission === 'granted') {
+            subscribeToPush(reg);
+          }
+        });
+      }).catch(function() {});
+    })();
+    </script>
+
+    <!-- PWA: Add to Home Screen install prompt (shows after 3rd calculator use) -->
+    <script is:inline>
+    (function initA2HS() {
+      var INSTALL_PROMPTED_KEY = 'ct.a2hs-prompted.v1';
+      var CALC_USE_COUNT_KEY = 'ct.calc-use-count.v1';
+      var INSTALL_THRESHOLD = 3;
+
+      // Only on calculator pages
+      var path = decodeURIComponent(window.location.pathname);
+      var isCalcPage = path.startsWith('/คำนวณ') || path.startsWith('/calc');
+      if (!isCalcPage) return;
+
+      // Don't show if already prompted
+      try {
+        if (localStorage.getItem(INSTALL_PROMPTED_KEY) === '1') return;
+      } catch { return; }
+
+      // Increment calculator use counter
+      var count = 0;
+      try {
+        count = parseInt(localStorage.getItem(CALC_USE_COUNT_KEY) || '0', 10) + 1;
+        localStorage.setItem(CALC_USE_COUNT_KEY, String(count));
+      } catch {}
+
+      // Capture install prompt event
+      var deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (count >= INSTALL_THRESHOLD) showInstallBanner();
+      });
+
+      // iOS doesn't fire beforeinstallprompt — use Safari-specific check
+      function isIOS() {
+        return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+      }
+      function isInStandaloneMode() {
+        return ('standalone' in window.navigator) && window.navigator.standalone;
+      }
+
+      function showInstallBanner() {
+        try { localStorage.setItem(INSTALL_PROMPTED_KEY, '1'); } catch {}
+
+        var banner = document.createElement('div');
+        banner.id = 'a2hs-banner';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-label', 'ติดตั้งแอปพลิเคชัน');
+        banner.style.cssText = 'position:fixed;bottom:70px;left:16px;right:16px;background:#1e40af;color:#fff;border-radius:12px;padding:16px;z-index:9998;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;';
+
+        var iosText = isIOS()
+          ? 'แตะ <strong>⎙</strong> แล้วเลือก <strong>"เพิ่มไปที่หน้าจอหลัก"</strong>'
+          : 'ติดตั้งเครื่องคำนวณเลขลงมือถือ ใช้ได้ออฟไลน์';
+
+        banner.innerHTML =
+          '<div style="font-size:28px;flex-shrink:0">📲</div>' +
+          '<div style="flex:1;font-size:14px;line-height:1.4">' +
+            '<strong style="display:block;margin-bottom:2px">เพิ่มไปที่หน้าจอหลัก</strong>' +
+            '<span>' + iosText + '</span>' +
+          '</div>' +
+          (!isIOS() ? '<button id="a2hs-install" style="background:#fff;color:#1e40af;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:13px">ติดตั้ง</button>' : '') +
+          '<button id="a2hs-close" style="background:transparent;border:none;color:#93c5fd;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0" aria-label="ปิด">✕</button>';
+
+        document.body.appendChild(banner);
+
+        var closeBtn = document.getElementById('a2hs-close');
+        if (closeBtn) closeBtn.addEventListener('click', function() { banner.remove(); });
+
+        var installBtn = document.getElementById('a2hs-install');
+        if (installBtn && deferredPrompt) {
+          installBtn.addEventListener('click', function() {
+            banner.remove();
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choice) {
+              if (typeof window.gtag === 'function') {
+                window.gtag('event', 'pwa_install_prompt', { outcome: choice.outcome });
+              }
+            });
+          });
+        }
+      }
+
+      // Check on load: if threshold already met and prompt available
+      if (count >= INSTALL_THRESHOLD && deferredPrompt) showInstallBanner();
+
+      // iOS: show informational banner (no prompt event)
+      if (count >= INSTALL_THRESHOLD && isIOS() && !isInStandaloneMode()) {
+        try { if (localStorage.getItem(INSTALL_PROMPTED_KEY) !== '1') showInstallBanner(); } catch {}
+      }
+    })();
+    </script>
+
     <script is:inline>
       (function trackRecentCalc() {
         var RECENT_KEY = 'ct.recent-calcs.v1';
@@ -550,5 +919,9 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
         syncButtons(currentPref);
       })();
     </script>
+    <!-- Phase 2: Save & Compare Drawer (global) -->
+    <SaveCompareDrawer />
+    <!-- CAL-1070: Email capture opt-in (appears after save confirmation) -->
+    <EmailCapture />
   </body>
 </html>

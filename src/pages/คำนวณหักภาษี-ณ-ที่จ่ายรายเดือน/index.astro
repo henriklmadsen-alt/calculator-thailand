@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีหัก ณ ที่จ่ายรายเดือน 2569 | ฟรี ออนไลน์ | Calculator Thailand';
+const pageTitle = 'คำนวณภาษีหัก ณ ที่จ่ายรายเดือน 2569 | ฟรี ออนไลน์ | Kamnuanlek';
 const pageDescription = 'คำนวณภาษีหัก ณ ที่จ่ายรายเดือน สำหรับพนักงานและฟรีแลนซ์ อัตรา 5–37% สำหรับเงินเดือน 3% สำหรับค่าบริการ ตามหลักเกณฑ์กรมสรรพากร 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน/`;
@@ -69,10 +70,8 @@ const jsonLdHowTo = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -239,17 +238,7 @@ const jsonLdHowTo = {
       <p>ผู้มีเงินเดือนต่างกัน อาจมีการหักภาษีต่างกัน ขึ้นอยู่กับจำนวนค่าลดหย่อนที่มีสิทธิได้รับ นายจ้างควรคำนวณให้ถูกต้องตามเอกสาร ภ.ง.ด.3 และ ภ.ง.ด.2 ตั้งแต่เริ่มต้น</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: มาตรฐานการหัก ณ ที่จ่าย ปี 2569</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน/" />
     <RelatedCalculators currentHref="/คำนวณหักภาษี-ณ-ที่จ่ายรายเดือน/" />

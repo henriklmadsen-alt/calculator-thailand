@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณงบประมาณปลอดภัยจากหนี้ ปี 2569 DTI ratio สัดส่วนหนี้ต่อรายได้ | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณงบประมาณปลอดภัยจากหนี้ ปี 2569 DTI ratio สัดส่วนหนี้ต่อรายได้ | Kamnuanlek';
 const pageDescription = 'คำนวณ DTI ratio สัดส่วนภาระหนี้ต่อรายได้ น้อยกว่า 40% ปลอดภัย 40-60% ระวัง มากกว่า 60% อันตราย คำนวณงบประมาณที่เหลือหลังหักหนี้';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณงบประมาณปลอดภัยจากหนี้/`;
@@ -52,10 +53,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณปลอดภัยจากหนี้">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
       <p class="text-sm font-semibold text-emerald-700">คำนวณ DTI ratio และงบประมาณที่ปลอดภัยจากหนี้</p>
       <p class="mt-1 text-sm text-slate-700">สูตร: DTI = (ภาระหนี้/เดือน ÷ รายได้) × 100% | งบสำรองชีวิต = รายได้ - ภาระหนี้</p>
@@ -158,19 +156,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณงบประมาณปลอดภัยจากหนี้/" />
     <RelatedCalculators currentHref="/คำนวณงบประมาณปลอดภัยจากหนี้/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นแนวทางทั่วไป เกณฑ์ DTI ของสถาบันการเงินแต่ละแห่งอาจแตกต่างกัน ควรปรึกษาที่ปรึกษาทางการเงินสำหรับการวางแผนหนี้ที่ซับซ้อน

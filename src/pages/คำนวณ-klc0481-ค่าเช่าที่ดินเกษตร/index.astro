@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่าเช่าที่ดินเกษตร | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเช่าที่ดินเกษตร ต่อไร่ต่อปี ต้นทุนที่ดินรวม ความคุ้มค่าการเช่าที่ดิน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0481-ค่าเช่าที่ดินเกษตร/`;
+const faqData = [
+  { question: 'ค่าเช่าที่ดินเกษตรต่อไร่เฉลี่ยเท่าไหร่?', answer: 'ค่าเช่าที่ดินนา 500-2,000 บาท/ไร่/ปี ภาคกลางแพงกว่าภาคอื่น ที่ดินใกล้ชลประทาน 1,500-3,000 บาท/ไร่/ปี ที่ดินไร่/สวน 300-1,000 บาท/ไร่/ปี' },
+  { question: 'สัญญาเช่าที่ดินเกษตรควรมีกี่ปี?', answer: 'สัญญาเช่าที่ดินเกษตรควรอย่างน้อย 3-5 ปี เพื่อให้คุ้มค่าการลงทุนปรับปรุงดินและสาธารณูปโภค ต้องจดทะเบียนที่กรมที่ดินหากเกิน 3 ปี' },
+  { question: 'ซื้อหรือเช่าที่ดินเกษตรดีกว่ากัน?', answer: 'เช่าดีกว่าถ้ามีทุนน้อยหรือยังไม่แน่ใจทำเลที่ตั้ง ซื้อดีกว่าถ้ามีแผนระยะยาว ราคาที่ดินมักเพิ่มขึ้น 5-10% ต่อปี ซึ่งเป็น capital gain ที่ดี' },
+  { question: 'เช่าที่ดิน สปก. ได้ไหม?', answer: 'ที่ดิน สปก. เช่าได้เฉพาะเกษตรกรที่ได้รับสิทธิ์เท่านั้น โอนสิทธิ์ไม่ได้ ค่าเช่าต่ำมาก 2-20 บาท/ไร่/ปี แต่มีเงื่อนไขการใช้ประโยชน์ที่เคร่งครัด' }
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' },
+  { question: 'ซื้อบ้านมือสองต้องระวังค่าใช้จ่ายอะไร?', answer: 'ค่าธรรมเนียมโอน ค่าภาษีธุรกิจเฉพาะหรืออากรแสตมป์ ค่าจดจำนอง ค่าตรวจสอบภาระผูกพัน ค่าประเมินราคา ค่าซ่อมแซม และค่าประกันภัย รวมกันอาจสูงถึง 5-10% ของราคาซื้อ' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าที่ดินเกษตร">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าเช่าที่ดินเกษตร</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนค่าเช่าที่ดินและสัดส่วนต่อต้นทุนรวม</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="land_area_rent" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่เช่า (ไร่)</label><input type="number" id="land_area_rent" min="1" placeholder="เช่น 20" value="20" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rent_per_rai" class="block text-sm font-medium text-gray-700 mb-1">ค่าเช่าต่อไร่ต่อปี (บาท)</label><input type="text" id="rent_per_rai" inputmode="decimal" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rent_years" class="block text-sm font-medium text-gray-700 mb-1">ระยะสัญญา (ปี)</label><input type="number" id="rent_years" min="1" placeholder="เช่น 3" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="total_farm_income" class="block text-sm font-medium text-gray-700 mb-1">รายได้เกษตรต่อปี (บาท)</label><input type="text" id="total_farm_income" inputmode="decimal" placeholder="เช่น 150000" value="150000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าเช่าต่อปี</p><p id="annual_rent" class="font-bold">-</p></div>
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าเช่ารวมตลอดสัญญา</p><p id="total_rent" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3 col-span-2"><p class="text-sm text-gray-600">สัดส่วนค่าเช่าต่อรายได้</p><p id="rent_ratio" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const area = parseFloat((document.getElementById('land_area_rent') as HTMLInputElement).value) || 0;
+      const rentPerRai = parseFloat((document.getElementById('rent_per_rai') as HTMLInputElement).value) || 0;
+      const years = parseFloat((document.getElementById('rent_years') as HTMLInputElement).value) || 1;
+      const income = parseFloat((document.getElementById('total_farm_income') as HTMLInputElement).value) || 0;
+      const annualRent = area * rentPerRai;
+      const totalRent = annualRent * years;
+      const ratio = income > 0 ? (annualRent / income * 100) : 0;
+      (document.getElementById('annual_rent') as HTMLElement).textContent = Math.round(annualRent).toLocaleString('th-TH') + ' บาท/ปี';
+      (document.getElementById('total_rent') as HTMLElement).textContent = Math.round(totalRent).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('rent_ratio') as HTMLElement).textContent = ratio.toFixed(1) + '% ของรายได้';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('agricultural-land-rent');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
+</BaseLayout>

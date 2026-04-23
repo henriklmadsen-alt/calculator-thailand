@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'ฟรีแลนซ์ต้องเสียภาษีอะไรบ้าง?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ฟรีแลนซ์ต้องเสียภาษีเงินได้บุคคลธรรมดา (PIT) หากรายได้ต่อปีเกิน 120,000 บาท และอาจต้องจดทะเบียน VAT หากรายได้เกิน 1.8 ล้านบาทต่อปี'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'ฟรีแลนซ์หักค่าใช้จ่ายได้เท่าไหร่?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ฟรีแลนซ์สามารถหักค่าใช้จ่ายได้ 60% ของรายได้จากงานอิสระ หรือใช้หักตามจริง (ต้องมีใบเสร็จ)'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'ฟรีแลนซ์ยื่นภาษีเมื่อไหร่?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ยื่นภาษีประจำปีภายในวันที่ 31 มีนาคม ของปีถัดไป หรือยื่นออนไลน์ผ่าน e-Filing ของกรมสรรพากร ภายใน 8 เมษายน'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'ถ้าฟรีแลนซ์รายได้ต่ำกว่า 120,000 บาท ต้องยื่นภาษีไหม?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ยังต้องยื่นแบบแสดงรายการภาษีเงินได้บุคคลธรรมดา (ภ.ง.ด.91/90) แต่จะไม่มีภาษีต้องชำระถ้ารายได้ไม่เกินเกณฑ์'
+      }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="ภาษีฟรีแลนซ์ไทย — คำนวณภาษี หักลดหย่อน และยื่นแบบ ปี 2569 | Kamnuanlek"
+  description="คู่มือภาษีสำหรับฟรีแลนซ์และผู้ประกอบอาชีพอิสระไทย วิธีคำนวณภาษีเงินได้ สิทธิหักลดหย่อน เมื่อไรต้องจด VAT พร้อมเครื่องคำนวณฟรี อัปเดตปี 2569"
+>
+  <script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "หน้าหลัก", "item": "https://www.kamnuanlek.com/"},
+      {"@type": "ListItem", "position": 2, "name": "ภาษีฟรีแลนซ์ไทย — คำนวณภาษี หักลดหย่อน และยื่นแบบ ปี 2569", "item": "https://www.kamnuanlek.com/ภาษีฟรีแลนซ์/"}
+    ]
+  }</script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">คู่มือภาษีฟรีแลนซ์ไทย ปี 2569</h1>
+
+    <div class="mb-12 p-6 bg-orange-50 border border-orange-200 rounded-lg">
+      <p class="text-lg text-gray-800">
+        ทำงานฟรีแลนซ์ในไทย? คู่มือนี้อธิบายชัดเจนว่าคุณต้องเสียภาษีอะไรบ้าง หักค่าใช้จ่ายได้เท่าไร และคำนวณภาษีอย่างถูกต้องได้อย่างไร
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">1. ประเภทภาษีสำหรับฟรีแลนซ์</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ภาษีเงินได้บุคคลธรรมดา (PIT)</h3>
+            <p class="text-gray-700 text-sm">ต้องชำระเมื่อรายได้ประจำปีเกิน 120,000 บาท อัตราก้าวหน้า: 0% ถึง 35%</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">VAT (7%)</h3>
+            <p class="text-gray-700 text-sm">ต้องจดทะเบียนเมื่อรายได้ประจำปีเกิน 1.8 ล้านบาท ยื่นจดกับกรมสรรพากร</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ภาษีหัก ณ ที่จ่าย</h3>
+            <p class="text-gray-700 text-sm">ลูกค้าหัก 3% เมื่อจ่ายค่าฟรีแลนซ์ (เกิน 1,000 บาทต่อครั้ง) คุณได้รับหนังสือรับรอง</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ประกันสังคม (สมัครใจ)</h3>
+            <p class="text-gray-700 text-sm">ผู้ประกอบอาชีพอิสระสามารถสมทบประกันสังคมมาตรา 39 ได้ (432 บาท/เดือน)</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">2. วิธีคำนวณภาษีของคุณ</h2>
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
+          <ol class="space-y-4">
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold">1</span>
+              <div>
+                <p class="font-semibold text-gray-900">รายได้ฟรีแลนซ์รวม</p>
+                <p class="text-gray-600 text-sm">รวมเงินที่ได้รับจากลูกค้าทั้งหมดในปีภาษี</p>
+              </div>
+            </li>
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold">2</span>
+              <div>
+                <p class="font-semibold text-gray-900">หักค่าใช้จ่าย 60%</p>
+                <p class="text-gray-600 text-sm">หรือหักตามจริง (ต้องมีใบเสร็จ) ฟรีแลนซ์ส่วนใหญ่ใช้ 60%</p>
+              </div>
+            </li>
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold">3</span>
+              <div>
+                <p class="font-semibold text-gray-900">หักค่าลดหย่อนส่วนตัว</p>
+                <p class="text-gray-600 text-sm">60,000 บาท ส่วนตัว + 20,000 บาท ต่อผู้อยู่ในความดูแล</p>
+              </div>
+            </li>
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold">4</span>
+              <div>
+                <p class="font-semibold text-gray-900">ใช้อัตราขั้นภาษี</p>
+                <p class="text-gray-600 text-sm">ก้าวหน้า: 5% สำหรับ 150k แรก, 10% สำหรับ 150k ถัดไป เป็นต้น</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">3. ตัวอย่างการคำนวณ</h2>
+        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <p class="font-semibold text-gray-900 mb-4">สถานการณ์: นักออกแบบฟรีแลนซ์มีรายได้ 600,000 บาท/ปี</p>
+          <div class="space-y-2 text-gray-700">
+            <div class="flex justify-between border-b border-gray-200 pb-2">
+              <span>รายได้รวม</span><span class="font-semibold">600,000 บาท</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-200 pb-2">
+              <span>หักค่าใช้จ่าย (60%)</span><span class="text-red-600">- 360,000 บาท</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-200 pb-2">
+              <span>รายได้สุทธิหลังหักค่าใช้จ่าย</span><span>240,000 บาท</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-200 pb-2">
+              <span>ค่าลดหย่อนส่วนตัว</span><span class="text-red-600">- 60,000 บาท</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-200 pb-2">
+              <span><strong>รายได้ที่ต้องเสียภาษี</strong></span><span class="font-semibold">180,000 บาท</span>
+            </div>
+            <div class="flex justify-between pt-2">
+              <span><strong>ภาษีที่ต้องชำระ</strong></span><span class="font-bold text-primary-600">1,500 บาท (5% บน 30,000 ที่เกิน 150k)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ฟรีแลนซ์ต้องเสียภาษีอะไรบ้าง?</h3>
+            <p class="text-gray-700 text-sm">ภาษีเงินได้บุคคลธรรมดา (PIT) ถ้ารายได้เกิน 120,000 บาท/ปี และ VAT ถ้ารายได้เกิน 1.8 ล้านบาท/ปี</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ฟรีแลนซ์หักค่าใช้จ่ายได้เท่าไหร่?</h3>
+            <p class="text-gray-700 text-sm">หักได้ 60% ของรายได้ หรือหักตามจริง (ต้องมีใบเสร็จ)</p>
+          </div>
+          <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <h3 class="font-semibold text-gray-900 mb-2">ฟรีแลนซ์ยื่นภาษีเมื่อไหร่?</h3>
+            <p class="text-gray-700 text-sm">ภายใน 31 มีนาคม (กระดาษ) หรือ 8 เมษายน (e-Filing) ของปีถัดไป</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-12 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">คำนวณภาษีฟรีแลนซ์ของคุณ</h2>
+      <p class="text-gray-700 mb-4">ใช้เครื่องคำนวณภาษีเงินได้ของเรา รวมการหักค่าใช้จ่าย 60% เพื่อได้ยอดภาษีฟรีแลนซ์ที่ถูกต้อง:</p>
+      <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold">
+        คำนวณภาษีของฉัน →
+      </a>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">แหล่งข้อมูลที่เกี่ยวข้อง</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">📚 คู่มือคำนวณภาษี</span>
+          <p class="text-gray-600 text-sm mt-2">คำแนะนำทีละขั้นตอน</p>
+        </a>
+        <a href="/ตรวจสอบหักลดหย่อนภาษี/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">✅ เช็กลิสต์ลดหย่อน</span>
+          <p class="text-gray-600 text-sm mt-2">ค่าลดหย่อนที่มีสิทธิ์ทั้งหมด</p>
+        </a>
+        <a href="/ผิดพลาดภาษีทั่วไป/" class="p-4 bg-white border border-gray-200 rounded-lg hover:border-primary-500 transition-colors">
+          <span class="font-semibold text-gray-900">❌ ข้อผิดพลาดที่พบบ่อย</span>
+          <p class="text-gray-600 text-sm mt-2">หลีกเลี่ยง 8 ข้อผิดพลาดนี้</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

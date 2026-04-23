@@ -1,12 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const pageTitle = 'คำนวณต้นทุนยานพาหนะ | Calculator Thailand';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'เปรียบเทียบไรด์แชร์ vs รถส่วนตัว 2569 ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนรถยนต์';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/calc/`;
+
+const faqData = [
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลที่ต้องการในช่องที่กำหนด แล้วกดปุ่มคำนวณ ผลลัพธ์จะแสดงทันทีพร้อมรายละเอียด' },
+  { question: 'ผลลัพธ์ที่ได้ถูกต้องแค่ไหน?', answer: 'เครื่องคำนวณใช้สูตรมาตรฐานและข้อมูลอัปเดต ผลลัพธ์เป็นการประมาณการเพื่อช่วยวางแผน ควรปรึกษาผู้เชี่ยวชาญสำหรับการตัดสินใจสำคัญ' },
+  { question: 'ข้อมูลที่ใช้คำนวณมาจากไหน?', answer: 'อิงจากกฎหมายและระเบียบปัจจุบันของประเทศไทย อัตราที่ประกาศโดยหน่วยงานรัฐ และสูตรมาตรฐานที่ใช้กันทั่วไป' },
+  { question: 'มีค่าใช้จ่ายในการใช้งานไหม?', answer: 'ใช้งานฟรีทั้งหมด ไม่ต้องสมัครสมาชิก ไม่มีค่าธรรมเนียม เครื่องคำนวณทั้งหมดบน Kamnuanlek ให้บริการฟรี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน">
-  <article><h1>คำนวณต้นทุน</h1>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน">  <article><h1>คำนวณต้นทุน</h1>
     <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
       <input type="number" id="amount" placeholder="0" value="100000" class="w-full px-3 py-2 border mb-4 rounded-md" />
       <button id="btn" class="w-full bg-orange-600 text-white py-2 rounded-md">คำนวณ</button>

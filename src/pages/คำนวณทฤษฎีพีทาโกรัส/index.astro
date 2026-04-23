@@ -1,0 +1,288 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณทฤษฎีพีทาโกรัส หาด้าน a b c ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณทฤษฎีพีทาโกรัส a²+b²=c² หาด้านที่หายไป ตรวจสอบสามเหลี่ยมมุมฉาก ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณทฤษฎีพีทาโกรัส/`;
+
+const faqData = [
+  {
+    question: 'ทฤษฎีพีทาโกรัสคืออะไร?',
+    answer: 'ทฤษฎีพีทาโกรัสระบุว่าในสามเหลี่ยมมุมฉาก ผลรวมของกำลังสองของด้านประกอบมุมฉาก (a และ b) เท่ากับกำลังสองของด้านตรงข้ามมุมฉาก (c) หรือ a² + b² = c² โดย c คือด้านยาวที่สุด (ด้านตรง)',
+  },
+  {
+    question: 'สามเหลี่ยม 3-4-5 คืออะไร?',
+    answer: 'สามเหลี่ยม 3-4-5 เป็นสามเหลี่ยมพีทาโกรัสที่ง่ายที่สุด: 3² + 4² = 9 + 16 = 25 = 5² ใช้บ่อยในงานก่อสร้างเพื่อตรวจสอบมุมฉาก โดยวัด 3 หน่วย 4 หน่วย และ 5 หน่วยตามลำดับ',
+  },
+  {
+    question: 'ทฤษฎีพีทาโกรัสใช้ในชีวิตจริงได้อย่างไร?',
+    answer: 'ใช้ในงานก่อสร้างเพื่อวัดมุมฉากและความยาวแนวทแยง ในนำทางเพื่อคำนวณระยะทางตรง ในการออกแบบและวิศวกรรม ตัวอย่างเช่น หาความยาวบันได คำนวณระยะห่างระหว่างสองจุดบนแผนที่ หรือตรวจสอบความได้ฉากของผนัง',
+  },
+  {
+    question: 'สามเหลี่ยมพีทาโกรัส (Pythagorean triple) คืออะไร?',
+    answer: 'สามเหลี่ยมพีทาโกรัสคือชุดจำนวนเต็มสามตัว (a, b, c) ที่สอดคล้องกับ a² + b² = c² เช่น (3,4,5), (5,12,13), (8,15,17), (7,24,25) ชุดเหล่านี้ใช้ได้กับสามเหลี่ยมมุมฉากที่มีด้านเป็นจำนวนเต็ม',
+  },
+  {
+    question: 'ทฤษฎีพีทาโกรัสใช้ได้กับสามเหลี่ยมทุกแบบไหม?',
+    answer: 'ไม่ ทฤษฎีพีทาโกรัสใช้ได้เฉพาะกับสามเหลี่ยมมุมฉาก (90 องศา) เท่านั้น สำหรับสามเหลี่ยมแบบอื่นต้องใช้กฎโคไซน์ (Law of Cosines): c² = a² + b² − 2ab·cos(C)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณทฤษฎีพีทาโกรัส',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณทฤษฎีพีทาโกรัส a²+b²=c²',
+  description: 'ขั้นตอนการหาด้านที่หายไปของสามเหลี่ยมมุมฉาก และตรวจสอบว่าสามเหลี่ยมเป็นมุมฉากหรือไม่',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกโหมดการคำนวณ',
+      text: 'เลือกว่าต้องการ "หาด้านตรง c" เมื่อรู้ a และ b, "หาด้านประกอบ a" เมื่อรู้ b และ c หรือ "ตรวจสอบสามเหลี่ยมมุมฉาก" เมื่อรู้ทุกด้าน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกความยาวด้านที่รู้',
+      text: 'ใส่ตัวเลขความยาวด้านที่ทราบ ทุกด้านต้องเป็นจำนวนบวก และสำหรับหาด้าน a ต้องมี c > b',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดคำนวณ',
+      text: 'กดปุ่ม "คำนวณ" เพื่อดูผลลัพธ์พร้อมสูตรที่ใช้ ผลลัพธ์แสดงทศนิยม 4 ตำแหน่ง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบและนำไปใช้',
+      text: 'สำหรับการตรวจสอบสามเหลี่ยม ถ้า a²+b² ≈ c² (ต่างกันน้อยกว่า 0.001) แสดงว่าเป็นสามเหลี่ยมมุมฉาก',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณทฤษฎีพีทาโกรัส">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณด้านสามเหลี่ยมมุมฉากด้วยทฤษฎีพีทาโกรัส</p>
+      <p class="mt-1 text-sm text-slate-700">หาด้านตรง c, หาด้านประกอบ a หรือ b, และตรวจสอบสามเหลี่ยมมุมฉาก</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณทฤษฎีพีทาโกรัส a²+b²=c² ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณด้านสามเหลี่ยมมุมฉากด้วยสูตร a² + b² = c² ทั้งหาด้านตรง (c) จากด้านประกอบ (a, b)
+      หาด้านประกอบจากด้านตรงและด้านประกอบอีกด้าน และตรวจสอบว่าสามเหลี่ยมเป็นมุมฉากหรือไม่
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'สสวท. (SciMath): สามเหลี่ยมและทฤษฎีพีทาโกรัส',
+        'กรมวิชาการ กระทรวงศึกษาธิการ: หลักสูตรคณิตศาสตร์',
+      ]}
+      assumptions={[
+        'ผลลัพธ์แสดงทศนิยม 4 ตำแหน่ง',
+        'การตรวจสอบสามเหลี่ยมมุมฉากใช้ความคลาดเคลื่อน ±0.001',
+      ]}
+      references={[
+        {
+          label: 'SciMath: ทฤษฎีพีทาโกรัสและการประยุกต์',
+          href: 'https://www.scimath.org/article-mathematics/item/11474-3',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: Find c -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) หาด้านตรง c จาก a และ b</h2>
+      <p class="text-sm text-gray-500 mb-4">สูตร: c = √(a² + b²) ตัวอย่าง: a=3, b=4 → c=5</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="pyth-a" class="block text-sm font-medium text-gray-700 mb-1">ด้าน a</label>
+          <input id="pyth-a" type="text" inputmode="decimal" placeholder="เช่น 3" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="pyth-b" class="block text-sm font-medium text-gray-700 mb-1">ด้าน b</label>
+          <input id="pyth-b" type="text" inputmode="decimal" placeholder="เช่น 4" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-pyth-c" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ c</button>
+        </div>
+      </div>
+      <p id="pyth-c-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="pyth-c-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="pyth-c-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: Find a -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) หาด้านประกอบ a จาก b และ c</h2>
+      <p class="text-sm text-gray-500 mb-4">สูตร: a = √(c² − b²) โดย c ต้องมากกว่า b</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="pyth-b2" class="block text-sm font-medium text-gray-700 mb-1">ด้าน b</label>
+          <input id="pyth-b2" type="text" inputmode="decimal" placeholder="เช่น 4" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="pyth-c2" class="block text-sm font-medium text-gray-700 mb-1">ด้านตรง c</label>
+          <input id="pyth-c2" type="text" inputmode="decimal" placeholder="เช่น 5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-pyth-a" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ a</button>
+        </div>
+      </div>
+      <p id="pyth-a-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="pyth-a-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="pyth-a-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 3: Verify -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">3) ตรวจสอบสามเหลี่ยมมุมฉาก</h2>
+      <p class="text-sm text-gray-500 mb-4">ตรวจสอบว่า a² + b² = c² หรือไม่ (ด้านยาวที่สุดใส่ใน c)</p>
+      <div class="grid gap-3 sm:grid-cols-4">
+        <div>
+          <label for="check-a" class="block text-sm font-medium text-gray-700 mb-1">ด้าน a</label>
+          <input id="check-a" type="text" inputmode="decimal" placeholder="เช่น 5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="check-b" class="block text-sm font-medium text-gray-700 mb-1">ด้าน b</label>
+          <input id="check-b" type="text" inputmode="decimal" placeholder="เช่น 12" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="check-c" class="block text-sm font-medium text-gray-700 mb-1">ด้านยาวสุด c</label>
+          <input id="check-c" type="text" inputmode="decimal" placeholder="เช่น 13" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-check" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">ตรวจสอบ</button>
+        </div>
+      </div>
+      <p id="check-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="check-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="check-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#check-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สามเหลี่ยมพีทาโกรัสที่ควรจำ</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">a</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">b</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">c</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">4</td><td class="px-4 py-2">5</td><td class="px-4 py-2">ง่ายที่สุด ใช้งานก่อสร้าง</td></tr>
+            <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">12</td><td class="px-4 py-2">13</td><td class="px-4 py-2">ชุดที่สอง</td></tr>
+            <tr><td class="px-4 py-2">8</td><td class="px-4 py-2">15</td><td class="px-4 py-2">17</td><td class="px-4 py-2">ชุดที่สาม</td></tr>
+            <tr><td class="px-4 py-2">7</td><td class="px-4 py-2">24</td><td class="px-4 py-2">25</td><td class="px-4 py-2">ชุดที่สี่</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณทฤษฎีพีทาโกรัส/" />
+    <RelatedCalculators currentHref="/คำนวณทฤษฎีพีทาโกรัส/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const showResult = (containerId, valueId, text) => {
+    const c = document.getElementById(containerId);
+    const v = document.getElementById(valueId);
+    if (!c || !v) return;
+    v.textContent = text;
+    c.classList.remove('hidden');
+  };
+
+  document.getElementById('btn-pyth-c')?.addEventListener('click', () => {
+    setError('pyth-c-error', '');
+    const a = parseNum(document.getElementById('pyth-a')?.value);
+    const b = parseNum(document.getElementById('pyth-b')?.value);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) { setError('pyth-c-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    if (a <= 0 || b <= 0) { setError('pyth-c-error', 'ด้านทุกด้านต้องมากกว่า 0'); return; }
+    const c = Math.sqrt(a * a + b * b);
+    showResult('pyth-c-result', 'pyth-c-result-value', `c = √(${a}² + ${b}²) = √${a*a+b*b} = ${c.toFixed(4)}`);
+  });
+
+  document.getElementById('btn-pyth-a')?.addEventListener('click', () => {
+    setError('pyth-a-error', '');
+    const b = parseNum(document.getElementById('pyth-b2')?.value);
+    const c = parseNum(document.getElementById('pyth-c2')?.value);
+    if (!Number.isFinite(b) || !Number.isFinite(c)) { setError('pyth-a-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    if (b <= 0 || c <= 0) { setError('pyth-a-error', 'ด้านทุกด้านต้องมากกว่า 0'); return; }
+    if (c <= b) { setError('pyth-a-error', 'ด้านตรง c ต้องยาวกว่าด้านประกอบ b'); return; }
+    const a = Math.sqrt(c * c - b * b);
+    showResult('pyth-a-result', 'pyth-a-result-value', `a = √(${c}² − ${b}²) = √${c*c-b*b} = ${a.toFixed(4)}`);
+  });
+
+  document.getElementById('btn-check')?.addEventListener('click', () => {
+    setError('check-error', '');
+    const a = parseNum(document.getElementById('check-a')?.value);
+    const b = parseNum(document.getElementById('check-b')?.value);
+    const c = parseNum(document.getElementById('check-c')?.value);
+    if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c)) { setError('check-error', 'กรุณากรอกตัวเลขให้ครบทั้ง 3 ด้าน'); return; }
+    if (a <= 0 || b <= 0 || c <= 0) { setError('check-error', 'ด้านทุกด้านต้องมากกว่า 0'); return; }
+    const lhs = a * a + b * b;
+    const rhs = c * c;
+    const diff = Math.abs(lhs - rhs);
+    const isRight = diff < 0.001;
+    const msg = isRight
+      ? `ใช่! เป็นสามเหลี่ยมมุมฉาก (${a}² + ${b}² = ${lhs.toFixed(4)} ≈ ${c}² = ${rhs.toFixed(4)})`
+      : `ไม่ใช่สามเหลี่ยมมุมฉาก (${a}² + ${b}² = ${lhs.toFixed(4)} ≠ ${c}² = ${rhs.toFixed(4)}, ผลต่าง = ${diff.toFixed(4)})`;
+    showResult('check-result', 'check-result-value', msg);
+  });
+</script>

@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาษีหัก ณ ที่จ่ายฟรีแลนซ์ 2569 | 3% ค่าบริการ | Calculator Thailand';
+const pageTitle = 'คำนวณภาษีหัก ณ ที่จ่ายฟรีแลนซ์ 2569 | 3% ค่าบริการ | Kamnuanlek';
 const pageDescription = 'คำนวณภาษีหัก ณ ที่จ่าย 3% สำหรับฟรีแลนซ์ แสดงยอดก่อน/หลังหักภาษี สร้างตัวเลขสำหรับออกใบแจ้งหนี้ และคำนวณภาษีหัก ณ ที่จ่ายที่ต้องนำส่ง ปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีหัก-ณ-ที่จ่ายฟรีแลนซ์/`;
@@ -56,10 +57,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีหัก-ณ-ที่จ่ายฟรีแลนซ์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">สำหรับฟรีแลนซ์และผู้ว่าจ้าง</p>
       <p class="mt-1 text-sm text-slate-700">คำนวณภาษีหัก ณ ที่จ่าย 3% ตามประเภท 40(2)</p>
@@ -159,18 +157,16 @@ const jsonLdFaq = {
       <p>ผู้จ่ายนำส่ง 900 บาทให้กรมสรรพากรแทนฟรีแลนซ์ เมื่อปิดปีภาษี ฟรีแลนซ์นำ 900 บาทนี้หักออกจากภาษีที่ต้องชำระ</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณภาษีหัก-ณ-ที่จ่ายฟรีแลนซ์/" />
     <RelatedCalculators currentHref="/คำนวณภาษีหัก-ณ-ที่จ่ายฟรีแลนซ์/" />
 

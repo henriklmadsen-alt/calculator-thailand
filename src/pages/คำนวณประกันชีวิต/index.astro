@@ -4,8 +4,9 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเบี้ยประกันชีวิต 2569 | เปรียบเทียบสะสมทรัพย์ ตลอดชีพ ชั่วระยะเวลา ฟรี | Calculator Thailand';
+const pageTitle = 'คำนวณเบี้ยประกันชีวิต 2569 | เปรียบเทียบสะสมทรัพย์ ตลอดชีพ ชั่วระยะเวลา ฟรี | Kamnuanlek';
 const pageDescription = 'คำนวณเบี้ยประกันชีวิต 2569 เปรียบเทียบแผนสะสมทรัพย์ ตลอดชีพ ชั่วระยะเวลา ตามอายุ เพศ ทุนประกัน ระยะสัญญา ดูเบี้ยรายเดือน รายปี สิทธิลดหย่อนภาษี ฟรี';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณประกันชีวิต/`;
@@ -54,11 +55,24 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันชีวิต',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันชีวิต เปรียบเทียบแผนสะสมทรัพย์ ตลอดชีพ และชั่วระยะเวลา',
+  step: [
+    { '@type': 'HowToStep', name: 'เลือกประเภทกรมธรรม์', text: 'เลือกแผนประกันที่ต้องการ: ตลอดชีพ (Whole Life) คุ้มครองตลอดชีวิต, สะสมทรัพย์ (Endowment) ได้เงินคืนครบสัญญา หรือชั่วระยะเวลา (Term) เบี้ยถูกสุด' },
+    { '@type': 'HowToStep', name: 'กรอกทุนประกัน (บาท)', text: 'ระบุวงเงินคุ้มครองชีวิตที่ต้องการ แนะนำ 5–10 เท่าของรายได้ต่อปี เช่น รายได้ 500,000 บาท/ปี ควรมีทุนประกัน 2,500,000–5,000,000 บาท' },
+    { '@type': 'HowToStep', name: 'ระบุอายุและเพศ', text: 'กรอกอายุปัจจุบัน (1–65 ปี) และเลือกเพศ เนื่องจากเพศหญิงมีอายุขัยยาวกว่าจึงเบี้ยถูกกว่าเพศชายประมาณ 15–20%' },
+    { '@type': 'HowToStep', name: 'เลือกระยะเวลาชำระเบี้ย', text: 'เลือกระยะสัญญา 10, 15, 20, 25 หรือ 30 ปี และงวดชำระเบี้ย: รายปี ราย 6 เดือน ราย 3 เดือน หรือรายเดือน' },
+    { '@type': 'HowToStep', name: 'กดคำนวณ — ดูเบี้ยประมาณการรายปี/รายเดือน', text: 'กดปุ่ม "คำนวณเบี้ยประกันชีวิต" เพื่อเปรียบเทียบเบี้ยทั้ง 3 แผนพร้อมสิทธิลดหย่อนภาษีสูงสุด 100,000 บาท/ปี' },
+  ],
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันชีวิต">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันชีวิต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -346,22 +360,12 @@ const jsonLdFaq = {
 
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
 
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณประกันชีวิต/" />

@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณภาระผู้ค้ำประกัน 2569 — ความเสี่ยงและผลกระทบ | Calculator Thailand';
+const pageTitle = 'คำนวณภาระผู้ค้ำประกัน 2569 — ความเสี่ยงและผลกระทบ | Kamnuanlek';
 const pageDescription = 'คำนวณภาระและความเสี่ยงของผู้ค้ำประกันสินเชื่อ หากผู้กู้ผิดนัดชำระ ผู้ค้ำต้องรับผิดชอบเท่าไร ประเมินก่อนตัดสินใจค้ำประกันให้ผู้อื่น';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาระผู้ค้ำประกัน/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาระผู้ค้ำประกัน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณภาระผู้ค้ำประกัน — ประเมินความเสี่ยงก่อนค้ำ
     </h1>
@@ -124,17 +122,7 @@ const jsonLdFaq = {
       <p>ผู้ค้ำประกันในสัญญากู้ยืมมีภาระผูกพันตามกฎหมาย ตาม ป.พ.พ. มาตรา 680-701 ผู้ค้ำรับผิดชอบหนี้ทั้งหมดหากผู้กู้ผิดนัด ก่อนค้ำควรตรวจสอบความสามารถทางการเงินของผู้กู้ วางแผนรับมือหากต้องชำระแทน และทำความเข้าใจเงื่อนไขสัญญาทั้งหมด</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณภาระผู้ค้ำประกัน/" />
     <RelatedCalculators currentHref="/คำนวณภาระผู้ค้ำประกัน/" />

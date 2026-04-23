@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าธรรมเนียมศาล 2569 | ค่าขึ้นศาลคดีแพ่ง อาญา แรงงาน | Calculator Thailand';
+const pageTitle = 'คำนวณค่าธรรมเนียมศาล 2569 | ค่าขึ้นศาลคดีแพ่ง อาญา แรงงาน | Kamnuanlek';
 const pageDescription = 'คำนวณค่าธรรมเนียมศาลออนไลน์ฟรี ค่าขึ้นศาลคดีแพ่ง คดีอาญา ศาลแรงงาน ตามประมวลกฎหมายวิธีพิจารณาความแพ่ง ทั้งศาลชั้นต้น อุทธรณ์ ฎีกา อัปเดตปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมศาล/`;
@@ -56,10 +57,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมศาล">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <!-- Info banner -->
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ข้อมูลสำคัญ</p>
@@ -337,21 +335,7 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณค่าธรรมเนียมศาล/" />
     <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมศาล/" />

@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/เลือกเครื่องคำนวณ/`;
+
+const scenarios = [
+  {
+    q: 'ต้องการคำนวณภาษีเงินได้บุคคลธรรมดา',
+    a: 'เครื่องคำนวณภาษีเงินได้',
+    link: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+    reason: 'คำนวณภาษีประจำปีพร้อมหักลดหย่อนทุกประเภท ค่าใช้จ่าย ประกัน กบข. และอื่นๆ',
+    icon: '🧾',
+  },
+  {
+    q: 'อยากรู้เงินเดือนสุทธิที่รับมือจริง',
+    a: 'เครื่องคำนวณเงินเดือนสุทธิ',
+    link: '/คำนวณเงินเดือนสุทธิ/',
+    reason: 'แสดงเงินที่รับจริงหลังหักประกันสังคมและภาษีเงินได้ ครบทุกมาตรา',
+    icon: '💰',
+  },
+  {
+    q: 'กำลังพิจารณากู้ซื้อบ้าน',
+    a: 'เครื่องคำนวณผ่อนบ้าน',
+    link: '/คำนวณผ่อนบ้าน/',
+    reason: 'คำนวณค่างวดรายเดือน ดอกเบี้ยรวม และรายได้ขั้นต่ำที่ต้องมีตามเกณฑ์ธนาคาร',
+    icon: '🏠',
+  },
+  {
+    q: 'อยากซื้อรถแต่ยังไม่รู้ค่างวด',
+    a: 'เครื่องคำนวณผ่อนรถ',
+    link: '/คำนวณผ่อนรถ/',
+    reason: 'คำนวณค่างวดรถยนต์ เปรียบเทียบดาวน์ต่างๆ และดูดอกเบี้ยที่แท้จริง',
+    icon: '🚗',
+  },
+  {
+    q: 'ต้องการเปรียบเทียบสินเชื่อหลายแห่ง',
+    a: 'เปรียบเทียบสินเชื่อ',
+    link: '/เปรียบเทียบสินเชื่อ/',
+    reason: 'เทียบสินเชื่อบ้าน รถ และบุคคลคู่กัน ดูดอกเบี้ยและค่างวดแบบเข้าใจง่าย',
+    icon: '⚖️',
+  },
+  {
+    q: 'มีเงินออม อยากรู้ดอกเบี้ยที่ได้',
+    a: 'เครื่องคำนวณดอกเบี้ยเงินฝาก',
+    link: '/คำนวณดอกเบี้ยเงินฝาก/',
+    reason: 'คำนวณดอกเบี้ยฝากประจำและออมทรัพย์ เปรียบเทียบผลตอบแทนก่อนตัดสินใจ',
+    icon: '🏦',
+  },
+  {
+    q: 'ทำธุรกิจ ต้องการคำนวณ VAT',
+    a: 'เครื่องคำนวณภาษีมูลค่าเพิ่ม',
+    link: '/คำนวณมูลค่าเพิ่ม/',
+    reason: 'บวก VAT 7% เข้าราคาหรือถอด VAT ออกจากราคารวม พร้อมแสดงรายละเอียดครบถ้วน',
+    icon: '🧮',
+  },
+  {
+    q: 'ใช้บัตรเครดิต อยากรู้ดอกเบี้ยที่แท้จริง',
+    a: 'เครื่องคำนวณดอกเบี้ยบัตรเครดิต',
+    link: '/คำนวณดอกเบี้ยบัตรเครดิต/',
+    reason: 'คำนวณดอกเบี้ยสะสมและเห็นว่าการจ่ายขั้นต่ำทำให้หนี้พอกได้อย่างไร',
+    icon: '💳',
+  },
+  {
+    q: 'ไม่รู้ว่าต้องใช้เครื่องคำนวณภาษีตัวไหน',
+    a: 'คู่มือเปรียบเทียบเครื่องคำนวณภาษี',
+    link: '/เปรียบเทียบเครื่องคำนวณภาษี/',
+    reason: 'อธิบายความแตกต่างของภาษีเงินได้ VAT ภาษีนิติบุคคล และภาษีหัก ณ ที่จ่าย',
+    icon: '📊',
+  },
+  {
+    q: 'อยากเรียนรู้วิธีคำนวณภาษีทีละขั้นตอน',
+    a: 'คู่มือคำนวณภาษีไทย',
+    link: '/วิธีคำนวณภาษีเงินได้ไทย/',
+    reason: 'คำแนะนำแบบ step-by-step พร้อมตารางขั้นภาษี ตัวอย่างจริง และเคล็ดลับลดหย่อน',
+    icon: '📚',
+  },
+  {
+    q: 'กังวลว่าตัวเองเสียภาษีเกินจริง',
+    a: 'ข้อผิดพลาดภาษีที่พบบ่อย',
+    link: '/ผิดพลาดภาษีทั่วไป/',
+    reason: '8 ข้อผิดพลาดที่คนไทยทำบ่อยเมื่อคำนวณภาษี พร้อมวิธีแก้และประหยัดเงิน',
+    icon: '⚠️',
+  },
+  {
+    q: 'ต้องการตรวจสอบว่าลดหย่อนได้อะไรบ้าง',
+    a: 'เช็กลิสต์หักลดหย่อนภาษี',
+    link: '/ตรวจสอบหักลดหย่อนภาษี/',
+    reason: 'รายการลดหย่อนครบทุกประเภท ส่วนตัว ประกัน กองทุน และการกุศล อัปเดตปี 2569',
+    icon: '✅',
+  },
+  {
+    q: 'ต้องการคำนวณค่าโอนบ้าน',
+    a: 'เครื่องคำนวณค่าธรรมเนียมโอนบ้าน',
+    link: '/คำนวณค่าธรรมเนียมโอนบ้าน/',
+    reason: 'คำนวณค่าโอน ค่าจดจำนอง อากรแสตมป์ และภาษีธุรกิจเฉพาะ ครบในหน้าเดียว',
+    icon: '🔑',
+  },
+  {
+    q: 'อยากวางแผนเกษียณ',
+    a: 'เครื่องคำนวณเงินเกษียณ',
+    link: '/คำนวณเงินเกษียณ/',
+    reason: 'คำนวณเงินที่ต้องมีเมื่อเกษียณ เทียบกับเงินออมปัจจุบัน และดูว่าต้องออมเพิ่มเท่าไร',
+    icon: '🌅',
+  },
+];
+
+const categories = [
+  { name: 'ภาษีและการเงิน', href: '/หมวดหมู่/ภาษีและการเงิน/', icon: '🧾' },
+  { name: 'สินเชื่อและบ้าน', href: '/หมวดหมู่/สินเชื่อและบ้าน/', icon: '🏠' },
+  { name: 'เงินเดือนและแรงงาน', href: '/หมวดหมู่/เงินเดือนและแรงงาน/', icon: '💼' },
+  { name: 'ธุรกิจและการลงทุน', href: '/หมวดหมู่/ธุรกิจและการลงทุน/', icon: '📈' },
+  { name: 'สุขภาพและชีวิต', href: '/หมวดหมู่/สุขภาพและชีวิต/', icon: '❤️' },
+  { name: 'ยานพาหนะ', href: '/หมวดหมู่/ยานพาหนะ/', icon: '🚗' },
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: scenarios.map((s) => ({
+    '@type': 'Question',
+    name: s.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: `${s.a}: ${s.reason}`,
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title="ช่วยเลือกเครื่องคำนวณ — บอกสถานการณ์ แล้วเราจะแนะนำ | Kamnuanlek"
+  description="ไม่แน่ใจว่าต้องใช้เครื่องคำนวณตัวไหน? บอกสถานการณ์ของคุณแล้วเราแนะนำเครื่องคำนวณที่เหมาะสมที่สุด ภาษี สินเชื่อ เงินเดือน ธุรกิจ ครบทุกเรื่องการเงินไทย"
+  canonical={canonical}
+  pageName="เลือกเครื่องคำนวณ"
+>
+  <script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "หน้าหลัก", "item": "https://www.kamnuanlek.com/"},
+      {"@type": "ListItem", "position": 2, "name": "ช่วยเลือกเครื่องคำนวณ — บอกสถานการณ์ แล้วเราจะแนะนำ", "item": "https://www.kamnuanlek.com/เลือกเครื่องคำนวณ/"}
+    ]
+  }</script>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-1.5 flex-wrap">
+      <li><a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a></li>
+      <li class="text-gray-300">/</li>
+      <li class="text-gray-700 font-medium">ช่วยเลือกเครื่องคำนวณ</li>
+    </ol>
+  </nav>
+
+  <div class="max-w-4xl">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">ช่วยเลือกเครื่องคำนวณ</h1>
+    <p class="text-gray-600 mb-8 leading-relaxed">
+      ไม่แน่ใจว่าต้องใช้เครื่องคำนวณตัวไหน? เลือกสถานการณ์ที่ตรงกับคุณแล้วเราจะพาไปยังเครื่องมือที่เหมาะที่สุด
+    </p>
+
+    <!-- Scenario Cards -->
+    <div class="space-y-3 mb-12">
+      {scenarios.map((item, idx) => (
+        <a
+          href={item.link}
+          class="flex items-start gap-4 p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-primary-200 hover:shadow-md transition-all group"
+        >
+          <div class="flex-shrink-0 w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center text-xl">
+            {item.icon}
+          </div>
+          <div class="flex-grow min-w-0">
+            <p class="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors mb-1">
+              {item.q}
+            </p>
+            <p class="text-sm text-gray-500 mb-2">{item.reason}</p>
+            <span class="inline-flex items-center gap-1 text-sm font-medium text-primary-600">
+              → {item.a}
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Browse by Category -->
+    <div class="mb-10">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">หรือเรียกดูตามหมวดหมู่</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {categories.map((cat) => (
+          <a
+            href={cat.href}
+            class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-primary-200 hover:shadow-md transition-all"
+          >
+            <span class="text-2xl">{cat.icon}</span>
+            <span class="font-medium text-gray-800 text-sm">{cat.name}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="p-6 bg-primary-50 rounded-2xl border border-primary-100">
+      <h2 class="font-bold text-gray-900 mb-3">ลิงก์ด่วน</h2>
+      <div class="flex flex-wrap gap-3">
+        <a href="/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">หน้าแรก — เครื่องคำนวณทั้งหมด</a>
+        <a href="/เปรียบเทียบเครื่องคำนวณภาษี/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">เปรียบเทียบเครื่องคำนวณภาษี</a>
+        <a href="/บทความ/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">บทความการเงิน</a>
+        <a href="/วิธีคำนวณภาษีเงินได้ไทย/" class="text-sm text-primary-700 hover:text-primary-900 hover:underline">คู่มือภาษีเงินได้</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

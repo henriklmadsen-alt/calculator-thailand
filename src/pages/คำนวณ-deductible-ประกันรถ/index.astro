@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณ Deductible ประกันรถยนต์ | เบี้ยสูง vs. จ่ายน้อย | Calculator Thailand';
+const pageTitle = 'คำนวณ Deductible ประกันรถยนต์ | เบี้ยสูง vs. จ่ายน้อย | Kamnuanlek';
 const pageDescription = 'คำนวณและเปรียบเทียบประโยชน์ของ deductible ระดับต่างๆ สำหรับประกันรถยนต์';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-deductible-ประกันรถ/`;
@@ -49,11 +50,24 @@ const jsonLdFaq = {
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณ Deductible ประกันรถยนต์ที่เหมาะสม',
+  description: 'ขั้นตอนการเปรียบเทียบและเลือก Deductible (ค่าเสียหายส่วนแรก) สำหรับประกันรถยนต์ที่คุ้มค่าที่สุด',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุวงเงินเคลมที่คาดหวัง', text: 'ประเมินมูลค่าความเสียหายโดยเฉลี่ยต่อครั้งจากประสบการณ์การใช้รถ เช่น ค่าซ่อมทั่วไป 20,000–50,000 บาท' },
+    { '@type': 'HowToStep', name: 'กรอก Deductible ที่ต้องการเปรียบเทียบ', text: 'ใส่ระดับ Deductible ที่สนใจ เช่น 2,000 บาท หรือ 5,000 บาท และเบี้ยประกันที่ลดลงเมื่อเลือก Deductible สูงขึ้น' },
+    { '@type': 'HowToStep', name: 'คำนวณ Break-even Point', text: 'หาจุดคุ้มทุน: จำนวนปีที่ประหยัดเบี้ยสะสมเท่ากับ Deductible ส่วนต่าง ยิ่งคาดว่าจะไม่เคลม ยิ่งควรเลือก Deductible สูง' },
+    { '@type': 'HowToStep', name: 'พิจารณาพฤติกรรมและเงินสำรอง', text: 'ถ้าขับรถระมัดระวังและมีเงินสำรองจ่าย Deductible ได้ทันที ให้เลือก Deductible สูงเพื่อประหยัดเบี้ยระยะยาว' },
+    { '@type': 'HowToStep', name: 'เลือก Deductible ที่เหมาะกับคุณ', text: 'เปรียบเทียบ Net Benefit และ Annual Cost จากผลคำนวณ แล้วตัดสินใจเลือกระดับ Deductible ที่คุ้มค่าที่สุดในระยะยาว' },
+  ],
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ Deductible ประกันรถยนต์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ Deductible ประกันรถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -197,33 +211,30 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <AffiliateCard
       category="insurance"
-      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
-      partnerName="EasySunday"
-      ctaText="เปรียบเทียบประกันรถยนต์"
-      subtext="เปรียบเทียบประกันชั้น 1/2+/2 จากหลายบริษัท AXA, MSIG, Chubb และอื่น ๆ"
+      affiliateUrl="/go/tipinsure/?sub_id=คำนวณ-deductible-ประกันรถ"
+      partnerName="TIPINSURE"
+      ctaText="เปรียบเทียบประกันรถผ่าน TIPINSURE"
+      subtext="เปรียบเทียบแผนประกันรถจากหลายบริษัท"
     />
 
     <!-- Related -->
     <RelatedArticles currentHref="/คำนวณ-deductible-ประกันรถ/" />
     <RelatedCalculators currentHref="/คำนวณ-deductible-ประกันรถ/" />
+
+    <!-- Authority Links -->
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/non-life/motor" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">สำนักงาน คปภ. — ประกันภัยรถยนต์</a> — ข้อมูลประกันรถยนต์ภาคสมัครใจและเงื่อนไขกรมธรรม์มาตรฐาน</li>
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/non-life/motor/motor-voluntary" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ประกันภัยรถยนต์ภาคสมัครใจ — คปภ.</a></li>
+        <li><a href="https://www.oic.or.th/th/consumer/knowledge/car_insurance" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:underline">ข้อมูลประกันรถยนต์จากสำนักงาน คปภ.</a> — ความรู้ประกันรถยนต์สำหรับผู้บริโภค</li>
+        <li><a href="https://www.oic.or.th/th/consumer/knowledge/vehicle_act" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">พรบ. รถยนต์ภาคบังคับ — ข้อมูลจาก คปภ.</a> — ข้อมูล พ.ร.บ. ประกันภัยรถยนต์ภาคบังคับ</li>
+      </ul>
+    </div>
 
     <!-- Disclaimer -->
     <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">

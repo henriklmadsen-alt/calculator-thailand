@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าไฟโซลาร์เซลล์ 2569 | ประหยัดค่าไฟ คืนทุนกี่ปี | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณค่าไฟโซลาร์เซลล์ 2569 | ประหยัดค่าไฟ คืนทุนกี่ปี | Kamnuanlek';
 const pageDescription = 'เครื่องคำนวณเงินออมโซลาร์เซลล์ คำนวณค่าไฟที่ประหยัดได้ ระยะคืนทุน ROI และ CO₂ ที่ลดได้ สำหรับบ้านอยู่อาศัยในประเทศไทย อัปเดตปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าไฟโซลาร์เซลล์/`;
@@ -35,6 +36,10 @@ const faqData = [
     answer:
       'เฉลี่ย 4.0-4.8 ชม./วัน ภาคอีสานได้มากสุด (~4.8) ภาคใต้ได้น้อยสุด (~4.0) เนื่องจากมีเมฆมากกว่า กรุงเทพฯ และภาคกลางเฉลี่ย ~4.5 ชม./วัน',
   },
+,
+  { question: 'ค่าไฟฟ้าในไทยใช้อัตราแบบไหน?', answer: 'ใช้อัตราก้าวหน้า (Progressive Rate) — ยิ่งใช้มากยิ่งแพงต่อหน่วย MEA/PEA มีอัตรา 3 ช่วง ตามประกาศคณะกรรมการกำกับกิจการพลังงาน (กกพ.) บวกค่า FT (Fuel Tariff) ที่เปลี่ยนทุก 4 เดือน' },
+  { question: 'ค่า FT คืออะไรและส่งผลต่อค่าไฟอย่างไร?', answer: 'FT (Fuel Adjustment Charge) คือค่าปรับตามต้นทุนเชื้อเพลิง ปรับทุก 4 เดือน ถ้า FT เป็นบวกหมายถึงค่าไฟแพงขึ้น ถ้าเป็นลบถูกลง ส่งผลให้ค่าไฟรายเดือนเปลี่ยนแปลงได้ 5-15%' },
+  { question: 'ประหยัดค่าไฟได้อย่างไรบ้าง?', answer: 'ปิดอุปกรณ์ที่ไม่ใช้งาน (standby กิน 5-10% ของค่าไฟ), ใช้หลอด LED แทนหลอดเก่า, ตั้งแอร์ที่ 25-26°C, ซักผ้าครั้งเดียวให้เต็มถัง, ตรวจสอบฉนวนและซีลประตูตู้เย็น' }
 ];
 
 const jsonLdWebApp = {
@@ -61,10 +66,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าไฟโซลาร์เซลล์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
       <p class="text-sm font-semibold text-green-700">อ้างอิงอัตราปี 2569</p>
       <p class="mt-1 text-sm text-slate-700">คำนวณตามข้อมูลแสงอาทิตย์เฉลี่ยรายภูมิภาค Performance Ratio 80% และค่าเสื่อมสภาพ 0.5%/ปี</p>
@@ -315,17 +317,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณค่าไฟโซลาร์เซลล์/" />
     <RelatedCalculators currentHref="/คำนวณค่าไฟโซลาร์เซลล์/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
       <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h2>

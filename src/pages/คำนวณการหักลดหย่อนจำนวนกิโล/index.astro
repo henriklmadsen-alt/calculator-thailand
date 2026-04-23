@@ -1,12 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const pageTitle = 'คำนวณต้นทุนยานพาหนะ | Calculator Thailand';
-const pageDescription = 'คำนวณต้นทุนรถยนต์';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณหักลดหย่อนค่าเดินทางรถ ตามกิโลเมตร 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณหักลดหย่อนค่าเดินทางรถ ตามจำนวนกิโลเมตร 2569 ฟรี';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/calc/`;
+
+const faqData = [
+  { question: 'ค่าลดหย่อนภาษีที่ใช้บ่อยมีอะไรบ้าง?', answer: 'ค่าลดหย่อนยอดนิยม ได้แก่ ค่าลดหย่อนส่วนตัว 60,000 บาท คู่สมรส 60,000 บาท บุตร 30,000 บาท/คน ประกันชีวิต สูงสุด 100,000 บาท และ LTF/RMF' },
+  { question: 'ยื่นภาษีคืนได้เมื่อไร?', answer: 'ยื่นแบบ ภ.ง.ด.90/91 ได้ตั้งแต่ 1 มกราคม ถึง 31 มีนาคมของทุกปี สำหรับรายได้ปีก่อน หากยื่นทางออนไลน์ได้ขยายเวลาถึง 8 เมษายน' },
+  { question: 'ค่าลดหย่อนทางการแพทย์ใช้ได้เท่าไร?', answer: 'ลดหย่อนค่ารักษาพยาบาลตนเอง คู่สมรส บุตร และบิดามารดาได้ตามจริง สูงสุด 15,000 บาท โดยต้องมีใบเสร็จรับเงินจากสถานพยาบาล' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลรายได้และค่าลดหย่อนที่มี เครื่องคำนวณจะแสดงรายได้สุทธิ ภาษีที่ต้องจ่าย และผลประโยชน์ทางภาษี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน">
-  <article><h1>คำนวณต้นทุน</h1>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน">  <article><h1>คำนวณต้นทุน</h1>
     <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
       <input type="number" id="amount" placeholder="0" value="100000" class="w-full px-3 py-2 border mb-4 rounded-md" />
       <button id="btn" class="w-full bg-orange-600 text-white py-2 rounded-md">คำนวณ</button>

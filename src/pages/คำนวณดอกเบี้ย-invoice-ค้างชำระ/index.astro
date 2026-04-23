@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณดอกเบี้ย Invoice ค้างชำระ ปี 2569 — Late Invoice Interest | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณดอกเบี้ย Invoice ค้างชำระ ปี 2569 — Late Invoice Interest | Kamnuanlek';
 const pageDescription = 'คำนวณดอกเบี้ยค้างชำระสำหรับ Invoice ที่เกินกำหนด ป้อนยอด Invoice อัตราดอกเบี้ยและจำนวนวันค้างชำระ ทราบดอกเบี้ยและยอดรวมทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณดอกเบี้ย-invoice-ค้างชำระ/`;
@@ -22,6 +23,11 @@ const faqData = [
     question: 'ดอกเบี้ยค้างชำระคิดแบบง่ายหรือทบต้น?',
     answer: 'โดยทั่วไปคิดแบบดอกเบี้ยง่าย (Simple Interest) ไม่ทบต้น ตามหลักกฎหมายแพ่งและพาณิชย์ไทย ยกเว้นตกลงกันไว้เป็นอย่างอื่น',
   },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
 ];
 
 const jsonLdWebApp = {
@@ -48,10 +54,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ย-invoice-ค้างชำระ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
       <p class="text-sm font-semibold text-red-700">คำนวณดอกเบี้ย Invoice ค้างชำระ</p>
       <p class="mt-1 text-sm text-slate-700">สูตร: ดอกเบี้ย = ยอด × (อัตรา%/ปี) × (วันค้าง ÷ 365)</p>
@@ -139,19 +142,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณดอกเบี้ย-invoice-ค้างชำระ/" />
     <RelatedCalculators currentHref="/คำนวณดอกเบี้ย-invoice-ค้างชำระ/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> การคำนวณนี้เป็นการประมาณการ อัตราดอกเบี้ยที่ใช้จริงต้องเป็นไปตามที่ระบุในสัญญาและกฎหมายที่บังคับใช้

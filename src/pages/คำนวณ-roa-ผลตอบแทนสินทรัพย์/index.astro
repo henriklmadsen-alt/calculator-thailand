@@ -1,0 +1,265 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ ROA ผลตอบแทนสินทรัพย์ ฟรี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณ ROA (Return on Assets) ผลตอบแทนต่อสินทรัพย์รวม วิเคราะห์ประสิทธิภาพการใช้สินทรัพย์ของบริษัท เปรียบเทียบค่าเฉลี่ย SET ฟรีทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-roa-ผลตอบแทนสินทรัพย์/`;
+
+const faqData = [
+  {
+    question: 'ROA คืออะไร และต่างจาก ROE อย่างไร?',
+    answer: 'ROA (Return on Assets) วัดว่าบริษัทสร้างกำไรได้กี่%จากสินทรัพย์รวมทั้งหมด ไม่ว่าจะมาจากทุนหรือหนี้สิน ต่างจาก ROE ที่วัดเฉพาะส่วนของผู้ถือหุ้น ROA บอกประสิทธิภาพการใช้สินทรัพย์จริง ไม่ขึ้นกับ Leverage',
+  },
+  {
+    question: 'ROA ที่ดีสำหรับบริษัทไทยควรเป็นเท่าไร?',
+    answer: 'ค่าเฉลี่ย ROA ของบริษัทใน SET ไทยอยู่ที่ประมาณ 5-8% ต่อปี ธนาคารพาณิชย์มักมี ROA ต่ำ (~1-2%) เพราะมีสินทรัพย์มหาศาล บริษัทค้าปลีกและเทคโนโลยีมักมี ROA สูงกว่า ROA > 10% ถือว่าดีมากสำหรับบริษัทส่วนใหญ่',
+  },
+  {
+    question: 'ทำไม ROA ของธนาคารถึงต่ำกว่าบริษัทอื่น?',
+    answer: 'ธนาคารมีสินทรัพย์รวมสูงมากเพราะรวมสินเชื่อและเงินฝากของลูกค้า ทำให้ฐานสินทรัพย์ใหญ่กว่าบริษัทอุตสาหกรรมอื่นมาก ธนาคารจึงมี ROA ต่ำโดยธรรมชาติ (~1-2%) แต่อาจมี ROE สูงเพราะ Leverage สูง ควรเปรียบเทียบ ROA ในอุตสาหกรรมเดียวกัน',
+  },
+  {
+    question: 'ROA ใช้ประเมินอะไรได้บ้าง?',
+    answer: 'ROA ใช้ประเมิน: (1) ประสิทธิภาพการใช้สินทรัพย์ของฝ่ายบริหาร (2) เปรียบเทียบบริษัทในอุตสาหกรรมเดียวกัน (3) ติดตามแนวโน้มประสิทธิภาพของบริษัทข้ามเวลา (4) ประกอบกับ ROE เพื่อเข้าใจผลของ Leverage',
+  },
+  {
+    question: 'สูตรคำนวณ ROA แบบอื่นมีอีกไหม?',
+    answer: 'ROA มักคำนวณจากกำไรสุทธิ แต่บางครั้งใช้ EBIT (กำไรก่อนดอกเบี้ยและภาษี) เพื่อเปรียบเทียบบริษัทที่มีโครงสร้างทุนต่างกัน: ROA (EBIT-based) = EBIT ÷ สินทรัพย์รวม × 100 วิธีนี้ทำให้เปรียบเทียบได้ยุติธรรมกว่าในบางกรณี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ ROA ผลตอบแทนสินทรัพย์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณ ROA ผลตอบแทนสินทรัพย์',
+  description: 'ขั้นตอนการคำนวณ ROA และแปลผลประสิทธิภาพการใช้สินทรัพย์',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'หากำไรสุทธิจากงบกำไรขาดทุน',
+      text: 'ดูกำไรสุทธิ (Net Income) จากงบกำไรขาดทุนประจำปี หรืองบล่าสุด 12 เดือน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หาสินทรัพย์รวมจากงบดุล',
+      text: 'ดูสินทรัพย์รวม (Total Assets) จากงบดุล อาจใช้ค่าเฉลี่ยต้นปีและปลายปีเพื่อความแม่นยำ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณ ROA',
+      text: 'ROA = กำไรสุทธิ ÷ สินทรัพย์รวม × 100',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เปรียบเทียบกับค่าเฉลี่ยอุตสาหกรรม',
+      text: 'เปรียบเทียบ ROA กับบริษัทในอุตสาหกรรมเดียวกัน และแนวโน้มของบริษัทในช่วง 3-5 ปีที่ผ่านมา',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-roa-ผลตอบแทนสินทรัพย์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณ ROA — ผลตอบแทนต่อสินทรัพย์รวม</p>
+      <p class="mt-1 text-sm text-slate-700">วัดประสิทธิภาพการใช้สินทรัพย์ ไม่ขึ้นกับ Leverage</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณ ROA ผลตอบแทนสินทรัพย์ (Return on Assets) 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณ ROA พร้อมการแปลผลและเปรียบเทียบกับค่าเฉลี่ย SET ไทย ใช้วิเคราะห์ประสิทธิภาพการดำเนินงานจริงของบริษัท
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'ตลาดหลักทรัพย์แห่งประเทศไทย (SET): ข้อมูลอัตราส่วนทางการเงิน',
+        'กรมพัฒนาธุรกิจการค้า: ฐานข้อมูลงบการเงิน',
+      ]}
+      assumptions={[
+        'สูตร: ROA = กำไรสุทธิ ÷ สินทรัพย์รวม × 100',
+        'ค่าเฉลี่ย ROA ของ SET ไทยอ้างอิง: ~5-8% ต่อปี',
+      ]}
+      references={[
+        { label: 'SET: อัตราส่วนทางการเงิน', href: 'https://www.set.or.th' },
+        { label: 'กรมพัฒนาธุรกิจการค้า', href: 'https://www.dbd.go.th' },
+      ]}
+    />
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="roa-form" class="space-y-5">
+        <p id="roa-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="roa-income" class="block text-sm font-medium text-gray-700 mb-1">กำไรสุทธิ — Net Income (บาท)</label>
+            <input type="text" id="roa-income" inputmode="numeric" placeholder="เช่น 10,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p class="mt-1 text-xs text-gray-500">จากงบกำไรขาดทุน</p>
+          </div>
+          <div>
+            <label for="roa-assets" class="block text-sm font-medium text-gray-700 mb-1">สินทรัพย์รวม — Total Assets (บาท)</label>
+            <input type="text" id="roa-assets" inputmode="numeric" placeholder="เช่น 100,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p class="mt-1 text-xs text-gray-500">จากงบดุล (สินทรัพย์รวม)</p>
+          </div>
+        </div>
+
+        <button type="submit" id="roa-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ ROA
+        </button>
+      </form>
+    </div>
+
+    <div id="roa-results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ ROA</h2>
+        <div class="grid gap-3 sm:grid-cols-2 mb-4">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ROA</div>
+            <div id="res-roa" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div id="roa-bench-card" class="rounded-lg p-4 text-center bg-gray-50">
+            <div class="text-sm text-gray-600 mb-1">เทียบค่าเฉลี่ย SET (~6%)</div>
+            <div id="res-roa-bench" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+        <div class="mt-4 rounded-lg bg-blue-50 p-3">
+          <p id="res-roa-interpretation" class="text-sm text-blue-800"></p>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#roa-results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตร ROA และการแปลผล</h2>
+      <div class="bg-gray-50 rounded-lg p-4 my-4">
+        <p class="font-semibold mb-1">สูตร ROA:</p>
+        <p class="text-sm">ROA = กำไรสุทธิ ÷ สินทรัพย์รวม × 100</p>
+      </div>
+      <div class="overflow-x-auto mt-4">
+        <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">ระดับ ROA</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">การแปลผล</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="px-4 py-2">&lt; 3%</td><td class="px-4 py-2">ต่ำ สินทรัพย์ถูกใช้ไม่มีประสิทธิภาพ หรืออยู่ในอุตสาหกรรมที่ใช้สินทรัพย์มาก</td></tr>
+            <tr><td class="px-4 py-2">3–6%</td><td class="px-4 py-2">ปานกลาง ใกล้เคียงค่าเฉลี่ยตลาด</td></tr>
+            <tr><td class="px-4 py-2">6–10%</td><td class="px-4 py-2">ดี ใช้สินทรัพย์ได้มีประสิทธิภาพ</td></tr>
+            <tr><td class="px-4 py-2">&gt; 10%</td><td class="px-4 py-2">ดีเยี่ยม บริษัทมีประสิทธิภาพสูงมาก</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.set.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">ตลาดหลักทรัพย์แห่งประเทศไทย (SET)</a>
+      </p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณ-roa-ผลตอบแทนสินทรัพย์/" />
+    <RelatedCalculators currentHref="/คำนวณ-roa-ผลตอบแทนสินทรัพย์/" slugs={['คำนวณ-roe-ผลตอบแทนผู้ถือหุ้น', 'คำนวณ-wacc-ต้นทุนทุนถัวเฉลี่ย', 'คำนวณ-จุดคุ้มทุน-break-even']} />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ ไม่ถือเป็นคำแนะนำการลงทุน ควรวิเคราะห์ประกอบกับปัจจัยอื่นก่อนตัดสินใจ
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNum(v: string): number {
+    return parseFloat(String(v).replace(/,/g, '').trim()) || 0;
+  }
+
+  const form = document.getElementById('roa-form') as HTMLFormElement;
+  const formError = document.getElementById('roa-form-error') as HTMLElement;
+  const resultsDiv = document.getElementById('roa-results') as HTMLElement;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    formError.classList.add('hidden');
+
+    const income = parseNum((document.getElementById('roa-income') as HTMLInputElement).value);
+    const assets = parseNum((document.getElementById('roa-assets') as HTMLInputElement).value);
+
+    if (assets <= 0) {
+      formError.classList.remove('hidden');
+      formError.textContent = 'กรุณากรอกสินทรัพย์รวมให้ถูกต้อง (ต้องมากกว่า 0)';
+      return;
+    }
+
+    const roa = (income / assets) * 100;
+    (document.getElementById('res-roa') as HTMLElement).textContent = roa.toFixed(2) + '%';
+
+    const benchEl = document.getElementById('res-roa-bench') as HTMLElement;
+    const benchCard = document.getElementById('roa-bench-card') as HTMLElement;
+    const interpEl = document.getElementById('res-roa-interpretation') as HTMLElement;
+
+    if (roa < 3) {
+      benchEl.textContent = 'ต่ำกว่าค่าเฉลี่ย';
+      benchEl.className = 'text-xl font-bold text-red-600';
+      benchCard.className = 'rounded-lg p-4 text-center bg-red-50';
+      interpEl.textContent = `ROA ${roa.toFixed(2)}% อยู่ในระดับต่ำ สินทรัพย์ยังไม่ถูกใช้อย่างมีประสิทธิภาพสูงสุด (หรืออยู่ในอุตสาหกรรมที่ใช้สินทรัพย์มาก เช่น ธนาคาร)`;
+    } else if (roa < 6) {
+      benchEl.textContent = 'ใกล้เคียงค่าเฉลี่ย';
+      benchEl.className = 'text-xl font-bold text-yellow-600';
+      benchCard.className = 'rounded-lg p-4 text-center bg-yellow-50';
+      interpEl.textContent = `ROA ${roa.toFixed(2)}% ใกล้เคียงค่าเฉลี่ย SET (~5-8%) บริษัทใช้สินทรัพย์ได้พอใช้`;
+    } else if (roa < 10) {
+      benchEl.textContent = 'ดีกว่าค่าเฉลี่ย';
+      benchEl.className = 'text-xl font-bold text-green-700';
+      benchCard.className = 'rounded-lg p-4 text-center bg-green-50';
+      interpEl.textContent = `ROA ${roa.toFixed(2)}% ดีกว่าค่าเฉลี่ย SET บริษัทใช้สินทรัพย์ได้มีประสิทธิภาพ`;
+    } else {
+      benchEl.textContent = 'ดีเยี่ยม';
+      benchEl.className = 'text-xl font-bold text-green-700';
+      benchCard.className = 'rounded-lg p-4 text-center bg-green-50';
+      interpEl.textContent = `ROA ${roa.toFixed(2)}% ดีเยี่ยม บริษัทมีประสิทธิภาพในการใช้สินทรัพย์สูงมาก สัญญาณบริษัทมีคุณภาพดี`;
+    }
+
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

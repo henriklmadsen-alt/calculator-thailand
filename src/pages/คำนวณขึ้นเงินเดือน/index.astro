@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณขึ้นเงินเดือน ปี 2569 เงินเดือนใหม่ ส่วนต่างรายเดือน รายปี | เครื่องคำนวณไทย';
-const pageDescription = 'คำนวณขึ้นเงินเดือน กรอกเงินเดือนปัจจุบันและเปอร์เซ็นต์ที่ขึ้น แสดงเงินเดือนใหม่ ส่วนต่างรายเดือนและรายปี';
+const pageTitle = 'คำนวณขึ้นเงินเดือน 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณขึ้นเงินเดือน 2569 ฟรี — ใส่เงินเดือนปัจจุบันและเปอร์เซ็นต์ที่ขึ้น รู้เงินเดือนใหม่และส่วนต่างรายเดือน-รายปีทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณขึ้นเงินเดือน/`;
 
@@ -26,6 +27,11 @@ const faqData = [
     question: 'ถ้าขึ้นเงินเดือนกลางปีต้องคำนวณอย่างไร?',
     answer: 'รายได้เพิ่มต่อปีในปีนั้น = ส่วนต่างรายเดือน × จำนวนเดือนที่เหลือในปี เช่น ขึ้นตั้งแต่เดือนกรกฎาคม = ส่วนต่าง × 6 เดือน',
   },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
 ];
 
 const jsonLdWebApp = {
@@ -52,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณขึ้นเงินเดือน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ดูผลของการขึ้นเงินเดือนทันที</p>
       <p class="mt-1 text-sm text-slate-700">เงินเดือนใหม่, ส่วนต่างรายเดือน, ส่วนต่างรายปี</p>
@@ -140,19 +143,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณขึ้นเงินเดือน/" />
     <RelatedCalculators currentHref="/คำนวณขึ้นเงินเดือน/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณตัวเลขเบื้องต้น ยอดจริงอาจต่างกันตามนโยบายและเงื่อนไขของบริษัท

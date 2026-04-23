@@ -2,9 +2,10 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณกำไรทุน 2569 | ภาษีหุ้น อสังหาฯ ฟรี | Calculator Thailand';
-const pageDescription = 'คำนวณกำไรจากการขายหุ้นและอสังหาริมทรัพย์ พร้อมประมาณภาระภาษีตามกฎหมายภาษีไทย อัปเดตปี 2569 ฟรี ไม่ต้องสมัครสมาชิก';
+const pageTitle = 'คำนวณกำไรทุน ภาษีหุ้น อสังหาฯ 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณกำไรจากการขายหุ้นและอสังหาริมทรัพย์ 2569 ฟรี — รู้กำไรสุทธิหลังหักภาษีและค่าธรรมเนียม ก่อนตัดสินใจขาย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณกำไรทุน/`;
 
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไรทุน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ประมาณภาระภาษีเบื้องต้น</p>
       <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก อัปเดตเกณฑ์ปี 2569</p>
@@ -236,17 +234,7 @@ const jsonLdFaq = {
       <p>การขายที่ดินหรือสินทรัพย์ที่ทำให้เกิดกำไรต้องเสียภาษีกำไรทุน 10% ตามกฎหมาย หากขายโดยขาดทุน จะไม่ต้องเสียภาษี</p>
       <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ภาษีกำไรทุน</a> [อัปเดต 2569]</p>
     </section>
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณกำไรทุน/" />
     <RelatedCalculators currentHref="/คำนวณกำไรทุน/" />

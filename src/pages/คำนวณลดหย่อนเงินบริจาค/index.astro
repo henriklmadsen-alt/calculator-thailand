@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณลดหย่อนเงินบริจาค 2569 | ลดหย่อน 2 เท่า การศึกษา | Calculator Thailand';
+const pageTitle = 'คำนวณลดหย่อนเงินบริจาค 2569 | ลดหย่อน 2 เท่า การศึกษา | Kamnuanlek';
 const pageDescription = 'คำนวณค่าลดหย่อนเงินบริจาคเพื่อการศึกษา (2 เท่า) และบริจาคการกุศลทั่วไป (1 เท่า สูงสุด 10%) ตามกฎหมายภาษีไทยปี 2569 ฟรี';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณลดหย่อนเงินบริจาค/`;
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนเงินบริจาค">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">บริจาคเพื่อการศึกษา ลดหย่อนได้ 2 เท่า</p>
       <p class="mt-1 text-sm text-slate-700">อัปเดตเกณฑ์ปี 2569</p>
@@ -151,17 +149,7 @@ const jsonLdFaq = {
       <p class="mt-3">เพดานรวมการบริจาคทุกประเภท: ต้องไม่เกิน 10% ของรายได้หลังหักค่าใช้จ่ายและค่าลดหย่อนอื่นๆ (ก่อนหักเงินบริจาค)</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณลดหย่อนเงินบริจาค/" />
     <RelatedCalculators currentHref="/คำนวณลดหย่อนเงินบริจาค/" />

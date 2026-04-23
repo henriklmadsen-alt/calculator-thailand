@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณผ่อนกู้สินเชื่อ 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณผ่อนกู้สินเชื่อ 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณค่าผ่อนสินเชื่อ ดอกเบี้ยบ้าน สินเชื่อรถ สินเชื่อส่วนบุคคล ทั้งแบบลดต้นลดดอก (reducing balance) และแบบคงที่ (flat rate) พร้อมตารางผ่อนชำระ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนกู้/`;
@@ -26,6 +27,11 @@ const faqData = [
     question: 'ผ่อนกี่ปีดีที่สุด?',
     answer: 'ระยะเวลาผ่อนที่เหมาะสมขึ้นอยู่กับความสามารถในการผ่อน ผ่อนสั้นจ่ายดอกเบี้ยน้อยแต่ค่างวดสูง ผ่อนยาวค่างวดต่ำแต่ดอกเบี้ยรวมมาก สินเชื่อบ้านมักผ่อนได้สูงสุด 30 ปี สินเชื่อรถ 5-7 ปี',
   },
+,
+  { question: 'กู้บ้านได้สูงสุดกี่เท่าของรายได้?', answer: 'ธนาคารส่วนใหญ่อนุมัติให้ผ่อนได้ไม่เกิน 40% ของรายได้สุทธิต่อเดือน เช่น รายได้ 50,000 บาท ผ่อนได้สูงสุด 20,000 บาท/เดือน วงเงินกู้สูงสุดขึ้นกับอัตราดอกเบี้ยและระยะเวลา' },
+  { question: 'อัตราดอกเบี้ยสินเชื่อบ้านปัจจุบันอยู่ที่เท่าไร?', answer: 'MRR ของธนาคารพาณิชย์ส่วนใหญ่อยู่ที่ 6.25-7.00% ต่อปี สินเชื่อบ้านทั่วไปได้รับส่วนลด เช่น MRR-1% ถึง MRR-2% ตรวจสอบอัตราปัจจุบันได้จากเว็บไซต์ธนาคารหรือ bot.or.th' },
+  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' },
+  { question: 'รีไฟแนนซ์บ้านคุ้มค่าเมื่อไร?', answer: 'คุ้มค่าเมื่อดอกเบี้ยใหม่ต่ำกว่าเดิมอย่างน้อย 0.5-1% และยังมีระยะเวลาผ่อนเหลืออีกนาน คำนวณจุดคืนทุน: ค่าใช้จ่ายรีไฟแนนซ์ ÷ เงินที่ประหยัดได้/เดือน = จำนวนเดือนที่คุ้มทุน' }
 ];
 
 const jsonLdWebApp = {
@@ -50,11 +56,24 @@ const jsonLdFaq = {
   })),
 };
 
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่างวดเงินกู้',
+  description: 'ขั้นตอนการคำนวณค่างวดผ่อนชำระเงินกู้รายเดือน สำหรับสินเชื่อบ้าน รถ หรือสินเชื่อส่วนบุคคล',
+  step: [
+    { '@type': 'HowToStep', name: 'ระบุวงเงินกู้', text: 'กรอกจำนวนเงินที่ต้องการกู้ เช่น 1,000,000 บาท (สินเชื่อบ้าน) หรือ 300,000 บาท (สินเชื่อรถยนต์) ตรวจสอบวงเงินที่ได้รับอนุมัติจากธนาคาร' },
+    { '@type': 'HowToStep', name: 'กรอกอัตราดอกเบี้ยต่อปี', text: 'ระบุอัตราดอกเบี้ยที่ธนาคารเสนอ เช่น MLR+1% = ประมาณ 6.5%/ปี (สินเชื่อบ้าน) หรือ 24-28%/ปี (สินเชื่อส่วนบุคคล) ตรวจสอบจากสัญญากู้' },
+    { '@type': 'HowToStep', name: 'เลือกระยะเวลาผ่อน', text: 'ระบุระยะเวลาผ่อนชำระเป็นปี เช่น 30 ปี (บ้าน) 5-7 ปี (รถ) หรือ 1-5 ปี (ส่วนบุคคล) ระยะเวลานานกว่า = ค่างวดต่ำกว่า แต่ดอกเบี้ยรวมสูงกว่า' },
+    { '@type': 'HowToStep', name: 'คำนวณค่างวดรายเดือน', text: 'สูตร PMT: ค่างวด = [P × r(1+r)^n] ÷ [(1+r)^n - 1] โดย P = เงินกู้, r = อัตราดอกเบี้ยรายเดือน, n = จำนวนงวด ตัวอย่าง: กู้ 1,000,000 บาท 6%/ปี 30 ปี = ค่างวด 5,996 บาท/เดือน' },
+    { '@type': 'HowToStep', name: 'วิเคราะห์ตารางผ่อนชำระ', text: 'ระบบแสดงตารางผ่อนชำระรายเดือน แยกส่วนเงินต้นและดอกเบี้ย ดอกเบี้ยรวมตลอดสัญญา และยอดหนี้คงเหลือแต่ละงวด ใช้เปรียบเทียบข้อเสนอจากหลายธนาคาร' },
+  ],
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนกู้สินเชื่อ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนกู้สินเชื่อ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -267,21 +286,7 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <section class="mb-8 rounded-xl border border-primary-200 bg-primary-50 p-4 sm:p-5">
       <h2 class="text-lg font-semibold text-primary-900 mb-2">บทความประกอบการตัดสินใจรีไฟแนนซ์</h2>

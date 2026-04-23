@@ -3,8 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณสินเชื่อฉุกเฉิน Payday Loan 2569 | Calculator Thailand';
+const pageTitle = 'คำนวณสินเชื่อฉุกเฉิน Payday Loan 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณต้นทุนที่แท้จริงของสินเชื่อฉุกเฉินและ Payday Loan ดูดอกเบี้ยต่อวัน APR และต้นทุนรวม เปรียบเทียบกับทางเลือกอื่นที่ถูกกว่า';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณสินเชื่อฉุกเฉิน/`;
@@ -48,10 +50,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อฉุกเฉิน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
       คำนวณสินเชื่อฉุกเฉิน (Payday Loan) — เปิดเผยต้นทุนจริง
     </h1>
@@ -107,6 +106,15 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="personal-loan"
+      affiliateUrl="/go/ttb-cash2go/?sub_id=คำนวณสินเชื่อฉุกเฉิน"
+      partnerName="TTB Cash 2 Go"
+      ctaText="สมัครสินเชื่อ TTB Cash 2 Go"
+      subtext="ทางเลือกที่ดีกว่า Payday Loan ดอกเบี้ยต่ำกว่า"
+    />
+
     <GuardedAdSlot />
 
     <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
@@ -114,18 +122,16 @@ const jsonLdFaq = {
       <p>สินเชื่อฉุกเฉินหรือ Payday Loan แม้ดอกเบี้ยดูเหมือนไม่มากในแต่ละงวด แต่เมื่อคำนวณเป็น APR ต่อปีแล้วสูงมาก ควรใช้เป็นทางเลือกสุดท้าย และต้องมั่นใจว่าสามารถชำระคืนได้ตามกำหนด เพื่อหลีกเลี่ยงดอกเบี้ยเบี้ยปรับที่จะทบทวีขึ้น</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600">{faq.question}</summary>
-            <div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณสินเชื่อฉุกเฉิน/" />
     <RelatedCalculators currentHref="/คำนวณสินเชื่อฉุกเฉิน/" />
 
@@ -164,6 +170,7 @@ const jsonLdFaq = {
 
       document.getElementById('results')!.classList.remove('hidden');
       document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       trackCalculatorUsed('payday-loan');
     });
   </script>

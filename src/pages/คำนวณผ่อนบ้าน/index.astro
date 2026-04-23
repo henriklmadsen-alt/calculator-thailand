@@ -4,9 +4,10 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณผ่อนบ้าน ดอกเบี้ย 2569 | Calculator Thailand';
-const pageDescription = 'คำนวณผ่อนบ้าน ดอกเบี้ย งวด จำนวนเงิน ตารางผ่อน เงินกู้บ้าน พร้อมตารางอื่น 2569 ฟรี';
+const pageTitle = 'คำนวณผ่อนบ้าน ค่างวด ดอกเบี้ย 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณผ่อนบ้านทุกธนาคาร 2569 ฟรี — ระบุวงเงิน ดอกเบี้ย ระยะเวลา รู้ค่างวดรายเดือนทันที พร้อมตารางผ่อนและเปรียบเทียบสินเชื่อ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนบ้าน/`;
 
@@ -31,6 +32,10 @@ const faqData = [
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณผ่อนบ้านที่ต้องหลีกเลี่ยง?',
     answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ลืมนำยอดหนี้คงเหลือปัจจุบันแทนเงินกู้เดิม (2) ใช้อัตราดอกเบี้ยจากสัญญาเก่าแทนสัญญาใหม่ (3) ไม่รวมค่าธรรมเนียมรีไฟแนนซ์ (4) เปรียบเทียบเปอร์เซ็นต์ดอกเบี้ยไม่เท่า (flat vs effective) (5) ลืมค่าประกันภัชระบบแรงงาน และ (6) คำนวณ break-even ไม่คำนึงถึงโปะเงินต้น',
   },
+,
+  { question: 'กู้บ้านได้สูงสุดกี่เท่าของรายได้?', answer: 'ธนาคารส่วนใหญ่อนุมัติให้ผ่อนได้ไม่เกิน 40% ของรายได้สุทธิต่อเดือน เช่น รายได้ 50,000 บาท ผ่อนได้สูงสุด 20,000 บาท/เดือน วงเงินกู้สูงสุดขึ้นกับอัตราดอกเบี้ยและระยะเวลา' },
+  { question: 'อัตราดอกเบี้ยสินเชื่อบ้านปัจจุบันอยู่ที่เท่าไร?', answer: 'MRR ของธนาคารพาณิชย์ส่วนใหญ่อยู่ที่ 6.25-7.00% ต่อปี สินเชื่อบ้านทั่วไปได้รับส่วนลด เช่น MRR-1% ถึง MRR-2% ตรวจสอบอัตราปัจจุบันได้จากเว็บไซต์ธนาคารหรือ bot.or.th' },
+  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' }
 ];
 
 const jsonLdWebApp = {
@@ -103,10 +108,8 @@ const jsonLdHowTo = {
 
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนบ้านและรีไฟแนนซ์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนบ้านและรีไฟแนนซ์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -323,26 +326,25 @@ const jsonLdHowTo = {
       </form>
     </div>
 
-    <div id="results" class="hidden mb-8">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+    <div id="results" class="hidden mb-8 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
 
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-          <div class="bg-primary-50 rounded-lg p-4 text-center">
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
             <div class="text-sm text-gray-600 mb-1">ค่างวดแผนเดิม</div>
-            <div id="res-current-monthly" class="text-xl font-bold text-primary-700">-</div>
+            <div id="res-current-monthly" class="text-lg sm:text-xl lg:text-2xl font-bold text-primary-700">-</div>
           </div>
-          <div class="bg-green-50 rounded-lg p-4 text-center">
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
             <div class="text-sm text-gray-600 mb-1">ค่างวดแผนใหม่</div>
-            <div id="res-new-monthly" class="text-xl font-bold text-green-700">-</div>
+            <div id="res-new-monthly" class="text-lg sm:text-xl lg:text-2xl font-bold text-green-700">-</div>
           </div>
-          <div class="bg-amber-50 rounded-lg p-4 text-center">
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
             <div class="text-sm text-gray-600 mb-1">ส่วนต่างต่อเดือน</div>
-            <div id="res-monthly-delta" class="text-xl font-bold text-amber-700">-</div>
+            <div id="res-monthly-delta" class="text-lg sm:text-xl lg:text-2xl font-bold text-amber-700">-</div>
           </div>
-          <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
             <div class="text-sm text-gray-600 mb-1">ประหยัดรวมสุทธิ</div>
-            <div id="res-total-saving" class="text-xl font-bold text-gray-800">-</div>
+            <div id="res-total-saving" class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">-</div>
           </div>
         </div>
 
@@ -369,11 +371,25 @@ const jsonLdHowTo = {
           </div>
         </div>
 
-        <div id="res-summary-note" class="p-3 rounded-lg text-sm bg-primary-50 border border-primary-200 text-primary-900">
+        <div id="res-summary-note" class="p-3 rounded-lg text-sm bg-white border border-gray-100 text-gray-900 mb-4">
           -
         </div>
-      </div>
+
+        <details class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <summary class="font-semibold text-yellow-900 cursor-pointer select-none hover:text-yellow-800 transition-colors">
+            ⚠️ สำคัญ: หมายเหตุเกี่ยวกับการคำนวณ
+          </summary>
+          <div class="mt-3 text-sm text-yellow-800 space-y-2">
+            <p>• ผลการคำนวณเป็นการประมาณการตามสูตร DTI เท่านั้น ธนาคารอาจมีเงื่อนไขอื่นเพิ่มเติม</p>
+            <p>• อัตราดอกเบี้ยและเงื่อนไขสินเชื่ออาจเปลี่ยนแปลงตามนโยบายของแต่ละธนาคาร</p>
+            <p>• ค่าธรรมเนียมรีไฟแนนซ์อาจแตกต่างกันระหว่างธนาคาร ควรตรวจสอบอัตราดอกเบี้ยจริงจากธนาคาร</p>
+            <p>• สำหรับข้อมูลอย่างเป็นทางการและการปรึกษาเฉพาะบุคคล ติดต่อธนาคารของคุณโดยตรง</p>
+          </div>
+        </details>
     </div>
+
+    <div class="my-8 border-t-2 border-gray-200"></div>
+
     <div id="mortgage-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
       <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณผ่อนรถ</p>
       <p class="mt-1 text-sm text-primary-700">รวมภาระหนี้บ้านและรถให้เห็นค่างวดรวมต่อเดือนก่อนตัดสินใจ</p>
@@ -535,21 +551,38 @@ const jsonLdHowTo = {
       <p class="text-sm text-gray-500 mt-2">ก่อนผ่อนบ้าน ตรวจสอบ → <a href="/คำนวณค่าธรรมเนียมโอนบ้าน/" class="text-primary-600 hover:underline">ค่าธรรมเนียมโอนบ้าน</a> ที่ต้องจ่ายวันโอนกรรมสิทธิ์</p>
     </section>
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">
-              {faq.answer}
-            </div>
-          </details>
-        ))}
-      </div>
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณสินเชื่อบ้าน</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อคำนวณเงินผ่อนบ้าน ข้อผิดพลาดเหล่านี้อาจทำให้คุณตัดสินใจผิด:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ไม่นำเงินดาวน์ลบออกจากราคาบ้าน</strong><br/>
+          บ้าน 3 ล้านบาท มีเงินดาวน์ 600,000 บาท แต่คิดเงินกู้เป็น 3 ล้าน ไม่ได้ลบดาวน์ออก เงินกู้ = ราคาบ้าน - เงินดาวน์ = 2,400,000 บาท
+        </li>
+        <li>
+          <strong>ลืมรวมค่าสินไถ่ ค่าประกันสินเชื่อ และค่าธรรมเนียม</strong><br/>
+          เงินผ่อน 11,000 บาท/เดือน แต่มีค่าประกันสินเชื่อ ค่าดำเนินการ ค่าสินไถ่เพิ่มเติม ขอใบประมาณการจากธนาคาร เพื่อดูเงินผ่อนทั้งหมด
+        </li>
+        <li>
+          <strong>เลือกอัตราดอกเบี้ยผิด (ลดต้นลดดอก vs ประจำ)</strong><br/>
+          ลดต้นลดดอก: เงินผ่อนสูงตอนแรก ลดลงเรื่อยๆ ประจำ: เงินผ่อนเท่าเดิมทุกเดือน เลือกตามสถานการณ์และแผนของคุณ
+        </li>
+        <li>
+          <strong>ไม่คำนึงถึง LTV (สัดส่วนเงินกู้ต่อมูลค่าทรัพย์สิน)</strong><br/>
+          ธนาคารไม่ให้กู้ 100% ถ้า LTV 80% บ้าน 3 ล้าน ให้กู้เพียง 2.4 ล้าน ต้องหาเงินดาวน์อีก 600,000 ตรวจสอบ LTV ของธนาคารแต่ละแห่ง
+        </li>
+        <li>
+          <strong>ไม่คำนึงถึงความจำเป็นของประกันอัมนัยชีวิต</strong><br/>
+          เงินผ่อน 12,000 บาท/เดือน แต่ไม่คิดว่ากรณีสุดร้ายจะเกิดอะไร ทำประกันอัมนัยชีวิตเพื่อให้บ้านปลอดหนี้หากเสียชีวิต
+        </li>
+      </ul>
     </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <RelatedArticles currentHref="/คำนวณผ่อนบ้าน/" />
     <RelatedCalculators currentHref="/คำนวณผ่อนบ้าน/" />

@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculateLandTitleTransfer } from '../../lib/land-title-transfer-calculator';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าโอนที่ดิน 2569 | ค่าธรรมเนียมโอนที่ดิน | Calculator Thailand';
+const pageTitle = 'คำนวณค่าโอนที่ดิน 2569 | ค่าธรรมเนียมโอนที่ดิน | Kamnuanlek';
 const pageDescription = 'คำนวณค่าโอนที่ดินออนไลน์ฟรี สำหรับ โอนขาย โอนให้ โอนทางมรดก คำนวณค่าธรรมเนียม ค่าแสตมป์ ภาษี ตามอัตรา 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-ค่าโอนที่ดิน/`;
@@ -33,6 +34,9 @@ const faqData = [
     question: 'เวลาในการโอนที่ดินนานแค่ไหน?',
     answer: 'โดยปกติ 1-2 สัปดาห์ ตั้งแต่ยื่นเอกสารจนกว่าจะได้โฉนด (โฉนดใบใหม่) ขึ้นอยู่กับความเร็วของ สำนักที่ดินท้องถิ่นและความครบถ้วนของเอกสาร',
   },
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' }
 ];
 
 const jsonLdWebApp = {
@@ -59,10 +63,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโอนที่ดิน">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
       คำนวณค่าโอนที่ดิน
     </h1>
@@ -246,6 +247,14 @@ const jsonLdFaq = {
     </div>
 
     <!-- Related Calculators -->
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
     <RelatedCalculators categoryId="government" />
   </article>
 </BaseLayout>

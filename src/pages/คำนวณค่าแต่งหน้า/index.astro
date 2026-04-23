@@ -2,8 +2,9 @@
 import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าแต่งหน้า 2569 | ค่าทำผม เจ้าสาว งานอีเวนต์ แต่งหน้าทั่วไป | Calculator Thailand';
+const pageTitle = 'คำนวณค่าแต่งหน้า 2569 | ค่าทำผม เจ้าสาว งานอีเวนต์ แต่งหน้าทั่วไป | Kamnuanlek';
 const pageDescription = 'คำนวณค่าแต่งหน้าออนไลน์ฟรี คิดค่าบริการช่างแต่งหน้า เจ้าสาว งานอีเวนต์ แต่งหน้าทั่วไป เปรียบเทียบจ้างช่างกับแต่งเอง อัปเดตราคาตลาดปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าแต่งหน้า/`;
@@ -51,10 +52,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าแต่งหน้า">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
       คำนวณค่าแต่งหน้า (Beauty Cost Calculator)
     </h1>
@@ -331,20 +329,7 @@ const jsonLdFaq = {
     </section>
 
     <!-- FAQ -->
-    <section class="mb-8">
-      <h2 class="text-xl font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      {faqData.map((faq) => (
-        <details class="group bg-white rounded-lg shadow-sm border border-gray-200 mb-3">
-          <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-gray-900 font-medium text-sm hover:bg-gray-50 transition-colors">
-            {faq.question}
-            <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div class="px-4 pb-3 text-gray-600 text-sm">{faq.answer}</div>
-        </details>
-      ))}
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <!-- Related Content -->
     <RelatedArticles currentHref="/คำนวณค่าแต่งหน้า/" />

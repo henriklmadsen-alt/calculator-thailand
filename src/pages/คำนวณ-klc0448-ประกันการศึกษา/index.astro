@@ -1,13 +1,31 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const pageTitle = 'คำนวณเบี้ยประกันการศึกษา | Calculator Thailand';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณเบี้ยประกันการศึกษา | Kamnuanlek';
 const pageDescription = 'คำนวณ คำนวณเบี้ยประกันการศึกษา - เครื่องคำนวณการศึกษาฟรีออนไลน์';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-klc0448-ประกันการศึกษา/`;
+
+const faqData = [
+  { question: 'ค่ารักษาพยาบาลในไทยแตกต่างกันอย่างไรระหว่างโรงพยาบาลรัฐและเอกชน?', answer: 'โรงพยาบาลรัฐมีค่าใช้จ่ายต่ำกว่ามาก แต่ใช้เวลารอนาน โรงพยาบาลเอกชนสะดวกกว่าแต่ราคาสูงกว่า 3-10 เท่า ขึ้นอยู่กับประเภทการรักษา' },
+  { question: 'สิทธิ์ประกันสังคมครอบคลุมค่ารักษาอะไรบ้าง?', answer: 'ผู้ประกันตนมาตรา 33 ได้รับการรักษาฟรีที่โรงพยาบาลตามบัตรรับรองสิทธิ์ ครอบคลุมการรักษาทั่วไป ผ่าตัด คลอดบุตร และยาตามบัญชียา' },
+  { question: 'ควรทำประกันสุขภาพหรือสำรองเงินเอง?', answer: 'ประกันสุขภาพช่วยลดความเสี่ยงจากค่าใช้จ่ายสูงที่คาดไม่ถึง เหมาะกับคนที่ไม่มีเงินสำรองมาก ส่วนคนที่มีเงินออมสูงอาจสำรองเองได้' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกค่าห้อง ค่ายา ค่าหัตถการ และค่าตรวจวินิจฉัย กดคำนวณเพื่อดูค่าใช้จ่ายรวมทั้งหมด' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันการศึกษา">
-  <article>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันการศึกษา">  <article>
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเบี้ยประกันการศึกษา</h1>
     <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
     <p class="text-gray-600 mb-6">เครื่องคำนวณ คำนวณเบี้ยประกันการศึกษา ฟรีออนไลน์</p>

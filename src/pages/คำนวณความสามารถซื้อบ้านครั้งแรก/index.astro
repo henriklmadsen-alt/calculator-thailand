@@ -3,9 +3,10 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณความสามารถซื้อบ้านครั้งแรก 2569 | Affordability | kamnuanlek.com';
-const pageDescription = 'คำนวณบ้านที่คุณจ่ายได้เพื่อเดือน (First-time homebuyer affordability) บนพื้นฐานรายได้เดือน อัตราดอกเบี้ย และเงินดาวน์ที่มี ออนไลน์ฟรี';
+const pageTitle = 'คำนวณกู้บ้านได้เท่าไร 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณว่ากู้บ้านได้เท่าไรจากรายได้ของคุณ 2569 ฟรี — ใส่เงินเดือน เงินดาวน์ ดอกเบี้ย รู้วงเงินสูงสุดที่ธนาคารจะอนุมัติ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณความสามารถซื้อบ้านครั้งแรก/`;
 
@@ -52,10 +53,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณความสามารถซื้อบ้านครั้งแรก">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">ตามความสามารถ ไม่เหนือกำลัง</p>
       <p class="mt-1 text-sm text-slate-700">คำนวณราคาบ้านที่คุณจ่ายได้จริง ตามรายได้และสถานการณ์</p>
@@ -182,20 +180,19 @@ const jsonLdFaq = {
       </form>
     </div>
 
-    <div id="results" class="hidden mb-8">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">ความสามารถซื้อบ้าน</h2>
+    <div id="results" class="hidden mb-8 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ความสามารถซื้อบ้าน</h2>
 
-        <div class="grid gap-3 sm:grid-cols-2 mb-6">
-          <div class="bg-green-50 rounded-lg p-4 text-center border border-green-100">
-            <div class="text-sm text-gray-600 mb-1">ราคาบ้านสูงสุด</div>
-            <div id="result-max-price" class="text-2xl font-bold text-green-700">-</div>
-          </div>
-          <div class="bg-orange-50 rounded-lg p-4 text-center border border-orange-100">
-            <div class="text-sm text-gray-600 mb-1">จำนวนสินเชื่อ</div>
-            <div id="result-loan-amount" class="text-2xl font-bold text-orange-700">-</div>
-          </div>
+      <div class="grid gap-3 sm:grid-cols-2 mb-6">
+        <div class="bg-green-50 rounded-lg p-4 text-center border border-green-100">
+          <div class="text-sm text-gray-600 mb-1">ราคาบ้านสูงสุด</div>
+          <div id="result-max-price" class="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-700">-</div>
         </div>
+        <div class="bg-orange-50 rounded-lg p-4 text-center border border-orange-100">
+          <div class="text-sm text-gray-600 mb-1">จำนวนสินเชื่อ</div>
+          <div id="result-loan-amount" class="text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-700">-</div>
+        </div>
+      </div>
 
         <div class="grid gap-4 sm:grid-cols-2 mb-6">
           <div class="rounded-lg border border-gray-200 p-4">
@@ -239,28 +236,36 @@ const jsonLdFaq = {
           </div>
         </div>
 
-        <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-4">
+        <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-4 mb-4">
           <p id="dti-note" class="text-sm text-yellow-800">-</p>
         </div>
+
+        <details class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <summary class="font-semibold text-yellow-900 cursor-pointer select-none hover:text-yellow-800 transition-colors">
+            ⚠️ สำคัญ: หมายเหตุเกี่ยวกับการคำนวณ
+          </summary>
+          <div class="mt-3 text-sm text-yellow-800 space-y-2">
+            <p>• ผลการคำนวณเป็นการประมาณการตามสูตร DTI เท่านั้น ธนาคารอาจมีเงื่อนไขอื่นเพิ่มเติม</p>
+            <p>• ธนาคารจะพิจารณาประวัติเครดิต ความเสถียรของรายได้ และเงื่อนไขอื่นๆ</p>
+            <p>• ราคาบ้านควรเป็น 2-3 เท่าของรายได้ประจำปีสำหรับการวางแผนที่สมดุล</p>
+            <p>• ตรวจสอบกับธนาคารหลายแห่งเพื่อเปรียบเทียบอัตราดอกเบี้ย และเงื่อนไขสินเชื่อ</p>
+          </div>
+        </details>
       </div>
     </div>
 
     <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
 
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
     <RelatedArticles currentHref="/คำนวณความสามารถซื้อบ้านครั้งแรก/" />
     <RelatedCalculators currentHref="/คำนวณความสามารถซื้อบ้านครั้งแรก/" />
 

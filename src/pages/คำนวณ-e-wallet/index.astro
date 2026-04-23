@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าธรรมเนียม E-Wallet ปี 2569 — True Money, Rabbit LINE Pay | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณค่าธรรมเนียม E-Wallet ปี 2569 — True Money, Rabbit LINE Pay | Kamnuanlek';
 const pageDescription = 'คำนวณค่าธรรมเนียม E-Wallet สำหรับร้านค้าและผู้บริโภค เช่น True Money Wallet, Rabbit LINE Pay ป้อนยอดชำระและอัตราค่าธรรมเนียม ทราบยอดรับจริงทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-e-wallet/`;
@@ -48,10 +49,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-e-wallet">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-purple-100 bg-purple-50 p-4">
       <p class="text-sm font-semibold text-purple-700">คำนวณค่าธรรมเนียม E-Wallet — True Money, Rabbit LINE Pay และอื่นๆ</p>
       <p class="mt-1 text-sm text-slate-700">สูตร: ค่าธรรมเนียม = (ยอด × %) + ค่าคงที่ | ยอดรับจริง = ยอดชำระ − ค่าธรรมเนียม</p>
@@ -157,19 +155,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณ-e-wallet/" />
     <RelatedCalculators currentHref="/คำนวณ-e-wallet/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราค่าธรรมเนียม E-Wallet อาจเปลี่ยนแปลงได้ ควรตรวจสอบกับผู้ให้บริการก่อนตัดสินใจ

@@ -3,8 +3,9 @@ import RelatedCalculators from '../../components/templates/RelatedCalculators.as
 import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเงินเดือนหลังเลื่อนตำแหน่ง ปี 2569 ส่วนต่าง ภาษีเปลี่ยนแปลง | เครื่องคำนวณไทย';
+const pageTitle = 'คำนวณเงินเดือนหลังเลื่อนตำแหน่ง ปี 2569 ส่วนต่าง ภาษีเปลี่ยนแปลง | Kamnuanlek';
 const pageDescription = 'คำนวณเงินเดือนหลังเลื่อนตำแหน่ง เปรียบเทียบเงินเดือนเดิมกับใหม่ เปอร์เซ็นต์ขึ้น ส่วนต่างรายเดือน/ปี และผลกระทบภาษีเงินได้ขั้นบันได';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเงินเดือนหลังเลื่อนตำแหน่ง/`;
@@ -26,6 +27,11 @@ const faqData = [
     question: 'ภาษีหัก ณ ที่จ่ายเพิ่มขึ้นเมื่อเงินเดือนสูงขึ้นไหม?',
     answer: 'ใช่ นายจ้างต้องคำนวณและหักภาษี ณ ที่จ่ายใหม่จากเงินเดือนที่สูงขึ้น ซึ่งอาจทำให้เงินสุทธิเพิ่มน้อยกว่าที่คาดหวัง',
   },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
 ];
 
 const jsonLdWebApp = {
@@ -52,10 +58,7 @@ const jsonLdFaq = {
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือนหลังเลื่อนตำแหน่ง">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-
-  <article>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
       <p class="text-sm font-semibold text-sky-700">เปรียบเทียบเงินเดือนเดิม vs ใหม่ พร้อมผลกระทบภาษี</p>
       <p class="mt-1 text-sm text-slate-700">คำนวณส่วนต่างและภาษีที่เพิ่มขึ้นตามอัตราขั้นบันได 5-35%</p>
@@ -150,19 +153,7 @@ const jsonLdFaq = {
     <RelatedArticles currentHref="/คำนวณเงินเดือนหลังเลื่อนตำแหน่ง/" />
     <RelatedCalculators currentHref="/คำนวณเงินเดือนหลังเลื่อนตำแหน่ง/" />
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-semibold text-gray-900">คำถามที่พบบ่อย</h2>
-      <div class="space-y-4">
-        {faqData.map((faq) => (
-          <details class="rounded-lg border border-gray-200 bg-white shadow-sm">
-            <summary class="cursor-pointer px-4 py-3 font-medium text-gray-900 hover:text-primary-600">
-              {faq.question}
-            </summary>
-            <div class="px-4 pb-4 text-sm text-gray-600">{faq.answer}</div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
       <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์ภาษีเป็นการประมาณการอย่างง่าย ไม่รวมค่าลดหย่อนพิเศษ ควรใช้เครื่องคำนวณภาษีเพื่อตัวเลขที่แม่นยำกว่า
