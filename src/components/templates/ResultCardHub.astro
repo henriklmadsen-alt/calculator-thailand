@@ -92,6 +92,30 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
         </a>
       </div>
     </div>
+
+    <!-- Print button -->
+    <button
+      type="button"
+      class="ct-hub-btn ct-hub-print"
+      id={`ct-print-btn-${calcId}`}
+      data-calc-id={calcId}
+      aria-label={`พิมพ์${calcTitle}`}
+    >
+      <span aria-hidden="true">🖨️</span>
+      <span>พิมพ์ผล</span>
+    </button>
+
+    <!-- Download PNG button -->
+    <button
+      type="button"
+      class="ct-hub-btn ct-hub-download"
+      id={`ct-download-btn-${calcId}`}
+      data-calc-id={calcId}
+      aria-label={`ดาวน์โหลด${calcTitle}เป็นภาพ`}
+    >
+      <span aria-hidden="true">📥</span>
+      <span>ดาวน์โหลด</span>
+    </button>
   </div>
 
   <!-- Related calculators -->
@@ -170,6 +194,18 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
   .ct-hub-share:hover { background: #f9fafb; }
   .ct-hub-share[aria-expanded="true"] { background: #f3f4f6; border-color: #9ca3af; }
 
+  .ct-hub-print {
+    background: transparent; color: #374151;
+    border-color: #d1d5db;
+  }
+  .ct-hub-print:hover { background: #f9fafb; }
+
+  .ct-hub-download {
+    background: transparent; color: #374151;
+    border-color: #d1d5db;
+  }
+  .ct-hub-download:hover { background: #f9fafb; }
+
   /* Share panel */
   .ct-share-wrap { position: relative; display: inline-block; }
   .ct-share-panel {
@@ -239,7 +275,70 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
   .ct-hub-steps-list li::before {
     content: "→"; color: #2563eb; font-weight: 700; flex-shrink: 0;
   }
+
+  /* ── Print stylesheet ──────────────────────────────────────── */
+  @media print {
+    /* Hide non-essential elements */
+    nav, .navigation, .navbar, .header,
+    .ads, [class*="ad"], [id*="ad"],
+    .sidebar, .footer, .comments,
+    .tooltip, [role="tooltip"],
+    .ct-hub-actions,
+    .ct-hub-related,
+    .ct-hub-nextsteps,
+    .action-chain,
+    .share-panel {
+      display: none !important;
+    }
+
+    /* Optimize for print */
+    body, html {
+      background: #fff;
+      color: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* Preserve calculator and result sections */
+    .calculator, .ct-form, .ct-result,
+    .ct-result-value, .ct-result-category,
+    .ct-result-interpretation,
+    .ct-input-group, .ct-input-label {
+      display: block !important;
+      page-break-inside: avoid;
+    }
+
+    /* Print-friendly sizing */
+    body { font-size: 11pt; line-height: 1.5; }
+    h1, h2, h3 { page-break-after: avoid; }
+    p { page-break-inside: avoid; }
+
+    /* Maintain margins and spacing */
+    .ct-hub { margin: 0; padding: 0; border: none; }
+    .ct-container { page-break-inside: avoid; }
+
+    /* Print-friendly colors */
+    a { text-decoration: underline; color: #000; }
+    border { border-color: #ccc; }
+
+    /* Add timestamp footer */
+    body::after {
+      content: "พิมพ์เมื่อ: " attr(data-timestamp);
+      display: block;
+      margin-top: 1.5cm;
+      font-size: 9pt;
+      color: #666;
+      border-top: 1px solid #ccc;
+      padding-top: 0.5cm;
+    }
+  }
 </style>
+
+<script is:inline>
+// Import html2canvas for download functionality
+import('html2canvas').catch(function() {
+  console.warn('html2canvas not loaded, download feature may not work');
+});
+</script>
 
 <script is:inline>
 (function initResultCardHub() {
@@ -368,6 +467,102 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
           window.trackLanguageAwareEvent('calculation_shared', { share_method: method, calculator_type: calcId });
         }
         setTimeout(closeAllSharePanels, 300);
+      });
+    });
+
+    // Print button handler
+    document.querySelectorAll('.ct-hub-print[data-calc-id]').forEach(function(btn) {
+      if (btn.dataset.printBound === '1') return;
+      btn.dataset.printBound = '1';
+      btn.addEventListener('click', function() {
+        var calcId = btn.dataset.calcId;
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('print_result', { calculator_type: calcId });
+        }
+        // Add timestamp for print
+        var timestamp = new Date().toLocaleString('th-TH', {
+          year: 'numeric', month: '2-digit', day: '2-digit',
+          hour: '2-digit', minute: '2-digit', second: '2-digit'
+        });
+        document.body.setAttribute('data-timestamp', timestamp);
+        // Trigger print dialog
+        window.print();
+      });
+    });
+
+    // Download PNG button handler
+    document.querySelectorAll('.ct-hub-download[data-calc-id]').forEach(function(btn) {
+      if (btn.dataset.downloadBound === '1') return;
+      btn.dataset.downloadBound = '1';
+      btn.addEventListener('click', function() {
+        var calcId = btn.dataset.calcId;
+        var hub = document.getElementById('ct-hub-' + calcId);
+        if (!hub) return;
+
+        // Find the result card to capture
+        var resultCard = hub.closest('.calculator')?.querySelector('[class*="result"], [class*="Result"]') ||
+                         hub.previousElementSibling ||
+                         document.querySelector('[class*="result-card"], [class*="ct-result"]');
+
+        if (!resultCard) {
+          console.warn('Result card element not found for download');
+          return;
+        }
+
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('download_result_png', { calculator_type: calcId });
+        }
+
+        // Show loading state
+        var originalText = btn.innerHTML;
+        btn.innerHTML = '<span aria-hidden="true">⏳</span><span>กำลังโหลด...</span>';
+        btn.disabled = true;
+
+        // Dynamic import of html2canvas
+        import('html2canvas').then(function(module) {
+          var html2canvas = module.default;
+          var options = {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            padding: 10,
+            logging: false,
+            charset: 'utf-8'
+          };
+
+          html2canvas(resultCard, options).then(function(canvas) {
+            // Create download link
+            var timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '');
+            var calcTitle = (window.__ctCurrentCalcData?.calcTitle || 'calculation').replace(/\s+/g, '_');
+            var filename = calcTitle + '_' + timestamp + '.png';
+
+            var link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Restore button state
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }).catch(function(error) {
+            console.error('Error generating PNG:', error);
+            btn.innerHTML = '<span aria-hidden="true">❌</span><span>ไม่สำเร็จ</span>';
+            setTimeout(function() {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+            }, 2000);
+          });
+        }).catch(function(error) {
+          console.error('Error loading html2canvas:', error);
+          btn.innerHTML = '<span aria-hidden="true">❌</span><span>ข้อผิดพลาด</span>';
+          setTimeout(function() {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }, 2000);
+        });
       });
     });
   }
