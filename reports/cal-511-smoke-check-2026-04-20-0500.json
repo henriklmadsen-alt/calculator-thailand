@@ -1,0 +1,88 @@
+{
+  "task": "CAL-511",
+  "title": "Hourly Trust QA: Live site smoke check 2026-04-20 ~05:00 UTC",
+  "timestamp": "2026-04-20T05:05:00Z",
+  "domain": "www.kamnuanlek.com",
+  "checks": {
+    "homepage": {
+      "url": "https://www.kamnuanlek.com/",
+      "status": 200,
+      "pass": true,
+      "notes": "26 calculators listed, land tax integrated, no mojibake, layout intact"
+    },
+    "apex_http": {
+      "url": "http://kamnuanlek.com/",
+      "status": 301,
+      "redirect": "https://www.kamnuanlek.com/",
+      "pass": true,
+      "notes": "HTTP apex redirects correctly to www HTTPS"
+    },
+    "apex_https": {
+      "url": "https://kamnuanlek.com/",
+      "status": "TIMEOUT",
+      "pass": false,
+      "severity": "known_issue",
+      "notes": "HTTPS on apex domain times out — pre-existing baseline issue"
+    },
+    "priority_routes": [
+      {
+        "route": "/คำนวณค่าโอนบ้าน/",
+        "description": "House transfer redirect (CAL-335)",
+        "www_status": 404,
+        "railway_status": 301,
+        "dist_exists": true,
+        "pass": false,
+        "severity": "low",
+        "notes": "Redirect page 404 on www. Target /คำนวณค่าธรรมเนียมโอนบ้าน/ returns 200. Page exists in dist/. Likely deploy propagation issue."
+      },
+      {
+        "route": "/บทความ/คำนวณค่าไฟฟ้า-2569-สูตร-pea-mea/",
+        "description": "Electricity article (deduped)",
+        "www_status": 200,
+        "pass": true,
+        "notes": "Content correct, Thai text clean, no mojibake"
+      },
+      {
+        "route": "/บทความ/คำนวณค่าไฟฟ้า-2569-สูตรคิดค่าไฟ/",
+        "description": "Electricity formula article",
+        "www_status": 200,
+        "pass": true,
+        "notes": "Content correct, Thai text clean"
+      },
+      {
+        "route": "/",
+        "description": "Homepage — land tax integration",
+        "www_status": 200,
+        "pass": true,
+        "notes": "Land tax calculator visible in featured section"
+      }
+    ],
+    "calculator_routes_sweep": {
+      "total_checked": 22,
+      "passing_200": 21,
+      "failing_404": 1,
+      "failing_route": "/คำนวณค่าโอนบ้าน/",
+      "notes": "All 21 primary calculator pages return 200. Only the meta-redirect page is 404."
+    },
+    "content_quality": {
+      "mojibake": false,
+      "english_placeholders": false,
+      "dark_mode": true,
+      "calculator_forms_interactive": true,
+      "thai_text_readable": true,
+      "notes": "Spot-checked transfer fee calc and land tax calc — forms present, inputs working, JS loaded, dark mode toggle functional"
+    },
+    "internal_links": {
+      "homepage_to_calculators": true,
+      "calculator_to_articles": true,
+      "notes": "Homepage links to correct /คำนวณค่าธรรมเนียมโอนบ้าน/ (not the 404 redirect)"
+    }
+  },
+  "summary": {
+    "overall": "PASS with 1 low-severity issue",
+    "blockers": 0,
+    "warnings": 1,
+    "known_issues": 1,
+    "details": "Site healthy. 21/22 calculator routes 200. One redirect page (/คำนวณค่าโอนบ้าน/) 404 on www but target page works. Apex HTTPS timeout is pre-existing."
+  }
+}

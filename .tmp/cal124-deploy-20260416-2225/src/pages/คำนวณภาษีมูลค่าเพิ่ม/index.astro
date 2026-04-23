@@ -1,0 +1,420 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pageTitle = 'คำนวณภาษีมูลค่าเพิ่ม VAT 7% 2569 | Calculator Thailand';
+const pageDescription = 'คำนวณภาษีมูลค่าเพิ่ม VAT 7% ออนไลน์ฟรี บวก VAT จากราคาสินค้า หรือแยก VAT จากราคารวม คำนวณทีละหลายรายการ ผลลัพธ์แม่นยำ';
+const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+const canonical = `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`;
+
+const faqData = [
+  {
+    question: 'VAT 7% คำนวณอย่างไร?',
+    answer: 'การบวก VAT: นำราคาสินค้าคูณ 1.07 จะได้ราคารวม VAT การแยก VAT จากราคารวม: นำราคารวมหาร 1.07 จะได้ราคาก่อน VAT แล้วนำราคารวมลบราคาก่อน VAT จะได้จำนวน VAT',
+  },
+  {
+    question: 'สินค้าและบริการอะไรบ้างที่ต้องเสีย VAT?',
+    answer: 'สินค้าและบริการส่วนใหญ่ในประเทศไทยต้องเสียภาษีมูลค่าเพิ่ม 7% ยกเว้นสินค้าเกษตรที่ยังไม่แปรรูป หนังสือพิมพ์ นิตยสาร การขนส่งระหว่างประเทศ และบริการทางการแพทย์ เป็นต้น',
+  },
+  {
+    question: 'ผู้ประกอบการรายได้เท่าไรต้องจดทะเบียน VAT?',
+    answer: 'ผู้ประกอบการที่มีรายได้จากการขายสินค้าหรือบริการเกิน 1,800,000 บาทต่อปี ต้องจดทะเบียนภาษีมูลค่าเพิ่มกับกรมสรรพากร',
+  },
+  {
+    question: 'VAT 7% หรือ 10% กันแน่?',
+    answer: 'อัตราภาษีมูลค่าเพิ่มตามกฎหมายคือ 10% แต่มีพระราชกฤษฎีกาลดอัตราเหลือ 7% (รวมภาษีท้องถิ่น) ซึ่งได้รับการต่ออายุเรื่อยมาจนถึงปัจจุบัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีมูลค่าเพิ่ม VAT 7%',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีมูลค่าเพิ่ม VAT 7%">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณภาษีมูลค่าเพิ่ม (VAT 7%)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณ VAT 7% ออนไลน์ฟรี บวก VAT หรือแยก VAT จากราคารวม รองรับหลายรายการ ผลลัพธ์ทันที
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Mode Toggle -->
+      <div class="flex rounded-lg bg-gray-100 p-1 mb-6">
+        <button
+          type="button"
+          id="mode-add"
+          class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700"
+        >
+          บวก VAT (ราคาก่อน VAT)
+        </button>
+        <button
+          type="button"
+          id="mode-extract"
+          class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600"
+        >
+          แยก VAT (ราคารวม VAT)
+        </button>
+      </div>
+
+      <!-- Single Calculation -->
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">คำนวณรายการเดียว</h2>
+        <div class="flex gap-3 items-end">
+          <div class="flex-1">
+            <label for="single-price" id="single-price-label" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาก่อน VAT (บาท)
+            </label>
+            <input
+              type="text"
+              id="single-price"
+              inputmode="numeric"
+              placeholder="เช่น 1,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <button
+            type="button"
+            id="btn-calculate"
+            class="px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+          >
+            คำนวณ
+          </button>
+        </div>
+      </div>
+
+      <!-- Single Result -->
+      <div id="single-result" class="hidden mb-6">
+        <div class="grid gap-3 sm:grid-cols-3">
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาก่อน VAT</div>
+            <div id="res-before" class="text-lg font-bold text-gray-900">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">VAT 7%</div>
+            <div id="res-vat" class="text-lg font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคารวม VAT</div>
+            <div id="res-total" class="text-lg font-bold text-green-700">-</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-6 border-gray-200" />
+
+      <!-- Batch Calculation -->
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">คำนวณหลายรายการ</h2>
+        <p class="text-sm text-gray-500 mb-3" id="batch-hint">
+          กรอกราคาก่อน VAT แต่ละรายการ คั่นด้วย Enter
+        </p>
+        <textarea
+          id="batch-input"
+          rows="4"
+          inputmode="numeric"
+          placeholder="1000&#10;2500&#10;750"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base font-mono"
+        ></textarea>
+        <button
+          type="button"
+          id="btn-batch"
+          class="mt-3 px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทั้งหมด
+        </button>
+      </div>
+
+      <!-- Batch Result -->
+      <div id="batch-result" class="hidden mt-4">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-2">#</th>
+                <th class="py-2 pr-2 text-right">ราคาก่อน VAT</th>
+                <th class="py-2 pr-2 text-right">VAT 7%</th>
+                <th class="py-2 text-right">ราคารวม VAT</th>
+              </tr>
+            </thead>
+            <tbody id="batch-table-body"></tbody>
+            <tfoot id="batch-table-foot" class="font-semibold border-t-2 border-gray-300"></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ภาษีมูลค่าเพิ่ม (VAT) คืออะไร?</h2>
+
+      <p>
+        ภาษีมูลค่าเพิ่ม (Value Added Tax หรือ VAT) เป็นภาษีทางอ้อมที่เรียกเก็บจากการขายสินค้าและบริการ
+        ในประเทศไทย อัตราภาษีมูลค่าเพิ่มที่ใช้ในปัจจุบันคือ 7% (รวมภาษีท้องถิ่น)
+        ซึ่งลดลงจากอัตราตามกฎหมาย 10% ตามพระราชกฤษฎีกา
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีคำนวณ VAT 7%</h3>
+
+      <p>การคำนวณภาษีมูลค่าเพิ่มมี 2 กรณีหลัก:</p>
+
+      <h4 class="font-semibold mt-4 mb-1">1. บวก VAT (คำนวณจากราคาก่อน VAT)</h4>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>จำนวน VAT = ราคาก่อน VAT × 0.07</li>
+        <li>ราคารวม VAT = ราคาก่อน VAT × 1.07</li>
+        <li>ตัวอย่าง: สินค้าราคา 1,000 บาท → VAT = 70 บาท → ราคารวม = 1,070 บาท</li>
+      </ul>
+
+      <h4 class="font-semibold mt-4 mb-1">2. แยก VAT (คำนวณจากราคารวม VAT)</h4>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ราคาก่อน VAT = ราคารวม VAT ÷ 1.07</li>
+        <li>จำนวน VAT = ราคารวม VAT − ราคาก่อน VAT</li>
+        <li>ตัวอย่าง: ราคารวม 1,070 บาท → ราคาก่อน VAT = 1,000 บาท → VAT = 70 บาท</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ใครต้องจดทะเบียน VAT?</h3>
+
+      <p>
+        ผู้ประกอบการที่มีรายได้จากการขายสินค้าหรือให้บริการเกิน 1,800,000 บาทต่อปี
+        มีหน้าที่ต้องจดทะเบียนภาษีมูลค่าเพิ่มกับกรมสรรพากร
+        ผู้จดทะเบียนต้องออกใบกำกับภาษีและยื่นแบบ ภ.พ.30 ทุกเดือน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สินค้าและบริการที่ได้รับยกเว้น VAT</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>สินค้าเกษตรที่ยังไม่แปรรูป (ผัก ผลไม้ ข้าว)</li>
+        <li>หนังสือพิมพ์ นิตยสาร ตำราเรียน</li>
+        <li>บริการขนส่งระหว่างประเทศ</li>
+        <li>บริการทางการแพทย์ในโรงพยาบาลของรัฐ</li>
+        <li>บริการให้เช่าอสังหาริมทรัพย์</li>
+        <li>บริการทางการศึกษาของสถาบันของรัฐ</li>
+      </ul>
+
+      <p class="mt-4">
+        เครื่องคำนวณ VAT นี้ช่วยให้คุณคำนวณภาษีมูลค่าเพิ่ม 7% ได้สะดวกรวดเร็ว
+        ทั้งการบวก VAT จากราคาสินค้า และการแยก VAT จากราคารวม รองรับการคำนวณหลายรายการพร้อมกัน
+        เหมาะสำหรับผู้ประกอบการ นักบัญชี และบุคคลทั่วไป
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-xl border border-primary-200 bg-primary-50 p-4 sm:p-5">
+      <h2 class="text-lg font-semibold text-primary-900 mb-2">บทความสูตร VAT 7% สำหรับใช้งานจริง</h2>
+      <p class="text-sm text-primary-800 mb-3">
+        รวมสูตรบวก VAT, สูตรถอด VAT, ตารางตัวอย่างราคา 10 จุด และข้อผิดพลาดที่ทำให้ตั้งราคาขายพลาด
+      </p>
+      <a
+        href="/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/"
+        data-preserve-utm
+        class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
+      >
+        อ่านบทความ VAT 7%
+      </a>
+    </section>
+
+    <!-- Related -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องคำนวณที่เกี่ยวข้อง</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณภาษีเงินได้บุคคลธรรมดา</span>
+          <span class="text-gray-400 text-sm block">ภาษีเงินได้ตามขั้นบันได 2569</span>
+        </a>
+        <a href="/คำนวณเงินเดือนสุทธิ/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณเงินเดือนสุทธิ</span>
+          <span class="text-gray-400 text-sm block">เงินเดือนหลังหักภาษีและประกันสังคม</span>
+        </a>
+        <a href="/คำนวณผ่อนรถ/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณผ่อนรถ</span>
+          <span class="text-gray-400 text-sm block">ค่างวดรถยนต์ ดอกเบี้ย เงินดาวน์</span>
+        </a>
+        <a href="/คำนวณดอกเบี้ยเงินฝาก/" data-preserve-utm class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 transition-colors">
+          <span class="text-primary-600 font-medium">คำนวณดอกเบี้ยเงินฝาก</span>
+          <span class="text-gray-400 text-sm block">ดอกเบี้ยเงินฝากประจำและออมทรัพย์</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    const VAT_RATE = 0.07;
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    type Mode = 'add' | 'extract';
+    let currentMode: Mode = 'add';
+
+    const modeAdd = document.getElementById('mode-add') as HTMLButtonElement;
+    const modeExtract = document.getElementById('mode-extract') as HTMLButtonElement;
+    const singleLabel = document.getElementById('single-price-label') as HTMLLabelElement;
+    const singleInput = document.getElementById('single-price') as HTMLInputElement;
+    const batchHint = document.getElementById('batch-hint') as HTMLParagraphElement;
+
+    function setMode(mode: Mode) {
+      currentMode = mode;
+      if (mode === 'add') {
+        modeAdd.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700';
+        modeExtract.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600';
+        singleLabel.textContent = 'ราคาก่อน VAT (บาท)';
+        singleInput.placeholder = 'เช่น 1,000';
+        batchHint.textContent = 'กรอกราคาก่อน VAT แต่ละรายการ คั่นด้วย Enter';
+      } else {
+        modeExtract.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700';
+        modeAdd.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600';
+        singleLabel.textContent = 'ราคารวม VAT (บาท)';
+        singleInput.placeholder = 'เช่น 1,070';
+        batchHint.textContent = 'กรอกราคารวม VAT แต่ละรายการ คั่นด้วย Enter';
+      }
+      // Hide results on mode change
+      (document.getElementById('single-result') as HTMLDivElement).classList.add('hidden');
+      (document.getElementById('batch-result') as HTMLDivElement).classList.add('hidden');
+    }
+
+    modeAdd.addEventListener('click', () => setMode('add'));
+    modeExtract.addEventListener('click', () => setMode('extract'));
+
+    function calcSingle(price: number, mode: Mode) {
+      if (mode === 'add') {
+        const vat = price * VAT_RATE;
+        return { before: price, vat, total: price + vat };
+      } else {
+        const before = price / (1 + VAT_RATE);
+        return { before, vat: price - before, total: price };
+      }
+    }
+
+    // Single calculation
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const price = parseNum(singleInput.value);
+      if (price <= 0) { singleInput.focus(); return; }
+
+      const r = calcSingle(price, currentMode);
+      (document.getElementById('res-before') as HTMLElement).textContent = fmt(r.before) + ' บาท';
+      (document.getElementById('res-vat') as HTMLElement).textContent = fmt(r.vat) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(r.total) + ' บาท';
+      (document.getElementById('single-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('vat');
+    });
+
+    // Allow Enter key on single input
+    singleInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btn-calculate')!.click();
+      }
+    });
+
+    // Batch calculation
+    document.getElementById('btn-batch')!.addEventListener('click', () => {
+      const textarea = document.getElementById('batch-input') as HTMLTextAreaElement;
+      const lines = textarea.value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const prices = lines.map(parseNum).filter(p => p > 0);
+
+      if (prices.length === 0) { textarea.focus(); return; }
+
+      const results = prices.map(p => calcSingle(p, currentMode));
+      const totals = {
+        before: results.reduce((s, r) => s + r.before, 0),
+        vat: results.reduce((s, r) => s + r.vat, 0),
+        total: results.reduce((s, r) => s + r.total, 0),
+      };
+
+      const tbody = document.getElementById('batch-table-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      results.forEach((r, i) => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-100';
+        row.innerHTML = `
+          <td class="py-2 pr-2 text-gray-500">${i + 1}</td>
+          <td class="py-2 pr-2 text-right">${fmt(r.before)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(r.vat)}</td>
+          <td class="py-2 text-right">${fmt(r.total)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      const tfoot = document.getElementById('batch-table-foot') as HTMLTableSectionElement;
+      tfoot.innerHTML = `
+        <tr>
+          <td class="py-2 pr-2">รวม</td>
+          <td class="py-2 pr-2 text-right">${fmt(totals.before)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(totals.vat)}</td>
+          <td class="py-2 text-right">${fmt(totals.total)}</td>
+        </tr>
+      `;
+
+      (document.getElementById('batch-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('vat');
+    });
+
+    // Track when result sections enter viewport
+    const vatResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('vat');
+          vatResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    vatResultObserver.observe(document.getElementById('single-result')!);
+    vatResultObserver.observe(document.getElementById('batch-result')!);
+  </script>
+</BaseLayout>

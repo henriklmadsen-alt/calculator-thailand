@@ -1,0 +1,1956 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+
+<head><script>(function(){"use strict";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){return _},_9:function(){return c},e:function(){return o},qQ:function(){return s},t9:function(){return n}});const o="eudaEnableAgent",n="eudaSyncLoad",_="eudaAgentVersion",a="eudaLoaderVersion",c="eudaForce",s="eudaClearText",i="eudaFailed",l="eudaMode"},405:function(e,t,r){r.d(t,{Pt:function(){return n}});let o=!1;function n(e){o=e}}},__webpack_module_cache__={};function __webpack_require__(e){var t=__webpack_module_cache__[e];if(void 0!==t)return t.exports;var r=__webpack_module_cache__[e]={exports:{}};return __webpack_modules__[e](r,r.exports,__webpack_require__),r.exports}__webpack_require__.d=function(e,t){for(var r in t)__webpack_require__.o(t,r)&&!__webpack_require__.o(e,r)&&Object.defineProperty(e,r,{enumerable:!0,get:t[r]})},__webpack_require__.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)};var __webpack_exports__={},_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__=__webpack_require__(348),_lib_service_worker_wrapper_js__WEBPACK_IMPORTED_MODULE_1__=__webpack_require__(405);(function(){let registerSWStarted=!1;const resourceBasePath="/678c37f1-fcea-354f-853d-32b794d02404",csmBasePath="/4359d65e-dd82-3237-8c34-3c0c315503df",getVersionIntervalSeconds="300",loaderVersion="1.2";localStorage.setItem(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.Pz,loaderVersion);const serviceWorkerUrl=`${resourceBasePath}/eudaapi/get-script/serviceworker`;let attempt=0,enableAgent=!1,syncLoad=!1,oldAgentVersion=!1,newAgentVersion=!1,agentVersion=!1,forceAgent=getBooleanFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__._9),clearText=getBooleanFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.qQ),agentLoaded=!1;function getBooleanFromLocalStorage(e){return"true"===getFromLocalStorage(e)}function getFromLocalStorage(e){return localStorage.getItem(e)}function loader(){let e=3e4;parseInt(getVersionIntervalSeconds)>0&&(e=1e3*getVersionIntervalSeconds),captureConfig(),init().then(()=>{"serviceWorker"in navigator&&navigator.serviceWorker.addEventListener("message",function(e){"reload"===e.data.type&&location.reload()}),setTimeout(loader,e)}).catch(t=>{if(attempt<3)setTimeout(loader,e);else{const e=Math.floor(Date.now()/1e3)+604800;localStorage.setItem(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.IP,e.toString())}attempt++})}function captureConfig(e){enableAgent=getBooleanFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.e),syncLoad=getBooleanFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.t9),agentVersion=getFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.XV),forceAgent=getBooleanFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__._9),oldAgentVersion=agentVersion,e&&(enableAgent=e.enableAgent,syncLoad=e.syncLoad,newAgentVersion=e.agentVersion,agentVersion=newAgentVersion,controlServiceWorker(newAgentVersion).then(()=>{}),localStorage.setItem(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.XV,agentVersion),localStorage.setItem(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.e,enableAgent),localStorage.setItem(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.t9,syncLoad))}function init(){const e=getFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.IP);if(!(null!==e&&Date.now()-Number(e)<=0))return localStorage.removeItem(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.IP),new Promise(async(e,t)=>{syncLoad&&enableAgent?loadAgentCode().then(()=>loadConfigFromServer().then(()=>e()).catch(e=>t(e))).catch(e=>t(e)):loadConfigFromServer().then(()=>isAgentRequired()?loadAgentCode().then(()=>e()).catch(e=>t(e)):e()).catch(e=>t(e))})}function loadConfigFromServer(){return new Promise(async(e,t)=>{try{const r=await fetch(`${csmBasePath}/eudaapi/version`,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify({location:location.href})});if(r.status>=400)return t(new Error("Bad response from server"));return captureConfig(await r.json()),e()}catch(e){return t(e)}})}function isAgentRequired(){return!!forceAgent||enableAgent}function loadAgentCodeAsync(e){return new Promise((t,r)=>{let o=0,n=setInterval(()=>{o++;let _=document.getElementsByTagName("head")[0];if(_){clearInterval(n);let r=document.createElement("script");return r.src=e,_.appendChild(r),agentLoaded=!0,t()}if(o>10)return clearInterval(n),console.info("couldn't load script no Head present"),r(new Error("couldn't load script no Head present"))},10)})}function loadAgentCodeSync(url){return new Promise((resolve,reject)=>{let xhr=new XMLHttpRequest;xhr.onreadystatechange=function(){if(this.readyState)return 200===this.status?(eval(xhr.responseText),agentLoaded=!0,resolve()):reject(new Error(`request returned status ${this.status}`))},xhr.open("GET",url,!1),xhr.send()})}function getModeArg(){let e="",t=getFromLocalStorage(_lib_local_storage_js__WEBPACK_IMPORTED_MODULE_0__.Sg);return t&&(e=`&mode=${encodeURIComponent(t)}`),e}function loadAgentCode(){return new Promise((e,t)=>{if(agentLoaded)return e();let r=`${resourceBasePath}/eudaapi/get-script/euda?ver=${agentVersion}${getModeArg()}`;(syncLoad?loadAgentCodeSync:loadAgentCodeAsync)(r).then(()=>e()).catch(e=>t(e))})}function compareAgentVersions(e){if(!oldAgentVersion)return!0;if(!e)return!1;return oldAgentVersion.substring(0,oldAgentVersion.lastIndexOf("."))<e.substring(0,e.lastIndexOf("."))}function registerServiceWorker(){return new Promise((e,t)=>{const r=setTimeout(()=>{t(new Error("service worker registration time out"))},3e4),o=agentVersion.substring(0,agentVersion.lastIndexOf("."));navigator.serviceWorker.register(`${serviceWorkerUrl}?v=${o}${getModeArg()}`,{scope:"/"}).then(t=>((0,_lib_service_worker_wrapper_js__WEBPACK_IMPORTED_MODULE_1__.Pt)(t),clearTimeout(r),e())).catch(e=>(clearTimeout(r),t(new Error(`service worker register failed: ${e}`))))})}function handleRegisterSW(e,t){registerServiceWorker().then(()=>(navigator.serviceWorker.ready.then(e=>{e.active&&e.active.postMessage({type:"FORCE_AGENT_VALUE",forceAgent:forceAgent})}).catch(e=>{console.warn("Failed to send force agent value to service worker:",e)}),registerSWStarted=!1,e())).catch(e=>(registerSWStarted=!1,t(e)))}function controlServiceWorker(e){return new Promise((t,r)=>{if(registerSWStarted)return t();const o="serviceWorker"in navigator,n=window.isSecureContext||"localhost"===location.hostname||"127.0.0.1"===location.hostname;if(!o||!n)return t();let _=compareAgentVersions(e);registerSWStarted=!0,navigator.serviceWorker.getRegistration("/").then(e=>e&&e.active?(e.active.postMessage({type:"FORCE_AGENT_VALUE",forceAgent:forceAgent}),_?handleRegisterSW(t,r):(registerSWStarted=!1,t())):enableAgent||forceAgent?handleRegisterSW(t,r):(registerSWStarted=!1,t())).catch(e=>(console.log(e),registerSWStarted=!1,r()))})}loader()})()})();
+//# sourceMappingURL=capture.bundle.js.map{}
+</script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no">
+				<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<title>เว็บไซต์กรมที่ดิน</title>
+
+			<meta name="keywords" content="เว็บไซต์กรมที่ดิน,">
+		<meta name="thumbnail" content="https://www.dol.go.th/media/716929789247754240/2025/03/ZfRqiNwoFk4mVCXGcUWjpzKY.png" />
+		<meta property="og:type" content="article">
+		<meta property="og:title" content="โอนเฉพาะสิ่งปลูกสร้าง ค่าโอน0.01% ไหมครับ">
+		<meta property="og:description" content="">
+		<meta property="og:url" content="https://www.dol.go.th/Q2603-000225">
+		<meta property="og:site_name" content="เว็บไซต์กรมที่ดิน">
+		<meta property="article:modified_time" content="2026-03-30 14:45:20">
+		<meta property="og:image" content="https://www.dol.go.th/media/716929789247754240/2025/03/ZfRqiNwoFk4mVCXGcUWjpzKY.png">
+		<meta property="og:image:width" content="560">
+		<meta property="og:image:height" content="252">
+		<meta property="og:image:type" content="image/png">
+	
+	<link rel="apple-touch-icon" sizes="180x180" href="https://www.dol.go.th/themes/dol_v1/assets/images/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://www.dol.go.th/themes/dol_v1/assets/images/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://www.dol.go.th/themes/dol_v1/assets/images/favicon/favicon-16x16.png">
+	<link rel="manifest" href="https://www.dol.go.th/themes/dol_v1/assets/images/favicon/site.webmanifest">
+
+	<!-- bootstrap css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstrap/dist/css/bootstrap.min.css?v=5.3" />
+
+	<!-- Bootstrap select css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstap-select/bootstrap-select.min.css" />
+
+	<!-- Bootstrap datepicker css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
+
+	<!-- Splide -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/splide/dist/css/splide.min.css?v=4.1.2" />
+
+	<!-- sweetalert css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/sweetalert/src/sweetalert2.min.css">
+
+	<!-- light-gallery css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/light-gallery/dist/css/lightgallery-bundle.css">
+
+	<!-- lightbox css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/lightbox/magnific-popup.css">
+
+	<!-- toastui calendar -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/tui-calendar/css/toastui-calendar.min.css" />
+
+	<!-- animate -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/animate_css/animate.min.css?v=4.1.1" />
+
+	<!-- cookie consent -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/css/cookieconsent.css?v=1776606519" />
+
+	<!-- custom css -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/css/main.min.css?v=1776606519" />
+
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/zebra/css/bootstrap/zebra_datepicker.min.css">
+
+	<!-- style migration -->
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/css/style-migration.css" />
+
+	
+		<!-- Leaflet Map -->
+	<script src="https://www.dol.go.th/themes/dol_v1/assets/plugins/leaflet/leaflet0.js"></script>
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/leaflet/leaflet.css">
+
+	<!-- Plugin Jquery -->
+	<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/jquery/jquery.min.js"></script>
+
+	<!-- Plugin Date Range Picker -->
+	<script src="https://www.dol.go.th/themes/dol_v1/assets/plugins/daterangepicker/moment.min.js"></script>
+	<script src="https://www.dol.go.th/themes/dol_v1/assets/plugins/daterangepicker/moment-local.min.js"></script>
+	<script src="https://www.dol.go.th/themes/dol_v1/assets/plugins/daterangepicker/daterangepicker.min.js"></script>
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/daterangepicker/daterangepicker.css">
+	</link>
+
+	<!-- Plugin time Picker -->
+	<script src="https://www.dol.go.th/themes/dol_v1/assets/plugins/timepicker/timepicker.min.js"></script>
+	<link rel="stylesheet" href="https://www.dol.go.th/themes/dol_v1/assets/plugins/timepicker/timepicker.css">
+	</link>
+
+	<!--  Plugin Zebra Datepicker -->
+	<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/zebra/zebra_datepicker.src.js"></script>
+
+	<script type="text/javascript">
+		var home_path = 'https://www.dol.go.th';
+		var cms_path = 'https://bo.dol.go.th';
+        var main_path = 'https://www.dol.go.th';
+		var api_path_local = 'https://www.dol.go.th/services';
+		var path_url = 'https://www.dol.go.th/themes/dol_v1/assets/plugins/3d-flip-book/';
+		var asset_path = 'https://www.dol.go.th/themes/dol_v1/assets';
+		var image_path = 'https://www.dol.go.th/themes/dol_v1/assets/images';
+		var image_default = 'https://www.dol.go.th/media/716929789247754240/2025/03/ZfRqiNwoFk4mVCXGcUWjpzKY.png';
+		var pdpa_text = '<p><strong>ข้อตกลงในการใช้งาน</strong></p> <p>&bull; การเก็บรวบรวมข้อมูลส่วนบุคคล</p> <p>&nbsp; &nbsp; 1. ในกรณีที่ท่านลงทะเบียนเพื่อใช้บริการอย่างใดอย่างหนึ่งในเว็บไซต์ จะเก็บรวบรวมข้อมูลส่วนบุคคลของท่าน เพื่อความสะดวกในการระบุตัวตนของผู้ใช้</p> <p>&nbsp; &nbsp; 2. นอกจากนั้น เพื่อสำรวจความนิยมในการใช้บริการ อันจะเป็นประโยชน์ในการนำสถิติไปใช้ในการปรับปรุงคุณภาพของเว็บไซต์จึงจำเป็นต้องจัดเก็บรวบรวมข้อมูลของท่านบางอย่างเพิ่มเติมด้วย ได้แก่ เลขประจำอุปกรณ์ (UUID) และชื่อระบบปฏิบัติการ (Platform) หรือ หมายเลข IP Address</p> <p>&bull; การใช้ข้อมูลส่วนตัว</p> <p>&nbsp; &nbsp; 1. กรมที่ดินจะใช้ข้อมูลส่วนบุคคลของท่านเพียงเท่าที่จำเป็นเพื่อใช้ในการติดต่อ ให้บริการ ประชาสัมพันธ์ หรือให้ข้อมูลข่าวสารต่างๆ รวมทั้งสำรวจความคิดเห็นของท่านในการใช้งานเว็บไซต์กรมที่ดินเท่านั้น</p> <p>&nbsp; &nbsp; 2. กรมที่ดินขอรับรองว่าจะไม่นำข้อมูลส่วนบุคคลของท่านที่เว็บไซต์กรมที่ดิน ได้เก็บรวบรวมไว้ ไปขายหรือเผยแพร่ให้กับบุคคลภายนอกโดยเด็ดขาด เว้นแต่จะได้รับอนุญาตจากท่านเท่านั้น</p> <p>&nbsp; &nbsp; 3. ในกรณีที่กรมที่ดินได้ว่าจ้างหน่วยงานอื่นเพื่อให้ดำเนินการเกี่ยวกับข้อมูลส่วนบุคคลของท่าน เช่น การวิเคราะห์เชิงสถิติในการใช้งานเว็บไซต์ เป็นต้น กรมที่ดินจะกำหนดให้หน่วยงานที่ได้ว่าจ้างให้ดำเนินการดังกล่าว เก็บรักษาความลับและความปลอดภัยของข้อมูลส่วนบุคคลของท่าน และกำหนดข้อห้ามมิให้มีการนำข้อมูลส่วนบุคคลดังกล่าวไปใช้นอกเหนือจากการใช้งานเว็บไซต์กรมที่ดิน</p> <p>&bull; การรักษาความปลอดภัยสำหรับข้อมูลส่วนบุคคล</p> <p>&nbsp; &nbsp; &nbsp; เพื่อประโยชน์ในการรักษาความลับและความปลอดภัยสำหรับข้อมูลส่วนบุคคลของท่าน กรมที่ดินจึงได้มีข้อกำหนดภายในหน่วยงานเพื่อกำหนดสิทธิในการเข้าถึงหรือใช้ข้อมูลส่วนบุคคลของท่าน และเพื่อรักษาความลับและความปลอดภัยของข้อมูลบางอย่างที่มีความสำคัญอย่างยิ่ง เช่น เลขประจำตัวประชาชน เป็นต้น</p> <p>&bull; การปรับปรุงนโยบายความเป็นส่วนตัว</p> <p>&nbsp; &nbsp; &nbsp;กรมที่ดินอาจทำการปรับปรุงหรือแก้ไขนโยบายความเป็นส่วนตัวโดยไม่ได้แจ้งให้ท่านทราบล่วงหน้า ทั้งนี้ เพื่อความเหมาะสมและมีประสิทธิภาพในการให้บริการ ดังนั้นกรมที่ดินจึงขอแนะนำให้ผู้ใช้บริการอ่านนโยบายความเป็นส่วนตัวทุกครั้งที่เข้าใช้งานเว็บไซต์</p> <p>&bull; การปฏิบัติตามนโยบายความเป็นส่วนตัวและการติดต่อกับกรมที่ดิน</p> <p>&nbsp; &nbsp; &nbsp; ในกรณีที่ท่านมีข้อสงสัย ข้อเสนอแนะ หรือข้อติชมใดๆ เกี่ยวกับนโยบายความเป็นส่วนตัว หรือการปฏิบัติตามนโยบายความเป็นส่วนตัวฉบับนี้ กรมที่ดินยินดีที่จะตอบข้อสงสัย รับฟังข้อเสนอแนะ และคำติชมทั้งหลาย อันจะเป็นประโยชน์ต่อการปรับปรุงการให้บริการของกรมที่ดินต่อไป โดยท่านสามารถติดต่อกับกรมที่ดินตามที่ปรากฏข้างล่างนี้</p> <p>ที่อยู่ : กรมที่ดิน ศูนย์ราชการเฉลิมพระเกียรติ ๘๐ พรรษาฯ ถนนแจ้งวัฒนะ แขวงทุ่งสองห้อง เขตหลักสี่กรุงเทพมหานคร ๑๐๒๑๐</p> <p>โทรศัพท์: ๐ ๒๑๔๑ ๕๕๕๕</p> <p>ไปรษณีย์อิเล็กทรอนิกส์: saraban@dol.go.th</p>';
+		var pdpa_version = '1.0.1';
+		var lang = 'th';
+
+        var is_grayscale = '0';
+
+		window.PDFJS_LOCALE = {
+			pdfJsWorker: path_url + 'js/pdf.worker.js',
+			pdfJsCMapUrl: 'cmaps'
+		};
+	</script>
+	<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/splide/dist/js/splide.min.js?v=4.1.2"></script> <script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/splide/dist/js/splide-extension-grid.min.js"></script> <!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-X18JVYYB1P"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag("js", new Date());
+
+			gtag("config", "G-X18JVYYB1P", { "anonymize_ip": true });
+		</script>
+	<style>
+	
+	.watermark {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(0deg);
+	opacity: 0.5;
+	font-size: 48px;
+	font-weight: bold;
+	color: gray;
+	width: 100%;
+	z-index: 10;
+	}
+	</style>
+
+<script>var __uzdbm_1 = "a4f2cfd1-9e53-43a3-bbd3-e9fd4dd1819d";var __uzdbm_2 = "NjZhZmUzZjUtZGgybS00MTk2LThkNTgtNWVkOWE2ZWQxOGI4JDU4LjExLjE4OS41Ng==";var __uzdbm_3 = "7f9000a4f2cfd1-9e53-43a3-bbd3-e9fd4dd1819d1-17766065196760-002e2b5ff3f4f39e0ba10";var __uzdbm_4 = "false";var __uzdbm_5 = "uzmx";var __uzdbm_6 = "7f9000007c1e7c-abe2-482f-a199-64f1a620ea281-17766065196760-2c628bba35aa0cf810";var __uzdbm_7 = "dol.go.th";</script> <script>   (function (w, d, e, u, c, g, a, b) {     w["SSJSConnectorObj"] = w["SSJSConnectorObj"] || {       ss_cid: c,       domain_info: "auto",     };     w[g] = function (i, j) {       w["SSJSConnectorObj"][i] = j;     };     a = d.createElement(e);     a.async = true;     if (       navigator.userAgent.indexOf('MSIE') !== -1 ||       navigator.appVersion.indexOf('Trident/') > -1     ) {       u = u.replace("/advanced/", "/advanced/ie/");     }     a.src = u;     b = d.getElementsByTagName(e)[0];     b.parentNode.insertBefore(a, b);   })(     window, document, "script", "https://www.dol.go.th/18f5227b-e27b-445a-a53f-f845fbe69b40/stormcaster.js", "dh2o", "ssConf"   );   ssConf("c1", "https://www.dol.go.th");   ssConf("c3", "c99a4269-161c-4242-a3f0-28d44fa6ce24");   ssConf("au", "dol.go.th");   ssConf("cu", "validate.perfdrive.com, ssc"); </script></head>
+
+<body >
+
+	
+	<div class="wrapper"> <!-- START WRAPPER-->
+		<header class="dol-header-fixed">
+			<nav id="navbarHeader" class="dol-navbar navbar-expand-xl">
+
+                <div class="container-xxl">
+                    <div class="dol-navbar-wrapper d-lg-none">
+                        <div class="related-link-mobile">
+                                                                                                                                        <div class="item">
+                                            <a class="item-link" href="https://intranet.dol.go.th/" target="_self">
+                                                                                                    <img class="link-icon" src="https://www.dol.go.th/media/716929789247754240/2025/03/mTEvsdRLgN2b1ewzjp43o08h.svg" alt="Intranet">
+                                                                                                <span class="text">Intranet</span>
+                                            </a>
+                                        </div>
+                                                                                                                                                <div class="item">
+                                            <a class="item-link" href="https://www.dol.go.th/department-internal/" target="_self">
+                                                                                                    <img class="link-icon" src="https://www.dol.go.th/media/716929789247754240/2025/03/VsdijyrWRuPFoSp6DXUGvNLg.svg" alt="หน่วยงานภายใน">
+                                                                                                <span class="text">หน่วยงานภายใน</span>
+                                            </a>
+                                        </div>
+                                                                                                                        </div>
+                    </div>
+                </div>
+
+				<div class="container-xxl">
+
+					<div class="dol-navbar-wrapper">
+
+						<a class="dol-logo dol-hide-mobile" href="https://www.dol.go.th/home/">
+							<img src="https://www.dol.go.th/media/716929789247754240/2025/12/BjtZpzGqQC4F91Xwfk73cTWm.svg" class="img-fluid" style="object-position:top"   alt="logo_beta">							<div class="dol-name d-none">
+								<div class="name">กรมที่ดิน</div>
+								<p class="name-en mb-0">Department of Lands</p>
+							</div>
+						</a>
+						<a class="dol-logo dol-logo-mb dol-mobile" href="https://www.dol.go.th/home/">
+							<img src="https://www.dol.go.th/themes/dol_v1/assets/images/default_logo.webp" class="img-fluid logo-mb" alt="logo">
+						</a>
+
+													<div class="related-link">
+								                                    									<div class="item">
+										<a class="item-link" href="https://intranet.dol.go.th/" target="_self">
+																							<img class="link-icon" src="https://www.dol.go.th/media/716929789247754240/2025/03/mTEvsdRLgN2b1ewzjp43o08h.svg" alt="Intranet">
+																						<span class="text">Intranet</span>
+										</a>
+									</div>
+                                    								                                    									<div class="item">
+										<a class="item-link" href="https://www.dol.go.th/department-internal/" target="_self">
+																							<img class="link-icon" src="https://www.dol.go.th/media/716929789247754240/2025/03/VsdijyrWRuPFoSp6DXUGvNLg.svg" alt="หน่วยงานภายใน">
+																						<span class="text">หน่วยงานภายใน</span>
+										</a>
+									</div>
+                                    															</div>
+						
+						<div class="dol-header-right">
+							<div class="dol-assembly-tools">
+								<div class="dropdown dol-dropdown-styled btn-group item-accessibility">
+									<button class="btn btn-accessibility dropdown-toggle" type="button" id="dd_accessibility" data-bs-toggle="dropdown" aria-expanded="false">
+										<div class="change-size"><span class="icon-svg"><svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M18.1013 3.95805L19.7942 5.65099C20.1224 5.97925 19.8864 6.53988 19.4254 6.53619L18.4409 6.53619L18.4409 13.4564L19.4254 13.4564C19.8901 13.4564 20.1225 14.0207 19.7942 14.349L18.1013 16.0419C17.8984 16.2448 17.5665 16.2448 17.3637 16.0419L15.6707 14.349C15.3425 14.0207 15.5785 13.4601 16.0395 13.4638L17.0241 13.4638L17.0241 6.54357L16.0395 6.54357C15.5748 6.54357 15.3424 5.97926 15.6707 5.651L17.3636 3.95805C17.5665 3.75519 17.8984 3.75519 18.1013 3.95805Z" fill="#202939" />
+													<path d="M3.48053 15.3453C3.48053 15.602 3.68861 15.8101 3.94529 15.8101H6.00489C6.26157 15.8101 6.46965 15.602 6.46965 15.3453V12.1238C6.46965 11.5791 6.58922 11.1474 6.82835 10.8285C7.0019 10.5971 7.23844 10.4427 7.53796 10.3652C7.7481 10.3109 7.93014 10.1585 7.96636 9.94449L8.06427 9.36591C8.09931 9.15888 7.99119 8.95408 7.80049 8.86623L6.35009 8.19807C6.36337 7.82608 6.52279 7.51388 6.82835 7.26147C7.13391 6.99576 7.59888 6.86291 8.22328 6.86291C8.86096 6.86291 9.3525 7.02898 9.69791 7.36111C10.0566 7.69323 10.236 8.19142 10.236 8.85568V15.3453C10.236 15.602 10.444 15.8101 10.7007 15.8101H12.7603C13.017 15.8101 13.2251 15.602 13.2251 15.3453V8.67633C13.2251 7.26811 12.78 6.21859 11.8899 5.52776C10.9998 4.82365 9.80419 4.47159 8.30299 4.47159C7.2269 4.47159 6.31023 4.63766 5.55299 4.96979C4.80903 5.28863 4.24441 5.72039 3.85915 6.26508C3.47388 6.80977 3.28125 7.4076 3.28125 8.05857V8.25142C3.28125 8.44673 3.40336 8.6212 3.58685 8.68808L5.4135 9.35387L5.39357 9.43358C4.76917 9.61957 4.29091 9.93842 3.95879 10.3901C3.63995 10.8418 3.48053 11.4861 3.48053 12.3231V15.3453Z" fill="#202939" />
+												</svg>
+											</span>
+										</div>
+										<div class="change-color">
+											<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path d="M10.7812 1.66663C6.17887 1.66663 2.44791 5.39758 2.44791 9.99996C2.44791 14.6023 6.17887 18.3333 10.7812 18.3333C15.3836 18.3333 19.1146 14.6023 19.1146 9.99996C19.1146 5.39758 15.3836 1.66663 10.7812 1.66663ZM10.7812 17.2916C6.75416 17.2916 3.48958 14.027 3.48958 9.99996C3.48958 5.97288 6.75416 2.70829 10.7812 2.70829C14.8083 2.70829 18.0729 5.97288 18.0729 9.99996C18.0729 14.027 14.8083 17.2916 10.7812 17.2916Z" fill="#202939" />
+												<path d="M10.7812 4.27075C10.4936 4.27075 10.2604 4.50392 10.2604 4.79159V15.2083C10.2604 15.4959 10.4936 15.7291 10.7812 15.7291C13.9454 15.7291 16.5104 13.164 16.5104 9.99992C16.5104 6.83579 13.9454 4.27075 10.7812 4.27075Z" fill="#202939" />
+											</svg>
+										</div>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dd_accessibility">
+										<div class="d-flex align-items-center gap-2">
+											<li><button type="button" class="dropdown-item btn-alphabet alphabet-sm" data-fontSize="14px" onclick="changeFontSize(this,'14px')"><span class="icon-size">ก</span> </button></li>
+											<li><button type="button" class="dropdown-item btn-alphabet alphabet-md" data-fontSize="16px" onclick="changeFontSize(this,'16px')"><span class="icon-size">ก</span> </button></li>
+											<li><button type="button" class="dropdown-item btn-alphabet alphabet-xl" data-fontSize="18px" onclick="changeFontSize(this,'18px')"><span class="icon-size">ก</span> </button></li>
+										</div>
+										<hr class="dropdown-divider" />
+										<div class="d-flex align-items-center gap-2">
+											<li><button type="button" class="dropdown-item btn-color color-light" data-theme="theme-light" onclick="changeTheme(this,'theme-light')">
+													<div class="circle">C</div>
+												</button></li>
+											<li><button type="button" class="dropdown-item btn-color color-dark" data-theme="theme-dark" onclick="changeTheme(this,'theme-dark')">
+													<div class="circle">C</div>
+												</button></li>
+											<li><button type="button" class="dropdown-item btn-color color-blindness" data-theme="theme-blindness" onclick="changeTheme(this,'theme-blindness')">
+													<div class="circle">C</div>
+												</button></li>
+										</div>
+									</ul>
+								</div>
+							</div>
+							<div class="dropdown dol-dropdown-styled dol-lang-tools">
+								<button class="btn btn-flag dropdown-toggle" type="button" id="dd_flag" data-bs-toggle="dropdown" aria-expanded="false">
+																			<img src="https://www.dol.go.th/themes/dol_v1/assets/images/icon/icn-th.png" class="image-flag" onerror="handleImageError(this)" alt="flag">
+																		<span class="text-select">ไทย</span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dd_flag">
+																			<li><a class="dropdown-item active" href="https://www.dol.go.th/question-answer/Q2603-000225">ไทย</a></li>
+																					<hr class="dropdown-divider d-none" />
+																													<li><a class="dropdown-item" href="https://www.dol.go.th/en/question-answer/Q2603-000225">EN</a></li>
+																											</ul>
+							</div>
+
+							<div class="divider"></div>
+
+							
+							
+								<a class="btn btn-login " href="https://www.dol.go.th/login/">
+									<span class="icon-lock"></span><span class="text dol-hide-mobile">เข้าสู่ระบบ (ประชาชน)</span>
+								</a>
+							
+							<div class="dol-search-mobile">
+								<div class="dol-search-dt me-0 d-none">
+									<form id="frm_search_bar" class="form-search" action="https://www.dol.go.th/search-result/">
+										<div class="search-box">
+											<input class="form-control" id="kw" type="text" name="s" value="" placeholder="ค้นหา">
+											<div class="ic-search">
+												<svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+													<path d="M8.8737 16.0384C10.3528 16.0381 11.7894 15.5429 12.9545 14.6317L16.6179 18.2951L17.7962 17.1167L14.1329 13.4534C15.0445 12.2881 15.54 10.8513 15.5404 9.37174C15.5404 5.69591 12.5495 2.70508 8.8737 2.70508C5.19786 2.70508 2.20703 5.69591 2.20703 9.37174C2.20703 13.0476 5.19786 16.0384 8.8737 16.0384ZM8.8737 4.37174C11.6312 4.37174 13.8737 6.61424 13.8737 9.37174C13.8737 12.1292 11.6312 14.3717 8.8737 14.3717C6.1162 14.3717 3.8737 12.1292 3.8737 9.37174C3.8737 6.61424 6.1162 4.37174 8.8737 4.37174Z" fill="#2A2F90" />
+												</svg>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="input-box">
+									<a href="javascript:void(0)" id="search_bar" title="search">
+										<span class="icon-search" aria-hidden="true"></span>
+										<svg class="d-none" width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M19 6.91L17.59 5.5L12 11.09L6.41 5.5L5 6.91L10.59 12.5L5 18.09L6.41 19.5L12 13.91L17.59 19.5L19 18.09L13.41 12.5L19 6.91Z" fill="#194FB4" />
+										</svg>
+									</a>
+								</div>
+							</div>
+							<div class="dol-search-mobile dol-mobile d-none">
+								<a href="https://www.dol.go.th/search-result/?s" title="search"><span class="icon-search" aria-hidden="true"></span></a>
+							</div>
+
+							<button class="dol-hamburger-menu" type="button">
+								<img src="https://www.dol.go.th/themes/dol_v1/assets/images/icon/ic-hamburger.svg" alt="hamburger">
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="dol-navbar-collapse navbar-collapse">
+										<ul class='navbar-nav nav-menu menu-location-th'><li class="nav-item nav-item-1 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/" title="หน้าหลัก" >หน้าหลัก</a></div></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="เกี่ยวกับกรม" >เกี่ยวกับกรม</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/dol-history/" title="ประวัติกรมที่ดิน" >ประวัติกรมที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/director-general/" title="เจ้ากรมและอธิบดี" >เจ้ากรมและอธิบดี</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/organizational-structure/" title="โครงสร้างการแบ่งส่วนราชการ" >โครงสร้างการแบ่งส่วนราชการ</a></div></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ทำเนียบผู้บริหาร" >ทำเนียบผู้บริหาร</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/director-generals/" title="อธิบดี" >อธิบดี</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/advisor-performance/" title="ที่ปรึกษาด้านประสิทธิภาพ" >ที่ปรึกษาด้านประสิทธิภาพ</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/chief-engineer-advisor-surveying/" title="นายช่างใหญ่ (ที่ปรึกษาด้านวิศวกรรมสำรวจ)" >นายช่างใหญ่ (ที่ปรึกษาด้านวิศวกรรมสำรวจ)</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/senior-it-executive-dcio/" title="ผู้บริหารเทคโนโลยีสารสนเทศระดับสูง (DCIO)" >ผู้บริหารเทคโนโลยีสารสนเทศระดับสูง (DCIO)</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/deputy-director-general/" title="รองอธิบดีกรมที่ดิน" >รองอธิบดีกรมที่ดิน</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/inspector-general/" title="ผู้ตรวจราชการกรมที่ดิน" >ผู้ตรวจราชการกรมที่ดิน</a></div></li></ul></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/vision-mission-values/" title="วิสัยทัศน์ พันธกิจ ค่านิยมองค์กร" >วิสัยทัศน์ พันธกิจ ค่านิยมองค์กร</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/core-missions/" title="ภารกิจหลัก" >ภารกิจหลัก</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/policy-and-plan/" title="นโยบายและแผน" >นโยบายและแผน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/anti-corruption-commitment/" title="เจตนารมณ์ต่อต้านการทุจริต" >เจตนารมณ์ต่อต้านการทุจริต</a></div></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="บริการกรมที่ดิน" >บริการกรมที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/citizen-services/" title="บริการประชาชน" >บริการประชาชน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/private-surveyor-services/" title="บริการช่างรังวัดเอกชน" >บริการช่างรังวัดเอกชน</a></div></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ธุรกิจอสังหาริมทรัพย์" >ธุรกิจอสังหาริมทรัพย์</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/real-estate-info/" title="ข้อมูลธุรกิจอสังหาริมทรัพย์" >ข้อมูลธุรกิจอสังหาริมทรัพย์</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/real-estate-statistics/" title="ข้อมูลด้านสถิติงานด้านธุรกิจอสังหาริมทรัพย์" >ข้อมูลด้านสถิติงานด้านธุรกิจอสังหาริมทรัพย์</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/land-allotment-statistics/" title="สถิติการให้บริการการออกใบอนุญาตจัดสรรที่ดิน" >สถิติการให้บริการการออกใบอนุญาตจัดสรรที่ดิน</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/supreme-court-rulings-land-condo/" title="คำพิพากษาศาลฎีกาเกี่ยวกับการจัดสรรที่ดินและอาคารชุด" >คำพิพากษาศาลฎีกาเกี่ยวกับการจัดสรรที่ดินและอาคารชุด</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/land/" title="ค้นหาข้อมูลจัดสรรที่ดินและอาคารชุด" >ค้นหาข้อมูลจัดสรรที่ดินและอาคารชุด</a></div></li><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข้อมูลนิติบุคคลอาคารชุด" >ข้อมูลนิติบุคคลอาคารชุด</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/cate-1771822449/cate-1771822630/" title="กรุงเทพมหานคร" >กรุงเทพมหานคร</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/cate-1771822449/cate-1771822584/" title="ต่างจังหวัด" >ต่างจังหวัด</a></div></li></ul></li><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข้อมูลนิติบุคคลหมู่บ้านจัดสรร" >ข้อมูลนิติบุคคลหมู่บ้านจัดสรร</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/cate-1771822522/cate-1771822759/" title="กรุงเทพมหานคร" >กรุงเทพมหานคร</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/cate-1771822522/cate-1771822732/" title="ต่างจังหวัด" >ต่างจังหวัด</a></div></li></ul></li></ul></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="สถิติการให้บริการ" >สถิติการให้บริการ</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/service-statistics/service-and-revenue-statistics/" title="สถิติการให้บริการประชาชนและการจัดเก็บรายได้" >สถิติการให้บริการประชาชนและการจัดเก็บรายได้</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/service-statistics/registration-statistics/" title="สถิติปริมาณงานและเงินได้จากการจดทะเบียน" >สถิติปริมาณงานและเงินได้จากการจดทะเบียน</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/service-statistics/e-lands-announcement-statistics/" title="สถิติการให้บริการระบบเผยแพร่ประกาศสำนักงานที่ดิน e-LandsAnnouncement" >สถิติการให้บริการระบบเผยแพร่ประกาศสำนักงานที่ดิน e-LandsAnnouncement</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/service-statistics/land-service-stats/" title="สถิติผู้เข้ารับบริการทางสำนักงานที่ดิน" >สถิติผู้เข้ารับบริการทางสำนักงานที่ดิน</a></div></li></ul></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="คู่มือการให้บริการประชาชน" >คู่มือการให้บริการประชาชน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="งานทะเบียนที่ดิน" >งานทะเบียนที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/registration-types-processes/" title="ประเภทและขั้นตอนการจดทะเบียน" >ประเภทและขั้นตอนการจดทะเบียน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-seizure/" title="การอายัดที่ดิน" >การอายัดที่ดิน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/power-of-attorney/" title="การมอบอำนาจ" >การมอบอำนาจ</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-allotment-registration/" title="การจัดสรรที่ดิน" >การจัดสรรที่ดิน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/fees-taxes-duties/" title="ค่าธรรมเนียม ภาษี และอากร" >ค่าธรรมเนียม ภาษี และอากร</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/citizen-guide/" title="หลักฐานการขอจดทะเบียน" >หลักฐานการขอจดทะเบียน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/condominium-documents/" title="เอกสารประกอบการขอจดทะเบียนอาคารชุด" >เอกสารประกอบการขอจดทะเบียนอาคารชุด</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-for-foreigners/" title="ข้อมูลที่ดินสำหรับคนต่างด้าว" >ข้อมูลที่ดินสำหรับคนต่างด้าว</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-for-religious-entities/" title="การได้มาซึ่งที่ดินของนิติบุคคลเพื่อการศาสนา" >การได้มาซึ่งที่ดินของนิติบุคคลเพื่อการศาสนา</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/housing-juristic-person-manual/" title="คู่มือการจัดตั้งนิติบุคคลหมู่บ้านจัดสรร" >คู่มือการจัดตั้งนิติบุคคลหมู่บ้านจัดสรร</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-knowledge-center/" title="รอบรู้เรื่องที่ดิน" >รอบรู้เรื่องที่ดิน</a></div></li></ul></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-survey/" title="งานรังวัด" >งานรังวัด</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/citizen-guide/" title="คู่มือประชาชน" >คู่มือประชาชน</a></div></li></ul></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ความรู้เกี่ยวกับกรมที่ดิน" >ความรู้เกี่ยวกับกรมที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="กฎหมายน่ารู้" >กฎหมายน่ารู้</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ระเบียบ" >ระเบียบ</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/regulations/land-department-regulations/" title="ระเบียบกรมที่ดิน" >ระเบียบกรมที่ดิน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/regulations/ministry-of-interior-regulations/" title="ระเบียบกระทรวงมหาดไทย" >ระเบียบกระทรวงมหาดไทย</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/regulations/prime-ministers-office-regulations/" title="ระเบียบสำนักนายกรัฐมนตรี" >ระเบียบสำนักนายกรัฐมนตรี</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/regulations/regulations-of-the-council-of-state/" title="ระเบียบคณะกรรมการกฤษฎีกา" >ระเบียบคณะกรรมการกฤษฎีกา</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/regulations/judicial-regulations-of-the-court-of-justice/" title="ระเบียบราชการฝ่ายตุลาการศาลยุติธรรม" >ระเบียบราชการฝ่ายตุลาการศาลยุติธรรม</a></div></li></ul></li><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ประกาศ" >ประกาศ</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/announce/land-department-announcement/" title="ประกาศกรมที่ดิน" >ประกาศกรมที่ดิน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/announce/announcement-of-the-ministry-of-interior/" title="ประกาศกระทรวงมหาดไทย" >ประกาศกระทรวงมหาดไทย</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/announce/announcement-of-the-cabinet-secretariat/" title="ประกาศสำนักเลขาธิการคณะรัฐมนตรี" >ประกาศสำนักเลขาธิการคณะรัฐมนตรี</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/announce/announcement-of-public-health/" title="ประกาศกระทรวงสาธารณสุข" >ประกาศกระทรวงสาธารณสุข</a></div></li></ul></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/collection-regulations/" title="รวมกฎกระทรวง" >รวมกฎกระทรวง</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/decree/" title="พระราชกฤษฎีกา" >พระราชกฤษฎีกา</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/act/" title="พระราชบัญญัติ" >พระราชบัญญัติ</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/statistics-past-5-years/" title="สถิติจำนวนคดีพิพาทที่ดำเนินการในศาลชั้นต้นย้อนหลัง 5 ปี" >สถิติจำนวนคดีพิพาทที่ดำเนินการในศาลชั้นต้นย้อนหลัง 5 ปี</a></div></li></ul></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/publication-law-77/" title="การเผยแพร่กฎหมายตามมาตรา 77" >การเผยแพร่กฎหมายตามมาตรา 77</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/history-of-land-titles/" title="ความเป็นมาของการออกโฉนดที่ดิน" >ความเป็นมาของการออกโฉนดที่ดิน</a></div></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="การออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์" >การออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/eligible-land-for-title/" title="ที่ดินที่จะออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์ได้" >ที่ดินที่จะออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์ได้</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/individual-land-title-request/" title="การขอออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์เฉพาะราย" >การขอออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์เฉพาะราย</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/title-issuance-survey-project/" title="การออกโฉนดที่ดินตามโครงการเดินสำรวจออกโฉนดที่ดิน" >การออกโฉนดที่ดินตามโครงการเดินสำรวจออกโฉนดที่ดิน</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/replacement-title-document/" title="การขอออกใบแทนหนังสือแสดงสิทธิในที่ดิน" >การขอออกใบแทนหนังสือแสดงสิทธิในที่ดิน</a></div></li></ul></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/public-land/" title="ที่สาธารณประโยชน์" >ที่สาธารณประโยชน์</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/community-farming-land/" title="การจัดที่ดินทำกินให้ชุมชน" >การจัดที่ดินทำกินให้ชุมชน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-encyclopedia/" title="สารานุกรมที่ดิน" >สารานุกรมที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/train/e-library/" title="ประมวลกฎหมายที่ดินรูปแบบอิเล็กทรอนิกส์" target="_blank">ประมวลกฎหมายที่ดินรูปแบบอิเล็กทรอนิกส์</a></div></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ยุทธศาสตร์และแผนงาน" >ยุทธศาสตร์และแผนงาน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ผลความก้าวหน้า" >ผลความก้าวหน้า</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/progress-results/progress-report/" title="รายงานผลความก้าวหน้า" >รายงานผลความก้าวหน้า</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/progress-results/annual-report/" title="รายงานประจำปี" >รายงานประจำปี</a></div></li></ul></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="โครงการแผนงาน" >โครงการแผนงาน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/project-plan/quality-certification-project/" title="โครงการรับรองคุณภาพการบริการจัดการข้อมูลที่ดินฯ" >โครงการรับรองคุณภาพการบริการจัดการข้อมูลที่ดินฯ</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/project-plan/outstanding-land-management/" title="โครงการคัดเลือกสำนักงานที่ดินบริหารจัดการดีเด่น" >โครงการคัดเลือกสำนักงานที่ดินบริหารจัดการดีเด่น</a></div></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/project-plan/evaluation-of-government/" title="การประเมินส่วนราชการตามมาตรการปรับปรุงประสิทธิภาพในการปฏิบัติราชการ" >การประเมินส่วนราชการตามมาตรการปรับปรุงประสิทธิภาพในการปฏิบัติราชการ</a></div></li></ul></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="แผนบริหาร" >แผนบริหาร</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="การประเมินความเสี่ยงการทุจริต" >การประเมินความเสี่ยงการทุจริต</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/management-plan/corruption-risk-assessment/corruption-risk-assessment-2568/" title="ปีงบประมาณ พ.ศ. 2568" >ปีงบประมาณ พ.ศ. 2568</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/management-plan/corruption-risk-assessment/corruption-risk-assessment-2567/" title="ปีงบประมาณ พ.ศ. 2567" >ปีงบประมาณ พ.ศ. 2567</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/management-plan/corruption-risk-assessment/corruption-risk-assessment-2566/" title="ปีงบประมาณ พ.ศ. 2566" >ปีงบประมาณ พ.ศ. 2566</a></div></li></ul></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/strategy-and-plan/management-plan/crisis-management-plan/" title="แผนบริหารความพร้อมต่อสภาวะวิกฤต" >แผนบริหารความพร้อมต่อสภาวะวิกฤต</a></div></li></ul></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวกรมที่ดิน" >ข่าวกรมที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวความเคลื่อนไหว" >ข่าวความเคลื่อนไหว</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวจัดซื้อจัดจ้าง" >ข่าวจัดซื้อจัดจ้าง</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/plan/" title="แผนการจัดซื้อจัดจ้าง" >แผนการจัดซื้อจัดจ้าง</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/announcement/" title="ประกาศจัดซื้อจัดจ้าง" >ประกาศจัดซื้อจัดจ้าง</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/consulting_hiring/" title="จ้างที่ปรึกษา" >จ้างที่ปรึกษา</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/design_supervision/" title="จ้างออกแบบและควบคุมงาน" >จ้างออกแบบและควบคุมงาน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/auction_sale/" title="ขายทอดตลาด" >ขายทอดตลาด</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/winner_announcement_quarterly/" title="ประกาศผลผู้ชนะการจัดซื้อจัดจ้างหรือได้รับการคัดเลือก (รายไตรมาส)" >ประกาศผลผู้ชนะการจัดซื้อจัดจ้างหรือได้รับการคัดเลือก (รายไตรมาส)</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/cancel/" title="ยกเลิกโครงการ" >ยกเลิกโครงการ</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/summary_monthly/" title="สรุปผลการดำเนินการจัดซื้อจัดจ้าง" >สรุปผลการดำเนินการจัดซื้อจัดจ้าง</a></div></li><li class="nav-item nav-item-4  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="รายงานผลการดำเนินการจัดซื้อจัดจ้าง" >รายงานผลการดำเนินการจัดซื้อจัดจ้าง</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-5'><li class="nav-item nav-item-5 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/report/?report_type=ITA12" title="แบบ ITA 012" >แบบ ITA 012</a></div></li><li class="nav-item nav-item-5 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/report/?report_type=ITA13" title="แบบ ITA 013" >แบบ ITA 013</a></div></li><li class="nav-item nav-item-5 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/report/?report_type=ITA14" title="แบบ ITA 014" >แบบ ITA 014</a></div></li><li class="nav-item nav-item-5 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/report/?report_type=ITA16" title="แบบ ITA 016" >แบบ ITA 016</a></div></li><li class="nav-item nav-item-5 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/report/?report_type=ITA17" title="แบบ ITA 017" >แบบ ITA 017</a></div></li></ul></li></ul></li><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวกองการเจ้าหน้าที่" >ข่าวกองการเจ้าหน้าที่</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/activity-updates/personnel-divisions-news/examination/" title="การสอบ" >การสอบ</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/activity-updates/personnel-divisions-news/general-news/" title="ข่าวทั่วไป" >ข่าวทั่วไป</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://dol.thaijobjob.com" title="การรับสมัครสอบ" >การรับสมัครสอบ</a></div></li></ul></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/budget-reports/" title="ข่าวรายงานการใช้จ่ายงบประมาณ" >ข่าวรายงานการใช้จ่ายงบประมาณ</a></div></li></ul></li><li class="nav-item nav-item-2  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวกรมที่ดิน" >ข่าวกรมที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-3'><li class="nav-item nav-item-3  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวประชาสัมพันธ์" >ข่าวประชาสัมพันธ์</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-4'><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/dol-news/press-releases/public-relations-department-of-lands/" title="ประชาสัมพันธ์ของกรมที่ดิน" >ประชาสัมพันธ์ของกรมที่ดิน</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/dol-news/press-releases/public-relations-external/" title="ประชาสัมพันธ์หน่วยงานภายนอก" >ประชาสัมพันธ์หน่วยงานภายนอก</a></div></li><li class="nav-item nav-item-4 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/dol-news/press-releases/land-relations-online/" title="ที่ดินสัมพันธ์ออนไลน์" >ที่ดินสัมพันธ์ออนไลน์</a></div></li></ul></li><li class="nav-item nav-item-3 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/dol-news/activity-news/" title="ข่าวกิจกรรม" >ข่าวกิจกรรม</a></div></li></ul></li></ul></li><li class="nav-item nav-item-1 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/contact-dol/" title="ติดต่อสำนักงานที่ดิน" >ติดต่อสำนักงานที่ดิน</a></div></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ช่องทางร้องเรียน" >ช่องทางร้องเรียน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/complaints/steps-complaint/" title="ขั้นตอนแจ้งเรื่องร้องเรียน" >ขั้นตอนแจ้งเรื่องร้องเรียน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://doldamrongdhama.dol.go.th/COM1I001" title="ศูนย์ดำรงธรรม (ร้องเรียน/ร้องทุกข์)  E-Contacts DC" target="_blank">ศูนย์ดำรงธรรม (ร้องเรียน/ร้องทุกข์)  E-Contacts DC</a></div></li></ul></li><li class="nav-item nav-item-1 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/question-and-answer/" title="ถามตอบเรื่องที่ดิน" >ถามตอบเรื่องที่ดิน</a></div></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ดาวน์โหลดแบบฟอร์ม" >ดาวน์โหลดแบบฟอร์ม</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/form-download/power-of-attorney-form/" title="หนังสือมอบอำนาจ" >หนังสือมอบอำนาจ</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/form-download/general-forms/" title="แบบฟอร์มต่าง ๆ" >แบบฟอร์มต่าง ๆ</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/form-download/power-of-attorney-form-sample/" title="ตัวอย่างหนังสือมอบอำนาจ" >ตัวอย่างหนังสือมอบอำนาจ</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/form-download/property-rights-registration-sample/" title="ตัวอย่างคำขอจดทะเบียนสิทธิและนิติกรรม" >ตัวอย่างคำขอจดทะเบียนสิทธิและนิติกรรม</a></div></li></ul></li></ul>				</div>
+
+                                    <img data-js="mourningRibbon" src="https://www.dol.go.th/themes/dol_v1/assets/images/mourning-ribbon.png" class="img-ribbon" alt="mourning ribbon">
+                			</nav>
+		</header>
+		<!-- Popup container -->
+		<div id="file-popup" class="popup d-none">
+			<div class="popup-content">
+				<span class="popup-close">&times;</span>
+				<h3>ไฟล์แนบทั้งหมด</h3>
+				<div id="popup-file-list"></div>
+			</div>
+		</div>
+		
+
+
+    <!--- Main Content -->
+    <div class="main-content main-content-question single ">
+        <div class="banner-top">
+            <div class="banner-cover" style="background-image:url(https://www.dol.go.th/themes/dol_v1/assets/images/banner-qa.png)"></div>
+            <div class="container-xxl detail">
+				<!--- Breadcrumb -->
+    <div class="breadcrumb">
+        <ul class="breadcrumb__ul">
+            <li class="breadcrumb__link"><a href="https://www.dol.go.th/home/"><span> หน้าแรก</span></span></a></li>
+							<li class="breadcrumb__link"><a href="https://www.dol.go.th/question-and-answer" title="ถาม-ตอบ กรมที่ดิน"><span>ถาม-ตอบ กรมที่ดิน</span></a></li>                <li class="breadcrumb__link active" title="โอนเฉพาะสิ่งปลูกสร้าง ค่าโอน0.01% ไหมครับ"><span>โอนเฉพาะสิ่งปลูกสร้าง ค่าโอน0.01% ไหมครับ</span></li>
+			        </ul>
+    </div>
+                <div class="b-title d-flex align-items-center">
+                    <h1 class="title-banner">ถาม-ตอบ กรมที่ดิน</h1>
+                </div>
+            </div>
+        </div>
+
+    <div class="archive archive-question-answer">
+        <div class="template template-default p-4">
+            <div class="container-xxl">
+                <div class="single-body">
+                    <div class="question-answer-header">
+	                                                <div class="b-cate">
+                                <div class="mb-2 copy-button">
+                                    <input type='text' value='Q2603-000225' id='copyLink_878913294465896448' class='d-none'>
+                                    <div id='copyLink_icon' class='id-copylink' data-clipboard-target='copyLink_878913294465896448'>
+                                        <span class='clipboard' style='font-weight: bold; font-size: 14px;'>Q2603-000225</span>
+                                        <span class="icon-copy">
+                                                            <svg xmlns='http://www.w3.org/2000/svg' width='16' height='19' viewBox='0 0 16 19' fill='none'>
+                                                                <path d='M11.75 0.175781H1.74999C0.833328 0.175781 0.0833282 0.925781 0.0833282 1.84245V13.5091H1.74999V1.84245H11.75V0.175781ZM14.25 3.50911H5.08333C4.16666 3.50911 3.41666 4.25911 3.41666 5.17578V16.8424C3.41666 17.7591 4.16666 18.5091 5.08333 18.5091H14.25C15.1667 18.5091 15.9167 17.7591 15.9167 16.8424V5.17578C15.9167 4.25911 15.1667 3.50911 14.25 3.50911ZM14.25 16.8424H5.08333V5.17578H14.25V16.8424Z' fill='black' />
+                                                            </svg>
+                                                        </span>
+                                        <span class="icon-copied d-none">
+                                                            <span class="bi check bi-check " aria-hidden="true"></span>                                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+	                    
+                        <div class="d-flex align-items-center">
+                            <h3 class="mt-2">โอนเฉพาะสิ่งปลูกสร้าง ค่าโอน0.01% ไหมครับ</h3>
+                            <div class="d-flex align-items-center gap-1 ms-2">
+			                    			                                                </div>
+                        </div>
+                        <div class="d-flex justify-content-between flex-wrap align-items-center gap-3 mt-3">
+                            <div class="d-flex flex-column flex-sm-row align-items-sm-center">
+                                <div class="b-author">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+                                            <path d="M11.6666 1.91406H2.33329C1.69163 1.91406 1.17246 2.43906 1.17246 3.08073L1.16663 13.5807L3.49996 11.2474H11.6666C12.3083 11.2474 12.8333 10.7224 12.8333 10.0807V3.08073C12.8333 2.43906 12.3083 1.91406 11.6666 1.91406ZM3.49996 5.9974H10.5V7.16406H3.49996V5.9974ZM8.16663 8.91406H3.49996V7.7474H8.16663V8.91406ZM10.5 5.41406H3.49996V4.2474H10.5V5.41406Z" fill="#175CD3" />
+                                        </svg>
+                                    </div>
+                                    <span class="author">นายจี</span>
+                                </div>
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <div class="single-viewer date">
+					                    29 มี.ค. 2569                                    </div>
+                                    <div class="single-viewer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+                                            <path d="M10.5007 5.41667C13.659 5.41667 16.4756 7.19167 17.8506 10C16.4756 12.8083 13.659 14.5833 10.5007 14.5833C7.34232 14.5833 4.52565 12.8083 3.15065 10C4.52565 7.19167 7.34232 5.41667 10.5007 5.41667ZM10.5007 3.75C6.33398 3.75 2.77565 6.34167 1.33398 10C2.77565 13.6583 6.33398 16.25 10.5007 16.25C14.6673 16.25 18.2256 13.6583 19.6673 10C18.2256 6.34167 14.6673 3.75 10.5007 3.75ZM10.5007 7.91667C11.6507 7.91667 12.584 8.85 12.584 10C12.584 11.15 11.6507 12.0833 10.5007 12.0833C9.35065 12.0833 8.41732 11.15 8.41732 10C8.41732 8.85 9.35065 7.91667 10.5007 7.91667ZM10.5007 6.25C8.43398 6.25 6.75065 7.93333 6.75065 10C6.75065 12.0667 8.43398 13.75 10.5007 13.75C12.5673 13.75 14.2506 12.0667 14.2506 10C14.2506 7.93333 12.5673 6.25 10.5007 6.25Z" fill="currentcolor" />
+                                        </svg>
+                                        <span class="ms-2">เข้าชม 45</span>
+                                    </div>
+                                </div>
+                            </div>
+		                    <div class=" d-flex  align-items-center">
+		<div class="single-share">
+		<div class="social">
+						<a href="javascript:window.open('https://www.facebook.com/share.php?u=https://www.dol.go.th/question-answer/Q2603-000225','','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600')" class="item-followus">
+				<svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+					<g clip-path="url(#clip0_8967_16020)">
+						<path d="M24.5 12C24.5 5.37258 19.1274 0 12.5 0C5.87258 0 0.5 5.37258 0.5 12C0.5 17.9895 4.8882 22.954 10.625 23.8542V15.4688H7.57812V12H10.625V9.35625C10.625 6.34875 12.4166 4.6875 15.1576 4.6875C16.4701 4.6875 17.8438 4.92188 17.8438 4.92188V7.875H16.3306C14.84 7.875 14.375 8.80008 14.375 9.75V12H17.7031L17.1711 15.4688H14.375V23.8542C20.1118 22.954 24.5 17.9895 24.5 12Z" fill="#1877F2" />
+						<path d="M17.1711 15.4688L17.7031 12H14.375V9.75C14.375 8.80102 14.84 7.875 16.3306 7.875H17.8438V4.92188C17.8438 4.92188 16.4705 4.6875 15.1576 4.6875C12.4166 4.6875 10.625 6.34875 10.625 9.35625V12H7.57812V15.4688H10.625V23.8542C11.8674 24.0486 13.1326 24.0486 14.375 23.8542V15.4688H17.1711Z" fill="white" />
+					</g>
+					<defs>
+						<clipPath id="clip0_8967_16020">
+							<rect width="24" height="24" fill="white" transform="translate(0.5)" />
+						</clipPath>
+					</defs>
+				</svg>
+			</a>
+			<a href="javascript:window.open('https://lineit.line.me/share/ui?url=https%3A%2F%2Fwww.dol.go.th%2Fquestion-answer%2FQ2603-000225','','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600')" class="item-followus">
+				<svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+					<g clip-path="url(#clip0_8967_16023)">
+						<path d="M12.5 24C19.1274 24 24.5 18.6274 24.5 12C24.5 5.37258 19.1274 0 12.5 0C5.87258 0 0.5 5.37258 0.5 12C0.5 18.6274 5.87258 24 12.5 24Z" fill="#39CD00" />
+						<path d="M20 11.7268C19.9893 11.8792 19.9698 12.0308 19.9414 12.1809C19.8465 12.7556 19.6522 13.3093 19.3673 13.8173C19.2309 14.06 18.575 14.9818 18.3745 15.2246C17.2659 16.5596 15.4086 18.1005 12.305 19.5991C12.2395 19.6307 12.1668 19.6443 12.0943 19.6385C12.0218 19.6327 11.9522 19.6077 11.8926 19.566C11.833 19.5243 11.7856 19.4675 11.7553 19.4014C11.7249 19.3353 11.7128 19.2624 11.72 19.19L11.8768 17.7814C11.8887 17.6736 11.8573 17.5655 11.7895 17.4809C11.7218 17.3963 11.6232 17.342 11.5155 17.33C10.483 17.2267 9.47718 16.9399 8.54545 16.4832C6.41818 15.4318 5 13.5541 5 11.4146C5 8.12001 8.35727 5.4541 12.5 5.4541C14.5809 5.4541 16.4627 6.13592 17.8182 7.21728C19.0877 8.23319 19.9005 9.61183 19.9877 11.1418C20.0023 11.3365 20.0064 11.5317 20 11.7268Z" fill="white" />
+						<path d="M10.4328 12.735C10.4691 12.7705 10.4978 12.8129 10.5172 12.8598C10.5367 12.9067 10.5465 12.957 10.546 13.0077C10.5461 13.0582 10.5364 13.1081 10.5172 13.1548C10.498 13.2014 10.4698 13.2438 10.4342 13.2795C10.3986 13.3153 10.3563 13.3436 10.3097 13.363C10.2632 13.3823 10.2132 13.3923 10.1628 13.3923H8.62869C8.52682 13.3919 8.42922 13.3513 8.35718 13.2792C8.28514 13.2072 8.24451 13.1096 8.24415 13.0077V10.11C8.24381 10.0593 8.25365 10.009 8.27309 9.96215C8.29254 9.9153 8.32118 9.87284 8.35733 9.83726C8.411 9.78342 8.47948 9.74676 8.55405 9.73195C8.62861 9.71714 8.7059 9.72484 8.77608 9.75408C8.84625 9.78332 8.90615 9.83278 8.94814 9.89616C8.99012 9.95953 9.01231 10.034 9.01188 10.11V12.6232H10.1628C10.213 12.6228 10.2627 12.6325 10.3091 12.6517C10.3555 12.6709 10.3976 12.6992 10.4328 12.735Z" fill="#00C200" />
+						<path d="M11.682 10.0266V13.0907C11.6816 13.1701 11.6499 13.2462 11.5937 13.3024C11.5375 13.3586 11.4614 13.3903 11.382 13.3907H11.2102C11.1306 13.3907 11.0543 13.3591 10.998 13.3028C10.9418 13.2465 10.9102 13.1702 10.9102 13.0907V10.0266C10.9102 9.94701 10.9418 9.8707 10.998 9.81444C11.0543 9.75818 11.1306 9.72657 11.2102 9.72657H11.3779C11.4176 9.72622 11.4569 9.7337 11.4937 9.7486C11.5305 9.7635 11.564 9.78552 11.5923 9.81339C11.6205 9.84127 11.643 9.87445 11.6584 9.91103C11.6738 9.94762 11.6818 9.98688 11.682 10.0266Z" fill="#00C200" />
+						<path d="M15.2438 10.1098V12.9912C15.2439 13.0948 15.2036 13.1944 15.1316 13.269C15.0596 13.3435 14.9615 13.3872 14.8579 13.3907C14.7608 13.3892 14.6679 13.3512 14.5974 13.2843C14.5838 13.2734 14.0683 12.6025 13.6306 12.038C13.3033 11.6166 13.0197 11.2484 13.0197 11.2484V13.0062C13.02 13.0807 12.9985 13.1536 12.9579 13.2161C12.9174 13.2786 12.8595 13.3279 12.7913 13.358C12.7232 13.3881 12.6477 13.3977 12.5742 13.3856C12.5007 13.3735 12.4323 13.3402 12.3774 13.2898C12.3378 13.2539 12.3062 13.2101 12.2846 13.1613C12.263 13.1124 12.2519 13.0596 12.252 13.0062V10.1262C12.2507 10.0249 12.2883 9.92704 12.3571 9.8527C12.4258 9.77837 12.5205 9.73324 12.6215 9.72661C12.6787 9.72568 12.7354 9.73742 12.7875 9.761C12.8396 9.78458 12.8858 9.81941 12.9229 9.86298C12.9393 9.88207 13.7315 10.913 14.1774 11.4993C14.3547 11.7284 14.4774 11.8893 14.4774 11.8893V10.1166C14.4782 10.0152 14.5188 9.91816 14.5905 9.84645C14.6622 9.77475 14.7592 9.73415 14.8606 9.73343C14.9611 9.73342 15.0575 9.77285 15.1292 9.84324C15.2009 9.91363 15.242 10.0094 15.2438 10.1098Z" fill="#00C200" />
+						<path d="M16.5902 11.9418V12.6236H17.7397C17.7921 12.6205 17.8445 12.6281 17.8938 12.646C17.943 12.6639 17.9882 12.6916 18.0263 12.7276C18.0645 12.7635 18.0949 12.8069 18.1157 12.855C18.1364 12.9032 18.1472 12.955 18.1472 13.0075C18.1472 13.0599 18.1364 13.1118 18.1157 13.1599C18.0949 13.208 18.0645 13.2514 18.0263 13.2874C17.9882 13.3233 17.943 13.3511 17.8938 13.369C17.8445 13.3868 17.7921 13.3945 17.7397 13.3913H16.2015C16.0998 13.391 16.0023 13.3503 15.9305 13.2782C15.8587 13.2061 15.8184 13.1085 15.8184 13.0068V10.1104C15.8187 10.0089 15.8592 9.91166 15.931 9.83987C16.0028 9.76809 16.1 9.7276 16.2015 9.72724H17.7356C17.788 9.72412 17.8404 9.73174 17.8897 9.74962C17.939 9.7675 17.9841 9.79527 18.0222 9.83122C18.0604 9.86717 18.0908 9.91054 18.1116 9.95868C18.1323 10.0068 18.1431 10.0587 18.1431 10.1111C18.1431 10.1635 18.1323 10.2154 18.1116 10.2635C18.0908 10.3117 18.0604 10.355 18.0222 10.391C17.9841 10.4269 17.939 10.4547 17.8897 10.4726C17.8404 10.4905 17.788 10.4981 17.7356 10.495H16.5902V11.1768H17.7397C17.8413 11.1768 17.9388 11.2172 18.0107 11.289C18.0825 11.3609 18.1229 11.4583 18.1229 11.56C18.1229 11.6616 18.0825 11.7591 18.0107 11.8309C17.9388 11.9028 17.8413 11.9432 17.7397 11.9432L16.5902 11.9418Z" fill="#00C200" />
+					</g>
+					<defs>
+						<clipPath id="clip0_8967_16023">
+							<rect width="24" height="24" fill="white" transform="translate(0.5)" />
+						</clipPath>
+					</defs>
+				</svg>
+			</a>
+			<a href="javascript:window.open('http://www.twitter.com/share?&text=%E0%B9%82%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%89%E0%B8%9E%E0%B8%B2%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B9%88%E0%B8%87%E0%B8%9B%E0%B8%A5%E0%B8%B9%E0%B8%81%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87+%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B9%82%E0%B8%AD%E0%B8%990.01%25+%E0%B9%84%E0%B8%AB%E0%B8%A1%E0%B8%84%E0%B8%A3%E0%B8%B1%E0%B8%9A&url=https%3A%2F%2Fwww.dol.go.th%2Fquestion-answer%2FQ2603-000225','','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=600')" class="item-followus">
+				<svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+					<g clip-path="url(#clip0_8967_16034)">
+						<path d="M12.5 0C5.87281 0 0.5 5.37281 0.5 12C0.5 18.6272 5.87281 24 12.5 24C19.1272 24 24.5 18.6272 24.5 12C24.5 5.37281 19.1272 0 12.5 0Z" fill="black" />
+						<path d="M13.812 10.9138L18.949 4.94238H17.7317L13.2712 10.1273L9.70864 4.94238H5.59961L10.9869 12.7829L5.59961 19.0448H6.817L11.5274 13.5694L15.2898 19.0448H19.3988L13.8117 10.9138H13.812ZM7.25563 5.85882H9.12546L17.7323 18.17H15.8625L7.25563 5.85882Z" fill="white" />
+					</g>
+					<defs>
+						<clipPath id="clip0_8967_16034">
+							<rect width="24" height="24" fill="white" transform="translate(0.5)" />
+						</clipPath>
+					</defs>
+				</svg>
+			</a>
+			<a href="javascript:window.open('mailto:?subject=%E0%B9%82%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%89%E0%B8%9E%E0%B8%B2%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B9%88%E0%B8%87%E0%B8%9B%E0%B8%A5%E0%B8%B9%E0%B8%81%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87+%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B9%82%E0%B8%AD%E0%B8%990.01%25+%E0%B9%84%E0%B8%AB%E0%B8%A1%E0%B8%84%E0%B8%A3%E0%B8%B1%E0%B8%9A&body=%E0%B8%94%E0%B8%B9%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%A1%E0%B8%B9%E0%B8%A5%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%80%E0%B8%95%E0%B8%B4%E0%B8%A1%E0%B9%84%E0%B8%94%E0%B9%89%E0%B8%97%E0%B8%B5%E0%B9%88%3A+https%3A%2F%2Fwww.dol.go.th%2Fquestion-answer%2FQ2603-000225');" class="item-followus">
+				<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<g clip-path="url(#clip0_8967_16038)">
+						<circle cx="12.5" cy="12" r="12" fill="#3596FC" />
+						<path d="M6.10228 8.70704L12.4996 11.9057L18.8969 8.707C18.8487 7.86672 18.152 7.2002 17.2996 7.2002H7.69961C6.84722 7.2002 6.15052 7.86674 6.10228 8.70704Z" fill="white" />
+						<path d="M18.8996 10.4945L12.4996 13.6945L6.09961 10.4946V15.2002C6.09961 16.0839 6.81595 16.8002 7.69961 16.8002H17.2996C18.1833 16.8002 18.8996 16.0839 18.8996 15.2002V10.4945Z" fill="white" />
+					</g>
+					<defs>
+						<clipPath id="clip0_8967_16038">
+							<rect width="24" height="24" fill="white" transform="translate(0.5)" />
+						</clipPath>
+					</defs>
+				</svg>
+			</a>
+			<div class="item-followus">
+				<input type="text" value="https://www.dol.go.th/question-answer/Q2603-000225" id="copyLink" class="d-none">
+				<div id="copyButton" data-clipboard-target="#copyText">
+					<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<g clip-path="url(#clip0_8967_16042)">
+							<circle cx="12.5" cy="12" r="12" fill="#EAECF0" />
+							<rect width="20" height="20" transform="translate(2.5 2)" fill="white" fill-opacity="0.01" />
+							<path d="M13.0443 9.30343C12.9092 9.43187 12.7292 9.50243 12.5427 9.50005C12.3562 9.49767 12.1781 9.42254 12.0462 9.29069C11.9144 9.15883 11.8393 8.98068 11.8369 8.79423C11.8345 8.60778 11.9051 8.42777 12.0335 8.29259L13.0452 7.28093C13.3328 6.99325 13.6743 6.76505 14.0501 6.60936C14.426 6.45367 14.8288 6.37354 15.2356 6.37354C15.6424 6.37354 16.0452 6.45367 16.4211 6.60936C16.7969 6.76505 17.1384 6.99325 17.426 7.28093C17.7142 7.56835 17.9428 7.90979 18.0988 8.2857C18.2548 8.6616 18.3352 9.06459 18.3353 9.47159C18.3353 9.87858 18.2551 10.2816 18.0993 10.6576C17.9434 11.0335 17.7149 11.3751 17.4268 11.6626L16.4152 12.6743L15.7452 13.3443C15.4576 13.6327 15.1159 13.8616 14.7398 14.0179C14.3637 14.1742 13.9604 14.2548 13.5531 14.2552C13.1458 14.2556 12.7424 14.1757 12.366 14.0201C11.9896 13.8645 11.6475 13.6363 11.3593 13.3484C11.2252 13.2143 11.1498 13.0323 11.1498 12.8426C11.1498 12.6529 11.2252 12.4709 11.3593 12.3368C11.4935 12.2026 11.6754 12.1272 11.8652 12.1272C12.0549 12.1272 12.2369 12.2026 12.371 12.3368C13.0218 12.9884 14.0793 12.9868 14.7343 12.3326L15.4043 11.6634L16.416 10.6518C16.5712 10.497 16.6944 10.3131 16.7784 10.1107C16.8624 9.90823 16.9056 9.69119 16.9055 9.472C16.9054 9.25282 16.8621 9.0358 16.7779 8.83341C16.6938 8.63102 16.5705 8.44723 16.4152 8.29259C16.2604 8.13763 16.0766 8.0147 15.8742 7.93083C15.6719 7.84695 15.455 7.80378 15.236 7.80378C15.017 7.80378 14.8001 7.84695 14.5978 7.93083C14.3954 8.0147 14.2116 8.13763 14.0568 8.29259L13.0443 9.30343ZM12.371 14.6968C12.5062 14.5683 12.6862 14.4978 12.8726 14.5001C13.0591 14.5025 13.2372 14.5776 13.3691 14.7095C13.501 14.8414 13.5761 15.0195 13.5785 15.206C13.5808 15.3924 13.5103 15.5724 13.3818 15.7076L12.3702 16.7193C12.0825 17.0069 11.7411 17.2351 11.3652 17.3908C10.9894 17.5465 10.5866 17.6266 10.1798 17.6266C9.77295 17.6266 9.37013 17.5465 8.99429 17.3908C8.61846 17.2351 8.27697 17.0069 7.98934 16.7193C7.70119 16.4318 7.47255 16.0904 7.31653 15.7145C7.16051 15.3386 7.08016 14.9356 7.08008 14.5286C7.08 14.1216 7.1602 13.7186 7.31608 13.3426C7.47196 12.9667 7.70046 12.6251 7.98851 12.3376L9.00017 11.3259L9.67017 10.6559C9.95779 10.3675 10.2994 10.1386 10.6756 9.98233C11.0517 9.82602 11.4549 9.74537 11.8622 9.74499C12.2695 9.7446 12.6729 9.82448 13.0493 9.98007C13.4258 10.1357 13.7678 10.3639 14.056 10.6518C14.1902 10.7859 14.2655 10.9679 14.2655 11.1576C14.2655 11.3473 14.1902 11.5293 14.056 11.6634C13.9219 11.7976 13.7399 11.8729 13.5502 11.8729C13.3604 11.8729 13.1785 11.7976 13.0443 11.6634C12.8889 11.5085 12.7045 11.3857 12.5016 11.302C12.2987 11.2184 12.0813 11.1755 11.8618 11.1759C11.6423 11.1763 11.4251 11.2199 11.2225 11.3043C11.0199 11.3887 10.8359 11.5121 10.681 11.6676L10.011 12.3368L8.99934 13.3484C8.84411 13.5032 8.72096 13.687 8.63696 13.8895C8.55296 14.0919 8.50976 14.309 8.50983 14.5282C8.50991 14.7474 8.55327 14.9644 8.63741 15.1668C8.72155 15.3692 8.84483 15.553 9.00017 15.7076C9.15496 15.8626 9.33878 15.9855 9.54111 16.0694C9.74344 16.1532 9.96031 16.1964 10.1793 16.1964C10.3984 16.1964 10.6152 16.1532 10.8176 16.0694C11.0199 15.9855 11.2037 15.8626 11.3585 15.7076L12.371 14.6968Z" fill="#42526E" />
+						</g>
+						<defs>
+							<clipPath id="clip0_8967_16042">
+								<rect width="24" height="24" fill="white" transform="translate(0.5)" />
+							</clipPath>
+						</defs>
+					</svg>
+				</div>
+				<span class="clipboard">Link Copied on Clipboard</span>
+			</div>
+		</div>
+	</div>
+</div>                        </div>
+                    </div>
+
+                    <hr class="mt-4">
+
+                    <div class="question-detail mt-2">
+		                                            <div class="question-detail-text">
+				                รบกวนสอบถามว่า ถ้าผู้เช่าสร้างบ้านบนที่ดินของเรา เมื่อสัญญาเช่าจบลง ผู้เช่าต้องการขายบ้านให้เรา<br />
+<br />
+ถ้าโอนเฉพาะสิ่งปลูกสร้าง เข้าร่วมมาตรการลดค่าธรรมเนียมจดทะเบียนสิทธิและนิติกรรม สำหรับที่อยู่อาศัย เหลือ ร้อยละ 0.01 ไหมครับ                            </div>
+		                                    </div>
+
+                    <div class="mt-4">
+		                                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="footer-social">
+	<div class="container-xxl">
+		<div class="social-list">
+												<a href="https://www.facebook.com/PRdolfanpage" class="social-item"  target="_blank">
+						<img src="https://www.dol.go.th/media/716929789247754240/2025/03/Y1FLJz7bpMSKj8DUPnfCAT4X.svg" alt="กรมที่ดิน Fanpage" width="40" height="40">
+						<span class="social-title">กรมที่ดิน Fanpage</span>
+					</a>
+									<a href="https://www.x.com/PR_Teedin" class="social-item"  target="_blank">
+						<img src="https://www.dol.go.th/media/716929789247754240/2025/03/Pb9TG3NKEWrpJdzMfesSknac.svg" alt="กรมที่ดิน" width="40" height="40">
+						<span class="social-title">กรมที่ดิน</span>
+					</a>
+									<a href="https://www.instagram.com/pr_teedin" class="social-item"  target="_blank">
+						<img src="https://www.dol.go.th/media/716929789247754240/2025/03/wYRVq3GFyHBKudbgTQxnD6ts.svg" alt="DOL-PR" width="40" height="40">
+						<span class="social-title">DOL-PR</span>
+					</a>
+									<a href="https://www.youtube.com/@Channel-iu1lt" class="social-item"  target="_blank">
+						<img src="https://www.dol.go.th/media/716929789247754240/2025/03/GNYXSj36VbFhxeMmKws9k4T1.svg" alt="กรมที่ดิน Channel" width="40" height="40">
+						<span class="social-title">กรมที่ดิน Channel</span>
+					</a>
+									<a href="https://www.tiktok.com/@SmartLands" class="social-item"  target="_blank">
+						<img src="https://www.dol.go.th/media/716929789247754240/2025/03/VDJS14wmae7u6fgWMTFzodZh.svg" alt="@SmartLands" width="40" height="40">
+						<span class="social-title">@SmartLands</span>
+					</a>
+									</div>
+	</div>
+</div>
+
+<footer class="footer">
+	<div class="container-xxl">
+		<div class="footer-inner-wrapper">
+			<div class="footer-col-1">
+				<div class="footer-logo">
+					<a href="https://www.dol.go.th/home/" class="logo-image" title="กรมที่ดิน">
+						<img src="https://www.dol.go.th/media/716929789247754240/2025/03/dtQRGxBTySP4Dz1b9qVA87jW_700.webp" class="img-fluid image-footer" alt="logo footer">
+						<div class="logo-name d-none">
+							<div class="name-th">กรมที่ดิน</div>
+							<div class="name-en dol-hide-mobile">Department of Lands</div>
+						</div>
+					</a>
+				</div>
+				<div class="footer-address">ศูนย์ราชการเฉลิมพระเกียรติ 80 พรรษาฯ ถ.แจ้งวัฒนะ แขวงทุ่งสองห้อง เขตหลักสี่ กรุงเทพมหานคร 10210<br><br>โทรศัพท์ : 02-1415555 (6 คู่สาย)<br>แฟกซ์ : -<br>อีเมล : saraban@dol.go.th</div>
+			</div>
+			<div class="footer-col-2">
+				<div class="footer-menu">
+					<ul class='navbar-nav nav-menu menu-location-th'><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="เกี่ยวกับกรม" >เกี่ยวกับกรม</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/dol-history/" title="ประวัติกรมที่ดิน" >ประวัติกรมที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/director-general/" title="เจ้ากรมและอธิบดี" >เจ้ากรมและอธิบดี</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/organizational-structure/" title="โครงสร้างการแบ่งส่วนราชการ" >โครงสร้างการแบ่งส่วนราชการ</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/executives-directory/director-generals/" title="ทำเนียบผู้บริหาร" >ทำเนียบผู้บริหาร</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/vision-mission-values/" title="วิสัยทัศน์ พันธกิจ ค่านิยมองค์กร" >วิสัยทัศน์ พันธกิจ ค่านิยมองค์กร</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/core-missions/" title="ภารกิจหลัก" >ภารกิจหลัก</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/policy-and-plan/" title="นโยบายและแผน" >นโยบายและแผน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/about-department-of-lands/anti-corruption-commitment/" title="เจตนารมณ์ต่อต้านการทุจริต" >เจตนารมณ์ต่อต้านการทุจริต</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-internal/" title="หน่วยงานภายใน" >หน่วยงานภายใน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/contact-dol/" title="ติดต่อสำนักงานที่ดิน" >ติดต่อสำนักงานที่ดิน</a></div></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="บริการของเรา" >บริการของเรา</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/question-and-answer" title="ถามตอบเรื่องที่ดิน" >ถามตอบเรื่องที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/citizen-services/" title="บริการประชาชน" >บริการประชาชน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/private-surveyor-services/" title="บริการช่างรังวัดเอกชน" >บริการช่างรังวัดเอกชน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/real-estate/real-estate-info/" title="ธุรกิจอสังหาริมทรัพย์" >ธุรกิจอสังหาริมทรัพย์</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/service-statistics/service-and-revenue-statistics/" title="สถิติการให้บริการ" >สถิติการให้บริการ</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/registration-types-processes/" title="งานทะเบียนที่ดิน" >งานทะเบียนที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/citizen-guide/" title="คู่มือประชาชน" >คู่มือประชาชน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/form-download/power-of-attorney-form/" title="ดาวน์โหลดแบบฟอร์ม" >ดาวน์โหลดแบบฟอร์ม</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/complaints/steps-complaint/" title="ช่องทางร้องเรียน" >ช่องทางร้องเรียน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dolweblink/" title="เว็บไซต์เพื่อนบ้าน" >เว็บไซต์เพื่อนบ้าน</a></div></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ความรู้เกี่ยวกับกรมที่ดิน" >ความรู้เกี่ยวกับกรมที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/law/regulations/land-department-regulations/" title="กฎหมายน่ารู้" >กฎหมายน่ารู้</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/publication-law-77/" title="การเผยแพร่กฎหมายตามมาตรา 77" >การเผยแพร่กฎหมายตามมาตรา 77</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/history-of-land-titles/" title="ความเป็นมาของการออกโฉนดที่ดิน" >ความเป็นมาของการออกโฉนดที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/eligible-land-for-title/" title="การออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์" >การออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/public-land/" title="ที่สาธารณประโยชน์" >ที่สาธารณประโยชน์</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/knowledge-land-department/land-encyclopedia/" title="สารานุกรมที่ดิน" >สารานุกรมที่ดิน</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/train/e-library/" title="ประมวลกฎหมายที่ดินรูปแบบอิเล็กทรอนิกส์" target="_blank">ประมวลกฎหมายที่ดินรูปแบบอิเล็กทรอนิกส์</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-knowledge-center/" title="รอบรู้เรื่องที่ดิน" >รอบรู้เรื่องที่ดิน</a></div></li></ul></li><li class="nav-item nav-item-1  has-child "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="ข่าวกรมที่ดิน" >ข่าวกรมที่ดิน</a><span class="icon-toggle-menu"><i class="icon icon-down-open-1"></i></span></div><ul class='nav-submenu submenu-level-2'><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/procurement/plan/" title="ข่าวจัดซื้อจัดจ้าง" >ข่าวจัดซื้อจัดจ้าง</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/activity-updates/personnel-divisions-news/examination/" title="ข่าวกองการเจ้าหน้าที่" >ข่าวกองการเจ้าหน้าที่</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/budget-reports/" title="ข่าวรายงานการใช้จ่ายงบประมาณ" >ข่าวรายงานการใช้จ่ายงบประมาณ</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/dol-news/press-releases/public-relations-department-of-lands/" title="ข่าวประชาสัมพันธ์" >ข่าวประชาสัมพันธ์</a></div></li><li class="nav-item nav-item-2 "><div class="nav-item-wrapper"><a class="nav-link" href="https://www.dol.go.th/department-news/dol-news/activity-news/" title="ข่าวกิจกรรม" >ข่าวกิจกรรม</a></div></li></ul></li></ul>				</div>
+			</div>
+		</div>
+
+		<div class="d-flex align-items-center flex-wrap gx-3">
+			<div class="footer-menu-links me-auto mt-3">
+				<ul class='navbar-nav nav-menu menu-location-th'><li class="nav-item nav-item-1 "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="นโยบายเว็บไซต์" >นโยบายเว็บไซต์</a></div></li><li class="nav-item nav-item-1 "><div class="nav-item-wrapper"><a class="nav-link" href="https://intranet.dol.go.th/privacy-policy/" title="นโยบายการคุ้มครองข้อมูลส่วนบุคคล" >นโยบายการคุ้มครองข้อมูลส่วนบุคคล</a></div></li><li class="nav-item nav-item-1 "><div class="nav-item-wrapper"><a class="nav-link" href="javascript:void(0)" title="นโยบายการรักษาความมั่นคงปลอดภัยเว็บไซต์" >นโยบายการรักษาความมั่นคงปลอดภัยเว็บไซต์</a></div></li></ul>			</div>
+			<div class="footer-sitemap">
+				<button class="sitemap-btn btn" data-js="openSitemap" data-bs-toggle="modal" data-bs-target="#sitemapModal"> แผนผังเว็บไซต์ </button>
+				<div class="sitemap-lists d-none" id="footer_sitemap">
+					<ul>
+						<li><a href="">หน้าแรก</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</footer>
+
+<div class="footer2">
+	<div class="footer2-layout ">
+		<div class="container-xxl">
+			<div class="footer2-left">
+				<div class="d-flex align-items-center gap-2">
+                    					<a href="https://www.dol.go.th/rss/?content=question-and-answer&category=&kw={"th":"ถาม-ตอบ กรมที่ดิน"}&sort=date_manage&ord=desc&p=1&ppp=20" target="_blank" rel="noopener" class="dol-hide-mobile"><img src="https://www.dol.go.th/themes/dol_v1/assets/images/icon/rss.png" class="image-rss" alt="rss image"></a>
+                    
+					<p class="mb-0 text-center d-flex flex-column flex-lg-row gap-1">
+						<span>รองรับการใช้งานได้ดีบนบราวเซอร์ Google Chrome, Firefox, Safari, Microsoft Edge.</span>
+						<span>© สงวนลิขสิทธิ์ พ.ศ. 2567 - กรมที่ดิน</span>
+					</p>
+				</div>
+				<div class="d-flex align-items-center flex-wrap justify-content-center gap-2">
+					<img src="https://www.dol.go.th/themes/dol_v1/assets/images/icon/w3c-html.png" class="image-check" alt="w3c html image">
+					<img src="https://www.dol.go.th/themes/dol_v1/assets/images/icon/w3c-css.png" class="image-check" alt="w3c css image">
+				</div>
+				<div class="footer-visitor">
+					<div class="visitor-tabel">สถิติผู้เข้าชมเว็บไซต์</div>
+					<div class="visitor-total" id="website_view"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="floating-icon">
+	<div class="floating floating-info d-none">
+		<div class="icon-container position-relative">
+			<a href="https://page.line.me/dol" target="_blank" rel="noopener" data-js="floatingiconInfo" class="icon icon-info">
+				<svg width="52" height="53" viewBox="0 0 52 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M26 1.5C12.1929 1.5 1 12.6929 1 26.5C1 40.3071 12.1929 51.5 26 51.5C39.8071 51.5 51 40.3071 51 26.5C51 12.6929 39.8071 1.5 26 1.5Z" fill="#43C506" stroke="white" stroke-width="2" />
+					<path fill-rule="evenodd" clip-rule="evenodd" d="M41.9941 26.0143C41.9941 18.7533 34.8195 12.8462 25.9998 12.8462C17.1814 12.8462 10.0059 18.7533 10.0059 26.0143C10.0059 32.5236 15.6959 37.9751 23.382 39.006C23.9029 39.1198 24.6118 39.3544 24.7912 39.806C24.9525 40.2163 24.8967 40.859 24.8427 41.2733C24.8427 41.2733 24.655 42.4184 24.6146 42.6622L24.6084 42.6984C24.5325 43.1377 24.3409 44.2464 25.9998 43.537C27.707 42.8072 35.211 38.0345 38.5665 34.116H38.5659C40.8839 31.5373 41.9941 28.9202 41.9941 26.0143ZM22.6881 22.3892H21.5107C21.3302 22.3892 21.1834 22.5378 21.1834 22.7203V30.141C21.1834 30.3238 21.3302 30.472 21.5107 30.472H22.6881C22.8687 30.472 23.0151 30.3238 23.0151 30.141V22.7203C23.0151 22.5378 22.8687 22.3892 22.6881 22.3892ZM29.6152 22.3892H30.7926C30.9734 22.3892 31.1195 22.5378 31.1195 22.7203V30.141C31.1195 30.3238 30.9734 30.472 30.7926 30.472H29.6152C29.5862 30.472 29.5582 30.4678 29.5315 30.4606L29.5299 30.4602C29.5288 30.4599 29.5277 30.4596 29.5267 30.4596C29.5193 30.4573 29.5122 30.455 29.5045 30.4521C29.5012 30.4511 29.498 30.4498 29.4948 30.4485C29.489 30.4462 29.4842 30.4439 29.4787 30.4416C29.4736 30.4394 29.4681 30.4367 29.4633 30.4338L29.4609 30.4326C29.4586 30.4315 29.4563 30.4304 29.4539 30.4289L29.4458 30.424L29.4337 30.4165L29.4337 30.4165C29.4327 30.4155 29.4314 30.4145 29.4305 30.4139C29.3992 30.3923 29.3706 30.3652 29.3474 30.3319L25.9915 25.7336V30.141C25.9915 30.3238 25.845 30.472 25.6642 30.472H24.4871C24.3065 30.472 24.1598 30.3238 24.1598 30.141V22.7203C24.1598 22.5378 24.3065 22.3892 24.4871 22.3892H25.6642L25.6679 22.3894L25.67 22.3896C25.6718 22.3897 25.6737 22.3899 25.6758 22.3899L25.6813 22.3901C25.6851 22.3903 25.6888 22.3904 25.6925 22.3909L25.6968 22.3913C25.7012 22.3918 25.7055 22.3922 25.7099 22.3932L25.7171 22.3939L25.7237 22.3948L25.732 22.3967L25.7363 22.3977L25.7424 22.399L25.7468 22.4003L25.7478 22.4006C25.7498 22.4011 25.7518 22.4016 25.7536 22.4023C25.7604 22.4039 25.7668 22.4062 25.7733 22.4085L25.7767 22.4098L25.7839 22.4124C25.7903 22.4147 25.7964 22.4176 25.8026 22.4206C25.8048 22.4214 25.8069 22.4225 25.809 22.4236L25.8129 22.4255C25.8186 22.4284 25.8244 22.432 25.8302 22.4356C25.8338 22.4372 25.837 22.4392 25.8402 22.4415C25.8438 22.4437 25.8472 22.4461 25.8507 22.4486L25.8573 22.4532L25.8596 22.455C25.8604 22.4556 25.8612 22.4563 25.862 22.4569C25.8633 22.4579 25.8645 22.4589 25.8656 22.4601C25.8717 22.4647 25.8775 22.4696 25.883 22.4748L25.8838 22.4755C25.8857 22.4771 25.8874 22.4786 25.8891 22.4803C25.8959 22.4869 25.9023 22.4934 25.9088 22.5009L25.911 22.5029C25.92 22.5136 25.9287 22.5247 25.9364 22.5365L29.2882 27.1289V22.7203C29.2882 22.5378 29.4346 22.3892 29.6152 22.3892ZM19.8502 28.6137H16.6509V22.7206C16.6509 22.5375 16.5045 22.3889 16.3243 22.3889H15.1465C14.966 22.3889 14.8196 22.5375 14.8196 22.7206V30.14V30.1406C14.8196 30.2298 14.8547 30.3104 14.911 30.3698C14.9123 30.3715 14.9135 30.3731 14.9155 30.3747C14.9171 30.3763 14.9187 30.3777 14.9203 30.3793C14.9792 30.4367 15.0584 30.472 15.1462 30.472H15.1465H19.8502C20.0307 30.472 20.1765 30.3231 20.1765 30.14V28.9454C20.1765 28.7623 20.0307 28.6137 19.8502 28.6137ZM37.6211 23.9155C37.6211 24.099 37.4753 24.2472 37.2948 24.2472H34.0958V25.5012H37.2948C37.4753 25.5012 37.6211 25.65 37.6211 25.8332V27.0277C37.6211 27.2109 37.4753 27.3594 37.2948 27.3594H34.0958V28.6137H37.2948C37.4753 28.6137 37.6211 28.7626 37.6211 28.9454V30.1403C37.6211 30.3231 37.4753 30.472 37.2948 30.472H32.5911H32.5905C32.503 30.472 32.4235 30.4364 32.3649 30.3793C32.3633 30.378 32.3614 30.3763 32.3601 30.3747C32.3585 30.3734 32.3569 30.3715 32.3556 30.3698C32.2993 30.3104 32.2642 30.2298 32.2642 30.1406V30.1403V22.7209V22.7206C32.2642 22.6318 32.299 22.5515 32.3549 22.4921C32.356 22.4908 32.357 22.4896 32.3581 22.4883C32.3588 22.4876 32.3594 22.4869 32.3601 22.4862C32.3611 22.4849 32.3627 22.4839 32.364 22.4826C32.4228 22.4248 32.5023 22.3889 32.5905 22.3889H32.5911H37.2948C37.4753 22.3889 37.6211 22.5378 37.6211 22.7209V23.9155Z" fill="white" />
+				</svg>
+
+			</a>
+			<a href="https://page.line.me/dol" target="_blank" rel="noopener" class="content content-info">Line ID: @Dol</a>
+		</div>
+	</div>
+
+	<div data-js="backToTop" class="back-to-top">
+		<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M12.4579 23.8886C18.9476 23.8886 24.2087 18.6276 24.2087 12.1378C24.2087 5.64798 18.9476 0.386963 12.4579 0.386963C5.96805 0.386963 0.707031 5.64798 0.707031 12.1378C0.707031 18.6276 5.96805 23.8886 12.4579 23.8886ZM17.903 11.0991L13.4965 6.69259C12.9229 6.11897 11.9928 6.11897 11.4192 6.69259L7.01266 11.0991C6.43904 11.6728 6.43904 12.6028 7.01266 13.1764C7.58628 13.75 8.51631 13.75 9.08993 13.1764L10.989 11.2773L10.989 16.5443C10.989 17.3556 11.6466 18.0132 12.4578 18.0132C13.2691 18.0132 13.9267 17.3556 13.9267 16.5443V11.2773L15.8258 13.1764C16.3994 13.75 17.3294 13.75 17.903 13.1764C18.4767 12.6028 18.4767 11.6728 17.903 11.0991Z" fill="#28A745" />
+		</svg>
+		<span class="text">ด้านบน</span>
+	</div>
+</div><div class="modal modal-sitemap fade" id="sitemapModal" tabindex="-1" aria-labelledby="sitemapModalLabel">
+	<div class="modal-dialog modal-dialog-scrollable modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="sitemapModalLabel">แผนผังเว็บไซต์</h1>
+				<button type="button" class="btn-unstyled" data-bs-dismiss="modal" aria-label="Close">
+					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 32 32">
+						<rect width="31" height="31" x=".5" y=".5" fill="#fff" rx="15.5" />
+						<rect width="31" height="31" x=".5" y=".5" stroke="#1A6A4D" rx="15.5" />
+						<path fill="#1A6A4D" d="M20.725 11.282a.747.747 0 0 0-1.058 0L16 14.942l-3.668-3.668a.747.747 0 1 0-1.057 1.058l3.668 3.667-3.668 3.668a.747.747 0 1 0 1.057 1.057L16 17.057l3.668 3.667a.747.747 0 1 0 1.057-1.057l-3.668-3.668 3.668-3.667a.752.752 0 0 0 0-1.05Z" />
+					</svg>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="list-menu">
+					<div id="sitemap_modal" class="sidemap-menu gap-4">
+						
+													<div class="col-12 col-lg-3">
+								<ul class="menu-list">
+																										<li class="menu-lv1">
+								<a href="https://www.dol.go.th/"
+                                   class="w-100 name"
+                                   title="หน้าหลัก"
+                                   target="_self"
+                                >
+									หน้าหลัก								</a>
+															</li>
+																																<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="เกี่ยวกับกรม"
+                                   target="_self"
+                                >
+									เกี่ยวกับกรม								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/dol-history/"
+                                   class="w-100 name"
+                                   title="ประวัติกรมที่ดิน"
+                                   target="_self"
+                                >
+									ประวัติกรมที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/director-general/"
+                                   class="w-100 name"
+                                   title="เจ้ากรมและอธิบดี"
+                                   target="_self"
+                                >
+									เจ้ากรมและอธิบดี								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/organizational-structure/"
+                                   class="w-100 name"
+                                   title="โครงสร้างการแบ่งส่วนราชการ"
+                                   target="_self"
+                                >
+									โครงสร้างการแบ่งส่วนราชการ								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ทำเนียบผู้บริหาร"
+                                   target="_self"
+                                >
+									ทำเนียบผู้บริหาร								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="https://www.dol.go.th/about-department-of-lands/executives-directory/director-generals/"
+                                   class="w-100 name"
+                                   title="อธิบดี"
+                                   target="_self"
+                                >
+									อธิบดี								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/about-department-of-lands/executives-directory/advisor-performance/"
+                                   class="w-100 name"
+                                   title="ที่ปรึกษาด้านประสิทธิภาพ"
+                                   target="_self"
+                                >
+									ที่ปรึกษาด้านประสิทธิภาพ								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/about-department-of-lands/executives-directory/chief-engineer-advisor-surveying/"
+                                   class="w-100 name"
+                                   title="นายช่างใหญ่ (ที่ปรึกษาด้านวิศวกรรมสำรวจ)"
+                                   target="_self"
+                                >
+									นายช่างใหญ่ (ที่ปรึกษาด้านวิศวกรรมสำรวจ)								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/about-department-of-lands/executives-directory/senior-it-executive-dcio/"
+                                   class="w-100 name"
+                                   title="ผู้บริหารเทคโนโลยีสารสนเทศระดับสูง (DCIO)"
+                                   target="_self"
+                                >
+									ผู้บริหารเทคโนโลยีสารสนเทศระดับสูง (DCIO)								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/about-department-of-lands/executives-directory/deputy-director-general/"
+                                   class="w-100 name"
+                                   title="รองอธิบดีกรมที่ดิน"
+                                   target="_self"
+                                >
+									รองอธิบดีกรมที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/about-department-of-lands/executives-directory/inspector-general/"
+                                   class="w-100 name"
+                                   title="ผู้ตรวจราชการกรมที่ดิน"
+                                   target="_self"
+                                >
+									ผู้ตรวจราชการกรมที่ดิน								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/vision-mission-values/"
+                                   class="w-100 name"
+                                   title="วิสัยทัศน์ พันธกิจ ค่านิยมองค์กร"
+                                   target="_self"
+                                >
+									วิสัยทัศน์ พันธกิจ ค่านิยมองค์กร								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/core-missions/"
+                                   class="w-100 name"
+                                   title="ภารกิจหลัก"
+                                   target="_self"
+                                >
+									ภารกิจหลัก								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/policy-and-plan/"
+                                   class="w-100 name"
+                                   title="นโยบายและแผน"
+                                   target="_self"
+                                >
+									นโยบายและแผน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/about-department-of-lands/anti-corruption-commitment/"
+                                   class="w-100 name"
+                                   title="เจตนารมณ์ต่อต้านการทุจริต"
+                                   target="_self"
+                                >
+									เจตนารมณ์ต่อต้านการทุจริต								</a>
+															</li>
+																									</ul>
+															</li>
+																							</ul>
+							</div>
+													<div class="col-12 col-lg-3">
+								<ul class="menu-list">
+																										<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="บริการกรมที่ดิน"
+                                   target="_self"
+                                >
+									บริการกรมที่ดิน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="https://www.dol.go.th/dol-services/citizen-services/"
+                                   class="w-100 name"
+                                   title="บริการประชาชน"
+                                   target="_self"
+                                >
+									บริการประชาชน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/dol-services/private-surveyor-services/"
+                                   class="w-100 name"
+                                   title="บริการช่างรังวัดเอกชน"
+                                   target="_self"
+                                >
+									บริการช่างรังวัดเอกชน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ธุรกิจอสังหาริมทรัพย์"
+                                   target="_self"
+                                >
+									ธุรกิจอสังหาริมทรัพย์								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="https://www.dol.go.th/real-estate/real-estate-info/"
+                                   class="w-100 name"
+                                   title="ข้อมูลธุรกิจอสังหาริมทรัพย์"
+                                   target="_self"
+                                >
+									ข้อมูลธุรกิจอสังหาริมทรัพย์								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/real-estate/real-estate-statistics/"
+                                   class="w-100 name"
+                                   title="ข้อมูลด้านสถิติงานด้านธุรกิจอสังหาริมทรัพย์"
+                                   target="_self"
+                                >
+									ข้อมูลด้านสถิติงานด้านธุรกิจอสังหาริมทรัพย์								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/real-estate/land-allotment-statistics/"
+                                   class="w-100 name"
+                                   title="สถิติการให้บริการการออกใบอนุญาตจัดสรรที่ดิน"
+                                   target="_self"
+                                >
+									สถิติการให้บริการการออกใบอนุญาตจัดสรรที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/real-estate/supreme-court-rulings-land-condo/"
+                                   class="w-100 name"
+                                   title="คำพิพากษาศาลฎีกาเกี่ยวกับการจัดสรรที่ดินและอาคารชุด"
+                                   target="_self"
+                                >
+									คำพิพากษาศาลฎีกาเกี่ยวกับการจัดสรรที่ดินและอาคารชุด								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/land/"
+                                   class="w-100 name"
+                                   title="ค้นหาข้อมูลจัดสรรที่ดินและอาคารชุด"
+                                   target="_self"
+                                >
+									ค้นหาข้อมูลจัดสรรที่ดินและอาคารชุด								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข้อมูลนิติบุคคลอาคารชุด"
+                                   target="_self"
+                                >
+									ข้อมูลนิติบุคคลอาคารชุด								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/real-estate/cate-1771822449/cate-1771822630/"
+                                   class="w-100 name"
+                                   title="กรุงเทพมหานคร"
+                                   target="_self"
+                                >
+									กรุงเทพมหานคร								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/real-estate/cate-1771822449/cate-1771822584/"
+                                   class="w-100 name"
+                                   title="ต่างจังหวัด"
+                                   target="_self"
+                                >
+									ต่างจังหวัด								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข้อมูลนิติบุคคลหมู่บ้านจัดสรร"
+                                   target="_self"
+                                >
+									ข้อมูลนิติบุคคลหมู่บ้านจัดสรร								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/real-estate/cate-1771822522/cate-1771822759/"
+                                   class="w-100 name"
+                                   title="กรุงเทพมหานคร"
+                                   target="_self"
+                                >
+									กรุงเทพมหานคร								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/real-estate/cate-1771822522/cate-1771822732/"
+                                   class="w-100 name"
+                                   title="ต่างจังหวัด"
+                                   target="_self"
+                                >
+									ต่างจังหวัด								</a>
+															</li>
+																									</ul>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="สถิติการให้บริการ"
+                                   target="_self"
+                                >
+									สถิติการให้บริการ								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="https://www.dol.go.th/dol-services/service-statistics/service-and-revenue-statistics/"
+                                   class="w-100 name"
+                                   title="สถิติการให้บริการประชาชนและการจัดเก็บรายได้"
+                                   target="_self"
+                                >
+									สถิติการให้บริการประชาชนและการจัดเก็บรายได้								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/dol-services/service-statistics/registration-statistics/"
+                                   class="w-100 name"
+                                   title="สถิติปริมาณงานและเงินได้จากการจดทะเบียน"
+                                   target="_self"
+                                >
+									สถิติปริมาณงานและเงินได้จากการจดทะเบียน								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/dol-services/service-statistics/e-lands-announcement-statistics/"
+                                   class="w-100 name"
+                                   title="สถิติการให้บริการระบบเผยแพร่ประกาศสำนักงานที่ดิน e-LandsAnnouncement"
+                                   target="_self"
+                                >
+									สถิติการให้บริการระบบเผยแพร่ประกาศสำนักงานที่ดิน e-LandsAnnouncement								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/dol-services/service-statistics/land-service-stats/"
+                                   class="w-100 name"
+                                   title="สถิติผู้เข้ารับบริการทางสำนักงานที่ดิน"
+                                   target="_self"
+                                >
+									สถิติผู้เข้ารับบริการทางสำนักงานที่ดิน								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="คู่มือการให้บริการประชาชน"
+                                   target="_self"
+                                >
+									คู่มือการให้บริการประชาชน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="งานทะเบียนที่ดิน"
+                                   target="_self"
+                                >
+									งานทะเบียนที่ดิน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/registration-types-processes/"
+                                   class="w-100 name"
+                                   title="ประเภทและขั้นตอนการจดทะเบียน"
+                                   target="_self"
+                                >
+									ประเภทและขั้นตอนการจดทะเบียน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-seizure/"
+                                   class="w-100 name"
+                                   title="การอายัดที่ดิน"
+                                   target="_self"
+                                >
+									การอายัดที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/power-of-attorney/"
+                                   class="w-100 name"
+                                   title="การมอบอำนาจ"
+                                   target="_self"
+                                >
+									การมอบอำนาจ								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-allotment-registration/"
+                                   class="w-100 name"
+                                   title="การจัดสรรที่ดิน"
+                                   target="_self"
+                                >
+									การจัดสรรที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/fees-taxes-duties/"
+                                   class="w-100 name"
+                                   title="ค่าธรรมเนียม ภาษี และอากร"
+                                   target="_self"
+                                >
+									ค่าธรรมเนียม ภาษี และอากร								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/citizen-guide/"
+                                   class="w-100 name"
+                                   title="หลักฐานการขอจดทะเบียน"
+                                   target="_self"
+                                >
+									หลักฐานการขอจดทะเบียน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/condominium-documents/"
+                                   class="w-100 name"
+                                   title="เอกสารประกอบการขอจดทะเบียนอาคารชุด"
+                                   target="_self"
+                                >
+									เอกสารประกอบการขอจดทะเบียนอาคารชุด								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-for-foreigners/"
+                                   class="w-100 name"
+                                   title="ข้อมูลที่ดินสำหรับคนต่างด้าว"
+                                   target="_self"
+                                >
+									ข้อมูลที่ดินสำหรับคนต่างด้าว								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-for-religious-entities/"
+                                   class="w-100 name"
+                                   title="การได้มาซึ่งที่ดินของนิติบุคคลเพื่อการศาสนา"
+                                   target="_self"
+                                >
+									การได้มาซึ่งที่ดินของนิติบุคคลเพื่อการศาสนา								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/housing-juristic-person-manual/"
+                                   class="w-100 name"
+                                   title="คู่มือการจัดตั้งนิติบุคคลหมู่บ้านจัดสรร"
+                                   target="_self"
+                                >
+									คู่มือการจัดตั้งนิติบุคคลหมู่บ้านจัดสรร								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-knowledge-center/"
+                                   class="w-100 name"
+                                   title="รอบรู้เรื่องที่ดิน"
+                                   target="_self"
+                                >
+									รอบรู้เรื่องที่ดิน								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/land-registration/land-survey/"
+                                   class="w-100 name"
+                                   title="งานรังวัด"
+                                   target="_self"
+                                >
+									งานรังวัด								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/dol-services/public-service-manual/citizen-guide/"
+                                   class="w-100 name"
+                                   title="คู่มือประชาชน"
+                                   target="_self"
+                                >
+									คู่มือประชาชน								</a>
+															</li>
+																									</ul>
+															</li>
+																									</ul>
+															</li>
+																																<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ความรู้เกี่ยวกับกรมที่ดิน"
+                                   target="_self"
+                                >
+									ความรู้เกี่ยวกับกรมที่ดิน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="กฎหมายน่ารู้"
+                                   target="_self"
+                                >
+									กฎหมายน่ารู้								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ระเบียบ"
+                                   target="_self"
+                                >
+									ระเบียบ								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/regulations/land-department-regulations/"
+                                   class="w-100 name"
+                                   title="ระเบียบกรมที่ดิน"
+                                   target="_self"
+                                >
+									ระเบียบกรมที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/regulations/ministry-of-interior-regulations/"
+                                   class="w-100 name"
+                                   title="ระเบียบกระทรวงมหาดไทย"
+                                   target="_self"
+                                >
+									ระเบียบกระทรวงมหาดไทย								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/regulations/prime-ministers-office-regulations/"
+                                   class="w-100 name"
+                                   title="ระเบียบสำนักนายกรัฐมนตรี"
+                                   target="_self"
+                                >
+									ระเบียบสำนักนายกรัฐมนตรี								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/regulations/regulations-of-the-council-of-state/"
+                                   class="w-100 name"
+                                   title="ระเบียบคณะกรรมการกฤษฎีกา"
+                                   target="_self"
+                                >
+									ระเบียบคณะกรรมการกฤษฎีกา								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/regulations/judicial-regulations-of-the-court-of-justice/"
+                                   class="w-100 name"
+                                   title="ระเบียบราชการฝ่ายตุลาการศาลยุติธรรม"
+                                   target="_self"
+                                >
+									ระเบียบราชการฝ่ายตุลาการศาลยุติธรรม								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ประกาศ"
+                                   target="_self"
+                                >
+									ประกาศ								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/announce/land-department-announcement/"
+                                   class="w-100 name"
+                                   title="ประกาศกรมที่ดิน"
+                                   target="_self"
+                                >
+									ประกาศกรมที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/announce/announcement-of-the-ministry-of-interior/"
+                                   class="w-100 name"
+                                   title="ประกาศกระทรวงมหาดไทย"
+                                   target="_self"
+                                >
+									ประกาศกระทรวงมหาดไทย								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/announce/announcement-of-the-cabinet-secretariat/"
+                                   class="w-100 name"
+                                   title="ประกาศสำนักเลขาธิการคณะรัฐมนตรี"
+                                   target="_self"
+                                >
+									ประกาศสำนักเลขาธิการคณะรัฐมนตรี								</a>
+															</li>
+																																																							<li class="menu-lv4">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/announce/announcement-of-public-health/"
+                                   class="w-100 name"
+                                   title="ประกาศกระทรวงสาธารณสุข"
+                                   target="_self"
+                                >
+									ประกาศกระทรวงสาธารณสุข								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/collection-regulations/"
+                                   class="w-100 name"
+                                   title="รวมกฎกระทรวง"
+                                   target="_self"
+                                >
+									รวมกฎกระทรวง								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/decree/"
+                                   class="w-100 name"
+                                   title="พระราชกฤษฎีกา"
+                                   target="_self"
+                                >
+									พระราชกฤษฎีกา								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/act/"
+                                   class="w-100 name"
+                                   title="พระราชบัญญัติ"
+                                   target="_self"
+                                >
+									พระราชบัญญัติ								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/law/statistics-past-5-years/"
+                                   class="w-100 name"
+                                   title="สถิติจำนวนคดีพิพาทที่ดำเนินการในศาลชั้นต้นย้อนหลัง 5 ปี"
+                                   target="_self"
+                                >
+									สถิติจำนวนคดีพิพาทที่ดำเนินการในศาลชั้นต้นย้อนหลัง 5 ปี								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/knowledge-land-department/publication-law-77/"
+                                   class="w-100 name"
+                                   title="การเผยแพร่กฎหมายตามมาตรา 77"
+                                   target="_self"
+                                >
+									การเผยแพร่กฎหมายตามมาตรา 77								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/knowledge-land-department/history-of-land-titles/"
+                                   class="w-100 name"
+                                   title="ความเป็นมาของการออกโฉนดที่ดิน"
+                                   target="_self"
+                                >
+									ความเป็นมาของการออกโฉนดที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="การออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์"
+                                   target="_self"
+                                >
+									การออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/eligible-land-for-title/"
+                                   class="w-100 name"
+                                   title="ที่ดินที่จะออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์ได้"
+                                   target="_self"
+                                >
+									ที่ดินที่จะออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์ได้								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/individual-land-title-request/"
+                                   class="w-100 name"
+                                   title="การขอออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์เฉพาะราย"
+                                   target="_self"
+                                >
+									การขอออกโฉนดที่ดินหรือหนังสือรับรองการทำประโยชน์เฉพาะราย								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/title-issuance-survey-project/"
+                                   class="w-100 name"
+                                   title="การออกโฉนดที่ดินตามโครงการเดินสำรวจออกโฉนดที่ดิน"
+                                   target="_self"
+                                >
+									การออกโฉนดที่ดินตามโครงการเดินสำรวจออกโฉนดที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/knowledge-land-department/land-title-issuance/replacement-title-document/"
+                                   class="w-100 name"
+                                   title="การขอออกใบแทนหนังสือแสดงสิทธิในที่ดิน"
+                                   target="_self"
+                                >
+									การขอออกใบแทนหนังสือแสดงสิทธิในที่ดิน								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/knowledge-land-department/public-land/"
+                                   class="w-100 name"
+                                   title="ที่สาธารณประโยชน์"
+                                   target="_self"
+                                >
+									ที่สาธารณประโยชน์								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/knowledge-land-department/community-farming-land/"
+                                   class="w-100 name"
+                                   title="การจัดที่ดินทำกินให้ชุมชน"
+                                   target="_self"
+                                >
+									การจัดที่ดินทำกินให้ชุมชน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/knowledge-land-department/land-encyclopedia/"
+                                   class="w-100 name"
+                                   title="สารานุกรมที่ดิน"
+                                   target="_self"
+                                >
+									สารานุกรมที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/train/e-library/"
+                                   class="w-100 name"
+                                   title="ประมวลกฎหมายที่ดินรูปแบบอิเล็กทรอนิกส์"
+                                   target="_blank"
+                                >
+									ประมวลกฎหมายที่ดินรูปแบบอิเล็กทรอนิกส์								</a>
+															</li>
+																									</ul>
+															</li>
+																							</ul>
+							</div>
+													<div class="col-12 col-lg-3">
+								<ul class="menu-list">
+																										<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ยุทธศาสตร์และแผนงาน"
+                                   target="_self"
+                                >
+									ยุทธศาสตร์และแผนงาน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ผลความก้าวหน้า"
+                                   target="_self"
+                                >
+									ผลความก้าวหน้า								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="https://www.dol.go.th/strategy-and-plan/progress-results/progress-report/"
+                                   class="w-100 name"
+                                   title="รายงานผลความก้าวหน้า"
+                                   target="_self"
+                                >
+									รายงานผลความก้าวหน้า								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/strategy-and-plan/progress-results/annual-report/"
+                                   class="w-100 name"
+                                   title="รายงานประจำปี"
+                                   target="_self"
+                                >
+									รายงานประจำปี								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="โครงการแผนงาน"
+                                   target="_self"
+                                >
+									โครงการแผนงาน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="https://www.dol.go.th/strategy-and-plan/project-plan/quality-certification-project/"
+                                   class="w-100 name"
+                                   title="โครงการรับรองคุณภาพการบริการจัดการข้อมูลที่ดินฯ"
+                                   target="_self"
+                                >
+									โครงการรับรองคุณภาพการบริการจัดการข้อมูลที่ดินฯ								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/strategy-and-plan/project-plan/outstanding-land-management/"
+                                   class="w-100 name"
+                                   title="โครงการคัดเลือกสำนักงานที่ดินบริหารจัดการดีเด่น"
+                                   target="_self"
+                                >
+									โครงการคัดเลือกสำนักงานที่ดินบริหารจัดการดีเด่น								</a>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/strategy-and-plan/project-plan/evaluation-of-government/"
+                                   class="w-100 name"
+                                   title="การประเมินส่วนราชการตามมาตรการปรับปรุงประสิทธิภาพในการปฏิบัติราชการ"
+                                   target="_self"
+                                >
+									การประเมินส่วนราชการตามมาตรการปรับปรุงประสิทธิภาพในการปฏิบัติราชการ								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="แผนบริหาร"
+                                   target="_self"
+                                >
+									แผนบริหาร								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="การประเมินความเสี่ยงการทุจริต"
+                                   target="_self"
+                                >
+									การประเมินความเสี่ยงการทุจริต								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/strategy-and-plan/management-plan/corruption-risk-assessment/corruption-risk-assessment-2568/"
+                                   class="w-100 name"
+                                   title="ปีงบประมาณ พ.ศ. 2568"
+                                   target="_self"
+                                >
+									ปีงบประมาณ พ.ศ. 2568								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/strategy-and-plan/management-plan/corruption-risk-assessment/corruption-risk-assessment-2567/"
+                                   class="w-100 name"
+                                   title="ปีงบประมาณ พ.ศ. 2567"
+                                   target="_self"
+                                >
+									ปีงบประมาณ พ.ศ. 2567								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/strategy-and-plan/management-plan/corruption-risk-assessment/corruption-risk-assessment-2566/"
+                                   class="w-100 name"
+                                   title="ปีงบประมาณ พ.ศ. 2566"
+                                   target="_self"
+                                >
+									ปีงบประมาณ พ.ศ. 2566								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/strategy-and-plan/management-plan/crisis-management-plan/"
+                                   class="w-100 name"
+                                   title="แผนบริหารความพร้อมต่อสภาวะวิกฤต"
+                                   target="_self"
+                                >
+									แผนบริหารความพร้อมต่อสภาวะวิกฤต								</a>
+															</li>
+																									</ul>
+															</li>
+																									</ul>
+															</li>
+																																<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข่าวกรมที่ดิน"
+                                   target="_self"
+                                >
+									ข่าวกรมที่ดิน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข่าวความเคลื่อนไหว"
+                                   target="_self"
+                                >
+									ข่าวความเคลื่อนไหว								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข่าวจัดซื้อจัดจ้าง"
+                                   target="_self"
+                                >
+									ข่าวจัดซื้อจัดจ้าง								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/plan/"
+                                   class="w-100 name"
+                                   title="แผนการจัดซื้อจัดจ้าง"
+                                   target="_self"
+                                >
+									แผนการจัดซื้อจัดจ้าง								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/announcement/"
+                                   class="w-100 name"
+                                   title="ประกาศจัดซื้อจัดจ้าง"
+                                   target="_self"
+                                >
+									ประกาศจัดซื้อจัดจ้าง								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/consulting_hiring/"
+                                   class="w-100 name"
+                                   title="จ้างที่ปรึกษา"
+                                   target="_self"
+                                >
+									จ้างที่ปรึกษา								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/design_supervision/"
+                                   class="w-100 name"
+                                   title="จ้างออกแบบและควบคุมงาน"
+                                   target="_self"
+                                >
+									จ้างออกแบบและควบคุมงาน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/auction_sale/"
+                                   class="w-100 name"
+                                   title="ขายทอดตลาด"
+                                   target="_self"
+                                >
+									ขายทอดตลาด								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/winner_announcement_quarterly/"
+                                   class="w-100 name"
+                                   title="ประกาศผลผู้ชนะการจัดซื้อจัดจ้างหรือได้รับการคัดเลือก (รายไตรมาส)"
+                                   target="_self"
+                                >
+									ประกาศผลผู้ชนะการจัดซื้อจัดจ้างหรือได้รับการคัดเลือก (รายไตรมาส)								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/cancel/"
+                                   class="w-100 name"
+                                   title="ยกเลิกโครงการ"
+                                   target="_self"
+                                >
+									ยกเลิกโครงการ								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/procurement/summary_monthly/"
+                                   class="w-100 name"
+                                   title="สรุปผลการดำเนินการจัดซื้อจัดจ้าง"
+                                   target="_self"
+                                >
+									สรุปผลการดำเนินการจัดซื้อจัดจ้าง								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="รายงานผลการดำเนินการจัดซื้อจัดจ้าง"
+                                   target="_self"
+                                >
+									รายงานผลการดำเนินการจัดซื้อจัดจ้าง								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv5">
+								<a href="https://www.dol.go.th/procurement/report/?report_type=ITA12"
+                                   class="w-100 name"
+                                   title="แบบ ITA 012"
+                                   target="_self"
+                                >
+									แบบ ITA 012								</a>
+															</li>
+																																		<li class="menu-lv5">
+								<a href="https://www.dol.go.th/procurement/report/?report_type=ITA13"
+                                   class="w-100 name"
+                                   title="แบบ ITA 013"
+                                   target="_self"
+                                >
+									แบบ ITA 013								</a>
+															</li>
+																																		<li class="menu-lv5">
+								<a href="https://www.dol.go.th/procurement/report/?report_type=ITA14"
+                                   class="w-100 name"
+                                   title="แบบ ITA 014"
+                                   target="_self"
+                                >
+									แบบ ITA 014								</a>
+															</li>
+																																		<li class="menu-lv5">
+								<a href="https://www.dol.go.th/procurement/report/?report_type=ITA16"
+                                   class="w-100 name"
+                                   title="แบบ ITA 016"
+                                   target="_self"
+                                >
+									แบบ ITA 016								</a>
+															</li>
+																																		<li class="menu-lv5">
+								<a href="https://www.dol.go.th/procurement/report/?report_type=ITA17"
+                                   class="w-100 name"
+                                   title="แบบ ITA 017"
+                                   target="_self"
+                                >
+									แบบ ITA 017								</a>
+															</li>
+																									</ul>
+															</li>
+																																														</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข่าวกองการเจ้าหน้าที่"
+                                   target="_self"
+                                >
+									ข่าวกองการเจ้าหน้าที่								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/department-news/activity-updates/personnel-divisions-news/examination/"
+                                   class="w-100 name"
+                                   title="การสอบ"
+                                   target="_self"
+                                >
+									การสอบ								</a>
+															</li>
+																																																																																																																																																																																																																															<li class="menu-lv4">
+								<a href="https://www.dol.go.th/department-news/activity-updates/personnel-divisions-news/general-news/"
+                                   class="w-100 name"
+                                   title="ข่าวทั่วไป"
+                                   target="_self"
+                                >
+									ข่าวทั่วไป								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://dol.thaijobjob.com"
+                                   class="w-100 name"
+                                   title="การรับสมัครสอบ"
+                                   target="_self"
+                                >
+									การรับสมัครสอบ								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/budget-reports/"
+                                   class="w-100 name"
+                                   title="ข่าวรายงานการใช้จ่ายงบประมาณ"
+                                   target="_self"
+                                >
+									ข่าวรายงานการใช้จ่ายงบประมาณ								</a>
+															</li>
+																									</ul>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข่าวกรมที่ดิน"
+                                   target="_self"
+                                >
+									ข่าวกรมที่ดิน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv3">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ข่าวประชาสัมพันธ์"
+                                   target="_self"
+                                >
+									ข่าวประชาสัมพันธ์								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv4">
+								<a href="https://www.dol.go.th/department-news/dol-news/press-releases/public-relations-department-of-lands/"
+                                   class="w-100 name"
+                                   title="ประชาสัมพันธ์ของกรมที่ดิน"
+                                   target="_self"
+                                >
+									ประชาสัมพันธ์ของกรมที่ดิน								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/department-news/dol-news/press-releases/public-relations-external/"
+                                   class="w-100 name"
+                                   title="ประชาสัมพันธ์หน่วยงานภายนอก"
+                                   target="_self"
+                                >
+									ประชาสัมพันธ์หน่วยงานภายนอก								</a>
+															</li>
+																																		<li class="menu-lv4">
+								<a href="https://www.dol.go.th/department-news/dol-news/press-releases/land-relations-online/"
+                                   class="w-100 name"
+                                   title="ที่ดินสัมพันธ์ออนไลน์"
+                                   target="_self"
+                                >
+									ที่ดินสัมพันธ์ออนไลน์								</a>
+															</li>
+																																																																			</ul>
+															</li>
+																																		<li class="menu-lv3">
+								<a href="https://www.dol.go.th/department-news/dol-news/activity-news/"
+                                   class="w-100 name"
+                                   title="ข่าวกิจกรรม"
+                                   target="_self"
+                                >
+									ข่าวกิจกรรม								</a>
+															</li>
+																									</ul>
+															</li>
+																									</ul>
+															</li>
+																							</ul>
+							</div>
+													<div class="col-12 col-lg-3">
+								<ul class="menu-list">
+																										<li class="menu-lv1">
+								<a href="https://www.dol.go.th/contact-dol/"
+                                   class="w-100 name"
+                                   title="ติดต่อสำนักงานที่ดิน"
+                                   target="_self"
+                                >
+									ติดต่อสำนักงานที่ดิน								</a>
+															</li>
+																																<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ช่องทางร้องเรียน"
+                                   target="_self"
+                                >
+									ช่องทางร้องเรียน								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="https://www.dol.go.th/complaints/steps-complaint/"
+                                   class="w-100 name"
+                                   title="ขั้นตอนแจ้งเรื่องร้องเรียน"
+                                   target="_self"
+                                >
+									ขั้นตอนแจ้งเรื่องร้องเรียน								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://doldamrongdhama.dol.go.th/COM1I001"
+                                   class="w-100 name"
+                                   title="ศูนย์ดำรงธรรม (ร้องเรียน/ร้องทุกข์)  E-Contacts DC"
+                                   target="_blank"
+                                >
+									ศูนย์ดำรงธรรม (ร้องเรียน/ร้องทุกข์)  E-Contacts DC								</a>
+															</li>
+																									</ul>
+															</li>
+																							</ul>
+							</div>
+													<div class="col-12 col-lg-3">
+								<ul class="menu-list">
+																										<li class="menu-lv1">
+								<a href="https://www.dol.go.th/question-and-answer/"
+                                   class="w-100 name"
+                                   title="ถามตอบเรื่องที่ดิน"
+                                   target="_self"
+                                >
+									ถามตอบเรื่องที่ดิน								</a>
+															</li>
+																																<li class="menu-lv1">
+								<a href="javascript:void(0)"
+                                   class="w-100 name"
+                                   title="ดาวน์โหลดแบบฟอร์ม"
+                                   target="_self"
+                                >
+									ดาวน์โหลดแบบฟอร์ม								</a>
+																	<ul class="sub-menu">
+																												<li class="menu-lv2">
+								<a href="https://www.dol.go.th/form-download/power-of-attorney-form/"
+                                   class="w-100 name"
+                                   title="หนังสือมอบอำนาจ"
+                                   target="_self"
+                                >
+									หนังสือมอบอำนาจ								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/form-download/general-forms/"
+                                   class="w-100 name"
+                                   title="แบบฟอร์มต่าง ๆ"
+                                   target="_self"
+                                >
+									แบบฟอร์มต่าง ๆ								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/form-download/power-of-attorney-form-sample/"
+                                   class="w-100 name"
+                                   title="ตัวอย่างหนังสือมอบอำนาจ"
+                                   target="_self"
+                                >
+									ตัวอย่างหนังสือมอบอำนาจ								</a>
+															</li>
+																																		<li class="menu-lv2">
+								<a href="https://www.dol.go.th/form-download/property-rights-registration-sample/"
+                                   class="w-100 name"
+                                   title="ตัวอย่างคำขอจดทะเบียนสิทธิและนิติกรรม"
+                                   target="_self"
+                                >
+									ตัวอย่างคำขอจดทะเบียนสิทธิและนิติกรรม								</a>
+															</li>
+																									</ul>
+															</li>
+																							</ul>
+							</div>
+												<div class="col px-1"></div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer d-none">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div><div id="process">
+    <div class="loading-spinner-eclipse">
+        <div class="loading">
+            <div></div>
+        </div>
+    </div>
+</div>
+</div> <!-- END WRAPPER-->
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+<!-- Plugin Bootstrap Select -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstap-select/bootstrap-select.min.js"></script>
+<!-- Plugin Bootstrap Datepicker -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker-thai.js"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.th.min.js"></script>
+<!-- Custtom js -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/js/app.js?v=1776606519"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/js/main_table.js?v=1776606519"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/js/main_datepicker.js?v=1776606519"></script>
+
+<!-- Plugin Lightbox -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/lightbox/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/js/moment.min.js"></script>
+<!-- Plugin sweetalert -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/sweetalert/src/sweetalert2.min.js"></script>
+<!-- Plugin masonry -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/masonry/masonry.pkgd.min.js"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/masonry/imagesloaded.pkgd.min.js"></script>
+<!-- Plugin cookieconsent -->
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/plugins/cookieconsent/dist/cookieconsent.umd.js?v=3.0.1"></script>
+<script type="text/javascript" src="https://www.dol.go.th/themes/dol_v1/assets/js/cookieconsent.js"></script>
+
+    <script>
+        $('.id-copylink').click(function() {
+            let btn_id = $(this).data('clipboard-target');
+            copyTextAndNotify(btn_id, '');
+            $(this).find('.icon-copy').addClass('d-none');
+            $(this).find('.icon-copied').removeClass('d-none');
+            setTimeout(() => {
+                $(this).find('.icon-copy').removeClass('d-none');
+                $(this).find('.icon-copied').addClass('d-none');
+            }, 2000);
+        });
+
+        $('#copyButton').click(function() {
+            copyTextAndNotify('copyLink', 'clipboard');
+        });
+        $('#select_ppp').on('change', function(e) {
+            e.preventDefault();
+            var that = this;
+            setCookie('ppp', $(that).val(), 30);
+            //location this + ppp
+            var url = new URL(window.location.href);
+            url = url.origin + url.pathname;
+            url = url + '?ppp=' + $(that).val();
+            location.href = url;
+        });
+
+    </script>
+<script type="text/javascript">
+	$('.gallery-item').magnificPopup({
+		type: 'image',
+		gallery: {
+			enabled: true
+		}
+	});
+
+	$(function() {
+		$("[data-toggle=\"tooltip\"]").tooltip({
+			placement: "right"
+		});
+		$("[data-toggle=\"tooltip2\"]").tooltip({
+			placement: "bottom"
+		});
+		$("[data-toggle=\"tooltip3\"]").tooltip({
+			placement: "left"
+		});
+
+		$(".complain-link").on("click", function() {
+			Swal.fire({
+				title: '',
+				html: '<h2 class="mt-4">ผู้ใช้งานจะต้องล็อคอินเข้าสู่ระบบก่อนถึงจะร้องเรียนได้</h2>',
+				confirmButtonText: 'ตกลง',
+				customClass: {
+					popup: 'first_popup',
+					confirmButton: 'btn-subscribed'
+				}
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = "https://accounts.egov.go.th/Citizen/Account/Authorize?returnUrl=%2FOpenId%2FAskUser";
+				}
+			})
+		});
+
+		$(".footer-menu .nav-menu >.nav-item.has-child .icon-toggle-menu").on("click", function() {
+			$(this).closest('.nav-item.has-child').toggleClass('show');
+		});
+		// $('.count-api').each(function () {
+		// 	$(this).prop('Counter',0).animate({
+		// 		Counter: $(this).text()
+		// 	}, {
+		// 		duration: 4000,
+		// 		easing: 'swing',
+		// 		step: function (now) {
+		// 				$(this).text(Math.ceil(now));
+		// 		}
+		// 	});
+		// });
+
+		
+		if ('' == '') {
+			updateView();
+		}
+
+		function beforePrint() {
+
+			// var watermark = document.createElement("img");
+			// watermark.src = "https://www.dol.go.th/themes/dol_v1/assets/images/watermark.png";
+			// watermark.classList.add("watermark");
+			// document.body.appendChild(watermark);
+
+			var elementsToHide = document.querySelectorAll(".no-print");
+			for (var i = 0; i < elementsToHide.length; i++) {
+				elementsToHide[i].style.display = "none";
+			}
+		}
+
+		function afterPrint() {
+			// var watermark = document.querySelector(".watermark");
+			// watermark.parentNode.removeChild(watermark);
+
+			var elementsToShow = document.querySelectorAll(".no-print");
+			for (var i = 0; i < elementsToShow.length; i++) {
+				elementsToShow[i].style.display = "";
+			}
+		}
+		window.onbeforeprint = beforePrint;
+		window.onafterprint = afterPrint;
+
+		// Back to top
+		var $backToTop = $("[data-js=backToTop]");
+		$backToTop.hide();
+		$(window).on('scroll', function() {
+			if ($(this).scrollTop() > 400) {
+				$backToTop.fadeIn();
+			} else {
+				$backToTop.fadeOut();
+			}
+		});
+		$backToTop.on('click', function(e) {
+			$("html, body").animate({
+				scrollTop: 0
+			}, 200);
+		});
+
+		$("#mn_eservice").on("click", function(e) {
+			$("#eservice_list").slideToggle();
+			$(this).toggleClass("open");
+			$(this).find(".icon").toggleClass('icon-down-open-1');
+			$(this).find(".icon").toggleClass('icon-up-open-1');
+		});
+		$("#mn_service").on("click", function(e) {
+			$("#service_list").slideToggle();
+			$(this).toggleClass("open");
+			$(this).find(".icon").toggleClass('icon-down-open-1');
+			$(this).find(".icon").toggleClass('icon-up-open-1');
+		});
+		$("#mn_other").on("click", function(e) {
+			$("#other_list").slideToggle();
+			$(this).toggleClass("open");
+			$(this).find(".icon").toggleClass('icon-down-open-1');
+			$(this).find(".icon").toggleClass('icon-up-open-1');
+		});
+	});
+
+	function submitCookie(type) {
+		var data = {
+			cookie1: ($("#cookie1").is(':checked')) ? 1 : 0,
+			cookie2: ($("#cookie2").is(':checked')) ? 1 : 0,
+		};
+		if (type == 1) {
+			data.cookie1 = 1;
+			data.cookie2 = 1;
+		}
+		$("#btn_submit_cookie").addClass("active");
+		setCookie('AcceptCookies', true, '365');
+		$(".cookie-consent").removeClass("show");
+		if (type == 0) {
+			$("#modal_cookie").modal("hide");
+		}
+	}
+
+	function updateView() {
+		// $page_id, $post_id, $category_id
+		//เปลี่ยนเป็น slug เป็น id
+		callAPILocal("POST", "/general/_view.php", {
+			id: "-",
+			lang: "th"
+		}).then(function(res) {
+
+			if (res.status == "SUCCESS") {
+				if (res.result.status == "success") {
+
+					let sNumber = res.result.summary.toString();
+					let tpl_website = "";
+					for (var i = 0, len = sNumber.length; i < len; i += 1) {
+						//output.push(+sNumber.charAt(i));
+						tpl_website += "<div class='number'>" + sNumber.charAt(i) + "</div>";
+					}
+
+					$("#website_view").html(tpl_website);
+				}
+			}
+		});
+	}
+</script>
+
+<!-- Custom js -->
+<script type="text/javascript">
+
+</script>
+
+</body>
+
+</html>

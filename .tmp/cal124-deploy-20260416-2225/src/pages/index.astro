@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const siteUrl = 'https://calculator-thailand-production.up.railway.app';
+
+const calculators = [
+  {
+    title: 'คำนวณภาษีเงินได้',
+    desc: 'คำนวณภาษีเงินได้บุคคลธรรมดาตามขั้นบันได พร้อมค่าลดหย่อน',
+    href: '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+    icon: '💰',
+    tag: 'ยอดนิยม',
+    tagColor: 'bg-red-50 text-red-600',
+  },
+  {
+    title: 'คำนวณ VAT 7%',
+    desc: 'บวก VAT หรือแยก VAT จากราคารวม รองรับหลายรายการ',
+    href: '/คำนวณภาษีมูลค่าเพิ่ม/',
+    icon: '🧾',
+    tag: 'สำหรับธุรกิจ',
+    tagColor: 'bg-blue-50 text-blue-600',
+  },
+  {
+    title: 'คำนวณผ่อนกู้',
+    desc: 'คำนวณค่างวดสินเชื่อบ้าน รถ ส่วนบุคคล พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนกู้/',
+    icon: '🏠',
+    tag: null,
+    tagColor: '',
+  },
+  {
+    title: 'คำนวณ BMI',
+    desc: 'คำนวณดัชนีมวลกาย ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย',
+    href: '/คำนวณ-bmi/',
+    icon: '⚖️',
+    tag: null,
+    tagColor: '',
+  },
+  {
+    title: 'คำนวณเงินเดือนสุทธิ',
+    desc: 'เงินเดือนหลังหักภาษีและประกันสังคม พร้อมรายละเอียดทุกรายการ',
+    href: '/คำนวณเงินเดือนสุทธิ/',
+    icon: '📊',
+    tag: 'มนุษย์เงินเดือน',
+    tagColor: 'bg-green-50 text-green-600',
+  },
+  {
+    title: 'คำนวณผ่อนรถ',
+    desc: 'คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย flat rate พร้อมตารางผ่อน',
+    href: '/คำนวณผ่อนรถ/',
+    icon: '🚗',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณดอกเบี้ยเงินฝาก',
+    desc: 'ดอกเบี้ยฝากประจำและออมทรัพย์ หักภาษี 15% แสดงผลตอบแทนสุทธิ',
+    href: '/คำนวณดอกเบี้ยเงินฝาก/',
+    icon: '🏦',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+  {
+    title: 'คำนวณอายุ',
+    desc: 'คำนวณอายุจากวันเกิด รองรับ พ.ศ. พร้อมราศีและ Generation',
+    href: '/คำนวณอายุ/',
+    icon: '🎂',
+    tag: 'ใหม่',
+    tagColor: 'bg-orange-50 text-orange-600',
+  },
+];
+
+const jsonLdWebsite = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'เครื่องคำนวณไทย',
+  url: siteUrl,
+  inLanguage: 'th',
+};
+
+const jsonLdItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'เครื่องคำนวณออนไลน์สำหรับคนไทย',
+  itemListElement: calculators.map((calc, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: calc.title,
+    url: `${siteUrl}${calc.href}`,
+  })),
+};
+---
+
+<BaseLayout
+  title="เครื่องคำนวณไทย — คำนวณภาษี ดอกเบี้ย สินเชื่อ ฟรี"
+  description="รวมเครื่องคำนวณออนไลน์ฟรี: ภาษีเงินได้บุคคลธรรมดา, ดอกเบี้ย, สินเชื่อบ้าน, VAT และอื่นๆ สำหรับคนไทย"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebsite)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} />
+  <!-- Hero Section -->
+  <div class="text-center mb-10 sm:mb-14">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-50 text-primary-700 rounded-full text-sm font-medium mb-5">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      คำนวณแม่นยำ ใช้งานง่าย ฟรี 100%
+    </div>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+      เครื่องคำนวณออนไลน์
+      <span class="bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent"> สำหรับคนไทย</span>
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+      คำนวณภาษี ดอกเบี้ย สินเชื่อ BMI และอื่นๆ ได้ทันที ไม่ต้องสมัครสมาชิก
+    </p>
+  </div>
+
+  <!-- Calculator Grid -->
+  <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-12">
+    {calculators.map((calc) => (
+      <a
+        href={calc.href}
+        class="calc-card group relative block p-5 sm:p-6 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200"
+      >
+        {calc.tag && (
+          <span class={`absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-full ${calc.tagColor}`}>
+            {calc.tag}
+          </span>
+        )}
+        <div class="text-3xl mb-3">{calc.icon}</div>
+        <h2 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1.5">
+          {calc.title}
+        </h2>
+        <p class="text-sm text-gray-500 leading-relaxed">
+          {calc.desc}
+        </p>
+        <div class="mt-4 flex items-center text-primary-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          เปิดเครื่องคำนวณ
+          <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </a>
+    ))}
+
+  </div>
+
+  <!-- Trust Section -->
+  <div class="text-center py-8 border-t border-gray-100">
+    <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-gray-400">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        สูตรคำนวณถูกต้อง
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        ไม่เก็บข้อมูลส่วนตัว
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        ใช้งานบนมือถือได้
+      </div>
+    </div>
+  </div>
+</BaseLayout>
