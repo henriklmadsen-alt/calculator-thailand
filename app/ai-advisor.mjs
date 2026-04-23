@@ -1,13 +1,13 @@
 /**
- * AI Advisor endpoint — CAL-1262
+ * AI Advisor endpoint — CAL-1262 / CAL-1263
  * POST /api/ai-advisor/message
- * Auth-gated, tier-enforced, Claude claude-sonnet-4-6 streaming internally,
- * returns JSON { reply, questionsUsed } to match existing frontend.
+ * Auth-gated, tier-enforced (server-side per-question log), Claude streaming internally,
+ * returns JSON { reply, questionsUsed }.
  */
 
 import Anthropic from '@anthropic-ai/sdk';
 import { getCurrentUser } from './auth.mjs';
-import { getUserById, incrementQuestionsUsed, TIER_LIMITS } from './db.mjs';
+import { getUserById, getQuestionCount, recordQuestion, TIER_LIMITS } from './db.mjs';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -126,16 +126,30 @@ export async function handleAiAdvisorMessage(req, res) {
     return;
   }
 
-  // Tier enforcement
+  // Server-side tier enforcement (CAL-1263):
+  //   free  → lifetime limit (SELECT COUNT(*) FROM questions WHERE user_id=?)
+  //   paid  → monthly limit, reset on billing anniversary date
   const tier = dbUser.tier || 'free';
   const limit = TIER_LIMITS[tier] ?? TIER_LIMITS.free;
-  if (dbUser.questionsUsed >= limit) {
+  const billingRef = dbUser.billingStartedAt || dbUser.createdAt;
+
+  let questionsUsed;
+  try {
+    questionsUsed = await getQuestionCount(dbUser.id, tier, billingRef);
+  } catch (err) {
+    console.error('[ai-advisor] DB error counting questions:', err.message);
+    res.writeHead(500, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify({ error: 'server_error' }));
+    return;
+  }
+
+  if (questionsUsed >= limit) {
     res.writeHead(402, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify({
-      error: 'quota_exceeded',
-      questionsUsed: dbUser.questionsUsed,
-      limit,
+      error: 'upgrade_required',
       tier,
+      questionsUsed,
+      limit,
     }));
     return;
   }
@@ -177,15 +191,14 @@ export async function handleAiAdvisorMessage(req, res) {
     return;
   }
 
-  // Increment usage counter
-  let newQuestionsUsed = dbUser.questionsUsed + 1;
+  // Record question in the per-question log (source of truth for tier enforcement)
   try {
-    newQuestionsUsed = await incrementQuestionsUsed(jwtUser.userId);
+    await recordQuestion(dbUser.id);
   } catch (err) {
-    console.error('[ai-advisor] DB error incrementing questions_used:', err.message);
-    // Non-fatal — still return the reply
+    console.error('[ai-advisor] DB error recording question:', err.message);
+    // Non-fatal — reply is already generated
   }
 
   res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-  res.end(JSON.stringify({ reply: fullReply, questionsUsed: newQuestionsUsed }));
+  res.end(JSON.stringify({ reply: fullReply, questionsUsed: questionsUsed + 1 }));
 }
