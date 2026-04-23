@@ -21,7 +21,7 @@ function generateReleaseMetadata() {
   const timestamp = new Date().toISOString();
 
   const metadata = {
-    sha,
+    gitCommit: sha,
     timestamp,
     version: '1.0.0',
   };
