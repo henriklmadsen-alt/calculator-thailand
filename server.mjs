@@ -208,6 +208,21 @@ function generateETag(data) {
 // Permanent 301 redirects served at the HTTP layer (before file serving).
 // Covers English calculator routes migrated to Thai-slug URLs and sitemap alias.
 const permanentRedirects = new Map([
+  // New /en/calculators/* routes (CAL-1062 emergency fix)
+  ['/en/calculators/mortgage/', '/คำนวณผ่อนบ้าน/'],
+  ['/en/calculators/mortgage', '/คำนวณผ่อนบ้าน/'],
+  ['/en/calculators/bmi/', '/คำนวณ-bmi/'],
+  ['/en/calculators/bmi', '/คำนวณ-bmi/'],
+  ['/en/calculators/apr/', '/คำนวณ-apr/'],
+  ['/en/calculators/apr', '/คำนวณ-apr/'],
+  ['/en/calculators/loan-payment/', '/คำนวณผ่อนกู้/'],
+  ['/en/calculators/loan-payment', '/คำนวณผ่อนกู้/'],
+  ['/en/calculators/salary/', '/คำนวณเงินเดือนสุทธิ/'],
+  ['/en/calculators/salary', '/คำนวณเงินเดือนสุทธิ/'],
+  ['/en/calculators/vehicle/', '/คำนวณผ่อนรถ/'],
+  ['/en/calculators/vehicle', '/คำนวณผ่อนรถ/'],
+
+  // Legacy /calculator/* routes
   ['/calculator/loan-payment/', '/คำนวณผ่อนกู้/'],
   ['/calculator/loan-payment', '/คำนวณผ่อนกู้/'],
   ['/calculator/property-transfer-tax/', '/คำนวณค่าธรรมเนียมโอนบ้าน/'],
