@@ -22,10 +22,14 @@
  */
 
 import pg from 'pg';
+import { Sentry, isSentryEnabled } from './monitoring.mjs';
 
 const { Pool } = pg;
 
 let pool = null;
+
+// Pool pressure warning thresholds (fraction of max connections)
+const POOL_WARN_FRACTION = 0.8;
 
 function getPool() {
   if (!pool) {
@@ -41,8 +45,36 @@ function getPool() {
       max: 10,
       idleTimeoutMillis: 30000,
     });
+
     pool.on('error', (err) => {
       console.error('[db] unexpected client error:', err.message);
+      if (isSentryEnabled()) {
+        Sentry.captureException(err, { tags: { component: 'db_pool' } });
+      }
+    });
+
+    pool.on('connect', () => {
+      const total = pool.totalCount;
+      const max = pool.options.max;
+      if (total >= max * POOL_WARN_FRACTION) {
+        const msg = `DB pool under pressure: ${total}/${max} connections active`;
+        console.warn(`[db] ${msg}`);
+        if (isSentryEnabled()) {
+          Sentry.captureMessage(msg, {
+            level: 'warning',
+            tags: { type: 'pool_pressure' },
+            extra: { totalConnections: total, maxConnections: max, waitingCount: pool.waitingCount },
+          });
+        }
+      }
+    });
+
+    pool.on('acquire', () => {
+      if (pool.waitingCount > 0) {
+        console.warn(
+          `[db] Pool contention: ${pool.waitingCount} queries waiting (total=${pool.totalCount}/${pool.options.max})`
+        );
+      }
     });
   }
   return pool;

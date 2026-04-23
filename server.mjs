@@ -20,6 +20,10 @@ import {
 } from './app/conversations.mjs';
 import { handleStripeCheckout } from './app/stripe.mjs';
 import { handleStripeWebhook } from './app/stripe-webhook.mjs';
+import {
+  initSentry, Sentry, isSentryEnabled,
+  getActiveRequestCount, sweepLeakedRequests,
+} from './app/monitoring.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -192,6 +196,13 @@ setInterval(async () => {
 
 // Load persisted subscriptions on startup
 loadSubscriptions();
+
+// ── Leaked request sweep — CAL-1421 ──────────────────────────────────────────
+// Sweeps long-running ai-advisor Claude streaming requests that haven't resolved
+// within 60s. Runs every 30s to limit exposure window.
+setInterval(() => {
+  sweepLeakedRequests();
+}, 30_000);
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -518,6 +529,30 @@ async function serve(req, res) {
   if (url.startsWith('/auth/dev-login')) { handleDevLogin(req, res); return; }
   if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
 
+  // ── Monitoring endpoints (CAL-1421) ──────────────────────────────────────
+  if (url === '/api/test-sentry' && req.method === 'GET') {
+    const testErr = new Error('Sentry test error from /api/test-sentry');
+    if (isSentryEnabled()) {
+      Sentry.captureException(testErr, { tags: { type: 'manual_test' } });
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
+      res.end(JSON.stringify({ ok: true, message: 'Test error sent to Sentry' }));
+    } else {
+      res.writeHead(503, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
+      res.end(JSON.stringify({ ok: false, message: 'Sentry not configured — set SENTRY_DSN env var' }));
+    }
+    return;
+  }
+
+  if (url === '/api/monitoring/status' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
+    res.end(JSON.stringify({
+      sentry: isSentryEnabled(),
+      activeAiRequests: getActiveRequestCount(),
+      uptime: Math.round(process.uptime()),
+    }));
+    return;
+  }
+
   // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
   if (url === '/api/ai-advisor/message' && req.method === 'POST') {
     await handleAiAdvisorMessage(req, res);
@@ -622,6 +657,8 @@ async function serve(req, res) {
 async function start() {
   releaseMetadata = await loadReleaseMetadata();
   console.log(`[release-metadata] Loaded commit: ${releaseMetadata.gitCommit}`);
+
+  initSentry({ release: releaseMetadata.gitCommit });
 
   if (process.env.DATABASE_URL) {
     try {

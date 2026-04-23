@@ -8,6 +8,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getCurrentUser } from './auth.mjs';
 import { getUserById, getQuestionCount, recordQuestion, TIER_LIMITS } from './db.mjs';
+import { Sentry, isSentryEnabled, trackActiveRequest, releaseActiveRequest } from './monitoring.mjs';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -79,6 +80,27 @@ function parseBody(req) {
 }
 
 export async function handleAiAdvisorMessage(req, res) {
+  const handlerStart = Date.now();
+  const activeReqId = trackActiveRequest('/api/ai-advisor/message');
+
+  try {
+    await _handleAiAdvisorMessageInner(req, res, handlerStart);
+  } finally {
+    const durationMs = releaseActiveRequest(activeReqId);
+    if (durationMs !== null && isSentryEnabled()) {
+      // p95 threshold alert: log slow responses so Sentry Performance can surface them
+      if (durationMs > 3000) {
+        Sentry.captureMessage(`ai-advisor p95 threshold breached: ${durationMs}ms`, {
+          level: 'warning',
+          tags: { endpoint: '/api/ai-advisor/message', type: 'p95_threshold' },
+          extra: { durationMs, thresholdMs: 3000 },
+        });
+      }
+    }
+  }
+}
+
+async function _handleAiAdvisorMessageInner(req, res, handlerStart) {
   // Auth check
   const jwtUser = getCurrentUser(req);
   if (!jwtUser || !jwtUser.userId) {
@@ -115,6 +137,7 @@ export async function handleAiAdvisorMessage(req, res) {
     dbUser = await getUserById(jwtUser.userId);
   } catch (err) {
     console.error('[ai-advisor] DB error fetching user:', err.message);
+    if (isSentryEnabled()) Sentry.captureException(err, { tags: { endpoint: '/api/ai-advisor/message', phase: 'db_fetch_user' } });
     res.writeHead(500, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify({ error: 'server_error' }));
     return;
@@ -138,6 +161,7 @@ export async function handleAiAdvisorMessage(req, res) {
     questionsUsed = await getQuestionCount(dbUser.id, tier, billingRef);
   } catch (err) {
     console.error('[ai-advisor] DB error counting questions:', err.message);
+    if (isSentryEnabled()) Sentry.captureException(err, { tags: { endpoint: '/api/ai-advisor/message', phase: 'db_count_questions' } });
     res.writeHead(500, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify({ error: 'server_error' }));
     return;
@@ -166,26 +190,41 @@ export async function handleAiAdvisorMessage(req, res) {
   const ragContext = buildRagContext(userMessage);
   const fullSystem = SYSTEM_PROMPT + ragContext;
 
-  // Stream from Claude, collect full reply
+  // Stream from Claude, collect full reply — wrapped in Sentry span for p95 tracking
   let fullReply = '';
   try {
-    const stream = client.messages.stream({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      system: [{ type: 'text', text: fullSystem, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userMessage }],
-    });
+    const claudeStart = Date.now();
+    await Sentry.startSpan(
+      {
+        name: 'claude.stream /api/ai-advisor/message',
+        op: 'ai.stream',
+        attributes: { 'ai.model': 'claude-sonnet-4-6', 'user.tier': tier },
+      },
+      async (span) => {
+        const stream = client.messages.stream({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1024,
+          system: [{ type: 'text', text: fullSystem, cache_control: { type: 'ephemeral' } }],
+          messages: [{ role: 'user', content: userMessage }],
+        });
 
-    for await (const event of stream) {
-      if (
-        event.type === 'content_block_delta' &&
-        event.delta?.type === 'text_delta'
-      ) {
-        fullReply += event.delta.text;
+        for await (const event of stream) {
+          if (
+            event.type === 'content_block_delta' &&
+            event.delta?.type === 'text_delta'
+          ) {
+            fullReply += event.delta.text;
+          }
+        }
+
+        const claudeDurationMs = Date.now() - claudeStart;
+        span.setAttribute('ai.duration_ms', claudeDurationMs);
+        console.log(`[ai-advisor] Claude stream completed in ${claudeDurationMs}ms (total handler: ${Date.now() - handlerStart}ms)`);
       }
-    }
+    );
   } catch (err) {
     console.error('[ai-advisor] Claude API error:', err.message);
+    if (isSentryEnabled()) Sentry.captureException(err, { tags: { endpoint: '/api/ai-advisor/message', phase: 'claude_stream' } });
     res.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify({ error: 'ai_error' }));
     return;
