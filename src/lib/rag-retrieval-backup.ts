@@ -1,22 +1,10 @@
 /**
- * RAG (Retrieval-Augmented Generation) Retrieval Function — OPTIMIZED VERSION
+ * RAG (Retrieval-Augmented Generation) Retrieval Function
  *
- * OPTIMIZATION: Uses PostgreSQL pgvector with ivfflat index for O(log n) vector search
- * instead of O(n) full table scan + in-memory similarity calculation.
+ * Retrieves relevant calculator content from the vector database based on a user question.
+ * Used by the AI Advisor to provide context for LLM responses.
  *
- * Performance improvement:
- * - Before: p50 ~250-350ms (FAILS target)
- * - After:  p50 ~80-120ms (MEETS <100ms target)
- *
- * Requires:
- * - PostgreSQL pgvector extension installed
- * - ivfflat index on calculator_embeddings(embedding) table
- * - Database URL with vector type support
- *
- * Usage:
- * - Drop-in replacement for src/lib/rag-retrieval.ts
- * - API endpoint remains unchanged
- * - No changes needed to calling code
+ * Performance target: <100ms retrieval per question
  */
 
 import postgres from 'pg';
@@ -53,16 +41,13 @@ function getPool(): postgres.Pool {
       ssl: databaseUrl.includes('railway') || databaseUrl.includes('sslmode=require')
         ? { rejectUnauthorized: false }
         : false,
-      // OPTIMIZATION: Increase connection pool for concurrent queries
-      max: 20,           // Was: 5
-      min: 5,            // New: maintain minimum connections
+      max: 5,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,  // Increased from 2000
-      maxUses: 7200,     // Reconnect after 7200 uses (periodic refresh)
+      connectionTimeoutMillis: 2000,
     });
 
     pool.on('error', (err) => {
-      console.error('[rag-retrieval-optimized] database pool error:', err);
+      console.error('[rag-retrieval] database pool error:', err);
     });
   }
 
@@ -112,31 +97,29 @@ async function generateQuestionEmbedding(question: string): Promise<{
 }
 
 /**
- * Convert embedding vector to PostgreSQL vector format
- * Format: [val1, val2, val3, ...]
+ * Calculate cosine similarity between two vectors
  */
-function embeddingToPostgresVector(embedding: number[]): string {
-  return `[${embedding.join(',')}]`;
-}
+function cosineSimilarity(vec1: number[], vec2: number[]): number {
+  if (vec1.length !== vec2.length) {
+    throw new Error('Vectors must have the same length');
+  }
 
-/**
- * Convert PostgreSQL vector distance to similarity score (0-1 range)
- * pgvector <-> operator returns cosine distance (0-2 range where 0 = identical)
- * We invert this to similarity: similarity = 1 - distance/2
- */
-function distanceToSimilarity(distance: number): number {
-  // Cosine distance ranges from 0 (identical) to 2 (opposite)
-  // Convert to similarity: 1 - distance/2 gives 0-1 range
-  return Math.max(0, 1 - distance / 2);
+  let dotProduct = 0;
+  let norm1 = 0;
+  let norm2 = 0;
+
+  for (let i = 0; i < vec1.length; i++) {
+    dotProduct += vec1[i] * vec2[i];
+    norm1 += vec1[i] * vec1[i];
+    norm2 += vec2[i] * vec2[i];
+  }
+
+  const denominator = Math.sqrt(norm1) * Math.sqrt(norm2);
+  return denominator === 0 ? 0 : dotProduct / denominator;
 }
 
 /**
  * Retrieve calculator context chunks most similar to the given question
- *
- * OPTIMIZATION: Uses PostgreSQL pgvector with ivfflat index
- * - Single SQL query with ORDER BY embedding <-> ? (uses index)
- * - No in-memory similarity calculation
- * - Expected performance: <100ms (p50) / <300ms (p99)
  *
  * @param question The user's question
  * @param topK Number of chunks to return (default: 3)
@@ -161,28 +144,19 @@ export async function retrieveCalculatorContext(
     const { embedding: questionEmbedding, tokens: queryTokens } =
       await generateQuestionEmbedding(question);
 
-    // Step 2: Retrieve top-K chunks using pgvector vector search
-    // OPTIMIZATION: This query uses the ivfflat index on the embedding column
-    // The <-> operator performs cosine distance search via the index
-    // Expected query time: <15ms (vs 50-100ms with full table scan)
+    // Step 2: Retrieve all embeddings from database
     const dbPool = getPool();
-    const vectorStr = embeddingToPostgresVector(questionEmbedding);
-
-    const result = await dbPool.query(
-      `
+    const result = await dbPool.query(`
       SELECT
         id,
         calculator_slug,
         chunk_type,
         chunk_index,
         content,
-        embedding <-> $1::vector AS distance
+        embedding
       FROM calculator_embeddings
-      ORDER BY embedding <-> $1::vector
-      LIMIT $2
-      `,
-      [vectorStr, topK]
-    );
+      LIMIT 1000
+    `);
 
     if (!result.rows || result.rows.length === 0) {
       return {
@@ -193,28 +167,56 @@ export async function retrieveCalculatorContext(
       };
     }
 
-    // Step 3: Convert results to CalculatorChunk format
-    const chunks: CalculatorChunk[] = result.rows.map((row: any) => ({
-      calculator_slug: row.calculator_slug,
-      chunk_type: row.chunk_type,
-      chunk_index: row.chunk_index,
-      content: row.content,
-      similarity: distanceToSimilarity(row.distance),
-    }));
+    // Step 3: Calculate similarity scores for all chunks (in-memory)
+    // This approach is used because:
+    // - Direct SQL similarity functions (pgvector) may not be available on all instances
+    // - PostgreSQL cosine_distance on FLOAT8[] arrays requires custom functions
+    // - In-memory calculation gives us control and works with FLOAT8[] storage
+    // - For 1000 chunks, this is still <100ms on modern hardware
+    const chunksWithSimilarity = result.rows
+      .map((row: any) => {
+        let embedding: number[] = [];
+
+        // Parse embedding (could be stored as FLOAT8[] or JSON)
+        if (typeof row.embedding === 'string') {
+          try {
+            embedding = JSON.parse(row.embedding);
+          } catch {
+            embedding = [];
+          }
+        } else if (Array.isArray(row.embedding)) {
+          embedding = row.embedding;
+        }
+
+        const similarity = embedding.length === questionEmbedding.length
+          ? cosineSimilarity(questionEmbedding, embedding)
+          : 0;
+
+        return {
+          calculator_slug: row.calculator_slug,
+          chunk_type: row.chunk_type,
+          chunk_index: row.chunk_index,
+          content: row.content,
+          similarity,
+        };
+      })
+      .filter((chunk) => chunk.similarity > 0) // Filter out chunks with zero similarity
+      .sort((a, b) => b.similarity - a.similarity) // Sort by similarity descending
+      .slice(0, topK); // Take top K
 
     // Step 4: Get unique sources for metadata
     const sourceSet = new Set<string>();
-    chunks.forEach((c) => sourceSet.add(c.calculator_slug));
+    chunksWithSimilarity.forEach((c) => sourceSet.add(c.calculator_slug));
     const sources = Array.from(sourceSet);
 
     return {
-      chunks,
+      chunks: chunksWithSimilarity,
       query_embedding_tokens: queryTokens,
       search_time_ms: Date.now() - startTime,
       sources,
     };
   } catch (error) {
-    console.error('[rag-retrieval-optimized] error retrieving calculator context:', error);
+    console.error('[rag-retrieval] error retrieving calculator context:', error);
     throw error;
   }
 }
