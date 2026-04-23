@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import webpush from 'web-push';
 import Anthropic from '@anthropic-ai/sdk';
+import * as Sentry from '@sentry/node';
 import {
   handleGoogleLogin, handleGoogleCallback,
   handleFacebookLogin, handleFacebookCallback,
@@ -67,6 +68,22 @@ let releaseMetadata = Object.freeze({
   deploymentId: null,
   generatedAt: new Date().toISOString(),
 });
+
+// ── Sentry error monitoring for AI Advisor (CAL-1415) ────────────────────────
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'production',
+    integrations: [
+      new Sentry.HttpIntegration({ tracing: true }),
+    ],
+    tracesSampleRate: 1.0,
+    release: releaseMetadata.gitCommit,
+  });
+  console.log('[sentry] Initialized with DSN');
+} else {
+  console.warn('[sentry] SENTRY_DSN not configured, error reporting disabled');
+}
 
 // ── Web Push configuration ────────────────────────────────────
 const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
@@ -643,6 +660,20 @@ async function serve(req, res) {
           console.error('[ai-advisor] Claude streaming error:', error.message);
           clearTimeout(sseTimeout);
 
+          // CAL-1415: Report to Sentry with context
+          Sentry.captureException(error, {
+            tags: {
+              endpoint: '/api/ai-advisor',
+              errorType: error.status === 529 ? 'claude_timeout' : error.status === 429 ? 'claude_quota' : 'internal',
+            },
+            extra: {
+              questionId,
+              userId,
+              calculator,
+              claudeStatus: error.status,
+            },
+          });
+
           // CAL-1313: Mark question as failed (don't count against quota)
           try {
             await markQuestionFailed(questionId);
@@ -665,6 +696,10 @@ async function serve(req, res) {
         }
       } catch (error) {
         console.error('[ai-advisor] endpoint error:', error.message);
+        // CAL-1415: Report to Sentry (non-streaming errors)
+        Sentry.captureException(error, {
+          tags: { endpoint: '/api/ai-advisor', errorType: 'request_parse' },
+        });
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Bad request' }));
       }
@@ -680,29 +715,39 @@ async function serve(req, res) {
 
   // ── /api/me with tier limit ────────────────────────────────────────────────
   if (url === '/api/me' && req.method === 'GET') {
-    const user = getCurrentUser(req);
-    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-    if (!user) {
-      res.end(JSON.stringify({ authenticated: false }));
-      return;
+    try {
+      const user = getCurrentUser(req);
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+      if (!user) {
+        res.end(JSON.stringify({ authenticated: false }));
+        return;
+      }
+
+      // Calculate billing cycle (monthly reset on 1st of month Bangkok time)
+      const now = new Date();
+      const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+      const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
+      const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
+
+      res.end(JSON.stringify({
+        authenticated: true,
+        userId: user.userId,
+        email: user.email,
+        tier: user.tier || 'free',
+        questionsUsed: user.questionsUsed || 0,
+        questionLimit: TIER_LIMITS[user.tier || 'free'] || 3,
+        billingCycleStart: billingCycleStart.toISOString(),
+        billingCycleEnd: billingCycleEnd.toISOString(),
+      }));
+    } catch (error) {
+      console.error('[/api/me] error:', error.message);
+      // CAL-1415: Report /api/me errors to Sentry
+      Sentry.captureException(error, {
+        tags: { endpoint: '/api/me' },
+      });
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
     }
-
-    // Calculate billing cycle (monthly reset on 1st of month Bangkok time)
-    const now = new Date();
-    const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
-    const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
-    const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
-
-    res.end(JSON.stringify({
-      authenticated: true,
-      userId: user.userId,
-      email: user.email,
-      tier: user.tier || 'free',
-      questionsUsed: user.questionsUsed || 0,
-      questionLimit: TIER_LIMITS[user.tier || 'free'] || 3,
-      billingCycleStart: billingCycleStart.toISOString(),
-      billingCycleEnd: billingCycleEnd.toISOString(),
-    }));
     return;
   }
 
@@ -720,9 +765,31 @@ async function serve(req, res) {
       res.end(JSON.stringify(stats));
     } catch (err) {
       console.error('[api/admin/usage-stats] error:', err.message);
+      // CAL-1415: Report admin endpoint errors to Sentry
+      Sentry.captureException(err, {
+        tags: { endpoint: '/api/admin/usage-stats' },
+      });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Internal server error' }));
     }
+    return;
+  }
+
+  // ── /api/test-sentry (CAL-1415 test endpoint) ───────────────────────────
+  if (url === '/api/test-sentry' && req.method === 'GET') {
+    if (!verifyAdminRequest(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+    // Intentionally trigger an error for Sentry testing
+    const err = new Error('[test] Deliberate error from /api/test-sentry for Sentry validation');
+    Sentry.captureException(err, {
+      tags: { endpoint: '/api/test-sentry', test: 'true' },
+      extra: { timestamp: new Date().toISOString() },
+    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ ok: true, message: 'Test error sent to Sentry' }));
     return;
   }
 
