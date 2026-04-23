@@ -243,15 +243,37 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
 
 <script is:inline>
 (function initResultCardHub() {
+  function buildShareUrl(basePath) {
+    var params = new URLSearchParams();
+    document.querySelectorAll('input[type=text],input[type=number],input[type=range],select').forEach(function(el) {
+      var key = el.id || el.name;
+      if (!key || key.startsWith('ct-') || key.startsWith('__')) return;
+      var val = (el.value || '').trim();
+      if (val) params.set(key, val);
+    });
+    var ps = params.toString();
+    return window.location.origin + basePath + (ps ? '?' + ps : '');
+  }
+
+  function updateOgTags(url, title, description) {
+    [['meta[property="og:url"]', url],
+     ['meta[property="og:title"]', title],
+     ['meta[property="og:description"]', description]].forEach(function(t) {
+      var el = document.querySelector(t[0]);
+      if (el) el.setAttribute('content', t[1]);
+    });
+  }
+
+  function closeAllSharePanels() {
+    document.querySelectorAll('.ct-share-panel').forEach(function(p) { p.hidden = true; });
+    document.querySelectorAll('.ct-hub-share').forEach(function(b) { b.setAttribute('aria-expanded', 'false'); });
+  }
+
   function bindHub() {
-    // Save buttons
     document.querySelectorAll('.ct-hub-save[data-calc-id]').forEach(function(btn) {
       if (btn.dataset.hubBound === '1') return;
       btn.dataset.hubBound = '1';
-
       btn.addEventListener('click', function() {
-        // Collect current result data from the page
-        // Pages that use this component should set window.__ctCurrentCalcData before showing result
         if (typeof window.__ctCurrentCalcData === 'object' && window.__ctCurrentCalcData) {
           if (typeof window.ctSaveCalculation === 'function') {
             window.ctSaveCalculation(window.__ctCurrentCalcData);
@@ -266,51 +288,98 @@ const defaultShareText = shareText || `คำนวณ${calcTitle} ฟรี ท
       });
     });
 
-    // Share buttons
-    document.querySelectorAll('.ct-hub-share').forEach(function(btn) {
+    document.querySelectorAll('.ct-hub-share[data-calc-id]').forEach(function(btn) {
       if (btn.dataset.shareBound === '1') return;
       btn.dataset.shareBound = '1';
-
-      btn.addEventListener('click', function() {
-        var shareTitle = btn.dataset.shareTitle || document.title;
-        var shareText  = btn.dataset.shareText  || document.title;
-        var shareUrl   = btn.dataset.shareUrl
-          ? (window.location.origin + btn.dataset.shareUrl)
-          : window.location.href;
-
-        if (navigator.share) {
-          navigator.share({ title: shareTitle, text: shareText, url: shareUrl }).catch(function() {});
-        } else {
-          // Fallback: copy URL to clipboard
-          try {
-            navigator.clipboard.writeText(shareUrl).then(function() {
-              btn.innerHTML = '<span aria-hidden="true">✅</span><span>คัดลอก URL แล้ว</span>';
-              setTimeout(function() {
-                btn.innerHTML = '<span aria-hidden="true">📤</span><span>แชร์</span>';
-              }, 2000);
-            });
-          } catch(e) {
-            // Ignore silently
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var calcId = btn.dataset.calcId;
+        var panel  = document.getElementById('ct-share-panel-' + calcId);
+        if (!panel) return;
+        var isOpen = !panel.hidden;
+        closeAllSharePanels();
+        if (!isOpen) {
+          var basePath = btn.dataset.shareUrl || window.location.pathname;
+          var shareUrl = buildShareUrl(basePath);
+          var calcData = window.__ctCurrentCalcData;
+          var title    = btn.dataset.shareTitle || document.title;
+          var desc     = btn.dataset.shareText  || title;
+          if (calcData && calcData.resultValue) {
+            title = (calcData.calcEmoji || '') + ' ' + calcData.calcTitle + ': ' +
+              calcData.resultValue + (calcData.resultCategory ? ' (' + calcData.resultCategory + ')' : '') +
+              ' | Kamnuanlek';
+            desc = 'ผลการคำนวณ ' + calcData.calcTitle + ': ' +
+              calcData.resultValue + (calcData.resultCategory ? ' — ' + calcData.resultCategory : '') +
+              ' ฟรี ที่ kamnuanlek.com';
           }
-        }
-
-        if (typeof window.trackLanguageAwareEvent === 'function') {
-          window.trackLanguageAwareEvent('result_shared', {
-            calculator_type: btn.closest('[id^="ct-hub-"]')
-              ? btn.closest('[id^="ct-hub-"]').id.replace('ct-hub-', '')
-              : '',
-          });
+          updateOgTags(shareUrl, title, desc);
+          var lineEl = panel.querySelector('[data-action="line"]');
+          var fbEl   = panel.querySelector('[data-action="facebook"]');
+          if (lineEl) lineEl.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl);
+          if (fbEl)   fbEl.href   = 'https://www.facebook.com/sharer/sharer.php?u='   + encodeURIComponent(shareUrl);
+          panel.dataset.shareUrl   = shareUrl;
+          panel.dataset.shareTitle = title;
+          panel.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+          if (typeof window.trackLanguageAwareEvent === 'function') {
+            window.trackLanguageAwareEvent('share_panel_opened', { calculator_type: calcId });
+          }
         }
       });
     });
+
+    document.querySelectorAll('.ct-share-copy').forEach(function(btn) {
+      if (btn.dataset.copyBound === '1') return;
+      btn.dataset.copyBound = '1';
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var panel    = btn.closest('.ct-share-panel');
+        var shareUrl = (panel && panel.dataset.shareUrl) || window.location.href;
+        var calcId   = panel ? panel.id.replace('ct-share-panel-', '') : '';
+        function onCopied() {
+          btn.innerHTML = '<span class="ct-share-icon" aria-hidden="true">✅</span><span>คัดลอกแล้ว!</span>';
+          setTimeout(function() {
+            btn.innerHTML = '<span class="ct-share-icon" aria-hidden="true">📋</span><span>คัดลอก URL</span>';
+          }, 2000);
+          if (typeof window.trackLanguageAwareEvent === 'function') {
+            window.trackLanguageAwareEvent('result_shared', { share_method: 'copy_url', calculator_type: calcId });
+          }
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(onCopied).catch(function() {});
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = shareUrl; ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); onCopied(); } catch(ex) {}
+          document.body.removeChild(ta);
+        }
+      });
+    });
+
+    document.querySelectorAll('.ct-share-line,.ct-share-fb').forEach(function(link) {
+      if (link.dataset.trackBound === '1') return;
+      link.dataset.trackBound = '1';
+      link.addEventListener('click', function() {
+        var method = link.classList.contains('ct-share-line') ? 'line' : 'facebook';
+        var panel  = link.closest('.ct-share-panel');
+        var calcId = panel ? panel.id.replace('ct-share-panel-', '') : '';
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('result_shared', { share_method: method, calculator_type: calcId });
+        }
+        setTimeout(closeAllSharePanels, 300);
+      });
+    });
   }
+
+  document.addEventListener('click', closeAllSharePanels);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAllSharePanels(); });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bindHub);
   } else {
     bindHub();
   }
-  // Re-bind on potential dynamic DOM updates
   window.ctBindResultHub = bindHub;
 })();
 </script>
