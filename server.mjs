@@ -278,6 +278,128 @@ async function serve(req, res) {
     return;
   }
 
+  // ── Email capture API (CAL-1070 — Brevo integration) ──────
+  if (url === '/api/email/capture' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', async () => {
+      const corsHeaders = {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store',
+        'Access-Control-Allow-Origin': '*',
+      };
+      try {
+        const brevoApiKey = process.env.BREVO_API_KEY || '';
+        const senderEmail = process.env.BREVO_SENDER_EMAIL || 'noreply@kamnuanlek.com';
+        const senderName = process.env.BREVO_SENDER_NAME || 'Kamnuanlek.com';
+
+        if (!brevoApiKey) {
+          // Graceful degradation: log + return ok so UI doesn't break
+          console.warn('[email-capture] BREVO_API_KEY not configured — skipping Brevo calls');
+          res.writeHead(200, corsHeaders);
+          res.end(JSON.stringify({ ok: true, mode: 'noop' }));
+          return;
+        }
+
+        const payload = JSON.parse(body);
+        const email = (payload.email || '').trim().toLowerCase();
+        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          res.writeHead(400, corsHeaders);
+          res.end(JSON.stringify({ error: 'invalid email' }));
+          return;
+        }
+
+        const calcCategory = (payload.calcCategory || 'GENERAL').toUpperCase().replace(/\s+/g, '_');
+        const calcTitle = payload.calcTitle || 'เครื่องคำนวณ';
+        const resultValue = payload.resultValue || '';
+        const resultLabel = payload.resultLabel || 'ผลลัพธ์';
+        const calcUrl = payload.url || '/';
+        const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com';
+        const fullUrl = siteUrl.replace(/\/$/, '') + calcUrl;
+
+        // 1. Add subscriber to Brevo contacts list
+        const contactRes = await fetch('https://api.brevo.com/v3/contacts', {
+          method: 'POST',
+          headers: {
+            'api-key': brevoApiKey,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            updateEnabled: true,
+            attributes: {
+              CALCULATOR_CATEGORY: calcCategory,
+              CALCULATOR_NAME: calcTitle,
+              SAVED_RESULT: `${resultLabel}: ${resultValue}`,
+              OPT_IN_SOURCE: 'save-prompt',
+              OPT_IN_URL: calcUrl,
+            },
+          }),
+        });
+
+        if (!contactRes.ok && contactRes.status !== 204) {
+          const errText = await contactRes.text();
+          console.error('[email-capture] Brevo contacts error:', contactRes.status, errText);
+        }
+
+        // 2. Send Email 1 — immediate result delivery
+        const emailRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'api-key': brevoApiKey,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            sender: { name: senderName, email: senderEmail },
+            to: [{ email }],
+            subject: `ผลการคำนวณของคุณจาก Kamnuanlek.com`,
+            htmlContent: [
+              `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1e293b;">`,
+              `<h2 style="color:#2563eb;margin:0 0 8px;">📊 ${calcTitle}</h2>`,
+              `<p style="margin:0 0 16px;font-size:15px;color:#475569;">นี่คือผลการคำนวณที่คุณบันทึกไว้</p>`,
+              `<div style="background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:12px;padding:16px 20px;margin-bottom:20px;">`,
+              `<p style="margin:0 0 4px;font-size:13px;color:#64748b;">${resultLabel}</p>`,
+              `<p style="margin:0;font-size:22px;font-weight:700;color:#0369a1;">${resultValue}</p>`,
+              `</div>`,
+              `<a href="${fullUrl}" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;font-size:15px;">`,
+              `คำนวณใหม่ →</a>`,
+              `<p style="margin:24px 0 0;font-size:12px;color:#94a3b8;">`,
+              `ไม่มีสแปม — <a href="${siteUrl}/unsubscribe" style="color:#94a3b8;">ยกเลิกการรับอีเมล</a></p>`,
+              `</div>`,
+            ].join(''),
+          }),
+        });
+
+        if (!emailRes.ok) {
+          const errText = await emailRes.text();
+          console.error('[email-capture] Brevo smtp error:', emailRes.status, errText);
+          // Still return ok — contact was added, email failure is non-fatal
+        }
+
+        res.writeHead(200, corsHeaders);
+        res.end(JSON.stringify({ ok: true }));
+      } catch (err) {
+        console.error('[email-capture] Unexpected error:', err);
+        // Always return 200 to client — never block user flow for email errors
+        res.writeHead(200, corsHeaders);
+        res.end(JSON.stringify({ ok: true, mode: 'error-silent' }));
+      }
+    });
+    return;
+  }
+
+  if (url === '/api/email/capture' && req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    });
+    res.end();
+    return;
+  }
+
   // ── Push subscription API ──────────────────────────────────
   if (url === '/api/push/subscribe' && req.method === 'POST') {
     let body = '';
