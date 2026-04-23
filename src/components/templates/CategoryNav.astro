@@ -1,5 +1,5 @@
 ---
-// CategoryNav — Phase 2: Category navigation
+// CategoryNav — Professional redesign with full dark/light mode support
 // Desktop: collapsible left sidebar with 8 categories + search shortcut
 // Mobile: sticky bottom tab bar with top 5 categories
 // Renders on every page via BaseLayout.
@@ -9,7 +9,7 @@ export interface NavCategory {
   name: string;
   shortName: string;
   icon: string;
-  mobileTab?: boolean; // show in mobile bottom tabs (top 5 only)
+  mobileTab?: boolean;
 }
 
 const categories: NavCategory[] = [
@@ -25,15 +25,20 @@ const categories: NavCategory[] = [
 
 const mobileTabs = categories.filter(c => c.mobileTab);
 
-// Detect current page category from the pathname
 const currentPath = Astro.url.pathname;
 ---
 
 <!-- Desktop: Sticky left sidebar (hidden on mobile) -->
 <aside class="ct-cat-sidebar" aria-label="หมวดหมู่เครื่องคำนวณ">
   <div class="ct-cat-sidebar-inner">
+
     <div class="ct-cat-sidebar-header">
-      <span class="ct-cat-sidebar-title">หมวดหมู่</span>
+      <div class="ct-cat-header-label">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="ct-cat-header-icon">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <span class="ct-cat-sidebar-title">หมวดหมู่</span>
+      </div>
       <button
         type="button"
         class="ct-cat-sidebar-toggle"
@@ -41,7 +46,7 @@ const currentPath = Astro.url.pathname;
         aria-expanded="true"
         data-sidebar-toggle
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <path d="M15 18l-6-6 6-6"/>
         </svg>
       </button>
@@ -56,9 +61,22 @@ const currentPath = Astro.url.pathname;
         >
           <span class="ct-cat-icon" aria-hidden="true">{cat.icon}</span>
           <span class="ct-cat-label">{cat.name}</span>
+          <svg class="ct-cat-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
       ))}
     </nav>
+
+    <div class="ct-cat-sidebar-footer">
+      <a href="/" class="ct-cat-all-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        </svg>
+        ดูทุกหมวดหมู่
+      </a>
+    </div>
+
   </div>
 </aside>
 
@@ -72,104 +90,329 @@ const currentPath = Astro.url.pathname;
     >
       <span class="ct-tab-icon" aria-hidden="true">{cat.icon}</span>
       <span class="ct-tab-label">{cat.shortName}</span>
+      {currentPath.includes(cat.slug) && <span class="ct-tab-pip" aria-hidden="true"></span>}
     </a>
   ))}
 </nav>
 
 <style>
-  /* ── Desktop Sidebar ──────────────────────────────────── */
+  /* ─────────────────────────────────────────────────────────
+     CSS Custom Properties — light defaults, dark overrides
+  ───────────────────────────────────────────────────────── */
+  .ct-cat-sidebar,
+  .ct-cat-tabs {
+    --nav-bg:          #ffffff;
+    --nav-bg-hover:    #f0f7ff;
+    --nav-bg-active:   #e8f1ff;
+    --nav-border:      #e5e9f0;
+    --nav-border-accent: #2563eb;
+    --nav-shadow:      0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+    --nav-text:        #374151;
+    --nav-text-muted:  #9ca3af;
+    --nav-text-active: #1d4ed8;
+    --nav-title-color: #6b7280;
+    --nav-icon-bg:     #f3f4f6;
+    --nav-footer-bg:   #f9fafb;
+    --nav-footer-text: #6b7280;
+    --nav-footer-hover:#1d4ed8;
+    --nav-tab-bg:      #ffffff;
+    --nav-tab-border:  #e5e9f0;
+    --nav-tab-text:    #6b7280;
+    --nav-tab-active:  #2563eb;
+    --nav-pip:         #2563eb;
+    --nav-shadow-top:  0 -2px 16px rgba(0,0,0,0.07);
+  }
+
+  /* Dark mode overrides */
+  html[data-theme='dark'] .ct-cat-sidebar,
+  html[data-theme='dark'] .ct-cat-tabs {
+    --nav-bg:          #0f172a;
+    --nav-bg-hover:    #1e293b;
+    --nav-bg-active:   #1e3a5f;
+    --nav-border:      #1e293b;
+    --nav-border-accent: #60a5fa;
+    --nav-shadow:      0 2px 16px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+    --nav-text:        #cbd5e1;
+    --nav-text-muted:  #475569;
+    --nav-text-active: #93c5fd;
+    --nav-title-color: #475569;
+    --nav-icon-bg:     #1e293b;
+    --nav-footer-bg:   #0b1220;
+    --nav-footer-text: #475569;
+    --nav-footer-hover:#93c5fd;
+    --nav-tab-bg:      #0f172a;
+    --nav-tab-border:  #1e293b;
+    --nav-tab-text:    #64748b;
+    --nav-tab-active:  #60a5fa;
+    --nav-pip:         #60a5fa;
+    --nav-shadow-top:  0 -2px 20px rgba(0,0,0,0.5);
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     Desktop Sidebar
+  ───────────────────────────────────────────────────────── */
   .ct-cat-sidebar {
-    display: none; /* hidden on mobile */
+    display: none;
   }
 
   @media (min-width: 1024px) {
     .ct-cat-sidebar {
       display: block;
-      width: 210px;
+      width: 220px;
       flex-shrink: 0;
     }
+
     .ct-cat-sidebar-inner {
       position: sticky;
-      top: 72px; /* below header */
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 0.75rem;
+      top: 72px;
+      background: var(--nav-bg);
+      border: 1px solid var(--nav-border);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: var(--nav-shadow);
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
+
+    /* Header */
     .ct-cat-sidebar-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.75rem 0.9rem 0.5rem;
-      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--nav-border);
+      background: var(--nav-bg);
     }
+
+    .ct-cat-header-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ct-cat-header-icon {
+      color: var(--nav-text-muted);
+      flex-shrink: 0;
+    }
+
     .ct-cat-sidebar-title {
-      font-size: 0.7rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.07em;
-      color: #9ca3af;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--nav-title-color);
+      transition: color 0.2s;
     }
+
     .ct-cat-sidebar-toggle {
-      background: none; border: none; cursor: pointer;
-      color: #9ca3af; padding: 0.2rem;
-      border-radius: 0.3rem; transition: color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--nav-icon-bg);
+      border: 1px solid var(--nav-border);
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--nav-text-muted);
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
     }
-    .ct-cat-sidebar-toggle:hover { color: #374151; background: #f3f4f6; }
+    .ct-cat-sidebar-toggle:hover {
+      color: var(--nav-text-active);
+      background: var(--nav-bg-hover);
+      border-color: var(--nav-border-accent);
+    }
+    .ct-cat-sidebar-toggle svg {
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     .ct-cat-sidebar-toggle[aria-expanded="false"] svg {
       transform: rotate(180deg);
     }
+
+    /* Nav list */
     .ct-cat-list {
-      padding: 0.4rem 0;
+      padding: 6px 0;
     }
     .ct-cat-list[hidden] { display: none; }
 
     .ct-cat-item {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.45rem 0.9rem;
-      font-size: 0.82rem; font-weight: 500; color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--nav-text);
       text-decoration: none;
-      transition: background 0.12s, color 0.12s;
-      border-radius: 0;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      position: relative;
     }
+
     .ct-cat-item:hover {
-      background: #f0f9ff; color: #1d4ed8;
+      background: var(--nav-bg-hover);
+      color: var(--nav-text-active);
+      border-left-color: color-mix(in srgb, var(--nav-border-accent) 40%, transparent);
     }
+
     .ct-cat-item.ct-cat-active {
-      background: #eff6ff; color: #1d4ed8; font-weight: 600;
-      border-right: 3px solid #2563eb;
+      background: var(--nav-bg-active);
+      color: var(--nav-text-active);
+      font-weight: 600;
+      border-left-color: var(--nav-border-accent);
     }
-    .ct-cat-icon { font-size: 1rem; flex-shrink: 0; line-height: 1; }
-    .ct-cat-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .ct-cat-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      line-height: 1;
+      width: 22px;
+      text-align: center;
+    }
+
+    .ct-cat-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.3;
+    }
+
+    .ct-cat-chevron {
+      color: var(--nav-text-muted);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.15s, transform 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .ct-cat-item:hover .ct-cat-chevron,
+    .ct-cat-item.ct-cat-active .ct-cat-chevron {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--nav-text-active);
+    }
+
+    /* Footer */
+    .ct-cat-sidebar-footer {
+      border-top: 1px solid var(--nav-border);
+      background: var(--nav-footer-bg);
+      padding: 8px 14px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .ct-cat-all-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--nav-footer-text);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: color 0.15s;
+    }
+    .ct-cat-all-link:hover {
+      color: var(--nav-footer-hover);
+    }
+    .ct-cat-all-link svg {
+      flex-shrink: 0;
+    }
   }
 
-  /* ── Mobile Bottom Tabs ───────────────────────────────── */
+  /* ─────────────────────────────────────────────────────────
+     Mobile Bottom Tabs
+  ───────────────────────────────────────────────────────── */
   .ct-cat-tabs {
     display: flex;
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: #fff;
-    border-top: 1px solid #e5e7eb;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--nav-tab-bg);
+    border-top: 1px solid var(--nav-tab-border);
+    box-shadow: var(--nav-shadow-top);
     z-index: 100;
-    /* safe-area padding for iOS notch devices */
     padding-bottom: env(safe-area-inset-bottom, 0);
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
   }
 
   .ct-tab-item {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 0.5rem 0.25rem 0.4rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px 6px;
     text-decoration: none;
-    color: #6b7280;
+    color: var(--nav-tab-text);
+    min-height: 54px;
+    position: relative;
     transition: color 0.15s, background 0.15s;
-    min-height: 52px;
+    -webkit-tap-highlight-color: transparent;
   }
-  .ct-tab-item:hover { color: #1d4ed8; background: #f0f9ff; }
-  .ct-tab-item.ct-tab-active { color: #2563eb; }
 
-  .ct-tab-icon  { font-size: 1.2rem; line-height: 1; margin-bottom: 0.15rem; }
-  .ct-tab-label { font-size: 0.65rem; font-weight: 600; line-height: 1; white-space: nowrap; }
+  .ct-tab-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--nav-tab-active);
+    border-radius: 0 0 3px 3px;
+    opacity: 0;
+    transform: scaleX(0);
+    transition: opacity 0.2s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ct-tab-item.ct-tab-active {
+    color: var(--nav-tab-active);
+  }
+
+  .ct-tab-item.ct-tab-active::before {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .ct-tab-item:hover {
+    color: var(--nav-tab-active);
+    background: color-mix(in srgb, var(--nav-tab-active) 6%, transparent);
+  }
+
+  .ct-tab-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+    margin-bottom: 3px;
+    transition: transform 0.15s;
+  }
+
+  .ct-tab-item.ct-tab-active .ct-tab-icon {
+    transform: scale(1.1);
+  }
+
+  .ct-tab-label {
+    font-size: 0.64rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  .ct-tab-pip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 3px;
+    background: var(--nav-pip);
+    border-radius: 0 0 3px 3px;
+  }
 
   @media (min-width: 1024px) {
     .ct-cat-tabs {
-      display: none; /* hidden on desktop, sidebar used instead */
+      display: none;
     }
   }
 </style>
@@ -187,7 +430,7 @@ const currentPath = Astro.url.pathname;
       content.hidden = isExpanded;
       try {
         localStorage.setItem('ct.cat-sidebar-collapsed.v1', isExpanded ? '1' : '0');
-      } catch {}
+      } catch (e) {}
     });
 
     // Restore collapsed state
@@ -197,7 +440,7 @@ const currentPath = Astro.url.pathname;
         toggle.setAttribute('aria-expanded', 'false');
         content.hidden = true;
       }
-    } catch {}
+    } catch (e) {}
   }
 
   if (document.readyState === 'loading') {
