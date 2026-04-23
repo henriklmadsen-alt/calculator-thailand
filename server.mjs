@@ -11,6 +11,7 @@ import {
   handleLogout, handleApiMe,
 } from './app/auth.mjs';
 import { initDb } from './app/db.mjs';
+import { handleAiAdvisorMessage } from './app/ai-advisor.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -507,6 +508,12 @@ async function serve(req, res) {
   if (url === '/auth/apple' || url === '/auth/apple/') { handleAppleLogin(req, res); return; }
   if (url === '/auth/logout' || url === '/auth/logout/') { handleLogout(req, res); return; }
   if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
+
+  // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
+  if (url === '/api/ai-advisor/message' && req.method === 'POST') {
+    await handleAiAdvisorMessage(req, res);
+    return;
+  }
 
   if (url === '/auth/google/callback') {
     const query = Object.fromEntries(incomingUrl.searchParams);
