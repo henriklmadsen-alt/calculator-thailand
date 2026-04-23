@@ -581,6 +581,19 @@ async function serve(req, res) {
           'Access-Control-Allow-Origin': '*',
         });
 
+        // CAL-1330: 30-second idle timeout for SSE connections
+        // Prevents zombified connections from consuming memory during load
+        const sseTimeout = setTimeout(() => {
+          console.warn(`[ai-advisor] SSE connection idle timeout (30s) for question ${questionId}`);
+          res.write(`data: ${JSON.stringify({ type: 'error', error: 'connection_timeout' })}\n\n`);
+          res.end();
+        }, 30 * 1000);
+
+        // Clear timeout when connection ends normally
+        res.on('close', () => {
+          clearTimeout(sseTimeout);
+        });
+
         // Initialize Claude client
         const client = new Anthropic({
           apiKey: process.env.ANTHROPIC_API_KEY,
@@ -624,9 +637,11 @@ async function serve(req, res) {
 
           // Send completion event
           res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+          clearTimeout(sseTimeout);
           res.end();
         } catch (error) {
           console.error('[ai-advisor] Claude streaming error:', error.message);
+          clearTimeout(sseTimeout);
 
           // CAL-1313: Mark question as failed (don't count against quota)
           try {
