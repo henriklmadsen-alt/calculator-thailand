@@ -303,6 +303,125 @@
       .message { max-width: 92%; }
       .chat-header { padding: 0.875rem 1rem; }
     }
+
+    /* ── Chat body (messages + sidebar) ── */
+    .chat-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .messages-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ── Advisor sidebar (desktop) ── */
+    #advisor-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border-left: 1px solid #e2e8f0;
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      overflow-y: auto;
+    }
+    .sidebar-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.875rem;
+      padding: 1rem;
+    }
+    .sidebar-card-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Usage meter */
+    .usage-bar-wrap {
+      background: #e2e8f0;
+      border-radius: 9999px;
+      height: 8px;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+    #usage-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      transition: width 0.5s ease, background-color 0.5s ease;
+      background: #22c55e;
+    }
+    #usage-bar-fill.amber { background: #f59e0b; }
+    #usage-bar-fill.red   { background: #ef4444; }
+    .usage-label {
+      font-size: 0.78rem;
+      color: #475569;
+      text-align: center;
+    }
+    #usage-label-count { font-weight: 700; color: #0f172a; }
+
+    /* Streak counter */
+    .streak-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      padding: 0.25rem 0;
+    }
+    .streak-fire { font-size: 1.75rem; line-height: 1; }
+    #streak-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.1;
+    }
+    .streak-unit { font-size: 0.7rem; color: #94a3b8; margin-top: 0.1rem; }
+    .streak-zero { color: #cbd5e1; }
+
+    /* ── Mobile compact stats strip (hidden on desktop) ── */
+    #mobile-stats-strip {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.4rem 1rem;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.75rem;
+    }
+    .mobile-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #475569;
+      font-weight: 600;
+    }
+    .mobile-usage-bar-wrap {
+      background: #e2e8f0;
+      border-radius: 9999px;
+      height: 5px;
+      width: 50px;
+      overflow: hidden;
+    }
+    #mobile-usage-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      transition: width 0.5s ease, background-color 0.5s ease;
+      background: #22c55e;
+    }
+    #mobile-usage-bar-fill.amber { background: #f59e0b; }
+    #mobile-usage-bar-fill.red   { background: #ef4444; }
+
+    @media (max-width: 768px) {
+      #advisor-sidebar { display: none; }
+      #mobile-stats-strip { display: flex; }
+    }
   </style>
 </head>
 <body>
@@ -354,17 +473,57 @@
     </div>
   </div>
 
-  <div class="messages-area" id="messages">
-    <div class="message ai">
-      สวัสดีครับ! ผม AI Advisor ของ Kamnuanlek.com 👋<br><br>
-      ถามผมได้เลยเรื่อง <strong>การเงินส่วนตัว, ภาษี, การลงทุน, สินเชื่อ</strong> หรืออะไรก็ตามที่ต้องการคำแนะนำด้านตัวเลขไทย
-      <div class="suggestions">
-        <button class="suggestion-chip" onclick="sendSuggestion(this)">คำนวณภาษีเงินได้ 2567</button>
-        <button class="suggestion-chip" onclick="sendSuggestion(this)">ดอกเบี้ยบ้านดีไหมถ้าผ่อน 30 ปี?</button>
-        <button class="suggestion-chip" onclick="sendSuggestion(this)">ประกันสังคมคำนวณยังไง?</button>
+  <!-- Mobile stats strip (visible < 769px) -->
+  <div id="mobile-stats-strip">
+    <div class="mobile-stat">
+      🔥 <span id="mobile-streak-count">0</span> วัน
+    </div>
+    <div class="mobile-stat" style="gap:0.5rem;">
+      <span id="mobile-usage-text">0/3</span>
+      <div class="mobile-usage-bar-wrap">
+        <div id="mobile-usage-bar-fill"></div>
       </div>
     </div>
   </div>
+
+  <!-- Chat body: messages + desktop sidebar -->
+  <div class="chat-body">
+    <div class="messages-area" id="messages">
+      <div class="message ai">
+        สวัสดีครับ! ผม AI Advisor ของ Kamnuanlek.com 👋<br><br>
+        ถามผมได้เลยเรื่อง <strong>การเงินส่วนตัว, ภาษี, การลงทุน, สินเชื่อ</strong> หรืออะไรก็ตามที่ต้องการคำแนะนำด้านตัวเลขไทย
+        <div class="suggestions">
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">คำนวณภาษีเงินได้ 2567</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">ดอกเบี้ยบ้านดีไหมถ้าผ่อน 30 ปี?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">ประกันสังคมคำนวณยังไง?</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop sidebar (visible ≥ 769px) -->
+    <div id="advisor-sidebar">
+      <!-- Usage meter -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">การใช้งานคำถาม</div>
+        <div class="usage-bar-wrap">
+          <div id="usage-bar-fill"></div>
+        </div>
+        <div class="usage-label">
+          <span id="usage-label-count">0</span> / <span id="usage-label-limit">3</span> คำถาม
+        </div>
+      </div>
+
+      <!-- Streak counter -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">วันติดต่อกัน</div>
+        <div class="streak-display">
+          <div class="streak-fire">🔥</div>
+          <div id="streak-number" class="streak-zero">0</div>
+          <div class="streak-unit">วันติดต่อกัน</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- .chat-body -->
 
   <div id="paywall-area"></div>
 
@@ -382,6 +541,80 @@
 <script>
 const TIER_LIMITS = { free: 3, basic: 200, premium: 500, master: 1000 };
 let currentUser = null;
+
+// ── Usage meter ──────────────────────────────────────────────
+function updateUsageMeter(used, tier) {
+  const limit = TIER_LIMITS[tier] || 3;
+  const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+
+  // Desktop bar
+  const fill = document.getElementById('usage-bar-fill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.classList.remove('amber', 'red');
+    if (pct >= 80) fill.classList.add('red');
+    else if (pct >= 50) fill.classList.add('amber');
+  }
+  const labelCount = document.getElementById('usage-label-count');
+  if (labelCount) labelCount.textContent = used;
+  const labelLimit = document.getElementById('usage-label-limit');
+  if (labelLimit) labelLimit.textContent = limit;
+
+  // Mobile bar
+  const mobileFill = document.getElementById('mobile-usage-bar-fill');
+  if (mobileFill) {
+    mobileFill.style.width = pct + '%';
+    mobileFill.classList.remove('amber', 'red');
+    if (pct >= 80) mobileFill.classList.add('red');
+    else if (pct >= 50) mobileFill.classList.add('amber');
+  }
+  const mobileText = document.getElementById('mobile-usage-text');
+  if (mobileText) mobileText.textContent = `${used}/${limit}`;
+}
+
+// ── Streak counter ───────────────────────────────────────────
+function loadStreak() {
+  try {
+    return JSON.parse(localStorage.getItem('ai_advisor_streak') || '{"days":0,"lastDate":null}');
+  } catch {
+    return { days: 0, lastDate: null };
+  }
+}
+
+function renderStreak(days) {
+  const el = document.getElementById('streak-number');
+  const mobileEl = document.getElementById('mobile-streak-count');
+  if (el) {
+    el.textContent = days;
+    if (days > 0) el.classList.remove('streak-zero');
+    else el.classList.add('streak-zero');
+  }
+  if (mobileEl) mobileEl.textContent = days;
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  const stored = loadStreak();
+
+  if (stored.lastDate === today) {
+    // Already active today — no change
+    renderStreak(stored.days);
+    return stored.days;
+  }
+
+  let newDays;
+  if (stored.lastDate === yesterday) {
+    newDays = stored.days + 1;   // Consecutive day
+  } else {
+    newDays = 1;                 // New streak or broken streak
+  }
+
+  const updated = { days: newDays, lastDate: today };
+  try { localStorage.setItem('ai_advisor_streak', JSON.stringify(updated)); } catch {}
+  renderStreak(newDays);
+  return newDays;
+}
 
 // Parse URL error param
 const urlParams = new URLSearchParams(location.search);
@@ -419,6 +652,8 @@ function showChat(user) {
   document.getElementById('user-email').textContent = user.email;
   document.getElementById('tier-badge').textContent = user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
   updateQuota(user.questionsUsed, user.tier);
+  updateUsageMeter(user.questionsUsed, user.tier);
+  renderStreak(loadStreak().days);
 }
 
 function updateQuota(used, tier) {
@@ -492,6 +727,8 @@ async function sendMessage() {
     const aiDiv = appendMessage('ai', data.reply);
     currentUser.questionsUsed = data.questionsUsed;
     updateQuota(data.questionsUsed, currentUser.tier);
+    updateUsageMeter(data.questionsUsed, currentUser.tier);
+    updateStreak();
     loadFollowups(text, data.reply, aiDiv);
   } catch {
     typingDiv.remove();
