@@ -60,6 +60,8 @@ export async function initDb() {
     CREATE UNIQUE INDEX IF NOT EXISTS users_provider_idx ON users (provider, provider_id);
   `);
   console.log('[db] users table ready');
+
+  await initAiAdvisorTables();
 }
 
 export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }) {
@@ -119,3 +121,116 @@ export const TIER_LIMITS = {
   premium: 500,
   master: 1000,
 };
+
+// Calculator embeddings table schema:
+//   calculator_slug  TEXT NOT NULL
+//   chunk_type       TEXT NOT NULL  (formula | description | examples | faq)
+//   chunk_index      INT NOT NULL   (for ordering multiple chunks of same type)
+//   content          TEXT NOT NULL
+//   embedding        FLOAT8[]       (OpenAI text-embedding-3-small, 1536 dimensions)
+//   tokens_used      INT            (for tracking API costs)
+//   created_at       TIMESTAMPTZ DEFAULT NOW()
+//   updated_at       TIMESTAMPTZ DEFAULT NOW()
+
+export async function initCalculatorEmbeddings() {
+  const db = getPool();
+  // Use FLOAT8[] (array of float8) to store embeddings without pgvector extension
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS calculator_embeddings (
+      id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      calculator_slug  TEXT NOT NULL,
+      chunk_type       TEXT NOT NULL,
+      chunk_index      INT NOT NULL DEFAULT 0,
+      content          TEXT NOT NULL,
+      embedding        FLOAT8[],
+      tokens_used      INT,
+      created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE(calculator_slug, chunk_type, chunk_index)
+    );
+    CREATE INDEX IF NOT EXISTS idx_calculator_embeddings_slug ON calculator_embeddings (calculator_slug);
+    CREATE INDEX IF NOT EXISTS idx_calculator_embeddings_type ON calculator_embeddings (chunk_type);
+  `);
+  console.log('[db] calculator_embeddings table ready');
+}
+
+export async function upsertCalculatorEmbedding({
+  calculatorSlug,
+  chunkType,
+  chunkIndex,
+  content,
+  embedding,
+  tokensUsed,
+}) {
+  const db = getPool();
+  const result = await db.query(
+    `INSERT INTO calculator_embeddings (calculator_slug, chunk_type, chunk_index, content, embedding, tokens_used)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     ON CONFLICT (calculator_slug, chunk_type, chunk_index) DO UPDATE
+       SET content = EXCLUDED.content,
+           embedding = EXCLUDED.embedding,
+           tokens_used = EXCLUDED.tokens_used,
+           updated_at = NOW()
+     RETURNING id`,
+    [calculatorSlug, chunkType, chunkIndex, content, embedding, tokensUsed]
+  );
+  return result.rows[0]?.id;
+}
+
+export async function getCalculatorEmbeddings(calculatorSlug) {
+  const db = getPool();
+  const result = await db.query(
+    'SELECT calculator_slug, chunk_type, chunk_index, content, embedding FROM calculator_embeddings WHERE calculator_slug = $1 ORDER BY chunk_type, chunk_index',
+    [calculatorSlug]
+  );
+  return result.rows;
+}
+
+// Questions and messages tables for AI Advisor (CAL-1312)
+// questions table: stores user questions
+// messages table: stores AI responses with citations
+
+export async function initAiAdvisorTables() {
+  const db = getPool();
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS questions (
+      id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id       UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      content       TEXT NOT NULL,
+      calculator    TEXT,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS questions_user_idx ON questions (user_id, created_at DESC);
+  `);
+
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      question_id   UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+      role          TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+      content       TEXT NOT NULL,
+      citations     JSONB,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS messages_question_idx ON messages (question_id, created_at ASC);
+  `);
+  console.log('[db] AI Advisor tables (questions, messages) ready');
+}
+
+export async function createQuestion({ userId, content, calculator }) {
+  const db = getPool();
+  const result = await db.query(
+    'INSERT INTO questions (user_id, content, calculator) VALUES ($1, $2, $3) RETURNING id',
+    [userId, content, calculator || null]
+  );
+  return result.rows[0].id;
+}
+
+export async function saveMessage({ questionId, role, content, citations }) {
+  const db = getPool();
+  const result = await db.query(
+    'INSERT INTO messages (question_id, role, content, citations) VALUES ($1, $2, $3, $4) RETURNING id',
+    [questionId, role, content, citations || null]
+  );
+  return result.rows[0].id;
+}

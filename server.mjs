@@ -4,13 +4,14 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import webpush from 'web-push';
+import Anthropic from '@anthropic-ai/sdk';
 import {
   handleGoogleLogin, handleGoogleCallback,
   handleFacebookLogin, handleFacebookCallback,
   handleAppleLogin, handleAppleCallback,
   handleLogout, handleApiMe,
 } from './app/auth.mjs';
-import { initDb } from './app/db.mjs';
+import { initDb, getUserById, createQuestion, saveMessage, TIER_LIMITS, incrementQuestionsUsed } from './app/db.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -488,6 +489,140 @@ async function serve(req, res) {
   if (url === '/api/push/stats' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
     res.end(JSON.stringify({ subscribers: pushSubscriptions.size }));
+    return;
+  }
+
+  // ── AI Advisor endpoint (CAL-1312) ──────────────────────────────────────────
+  if (url === '/api/ai-advisor' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { question, calculator } = JSON.parse(body);
+        if (!question || typeof question !== 'string' || question.trim().length === 0) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'question required and non-empty' }));
+          return;
+        }
+
+        // Get authenticated user from cookie
+        const cookies = Object.fromEntries(
+          (req.headers.cookie || '')
+            .split(/;\s*/)
+            .filter(Boolean)
+            .map(c => c.split('='))
+        );
+        const userSession = cookies.__user_session;
+        if (!userSession) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Unauthenticated' }));
+          return;
+        }
+
+        // Parse session (simple JWT format: user-id.timestamp.hash)
+        const [userId] = userSession.split('.');
+        if (!userId) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid session' }));
+          return;
+        }
+
+        // Get user and check tier
+        const user = await getUserById(userId);
+        if (!user) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'User not found' }));
+          return;
+        }
+
+        // Check tier enforcement
+        const limit = TIER_LIMITS[user.tier] || 3;
+        if (user.questionsUsed >= limit) {
+          res.writeHead(402, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Monthly quota exceeded', quota: limit, used: user.questionsUsed }));
+          return;
+        }
+
+        // Create question record
+        const questionId = await createQuestion({
+          userId,
+          content: question.trim(),
+          calculator: calculator || null,
+        });
+
+        // Set up SSE response
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+          'Access-Control-Allow-Origin': '*',
+        });
+
+        // Initialize Claude client
+        const client = new Anthropic({
+          apiKey: process.env.ANTHROPIC_API_KEY,
+        });
+
+        let assistantMessage = '';
+        let citations = null;
+
+        try {
+          // Stream response from Claude
+          const stream = await client.messages.create({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 800,
+            messages: [
+              {
+                role: 'user',
+                content: question.trim(),
+              },
+            ],
+            stream: true,
+          });
+
+          for await (const event of stream) {
+            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+              const chunk = event.delta.text;
+              assistantMessage += chunk;
+              res.write(`data: ${JSON.stringify({ type: 'text', text: chunk })}\n\n`);
+            }
+          }
+
+          // Save message to DB
+          await saveMessage({
+            questionId,
+            role: 'assistant',
+            content: assistantMessage,
+            citations,
+          });
+
+          // Increment questions used
+          await incrementQuestionsUsed(userId);
+
+          // Send completion event
+          res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+          res.end();
+        } catch (error) {
+          console.error('[ai-advisor] Claude streaming error:', error.message);
+          if (error.status === 529) {
+            // Claude API overloaded or timeout
+            res.writeHead(504, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Claude timeout' }));
+          } else if (error.status === 429) {
+            // Rate limit / quota exceeded
+            res.writeHead(402, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Quota exceeded' }));
+          } else {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal error' }));
+          }
+        }
+      } catch (error) {
+        console.error('[ai-advisor] endpoint error:', error.message);
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Bad request' }));
+      }
+    });
     return;
   }
 
