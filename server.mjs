@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import webpush from 'web-push';
 import Anthropic from '@anthropic-ai/sdk';
 import * as Sentry from '@sentry/node';
+import Stripe from 'stripe';
 import {
   handleGoogleLogin, handleGoogleCallback,
   handleFacebookLogin, handleFacebookCallback,
@@ -89,6 +90,12 @@ if (process.env.SENTRY_DSN) {
 const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'gprQSYiSxVDck5s28oOrEFuSP-BBB-6yF5EhAuRGA6A';
 webpush.setVapidDetails('mailto:hello@kamnuanlek.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+
+// ── Stripe configuration ──────────────────────────────────────
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2024-04-10',
+});
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 // In-memory subscription store (survives server session, cleared on redeploy)
 // Subscribers who revisit re-register automatically via SW
@@ -275,6 +282,72 @@ function getRequestHost(req) {
   const hostHeader = String(req.headers.host || '').trim().toLowerCase();
   if (!hostHeader) return '';
   return hostHeader.split(':', 1)[0];
+}
+
+// ── Stripe Webhook Handler ────────────────────────────────────
+async function handleStripeWebhook(req, res) {
+  if (!STRIPE_WEBHOOK_SECRET) {
+    console.warn('[stripe/webhook] STRIPE_WEBHOOK_SECRET not configured');
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Webhook not configured' }));
+    return;
+  }
+
+  let body = '';
+  req.on('data', (chunk) => { body += chunk; });
+  await new Promise((resolve) => req.on('end', resolve));
+
+  const signature = req.headers['stripe-signature'] || '';
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(body, signature, STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('[stripe/webhook] signature verification failed:', err.message);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Signature verification failed' }));
+    return;
+  }
+
+  console.log(`[stripe/webhook] Received event: ${event.type} (${event.id})`);
+
+  try {
+    switch (event.type) {
+      case 'customer.subscription.created': {
+        const subscription = event.data.object;
+        console.log(`[stripe/webhook] Subscription created: ${subscription.id} for customer ${subscription.customer}`);
+        break;
+      }
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object;
+        console.log(`[stripe/webhook] Subscription updated: ${subscription.id}, status: ${subscription.status}`);
+        break;
+      }
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object;
+        console.log(`[stripe/webhook] Subscription deleted: ${subscription.id}`);
+        break;
+      }
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object;
+        console.log(`[stripe/webhook] Payment failed on invoice: ${invoice.id}`);
+        break;
+      }
+      default:
+        console.log(`[stripe/webhook] Unhandled event type: ${event.type}`);
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ received: true }));
+  } catch (err) {
+    console.error('[stripe/webhook] Error processing event:', err.message);
+    Sentry.captureException(err, {
+      tags: { endpoint: '/api/stripe/webhook', eventType: event.type },
+      extra: { eventId: event.id },
+    });
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Internal server error' }));
+  }
 }
 
 async function serve(req, res) {
@@ -808,6 +881,12 @@ async function serve(req, res) {
     req.on('data', (chunk) => { body += chunk; });
     await new Promise((resolve) => req.on('end', resolve));
     await handleAppleCallback(req, res, body);
+    return;
+  }
+
+  // ── Stripe Webhook (CAL-1419) ────────────────────────────────────
+  if (url === '/api/stripe/webhook' && req.method === 'POST') {
+    await handleStripeWebhook(req, res);
     return;
   }
 
