@@ -81,6 +81,11 @@ export async function initDb() {
     CREATE INDEX IF NOT EXISTS questions_user_id_created_at_idx ON questions (user_id, created_at);
   `);
 
+  // Stripe customer ID column (CAL-1266)
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
+  `);
+
   // Conversation history (CAL-1265)
   await db.query(`
     CREATE TABLE IF NOT EXISTS conversations (
@@ -244,7 +249,7 @@ export async function incrementQuestionsUsed(userId) {
 export async function getUserById(userId) {
   const db = getPool();
   const result = await db.query(
-    'SELECT id, email, tier, questions_used, billing_started_at, created_at, name, avatar_url FROM users WHERE id = $1',
+    'SELECT id, email, tier, questions_used, billing_started_at, created_at, name, avatar_url, stripe_customer_id FROM users WHERE id = $1',
     [userId]
   );
   if (!result.rows.length) return null;
@@ -258,7 +263,16 @@ export async function getUserById(userId) {
     createdAt: u.created_at,
     name: u.name,
     avatarUrl: u.avatar_url,
+    stripeCustomerId: u.stripe_customer_id,
   };
+}
+
+export async function setUserStripeCustomerId(userId, stripeCustomerId) {
+  const db = getPool();
+  await db.query(
+    'UPDATE users SET stripe_customer_id = $1, updated_at = NOW() WHERE id = $2',
+    [stripeCustomerId, userId]
+  );
 }
 
 // Tier question limits: free = lifetime, others = per billing month

@@ -18,6 +18,7 @@ import {
   handleGetConversation,
   handleDeleteConversation,
 } from './app/conversations.mjs';
+import { handleStripeCheckout } from './app/stripe.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -518,6 +519,12 @@ async function serve(req, res) {
   // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
   if (url === '/api/ai-advisor/message' && req.method === 'POST') {
     await handleAiAdvisorMessage(req, res);
+    return;
+  }
+
+  // ── Stripe checkout (CAL-1266) ────────────────────────────────────────────
+  if (url === '/api/stripe/checkout' && req.method === 'POST') {
+    await handleStripeCheckout(req, res);
     return;
   }
 
