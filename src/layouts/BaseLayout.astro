@@ -2,6 +2,7 @@
 import '../styles/theme.css';
 import SaveCompareDrawer from '../components/templates/SaveCompareDrawer.astro';
 import RecentCalculations from '../components/templates/RecentCalculations.astro';
+import CategoryNav from '../components/templates/CategoryNav.astro';
 
 interface Props {
   title: string;
@@ -478,6 +479,23 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       }
       .ct-breadcrumb-link:hover { color: #1d4ed8; text-decoration: underline; }
       .ct-breadcrumb-sep { color: #9ca3af; padding: 0 0.15rem; }
+      /* ── Category nav 2-column layout ──────────────────── */
+      .ct-layout-wrapper {
+        display: flex; gap: 0; padding-top: 0; padding-bottom: 0;
+        align-items: flex-start;
+      }
+      .ct-layout-main {
+        padding-left: 0;
+      }
+      @media (min-width: 1024px) {
+        .ct-layout-wrapper { gap: 1.5rem; }
+        .ct-layout-main { padding-left: 0; }
+      }
+      /* Extra bottom padding on mobile to clear the sticky bottom tabs */
+      @media (max-width: 1023px) {
+        .ct-layout-main { padding-bottom: 80px; }
+      }
+
       .ct-breadcrumb-current {
         color: #6b7280; font-weight: 400;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -517,7 +535,10 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
       </nav>
     </header>
 
-    <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
+    <!-- Category nav wrapper: sidebar on desktop, bottom tabs on mobile -->
+    <div class="ct-layout-wrapper max-w-6xl mx-auto px-4 sm:px-6 py-0 w-full flex">
+      <CategoryNav />
+      <main class="ct-layout-main flex-1 min-w-0 py-8">
       {categoryId && categoryName && (
         <nav aria-label="Breadcrumb" class="ct-breadcrumb">
           <ol class="ct-breadcrumb-list">
@@ -536,10 +557,11 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
           </ol>
         </nav>
       )}
-      <slot />
-      <!-- Phase 3 Feature 1: Recent Calculations history auto-save -->
-      <RecentCalculations />
-    </main>
+        <slot />
+        <!-- Phase 3 Feature 1: Recent Calculations history auto-save -->
+        <RecentCalculations />
+      </main>
+    </div><!-- /ct-layout-wrapper -->
 
     <footer class="mt-auto border-t border-gray-100 bg-white/60">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">

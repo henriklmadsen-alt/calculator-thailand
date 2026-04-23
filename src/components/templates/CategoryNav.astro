@@ -1,0 +1,209 @@
+---
+// CategoryNav — Phase 2: Category navigation
+// Desktop: collapsible left sidebar with 8 categories + search shortcut
+// Mobile: sticky bottom tab bar with top 5 categories
+// Renders on every page via BaseLayout.
+
+export interface NavCategory {
+  slug: string;
+  name: string;
+  shortName: string;
+  icon: string;
+  mobileTab?: boolean; // show in mobile bottom tabs (top 5 only)
+}
+
+const categories: NavCategory[] = [
+  { slug: 'ภาษี',               name: 'เครื่องคำนวณภาษี',              shortName: 'ภาษี',         icon: '💰', mobileTab: true  },
+  { slug: 'สินเชื่อ',            name: 'เครื่องคำนวณสินเชื่อ',            shortName: 'สินเชื่อ',        icon: '🏠', mobileTab: true  },
+  { slug: 'การออม',           name: 'เครื่องคำนวณการออมและการลงทุน',  shortName: 'ออมทรัพย์',    icon: '🏦', mobileTab: false },
+  { slug: 'เงินเดือน',       name: 'เครื่องคำนวณเงินเดือนและแรงงาน', shortName: 'เงินเดือน',   icon: '📊', mobileTab: true  },
+  { slug: 'ค่าใช้จ่ายบ้าน',  name: 'เครื่องคำนวณค่าใช้จ่ายบ้าน',  shortName: 'บ้าน',        icon: '🏡', mobileTab: false },
+  { slug: 'บัตรเครดิต',       name: 'เครื่องคำนวณบัตรเครดิต',        shortName: 'บัตร',         icon: '💳', mobileTab: false },
+  { slug: 'สุขภาพ',          name: 'เครื่องคำนวณสุขภาพและชีวิต',  shortName: 'สุขภาพ',      icon: '❤️',    mobileTab: true  },
+  { slug: 'เครื่องมือทั่วไป', name: 'เครื่องมือคำนวณทั่วไป',   shortName: 'ทั่วไป',       icon: '🧰', mobileTab: false },
+];
+
+const mobileTabs = categories.filter(c => c.mobileTab);
+
+// Detect current page category from the pathname
+const currentPath = Astro.url.pathname;
+---
+
+<!-- Desktop: Sticky left sidebar (hidden on mobile) -->
+<aside class="ct-cat-sidebar" aria-label="หมวดหมู่เครื่องคำนวณ">
+  <div class="ct-cat-sidebar-inner">
+    <div class="ct-cat-sidebar-header">
+      <span class="ct-cat-sidebar-title">หมวดหมู่</span>
+      <button
+        type="button"
+        class="ct-cat-sidebar-toggle"
+        aria-label="ย่อ/ขยายเมนู"
+        aria-expanded="true"
+        data-sidebar-toggle
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="ct-cat-list" data-sidebar-content>
+      {categories.map((cat) => (
+        <a
+          href={`/หมวดหมู่/${cat.slug}/`}
+          class={`ct-cat-item${currentPath.includes(cat.slug) ? ' ct-cat-active' : ''}`}
+          aria-current={currentPath.includes(cat.slug) ? 'page' : undefined}
+        >
+          <span class="ct-cat-icon" aria-hidden="true">{cat.icon}</span>
+          <span class="ct-cat-label">{cat.name}</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+</aside>
+
+<!-- Mobile: Sticky bottom tabs (hidden on desktop) -->
+<nav class="ct-cat-tabs" aria-label="เมนูหมวดหมู่">
+  {mobileTabs.map((cat) => (
+    <a
+      href={`/หมวดหมู่/${cat.slug}/`}
+      class={`ct-tab-item${currentPath.includes(cat.slug) ? ' ct-tab-active' : ''}`}
+      aria-current={currentPath.includes(cat.slug) ? 'page' : undefined}
+    >
+      <span class="ct-tab-icon" aria-hidden="true">{cat.icon}</span>
+      <span class="ct-tab-label">{cat.shortName}</span>
+    </a>
+  ))}
+</nav>
+
+<style>
+  /* ── Desktop Sidebar ──────────────────────────────────── */
+  .ct-cat-sidebar {
+    display: none; /* hidden on mobile */
+  }
+
+  @media (min-width: 1024px) {
+    .ct-cat-sidebar {
+      display: block;
+      width: 210px;
+      flex-shrink: 0;
+    }
+    .ct-cat-sidebar-inner {
+      position: sticky;
+      top: 72px; /* below header */
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .ct-cat-sidebar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 0.9rem 0.5rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .ct-cat-sidebar-title {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: #9ca3af;
+    }
+    .ct-cat-sidebar-toggle {
+      background: none; border: none; cursor: pointer;
+      color: #9ca3af; padding: 0.2rem;
+      border-radius: 0.3rem; transition: color 0.15s, background 0.15s;
+    }
+    .ct-cat-sidebar-toggle:hover { color: #374151; background: #f3f4f6; }
+    .ct-cat-sidebar-toggle[aria-expanded="false"] svg {
+      transform: rotate(180deg);
+    }
+    .ct-cat-list {
+      padding: 0.4rem 0;
+    }
+    .ct-cat-list[hidden] { display: none; }
+
+    .ct-cat-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.82rem; font-weight: 500; color: #374151;
+      text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+      border-radius: 0;
+    }
+    .ct-cat-item:hover {
+      background: #f0f9ff; color: #1d4ed8;
+    }
+    .ct-cat-item.ct-cat-active {
+      background: #eff6ff; color: #1d4ed8; font-weight: 600;
+      border-right: 3px solid #2563eb;
+    }
+    .ct-cat-icon { font-size: 1rem; flex-shrink: 0; line-height: 1; }
+    .ct-cat-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }
+
+  /* ── Mobile Bottom Tabs ───────────────────────────────── */
+  .ct-cat-tabs {
+    display: flex;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    z-index: 100;
+    /* safe-area padding for iOS notch devices */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .ct-tab-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 0.5rem 0.25rem 0.4rem;
+    text-decoration: none;
+    color: #6b7280;
+    transition: color 0.15s, background 0.15s;
+    min-height: 52px;
+  }
+  .ct-tab-item:hover { color: #1d4ed8; background: #f0f9ff; }
+  .ct-tab-item.ct-tab-active { color: #2563eb; }
+
+  .ct-tab-icon  { font-size: 1.2rem; line-height: 1; margin-bottom: 0.15rem; }
+  .ct-tab-label { font-size: 0.65rem; font-weight: 600; line-height: 1; white-space: nowrap; }
+
+  @media (min-width: 1024px) {
+    .ct-cat-tabs {
+      display: none; /* hidden on desktop, sidebar used instead */
+    }
+  }
+</style>
+
+<script is:inline>
+(function initCategoryNav() {
+  function bindSidebar() {
+    var toggle = document.querySelector('[data-sidebar-toggle]');
+    var content = document.querySelector('[data-sidebar-content]');
+    if (!toggle || !content) return;
+
+    toggle.addEventListener('click', function() {
+      var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      content.hidden = isExpanded;
+      try {
+        localStorage.setItem('ct.cat-sidebar-collapsed.v1', isExpanded ? '1' : '0');
+      } catch {}
+    });
+
+    // Restore collapsed state
+    try {
+      var collapsed = localStorage.getItem('ct.cat-sidebar-collapsed.v1') === '1';
+      if (collapsed) {
+        toggle.setAttribute('aria-expanded', 'false');
+        content.hidden = true;
+      }
+    } catch {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSidebar);
+  } else {
+    bindSidebar();
+  }
+})();
+</script>
