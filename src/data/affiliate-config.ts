@@ -1,8 +1,13 @@
 /**
  * Affiliate partner configuration.
  *
- * PLACEHOLDER — real partner URLs will be wired in when CMO delivers CAL-796 partner details.
+ * AFFILIATE URLs ARE READ FROM ENVIRONMENT VARIABLES — see .env.example
+ * This prevents accidental commits of partner URLs and allows board to update links without a code deploy.
  * To add a partner: append an entry here; the /go/[slug] redirect page is auto-generated at build.
+ *
+ * Environment variables (AFFILIATE_URL_*) are documented in .env.example and should be set in:
+ * - Local dev: .env.local
+ * - Railway production: Railway dashboard Variables section
  */
 
 export type AffiliateCategory =
@@ -76,13 +81,14 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   },
 
   // ─── ACCESSTRADE Thailand campaigns ───────────────────────────────────────
-  // PLACEHOLDER: targetUrl will be replaced with real ACCESSTRADE tracking URLs
-  // once Board completes signup + CMO delivers campaign links (CAL-897).
+  // Real ACCESSTRADE tracking URLs are read from AFFILIATE_URL_* environment variables.
+  // See .env.example for configuration. Once Board completes signup + CMO delivers
+  // campaign links (CAL-897), set these in Railway dashboard or .env.local.
   // URL format: https://[at-tracking-domain]/[campaign-id]?sub_id=[page-slug]
   'ttb-cash2go': {
     slug: 'ttb-cash2go',
     partnerName: 'TTB Cash 2 Go',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_TTB_CASH2GO || 'https://accesstrade.in.th',
     category: 'personal-loan',
     ctaText: 'สมัครสินเชื่อ TTB Cash 2 Go',
     subtext: 'วงเงินสูง อนุมัติเร็ว ดอกเบี้ยคงที่',
@@ -90,7 +96,7 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   'ktc-brother-berm': {
     slug: 'ktc-brother-berm',
     partnerName: 'KTC Brother Berm',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_KTC_BROTHER_BERM || 'https://accesstrade.in.th',
     category: 'car-loan',
     ctaText: 'สมัครสินเชื่อรถ KTC Brother Berm',
     subtext: 'สินเชื่อรถใหม่และรถมือสอง ดอกเบี้ยพิเศษ',
@@ -98,7 +104,7 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   'ngern-tid-lor': {
     slug: 'ngern-tid-lor',
     partnerName: 'เงินติดล้อ',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_NGERN_TID_LOR || 'https://accesstrade.in.th',
     category: 'car-loan',
     ctaText: 'สมัครสินเชื่อเงินติดล้อ',
     subtext: 'ใช้รถเป็นหลักประกัน ไม่ต้องโอนเล่มทะเบียน',
@@ -106,7 +112,7 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   'tipinsure': {
     slug: 'tipinsure',
     partnerName: 'TIPINSURE',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_TIPINSURE || 'https://accesstrade.in.th',
     category: 'insurance',
     ctaText: 'เปรียบเทียบประกันรถผ่าน TIPINSURE',
     subtext: 'เปรียบเทียบแผนประกันรถจากหลายบริษัท',
@@ -114,7 +120,7 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   'uob-tmrw': {
     slug: 'uob-tmrw',
     partnerName: 'UOB TMRW',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_UOB_TMRW || 'https://accesstrade.in.th',
     category: 'credit-card',
     ctaText: 'สมัครบัตร UOB TMRW',
     subtext: 'บัตรเครดิตดิจิทัล สิทธิพิเศษมากมาย',
@@ -122,7 +128,7 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   'krungsri-signature': {
     slug: 'krungsri-signature',
     partnerName: 'บัตร Krungsri',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_KRUNGSRI_SIGNATURE || 'https://accesstrade.in.th',
     category: 'credit-card',
     ctaText: 'สมัครบัตรเครดิต Krungsri',
     subtext: 'สิทธิประโยชน์ครบ เงินคืนทุกการใช้จ่าย',
@@ -130,19 +136,20 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   'kept-krungsri': {
     slug: 'kept-krungsri',
     partnerName: 'Kept by Krungsri',
-    targetUrl: 'https://accesstrade.in.th', // PLACEHOLDER — replace with real ACCESSTRADE URL
+    targetUrl: import.meta.env.AFFILIATE_URL_KEPT_KRUNGSRI || 'https://accesstrade.in.th',
     category: 'savings',
     ctaText: 'เปิดบัญชี Kept by Krungsri',
     subtext: 'ดอกเบี้ยสูงกว่าออมทรัพย์ทั่วไป ถอนได้ทุกวัน',
   },
 
   // ─── Involve Asia campaigns ────────────────────────────────────────────────
-  // PLACEHOLDER: targetUrl will be replaced with real Involve Asia tracking URL
-  // once Board completes signup + CMO delivers Rabbit Care CPL link (CAL-897).
+  // Real Involve Asia tracking URL is read from AFFILIATE_URL_RABBIT_CARE_HEALTH_CPL env var.
+  // See .env.example for configuration. Once Board completes signup + CMO delivers
+  // Rabbit Care CPL link (CAL-897), set this in Railway dashboard or .env.local.
   'rabbit-care-health-cpl': {
     slug: 'rabbit-care-health-cpl',
     partnerName: 'Rabbit Care',
-    targetUrl: 'https://app.involve.asia', // PLACEHOLDER — replace with real Involve Asia URL
+    targetUrl: import.meta.env.AFFILIATE_URL_RABBIT_CARE_HEALTH_CPL || 'https://app.involve.asia',
     category: 'insurance',
     ctaText: 'เปรียบเทียบประกันสุขภาพฟรี',
     subtext: 'รับใบเสนอราคาจากหลายบริษัทภายใน 2 นาที',
