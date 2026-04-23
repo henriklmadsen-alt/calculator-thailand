@@ -4,20 +4,22 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import webpush from 'web-push';
-import Anthropic from '@anthropic-ai/sdk';
-import * as Sentry from '@sentry/node';
-import Stripe from 'stripe';
 import {
   handleGoogleLogin, handleGoogleCallback,
   handleFacebookLogin, handleFacebookCallback,
   handleAppleLogin, handleAppleCallback,
-  handleLogout, handleApiMe,
-  getCurrentUser, verifyAdminRequest,
+  handleLogout, handleApiMe, handleDevLogin,
 } from './app/auth.mjs';
+import { initDb } from './app/db.mjs';
+import { handleAiAdvisorMessage } from './app/ai-advisor.mjs';
 import {
-  initDb, getUserById, createQuestion, saveMessage, TIER_LIMITS, incrementQuestionsUsed,
-  createQuestionAtomic, markQuestionSuccessAndIncrement, markQuestionFailed, getAdminUsageStats,
-} from './app/db.mjs';
+  handleListConversations,
+  handleCreateConversation,
+  handleGetConversation,
+  handleDeleteConversation,
+} from './app/conversations.mjs';
+import { handleStripeCheckout } from './app/stripe.mjs';
+import { handleStripeWebhook } from './app/stripe-webhook.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -70,32 +72,10 @@ let releaseMetadata = Object.freeze({
   generatedAt: new Date().toISOString(),
 });
 
-// ── Sentry error monitoring for AI Advisor (CAL-1415) ────────────────────────
-if (process.env.SENTRY_DSN) {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.NODE_ENV || 'production',
-    integrations: [
-      new Sentry.HttpIntegration({ tracing: true }),
-    ],
-    tracesSampleRate: 1.0,
-    release: releaseMetadata.gitCommit,
-  });
-  console.log('[sentry] Initialized with DSN');
-} else {
-  console.warn('[sentry] SENTRY_DSN not configured, error reporting disabled');
-}
-
 // ── Web Push configuration ────────────────────────────────────
 const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'gprQSYiSxVDck5s28oOrEFuSP-BBB-6yF5EhAuRGA6A';
 webpush.setVapidDetails('mailto:hello@kamnuanlek.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
-
-// ── Stripe configuration ──────────────────────────────────────
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-04-10',
-});
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 // In-memory subscription store (survives server session, cleared on redeploy)
 // Subscribers who revisit re-register automatically via SW
@@ -252,6 +232,16 @@ const permanentRedirects = new Map([
   ['/en/calculators/vehicle', '/คำนวณผ่อนรถ/'],
 
   // Legacy /calculator/* routes
+  ['/calculator/bmi/', '/คำนวณ-bmi/'],
+  ['/calculator/bmi', '/คำนวณ-bmi/'],
+  ['/calculator/apr/', '/คำนวณ-apr/'],
+  ['/calculator/apr', '/คำนวณ-apr/'],
+  ['/calculator/mortgage/', '/คำนวณผ่อนบ้าน/'],
+  ['/calculator/mortgage', '/คำนวณผ่อนบ้าน/'],
+  ['/calculator/salary/', '/คำนวณเงินเดือนสุทธิ/'],
+  ['/calculator/salary', '/คำนวณเงินเดือนสุทธิ/'],
+  ['/calculator/vehicle/', '/คำนวณผ่อนรถ/'],
+  ['/calculator/vehicle', '/คำนวณผ่อนรถ/'],
   ['/calculator/loan-payment/', '/คำนวณผ่อนกู้/'],
   ['/calculator/loan-payment', '/คำนวณผ่อนกู้/'],
   ['/calculator/property-transfer-tax/', '/คำนวณค่าธรรมเนียมโอนบ้าน/'],
@@ -282,72 +272,6 @@ function getRequestHost(req) {
   const hostHeader = String(req.headers.host || '').trim().toLowerCase();
   if (!hostHeader) return '';
   return hostHeader.split(':', 1)[0];
-}
-
-// ── Stripe Webhook Handler ────────────────────────────────────
-async function handleStripeWebhook(req, res) {
-  if (!STRIPE_WEBHOOK_SECRET) {
-    console.warn('[stripe/webhook] STRIPE_WEBHOOK_SECRET not configured');
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Webhook not configured' }));
-    return;
-  }
-
-  let body = '';
-  req.on('data', (chunk) => { body += chunk; });
-  await new Promise((resolve) => req.on('end', resolve));
-
-  const signature = req.headers['stripe-signature'] || '';
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(body, signature, STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    console.error('[stripe/webhook] signature verification failed:', err.message);
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Signature verification failed' }));
-    return;
-  }
-
-  console.log(`[stripe/webhook] Received event: ${event.type} (${event.id})`);
-
-  try {
-    switch (event.type) {
-      case 'customer.subscription.created': {
-        const subscription = event.data.object;
-        console.log(`[stripe/webhook] Subscription created: ${subscription.id} for customer ${subscription.customer}`);
-        break;
-      }
-      case 'customer.subscription.updated': {
-        const subscription = event.data.object;
-        console.log(`[stripe/webhook] Subscription updated: ${subscription.id}, status: ${subscription.status}`);
-        break;
-      }
-      case 'customer.subscription.deleted': {
-        const subscription = event.data.object;
-        console.log(`[stripe/webhook] Subscription deleted: ${subscription.id}`);
-        break;
-      }
-      case 'invoice.payment_failed': {
-        const invoice = event.data.object;
-        console.log(`[stripe/webhook] Payment failed on invoice: ${invoice.id}`);
-        break;
-      }
-      default:
-        console.log(`[stripe/webhook] Unhandled event type: ${event.type}`);
-    }
-
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ received: true }));
-  } catch (err) {
-    console.error('[stripe/webhook] Error processing event:', err.message);
-    Sentry.captureException(err, {
-      tags: { endpoint: '/api/stripe/webhook', eventType: event.type },
-      extra: { eventId: event.id },
-    });
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Internal server error' }));
-  }
 }
 
 async function serve(req, res) {
@@ -586,284 +510,42 @@ async function serve(req, res) {
     return;
   }
 
-  // ── AI Advisor endpoint (CAL-1312 + CAL-1313) ──────────────────────────────────────────
-  // CAL-1313: Atomic question counter (no double-counting)
-  // Flow: Create question FIRST (status=pending) → Call Claude → Mark success/failed → Increment only if success
-  if (url === '/api/ai-advisor' && req.method === 'POST') {
-    let body = '';
-    req.on('data', (chunk) => { body += chunk; });
-    req.on('end', async () => {
-      try {
-        const { question, calculator, idempotencyKey } = JSON.parse(body);
-        if (!question || typeof question !== 'string' || question.trim().length === 0) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'question required and non-empty' }));
-          return;
-        }
-
-        // Get authenticated user from cookie
-        const cookies = Object.fromEntries(
-          (req.headers.cookie || '')
-            .split(/;\s*/)
-            .filter(Boolean)
-            .map(c => c.split('='))
-        );
-        const userSession = cookies.__user_session;
-        if (!userSession) {
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Unauthenticated' }));
-          return;
-        }
-
-        // Parse session (simple JWT format: user-id.timestamp.hash)
-        const [userId] = userSession.split('.');
-        if (!userId) {
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Invalid session' }));
-          return;
-        }
-
-        // Get user and check tier
-        const user = await getUserById(userId);
-        if (!user) {
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'User not found' }));
-          return;
-        }
-
-        // Check tier enforcement (before creating question, to prevent quota waste on invalid requests)
-        const limit = TIER_LIMITS[user.tier] || 3;
-        if (user.questionsUsed >= limit) {
-          res.writeHead(402, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Monthly quota exceeded', quota: limit, used: user.questionsUsed }));
-          return;
-        }
-
-        // CAL-1313: Create question BEFORE calling Claude (counts immediately, even if Claude fails)
-        // Uses idempotencyKey to prevent double-counting on retry
-        const questionResult = await createQuestionAtomic({
-          userId,
-          content: question.trim(),
-          idempotencyKey: idempotencyKey || null,
-          calculator: calculator || null,
-        });
-
-        const questionId = questionResult.id;
-        const isNewQuestion = questionResult.isNew;
-
-        // If question already exists (idempotency), return cached result
-        if (!isNewQuestion) {
-          res.writeHead(409, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            error: 'question_already_exists',
-            questionId,
-            status: questionResult.status,
-            message: 'This question was already submitted. Returning cached result.',
-          }));
-          return;
-        }
-
-        // Set up SSE response
-        res.writeHead(200, {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*',
-        });
-
-        // CAL-1330: 30-second idle timeout for SSE connections
-        // Prevents zombified connections from consuming memory during load
-        const sseTimeout = setTimeout(() => {
-          console.warn(`[ai-advisor] SSE connection idle timeout (30s) for question ${questionId}`);
-          res.write(`data: ${JSON.stringify({ type: 'error', error: 'connection_timeout' })}\n\n`);
-          res.end();
-        }, 30 * 1000);
-
-        // Clear timeout when connection ends normally
-        res.on('close', () => {
-          clearTimeout(sseTimeout);
-        });
-
-        // Initialize Claude client
-        const client = new Anthropic({
-          apiKey: process.env.ANTHROPIC_API_KEY,
-        });
-
-        let assistantMessage = '';
-        let citations = null;
-
-        try {
-          // Stream response from Claude
-          const stream = await client.messages.create({
-            model: 'claude-sonnet-4-6',
-            max_tokens: 800,
-            messages: [
-              {
-                role: 'user',
-                content: question.trim(),
-              },
-            ],
-            stream: true,
-          });
-
-          for await (const event of stream) {
-            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-              const chunk = event.delta.text;
-              assistantMessage += chunk;
-              res.write(`data: ${JSON.stringify({ type: 'text', text: chunk })}\n\n`);
-            }
-          }
-
-          // Save message to DB
-          await saveMessage({
-            questionId,
-            role: 'assistant',
-            content: assistantMessage,
-            citations,
-          });
-
-          // CAL-1313: Mark question as success and increment counter atomically
-          await markQuestionSuccessAndIncrement(questionId, userId);
-
-          // Send completion event
-          res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
-          clearTimeout(sseTimeout);
-          res.end();
-        } catch (error) {
-          console.error('[ai-advisor] Claude streaming error:', error.message);
-          clearTimeout(sseTimeout);
-
-          // CAL-1415: Report to Sentry with context
-          Sentry.captureException(error, {
-            tags: {
-              endpoint: '/api/ai-advisor',
-              errorType: error.status === 529 ? 'claude_timeout' : error.status === 429 ? 'claude_quota' : 'internal',
-            },
-            extra: {
-              questionId,
-              userId,
-              calculator,
-              claudeStatus: error.status,
-            },
-          });
-
-          // CAL-1313: Mark question as failed (don't count against quota)
-          try {
-            await markQuestionFailed(questionId);
-          } catch (markErr) {
-            console.error('[ai-advisor] Failed to mark question as failed:', markErr.message);
-          }
-
-          if (error.status === 529) {
-            // Claude API overloaded or timeout
-            res.writeHead(504, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Claude timeout' }));
-          } else if (error.status === 429) {
-            // Rate limit / quota exceeded
-            res.writeHead(402, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Quota exceeded' }));
-          } else {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Internal error' }));
-          }
-        }
-      } catch (error) {
-        console.error('[ai-advisor] endpoint error:', error.message);
-        // CAL-1415: Report to Sentry (non-streaming errors)
-        Sentry.captureException(error, {
-          tags: { endpoint: '/api/ai-advisor', errorType: 'request_parse' },
-        });
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Bad request' }));
-      }
-    });
-    return;
-  }
-
   // ── Auth routes (CAL-1205) ─────────────────────────────────────────────────
   if (url === '/auth/google' || url === '/auth/google/') { handleGoogleLogin(req, res); return; }
   if (url === '/auth/facebook' || url === '/auth/facebook/') { handleFacebookLogin(req, res); return; }
   if (url === '/auth/apple' || url === '/auth/apple/') { handleAppleLogin(req, res); return; }
   if (url === '/auth/logout' || url === '/auth/logout/') { handleLogout(req, res); return; }
+  if (url.startsWith('/auth/dev-login')) { handleDevLogin(req, res); return; }
+  if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
 
-  // ── /api/me with tier limit ────────────────────────────────────────────────
-  if (url === '/api/me' && req.method === 'GET') {
-    try {
-      const user = getCurrentUser(req);
-      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-      if (!user) {
-        res.end(JSON.stringify({ authenticated: false }));
-        return;
-      }
-
-      // Calculate billing cycle (monthly reset on 1st of month Bangkok time)
-      const now = new Date();
-      const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
-      const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
-      const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
-
-      res.end(JSON.stringify({
-        authenticated: true,
-        userId: user.userId,
-        email: user.email,
-        tier: user.tier || 'free',
-        questionsUsed: user.questionsUsed || 0,
-        questionLimit: TIER_LIMITS[user.tier || 'free'] || 3,
-        billingCycleStart: billingCycleStart.toISOString(),
-        billingCycleEnd: billingCycleEnd.toISOString(),
-      }));
-    } catch (error) {
-      console.error('[/api/me] error:', error.message);
-      // CAL-1415: Report /api/me errors to Sentry
-      Sentry.captureException(error, {
-        tags: { endpoint: '/api/me' },
-      });
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Internal server error' }));
-    }
+  // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
+  if (url === '/api/ai-advisor/message' && req.method === 'POST') {
+    await handleAiAdvisorMessage(req, res);
     return;
   }
 
-  // ── /api/admin/usage-stats (admin only) ────────────────────────────────────
-  if (url === '/api/admin/usage-stats' && req.method === 'GET') {
-    if (!verifyAdminRequest(req)) {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Unauthorized: admin access required' }));
-      return;
-    }
-
-    try {
-      const stats = await getAdminUsageStats();
-      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
-      res.end(JSON.stringify(stats));
-    } catch (err) {
-      console.error('[api/admin/usage-stats] error:', err.message);
-      // CAL-1415: Report admin endpoint errors to Sentry
-      Sentry.captureException(err, {
-        tags: { endpoint: '/api/admin/usage-stats' },
-      });
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Internal server error' }));
-    }
+  // ── Stripe webhook (CAL-1267) — raw body required for signature verification ─
+  if (url === '/api/stripe/webhook' && req.method === 'POST') {
+    await handleStripeWebhook(req, res);
     return;
   }
 
-  // ── /api/test-sentry (CAL-1415 test endpoint) ───────────────────────────
-  if (url === '/api/test-sentry' && req.method === 'GET') {
-    if (!verifyAdminRequest(req)) {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Unauthorized' }));
-      return;
-    }
-    // Intentionally trigger an error for Sentry testing
-    const err = new Error('[test] Deliberate error from /api/test-sentry for Sentry validation');
-    Sentry.captureException(err, {
-      tags: { endpoint: '/api/test-sentry', test: 'true' },
-      extra: { timestamp: new Date().toISOString() },
-    });
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ ok: true, message: 'Test error sent to Sentry' }));
+  // ── Stripe checkout (CAL-1266) ────────────────────────────────────────────
+  if (url === '/api/stripe/checkout' && req.method === 'POST') {
+    await handleStripeCheckout(req, res);
     return;
+  }
+
+  // ── Conversation history API (CAL-1265) ───────────────────────────────────
+  if (url === '/api/conversations' || url === '/api/conversations/') {
+    if (req.method === 'GET') { await handleListConversations(req, res, incomingUrl); return; }
+    if (req.method === 'POST') { await handleCreateConversation(req, res); return; }
+  }
+  const conversationMatch = url.match(/^\/api\/conversations\/([^/]+)\/?$/);
+  if (conversationMatch) {
+    const conversationId = conversationMatch[1];
+    if (req.method === 'GET') { await handleGetConversation(req, res, conversationId); return; }
+    if (req.method === 'DELETE') { await handleDeleteConversation(req, res, conversationId); return; }
   }
 
   if (url === '/auth/google/callback') {
@@ -881,12 +563,6 @@ async function serve(req, res) {
     req.on('data', (chunk) => { body += chunk; });
     await new Promise((resolve) => req.on('end', resolve));
     await handleAppleCallback(req, res, body);
-    return;
-  }
-
-  // ── Stripe Webhook (CAL-1419) ────────────────────────────────────
-  if (url === '/api/stripe/webhook' && req.method === 'POST') {
-    await handleStripeWebhook(req, res);
     return;
   }
 
