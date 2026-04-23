@@ -1,7 +1,6 @@
 FROM node:20-alpine AS build
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-RUN apk add --no-cache git
 WORKDIR /app
 RUN apk add --no-cache git
 COPY package.json package-lock.json ./
