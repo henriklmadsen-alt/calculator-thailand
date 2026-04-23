@@ -352,12 +352,22 @@ export function handleApiMe(req, res) {
     res.end(JSON.stringify({ authenticated: false }));
     return;
   }
+
+  // Calculate billing cycle (monthly reset on 1st of month in user's local time / Bangkok time)
+  const now = new Date();
+  const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
+  const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
+
   res.end(JSON.stringify({
     authenticated: true,
     userId: user.userId,
     email: user.email,
     tier: user.tier || 'free',
     questionsUsed: user.questionsUsed || 0,
+    // Quota limit will be filled by the caller from TIER_LIMITS
+    billingCycleStart: billingCycleStart.toISOString(),
+    billingCycleEnd: billingCycleEnd.toISOString(),
   }));
 }
 

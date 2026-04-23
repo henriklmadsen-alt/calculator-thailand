@@ -10,9 +10,18 @@
  * Handles Thai text correctly. Progress logging. Deduplicates on (calculator_slug, chunk_type, chunk_index).
  *
  * Usage:
- *   DATABASE_URL="postgresql://..." OPENAI_API_KEY="sk-..." node embed-calculator-content.mjs [--calculator-slug <slug>]
+ *   DATABASE_URL="postgresql://..." OPENAI_API_KEY="sk-..." node embed-calculator-content.mjs [options]
  *
- * If no slug provided, embeds all calculators found in src/pages.
+ * Options:
+ *   --calculator-slug <slug>  Embed only the specified calculator (e.g. "คำนวณ-apr")
+ *   --dry-run                 Parse files and show what would be embedded (no DB writes)
+ *   --verbose                 Show per-calculator logging
+ *
+ * Examples:
+ *   node embed-calculator-content.mjs                    # Embed all (silent progress)
+ *   node embed-calculator-content.mjs --verbose          # Embed all (verbose output)
+ *   node embed-calculator-content.mjs --calculator-slug "คำนวณ-apr"  # Embed one calculator
+ *   node embed-calculator-content.mjs --dry-run          # Test file parsing only
  */
 
 import fs from 'fs/promises';
@@ -32,7 +41,9 @@ const APP_ROOT = path.join(__dirname, '..');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const DATABASE_URL = process.env.DATABASE_URL;
 const DRY_RUN = process.argv.includes('--dry-run');
-const TARGET_SLUG = process.argv[process.argv.indexOf('--calculator-slug') + 1] || null;
+const VERBOSE = process.argv.includes('--verbose');
+const SLUG_INDEX = process.argv.indexOf('--calculator-slug');
+const TARGET_SLUG = SLUG_INDEX >= 0 ? process.argv[SLUG_INDEX + 1] : null;
 
 if (!DRY_RUN && !OPENAI_API_KEY) {
   console.error('❌ OPENAI_API_KEY environment variable not set');
@@ -277,14 +288,19 @@ async function upsertEmbedding(calculatorSlug, chunkType, chunkIndex, content, e
 
 async function processCalculator(calculatorPath) {
   const calculatorSlug = extractCalculatorSlug(calculatorPath);
-  if (!calculatorSlug) return;
-
-  // Filter by slug if specified
-  if (TARGET_SLUG && calculatorSlug !== TARGET_SLUG) {
+  if (!calculatorSlug) {
     return;
   }
 
-  console.log(`\n📄 Processing: ${calculatorSlug}`);
+  // Filter by slug if specified - only process if target matches or no target specified
+  if (TARGET_SLUG && calculatorSlug !== TARGET_SLUG) {
+    return; // Skip if we're targeting a specific slug that doesn't match
+  }
+
+  const shouldLog = !!TARGET_SLUG || VERBOSE;
+  if (shouldLog) {
+    console.log(`\n📄 Processing: ${calculatorSlug}`);
+  }
 
   const indexPath = path.join(calculatorPath, 'index.astro');
 
@@ -341,7 +357,9 @@ async function processCalculator(calculatorPath) {
       }
     }
 
-    console.log(`✅ ${calculatorSlug}: ${embeddingCount} embeddings created (${totalTokens} tokens)`);
+    if (shouldLog && embeddingCount > 0) {
+      console.log(`✅ ${calculatorSlug}: ${embeddingCount} embeddings created (${totalTokens} tokens)`);
+    }
   } catch (err) {
     console.error(`❌ Failed to process ${calculatorSlug}:`, err.message);
   }
@@ -385,11 +403,20 @@ async function main() {
       process.exit(0);
     }
 
-    console.log(`📊 Found ${calculatorPaths.length} calculator(s)\n`);
+    console.log(`📊 Found ${calculatorPaths.length} calculator(s) to process\n`);
 
     // Process each calculator
+    let processed = 0;
     for (const calcPath of calculatorPaths) {
       await processCalculator(calcPath);
+      processed++;
+      if (processed % 50 === 0 && !TARGET_SLUG) {
+        // Show progress every 50 calculators
+        process.stdout.write(`\r  [${processed}/${calculatorPaths.length}]`);
+      }
+    }
+    if (!TARGET_SLUG && processed > 50) {
+      console.log('\n');
     }
 
     console.log('\n✨ Embedding complete!\n');

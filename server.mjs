@@ -10,8 +10,12 @@ import {
   handleFacebookLogin, handleFacebookCallback,
   handleAppleLogin, handleAppleCallback,
   handleLogout, handleApiMe,
+  getCurrentUser,
 } from './app/auth.mjs';
-import { initDb, getUserById, createQuestion, saveMessage, TIER_LIMITS, incrementQuestionsUsed } from './app/db.mjs';
+import {
+  initDb, getUserById, createQuestion, saveMessage, TIER_LIMITS, incrementQuestionsUsed,
+  createQuestionAtomic, markQuestionSuccessAndIncrement, markQuestionFailed,
+} from './app/db.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -492,13 +496,15 @@ async function serve(req, res) {
     return;
   }
 
-  // ── AI Advisor endpoint (CAL-1312) ──────────────────────────────────────────
+  // ── AI Advisor endpoint (CAL-1312 + CAL-1313) ──────────────────────────────────────────
+  // CAL-1313: Atomic question counter (no double-counting)
+  // Flow: Create question FIRST (status=pending) → Call Claude → Mark success/failed → Increment only if success
   if (url === '/api/ai-advisor' && req.method === 'POST') {
     let body = '';
     req.on('data', (chunk) => { body += chunk; });
     req.on('end', async () => {
       try {
-        const { question, calculator } = JSON.parse(body);
+        const { question, calculator, idempotencyKey } = JSON.parse(body);
         if (!question || typeof question !== 'string' || question.trim().length === 0) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'question required and non-empty' }));
@@ -535,7 +541,7 @@ async function serve(req, res) {
           return;
         }
 
-        // Check tier enforcement
+        // Check tier enforcement (before creating question, to prevent quota waste on invalid requests)
         const limit = TIER_LIMITS[user.tier] || 3;
         if (user.questionsUsed >= limit) {
           res.writeHead(402, { 'Content-Type': 'application/json' });
@@ -543,12 +549,29 @@ async function serve(req, res) {
           return;
         }
 
-        // Create question record
-        const questionId = await createQuestion({
+        // CAL-1313: Create question BEFORE calling Claude (counts immediately, even if Claude fails)
+        // Uses idempotencyKey to prevent double-counting on retry
+        const questionResult = await createQuestionAtomic({
           userId,
           content: question.trim(),
+          idempotencyKey: idempotencyKey || null,
           calculator: calculator || null,
         });
+
+        const questionId = questionResult.id;
+        const isNewQuestion = questionResult.isNew;
+
+        // If question already exists (idempotency), return cached result
+        if (!isNewQuestion) {
+          res.writeHead(409, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'question_already_exists',
+            questionId,
+            status: questionResult.status,
+            message: 'This question was already submitted. Returning cached result.',
+          }));
+          return;
+        }
 
         // Set up SSE response
         res.writeHead(200, {
@@ -596,14 +619,22 @@ async function serve(req, res) {
             citations,
           });
 
-          // Increment questions used
-          await incrementQuestionsUsed(userId);
+          // CAL-1313: Mark question as success and increment counter atomically
+          await markQuestionSuccessAndIncrement(questionId, userId);
 
           // Send completion event
           res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
           res.end();
         } catch (error) {
           console.error('[ai-advisor] Claude streaming error:', error.message);
+
+          // CAL-1313: Mark question as failed (don't count against quota)
+          try {
+            await markQuestionFailed(questionId);
+          } catch (markErr) {
+            console.error('[ai-advisor] Failed to mark question as failed:', markErr.message);
+          }
+
           if (error.status === 529) {
             // Claude API overloaded or timeout
             res.writeHead(504, { 'Content-Type': 'application/json' });
@@ -631,7 +662,34 @@ async function serve(req, res) {
   if (url === '/auth/facebook' || url === '/auth/facebook/') { handleFacebookLogin(req, res); return; }
   if (url === '/auth/apple' || url === '/auth/apple/') { handleAppleLogin(req, res); return; }
   if (url === '/auth/logout' || url === '/auth/logout/') { handleLogout(req, res); return; }
-  if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
+
+  // ── /api/me with tier limit ────────────────────────────────────────────────
+  if (url === '/api/me' && req.method === 'GET') {
+    const user = getCurrentUser(req);
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    if (!user) {
+      res.end(JSON.stringify({ authenticated: false }));
+      return;
+    }
+
+    // Calculate billing cycle (monthly reset on 1st of month Bangkok time)
+    const now = new Date();
+    const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+    const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
+    const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
+
+    res.end(JSON.stringify({
+      authenticated: true,
+      userId: user.userId,
+      email: user.email,
+      tier: user.tier || 'free',
+      questionsUsed: user.questionsUsed || 0,
+      questionLimit: TIER_LIMITS[user.tier || 'free'] || 3,
+      billingCycleStart: billingCycleStart.toISOString(),
+      billingCycleEnd: billingCycleEnd.toISOString(),
+    }));
+    return;
+  }
 
   if (url === '/auth/google/callback') {
     const query = Object.fromEntries(incomingUrl.searchParams);

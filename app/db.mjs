@@ -194,13 +194,17 @@ export async function initAiAdvisorTables() {
   const db = getPool();
   await db.query(`
     CREATE TABLE IF NOT EXISTS questions (
-      id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id       UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      content       TEXT NOT NULL,
-      calculator    TEXT,
-      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id           UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      idempotency_key   TEXT,
+      content           TEXT NOT NULL,
+      calculator        TEXT,
+      status            TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'success', 'failed')),
+      created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE INDEX IF NOT EXISTS questions_user_idx ON questions (user_id, created_at DESC);
+    CREATE UNIQUE INDEX IF NOT EXISTS questions_idempotency_idx ON questions (user_id, idempotency_key) WHERE idempotency_key IS NOT NULL;
   `);
 
   await db.query(`
@@ -224,6 +228,99 @@ export async function createQuestion({ userId, content, calculator }) {
     [userId, content, calculator || null]
   );
   return result.rows[0].id;
+}
+
+/**
+ * Create a question atomically with idempotency support.
+ * CAL-1313: Atomic question counter (no double-counting)
+ *
+ * 1. If idempotencyKey exists for this user, returns cached result
+ * 2. Otherwise, inserts question (status='pending') in transaction
+ * 3. Returns question ID (question is now counted for quota check)
+ *
+ * @param {string} userId - User ID
+ * @param {string} content - Question content
+ * @param {string} idempotencyKey - Client-provided UUID (ensures no double-count on retry)
+ * @param {string} calculator - Optional calculator context
+ * @returns {Promise<{id: string, isNew: boolean}>} Question ID and whether it's new
+ */
+export async function createQuestionAtomic({ userId, content, idempotencyKey, calculator }) {
+  const db = getPool();
+
+  // For idempotency: if this key exists, return the existing question ID
+  // This prevents double-counting if client retries the request
+  if (idempotencyKey) {
+    const existing = await db.query(
+      'SELECT id, status FROM questions WHERE user_id = $1 AND idempotency_key = $2',
+      [userId, idempotencyKey]
+    );
+    if (existing.rows.length > 0) {
+      return { id: existing.rows[0].id, isNew: false, status: existing.rows[0].status };
+    }
+  }
+
+  // Create new question with status='pending'
+  // This counts immediately toward quota, even before Claude responds
+  const result = await db.query(
+    `INSERT INTO questions (user_id, idempotency_key, content, calculator, status)
+     VALUES ($1, $2, $3, $4, 'pending')
+     RETURNING id, status`,
+    [userId, idempotencyKey || null, content, calculator || null]
+  );
+  return { id: result.rows[0].id, isNew: true, status: result.rows[0].status };
+}
+
+/**
+ * Mark a question as success and increment the user's questions_used.
+ * CAL-1313: Only count toward quota if Claude response succeeds.
+ * Uses transaction to ensure atomicity: status update and counter increment are all-or-nothing.
+ *
+ * @param {string} questionId - Question ID to mark as success
+ * @param {string} userId - User ID (for counter increment)
+ * @returns {Promise<{questionsUsed: number}>} New questions_used count
+ */
+export async function markQuestionSuccessAndIncrement(questionId, userId) {
+  const db = getPool();
+  const client = await db.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // Mark question as success
+    await client.query(
+      'UPDATE questions SET status = $1, updated_at = NOW() WHERE id = $2',
+      ['success', questionId]
+    );
+
+    // Atomically increment counter
+    const result = await client.query(
+      'UPDATE users SET questions_used = questions_used + 1, updated_at = NOW() WHERE id = $1 RETURNING questions_used',
+      [userId]
+    );
+
+    await client.query('COMMIT');
+    return { questionsUsed: result.rows[0].questions_used };
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Mark a question as failed (Claude API error, timeout, etc).
+ * CAL-1313: Failed questions do NOT count toward quota.
+ *
+ * @param {string} questionId - Question ID to mark as failed
+ * @returns {Promise<void>}
+ */
+export async function markQuestionFailed(questionId) {
+  const db = getPool();
+  await db.query(
+    'UPDATE questions SET status = $1, updated_at = NOW() WHERE id = $2',
+    ['failed', questionId]
+  );
 }
 
 export async function saveMessage({ questionId, role, content, citations }) {
