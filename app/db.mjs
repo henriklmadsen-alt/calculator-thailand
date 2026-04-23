@@ -275,6 +275,36 @@ export async function setUserStripeCustomerId(userId, stripeCustomerId) {
   );
 }
 
+export async function getUserByStripeCustomerId(stripeCustomerId) {
+  const db = getPool();
+  const result = await db.query(
+    'SELECT id, email, tier, stripe_customer_id FROM users WHERE stripe_customer_id = $1',
+    [stripeCustomerId]
+  );
+  if (!result.rows.length) return null;
+  const u = result.rows[0];
+  return { id: u.id, email: u.email, tier: u.tier, stripeCustomerId: u.stripe_customer_id };
+}
+
+/**
+ * Update a user's tier. Sets billing_started_at on the first upgrade from free.
+ * Idempotent — safe to call multiple times with the same tier.
+ */
+export async function updateUserTier(userId, tier) {
+  const db = getPool();
+  await db.query(
+    `UPDATE users
+     SET tier = $1,
+         billing_started_at = CASE
+           WHEN tier = 'free' AND $1 != 'free' AND billing_started_at IS NULL THEN NOW()
+           ELSE billing_started_at
+         END,
+         updated_at = NOW()
+     WHERE id = $2`,
+    [tier, userId]
+  );
+}
+
 // Tier question limits: free = lifetime, others = per billing month
 export const TIER_LIMITS = {
   free: 3,

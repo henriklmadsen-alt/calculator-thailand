@@ -19,6 +19,7 @@ import {
   handleDeleteConversation,
 } from './app/conversations.mjs';
 import { handleStripeCheckout } from './app/stripe.mjs';
+import { handleStripeWebhook } from './app/stripe-webhook.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -519,6 +520,12 @@ async function serve(req, res) {
   // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
   if (url === '/api/ai-advisor/message' && req.method === 'POST') {
     await handleAiAdvisorMessage(req, res);
+    return;
+  }
+
+  // ── Stripe webhook (CAL-1267) — raw body required for signature verification ─
+  if (url === '/api/stripe/webhook' && req.method === 'POST') {
+    await handleStripeWebhook(req, res);
     return;
   }
 
