@@ -5,6 +5,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+import TooltipIcon from '../../components/TooltipIcon.astro';
+import { getFieldTooltip } from '../../utils/input-field-tooltips';
 
 const pageTitle = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณ APR อัตราดอกเบี้ยที่แท้จริง 2569 ฟรี — รวมค่าธรรมเนียมทุกอย่าง รู้ต้นทุนสินเชื่อที่แท้จริงก่อนเซ็นสัญญา';
@@ -62,6 +64,7 @@ const jsonLdWebApp = {
           <div>
             <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
               เงินกู้ (บาท)
+              <TooltipIcon text={getFieldTooltip('apr', 'principal')} fieldName="principal" />
             </label>
             <input
               type="text"
@@ -74,6 +77,7 @@ const jsonLdWebApp = {
           <div>
             <label for="monthly-payment" class="block text-sm font-medium text-gray-700 mb-1">
               ค่างวดต่อเดือน (บาท)
+              <TooltipIcon text={getFieldTooltip('apr', 'monthly-payment')} fieldName="monthly-payment" />
             </label>
             <input
               type="text"
@@ -88,6 +92,7 @@ const jsonLdWebApp = {
         <div>
           <label for="term-months" class="block text-sm font-medium text-gray-700 mb-1">
             จำนวนงวด (เดือน)
+            <TooltipIcon text={getFieldTooltip('apr', 'term-months')} fieldName="term-months" />
           </label>
           <input
             type="text"
@@ -103,6 +108,7 @@ const jsonLdWebApp = {
             <label for="fees" class="block text-sm font-medium text-gray-700 mb-1">
               ค่าธรรมเนียมทั้งหมด (บาท)
               <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+              <TooltipIcon text={getFieldTooltip('apr', 'other-fees')} fieldName="fees" />
             </label>
             <input
               type="text"

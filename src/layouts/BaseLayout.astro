@@ -17,9 +17,11 @@ interface Props {
   categoryName?: string;
   /** URL slug for the category page — e.g. "สุขภาพ" */
   categorySlug?: string;
+  /** Set true on pages that define their own custom HowTo JSON-LD to suppress the generic BaseLayout HowTo */
+  noGenericHowTo?: boolean;
 }
 
-const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug } = Astro.props;
+const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false } = Astro.props;
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
@@ -119,6 +121,39 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     ])
   ]
 }) : null;
+
+const genericHowToJsonLd = !noGenericHowTo ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  'name': title,
+  'description': description,
+  'author': {
+    '@type': 'Organization',
+    'name': 'Kamnuanlek.com',
+    'url': siteUrl,
+  },
+  'totalTime': 'PT2M',
+  'step': [
+    {
+      '@type': 'HowToStep',
+      'position': 1,
+      'name': 'กรอกข้อมูล',
+      'text': 'กรอกตัวเลขหรือข้อมูลที่ต้องการลงในช่องรับข้อมูลบนหน้าเครื่องคำนวณ',
+    },
+    {
+      '@type': 'HowToStep',
+      'position': 2,
+      'name': 'กดคำนวณ',
+      'text': 'กดปุ่มคำนวณ เครื่องคำนวณจะประมวลผลทันทีและแสดงผลลัพธ์',
+    },
+    {
+      '@type': 'HowToStep',
+      'position': 3,
+      'name': 'อ่านผลลัพธ์',
+      'text': 'ดูผลลัพธ์ที่แสดงในการ์ดผลลัพธ์ พร้อมคำอธิบายและคำแนะนำที่เกี่ยวข้อง',
+    },
+  ],
+}) : null;
 ---
 
 <!doctype html>
@@ -173,6 +208,7 @@ const breadcrumbJsonLd = pageName ? JSON.stringify({
     <script type="application/ld+json" set:html={jsonLdOrganization} />
     <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
+    {genericHowToJsonLd && <script type="application/ld+json" set:html={genericHowToJsonLd} />}
 
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
