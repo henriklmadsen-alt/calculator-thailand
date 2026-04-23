@@ -760,6 +760,97 @@ const genericHowToJsonLd = !noGenericHowTo ? JSON.stringify({
     })();
     </script>
 
+    <!-- PWA: Add to Home Screen install prompt (shows after 3rd calculator use) -->
+    <script is:inline>
+    (function initA2HS() {
+      var INSTALL_PROMPTED_KEY = 'ct.a2hs-prompted.v1';
+      var CALC_USE_COUNT_KEY = 'ct.calc-use-count.v1';
+      var INSTALL_THRESHOLD = 3;
+
+      // Only on calculator pages
+      var path = decodeURIComponent(window.location.pathname);
+      var isCalcPage = path.startsWith('/คำนวณ') || path.startsWith('/calc');
+      if (!isCalcPage) return;
+
+      // Don't show if already prompted
+      try {
+        if (localStorage.getItem(INSTALL_PROMPTED_KEY) === '1') return;
+      } catch { return; }
+
+      // Increment calculator use counter
+      var count = 0;
+      try {
+        count = parseInt(localStorage.getItem(CALC_USE_COUNT_KEY) || '0', 10) + 1;
+        localStorage.setItem(CALC_USE_COUNT_KEY, String(count));
+      } catch {}
+
+      // Capture install prompt event
+      var deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (count >= INSTALL_THRESHOLD) showInstallBanner();
+      });
+
+      // iOS doesn't fire beforeinstallprompt — use Safari-specific check
+      function isIOS() {
+        return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+      }
+      function isInStandaloneMode() {
+        return ('standalone' in window.navigator) && window.navigator.standalone;
+      }
+
+      function showInstallBanner() {
+        try { localStorage.setItem(INSTALL_PROMPTED_KEY, '1'); } catch {}
+
+        var banner = document.createElement('div');
+        banner.id = 'a2hs-banner';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-label', 'ติดตั้งแอปพลิเคชัน');
+        banner.style.cssText = 'position:fixed;bottom:70px;left:16px;right:16px;background:#1e40af;color:#fff;border-radius:12px;padding:16px;z-index:9998;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;';
+
+        var iosText = isIOS()
+          ? 'แตะ <strong>⎙</strong> แล้วเลือก <strong>"เพิ่มไปที่หน้าจอหลัก"</strong>'
+          : 'ติดตั้งเครื่องคำนวณเลขลงมือถือ ใช้ได้ออฟไลน์';
+
+        banner.innerHTML =
+          '<div style="font-size:28px;flex-shrink:0">📲</div>' +
+          '<div style="flex:1;font-size:14px;line-height:1.4">' +
+            '<strong style="display:block;margin-bottom:2px">เพิ่มไปที่หน้าจอหลัก</strong>' +
+            '<span>' + iosText + '</span>' +
+          '</div>' +
+          (!isIOS() ? '<button id="a2hs-install" style="background:#fff;color:#1e40af;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:13px">ติดตั้ง</button>' : '') +
+          '<button id="a2hs-close" style="background:transparent;border:none;color:#93c5fd;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0" aria-label="ปิด">✕</button>';
+
+        document.body.appendChild(banner);
+
+        var closeBtn = document.getElementById('a2hs-close');
+        if (closeBtn) closeBtn.addEventListener('click', function() { banner.remove(); });
+
+        var installBtn = document.getElementById('a2hs-install');
+        if (installBtn && deferredPrompt) {
+          installBtn.addEventListener('click', function() {
+            banner.remove();
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choice) {
+              if (typeof window.gtag === 'function') {
+                window.gtag('event', 'pwa_install_prompt', { outcome: choice.outcome });
+              }
+            });
+          });
+        }
+      }
+
+      // Check on load: if threshold already met and prompt available
+      if (count >= INSTALL_THRESHOLD && deferredPrompt) showInstallBanner();
+
+      // iOS: show informational banner (no prompt event)
+      if (count >= INSTALL_THRESHOLD && isIOS() && !isInStandaloneMode()) {
+        try { if (localStorage.getItem(INSTALL_PROMPTED_KEY) !== '1') showInstallBanner(); } catch {}
+      }
+    })();
+    </script>
+
     <script is:inline>
       (function trackRecentCalc() {
         var RECENT_KEY = 'ct.recent-calcs.v1';
