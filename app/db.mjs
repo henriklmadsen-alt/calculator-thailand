@@ -331,3 +331,103 @@ export async function saveMessage({ questionId, role, content, citations }) {
   );
   return result.rows[0].id;
 }
+
+// ── Admin stats (CAL-1318) ────────────────────────────────────────────────────
+
+/**
+ * Get usage statistics for admin dashboard.
+ * Returns: user counts by tier, questions time-series, most used categories, revenue estimate.
+ */
+export async function getAdminUsageStats() {
+  const db = getPool();
+
+  // 1. Total users by tier
+  const tierStats = await db.query(`
+    SELECT tier, COUNT(*) as count
+    FROM users
+    GROUP BY tier
+    ORDER BY CASE tier WHEN 'free' THEN 0 WHEN 'basic' THEN 1 WHEN 'premium' THEN 2 WHEN 'master' THEN 3 ELSE 4 END
+  `);
+
+  const totalUsersByTier = {};
+  for (const row of tierStats.rows) {
+    totalUsersByTier[row.tier] = parseInt(row.count, 10);
+  }
+
+  // 2. Questions today/week/month
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const monthAgo = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const questionsStats = await db.query(`
+    SELECT
+      (SELECT COUNT(*) FROM questions WHERE created_at >= $1 AND status = 'success') as today,
+      (SELECT COUNT(*) FROM questions WHERE created_at >= $2 AND status = 'success') as week,
+      (SELECT COUNT(*) FROM questions WHERE created_at >= $3 AND status = 'success') as month
+  `, [today, weekAgo, monthAgo]);
+
+  const questions = {
+    today: parseInt(questionsStats.rows[0].today, 10),
+    week: parseInt(questionsStats.rows[0].week, 10),
+    month: parseInt(questionsStats.rows[0].month, 10),
+  };
+
+  // 3. Average questions per user
+  const avgStats = await db.query(`
+    SELECT
+      AVG(questions_used) as avg_questions,
+      MAX(questions_used) as max_questions,
+      MIN(questions_used) as min_questions
+    FROM users
+    WHERE questions_used > 0
+  `);
+
+  const avgQuestions = {
+    avg: Math.round(avgStats.rows[0].avg_questions * 100) / 100,
+    max: parseInt(avgStats.rows[0].max_questions, 10),
+    min: parseInt(avgStats.rows[0].min_questions, 10),
+  };
+
+  // 4. Most used calculator categories (from questions)
+  const categoryStats = await db.query(`
+    SELECT calculator, COUNT(*) as count
+    FROM questions
+    WHERE calculator IS NOT NULL AND calculator != ''
+    GROUP BY calculator
+    ORDER BY count DESC
+    LIMIT 10
+  `);
+
+  const topCalculators = categoryStats.rows.map(row => ({
+    calculator: row.calculator,
+    count: parseInt(row.count, 10),
+  }));
+
+  // 5. Revenue estimate (based on tier subscriptions)
+  // Assumes: Basic = 99 THB/month, Premium = 199 THB/month, Master = 599 THB/month
+  // Assumes free users generate 0 revenue (but AdSense revenue would go here)
+  const monthlyMRR = (
+    (totalUsersByTier.basic || 0) * 99 +
+    (totalUsersByTier.premium || 0) * 199 +
+    (totalUsersByTier.master || 0) * 599
+  );
+
+  return {
+    timestamp: new Date().toISOString(),
+    totalUsers: Object.values(totalUsersByTier).reduce((a, b) => a + b, 0),
+    usersByTier: totalUsersByTier,
+    questions,
+    averageQuestionsPerUser: avgQuestions,
+    topCalculators,
+    estimatedMonthlyRevenue: {
+      amount: monthlyMRR,
+      currency: 'THB',
+      breakdown: {
+        basic: (totalUsersByTier.basic || 0) * 99,
+        premium: (totalUsersByTier.premium || 0) * 199,
+        master: (totalUsersByTier.master || 0) * 599,
+      },
+    },
+  };
+}

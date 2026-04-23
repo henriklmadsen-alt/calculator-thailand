@@ -371,6 +371,27 @@ export function handleApiMe(req, res) {
   }));
 }
 
+// ── Admin authentication ─────────────────────────────────────────────────────
+
+/**
+ * Check if request has valid admin credentials.
+ * Admin access via Bearer token in Authorization header.
+ * Token is verified as a valid JWT with admin=true payload.
+ */
+export function verifyAdminRequest(req) {
+  if (!JWT_SECRET) return false;
+
+  const authHeader = req.headers.authorization || '';
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  if (!match) return false;
+
+  const token = match[1];
+  const payload = verifyJwt(token);
+
+  // Token must be valid JWT and have admin=true flag
+  return payload && payload.admin === true;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function redirectWithError(res, code) {

@@ -10,11 +10,11 @@ import {
   handleFacebookLogin, handleFacebookCallback,
   handleAppleLogin, handleAppleCallback,
   handleLogout, handleApiMe,
-  getCurrentUser,
+  getCurrentUser, verifyAdminRequest,
 } from './app/auth.mjs';
 import {
   initDb, getUserById, createQuestion, saveMessage, TIER_LIMITS, incrementQuestionsUsed,
-  createQuestionAtomic, markQuestionSuccessAndIncrement, markQuestionFailed,
+  createQuestionAtomic, markQuestionSuccessAndIncrement, markQuestionFailed, getAdminUsageStats,
 } from './app/db.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -703,6 +703,26 @@ async function serve(req, res) {
       billingCycleStart: billingCycleStart.toISOString(),
       billingCycleEnd: billingCycleEnd.toISOString(),
     }));
+    return;
+  }
+
+  // ── /api/admin/usage-stats (admin only) ────────────────────────────────────
+  if (url === '/api/admin/usage-stats' && req.method === 'GET') {
+    if (!verifyAdminRequest(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Unauthorized: admin access required' }));
+      return;
+    }
+
+    try {
+      const stats = await getAdminUsageStats();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate' });
+      res.end(JSON.stringify(stats));
+    } catch (err) {
+      console.error('[api/admin/usage-stats] error:', err.message);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+    }
     return;
   }
 
