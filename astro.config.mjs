@@ -5,6 +5,11 @@ import sitemap from '@astrojs/sitemap';
 function classifySitemapUrl(url) {
   const decoded = decodeURIComponent(url);
 
+  // AI Advisor → priority 0.9 (strategic feature, Fortune 500 launch)
+  if (decoded.includes('ai-advisor')) {
+    return { priority: 0.9, changefreq: 'weekly' };
+  }
+
   // Car loan / installment calculators → priority 1.0
   if (decoded.includes('ผ่อนรถ') || decoded.includes('สินเชื่อรถ') || decoded.includes('เปรียบเทียบซื้อรถ')) {
     return { priority: 1.0, changefreq: 'monthly' };
