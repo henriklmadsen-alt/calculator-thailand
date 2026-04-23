@@ -4,6 +4,13 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import webpush from 'web-push';
+import {
+  handleGoogleLogin, handleGoogleCallback,
+  handleFacebookLogin, handleFacebookCallback,
+  handleAppleLogin, handleAppleCallback,
+  handleLogout, handleApiMe,
+} from './app/auth.mjs';
+import { initDb } from './app/db.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -469,6 +476,31 @@ async function serve(req, res) {
     return;
   }
 
+  // ── Auth routes (CAL-1205) ─────────────────────────────────────────────────
+  if (url === '/auth/google' || url === '/auth/google/') { handleGoogleLogin(req, res); return; }
+  if (url === '/auth/facebook' || url === '/auth/facebook/') { handleFacebookLogin(req, res); return; }
+  if (url === '/auth/apple' || url === '/auth/apple/') { handleAppleLogin(req, res); return; }
+  if (url === '/auth/logout' || url === '/auth/logout/') { handleLogout(req, res); return; }
+  if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
+
+  if (url === '/auth/google/callback') {
+    const query = Object.fromEntries(incomingUrl.searchParams);
+    await handleGoogleCallback(req, res, query);
+    return;
+  }
+  if (url === '/auth/facebook/callback') {
+    const query = Object.fromEntries(incomingUrl.searchParams);
+    await handleFacebookCallback(req, res, query);
+    return;
+  }
+  if (url === '/auth/apple/callback' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    await new Promise((resolve) => req.on('end', resolve));
+    await handleAppleCallback(req, res, body);
+    return;
+  }
+
   if (url.endsWith('/')) url += 'index.html';
   if (!extname(url)) url += '/index.html';
 
@@ -525,6 +557,16 @@ async function serve(req, res) {
 async function start() {
   releaseMetadata = await loadReleaseMetadata();
   console.log(`[release-metadata] Loaded commit: ${releaseMetadata.gitCommit}`);
+
+  if (process.env.DATABASE_URL) {
+    try {
+      await initDb();
+    } catch (err) {
+      console.error('[db] init failed (auth features disabled):', err.message);
+    }
+  } else {
+    console.warn('[db] DATABASE_URL not set — auth features disabled');
+  }
 
   createServer(serve).listen(port, () => {
     console.log(`[server] listening on port ${port}`);

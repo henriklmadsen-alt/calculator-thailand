@@ -1,0 +1,344 @@
+---
+// AI Advisor — kamnuanlek.com/ai-advisor
+// Auth gate: requires Google / Facebook / Apple login.
+// Unauthenticated users see the login panel.
+// Authenticated users (checked client-side via /api/me) see the chat interface.
+---
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Advisor — ที่ปรึกษาการเงิน AI | Kamnuanlek.com</title>
+  <meta name="description" content="ถามคำถามด้านการเงิน ภาษี และการลงทุนกับ AI ที่เข้าใจบริบทไทย — ฟรี 3 คำถามแรก" />
+  <link rel="canonical" href="https://www.kamnuanlek.com/ai-advisor/" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+
+    /* ── Login panel ── */
+    #login-panel {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 2rem;
+    }
+    .login-card {
+      background: #fff; border-radius: 1.5rem; padding: 2.5rem 2rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center;
+    }
+    .login-logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .login-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; color: #0f172a; }
+    .login-sub { font-size: 0.95rem; color: #64748b; margin-bottom: 2rem; line-height: 1.5; }
+    .login-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+      width: 100%; padding: 0.875rem 1.25rem; border-radius: 0.75rem; font-size: 1rem;
+      font-weight: 600; cursor: pointer; border: none; text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s; margin-bottom: 0.75rem;
+    }
+    .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .login-btn:active { transform: translateY(0); }
+    .btn-google { background: #fff; color: #374151; border: 2px solid #e5e7eb; }
+    .btn-facebook { background: #1877f2; color: #fff; }
+    .btn-apple { background: #000; color: #fff; }
+    .login-divider { font-size: 0.8rem; color: #94a3b8; margin: 0.5rem 0 1rem; }
+    .login-free-badge {
+      display: inline-block; background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
+      border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .error-msg { color: #dc2626; font-size: 0.875rem; margin-bottom: 1rem; }
+
+    /* ── Chat interface ── */
+    #chat-panel {
+      display: none; flex-direction: column; height: 100vh;
+    }
+    .chat-header {
+      background: #fff; border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .chat-header-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; }
+    .chat-header-meta { font-size: 0.8rem; color: #64748b; }
+    .tier-badge {
+      background: #eff6ff; color: #2563eb; border-radius: 9999px;
+      padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;
+    }
+    .logout-btn {
+      background: none; border: none; color: #94a3b8; font-size: 0.875rem;
+      cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 0.375rem;
+    }
+    .logout-btn:hover { color: #ef4444; background: #fef2f2; }
+    .messages-area {
+      flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+    }
+    .message { max-width: 80%; border-radius: 1rem; padding: 0.875rem 1rem; line-height: 1.6; font-size: 0.95rem; }
+    .message.user { background: #2563eb; color: #fff; align-self: flex-end; border-bottom-right-radius: 0.25rem; }
+    .message.ai { background: #fff; color: #1e293b; align-self: flex-start; border: 1px solid #e2e8f0; border-bottom-left-radius: 0.25rem; }
+    .message.ai .typing { display: flex; gap: 4px; padding: 0.25rem 0; }
+    .message.ai .typing span { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; animation: bounce 1.2s infinite; }
+    .message.ai .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .message.ai .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100% { transform: scale(0.7); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+
+    .suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .suggestion-chip {
+      background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 9999px;
+      padding: 0.375rem 0.875rem; font-size: 0.8rem; color: #475569; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .suggestion-chip:hover { background: #e2e8f0; }
+
+    .input-area { background: #fff; border-top: 1px solid #e2e8f0; padding: 1rem 1.5rem; }
+    .quota-bar { font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem; }
+    .quota-bar span { color: #2563eb; font-weight: 600; }
+    .input-row { display: flex; gap: 0.75rem; }
+    #message-input {
+      flex: 1; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 0.75rem 1rem;
+      font-size: 0.95rem; font-family: inherit; resize: none; outline: none;
+      transition: border-color 0.15s;
+    }
+    #message-input:focus { border-color: #2563eb; }
+    #send-btn {
+      background: #2563eb; color: #fff; border: none; border-radius: 0.75rem;
+      padding: 0.75rem 1.25rem; font-size: 1rem; cursor: pointer; transition: background 0.15s;
+    }
+    #send-btn:hover { background: #1d4ed8; }
+    #send-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .paywall-banner {
+      background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+      border: 1px solid #bfdbfe; border-radius: 0.75rem;
+      padding: 1rem; text-align: center; margin: 1rem;
+    }
+    .paywall-banner h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .paywall-banner p { font-size: 0.875rem; color: #64748b; margin-bottom: 0.75rem; }
+    .upgrade-btn {
+      display: inline-block; background: #2563eb; color: #fff; border-radius: 0.5rem;
+      padding: 0.5rem 1.25rem; font-size: 0.9rem; font-weight: 600; text-decoration: none;
+      cursor: pointer; border: none; transition: background 0.15s;
+    }
+    .upgrade-btn:hover { background: #1d4ed8; }
+
+    @media (max-width: 640px) {
+      .message { max-width: 92%; }
+      .chat-header { padding: 0.875rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login panel (shown when not authenticated) ── -->
+<div id="login-panel">
+  <div class="login-card">
+    <div class="login-logo">🤖</div>
+    <h1 class="login-title">AI Advisor</h1>
+    <p class="login-sub">ที่ปรึกษาการเงิน ภาษี และการลงทุน<br>สำหรับคนไทย — powered by AI</p>
+    <div class="login-free-badge">✨ ฟรี 3 คำถามแรก</div>
+
+    <div id="error-area"></div>
+
+    <a href="/auth/google" class="login-btn btn-google">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      เข้าสู่ระบบด้วย Google
+    </a>
+
+    <a href="/auth/facebook" class="login-btn btn-facebook">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.027 4.388 11.024 10.125 11.927v-8.437H7.078v-3.49h3.047V9.41c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796v8.437C19.612 23.097 24 18.1 24 12.073z"/></svg>
+      เข้าสู่ระบบด้วย Facebook
+    </a>
+
+    <div class="login-divider">หรือ</div>
+
+    <a href="/auth/apple" class="login-btn btn-apple">
+      <svg width="20" height="20" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.9 0 665.8 0 541.2c0-189.3 123.5-289.5 245-289.5 65.1 0 119.2 43.2 161 43.2 40.4 0 103.4-45.5 173.2-45.5 26.2 0 108.2 2.6 162.5 95.3zm-155.9-210.2c28.1-33.4 48.2-79.7 48.2-126 0-6.5-.6-13-.6-19.1-45.5 1.9-99 30.4-131.2 64.1-26.2 28.1-50.5 74.4-50.5 121.3 0 6.5 1.3 13 1.9 14.9 3.2.6 8.4 1.3 13.6 1.3 41 0 92.9-27.5 118.6-56.5z"/></svg>
+      เข้าสู่ระบบด้วย Apple
+    </a>
+
+    <p style="margin-top:1.5rem; font-size:0.78rem; color:#94a3b8; line-height:1.5;">
+      การเข้าสู่ระบบถือว่าคุณยอมรับ<br>
+      <a href="/ข้อกำหนดการใช้งาน/" style="color:#2563eb;">ข้อกำหนดการใช้งาน</a> ของเรา
+    </p>
+  </div>
+</div>
+
+<!-- ── Chat panel (shown when authenticated) ── -->
+<div id="chat-panel">
+  <div class="chat-header">
+    <div>
+      <span class="chat-header-title">🤖 AI Advisor</span>
+      <span id="tier-badge" class="tier-badge">Free</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <span id="user-email" class="chat-header-meta"></span>
+      <button class="logout-btn" onclick="window.location='/auth/logout'">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <div class="messages-area" id="messages">
+    <div class="message ai">
+      สวัสดีครับ! ผม AI Advisor ของ Kamnuanlek.com 👋<br><br>
+      ถามผมได้เลยเรื่อง <strong>การเงินส่วนตัว, ภาษี, การลงทุน, สินเชื่อ</strong> หรืออะไรก็ตามที่ต้องการคำแนะนำด้านตัวเลขไทย
+      <div class="suggestions">
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">คำนวณภาษีเงินได้ 2567</button>
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">ดอกเบี้ยบ้านดีไหมถ้าผ่อน 30 ปี?</button>
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">ประกันสังคมคำนวณยังไง?</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="paywall-area"></div>
+
+  <div class="input-area" id="input-area">
+    <div class="quota-bar">
+      คำถามที่ใช้ไป: <span id="questions-used">0</span> / <span id="questions-limit">3</span>
+    </div>
+    <div class="input-row">
+      <textarea id="message-input" rows="1" placeholder="พิมพ์คำถามด้านการเงิน ภาษี หรือการลงทุน..." maxlength="2000"></textarea>
+      <button id="send-btn" onclick="sendMessage()">ส่ง ➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TIER_LIMITS = { free: 3, basic: 200, premium: 500, master: 1000 };
+let currentUser = null;
+
+// Parse URL error param
+const urlParams = new URLSearchParams(location.search);
+const errorCode = urlParams.get('error');
+if (errorCode) {
+  const errorMessages = {
+    google_not_configured: 'ยังไม่ได้ตั้งค่า Google OAuth กรุณาติดต่อผู้ดูแลระบบ',
+    facebook_not_configured: 'ยังไม่ได้ตั้งค่า Facebook OAuth กรุณาติดต่อผู้ดูแลระบบ',
+    apple_not_configured: 'ยังไม่ได้ตั้งค่า Apple Sign In กรุณาติดต่อผู้ดูแลระบบ',
+    google_state_mismatch: 'เซสชันหมดอายุ กรุณาลองใหม่อีกครั้ง',
+    facebook_state_mismatch: 'เซสชันหมดอายุ กรุณาลองใหม่อีกครั้ง',
+    apple_state_mismatch: 'เซสชันหมดอายุ กรุณาลองใหม่อีกครั้ง',
+  };
+  const msg = errorMessages[errorCode] || 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  document.getElementById('error-area').innerHTML = `<p class="error-msg">⚠️ ${msg}</p>`;
+}
+
+async function init() {
+  try {
+    const res = await fetch('/api/me');
+    const data = await res.json();
+    if (data.authenticated) {
+      currentUser = data;
+      showChat(data);
+    }
+    // else: stay on login panel
+  } catch {
+    // stay on login panel
+  }
+}
+
+function showChat(user) {
+  document.getElementById('login-panel').style.display = 'none';
+  document.getElementById('chat-panel').style.display = 'flex';
+  document.getElementById('user-email').textContent = user.email;
+  document.getElementById('tier-badge').textContent = user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
+  updateQuota(user.questionsUsed, user.tier);
+}
+
+function updateQuota(used, tier) {
+  const limit = TIER_LIMITS[tier] || 3;
+  document.getElementById('questions-used').textContent = used;
+  document.getElementById('questions-limit').textContent = limit;
+
+  if (used >= limit) {
+    document.getElementById('input-area').style.display = 'none';
+    document.getElementById('paywall-area').innerHTML = `
+      <div class="paywall-banner">
+        <h3>คุณใช้ครบ ${limit} คำถามแล้ว 🎯</h3>
+        <p>อัปเกรดเพื่อถามได้อีก ${tier === 'free' ? '200' : '500'} คำถาม/เดือน</p>
+        <button class="upgrade-btn" onclick="alert('Stripe integration coming soon')">อัปเกรด Basic — 99 THB/เดือน</button>
+      </div>`;
+  }
+}
+
+function appendMessage(role, text) {
+  const area = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.textContent = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+function appendTyping() {
+  const area = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ai';
+  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('message-input');
+  const text = input.value.trim();
+  if (!text || !currentUser) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  input.value = '';
+
+  appendMessage('user', text);
+  const typingDiv = appendTyping();
+
+  try {
+    const res = await fetch('/api/ai-advisor/message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text }),
+    });
+    const data = await res.json();
+    typingDiv.remove();
+
+    if (res.status === 402) {
+      // Quota exceeded
+      updateQuota(currentUser.questionsUsed, currentUser.tier);
+      return;
+    }
+
+    if (data.error) {
+      appendMessage('ai', `ขออภัย เกิดข้อผิดพลาด: ${data.error}`);
+      return;
+    }
+
+    appendMessage('ai', data.reply);
+    currentUser.questionsUsed = data.questionsUsed;
+    updateQuota(data.questionsUsed, currentUser.tier);
+  } catch {
+    typingDiv.remove();
+    appendMessage('ai', 'ขออภัย ไม่สามารถเชื่อมต่อได้ในขณะนี้ กรุณาลองใหม่');
+  } finally {
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('message-input').value = btn.textContent;
+  btn.closest('.suggestions')?.remove();
+  sendMessage();
+}
+
+document.getElementById('message-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Auto-resize textarea
+document.getElementById('message-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+init();
+</script>
+</body>
+</html>
