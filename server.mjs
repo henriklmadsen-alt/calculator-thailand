@@ -1,7 +1,8 @@
 import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import webpush from 'web-push';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -170,6 +171,12 @@ const mimeTypes = {
   '.webmanifest': 'application/manifest+json',
 };
 
+// Generate ETag from file content (simple hash)
+function generateETag(data) {
+  const hash = createHash('md5').update(data).digest('hex');
+  return `"${hash}"`;
+}
+
 // Permanent 301 redirects served at the HTTP layer (before file serving).
 // Covers English calculator routes migrated to Thai-slug URLs and sitemap alias.
 const permanentRedirects = new Map([
@@ -326,11 +333,31 @@ async function serve(req, res) {
     const filePath = join(distDir, url);
     const data = await readFile(filePath);
     const ext = extname(filePath);
-    res.writeHead(200, {
+
+    // Get file stats for Last-Modified and ETag
+    const fileStats = await stat(filePath);
+    const lastModified = fileStats.mtime.toUTCString();
+    const etag = generateETag(data);
+
+    // CAL-1048: Cache header configuration
+    // HTML pages: shorter browser cache, longer CDN cache
+    // Static assets: 1-week max-age, immutable
+    let cacheControl;
+    if (ext === '.html') {
+      cacheControl = 'public, max-age=3600, s-maxage=86400';
+    } else {
+      cacheControl = 'public, max-age=604800, immutable';
+    }
+
+    const headers = {
       'Content-Type': mimeTypes[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'public, max-age=3600, must-revalidate' : 'public, max-age=31536000, immutable',
+      'Cache-Control': cacheControl,
+      'ETag': etag,
+      'Last-Modified': lastModified,
       'X-Served-File': Buffer.from(url).toString('base64'),
-    });
+    };
+
+    res.writeHead(200, headers);
     res.end(data);
   } catch {
     try {
