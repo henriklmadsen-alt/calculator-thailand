@@ -12,6 +12,12 @@ import {
 } from './app/auth.mjs';
 import { initDb } from './app/db.mjs';
 import { handleAiAdvisorMessage } from './app/ai-advisor.mjs';
+import {
+  handleListConversations,
+  handleCreateConversation,
+  handleGetConversation,
+  handleDeleteConversation,
+} from './app/conversations.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -513,6 +519,18 @@ async function serve(req, res) {
   if (url === '/api/ai-advisor/message' && req.method === 'POST') {
     await handleAiAdvisorMessage(req, res);
     return;
+  }
+
+  // ── Conversation history API (CAL-1265) ───────────────────────────────────
+  if (url === '/api/conversations' || url === '/api/conversations/') {
+    if (req.method === 'GET') { await handleListConversations(req, res, incomingUrl); return; }
+    if (req.method === 'POST') { await handleCreateConversation(req, res); return; }
+  }
+  const conversationMatch = url.match(/^\/api\/conversations\/([^/]+)\/?$/);
+  if (conversationMatch) {
+    const conversationId = conversationMatch[1];
+    if (req.method === 'GET') { await handleGetConversation(req, res, conversationId); return; }
+    if (req.method === 'DELETE') { await handleDeleteConversation(req, res, conversationId); return; }
   }
 
   if (url === '/auth/google/callback') {

@@ -81,7 +81,125 @@ export async function initDb() {
     CREATE INDEX IF NOT EXISTS questions_user_id_created_at_idx ON questions (user_id, created_at);
   `);
 
-  console.log('[db] users + questions tables ready');
+  // Conversation history (CAL-1265)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS conversations (
+      id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id    UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      title      TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS conversations_user_id_updated_at_idx ON conversations (user_id, updated_at DESC);
+  `);
+
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+      role            TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+      content         TEXT NOT NULL,
+      created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS messages_conversation_id_idx ON messages (conversation_id, created_at ASC);
+  `);
+
+  console.log('[db] users + questions + conversations + messages tables ready');
+}
+
+/** Create a new conversation for a user with an auto-generated title. */
+export async function createConversation(userId, title) {
+  const db = getPool();
+  const result = await db.query(
+    `INSERT INTO conversations (user_id, title) VALUES ($1, $2)
+     RETURNING id, title, created_at, updated_at`,
+    [userId, title]
+  );
+  return result.rows[0];
+}
+
+/** List conversations for a user, newest-updated first, 20 per page. */
+export async function listConversations(userId, page = 1) {
+  const db = getPool();
+  const limit = 20;
+  const offset = (page - 1) * limit;
+  const [rows, countRow] = await Promise.all([
+    db.query(
+      `SELECT id, title, created_at, updated_at
+       FROM conversations WHERE user_id = $1
+       ORDER BY updated_at DESC LIMIT $2 OFFSET $3`,
+      [userId, limit, offset]
+    ),
+    db.query('SELECT COUNT(*) FROM conversations WHERE user_id = $1', [userId]),
+  ]);
+  const total = parseInt(countRow.rows[0].count, 10);
+  return {
+    conversations: rows.rows,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit) || 1,
+    hasMore: offset + rows.rows.length < total,
+  };
+}
+
+/**
+ * Fetch a conversation with all its messages.
+ * Returns null if not found, 'forbidden' if user_id mismatch.
+ */
+export async function getConversationWithMessages(conversationId, userId) {
+  const db = getPool();
+  const convResult = await db.query(
+    'SELECT id, title, user_id, created_at, updated_at FROM conversations WHERE id = $1',
+    [conversationId]
+  );
+  if (!convResult.rows.length) return null;
+  const conv = convResult.rows[0];
+  if (conv.user_id !== userId) return 'forbidden';
+
+  const msgResult = await db.query(
+    `SELECT id, role, content, created_at FROM messages
+     WHERE conversation_id = $1 ORDER BY created_at ASC`,
+    [conversationId]
+  );
+  return {
+    id: conv.id,
+    title: conv.title,
+    createdAt: conv.created_at,
+    updatedAt: conv.updated_at,
+    messages: msgResult.rows.map(m => ({
+      id: m.id, role: m.role, content: m.content, createdAt: m.created_at,
+    })),
+  };
+}
+
+/**
+ * Delete a conversation by ID.
+ * Returns 'not_found', 'forbidden', or 'deleted'.
+ */
+export async function deleteConversation(conversationId, userId) {
+  const db = getPool();
+  const check = await db.query(
+    'SELECT user_id FROM conversations WHERE id = $1',
+    [conversationId]
+  );
+  if (!check.rows.length) return 'not_found';
+  if (check.rows[0].user_id !== userId) return 'forbidden';
+  await db.query('DELETE FROM conversations WHERE id = $1', [conversationId]);
+  return 'deleted';
+}
+
+/** Append a message to a conversation and bump updated_at. */
+export async function addMessage(conversationId, role, content) {
+  const db = getPool();
+  const [msgResult] = await Promise.all([
+    db.query(
+      `INSERT INTO messages (conversation_id, role, content) VALUES ($1, $2, $3)
+       RETURNING id, role, content, created_at`,
+      [conversationId, role, content]
+    ),
+    db.query('UPDATE conversations SET updated_at = NOW() WHERE id = $1', [conversationId]),
+  ]);
+  return msgResult.rows[0];
 }
 
 export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }) {
