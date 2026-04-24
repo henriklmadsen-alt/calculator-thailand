@@ -190,7 +190,11 @@ async function _handleAiAdvisorMessageInner(req, res, handlerStart) {
   const ragContext = buildRagContext(userMessage);
   const fullSystem = SYSTEM_PROMPT + ragContext;
 
-  // Stream from Claude, collect full reply — wrapped in Sentry span for p95 tracking
+  // Stream from Claude, collect full reply — wrapped in Sentry span for p95 tracking.
+  // 30s idle timeout: if no token arrives for 30s the AbortController fires.
+  const IDLE_TIMEOUT_MS = 30_000;
+  const abortController = new AbortController();
+  let idleTimer = setTimeout(() => abortController.abort(), IDLE_TIMEOUT_MS);
   let fullReply = '';
   try {
     const claudeStart = Date.now();
@@ -201,12 +205,15 @@ async function _handleAiAdvisorMessageInner(req, res, handlerStart) {
         attributes: { 'ai.model': 'claude-sonnet-4-6', 'user.tier': tier },
       },
       async (span) => {
-        const stream = client.messages.stream({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1024,
-          system: [{ type: 'text', text: fullSystem, cache_control: { type: 'ephemeral' } }],
-          messages: [{ role: 'user', content: userMessage }],
-        });
+        const stream = client.messages.stream(
+          {
+            model: 'claude-sonnet-4-6',
+            max_tokens: 1024,
+            system: [{ type: 'text', text: fullSystem, cache_control: { type: 'ephemeral' } }],
+            messages: [{ role: 'user', content: userMessage }],
+          },
+          { signal: abortController.signal }
+        );
 
         for await (const event of stream) {
           if (
@@ -214,6 +221,9 @@ async function _handleAiAdvisorMessageInner(req, res, handlerStart) {
             event.delta?.type === 'text_delta'
           ) {
             fullReply += event.delta.text;
+            // Reset idle timer on each received token
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => abortController.abort(), IDLE_TIMEOUT_MS);
           }
         }
 
@@ -223,11 +233,26 @@ async function _handleAiAdvisorMessageInner(req, res, handlerStart) {
       }
     );
   } catch (err) {
+    clearTimeout(idleTimer);
+    if (abortController.signal.aborted) {
+      console.warn('[ai-advisor] Idle timeout: no token received for 30s');
+      if (isSentryEnabled()) {
+        Sentry.captureMessage('ai-advisor idle timeout (30s without token)', {
+          level: 'warning',
+          tags: { endpoint: '/api/ai-advisor/message', type: 'idle_timeout' },
+        });
+      }
+      res.writeHead(504, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+      res.end(JSON.stringify({ error: 'timeout' }));
+      return;
+    }
     console.error('[ai-advisor] Claude API error:', err.message);
     if (isSentryEnabled()) Sentry.captureException(err, { tags: { endpoint: '/api/ai-advisor/message', phase: 'claude_stream' } });
     res.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify({ error: 'ai_error' }));
     return;
+  } finally {
+    clearTimeout(idleTimer);
   }
 
   // Record question in the per-question log (source of truth for tier enforcement)

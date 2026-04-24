@@ -49,7 +49,7 @@ const activeRequests = new Map(); // id → { startTime, endpoint, userId }
 let _idCounter = 0;
 
 const CONCURRENT_REQUEST_THRESHOLD = 50;  // alert above this many parallel requests
-const LEAK_AGE_MS = 60_000;               // 60s without completion = likely leaked
+const LEAK_AGE_MS = 30_000;               // 30s without completion = likely leaked (aligned with ai-advisor idle timeout)
 
 export function trackActiveRequest(endpoint, { userId } = {}) {
   const id = ++_idCounter;
