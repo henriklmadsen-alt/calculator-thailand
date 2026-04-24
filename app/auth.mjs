@@ -352,13 +352,44 @@ export function handleApiMe(req, res) {
     res.end(JSON.stringify({ authenticated: false }));
     return;
   }
+
+  // Calculate billing cycle (monthly reset on 1st of month in user's local time / Bangkok time)
+  const now = new Date();
+  const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
+  const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
+
   res.end(JSON.stringify({
     authenticated: true,
     userId: user.userId,
     email: user.email,
     tier: user.tier || 'free',
     questionsUsed: user.questionsUsed || 0,
+    // Quota limit will be filled by the caller from TIER_LIMITS
+    billingCycleStart: billingCycleStart.toISOString(),
+    billingCycleEnd: billingCycleEnd.toISOString(),
   }));
+}
+
+// ── Admin authentication ─────────────────────────────────────────────────────
+
+/**
+ * Check if request has valid admin credentials.
+ * Admin access via Bearer token in Authorization header.
+ * Token is verified as a valid JWT with admin=true payload.
+ */
+export function verifyAdminRequest(req) {
+  if (!JWT_SECRET) return false;
+
+  const authHeader = req.headers.authorization || '';
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  if (!match) return false;
+
+  const token = match[1];
+  const payload = verifyJwt(token);
+
+  // Token must be valid JWT and have admin=true flag
+  return payload && payload.admin === true;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
