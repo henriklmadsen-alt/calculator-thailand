@@ -89,6 +89,15 @@ export async function initDb() {
   await db.query(`
     ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
   `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
+  `);
 
   // Per-question log — used for server-side tier enforcement (CAL-1263)
   await db.query(`
@@ -257,14 +266,19 @@ export async function getOrCreateUser({ provider, providerId, email, name, avata
     const u = result.rows[0];
     return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
   } catch (err) {
-    // If any column is missing and we haven't exceeded retry limit, apply migrations and retry
+    // If any column is missing and we haven't exceeded retry limit, apply all migrations and retry
     if (err.message && err.message.includes('does not exist') && _retryCount < MAX_RETRIES) {
-      console.warn(`[db] schema columns missing (retry ${_retryCount + 1}), applying migrations...`, err.message);
+      console.warn(`[db] schema columns missing (retry ${_retryCount + 1}), applying all migrations...`, err.message);
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT \'local\'');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS billing_started_at TIMESTAMPTZ');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS tier TEXT NOT NULL DEFAULT \'free\'');
       return getOrCreateUser({ provider, providerId, email, name, avatarUrl }, _retryCount + 1);
     }
     throw err;
