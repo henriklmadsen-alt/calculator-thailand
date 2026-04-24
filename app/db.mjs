@@ -76,12 +76,18 @@ export async function initDb() {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0;
   `);
 
-  // Add provider + provider_id if missing from legacy schema (idempotent migration)
+  // Add all auth columns if missing from legacy schema (idempotent migrations)
   await db.query(`
     ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT 'local';
   `);
   await db.query(`
     ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT;
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT;
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
   `);
 
   // Per-question log — used for server-side tier enforcement (CAL-1263)
@@ -250,15 +256,13 @@ export async function getOrCreateUser({ provider, providerId, email, name, avata
     const u = result.rows[0];
     return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
   } catch (err) {
-    // If column is missing, apply migration and retry (self-healing schema)
-    if (err.message && (err.message.includes('column "provider" does not exist') || err.message.includes('column "provider_id" does not exist'))) {
-      console.warn('[db] provider columns missing, applying migration...');
+    // If any column is missing, apply all legacy schema migrations and retry (self-healing)
+    if (err.message && err.message.includes('does not exist')) {
+      console.warn('[db] schema columns missing, applying comprehensive migrations...');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT \'local\'');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT');
-      return getOrCreateUser({ provider, providerId, email, name, avatarUrl });
-    }
-    if (err.message && err.message.includes('column "questions_used" does not exist')) {
-      console.warn('[db] questions_used column missing, applying migration...');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0');
       // Retry original call
       return getOrCreateUser({ provider, providerId, email, name, avatarUrl });
