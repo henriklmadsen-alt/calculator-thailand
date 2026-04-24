@@ -6,6 +6,8 @@ export interface RelatedLink {
   href: string;
   title: string;
   desc: string;
+  date?: string; // Publication date (ISO or human-readable format)
+  author?: string; // Article author name
 }
 
 export interface CalculatorLinks {
