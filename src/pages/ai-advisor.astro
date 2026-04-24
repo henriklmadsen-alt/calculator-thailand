@@ -218,6 +218,20 @@ if (errorCode) {
 }
 
 async function init() {
+  // DEV_MODE: check ?dev=true in URL to bypass auth for demos
+  const params = new URLSearchParams(location.search);
+  if (params.get('dev') === 'true') {
+    currentUser = {
+      authenticated: true,
+      userId: 'demo-user-' + Math.random().toString(36).slice(2,9),
+      email: 'demo@kamnuanlek.com',
+      tier: 'free',
+      questionsUsed: 0,
+    };
+    showChat(currentUser);
+    return;
+  }
+
   try {
     const res = await fetch('/api/me');
     const data = await res.json();
