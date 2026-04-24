@@ -8,9 +8,10 @@ import {
   handleGoogleLogin, handleGoogleCallback,
   handleFacebookLogin, handleFacebookCallback,
   handleAppleLogin, handleAppleCallback,
-  handleLogout, handleApiMe,
+  handleLogout, handleApiMe, getCurrentUser,
 } from './app/auth.mjs';
-import { initDb } from './app/db.mjs';
+import { initDb, incrementQuestionsUsed, getUserById } from './app/db.mjs';
+import { streamAiMessage, validateQuestionsUsed } from './app/ai.mjs';
 import { handleAiAdvisorMessage } from './app/ai-advisor.mjs';
 import {
   handleListConversations,
@@ -516,6 +517,54 @@ async function serve(req, res) {
   if (url === '/auth/apple' || url === '/auth/apple/') { handleAppleLogin(req, res); return; }
   if (url === '/auth/logout' || url === '/auth/logout/') { handleLogout(req, res); return; }
   if (url === '/api/me' && req.method === 'GET') { handleApiMe(req, res); return; }
+
+  // ── AI Advisor streaming endpoint ──────────────────────────────────────────
+  if (url === '/api/ai-advisor/message' && req.method === 'POST') {
+    const user = getCurrentUser(req);
+    if (!user) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'unauthorized' }));
+      return;
+    }
+
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const payload = JSON.parse(body);
+        const messageText = (payload.message || '').trim();
+        const conversationId = payload.conversationId || null;
+
+        if (!messageText || messageText.length > 2000) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'invalid message' }));
+          return;
+        }
+
+        // Check quota (tier-based question limits)
+        const userRecord = await getUserById(user.userId);
+        const canUse = await validateQuestionsUsed(userRecord.tier, userRecord.questionsUsed);
+        if (!canUse) {
+          res.writeHead(402, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'quota exceeded' }));
+          return;
+        }
+
+        // Increment questions used
+        const newCount = await incrementQuestionsUsed(user.userId);
+
+        // Stream AI response (server-sent events)
+        await streamAiMessage(req, res, user.userId, messageText, conversationId);
+      } catch (err) {
+        console.error('[ai-advisor/message] error:', err);
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'server error' }));
+        }
+      }
+    });
+    return;
+  }
 
   // ── AI Advisor endpoint (CAL-1262) ────────────────────────────────────────
   if (url === '/api/ai-advisor/message' && req.method === 'POST') {
