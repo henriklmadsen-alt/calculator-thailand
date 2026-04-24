@@ -247,31 +247,42 @@ export async function addMessage(conversationId, role, content) {
 export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }) {
   const db = getPool();
 
-  // Try find by provider identity first (handles email changes)
-  const existing = await db.query(
-    'SELECT id, email, tier, questions_used FROM users WHERE provider = $1 AND provider_id = $2',
-    [provider, providerId]
-  );
-  if (existing.rows.length > 0) {
-    const u = existing.rows[0];
-    return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
-  }
+  try {
+    // Try find by provider identity first (handles email changes)
+    const existing = await db.query(
+      'SELECT id, email, tier, questions_used FROM users WHERE provider = $1 AND provider_id = $2',
+      [provider, providerId]
+    );
+    if (existing.rows.length > 0) {
+      const u = existing.rows[0];
+      return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
+    }
 
-  // Insert new user (ON CONFLICT handles race on duplicate email)
-  const result = await db.query(
-    `INSERT INTO users (email, provider, provider_id, name, avatar_url)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (email) DO UPDATE
-       SET provider = EXCLUDED.provider,
-           provider_id = EXCLUDED.provider_id,
-           name = COALESCE(EXCLUDED.name, users.name),
-           avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
-           updated_at = NOW()
-     RETURNING id, email, tier, questions_used`,
-    [email, provider, providerId, name || null, avatarUrl || null]
-  );
-  const u = result.rows[0];
-  return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
+    // Insert new user (ON CONFLICT handles race on duplicate email)
+    const result = await db.query(
+      `INSERT INTO users (email, provider, provider_id, name, avatar_url)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (email) DO UPDATE
+         SET provider = EXCLUDED.provider,
+             provider_id = EXCLUDED.provider_id,
+             name = COALESCE(EXCLUDED.name, users.name),
+             avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
+             updated_at = NOW()
+       RETURNING id, email, tier, questions_used`,
+      [email, provider, providerId, name || null, avatarUrl || null]
+    );
+    const u = result.rows[0];
+    return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
+  } catch (err) {
+    // If column is missing, apply migration and retry (self-healing schema)
+    if (err.message && err.message.includes('column "questions_used" does not exist')) {
+      console.warn('[db] questions_used column missing, applying migration...');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0');
+      // Retry original call
+      return getOrCreateUser({ provider, providerId, email, name, avatarUrl });
+    }
+    throw err;
+  }
 }
 
 export async function incrementQuestionsUsed(userId) {
