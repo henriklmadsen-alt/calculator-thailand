@@ -1,0 +1,136 @@
+---
+// ArticleTeaser component - shows single article after calculator result
+// WCAG 2.1 compliant: 44×44px minimum tap target
+
+interface Props {
+  title?: string;
+  description?: string;
+  href?: string;
+  currentHref?: string; // For auto-lookup if title/desc/href not provided
+}
+
+const { title, description, href } = Astro.props;
+
+// Don't render if no article provided
+if (!title || !href) {
+  // Could implement auto-lookup here using currentHref in future
+  return null;
+}
+---
+
+<div class="article-teaser">
+  <a href={href} class="teaser-link">
+    <div class="teaser-content">
+      <div class="teaser-icon">📖</div>
+      <div class="teaser-text">
+        <h3 class="teaser-title">{title}</h3>
+        {description && <p class="teaser-description">{description}</p>}
+      </div>
+      <div class="teaser-arrow">➜</div>
+    </div>
+  </a>
+</div>
+
+<style>
+  .article-teaser {
+    margin: 16px 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .teaser-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+  }
+
+  .teaser-link:hover {
+    background-color: #f9fafb;
+  }
+
+  .teaser-link:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+    border-radius: 2px;
+  }
+
+  .teaser-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    min-height: 44px;
+    line-height: 1.4;
+  }
+
+  .teaser-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .teaser-text {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .teaser-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2563eb;
+    word-break: break-word;
+  }
+
+  .teaser-description {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #6b7280;
+    word-break: break-word;
+  }
+
+  .teaser-arrow {
+    flex-shrink: 0;
+    font-size: 16px;
+    color: #2563eb;
+    margin-left: 8px;
+    line-height: 1;
+  }
+
+  /* Mobile: stack icon on top if needed for narrow screens */
+  @media (max-width: 360px) {
+    .teaser-content {
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .teaser-title {
+      font-size: 13px;
+    }
+
+    .teaser-description {
+      font-size: 12px;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .teaser-link:hover {
+      background-color: #1f2937;
+    }
+
+    .teaser-title {
+      color: #60a5fa;
+    }
+
+    .teaser-description {
+      color: #d1d5db;
+    }
+
+    .teaser-arrow {
+      color: #60a5fa;
+    }
+  }
+</style>
