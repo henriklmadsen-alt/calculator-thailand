@@ -76,6 +76,14 @@ export async function initDb() {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0;
   `);
 
+  // Add provider + provider_id if missing from legacy schema (idempotent migration)
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT 'local';
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT;
+  `);
+
   // Per-question log — used for server-side tier enforcement (CAL-1263)
   await db.query(`
     CREATE TABLE IF NOT EXISTS questions (
