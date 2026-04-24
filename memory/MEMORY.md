@@ -1,3 +1,4 @@
+- [CAL-1536 UX Designer Sprint Heartbeat 2026-04-24](cal_1536_sprint_heartbeat_2026_04_24.md) — Phase 1 audits consolidated; CAL-1507 moph.go.th fix verified; Phase 2 ready (5 work streams locked); gate 2026-04-29; no blockers.
 - [CAL-1530 UX Designer Sprint Heartbeat 2026-04-24](cal_1530_sprint_heartbeat_2026_04_24.md) — Phase 1 audits final track; Phase 2 scope locked (5 work streams); mobile UX risk high (99.7% lack components); gate decision 2026-04-29; no blockers.
 - [CAL-1531 Sprint Heartbeat 2026-04-24 Evening](sprint_heartbeat_cal_1531.md) — CAL-1508 P0 blocker RESOLVED. CAL-1463 unblocked. Phase 1 gate track clear for 2026-04-29. Phase B ~85% complete.
 - [CMO Heartbeat 2026-04-24](cmo_heartbeat_2026_04_24.md) — Full CMO review: Phase 1 audit consolidation, Phase B deletion on track, post-Phase-1 cluster work queued. Team ready for pivot to Tier 1/2 support articles.
