@@ -251,6 +251,12 @@ export async function getOrCreateUser({ provider, providerId, email, name, avata
     return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
   } catch (err) {
     // If column is missing, apply migration and retry (self-healing schema)
+    if (err.message && (err.message.includes('column "provider" does not exist') || err.message.includes('column "provider_id" does not exist'))) {
+      console.warn('[db] provider columns missing, applying migration...');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT \'local\'');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT');
+      return getOrCreateUser({ provider, providerId, email, name, avatarUrl });
+    }
     if (err.message && err.message.includes('column "questions_used" does not exist')) {
       console.warn('[db] questions_used column missing, applying migration...');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0');
