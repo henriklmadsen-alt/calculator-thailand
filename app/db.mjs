@@ -226,8 +226,9 @@ export async function addMessage(conversationId, role, content) {
   return msgResult.rows[0];
 }
 
-export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }) {
+export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }, _retryCount = 0) {
   const db = getPool();
+  const MAX_RETRIES = 2; // Prevent infinite loops
 
   try {
     // Try find by provider identity first (handles email changes)
@@ -256,16 +257,15 @@ export async function getOrCreateUser({ provider, providerId, email, name, avata
     const u = result.rows[0];
     return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
   } catch (err) {
-    // If any column is missing, apply all legacy schema migrations and retry (self-healing)
-    if (err.message && err.message.includes('does not exist')) {
-      console.warn('[db] schema columns missing, applying comprehensive migrations...');
+    // If any column is missing and we haven't exceeded retry limit, apply migrations and retry
+    if (err.message && err.message.includes('does not exist') && _retryCount < MAX_RETRIES) {
+      console.warn(`[db] schema columns missing (retry ${_retryCount + 1}), applying migrations...`, err.message);
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT \'local\'');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT');
       await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0');
-      // Retry original call
-      return getOrCreateUser({ provider, providerId, email, name, avatarUrl });
+      return getOrCreateUser({ provider, providerId, email, name, avatarUrl }, _retryCount + 1);
     }
     throw err;
   }
