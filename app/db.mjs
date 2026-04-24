@@ -71,6 +71,11 @@ export async function initDb() {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS billing_started_at TIMESTAMPTZ;
   `);
 
+  // Add questions_used if column missing from legacy schema (idempotent migration)
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0;
+  `);
+
   // Per-question log — used for server-side tier enforcement (CAL-1263)
   await db.query(`
     CREATE TABLE IF NOT EXISTS questions (
