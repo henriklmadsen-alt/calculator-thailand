@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
+import sentry from '@sentry/astro';
 
 function classifySitemapUrl(url) {
   const decoded = decodeURIComponent(url);
@@ -41,6 +42,13 @@ export default defineConfig({
         item.changefreq = changefreq;
         return item;
       },
+    }),
+    sentry({
+      dsn: process.env.PUBLIC_SENTRY_DSN,
+      environment: process.env.NODE_ENV || 'development',
+      tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
     }),
   ],
   image: {
