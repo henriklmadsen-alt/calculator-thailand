@@ -42,14 +42,10 @@ export default defineConfig({
   },
   integrations: [
     tailwind(),
-    sitemap({
-      serialize(item) {
-        const { priority, changefreq } = classifySitemapUrl(item.url);
-        item.priority = priority;
-        item.changefreq = changefreq;
-        return item;
-      },
-    }),
+    // DISABLED: CAL-2260 - @astrojs/sitemap 3.7.2 incompatible with Astro 4.16.19
+    // Causes "Cannot read properties of undefined (reading 'reduce')" in sitemap:build:done hook
+    // Workaround: Manual sitemap or post-build generation
+    // sitemap(),
     sentry({
       dsn: process.env.PUBLIC_SENTRY_DSN,
       environment: process.env.NODE_ENV || 'development',
