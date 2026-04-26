@@ -1,5 +1,4 @@
 import type { APIRoute } from 'astro';
-import { GSCService, GA4Service } from '../../../lib/gsc-ga4-service';
 
 export const GET: APIRoute = async ({ request }) => {
   try {
@@ -41,6 +40,9 @@ export const GET: APIRoute = async ({ request }) => {
         { status: 503, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    // Dynamically import services (server-side only)
+    const { GSCService, GA4Service } = await import('../../../lib/gsc-ga4-service');
 
     // Initialize services
     const gscService = new GSCService({

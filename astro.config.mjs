@@ -33,6 +33,13 @@ function classifySitemapUrl(url) {
 
 export default defineConfig({
   output: 'static',
+  vite: {
+    build: {
+      rollupOptions: {
+        external: ['googleapis', 'google-auth-library'],
+      },
+    },
+  },
   integrations: [
     tailwind(),
     sitemap({

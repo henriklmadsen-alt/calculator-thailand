@@ -113,6 +113,34 @@
 
 ---
 
+## Day 2 (2026-04-27) — Starting Now ✓
+
+### Financial & Labor (3/20 verified)
+
+#### ✅ Overtime Calculator (overtime-calculator.ts)
+- **Formula:** Hourly rate × multiplier × hours
+- **Multipliers:** Weekday OT (1.5x), Holiday work (2x), Holiday OT (3x)
+- **Source:** Thai Labor Protection Act (พระราชกฤษฎีกา)
+- **Status:** ✅ CORRECT
+
+#### ✅ Minimum Wage Calculator (minimum-wage-calculator.ts)
+- **Formula:** Province daily rate × working days per month
+- **Hourly:** Daily rate / 8 hours
+- **OT multipliers:** Weekday (1.5x), Holiday (2x), Holiday OT (3x)
+- **Data:** All 77 provinces with current rates (effective 1 July 2025)
+- **Source:** Ministry of Labor (mol.go.th) — latest provincial rates
+- **Status:** ✅ CORRECT
+
+#### ✅ Car Insurance Calculator (car-insurance-calculator.ts)
+- **Formula:** Base rate (% of insured value) × car group × type multiplier × age/driver adjustments
+- **Coverage types:** Type 1 (comprehensive), Type 2/2+ (third-party + collision), Type 3/3+ (liability + collision)
+- **Base rates by group:** Group 1: 1.7%, Group 2: 2.1%, Group 3: 2.7%, Group 4: 3.2%, Group 5: 4.0%
+- **Type multipliers:** Type 1: 100%, Type 2+: 50%, Type 2: 30%, Type 3+: 35%, Type 3: 12%
+- **Source:** OIC (Office of Insurance Commission) reference premium tariff
+- **Status:** ✅ CORRECT
+
+---
+
 ## Next Actions (Priority Order)
 
 1. **Complete Top 10 Verification** — 5 more calculators by 2026-04-27 08:00 UTC
