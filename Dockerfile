@@ -47,4 +47,4 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/server.mjs ./server.mjs
 COPY --from=build /app/app ./app
 EXPOSE 3000
-CMD ["node", "server.mjs"]
+CMD ["node", "--max-old-space-size=512", "server.mjs"]

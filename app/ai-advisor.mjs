@@ -166,7 +166,14 @@ export async function handleAiAdvisorMessage(req, res) {
   const ragContext = buildRagContext(userMessage);
   const fullSystem = SYSTEM_PROMPT + ragContext;
 
-  // Stream from Claude, collect full reply
+  // Stream Claude response to client via SSE (word-by-word, mandatory quality bar)
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no',
+  });
+
   let fullReply = '';
   try {
     const stream = client.messages.stream({
@@ -181,13 +188,15 @@ export async function handleAiAdvisorMessage(req, res) {
         event.type === 'content_block_delta' &&
         event.delta?.type === 'text_delta'
       ) {
-        fullReply += event.delta.text;
+        const chunk = event.delta.text;
+        fullReply += chunk;
+        res.write(`data: ${JSON.stringify({ type: 'delta', text: chunk })}\n\n`);
       }
     }
   } catch (err) {
     console.error('[ai-advisor] Claude API error:', err.message);
-    res.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-    res.end(JSON.stringify({ error: 'ai_error' }));
+    res.write(`data: ${JSON.stringify({ type: 'error', code: 'ai_error' })}\n\n`);
+    res.end();
     return;
   }
 
@@ -199,6 +208,6 @@ export async function handleAiAdvisorMessage(req, res) {
     // Non-fatal — reply is already generated
   }
 
-  res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-  res.end(JSON.stringify({ reply: fullReply, questionsUsed: questionsUsed + 1 }));
+  res.write(`data: ${JSON.stringify({ type: 'done', questionsUsed: questionsUsed + 1 })}\n\n`);
+  res.end();
 }

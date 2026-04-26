@@ -352,13 +352,44 @@ export function handleApiMe(req, res) {
     res.end(JSON.stringify({ authenticated: false }));
     return;
   }
+
+  // Calculate billing cycle (monthly reset on 1st of month in user's local time / Bangkok time)
+  const now = new Date();
+  const bkkTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  const billingCycleStart = new Date(bkkTime.getFullYear(), bkkTime.getMonth(), 1);
+  const billingCycleEnd = new Date(bkkTime.getFullYear(), bkkTime.getMonth() + 1, 0, 23, 59, 59);
+
   res.end(JSON.stringify({
     authenticated: true,
     userId: user.userId,
     email: user.email,
     tier: user.tier || 'free',
     questionsUsed: user.questionsUsed || 0,
+    // Quota limit will be filled by the caller from TIER_LIMITS
+    billingCycleStart: billingCycleStart.toISOString(),
+    billingCycleEnd: billingCycleEnd.toISOString(),
   }));
+}
+
+// ── Admin authentication ─────────────────────────────────────────────────────
+
+/**
+ * Check if request has valid admin credentials.
+ * Admin access via Bearer token in Authorization header.
+ * Token is verified as a valid JWT with admin=true payload.
+ */
+export function verifyAdminRequest(req) {
+  if (!JWT_SECRET) return false;
+
+  const authHeader = req.headers.authorization || '';
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  if (!match) return false;
+
+  const token = match[1];
+  const payload = verifyJwt(token);
+
+  // Token must be valid JWT and have admin=true flag
+  return payload && payload.admin === true;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -366,4 +397,37 @@ export function handleApiMe(req, res) {
 function redirectWithError(res, code) {
   res.writeHead(302, { Location: `/ai-advisor?error=${code}` });
   res.end();
+}
+
+// ── Dev-mode login bypass (CAL-1205) ─────────────────────────────────────────
+// Only active when DEV_AUTH_ENABLED=true. Never set this in production.
+
+export async function handleDevLogin(req, res) {
+  if (process.env.DEV_AUTH_ENABLED !== 'true') {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'dev_auth_disabled' }));
+    return;
+  }
+
+  const qs = new URL(req.url, 'http://localhost').searchParams;
+  const email = qs.get('email') || 'dev@kamnuanlek.com';
+  const name = qs.get('name') || 'Dev User';
+
+  try {
+    const user = await getOrCreateUser({
+      provider: 'dev',
+      providerId: `dev_${email}`,
+      email,
+      name,
+      avatarUrl: null,
+    });
+    const jwt = signJwt({ userId: user.id, email: user.email, tier: user.tier });
+    setSessionCookie(res, jwt);
+    res.writeHead(302, { Location: '/ai-advisor' });
+    res.end();
+  } catch (err) {
+    console.error('[auth/dev] login error:', err);
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'dev_auth_error', message: err.message }));
+  }
 }

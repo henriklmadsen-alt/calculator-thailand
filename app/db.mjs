@@ -71,6 +71,34 @@ export async function initDb() {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS billing_started_at TIMESTAMPTZ;
   `);
 
+  // Add questions_used if column missing from legacy schema (idempotent migration)
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0;
+  `);
+
+  // Add all auth columns if missing from legacy schema (idempotent migrations)
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT 'local';
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT;
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT;
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  `);
+  await db.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
+  `);
+
   // Per-question log — used for server-side tier enforcement (CAL-1263)
   await db.query(`
     CREATE TABLE IF NOT EXISTS questions (
@@ -207,34 +235,54 @@ export async function addMessage(conversationId, role, content) {
   return msgResult.rows[0];
 }
 
-export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }) {
+export async function getOrCreateUser({ provider, providerId, email, name, avatarUrl }, _retryCount = 0) {
   const db = getPool();
+  const MAX_RETRIES = 2; // Prevent infinite loops
 
-  // Try find by provider identity first (handles email changes)
-  const existing = await db.query(
-    'SELECT id, email, tier, questions_used FROM users WHERE provider = $1 AND provider_id = $2',
-    [provider, providerId]
-  );
-  if (existing.rows.length > 0) {
-    const u = existing.rows[0];
+  try {
+    // Try find by provider identity first (handles email changes)
+    const existing = await db.query(
+      'SELECT id, email, tier, questions_used FROM users WHERE provider = $1 AND provider_id = $2',
+      [provider, providerId]
+    );
+    if (existing.rows.length > 0) {
+      const u = existing.rows[0];
+      return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
+    }
+
+    // Insert new user (ON CONFLICT handles race on duplicate email)
+    const result = await db.query(
+      `INSERT INTO users (email, provider, provider_id, name, avatar_url)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (email) DO UPDATE
+         SET provider = EXCLUDED.provider,
+             provider_id = EXCLUDED.provider_id,
+             name = COALESCE(EXCLUDED.name, users.name),
+             avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
+             updated_at = NOW()
+       RETURNING id, email, tier, questions_used`,
+      [email, provider, providerId, name || null, avatarUrl || null]
+    );
+    const u = result.rows[0];
     return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
+  } catch (err) {
+    // If any column is missing and we haven't exceeded retry limit, apply all migrations and retry
+    if (err.message && err.message.includes('does not exist') && _retryCount < MAX_RETRIES) {
+      console.warn(`[db] schema columns missing (retry ${_retryCount + 1}), applying all migrations...`, err.message);
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider TEXT NOT NULL DEFAULT \'local\'');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_id TEXT');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS questions_used INT NOT NULL DEFAULT 0');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS billing_started_at TIMESTAMPTZ');
+      await db.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS tier TEXT NOT NULL DEFAULT \'free\'');
+      return getOrCreateUser({ provider, providerId, email, name, avatarUrl }, _retryCount + 1);
+    }
+    throw err;
   }
-
-  // Insert new user (ON CONFLICT handles race on duplicate email)
-  const result = await db.query(
-    `INSERT INTO users (email, provider, provider_id, name, avatar_url)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (email) DO UPDATE
-       SET provider = EXCLUDED.provider,
-           provider_id = EXCLUDED.provider_id,
-           name = COALESCE(EXCLUDED.name, users.name),
-           avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
-           updated_at = NOW()
-     RETURNING id, email, tier, questions_used`,
-    [email, provider, providerId, name || null, avatarUrl || null]
-  );
-  const u = result.rows[0];
-  return { id: u.id, email: u.email, tier: u.tier, questionsUsed: u.questions_used };
 }
 
 export async function incrementQuestionsUsed(userId) {

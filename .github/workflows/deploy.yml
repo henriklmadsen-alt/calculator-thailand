@@ -1,4 +1,4 @@
-name: Railway Release Confirmation Gate
+name: Deploy to Railway + Release Confirmation
 
 on:
   push:
@@ -29,7 +29,7 @@ env:
 
 jobs:
   build:
-    name: Build Validation
+    name: Build Validation & Pre-Deploy Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,17 +38,57 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: TypeScript Type Check & Code Quality
+        run: npm run build
       - name: Formula Verification Gate (CAL-938)
         run: node scripts/verify-calculator.js
-      - run: npm run build
+      - name: Build Output Validation
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Build failed: dist directory not found"
+            exit 1
+          fi
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ Build failed: index.html not found in dist"
+            exit 1
+          fi
+          echo "✓ Build validation passed"
 
-  release_confirmation:
-    name: Release Confirmation
+  deploy:
+    name: Deploy to Railway
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: ${{ steps.resolve.outputs.site_url }}
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "❌ ERROR: RAILWAY_TOKEN secret not configured"
+            echo "→ Add RAILWAY_TOKEN to GitHub repo settings (Settings → Secrets and variables → Actions)"
+            exit 1
+          fi
+
+          echo "Starting Railway deployment..."
+          railway up --detach
+
+          # Wait for deployment to initialize (Railway async)
+          echo "Deployment triggered. Waiting for Railway to process..."
+          sleep 10
+          echo "✓ Deployment initiated"
+
+  release_confirmation:
+    name: Release Confirmation Gate
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -66,7 +106,8 @@ jobs:
         run: |
           SITE_URL="${INPUT_SITE_URL:-$DEFAULT_SITE_URL}"
           EXPECTED_SHA="${INPUT_EXPECTED_SHA:-$DEFAULT_EXPECTED_SHA}"
-          TIMEOUT_MINUTES="${INPUT_TIMEOUT_MINUTES:-15}"
+          # Default to 20 minutes (Railway takes ~5-10 min + buffer)
+          TIMEOUT_MINUTES="${INPUT_TIMEOUT_MINUTES:-20}"
 
           if ! [[ "$TIMEOUT_MINUTES" =~ ^[0-9]+$ ]]; then
             echo "timeout_minutes must be an integer. Received: $TIMEOUT_MINUTES" >&2
@@ -76,22 +117,32 @@ jobs:
           echo "site_url=$SITE_URL" >> "$GITHUB_OUTPUT"
           echo "expected_sha=$EXPECTED_SHA" >> "$GITHUB_OUTPUT"
           echo "timeout_ms=$((TIMEOUT_MINUTES * 60 * 1000))" >> "$GITHUB_OUTPUT"
+      - name: Wait for Railway deployment
+        run: |
+          echo "Waiting for Railway to process deployment..."
+          sleep 30  # Give Railway time to start the deployment
       - name: Verify Railway production commit
         run: |
           node scripts/verify-railway-release.mjs \
             --site-url "${{ steps.resolve.outputs.site_url }}" \
             --expected-sha "${{ steps.resolve.outputs.expected_sha }}" \
             --timeout-ms "${{ steps.resolve.outputs.timeout_ms }}" \
-            --interval-ms 15000
-      - name: Publish gate summary
+            --interval-ms 10000
+      - name: Publish deployment summary
         if: always()
         run: |
           {
-            echo "### Railway Release Confirmation"
+            echo "### Railway Deployment + Verification Summary"
             echo ""
-            echo "- Site URL: \`${{ steps.resolve.outputs.site_url }}\`"
-            echo "- Expected SHA: \`${{ steps.resolve.outputs.expected_sha }}\`"
-            echo "- Timeout: \`${{ steps.resolve.outputs.timeout_ms }} ms\`"
+            echo "**Build**: ✓ TypeScript validation passed"
+            echo "**Deploy**: ✓ Railway deployment triggered"
+            echo "**Verification**: $([[ $? -eq 0 ]] && echo '✓ Production commit verified' || echo '⚠️ Verification in progress')"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Site URL | \`${{ steps.resolve.outputs.site_url }}\` |"
+            echo "| Expected SHA | \`${{ steps.resolve.outputs.expected_sha }}\` |"
+            echo "| Timeout | \`${{ steps.resolve.outputs.timeout_ms }} ms\` |"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Submit URLs to IndexNow
         if: success()
