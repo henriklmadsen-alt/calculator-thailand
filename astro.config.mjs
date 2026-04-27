@@ -72,7 +72,5 @@ export default defineConfig({
     '/calculator/unit-converter/': { destination: '/แปลงหน่วย/', status: 301 },
     '/calculator/overtime-pay/': { destination: '/คำนวณค่าโอที/', status: 301 },
     '/calculator/electricity-bill/': { destination: '/คำนวณค่าไฟฟ้า/', status: 301 },
-    // Sitemap alias (Astro generates sitemap-index.xml, not sitemap.xml)
-    '/sitemap.xml': { destination: '/sitemap-index.xml', status: 301 },
   },
 });
