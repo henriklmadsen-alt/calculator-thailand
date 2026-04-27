@@ -135,7 +135,18 @@ try {
   fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
   console.log('✓ Generated sitemap-index.xml');
 
-  // Also create sitemap.xml as alias for sitemap-0.xml
+  // Remove /sitemap.xml directory if it exists (created by Astro)
+  const sitemapDirPath = path.join(distDir, 'sitemap.xml');
+  if (fs.existsSync(sitemapDirPath)) {
+    if (fs.statSync(sitemapDirPath).isDirectory()) {
+      fs.rmSync(sitemapDirPath, { recursive: true, force: true });
+      console.log('✓ Removed /sitemap.xml directory');
+    } else {
+      fs.unlinkSync(sitemapDirPath);
+    }
+  }
+
+  // Create sitemap.xml as alias for sitemap-0.xml
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
   console.log('✓ Generated sitemap.xml (alias)');
 
