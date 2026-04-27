@@ -46,13 +46,14 @@ export default defineConfig({
     // Causes "Cannot read properties of undefined (reading 'reduce')" in sitemap:build:done hook
     // Workaround: Manual sitemap or post-build generation
     // sitemap(),
-    sentry({
-      dsn: process.env.PUBLIC_SENTRY_DSN,
-      environment: process.env.NODE_ENV || 'development',
-      tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1.0,
-    }),
+    // DISABLED TEMPORARILY: CAL-2365 - Sentry integration causing renderers.mjs generation failure
+    // sentry({
+    //   dsn: process.env.PUBLIC_SENTRY_DSN,
+    //   environment: process.env.NODE_ENV || 'development',
+    //   tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+    //   replaysSessionSampleRate: 0.1,
+    //   replaysOnErrorSampleRate: 1.0,
+    // }),
   ],
   image: {
     service: {
