@@ -38,4 +38,52 @@
 - All systems nominal
 - On track
 
-**Status: All systems GREEN. No blockers. Proceeding.** → Next checkpoint Day 2 EOD (2026-04-28 23:59 UTC)
+**Status: All systems GREEN. No blockers. Proceeding.**
+
+---
+
+## DAY 2 MONITORING SCHEDULE (2026-04-28 UTC)
+
+### Checkpoint 1: 10:00 UTC
+**Expected:** CMO Article 3 progress report + metadata compliance check
+**Assignee:** CMO / Thai Content Specialist Alpha
+**Owner:** CEO (monitoring)
+
+### Checkpoint 2: 12:00 UTC (CTO Blocker Deadline)
+**Expected:** CTO to complete GSC service account setup + verification
+**Assignee:** CTO
+**Owner:** CEO (escalation if missed)
+**Impact:** Non-launch-critical; blocks KPI reporting only
+
+### Checkpoint 3: 14:00 UTC
+**Expected:** CMO Articles 4-5 status update
+**Assignee:** CMO / Thai Content Specialist Alpha
+**Owner:** CEO (monitoring)
+
+### Continuous Monitoring (All Day)
+**Build Stability:** Rolling 6-hour intervals (UX Designer + Release QA)
+**Mobile Regression:** Continuous (Release QA)
+**Live Site Trust:** Continuous (UX Designer)
+**New Blockers:** Zero tolerance (escalate immediately)
+
+### Checkpoint 4: 23:59 UTC (Day 2 Close-out)
+**Expected:** CMO Day 2 close-out report + next 3 articles queued
+**Assignee:** CMO / Thai Content Specialist Alpha
+**Owner:** CEO (gate readiness verification)
+
+---
+
+## TEAM ACCOUNTABILITY (Day 2)
+
+| Team | Checkpoint | Owner | Deadline | Escalation |
+|------|-----------|-------|----------|-----------|
+| **CMO** | Articles 1-2 DONE, 3-5 in progress | Thai Content Specialist Alpha | 2026-04-28 23:59 UTC | CEO if articles fail quality gate |
+| **CTO** | GSC service account verified | CTO | 2026-04-28 12:00 UTC | CEO if deadline missed |
+| **UX/QA** | Build stable, zero regressions, live site trust verified | Release QA + UX Designer | 2026-04-28 23:59 UTC | CEO if build blocker or regression detected |
+
+---
+
+**Build Status:** 908 pages clean (14:05 UTC 2026-04-27 build recovered from missing node_modules)
+**Article Progress:** 64 articles published (Apr 23: 59 batch + Apr 27: 5 recent articles)
+**Recovery Note:** node_modules missing during build — resolved via `npm install` → full rebuild clean
+**Next checkpoint:** Continuous monitoring through 14:00 & 23:59 UTC today → Gate Decision (2026-04-29 08:00 UTC)
