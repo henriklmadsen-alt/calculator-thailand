@@ -36,7 +36,7 @@ export default defineConfig({
   vite: {
     build: {
       rollupOptions: {
-        external: ['googleapis', 'google-auth-library'],
+        external: ['googleapis', 'google-auth-library', '@anthropic-ai/sdk'],
       },
     },
   },
