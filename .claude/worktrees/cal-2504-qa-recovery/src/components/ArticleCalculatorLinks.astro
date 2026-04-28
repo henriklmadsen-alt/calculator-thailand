@@ -1,0 +1,46 @@
+---
+// ArticleCalculatorLinks - Shows 2-3 related calculators at end of article
+// Uses same styling as RelatedCalculators cards (48px+ tap target from CAL-1461)
+// Placement: End of article body, before comments/related articles
+
+import type { RelatedLink } from '../lib/internal-links';
+
+interface Props {
+  /** Related calculator links to display */
+  calculators: RelatedLink[];
+  /** Section heading override */
+  heading?: string;
+}
+
+const { calculators, heading = 'เครื่องคำนวณที่เกี่ยวข้อง' } = Astro.props;
+
+// Display 2-3 calculators
+const displayedCalcs = calculators.slice(0, 3);
+---
+
+{
+  displayedCalcs.length > 0 && (
+    <section class="article-calculator-links mb-8">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">{heading}</h3>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {displayedCalcs.map((calc) => (
+          <a
+            href={calc.href}
+            data-preserve-utm
+            class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all min-h-[44px] flex flex-col justify-center"
+          >
+            <span class="text-primary-600 font-medium block">{calc.title}</span>
+            {calc.desc && <span class="text-gray-400 text-sm block">{calc.desc}</span>}
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .article-calculator-links {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+  }
+</style>

@@ -1,0 +1,279 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณภาษีเงินปันผล 2569 | หัก ณ ที่จ่าย 10% | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีเงินปันผลจากหุ้น กองทุน พร้อมเปรียบเทียบการรวมหรือแยกยื่นภาษีเงินได้บุคคลธรรมดา อัปเดตอัตรา 10% ปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณภาษีเงินปันผล/`;
+
+const faqData = [
+  {
+    question: 'เงินปันผลจากหุ้นไทยถูกหักภาษีอัตราเท่าไร?',
+    answer: 'เงินปันผลจากบริษัทจดทะเบียนในตลาดหลักทรัพย์ไทยถูกหักภาษี ณ ที่จ่าย 10% ของเงินปันผลที่ได้รับ โดยบริษัทผู้จ่ายจะหักและนำส่งกรมสรรพากรโดยตรง',
+  },
+  {
+    question: 'เงินปันผลต้องรวมยื่นภาษีประจำปีไหม?',
+    answer: 'ผู้รับเงินปันผลมีทางเลือก 2 แบบ: (1) ไม่นำมารวมคำนวณ (ถือว่าเสียภาษีครบแล้วด้วยอัตรา 10%) หรือ (2) นำมารวมกับเงินได้อื่นเพื่อคำนวณภาษีอัตราก้าวหน้า แล้วขอเครดิตภาษี 10% ที่ถูกหักไว้แล้ว วิธีที่คุ้มกว่าขึ้นอยู่กับระดับรายได้รวม',
+  },
+  {
+    question: 'เมื่อไหรถึงควรนำเงินปันผลมารวมยื่นภาษี?',
+    answer: 'หากอัตราภาษีขั้นบันไดของคุณต่ำกว่า 10% (รายได้สุทธิไม่เกิน 300,000 บาท อัตรา 5%) การนำเงินปันผลมารวมยื่นจะช่วยคืนภาษีส่วนเกินได้ แต่หากอัตราภาษีสูงกว่า 10% ควรเลือกไม่นำมารวม',
+  },
+  {
+    question: 'เงินปันผลจากกองทุนรวมมีภาษีอย่างไร?',
+    answer: 'เงินปันผลจากกองทุนรวมหุ้นในประเทศถูกหักภาษี ณ ที่จ่าย 10% เช่นเดียวกัน และมีทางเลือกรวมหรือแยกยื่นเหมือนกับหุ้น กองทุนตราสารหนี้บางประเภทอาจมีภาษีแตกต่างกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีเงินปันผล 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีเงินปันผล ปี 2569",
+  "description": "ขั้นตอนการคำนวณภาษีจากเงินปันผล (Dividend Income) ที่ได้รับจากหุ้นหรือกองทุน ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "step": [
+    {"@type": "HowToStep", "name": "รวบรวมใบรับรองการปันผล", "text": "เก็บใบรับรองจากบริษัทหรือสถาบันการเงินที่จ่ายปันผล บันทึกจำนวนเงินปันผลทั้งหมดที่ได้รับในปี 2569 ตัวอย่าง: ปันผลจากหุ้น 50,000 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบวิธีการคำนวณภาษี", "text": "ปันผลในไทยมี 2 วิธี: (1) Exemption Method = ไม่นับเป็นรายได้ (ถ้าจ่ายภาษีบริษัท 20% แล้ว), (2) Full Inclusion = นับเป็นรายได้ทั้งหมด + tax credit 20%"},
+    {"@type": "HowToStep", "name": "คำนวณภาษี (ถ้าใช้ Full Inclusion)", "text": "ภาษี = ปันผลที่รับ × อัตราภาษีขั้นบันได ตัวอย่าง: ปันผล 50,000 บาท ในขั้น 5% ภาษี = 50,000 × 5% = 2,500 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบ Tax Credit (ถ้าสมควร)", "text": "ถ้าใช้ Full Inclusion Method อาจได้ Tax Credit 20% ของปันผลที่รับ ตัวอย่าง: ปันผล 50,000 × 20% = 10,000 บาท credit สามารถหักจากภาษีที่ต้องชำระ"},
+    {"@type": "HowToStep", "name": "เปรียบเทียบสองวิธีและเลือกที่ดีกว่า", "text": "คำนวณภาษีสุทธิทั้งสองวิธีแล้วเลือกวิธีที่เสียภาษีน้อยกว่า หรือไม่เสียเลย ยื่นแบบ ภ.ง.ด.90 ภายใน 31 มีนาคม ปีถัดไป"}
+  ]
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีเงินปันผล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">เปรียบเทียบตัวเลือกรวม/แยกยื่นภาษีเงินปันผล</p>
+      <p class="mt-1 text-sm text-slate-700">อัตราหัก ณ ที่จ่าย 10% อัปเดตปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณภาษีเงินปันผล อัปเดต 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณภาษีจากเงินปันผลหุ้นไทย พร้อมเปรียบเทียบว่าควร "รวม" หรือ "ไม่รวม" ยื่นภาษีประจำปี
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <div class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="div-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินปันผลที่ได้รับ (บาท/ปี)
+            </label>
+            <input type="text" id="div-amount" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          </div>
+          <div>
+            <label for="div-other-income" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินได้อื่นต่อปี (บาท) — เงินเดือน/อื่นๆ
+            </label>
+            <input type="text" id="div-other-income" inputmode="numeric" placeholder="เช่น 480,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          </div>
+        </div>
+        <div>
+          <label for="div-deductions" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าลดหย่อนรวม (บาท) <span class="text-gray-400 font-normal">— ส่วนตัว คู่สมรส บุตร ประกัน ฯลฯ</span>
+          </label>
+          <input type="text" id="div-deductions" inputmode="numeric" placeholder="เช่น 60,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <button type="button" id="btn-div-calc"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </div>
+
+      <div id="div-result" class="hidden mt-6">
+        <div class="mb-4 p-3 bg-gray-50 rounded-lg text-sm space-y-1">
+          <div class="flex justify-between"><span class="text-gray-600">เงินปันผลที่ได้รับ</span><span id="r-div" class="font-medium"></span></div>
+          <div class="flex justify-between"><span class="text-gray-600">ภาษีหัก ณ ที่จ่าย 10%</span><span id="r-wht" class="font-medium text-red-600"></span></div>
+          <div class="flex justify-between border-t border-gray-200 pt-1"><span class="font-semibold">เงินรับสุทธิ</span><span id="r-net" class="font-bold"></span></div>
+        </div>
+
+        <h3 class="text-base font-semibold text-gray-900 mb-3">เปรียบเทียบตัวเลือก</h3>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">❌ ไม่รวมยื่นภาษี (จบที่ 10%)</div>
+            <div class="space-y-1 text-sm">
+              <div class="flex justify-between"><span class="text-gray-500">ภาษีรวม</span><span id="r-opt1-tax" class="font-medium text-red-600"></span></div>
+              <div class="flex justify-between"><span class="text-gray-500">คืน/จ่ายเพิ่ม</span><span id="r-opt1-diff" class="font-medium"></span></div>
+            </div>
+          </div>
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">✅ รวมยื่นภาษี (ขั้นบันได)</div>
+            <div class="space-y-1 text-sm">
+              <div class="flex justify-between"><span class="text-gray-500">ภาษีรวม</span><span id="r-opt2-tax" class="font-medium text-red-600"></span></div>
+              <div class="flex justify-between"><span class="text-gray-500">คืน/จ่ายเพิ่ม</span><span id="r-opt2-diff" class="font-medium"></span></div>
+            </div>
+          </div>
+        </div>
+        <div id="r-recommendation" class="mt-4 p-3 rounded-lg text-sm font-medium"></div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ภาษีเงินปันผลในประเทศไทย</h2>
+      <p>เงินปันผลที่ได้รับจากบริษัทจดทะเบียนในตลาดหลักทรัพย์ไทย ถือเป็นเงินได้พึงประเมินประเภทที่ 4 ตามมาตรา 40(4)(ข) แห่งประมวลรัษฎากร โดยมีภาษีหัก ณ ที่จ่าย 10% ก่อนจ่ายให้ผู้ถือหุ้น</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สองทางเลือกสำหรับเงินปันผล</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ไม่นำมารวมยื่น:</strong> ถือว่าเสียภาษีครบแล้วที่อัตรา 10% ไม่ต้องระบุในแบบ ภ.ง.ด.90/91</li>
+        <li><strong>นำมารวมยื่น:</strong> รวมเงินปันผลกับเงินได้อื่น คำนวณภาษีอัตราก้าวหน้า ขอเครดิตภาษี 10% ที่ถูกหักไว้แล้ว — เหมาะสำหรับผู้มีรายได้รวมต่ำ (อัตราภาษีต่ำกว่า 10%)</li>
+      </ul>
+    </section>
+
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <p><strong>ภาษีเงินปันผล = จำนวนเงินปันผล × อัตราภาษี</strong></p>
+      <p>อัตราภาษีเงินปันผลอยู่ระหว่าง 10%−15% ตามประเภทหุ้นและเงื่อนไข หากถูกหักแล้วที่จ่าย 10% อาจไม่ต้องชำระเพิ่มเติม</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณ</h3>
+      <p><strong>ตัวอย่างที่ 1: เงินปันผลที่ได้รับ 50,000 บาท (หักแล้ว 10%)</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>เงินปันผล</strong> = 50,000 บาท</li>
+        <li><strong>ภาษีหักแล้ว</strong> = 50,000 × 10% = 5,000 บาท</li>
+        <li><strong>เงินปันผลสุทธิ</strong> = 50,000 − 5,000 = <strong>45,000 บาท</strong> (รับจริง)</li>
+        <li>ไม่ต้องชำระเพิ่มเติมหากหัก 10%</li>
+      </ul>
+
+      <p class="mt-4"><strong>ตัวอย่างที่ 2: เงินปันผล 100,000 บาท รวมกับรายได้อื่น (ใช้วิธี Full Inclusion)</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>เงินปันผล</strong> = 100,000 บาท</li>
+        <li><strong>ภาษีในอัตราขั้นบันได 10%</strong> = 100,000 × 10% = 10,000 บาท</li>
+        <li><strong>หักภาษีที่หักไว้แล้ว</strong> = 10,000 บาท (ที่หักไว้แล้ว)</li>
+        <li><strong>ภาษีจ่ายเพิ่ม</strong> = 10,000 − 10,000 = <strong>0 บาท</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สรุป</h3>
+      <p>เงินปันผลจากหุ้นต้องเสียภาษีตามอัตราที่กำหนด โดยทั่วไปบริษัทจ่ายหุ้นจะหักภาษีแล้ว ผู้ถือหุ้นอาจไม่ต้องชำระเพิ่มเติมหากเข้าเงื่อนไข</p>
+      <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ภาษีเงินปันผล</a> [อัปเดต 2569]</p>
+    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณภาษีเงินปันผล/" />
+    <RelatedCalculators currentHref="/คำนวณภาษีเงินปันผล/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+    function calcPIT(taxable: number): number {
+      const brackets = [
+        { max: 150000, rate: 0 }, { max: 300000, rate: 0.05 },
+        { max: 500000, rate: 0.10 }, { max: 750000, rate: 0.15 },
+        { max: 1000000, rate: 0.20 }, { max: 2000000, rate: 0.25 },
+        { max: 5000000, rate: 0.30 }, { max: Infinity, rate: 0.35 },
+      ];
+      let tax = 0; let prev = 0;
+      for (const b of brackets) {
+        if (taxable <= prev) break;
+        tax += (Math.min(taxable, b.max) - prev) * b.rate;
+        prev = b.max;
+      }
+      return tax;
+    }
+
+    document.getElementById('btn-div-calc')!.addEventListener('click', () => {
+      const div = parseNum((document.getElementById('div-amount') as HTMLInputElement).value);
+      const other = parseNum((document.getElementById('div-other-income') as HTMLInputElement).value);
+      const deductions = parseNum((document.getElementById('div-deductions') as HTMLInputElement).value);
+      if (div <= 0) return;
+
+      const wht = div * 0.10;
+      const net = div - wht;
+
+      // Option 1: not included — tax = wht only on dividend side
+      const otherExpense = Math.min(other * 0.5, 100000);
+      const otherTaxable = Math.max(0, other - otherExpense - deductions);
+      const otherTax = calcPIT(otherTaxable);
+      const opt1Tax = otherTax + wht;
+
+      // Option 2: included — add dividend gross to income
+      const totalIncome = other + div;
+      const totalExpense = Math.min(totalIncome * 0.5, 100000);
+      const totalTaxable = Math.max(0, totalIncome - totalExpense - deductions);
+      const totalGrossTax = calcPIT(totalTaxable);
+      const opt2Tax = Math.max(0, totalGrossTax - wht); // net additional tax after credit
+      const opt2Total = otherTax + opt2Tax + wht; // total burden
+
+      const opt1Diff = 0; // baseline
+      const opt2Diff = opt2Total - opt1Tax; // positive = pay more, negative = get refund
+
+      (document.getElementById('r-div') as HTMLElement).textContent = fmt(div);
+      (document.getElementById('r-wht') as HTMLElement).textContent = '−' + fmt(wht);
+      (document.getElementById('r-net') as HTMLElement).textContent = fmt(net);
+      (document.getElementById('r-opt1-tax') as HTMLElement).textContent = fmt(opt1Tax);
+      (document.getElementById('r-opt1-diff') as HTMLElement).textContent = '—';
+      (document.getElementById('r-opt2-tax') as HTMLElement).textContent = fmt(opt2Total);
+      const diffEl = document.getElementById('r-opt2-diff') as HTMLElement;
+      if (opt2Diff < 0) {
+        diffEl.textContent = 'คืนภาษี ' + fmt(-opt2Diff);
+        diffEl.className = 'font-medium text-green-600';
+      } else if (opt2Diff > 0) {
+        diffEl.textContent = 'จ่ายเพิ่ม ' + fmt(opt2Diff);
+        diffEl.className = 'font-medium text-red-600';
+      } else {
+        diffEl.textContent = 'เท่ากัน';
+        diffEl.className = 'font-medium text-gray-600';
+      }
+
+      const recEl = document.getElementById('r-recommendation') as HTMLElement;
+      if (opt2Diff < -100) {
+        recEl.textContent = '✅ แนะนำ: นำเงินปันผลมารวมยื่น — จะได้คืนภาษี ' + fmt(-opt2Diff);
+        recEl.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-green-50 text-green-800 border border-green-200';
+      } else if (opt2Diff > 100) {
+        recEl.textContent = '✅ แนะนำ: ไม่รวมยื่น — ประหยัดภาษีได้ ' + fmt(opt2Diff);
+        recEl.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-blue-50 text-blue-800 border border-blue-200';
+      } else {
+        recEl.textContent = '— ทั้งสองตัวเลือกให้ผลใกล้เคียงกัน';
+        recEl.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-gray-50 text-gray-700 border border-gray-200';
+      }
+
+      (document.getElementById('div-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('dividend-tax');
+    });
+  </script>
+</BaseLayout>

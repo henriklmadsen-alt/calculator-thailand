@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณกำไรและขาดทุนจากการเกษตร | Kamnuanlek';
+const pageDescription = 'คำนวณกำไรขาดทุนการเกษตร รายได้รวม ต้นทุนรวม อัตรากำไรเกษตร ต่อไร่ต่อปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0491-กำไรเกษตร/`;
+const faqData = [
+  { question: 'เกษตรกรไทยมีรายได้เฉลี่ยเท่าไหร่ต่อปี?', answer: 'เกษตรกรไทยมีรายได้เฉลี่ย 60,000-120,000 บาท/ครัวเรือน/ปี ขึ้นกับชนิดพืช พื้นที่ และการบริหารจัดการ เกษตรกรที่ปรับตัวสู่เกษตรมูลค่าสูงมีรายได้ 200,000+ บาท/ปี' },
+  { question: 'ทำไมเกษตรกรไทยถึงยังจน?', answer: 'ราคาสินค้าเกษตรต่ำและผันผวน ต้นทุนสูงขึ้น พื้นที่ถือครองน้อย หนี้สิน ขาดการรวมกลุ่ม และการเข้าถึงตลาด การเพิ่มมูลค่าและลดต้นทุนคือทางออก' },
+  { question: 'เกษตรอินทรีย์ช่วยเพิ่มกำไรได้ไหม?', answer: 'เกษตรอินทรีย์ขายได้ราคาสูงกว่า 30-100% แต่ใช้เวลา 3 ปีในการปรับเปลี่ยน ผลผลิตอาจลดช่วงแรก ควรมีตลาดรับซื้อที่แน่นอนก่อนเปลี่ยน' },
+  { question: 'แปลงใหญ่ (Large-scale farming) ช่วยลดต้นทุนได้ไหม?', answer: 'โครงการแปลงใหญ่ของกรมส่งเสริมการเกษตรรวมกลุ่มเกษตรกร ลดต้นทุนปัจจัยการผลิต 10-20% เพิ่มอำนาจต่อรอง เข้าถึงเครื่องจักรร่วมกัน' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไรและขาดทุนจากการเกษตร">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณกำไร-ขาดทุนการเกษตร</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">สรุปรายได้ ต้นทุน และกำไรสุทธิจากการทำเกษตร</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="farm_total_revenue" class="block text-sm font-medium text-gray-700 mb-1">รายได้รวมต่อปี (บาท)</label><input type="text" id="farm_total_revenue" inputmode="decimal" placeholder="เช่น 200000" value="200000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="farm_variable_cost" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนผันแปร (ปุ๋ย ยา เมล็ด) (บาท)</label><input type="text" id="farm_variable_cost" inputmode="decimal" placeholder="เช่น 80000" value="80000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="farm_fixed_cost" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนคงที่ (เช่าที่ เครื่องจักร) (บาท)</label><input type="text" id="farm_fixed_cost" inputmode="decimal" placeholder="เช่น 40000" value="40000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="farm_labor_cost_total" class="block text-sm font-medium text-gray-700 mb-1">ค่าแรงงานรวม (บาท)</label><input type="text" id="farm_labor_cost_total" inputmode="decimal" placeholder="เช่น 30000" value="30000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนรวมทั้งหมด</p><p id="farm_all_cost" class="font-bold">-</p></div>
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">กำไรสุทธิต่อปี</p><p id="farm_net" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3 col-span-2"><p class="text-sm text-gray-600">อัตรากำไร</p><p id="farm_margin" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const revenue = parseFloat((document.getElementById('farm_total_revenue') as HTMLInputElement).value) || 0;
+      const variable = parseFloat((document.getElementById('farm_variable_cost') as HTMLInputElement).value) || 0;
+      const fixed = parseFloat((document.getElementById('farm_fixed_cost') as HTMLInputElement).value) || 0;
+      const labor = parseFloat((document.getElementById('farm_labor_cost_total') as HTMLInputElement).value) || 0;
+      const allCost = variable + fixed + labor;
+      const net = revenue - allCost;
+      const margin = revenue > 0 ? (net / revenue * 100) : 0;
+      (document.getElementById('farm_all_cost') as HTMLElement).textContent = Math.round(allCost).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('farm_net') as HTMLElement).textContent = Math.round(net).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('farm_margin') as HTMLElement).textContent = margin.toFixed(1) + '%';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('farm-profit-loss');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

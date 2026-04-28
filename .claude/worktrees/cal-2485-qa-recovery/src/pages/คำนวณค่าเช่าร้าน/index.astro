@@ -1,0 +1,412 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าเช่าร้านค้า ต้นทุนรวม 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเช่าร้าน 2569 ฟรี — รวมค่าเช่า ค่าส่วนกลาง ค่าสาธารณูปโภค ค่าเซ้ง รู้ต้นทุนรวมก่อนตัดสินใจเช่า';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าเช่าร้าน/`;
+
+const faqData = [
+  {
+    question: 'ค่าเช่าร้านค้าในไทยเฉลี่ยเท่าไหร่?',
+    answer: 'ค่าเช่าร้านค้าในไทยแตกต่างตามทำเลและขนาด ย่านการค้าในกรุงเทพฯ เช่น สยาม สีลม สุขุมวิท อาจอยู่ที่ 800-3,000 บาท/ตร.ม./เดือน ทำเลชุมชนทั่วไปอยู่ที่ 200-600 บาท/ตร.ม./เดือน ตลาดนัดหรือร้านริมถนนเริ่มต้นที่ 3,000-15,000 บาท/เดือน',
+  },
+  {
+    question: 'ค่าเซ้ง (Key Money) คืออะไร?',
+    answer: 'ค่าเซ้งคือเงินที่จ่ายครั้งเดียวให้เจ้าของร้านเดิมหรือเจ้าของพื้นที่ เพื่อได้สิทธิ์เช่าพื้นที่ร้านค้า มักพบในทำเลค้าขายดี ค่าเซ้งจะได้คืนเมื่อหมดสัญญาเฉพาะบางกรณี ควรตรวจสอบสัญญาให้ชัดเจน',
+  },
+  {
+    question: 'ค่ามัดจำร้านค้ากี่เดือน?',
+    answer: 'ร้านค้าและพื้นที่พาณิชย์มักเรียกเก็บค่ามัดจำ 2-6 เดือน สูงกว่าห้องพักทั่วไป เนื่องจากความเสี่ยงสูงกว่า ศูนย์การค้าบางแห่งอาจเรียกเก็บ 3 เดือน บวกค่าเช่าล่วงหน้า 1-2 เดือน',
+  },
+  {
+    question: 'ค่าส่วนกลางร้านค้าต่างจากคอนโดอย่างไร?',
+    answer: 'ค่าส่วนกลางร้านค้าในศูนย์การค้าหรืออาคารพาณิชย์มักสูงกว่าคอนโด ครอบคลุมค่ารปภ. ทำความสะอาดพื้นที่ส่วนกลาง แอร์ส่วนกลาง ลิฟต์ บำรุงรักษาอาคาร อาจอยู่ที่ 100-300 บาท/ตร.ม./เดือน',
+  },
+  {
+    question: 'ควรเตรียมงบเท่าไหร่ก่อนเปิดร้าน?',
+    answer: 'นอกจากค่าเช่ารายเดือน ควรเตรียมเงินสำหรับค่ามัดจำ (2-6 เดือน) ค่าเช่าล่วงหน้า (1-2 เดือน) ค่าเซ้ง (ถ้ามี) และค่าตกแต่งร้าน ใช้เครื่องคำนวณนี้ช่วยประเมินค่าใช้จ่ายเบื้องต้นก่อนตัดสินใจ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเช่าร้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าร้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณค่าเช่าร้าน 2569 — ค่าเช่า ค่าส่วนกลาง ค่าที่จอดรถ ค่าสาธารณูปโภค</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณค่าใช้จ่ายทั้งหมดสำหรับเช่าร้านค้าหรือสำนักงาน รวมค่ามัดจำ ค่าเซ้ง และค่าใช้จ่ายรายเดือน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับผู้ประกอบการ เจ้าของกิจการ ร้านค้า สำนักงาน และพื้นที่เชิงพาณิชย์</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าเช่าร้าน 2569 — ค่าเช่า มัดจำ เซ้ง สาธารณูปโภครวม
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกค่าเช่ารายเดือน พื้นที่ร้าน ค่าส่วนกลาง ค่าที่จอดรถ และค่าสาธารณูปโภค
+      ระบบจะคำนวณค่าใช้จ่ายย้ายเข้า ค่าใช้จ่ายรายเดือนรวม และค่าใช้จ่ายตลอดสัญญา
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'อัตราค่าเช่าพื้นที่พาณิชย์ทั่วไปในตลาดอสังหาริมทรัพย์ไทย ปี 2569',
+        'ข้อมูลค่ามัดจำตามหลักปฏิบัติสัญญาเช่าพาณิชย์',
+      ]}
+      assumptions={[
+        'ค่าสาธารณูปโภคเป็นประมาณการจากข้อมูลที่ผู้ใช้กรอก',
+        'ค่าใช้จ่ายจริงขึ้นอยู่กับเงื่อนไขสัญญาเช่าและทำเลที่ตั้ง',
+        'ค่าใช้จ่ายตลอดสัญญาไม่รวมค่าตกแต่งร้านและค่าดำเนินธุรกิจอื่น',
+      ]}
+      references={[
+        {
+          label: 'คำนวณค่าไฟฟ้า — Kamnuanlek',
+          href: '/คำนวณค่าไฟฟ้า/',
+        },
+        {
+          label: 'คำนวณค่าน้ำ — Kamnuanlek',
+          href: '/คำนวณค่าน้ำ/',
+        },
+        {
+          label: 'คำนวณค่าห้องพัก — Kamnuanlek',
+          href: '/คำนวณค่าห้องพัก/',
+        },
+      ]}
+    />
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="shop-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกค่าเช่ารายเดือนให้ถูกต้อง
+        </p>
+
+        <div>
+          <p class="mb-3 text-sm font-semibold text-gray-700">ข้อมูลร้านค้า/สำนักงาน</p>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="monthly-rent" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่ารายเดือน (บาท)</label>
+              <input id="monthly-rent" type="text" inputmode="decimal" placeholder="เช่น 25,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="area-sqm" class="mb-1 block text-sm font-medium text-gray-700">พื้นที่ (ตร.ม.) — ไม่บังคับ</label>
+              <input id="area-sqm" type="text" inputmode="decimal" placeholder="เช่น 50" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4">
+          <p class="mb-3 text-sm font-semibold text-gray-700">ค่าส่วนกลางและที่จอดรถ</p>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label for="common-area-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าส่วนกลาง (บาท/เดือน)</label>
+              <input id="common-area-fee" type="text" inputmode="decimal" placeholder="เช่น 3,000" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="parking-spaces" class="mb-1 block text-sm font-medium text-gray-700">จำนวนที่จอดรถ (คัน)</label>
+              <input id="parking-spaces" type="text" inputmode="numeric" placeholder="เช่น 2" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="parking-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าที่จอดรถ (บาท/คัน/เดือน)</label>
+              <input id="parking-cost" type="text" inputmode="decimal" placeholder="เช่น 2,000" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4">
+          <p class="mb-3 text-sm font-semibold text-gray-700">ค่าสาธารณูปโภคประมาณการ (บาท/เดือน)</p>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label for="electricity-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าไฟฟ้า</label>
+              <input id="electricity-cost" type="text" inputmode="decimal" placeholder="เช่น 3,000" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="water-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าน้ำ</label>
+              <input id="water-cost" type="text" inputmode="decimal" placeholder="เช่น 500" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="internet-cost" class="mb-1 block text-sm font-medium text-gray-700">ค่าอินเทอร์เน็ต/โทรศัพท์</label>
+              <input id="internet-cost" type="text" inputmode="decimal" placeholder="เช่น 799" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="other-cost" class="mb-1 block text-sm font-medium text-gray-700">อื่น ๆ (ประกัน ฯลฯ)</label>
+              <input id="other-cost" type="text" inputmode="decimal" placeholder="เช่น 1,000" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4">
+          <p class="mb-3 text-sm font-semibold text-gray-700">ค่ามัดจำและค่าเซ้ง</p>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label for="deposit-months" class="mb-1 block text-sm font-medium text-gray-700">ค่ามัดจำ (จำนวนเดือน)</label>
+              <select id="deposit-months" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="1">1 เดือน</option>
+                <option value="2">2 เดือน</option>
+                <option value="3" selected>3 เดือน</option>
+                <option value="4">4 เดือน</option>
+                <option value="5">5 เดือน</option>
+                <option value="6">6 เดือน</option>
+              </select>
+            </div>
+            <div>
+              <label for="advance-months" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่าล่วงหน้า (จำนวนเดือน)</label>
+              <select id="advance-months" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="0">ไม่มี</option>
+                <option value="1" selected>1 เดือน</option>
+                <option value="2">2 เดือน</option>
+              </select>
+            </div>
+            <div>
+              <label for="key-money" class="mb-1 block text-sm font-medium text-gray-700">ค่าเซ้ง (บาท) — ถ้ามี</label>
+              <input id="key-money" type="text" inputmode="decimal" placeholder="เช่น 100,000" value="0" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="contract-months" class="mb-1 block text-sm font-medium text-gray-700">ระยะสัญญาเช่า</label>
+              <select id="contract-months" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="6">6 เดือน</option>
+                <option value="12" selected>1 ปี (12 เดือน)</option>
+                <option value="24">2 ปี (24 เดือน)</option>
+                <option value="36">3 ปี (36 เดือน)</option>
+                <option value="60">5 ปี (60 เดือน)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าเช่าร้าน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณค่าเช่าร้าน</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายรายเดือนรวม</div>
+            <div id="res-total-monthly" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายย้ายเข้า</div>
+            <div id="res-movein" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมตลอดสัญญา</div>
+            <div id="res-contract-total" class="text-xl font-bold text-emerald-700">-</div>
+            <div id="res-contract-label" class="text-xs text-gray-500"></div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่ารายเดือน</span>
+            <span id="res-rent" class="font-medium">-</span>
+          </div>
+          <div id="row-sqm" class="hidden flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่าต่อ ตร.ม.</span>
+            <span id="res-rent-sqm" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าส่วนกลาง</span>
+            <span id="res-common" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าที่จอดรถ</span>
+            <span id="res-parking" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รวมค่าสาธารณูปโภค/เดือน</span>
+            <span id="res-utilities" class="font-medium">-</span>
+          </div>
+          <div id="row-total-sqm" class="hidden flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ต้นทุนรวมต่อ ตร.ม./เดือน</span>
+            <span id="res-total-sqm" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <h3 class="mb-2 text-base font-semibold text-gray-900">รายละเอียดค่าใช้จ่ายย้ายเข้า</h3>
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่ามัดจำ</span>
+            <span id="res-deposit" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่าล่วงหน้า</span>
+            <span id="res-advance" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเซ้ง</span>
+            <span id="res-keymoney" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <h3 id="breakdown-heading" class="mb-2 hidden text-base font-semibold text-gray-900">แจกแจงค่าใช้จ่ายรายเดือน</h3>
+        <ul id="cost-breakdown" class="space-y-2 text-sm text-gray-700"></ul>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าเช่าต่อ ตร.ม. = ค่าเช่ารายเดือน ÷ พื้นที่ (ตร.ม.)</li>
+        <li>ค่าที่จอดรถรวม = จำนวนคัน × ค่าจอดรถต่อคัน</li>
+        <li>ค่ามัดจำ = ค่าเช่ารายเดือน × จำนวนเดือนมัดจำ</li>
+        <li>ค่าเช่าล่วงหน้า = ค่าเช่ารายเดือน × จำนวนเดือนล่วงหน้า</li>
+        <li>ค่าใช้จ่ายย้ายเข้า = ค่ามัดจำ + ค่าเช่าล่วงหน้า + ค่าเซ้ง</li>
+        <li>รวมรายเดือน = ค่าเช่า + ค่าส่วนกลาง + ค่าที่จอดรถ + ค่าไฟ + ค่าน้ำ + ค่าอินเทอร์เน็ต + อื่น ๆ</li>
+        <li>รวมตลอดสัญญา = ค่าใช้จ่ายย้ายเข้า + (รวมรายเดือน × จำนวนเดือนสัญญา)</li>
+      </ul>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าเช่าร้าน/" />
+    <RelatedCalculators currentHref="/คำนวณค่าเช่าร้าน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อช่วยประมาณการค่าใช้จ่ายเช่าร้านค้า/สำนักงานเบื้องต้น
+      ค่าใช้จ่ายจริงขึ้นอยู่กับเงื่อนไขสัญญาเช่า ทำเลที่ตั้ง และข้อตกลงกับเจ้าของพื้นที่
+    </div>
+  </article>
+
+  <script>
+    import { calculateShopRental } from '../../lib/shop-rental-calculator';
+
+    const form = document.getElementById('shop-form');
+    const formError = document.getElementById('form-error');
+    const results = document.getElementById('results');
+
+    const show = (el: HTMLElement | null) => el?.classList.remove('hidden');
+    const hide = (el: HTMLElement | null) => el?.classList.add('hidden');
+
+    const parseNumber = (value: string | undefined | null): number => {
+      const normalized = String(value ?? '').replace(/,/g, '').trim();
+      if (!normalized) return 0;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    };
+
+    const formatMoney = (value: number): string =>
+      `${new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value)} บาท`;
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hide(formError);
+
+      const monthlyRent = parseNumber((document.getElementById('monthly-rent') as HTMLInputElement)?.value);
+
+      if (!Number.isFinite(monthlyRent) || monthlyRent <= 0) {
+        show(formError);
+        hide(results);
+        return;
+      }
+
+      const areaSqm = parseNumber((document.getElementById('area-sqm') as HTMLInputElement)?.value) || 0;
+
+      const result = calculateShopRental({
+        monthlyRent,
+        areaSqm,
+        commonAreaFee: parseNumber((document.getElementById('common-area-fee') as HTMLInputElement)?.value) || 0,
+        parkingSpaces: parseNumber((document.getElementById('parking-spaces') as HTMLInputElement)?.value) || 0,
+        parkingCostPerSpace: parseNumber((document.getElementById('parking-cost') as HTMLInputElement)?.value) || 0,
+        electricityCost: parseNumber((document.getElementById('electricity-cost') as HTMLInputElement)?.value) || 0,
+        waterCost: parseNumber((document.getElementById('water-cost') as HTMLInputElement)?.value) || 0,
+        internetCost: parseNumber((document.getElementById('internet-cost') as HTMLInputElement)?.value) || 0,
+        keyMoney: parseNumber((document.getElementById('key-money') as HTMLInputElement)?.value) || 0,
+        depositMonths: Number((document.getElementById('deposit-months') as HTMLSelectElement)?.value) || 0,
+        advanceMonths: Number((document.getElementById('advance-months') as HTMLSelectElement)?.value) || 0,
+        contractMonths: Number((document.getElementById('contract-months') as HTMLSelectElement)?.value) || 12,
+        otherCost: parseNumber((document.getElementById('other-cost') as HTMLInputElement)?.value) || 0,
+      });
+
+      document.getElementById('res-total-monthly')!.textContent = formatMoney(result.totalMonthlyCost);
+      document.getElementById('res-movein')!.textContent = formatMoney(result.moveInCost);
+      document.getElementById('res-contract-total')!.textContent = formatMoney(result.totalContractCost);
+      document.getElementById('res-contract-label')!.textContent = `(${result.contractMonths} เดือน)`;
+      document.getElementById('res-rent')!.textContent = formatMoney(result.monthlyRent);
+      document.getElementById('res-common')!.textContent = formatMoney(result.commonAreaFee);
+      document.getElementById('res-parking')!.textContent = formatMoney(result.parkingTotal);
+      document.getElementById('res-utilities')!.textContent = formatMoney(result.totalUtilities);
+      document.getElementById('res-deposit')!.textContent = formatMoney(result.depositAmount);
+      document.getElementById('res-advance')!.textContent = formatMoney(result.advanceAmount);
+      document.getElementById('res-keymoney')!.textContent = formatMoney(result.keyMoney);
+
+      // Show per-sqm rows only if area was provided
+      const rowSqm = document.getElementById('row-sqm');
+      const rowTotalSqm = document.getElementById('row-total-sqm');
+      if (areaSqm > 0) {
+        show(rowSqm);
+        show(rowTotalSqm);
+        document.getElementById('res-rent-sqm')!.textContent = formatMoney(result.rentPerSqm) + '/ตร.ม.';
+        document.getElementById('res-total-sqm')!.textContent = formatMoney(result.totalCostPerSqm) + '/ตร.ม.';
+      } else {
+        hide(rowSqm);
+        hide(rowTotalSqm);
+      }
+
+      // Cost breakdown
+      const breakdownEl = document.getElementById('cost-breakdown');
+      const breakdownHeading = document.getElementById('breakdown-heading');
+      if (breakdownEl) {
+        breakdownEl.innerHTML = '';
+        if (result.costBreakdown.length > 0) {
+          show(breakdownHeading);
+          result.costBreakdown.forEach((item) => {
+            const li = document.createElement('li');
+            li.className = 'rounded-md border border-gray-100 bg-gray-50 px-3 py-2 flex justify-between';
+            li.innerHTML = `<span>${item.label}</span><span class="font-medium">${formatMoney(item.amount)}</span>`;
+            breakdownEl.appendChild(li);
+          });
+        } else {
+          hide(breakdownHeading);
+        }
+      }
+
+      show(results);
+      results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof (window as any).trackCalculatorStart === 'function') (window as any).trackCalculatorStart('shop_rental');
+      if (typeof (window as any).trackCalculatorComplete === 'function') (window as any).trackCalculatorComplete('shop_rental', result.totalMonthlyCost);
+      if (typeof (window as any).trackCalculatorUsed === 'function') (window as any).trackCalculatorUsed('shop_rental');
+      if (typeof (window as any).trackResultViewed === 'function') (window as any).trackResultViewed('shop_rental');
+    });
+  </script>
+</BaseLayout>

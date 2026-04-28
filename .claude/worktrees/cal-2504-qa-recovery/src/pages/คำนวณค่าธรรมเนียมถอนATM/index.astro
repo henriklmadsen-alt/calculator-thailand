@@ -1,0 +1,132 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมถอน ATM 2569 | ค่าธรรมเนียม ATM ต่างธนาคาร | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียมถอนเงิน ATM ต่างธนาคาร ในประเทศและต่างประเทศ ต่อเดือนและต่อปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมถอนATM/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียมถอน ATM ต่างธนาคารในไทยเป็นเท่าไร?',
+    answer: 'การถอน ATM ต่างธนาคารในประเทศไทยมีค่าธรรมเนียมประมาณ 20-25 บาทต่อครั้ง ขึ้นอยู่กับธนาคารและเครือข่าย ATM ส่วนการถอนในธนาคารเดียวกันโดยทั่วไปไม่มีค่าธรรมเนียม',
+  },
+  {
+    question: 'ถอนเงิน ATM ในต่างประเทศมีค่าใช้จ่ายอะไรบ้าง?',
+    answer: 'การถอนเงิน ATM ในต่างประเทศมีค่าใช้จ่าย 2 ส่วน คือ ค่าธรรมเนียมถอนของธนาคารไทย (ประมาณ 150-200 บาท) และค่า FX fee จากการแลกเปลี่ยนสกุลเงิน (1-2%) บางธนาคารอาจมีค่าธรรมเนียมเพิ่มเติมจาก ATM ต่างประเทศด้วย',
+  },
+  {
+    question: 'วิธีลดค่าธรรมเนียม ATM ทำได้อย่างไร?',
+    answer: 'ถอนเงินในจำนวนมากครั้งเดียวแทนการถอนบ่อยครั้ง ใช้ ATM ของธนาคารตัวเองเมื่อทำได้ สมัครบัญชีที่มีสิทธิ์ถอน ATM ต่างธนาคารฟรีตามจำนวนครั้งที่กำหนด หรือใช้พร้อมเพย์โอนเงินไปบัญชีที่ต้องการแทน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมถอน ATM',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมถอนATM">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าธรรมเนียมถอน ATM 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณค่าธรรมเนียมถอนเงิน ATM ทุกประเภท รวมต่อเดือนและต่อปี</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div>
+          <label for="same-bank" class="mb-1 block text-sm font-medium text-gray-700">ถอน ATM ธนาคารเดียวกัน (ครั้ง/เดือน)</label>
+          <input id="same-bank" type="text" inputmode="numeric" placeholder="0" value="0"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียม: ฟรี</p>
+        </div>
+        <div>
+          <label for="diff-bank" class="mb-1 block text-sm font-medium text-gray-700">ถอน ATM ต่างธนาคาร (ครั้ง/เดือน)</label>
+          <input id="diff-bank" type="text" inputmode="numeric" placeholder="0" value="0"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียม: 20 บาท/ครั้ง</p>
+        </div>
+        <div>
+          <label for="abroad" class="mb-1 block text-sm font-medium text-gray-700">ถอน ATM ต่างประเทศ (ครั้ง/เดือน)</label>
+          <input id="abroad" type="text" inputmode="numeric" placeholder="0" value="0"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียม: 200 บาท/ครั้ง (เฉลี่ย)</p>
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ค่าธรรมเนียม ATM รวม</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวม/เดือน</div>
+            <div id="res-monthly" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวม/ปี</div>
+            <div id="res-yearly" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <div id="res-breakdown" class="mt-4 space-y-1 text-sm text-gray-700"></div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมถอนATM/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const sameBank = parseNum((document.getElementById('same-bank') as HTMLInputElement).value);
+    const diffBank = parseNum((document.getElementById('diff-bank') as HTMLInputElement).value);
+    const abroad = parseNum((document.getElementById('abroad') as HTMLInputElement).value);
+
+    const sameFee = sameBank * 0;
+    const diffFee = diffBank * 20;
+    const abroadFee = abroad * 200;
+    const monthly = sameFee + diffFee + abroadFee;
+
+    const lines = [];
+    if (sameBank > 0) lines.push(`• ATM ธนาคารเดียวกัน ${sameBank} ครั้ง: ${fmt(sameFee)}`);
+    if (diffBank > 0) lines.push(`• ATM ต่างธนาคาร ${diffBank} ครั้ง × ฿20: ${fmt(diffFee)}`);
+    if (abroad > 0) lines.push(`• ATM ต่างประเทศ ${abroad} ครั้ง × ฿200: ${fmt(abroadFee)}`);
+
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-yearly')!.textContent = fmt(monthly * 12);
+    document.getElementById('res-breakdown')!.innerHTML = lines.join('<br/>') || 'ไม่มีค่าธรรมเนียม';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

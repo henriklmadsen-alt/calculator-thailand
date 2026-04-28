@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณภาษีนิติบุคคล | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีเงินได้นิติบุคคล Corporate Income Tax อัตรา 20% กำไรสุทธิ ปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0453-ภาษีนิติบุคคล/`;
+
+const faqData = [
+  { question: 'อัตราภาษีนิติบุคคลในไทยเท่าไหร่?', answer: 'บริษัททั่วไปเสียภาษีนิติบุคคล 20% ของกำไรสุทธิ SME ทุนไม่เกิน 5 ล้านบาท รายได้ไม่เกิน 30 ล้านบาท เสียภาษีขั้นบันได 15-20%' },
+  { question: 'SME ได้สิทธิ์อัตราภาษีพิเศษอย่างไร?', answer: 'SME กำไรไม่เกิน 300,000 บาท เสียภาษี 0% กำไร 300,001-3,000,000 บาท เสียภาษี 15% กำไรเกิน 3,000,000 บาท เสียภาษี 20%' },
+  { question: 'กำไรสุทธิคำนวณอย่างไร?', answer: 'กำไรสุทธิ = รายได้ - ค่าใช้จ่ายที่ยอมรับได้ตามกฎหมายภาษี ค่าใช้จ่ายบางอย่างหักได้ 1.5 เท่าหรือ 2 เท่า เช่น ค่าฝึกอบรม R&D' },
+  { question: 'ยื่นภาษีนิติบุคคลเมื่อไหร่?', answer: 'ยื่นแบบ ภ.ง.ด.50 ภายใน 150 วันหลังสิ้นรอบบัญชี (ปกติ 31 พฤษภาคมสำหรับปีบัญชีสิ้น 31 ธันวาคม) และ ภ.ง.ด.51 ครึ่งปีภายใน 31 สิงหาคม' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีนิติบุคคล">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณภาษีเงินได้นิติบุคคล</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณภาษีนิติบุคคลตามกำไรสุทธิ สำหรับบริษัทและ SME</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="net_profit" class="block text-sm font-medium text-gray-700 mb-1">กำไรสุทธิก่อนภาษี (บาท)</label><input type="text" id="net_profit" inputmode="decimal" placeholder="เช่น 2000000" value="2000000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div>
+          <label for="company_type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทบริษัท</label>
+          <select id="company_type" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="sme" selected>SME (ทุน ≤5ล้าน, รายได้ ≤30ล้าน)</option>
+            <option value="normal">บริษัทปกติ (อัตราคงที่ 20%)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3">
+            <p class="text-sm text-gray-600">ภาษีนิติบุคคล</p>
+            <p id="cit_amount" class="font-bold">-</p>
+          </div>
+          <div class="bg-blue-50 rounded p-3">
+            <p class="text-sm text-gray-600">อัตราภาษีจริง</p>
+            <p id="effective_rate" class="font-bold">-</p>
+          </div>
+          <div class="bg-indigo-50 rounded p-3 col-span-2">
+            <p class="text-sm text-gray-600">กำไรสุทธิหลังภาษี</p>
+            <p id="after_tax" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const netProfit = parseFloat((document.getElementById('net_profit') as HTMLInputElement).value) || 0;
+      const companyType = (document.getElementById('company_type') as HTMLSelectElement).value;
+
+      let citAmount = 0;
+      if (companyType === 'sme') {
+        if (netProfit <= 300000) {
+          citAmount = 0;
+        } else if (netProfit <= 3000000) {
+          citAmount = (netProfit - 300000) * 0.15;
+        } else {
+          citAmount = (3000000 - 300000) * 0.15 + (netProfit - 3000000) * 0.20;
+        }
+      } else {
+        citAmount = netProfit * 0.20;
+      }
+
+      const afterTax = netProfit - citAmount;
+      const effectiveRate = netProfit > 0 ? (citAmount / netProfit * 100) : 0;
+
+      (document.getElementById('cit_amount') as HTMLElement).textContent = Math.round(citAmount).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('effective_rate') as HTMLElement).textContent = effectiveRate.toFixed(2) + '%';
+      (document.getElementById('after_tax') as HTMLElement).textContent = Math.round(afterTax).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('corporate-income-tax');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
+</BaseLayout>

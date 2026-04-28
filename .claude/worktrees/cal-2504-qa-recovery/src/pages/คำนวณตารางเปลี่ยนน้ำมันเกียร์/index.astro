@@ -1,0 +1,333 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณตารางเปลี่ยนน้ำมันเกียร์รถยนต์ ปี 2569 | Transmission Fluid | Kamnuanlek';
+const pageDescription = 'คำนวณช่วงเปลี่ยนน้ำมันเกียร์ตามประเภทเกียร์และระยะทาง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณตารางเปลี่ยนน้ำมันเกียร์/`;
+
+const faqData = [
+  {
+    question: 'น้ำมันเกียร์อัตโนมัติควรเปลี่ยนทุกกี่กิโลเมตร?',
+    answer: 'น้ำมันเกียร์อัตโนมัติ (ATF) ควรเปลี่ยนทุก 40,000 กม. สำหรับการขับในเมืองที่มีความร้อนสูง บางผู้ผลิตอาจระบุ 60,000–80,000 กม. แต่ในสภาพอากาศร้อนของไทยและการขับในเมืองที่หนักหน่วง แนะนำให้เปลี่ยนที่ 40,000 กม. เพื่อยืดอายุเกียร์อัตโนมัติซึ่งมีราคาซ่อมสูงมาก',
+  },
+  {
+    question: 'CVT กับเกียร์อัตโนมัติใช้น้ำมันเกียร์เหมือนกันหรือไม่?',
+    answer: 'ไม่ CVT (Continuously Variable Transmission) ต้องใช้น้ำมันเกียร์ชนิดพิเศษสำหรับ CVT โดยเฉพาะ ไม่สามารถใช้ ATF ทั่วไปแทนได้ การใช้น้ำมันเกียร์ผิดชนิดจะทำให้เกียร์ CVT เสียหายอย่างรุนแรง ควรอ้างอิงประเภทน้ำมันเกียร์ที่ผู้ผลิตแนะนำในคู่มือรถยนต์เสมอ',
+  },
+  {
+    question: 'อาการอะไรบ่งบอกว่าน้ำมันเกียร์เสื่อมสภาพ?',
+    answer: 'อาการที่ควรระวัง ได้แก่ เกียร์กระตุกหรือเปลี่ยนเกียร์ไม่นุ่มนวล เกียร์ลื่นหรือไม่จับ น้ำมันเกียร์มีสีดำหรือมีกลิ่นไหม้ (ปกติควรเป็นสีแดงใส) รถวิ่งช้ากว่าที่ควร และมีเสียงดังผิดปกติจากกล่องเกียร์ ควรให้ช่างตรวจสอบทันทีหากพบอาการเหล่านี้',
+  },
+  {
+    question: 'เกียร์ DCT ต้องดูแลอย่างไรเป็นพิเศษ?',
+    answer: 'เกียร์ DCT (Dual Clutch Transmission) ต้องการน้ำมันเกียร์ DCF (Dual Clutch Fluid) ชนิดพิเศษ และควรเปลี่ยนทุก 40,000 กม. DCT มีคลัตช์เปียกที่ต้องการการหล่อลื่นที่เหมาะสม การขับในการจราจรติดขัดบ่อยอาจทำให้น้ำมันเกียร์เสื่อมเร็ว โดยเฉพาะในช่วงออกตัวซ้ำๆ ที่คลัตช์ทำงานหนัก',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณตารางเปลี่ยนน้ำมันเกียร์รถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณตารางเปลี่ยนน้ำมันเกียร์รถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณตารางเปลี่ยนน้ำมันเกียร์รถยนต์
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณกำหนดการเปลี่ยนน้ำมันเกียร์ตามประเภทระบบเกียร์และระยะทาง พร้อมคาดการณ์ค่าใช้จ่ายรายปี
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="trans-type" class="block text-sm font-medium text-gray-700 mb-1">
+              ประเภทระบบเกียร์
+            </label>
+            <select
+              id="trans-type"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="manual">เกียร์ธรรมดา (50,000 กม.)</option>
+              <option value="automatic">เกียร์อัตโนมัติ (40,000 กม.)</option>
+              <option value="cvt">CVT (40,000 กม.)</option>
+              <option value="dct">DCT (40,000 กม.)</option>
+            </select>
+          </div>
+          <div>
+            <label for="last-service-year" class="block text-sm font-medium text-gray-700 mb-1">
+              ปีที่เปลี่ยนครั้งล่าสุด (พ.ศ.)
+            </label>
+            <input
+              type="text"
+              id="last-service-year"
+              inputmode="numeric"
+              placeholder="เช่น 2567"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="last-service-month" class="block text-sm font-medium text-gray-700 mb-1">
+              เดือนที่เปลี่ยนครั้งล่าสุด
+            </label>
+            <select
+              id="last-service-month"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="1">มกราคม</option>
+              <option value="2">กุมภาพันธ์</option>
+              <option value="3">มีนาคม</option>
+              <option value="4" selected>เมษายน</option>
+              <option value="5">พฤษภาคม</option>
+              <option value="6">มิถุนายน</option>
+              <option value="7">กรกฎาคม</option>
+              <option value="8">สิงหาคม</option>
+              <option value="9">กันยายน</option>
+              <option value="10">ตุลาคม</option>
+              <option value="11">พฤศจิกายน</option>
+              <option value="12">ธันวาคม</option>
+            </select>
+          </div>
+          <div>
+            <label for="last-mileage" class="block text-sm font-medium text-gray-700 mb-1">
+              เลขไมล์ตอนที่เปลี่ยนครั้งล่าสุด (กม.)
+            </label>
+            <input
+              type="text"
+              id="last-mileage"
+              inputmode="decimal"
+              placeholder="เช่น 80000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="monthly-km" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะทางเฉลี่ยต่อเดือน (กม.)
+            </label>
+            <input
+              type="text"
+              id="monthly-km"
+              inputmode="decimal"
+              placeholder="เช่น 2000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="service-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าบริการเปลี่ยนน้ำมันเกียร์ (บาท)
+            </label>
+            <input
+              type="text"
+              id="service-cost"
+              inputmode="decimal"
+              placeholder="เช่น 2500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-blue-700 font-medium mb-1">กำหนดเปลี่ยนครั้งถัดไป</div>
+            <div id="res-next-km" class="text-2xl font-bold text-blue-800">-</div>
+            <div class="text-xs text-blue-600 mt-1">กิโลเมตร</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4">
+            <div class="text-sm text-purple-700 font-medium mb-1">ระยะทางที่เหลือ</div>
+            <div id="res-remaining-km" class="text-2xl font-bold text-purple-800">-</div>
+            <div class="text-xs text-purple-600 mt-1">กิโลเมตร</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-green-700 font-medium mb-1">เดือนที่เหลือโดยประมาณ</div>
+            <div id="res-remaining-months" class="text-2xl font-bold text-green-800">-</div>
+            <div class="text-xs text-green-600 mt-1">เดือน</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <div class="text-sm text-orange-700 font-medium mb-1">ค่าใช้จ่ายต่อปี (เฉลี่ย)</div>
+            <div id="res-annual-cost" class="text-2xl font-bold text-orange-800">-</div>
+            <div class="text-xs text-orange-600 mt-1">บาท/ปี</div>
+          </div>
+        </div>
+        <div id="status-panel" class="rounded-lg p-4 border">
+          <div id="status-label" class="text-sm font-medium mb-1">สถานะน้ำมันเกียร์</div>
+          <div id="status-message" class="text-base font-semibold">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">น้ำมันเกียร์รถยนต์และความสำคัญต่อระบบส่งกำลัง</h2>
+      <p>
+        น้ำมันเกียร์ทำหน้าที่หล่อลื่นและระบายความร้อนให้กับชิ้นส่วนในระบบเกียร์
+        การเปลี่ยนตามกำหนดช่วยยืดอายุเกียร์ซึ่งมีต้นทุนซ่อมสูง
+        โดยเฉพาะเกียร์อัตโนมัติและ CVT ที่อาจมีค่าซ่อมหลักหมื่นถึงหลักแสนบาท
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ระยะเปลี่ยนน้ำมันเกียร์ตามประเภท</h3>
+      <div class="bg-gray-50 rounded-lg p-4 my-4 space-y-2">
+        <p class="font-medium">เกียร์ธรรมดา (Manual): ทุก 50,000 กม.</p>
+        <p class="font-medium">เกียร์อัตโนมัติ (Automatic): ทุก 40,000 กม.</p>
+        <p class="font-medium">CVT: ทุก 40,000 กม. (ใช้ CVTF เฉพาะชนิด)</p>
+        <p class="font-semibold text-primary-700">DCT: ทุก 40,000 กม. (ใช้ DCF เฉพาะชนิด)</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ผลของการละเลยการเปลี่ยนน้ำมันเกียร์</h3>
+      <p>
+        น้ำมันเกียร์ที่เสื่อมสภาพสูญเสียคุณสมบัติหล่อลื่น ทำให้เกิดการสึกหรอของชิ้นส่วนโลหะ
+        ความร้อนสะสมในระบบเกียร์สูงขึ้น และอาจนำไปสู่การล้มเหลวของระบบเกียร์โดยสมบูรณ์
+        ค่าเปลี่ยนน้ำมันเกียร์ตามกำหนดเพียงไม่กี่พันบาทสามารถป้องกันค่าซ่อมเกียร์ที่อาจสูงถึง 50,000–150,000 บาทได้
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณตารางเปลี่ยนน้ำมันเกียร์/" />
+    <RelatedCalculators currentHref="/คำนวณตารางเปลี่ยนน้ำมันเกียร์/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการทั่วไป
+      กำหนดการเปลี่ยนที่แน่นอนควรอ้างอิงตามคู่มือรถยนต์ของผู้ผลิต
+      ควรใช้น้ำมันเกียร์ตรงตามชนิดที่ผู้ผลิตแนะนำเท่านั้น
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number, decimals = 2): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
+    }
+
+    // km interval per transmission type
+    const TRANS_INTERVAL: Record<string, number> = {
+      manual: 50000,
+      automatic: 40000,
+      cvt: 40000,
+      dct: 40000,
+    };
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const transType = (document.getElementById('trans-type') as HTMLSelectElement).value;
+      const lastYear = parseNum((document.getElementById('last-service-year') as HTMLInputElement).value);
+      const lastMonth = parseInt((document.getElementById('last-service-month') as HTMLSelectElement).value, 10);
+      const lastMileage = parseNum((document.getElementById('last-mileage') as HTMLInputElement).value);
+      const monthlyKm = parseNum((document.getElementById('monthly-km') as HTMLInputElement).value);
+      const serviceCost = parseNum((document.getElementById('service-cost') as HTMLInputElement).value);
+
+      if (lastYear <= 0 || lastMileage <= 0 || monthlyKm <= 0) {
+        alert('กรุณากรอกปีที่เปลี่ยน เลขไมล์ตอนเปลี่ยน และระยะทางต่อเดือน');
+        return;
+      }
+
+      const interval = TRANS_INTERVAL[transType] ?? 40000;
+      const nextDueKm = lastMileage + interval;
+
+      // Current date in BE
+      const now = new Date();
+      const currentYear = now.getFullYear() + 543;
+      const currentMonth = now.getMonth() + 1;
+      const currentTotalMonths = currentYear * 12 + (currentMonth - 1);
+      const lastTotalMonths = lastYear * 12 + (lastMonth - 1);
+      const monthsElapsed = currentTotalMonths - lastTotalMonths;
+
+      const currentMileageEst = lastMileage + monthsElapsed * monthlyKm;
+      const remainingKm = Math.max(0, nextDueKm - currentMileageEst);
+      const remainingMonths = monthlyKm > 0 ? remainingKm / monthlyKm : 0;
+
+      // Annual cost amortized: cost / (interval / (monthlyKm * 12))
+      const annualKm = monthlyKm * 12;
+      const yearsBetweenService = annualKm > 0 ? interval / annualKm : 0;
+      const annualCost = serviceCost > 0 && yearsBetweenService > 0 ? serviceCost / yearsBetweenService : 0;
+
+      (document.getElementById('res-next-km') as HTMLElement).textContent = fmt(nextDueKm, 0);
+      (document.getElementById('res-remaining-km') as HTMLElement).textContent = fmt(remainingKm, 0);
+      (document.getElementById('res-remaining-months') as HTMLElement).textContent = fmt(remainingMonths, 1);
+      (document.getElementById('res-annual-cost') as HTMLElement).textContent =
+        annualCost > 0 ? fmt(annualCost, 0) : 'ไม่ระบุ';
+
+      const panel = document.getElementById('status-panel') as HTMLElement;
+      const label = document.getElementById('status-label') as HTMLElement;
+      const message = document.getElementById('status-message') as HTMLElement;
+
+      const isOverdue = remainingKm <= 0;
+      const isDueSoon = remainingMonths < 3;
+
+      if (isOverdue) {
+        panel.className = 'rounded-lg p-4 border border-red-300 bg-red-50';
+        label.className = 'text-sm font-medium mb-1 text-red-700';
+        label.textContent = 'สถานะน้ำมันเกียร์ — เกินกำหนดแล้ว!';
+        message.className = 'text-base font-semibold text-red-800';
+        const overdueKm = Math.abs(remainingKm - 0) + (currentMileageEst - nextDueKm);
+        message.textContent = `เกินกำหนดมาแล้วประมาณ ${fmt(currentMileageEst - nextDueKm, 0)} กม. — ควรนัดบริการโดยเร็ว`;
+      } else if (isDueSoon) {
+        panel.className = 'rounded-lg p-4 border border-orange-300 bg-orange-50';
+        label.className = 'text-sm font-medium mb-1 text-orange-700';
+        label.textContent = 'สถานะน้ำมันเกียร์ — ใกล้ถึงกำหนด';
+        message.className = 'text-base font-semibold text-orange-800';
+        message.textContent = `อีกประมาณ ${fmt(remainingMonths, 1)} เดือน (${fmt(remainingKm, 0)} กม.) ถึงกำหนด`;
+      } else {
+        panel.className = 'rounded-lg p-4 border border-green-300 bg-green-50';
+        label.className = 'text-sm font-medium mb-1 text-green-700';
+        label.textContent = 'สถานะน้ำมันเกียร์ — ยังอยู่ในเกณฑ์ดี';
+        message.className = 'text-base font-semibold text-green-800';
+        message.textContent = `ยังใช้งานได้อีกประมาณ ${fmt(remainingMonths, 1)} เดือน (${fmt(remainingKm, 0)} กม.)`;
+      }
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+
+    document.querySelectorAll('#calculator-form input').forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

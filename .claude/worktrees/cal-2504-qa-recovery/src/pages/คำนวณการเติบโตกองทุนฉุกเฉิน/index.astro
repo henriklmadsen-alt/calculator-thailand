@@ -1,0 +1,240 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณกองทุนฉุกเฉิน 2569 | เป้าหมายและการเติบโต | Kamnuanlek';
+const pageDescription = 'คำนวณเป้าหมายกองทุนฉุกเฉิน 3-6 เท่าค่าใช้จ่ายรายเดือน และการเติบโตจากการออมสม่ำเสมอ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณการเติบโตกองทุนฉุกเฉิน/`;
+
+const faqData = [
+  {
+    question: 'กองทุนฉุกเฉินควรมีเท่าไหร่?',
+    answer: 'ผู้เชี่ยวชาญด้านการเงินแนะนำให้มีกองทุนฉุกเฉิน 3-6 เท่าของค่าใช้จ่ายรายเดือน ผู้มีรายได้ไม่แน่นอนหรือฟรีแลนซ์ควรเก็บ 6-12 เท่า เพื่อรองรับกรณีตกงาน เจ็บป่วย หรือเหตุการณ์ฉุกเฉินที่คาดไม่ถึง',
+  },
+  {
+    question: 'ควรเก็บกองทุนฉุกเฉินไว้ที่ไหน?',
+    answer: 'ควรเก็บในบัญชีที่เข้าถึงได้ทันทีและมีความเสี่ยงต่ำ เช่น บัญชีออมทรัพย์พิเศษ กองทุนตลาดเงิน (Money Market Fund) หรือเงินฝากประจำระยะสั้น 1-3 เดือน ไม่ควรนำไปลงทุนในหุ้นหรือกองทุนที่มีความผันผวนสูง',
+  },
+  {
+    question: 'หากใช้กองทุนฉุกเฉินไปแล้วควรทำอย่างไร?',
+    answer: 'ควรเติมเงินกลับเข้ากองทุนฉุกเฉินให้ครบเป้าหมายโดยเร็วที่สุด ตั้งแผนออมเพิ่มชั่วคราวจนถึงระดับเป้าหมายก่อนกลับมาออมเพื่อเป้าหมายอื่น การมีกองทุนฉุกเฉินที่ครบถ้วนช่วยป้องกันการก่อหนี้ในยามจำเป็น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกองทุนฉุกเฉิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการเติบโตกองทุนฉุกเฉิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณกองทุนฉุกเฉิน 2569 — เป้าหมายและการเติบโต
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเป้าหมายกองทุนฉุกเฉิน 3-6 เท่าค่าใช้จ่ายรายเดือน และระยะเวลาที่จะถึงเป้าหมาย
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="emergency-fund-form" class="space-y-5">
+        <p id="emergency-fund-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ef-expense" class="block text-sm font-medium text-gray-700 mb-1">ค่าใช้จ่ายรายเดือน (บาท)</label>
+            <input type="text" id="ef-expense" inputmode="numeric" placeholder="เช่น 25,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="ef-expense-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ef-months-reserve" class="block text-sm font-medium text-gray-700 mb-1">จำนวนเดือนสำรอง</label>
+            <select id="ef-months-reserve" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+              <option value="3">3 เดือน</option>
+              <option value="4">4 เดือน</option>
+              <option value="5">5 เดือน</option>
+              <option value="6" selected>6 เดือน</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ef-current" class="block text-sm font-medium text-gray-700 mb-1">เงินออมปัจจุบัน (บาท)</label>
+            <input type="text" id="ef-current" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+          <div>
+            <label for="ef-monthly-add" class="block text-sm font-medium text-gray-700 mb-1">ออมเพิ่มรายเดือน (บาท)</label>
+            <input type="text" id="ef-monthly-add" inputmode="numeric" placeholder="เช่น 5,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="ef-monthly-add-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ef-rate" class="block text-sm font-medium text-gray-700 mb-1">อัตราดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="ef-rate" inputmode="decimal" placeholder="เช่น 1.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+        </div>
+
+        <button type="submit" id="emergency-fund-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เป้าหมายกองทุน</div>
+            <div id="res-target" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดปัจจุบัน</div>
+            <div id="res-current" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ขาดอีก</div>
+            <div id="res-gap" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ระยะเวลาถึงเป้า</div>
+            <div id="res-timeline" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">% สำเร็จแล้ว</div>
+            <div id="res-pct" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ทำไมต้องมีกองทุนฉุกเฉิน</h2>
+      <p>กองทุนฉุกเฉินคือเงินสำรองที่ช่วยให้คุณรับมือกับเหตุการณ์ไม่คาดฝัน เช่น การตกงาน ค่าซ่อมรถ หรือค่ารักษาพยาบาล โดยไม่ต้องก่อหนี้หรือขายสินทรัพย์ในเวลาที่ไม่เหมาะสม</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">การคำนวณเป้าหมายกองทุนฉุกเฉิน</h3>
+      <p>เป้าหมาย = ค่าใช้จ่ายรายเดือน × จำนวนเดือนสำรอง<br />การเติบโต: ยอดถัดไป = ยอดปัจจุบัน × (1 + r/12) + เงินออมรายเดือน จนกว่าจะถึงเป้าหมาย</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ใครควรมีกองทุนฉุกเฉินมากกว่า 6 เดือน</h3>
+      <p>ฟรีแลนซ์ เจ้าของกิจการ ผู้มีรายได้ไม่แน่นอน หรือผู้ที่มีภาระค่าใช้จ่ายสูง ควรเก็บกองทุนฉุกเฉิน 9-12 เดือนเพื่อความมั่นคงทางการเงินที่ดีกว่า</p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณการเติบโตกองทุนฉุกเฉิน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น อัตราดอกเบี้ยจริงอาจแตกต่างตามเงื่อนไขของธนาคาร ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+    const form = document.getElementById('emergency-fund-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('emergency-fund-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('emergency-fund-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const expenseInput = document.getElementById('ef-expense') as HTMLInputElement;
+    const currentInput = document.getElementById('ef-current') as HTMLInputElement;
+    const monthlyAddInput = document.getElementById('ef-monthly-add') as HTMLInputElement;
+    const rateInput = document.getElementById('ef-rate') as HTMLInputElement;
+    function setFieldError(id: string, msg: string) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.remove('hidden'); }
+    function clearFieldError(id: string) { const el = document.getElementById(id); if (!el) return; el.textContent = ''; el.classList.add('hidden'); }
+    function clearValidation() { formError.classList.add('hidden'); ['ef-expense-error','ef-monthly-add-error'].forEach(clearFieldError); }
+    [expenseInput, currentInput, monthlyAddInput, rateInput].forEach(input => { input.addEventListener('input', clearValidation); });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); clearValidation();
+      const expense = parseNum(expenseInput.value);
+      const reserveMonths = parseInt((document.getElementById('ef-months-reserve') as HTMLSelectElement).value) || 6;
+      const current = parseNum(currentInput.value);
+      const monthlyAdd = parseNum(monthlyAddInput.value);
+      const annualRate = parseFloat(rateInput.value.replace(/,/g, '')) || 0;
+      let hasError = false;
+      if (expense <= 0) { setFieldError('ef-expense-error', 'กรุณากรอกค่าใช้จ่ายรายเดือน'); hasError = true; }
+      if (monthlyAdd <= 0 && current <= 0) { setFieldError('ef-monthly-add-error', 'กรุณากรอกเงินออมเพิ่มรายเดือน'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); return; }
+      submitBtn.disabled = true; submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('emergency-fund-growth');
+      const target = expense * reserveMonths;
+      const gap = Math.max(0, target - current);
+      const pct = target > 0 ? Math.min(100, (current / target) * 100) : 0;
+      // Calculate months to reach target
+      let timeline = 0;
+      if (current >= target) {
+        timeline = 0;
+      } else if (monthlyAdd <= 0) {
+        timeline = -1; // cannot reach
+      } else {
+        const r = annualRate / 100;
+        let balance = current;
+        let months = 0;
+        const maxMonths = 600;
+        while (balance < target && months < maxMonths) {
+          balance = balance * (1 + r / 12) + monthlyAdd;
+          months++;
+        }
+        timeline = months < maxMonths ? months : -1;
+      }
+      (document.getElementById('res-target') as HTMLElement).textContent = fmt(target) + ' บาท';
+      (document.getElementById('res-current') as HTMLElement).textContent = fmt(current) + ' บาท';
+      (document.getElementById('res-gap') as HTMLElement).textContent = fmt(gap) + ' บาท';
+      const timelineEl = document.getElementById('res-timeline') as HTMLElement;
+      if (timeline === 0) {
+        timelineEl.textContent = 'ถึงเป้าแล้ว!';
+      } else if (timeline === -1) {
+        timelineEl.textContent = 'ไม่สามารถคำนวณได้';
+      } else {
+        const yrs = Math.floor(timeline / 12);
+        const mos = timeline % 12;
+        timelineEl.textContent = (yrs > 0 ? yrs + ' ปี ' : '') + (mos > 0 ? mos + ' เดือน' : '');
+      }
+      (document.getElementById('res-pct') as HTMLElement).textContent = pct.toFixed(1) + '%';
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false; submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('emergency-fund-growth');
+      trackCalculatorUsed('emergency-fund-growth');
+    });
+  </script>
+</BaseLayout>

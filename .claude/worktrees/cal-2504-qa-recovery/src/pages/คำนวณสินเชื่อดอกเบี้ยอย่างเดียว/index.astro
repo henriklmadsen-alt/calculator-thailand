@@ -1,0 +1,194 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณสินเชื่อดอกเบี้ยอย่างเดียว (Interest-Only) 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่างวดสินเชื่อแบบจ่ายดอกเบี้ยอย่างเดียว (Interest-Only Loan) เปรียบเทียบกับสินเชื่อปกติ เหมาะสำหรับนักลงทุนอสังหาฯ และสินเชื่อระยะสั้น';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณสินเชื่อดอกเบี้ยอย่างเดียว/`;
+
+const faqData = [
+  {
+    question: 'สินเชื่อดอกเบี้ยอย่างเดียวคืออะไร?',
+    answer: 'สินเชื่อ Interest-Only คือการผ่อนเฉพาะดอกเบี้ยในช่วงแรก ไม่มีการลดต้น เงินต้นคงที่ตลอดช่วง IO เหมาะสำหรับนักลงทุนที่ต้องการกระแสเงินสดสูงในช่วงเริ่มต้น หรือรอขายทรัพย์ภายในเวลาที่กำหนด',
+  },
+  {
+    question: 'ข้อเสียของสินเชื่อ Interest-Only คืออะไร?',
+    answer: 'ข้อเสียหลักคือเงินต้นไม่ลดลงในช่วง IO เมื่อหมดช่วง IO ค่างวดจะกระโดดสูงขึ้นมากเพราะต้องผ่อนทั้งต้นและดอกในระยะเวลาที่สั้นลง และดอกเบี้ยรวมตลอดสัญญาสูงกว่าสินเชื่อปกติ',
+  },
+  {
+    question: 'ในไทยมีสินเชื่อ Interest-Only หรือไม่?',
+    answer: 'สินเชื่อ Interest-Only แบบเต็มรูปแบบไม่แพร่หลายในไทย แต่สินเชื่อบ้านหลายแห่งมีลักษณะคล้ายกัน เช่น ปีแรกผ่อนดอกเบี้ยอย่างเดียว หรือผ่อนต่ำมากในช่วงก่อสร้าง (Pre-Finance) แล้วปรับเป็นปกติเมื่อโอน',
+  },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณสินเชื่อดอกเบี้ยอย่างเดียว',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อดอกเบี้ยอย่างเดียว">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณสินเชื่อดอกเบี้ยอย่างเดียว (Interest-Only Loan)
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">เปรียบเทียบค่างวดและต้นทุนรวมระหว่างสินเชื่อ IO กับสินเชื่อแบบปกติ</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="io-form" class="space-y-5">
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วงเงินกู้ (บาท)</label>
+          <input type="text" id="principal" inputmode="numeric" placeholder="เช่น 5,000,000"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="rate" inputmode="decimal" placeholder="เช่น 6.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="io-years" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ช่วง IO (ปี)</label>
+            <input type="text" id="io-years" inputmode="numeric" placeholder="เช่น 5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="total-years" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลารวม (ปี)</label>
+            <input type="text" id="total-years" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+            <h3 class="font-semibold text-blue-700 dark:text-blue-300 mb-3">สินเชื่อ Interest-Only</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">ค่างวดช่วง IO/เดือน</span><span id="res-io-pay" class="font-bold text-blue-700 dark:text-blue-300">-</span></div>
+              <div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">ค่างวดหลัง IO/เดือน</span><span id="res-after-io-pay" class="font-bold">-</span></div>
+              <div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">ดอกเบี้ยรวม</span><span id="res-io-interest" class="font-bold text-red-600">-</span></div>
+            </div>
+          </div>
+          <div class="border border-green-200 dark:border-green-700 rounded-lg p-4">
+            <h3 class="font-semibold text-green-700 dark:text-green-300 mb-3">สินเชื่อปกติ (ลดต้นลดดอก)</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">ค่างวด/เดือน</span><span id="res-normal-pay" class="font-bold text-green-700 dark:text-green-300">-</span></div>
+              <div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">ค่างวดคงที่ตลอด</span><span class="text-xs text-gray-500">✓</span></div>
+              <div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">ดอกเบี้ยรวม</span><span id="res-normal-interest" class="font-bold text-red-600">-</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="extra-cost" class="mt-4 p-3 rounded-lg text-sm bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-300"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Interest-Only Loan เหมาะกับใคร?</h2>
+      <p>สินเชื่อแบบ IO เหมาะสำหรับนักลงทุนอสังหาริมทรัพย์ที่ซื้อเพื่อปล่อยเช่าและวางแผนขายก่อนหมดช่วง IO หรือผู้ที่มีรายได้ไม่สม่ำเสมอแต่คาดว่าจะมีเงินก้อนชำระต้นในอนาคต ไม่แนะนำสำหรับผู้ซื้อบ้านเพื่ออยู่อาศัยระยะยาวเพราะต้นทุนรวมสูงกว่ามาก</p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณสินเชื่อดอกเบี้ยอย่างเดียว/" />
+    <RelatedCalculators currentHref="/คำนวณสินเชื่อดอกเบี้ยอย่างเดียว/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('io-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const P = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const annualRate = parseNum((document.getElementById('rate') as HTMLInputElement).value) || 6.5;
+      const ioYears = parseNum((document.getElementById('io-years') as HTMLInputElement).value) || 5;
+      const totalYears = parseNum((document.getElementById('total-years') as HTMLInputElement).value) || 30;
+      if (!P || totalYears <= ioYears) return;
+
+      const r = annualRate / 100 / 12;
+      const ioMonths = ioYears * 12;
+      const remainMonths = (totalYears - ioYears) * 12;
+      const totalMonths = totalYears * 12;
+
+      // IO phase: interest only
+      const ioPay = P * r;
+      const ioTotalInterest = ioPay * ioMonths;
+
+      // After IO: amortize full principal over remaining months
+      let afterIoPay: number;
+      if (r === 0) {
+        afterIoPay = P / remainMonths;
+      } else {
+        afterIoPay = P * (r * Math.pow(1 + r, remainMonths)) / (Math.pow(1 + r, remainMonths) - 1);
+      }
+      const afterIoTotalInterest = afterIoPay * remainMonths - P;
+      const ioTotalInterestAll = ioTotalInterest + afterIoTotalInterest;
+
+      // Normal loan
+      let normalPay: number;
+      if (r === 0) {
+        normalPay = P / totalMonths;
+      } else {
+        normalPay = P * (r * Math.pow(1 + r, totalMonths)) / (Math.pow(1 + r, totalMonths) - 1);
+      }
+      const normalTotalInterest = normalPay * totalMonths - P;
+
+      (document.getElementById('res-io-pay') as HTMLElement).textContent = fmt(ioPay) + ' บาท';
+      (document.getElementById('res-after-io-pay') as HTMLElement).textContent = fmt(afterIoPay) + ' บาท';
+      (document.getElementById('res-io-interest') as HTMLElement).textContent = fmt(ioTotalInterestAll) + ' บาท';
+      (document.getElementById('res-normal-pay') as HTMLElement).textContent = fmt(normalPay) + ' บาท';
+      (document.getElementById('res-normal-interest') as HTMLElement).textContent = fmt(normalTotalInterest) + ' บาท';
+
+      const extra = ioTotalInterestAll - normalTotalInterest;
+      const extraEl = document.getElementById('extra-cost') as HTMLElement;
+      if (extra > 0) {
+        extraEl.textContent = `สินเชื่อ IO จ่ายดอกเบี้ยมากกว่าสินเชื่อปกติ ${fmt(extra)} บาท แต่ค่างวดช่วง IO ต่ำกว่า ${fmt(normalPay - ioPay)} บาท/เดือน`;
+      } else {
+        extraEl.textContent = 'ผลการคำนวณสำเร็จ';
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('interest-only-loan');
+    });
+  </script>
+</BaseLayout>

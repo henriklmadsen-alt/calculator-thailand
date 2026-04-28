@@ -1,0 +1,212 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณแผนออมเพื่อการศึกษา ปี 2569 | เป้าหมายออม | Kamnuanlek';
+const pageDescription = 'วางแผนออมเพื่อการศึกษา: คำนวณจำนวนออมต่อเดือน เพื่อให้เพียงพอกับเป้าหมายค่าเรียน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณแผนออมเพื่อการศึกษา/`;
+
+const faqData = [
+  {
+    question: 'ควรเก็บออมเท่าไหร่เพื่อการศึกษาเด็ก?',
+    answer: 'ขึ้นอยู่กับเป้าหมาย หากค่าเรียน 1 ล้านบาท และมีเวลา 18 ปี ต้องออม ~46,000 บาท/ปี (~3,800 บาท/เดือน) โดยไม่นับดอกเบี้ย',
+  },
+  {
+    question: 'ควรเลือกเครื่องมือการออมใด?',
+    answer: 'บัญชีออมทั่วไป, กองทุน, พันธบัตร, ประกันออม, หรือทรัพยากรธรรมชาติดอกเบี้ย ขึ้นอยู่กับความเสี่ยงและระยะเวลา',
+  },
+  {
+    question: 'ดอกเบี้ยมีผลต่อแผนออมหรือไม่?',
+    answer: 'ใช่ ดอกเบี้ย 3–5% ต่อปี สามารถลดจำนวนออมต่อเดือนได้อย่างมาก เช่น อัตรา 4% อาจลด ~30% ของจำนวนออมที่ต้องการ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณแผนออมเพื่อการศึกษา',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแผนออมเพื่อการศึกษา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณแผนออมเพื่อการศึกษา ปี 2569</h1>
+
+    <p class="text-gray-600 mb-6">
+      วางแผนออมเพื่อการศึกษา คำนวณจำนวนออมต่อเดือน เพื่อให้บรรลุเป้าหมายค่าเรียนในอนาคต
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="savings-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="goal" class="block text-sm font-medium text-gray-700 mb-1">
+              เป้าหมายจำนวนออม (บาท)
+            </label>
+            <input
+              type="text"
+              id="goal"
+              inputmode="numeric"
+              placeholder="เช่น 1,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <input
+              type="text"
+              id="years"
+              inputmode="numeric"
+              placeholder="เช่น 18"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ยประจำปี (%) — ไม่บังคับ
+            </label>
+            <input
+              type="text"
+              id="rate"
+              inputmode="decimal"
+              placeholder="เช่น 3.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="initial" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนออมเริ่มต้น (บาท) — ไม่บังคับ
+            </label>
+            <input
+              type="text"
+              id="initial"
+              inputmode="numeric"
+              placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-blue-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-blue-700">
+          คำนวณแผนออม
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ออม/เดือน</div>
+            <div id="res-monthly" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ออม/ปี</div>
+            <div id="res-yearly" class="text-2xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">เป้าหมาย</span>
+            <span id="res-goal" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">จำนวนออมเริ่มต้น</span>
+            <span id="res-initial" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ระยะเวลา</span>
+            <span id="res-time" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">อัตราดอกเบี้ย</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <RelatedCalculators currentHref="/คำนวณแผนออมเพื่อการศึกษา/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return 0;
+    return Number(String(value).replace(/,/g, '').trim()) || 0;
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#savings-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const goal = parseNumber(document.querySelector('#goal')?.value || '');
+    const years = parseNumber(document.querySelector('#years')?.value || '');
+    const rate = parseNumber(document.querySelector('#rate')?.value || '');
+    const initial = parseNumber(document.querySelector('#initial')?.value || '');
+
+    if (!(goal > 0 && years > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const months = years * 12;
+    const monthlyRate = (rate || 0) / 100 / 12;
+
+    let monthlyPayment;
+    const needed = goal - initial;
+
+    if (monthlyRate === 0) {
+      monthlyPayment = needed / months;
+    } else {
+      monthlyPayment = (needed * monthlyRate) / (Math.pow(1 + monthlyRate, months) - 1);
+    }
+
+    const yearlyPayment = monthlyPayment * 12;
+
+    document.querySelector('#res-monthly').textContent = formatCurrency(monthlyPayment);
+    document.querySelector('#res-yearly').textContent = formatCurrency(yearlyPayment);
+    document.querySelector('#res-goal').textContent = formatCurrency(goal);
+    document.querySelector('#res-initial').textContent = formatCurrency(initial);
+    document.querySelector('#res-time').textContent = `${years} ปี (${months} เดือน)`;
+    document.querySelector('#res-rate').textContent = `${rate.toFixed(1)}% ต่อปี`;
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

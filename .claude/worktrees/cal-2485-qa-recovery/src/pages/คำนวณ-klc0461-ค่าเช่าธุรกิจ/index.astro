@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่าเช่าพื้นที่ธุรกิจ | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเช่าพื้นที่ธุรกิจ ต้นทุนพื้นที่ต่อตร.ม. วิเคราะห์ความคุ้มค่าการเช่าพื้นที่เพื่อธุรกิจ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0461-ค่าเช่าธุรกิจ/`;
+const faqData = [
+  { question: 'ค่าเช่าพื้นที่ธุรกิจในกรุงเทพฯ เท่าไหร่?', answer: 'ค่าเช่าพื้นที่ธุรกิจในกรุงเทพฯ ย่านศูนย์กลาง 1,500-5,000 บาท/ตร.ม./เดือน ย่านนอก 500-1,500 บาท/ตร.ม./เดือน ห้างสรรพสินค้า 3,000-10,000 บาท/ตร.ม.' },
+  { question: 'ค่าเช่าควรเป็นกี่เปอร์เซ็นต์ของรายได้?', answer: 'ค่าเช่าไม่ควรเกิน 10-15% ของรายได้ สำหรับร้านค้าปลีกไม่เกิน 10% ร้านอาหาร 5-8% สำนักงาน 10-15% ขึ้นอยู่กับอุตสาหกรรม' },
+  { question: 'ค่ามัดจำค่าเช่าธุรกิจปกติเท่าไหร่?', answer: 'ค่ามัดจำค่าเช่าธุรกิจ 2-3 เดือน สำหรับสัญญา 1-3 ปี ในห้างสรรพสินค้าอาจ 3-6 เดือน ค่ามัดจำได้คืนเมื่อสิ้นสุดสัญญา' },
+  { question: 'สัญญาเช่าที่ดีควรมีข้อตกลงอะไรบ้าง?', answer: 'สัญญาเช่าที่ดีควรระบุ ค่าเช่าและการปรับขึ้น การต่อสัญญา สิทธิ์ปรับปรุง ความรับผิดชอบซ่อมแซม เงื่อนไขยกเลิก และอนุญาตให้โอนสิทธิ์หรือไม่' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเช่าพื้นที่ธุรกิจ">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าเช่าพื้นที่ธุรกิจ</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">วิเคราะห์ค่าเช่าพื้นที่ธุรกิจและต้นทุนต่อตารางเมตร</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="rent_area" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่เช่า (ตร.ม.)</label><input type="number" id="rent_area" min="1" placeholder="เช่น 50" value="50" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rent_rate_sqm" class="block text-sm font-medium text-gray-700 mb-1">ค่าเช่าต่อ ตร.ม. ต่อเดือน (บาท)</label><input type="text" id="rent_rate_sqm" inputmode="decimal" placeholder="เช่น 800" value="800" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="deposit_months" class="block text-sm font-medium text-gray-700 mb-1">มัดจำ (เดือน)</label><input type="number" id="deposit_months" min="1" max="6" placeholder="เช่น 3" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="utilities_biz" class="block text-sm font-medium text-gray-700 mb-1">ค่าสาธารณูปโภคต่อเดือน (บาท)</label><input type="text" id="utilities_biz" inputmode="decimal" placeholder="เช่น 5000" value="5000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ค่าเช่าต่อเดือน</p><p id="monthly_rent" class="font-bold">-</p></div>
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ค่ามัดจำ</p><p id="deposit_amt" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3 col-span-2"><p class="text-sm text-gray-600">ต้นทุนพื้นที่ต่อปี (เช่า+สาธารณูปโภค)</p><p id="yearly_space" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const area = parseFloat((document.getElementById('rent_area') as HTMLInputElement).value) || 0;
+      const ratePerSqm = parseFloat((document.getElementById('rent_rate_sqm') as HTMLInputElement).value) || 0;
+      const depositMonths = parseInt((document.getElementById('deposit_months') as HTMLInputElement).value) || 3;
+      const utilities = parseFloat((document.getElementById('utilities_biz') as HTMLInputElement).value) || 0;
+      const monthlyRent = area * ratePerSqm;
+      const depositAmt = monthlyRent * depositMonths;
+      const yearlySpace = (monthlyRent + utilities) * 12;
+      (document.getElementById('monthly_rent') as HTMLElement).textContent = monthlyRent.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('deposit_amt') as HTMLElement).textContent = depositAmt.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('yearly_space') as HTMLElement).textContent = yearlySpace.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('commercial-rent');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

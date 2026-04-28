@@ -1,0 +1,131 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียม BAHTNET 2569 | โอนเงินรายใหญ่ผ่าน BAHTNET | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียม BAHTNET ระบบโอนเงินรายใหญ่ของธนาคารแห่งประเทศไทย สำหรับธุรกรรมมูลค่าสูง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมBAHTNET/`;
+
+const faqData = [
+  {
+    question: 'BAHTNET คืออะไร และใช้เพื่ออะไร?',
+    answer: 'BAHTNET (Bank of Thailand Automated High-value Transfer Network) คือระบบโอนเงินรายใหญ่ของธนาคารแห่งประเทศไทย ใช้สำหรับธุรกรรมขนาดใหญ่ตั้งแต่ 1 ล้านบาทขึ้นไป เช่น การชำระหนี้ระหว่างธนาคาร ธุรกรรมตลาดเงิน และการชำระเงินรายใหญ่ของภาครัฐและเอกชน',
+  },
+  {
+    question: 'BAHTNET ต่างจากระบบ ORFT อย่างไร?',
+    answer: 'BAHTNET เป็นระบบ RTGS (Real-Time Gross Settlement) สำหรับธุรกรรมรายใหญ่ที่ชำระเงินแบบ real-time ทีละรายการ ส่วน ORFT (Online Retail Fund Transfer) ใช้สำหรับธุรกรรมรายย่อยที่ชำระเงินแบบ batch settlement BAHTNET มีความปลอดภัยสูงกว่าและเหมาะกับธุรกรรมมูลค่าสูง',
+  },
+  {
+    question: 'ใครสามารถใช้ BAHTNET ได้บ้าง?',
+    answer: 'BAHTNET เปิดให้ใช้งานเฉพาะสมาชิกที่ได้รับอนุญาตจากธนาคารแห่งประเทศไทย ได้แก่ ธนาคารพาณิชย์ สถาบันการเงินเฉพาะกิจ บริษัทหลักทรัพย์ และหน่วยงานภาครัฐบางแห่ง ลูกค้าทั่วไปใช้บริการผ่านธนาคารของตน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียม BAHTNET',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมBAHTNET">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าธรรมเนียม BAHTNET 2569</h1>
+    <p class="mb-4 text-gray-600">คำนวณค่าธรรมเนียมระบบโอนเงินรายใหญ่ BAHTNET สำหรับธุรกรรมมูลค่าสูง</p>
+    <div class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+      ℹ️ BAHTNET ใช้สำหรับธุรกรรมขนาดใหญ่ตั้งแต่ 1 ล้านบาทขึ้นไป
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div>
+          <label for="tx-count" class="mb-1 block text-sm font-medium text-gray-700">จำนวนธุรกรรม/เดือน</label>
+          <input id="tx-count" type="text" inputmode="numeric" placeholder="เช่น 10" value="10"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <div>
+          <label for="fee-per-tx" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมต่อธุรกรรม (บาท)</label>
+          <input id="fee-per-tx" type="text" inputmode="numeric" value="150"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียม BAHTNET ทั่วไปอยู่ที่ 100-200 บาท/ธุรกรรม</p>
+        </div>
+        <div>
+          <label for="avg-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าเฉลี่ยต่อธุรกรรม (บาท)</label>
+          <input id="avg-value" type="text" inputmode="numeric" placeholder="เช่น 5000000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียม BAHTNET/เดือน</div>
+            <div id="res-monthly" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ค่าธรรมเนียมต่อมูลค่าโอน</div>
+            <div id="res-pct" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="rounded-lg bg-gray-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต่อปี</div>
+            <div id="res-yearly" class="text-3xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมBAHTNET/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const count = parseNum((document.getElementById('tx-count') as HTMLInputElement).value);
+    const feePerTx = parseNum((document.getElementById('fee-per-tx') as HTMLInputElement).value);
+    const avgValue = parseNum((document.getElementById('avg-value') as HTMLInputElement).value);
+    if (!count || !feePerTx) return;
+
+    const monthly = count * feePerTx;
+    const totalValue = count * avgValue;
+    const pct = totalValue > 0 ? (monthly / totalValue) * 100 : 0;
+
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-pct')!.textContent = pct > 0 ? pct.toFixed(4) + '%' : '-';
+    document.getElementById('res-yearly')!.textContent = fmt(monthly * 12);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

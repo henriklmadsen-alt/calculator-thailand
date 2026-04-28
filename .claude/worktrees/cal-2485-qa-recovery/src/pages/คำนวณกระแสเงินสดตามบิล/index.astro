@@ -1,0 +1,295 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณกระแสเงินสด วันไหนเงินตึง 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณกระแสเงินสดรายสัปดาห์ 2569 ฟรี — จัดบิลตามวันที่ครบ รู้ล่วงหน้าว่าช่วงไหนเงินจะตึง วางแผนหลีกเลี่ยงเงินขาดมือ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกระแสเงินสดตามบิล/`;
+
+const faqData = [
+  {
+    question: 'กระแสเงินสดรายสัปดาห์สำคัญอย่างไร?',
+    answer: 'แม้รายรับรายเดือนจะเพียงพอ แต่ถ้าบิลส่วนใหญ่ครบกำหนดก่อนวันรับเงินเดือน อาจมีช่วงที่เงินขาดมือได้ การวางแผนกระแสเงินสดรายสัปดาห์ช่วยให้รู้ล่วงหน้าและเตรียมเงินสำรองไว้ก่อน',
+  },
+  {
+    question: 'ควรทำอย่างไรถ้ายอดคงเหลือติดลบในสัปดาห์ใดสัปดาห์หนึ่ง?',
+    answer: 'วิธีแก้ไข: (1) ขอเลื่อนวันครบกำหนดบิลให้ตรงกับช่วงหลังรับเงินเดือน (2) โอนเงินสำรองไว้ล่วงหน้า หรือ (3) ชำระบิลล่วงหน้าก่อนวันครบกำหนดในสัปดาห์ที่มีเงินเพียงพอ',
+  },
+  {
+    question: 'วันรับเงินเดือนมีผลต่อกระแสเงินสดอย่างไร?',
+    answer: 'การรับเงินเดือนต้นเดือนทำให้มีสภาพคล่องดีในช่วงต้น แต่ถ้าบิลส่วนใหญ่ตกสัปดาห์ที่ 4 อาจตึงก่อนสิ้นเดือน การรับกลางเดือนจะกระจายสภาพคล่องดีกว่าในบางกรณี',
+  },
+  {
+    question: 'ยอดคงเหลือต่ำสุดควรเป็นเท่าไร?',
+    answer: 'ยอดคงเหลือขั้นต่ำควรมีไว้อย่างน้อย 5,000-10,000 บาทหรือ 1 สัปดาห์ของค่าใช้จ่าย เพื่อรองรับค่าใช้จ่ายเร่งด่วนที่ไม่คาดฝัน ถ้ายอดต่ำสุดน้อยเกินไปควรปรับแผนการชำระบิล',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกระแสเงินสดตามบิล',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกระแสเงินสดตามบิล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณกระแสเงินสดรายสัปดาห์ตามวันครบกำหนดบิล</p>
+      <p class="mt-1 text-sm text-slate-700">แสดงยอดคงเหลือแต่ละสัปดาห์ และจุดที่เงินอาจขาดมือในเดือน</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">วางแผนล่วงหน้าเพื่อหลีกเลี่ยงเงินขาดมือ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณกระแสเงินสดตามบิล ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้ วันรับเงิน และบิลแต่ละรายการพร้อมสัปดาห์ที่ครบกำหนด เพื่อดูยอดคงเหลือรายสัปดาห์ทั้งเดือน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="bcf-form" class="space-y-5">
+        <p id="bcf-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="bcf-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้ต่อเดือน (บาท)</label>
+            <input type="text" id="bcf-income" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="bcf-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="bcf-payday" class="mb-1 block text-sm font-medium text-gray-700">วันรับเงินเดือน</label>
+            <select id="bcf-payday" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="1">ต้นเดือน (สัปดาห์ที่ 1)</option>
+              <option value="2">กลางเดือน (สัปดาห์ที่ 2-3)</option>
+              <option value="4">สิ้นเดือน (สัปดาห์ที่ 4)</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-gray-700">บิลรายเดือน (กรอกได้สูงสุด 8 รายการ)</p>
+        <div id="bcf-bills-container" class="space-y-3">
+          <div class="grid gap-3 sm:grid-cols-3 bcf-bill-row">
+            <div>
+              <input type="text" placeholder="ชื่อบิล เช่น ค่าเช่า" class="bcf-bill-name w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <input type="text" inputmode="numeric" placeholder="จำนวน (บาท)" class="bcf-bill-amount w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <select class="bcf-bill-week w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="1">สัปดาห์ที่ 1 (วันที่ 1-7)</option>
+                <option value="2">สัปดาห์ที่ 2 (วันที่ 8-15)</option>
+                <option value="3">สัปดาห์ที่ 3 (วันที่ 16-22)</option>
+                <option value="4">สัปดาห์ที่ 4 (วันที่ 23-31)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="bcf-add-bill" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          + เพิ่มบิล
+        </button>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณกระแสเงินสด
+        </button>
+      </form>
+    </div>
+
+    <div id="bcf-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">กระแสเงินสดรายสัปดาห์</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดบิลรวมทั้งเดือน</div>
+            <div id="res-bcf-total-bills" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดคงเหลือต่ำสุดในเดือน</div>
+            <div id="res-bcf-min-balance" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-left">
+                <th class="px-3 py-2 font-medium text-gray-700">สัปดาห์</th>
+                <th class="px-3 py-2 text-right font-medium text-gray-700">รายรับ</th>
+                <th class="px-3 py-2 text-right font-medium text-gray-700">บิลที่ครบ</th>
+                <th class="px-3 py-2 text-right font-medium text-gray-700">ยอดคงเหลือ</th>
+              </tr>
+            </thead>
+            <tbody id="bcf-table-body" class="divide-y divide-gray-100">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายรับสัปดาห์ที่รับเงิน = รายได้ทั้งเดือน</li>
+        <li>บิลสัปดาห์นั้น = ผลรวมบิลที่ครบกำหนดสัปดาห์นั้น</li>
+        <li>ยอดคงเหลือสัปดาห์ถัดไป = ยอดคงเหลือก่อนหน้า + รายรับ - บิล</li>
+        <li>ยอดต่ำสุดในเดือน = ค่าต่ำสุดของยอดคงเหลือทั้ง 4 สัปดาห์</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณส่วนต่างรายได้รายจ่าย/">คำนวณส่วนต่างรายได้รายจ่าย</a></li>
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณ-cash-runway/">คำนวณ Cash Runway</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#bcf-results" />
+    <RelatedArticles currentHref="/คำนวณกระแสเงินสดตามบิล/" />
+    <RelatedCalculators currentHref="/คำนวณกระแสเงินสดตามบิล/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการจำลองกระแสเงินสดโดยประมาณ ค่าใช้จ่ายจริงอาจแตกต่างจากที่กรอก
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('bcf-form');
+    const formError = document.getElementById('bcf-error');
+    const resultBox = document.getElementById('bcf-results');
+    const addBillBtn = document.getElementById('bcf-add-bill');
+    const billsContainer = document.getElementById('bcf-bills-container');
+
+    let billCount = 1;
+
+    function createBillRow() {
+      const div = document.createElement('div');
+      div.className = 'grid gap-3 sm:grid-cols-3 bcf-bill-row';
+      div.innerHTML = `
+        <div>
+          <input type="text" placeholder="ชื่อบิล" class="bcf-bill-name w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <input type="text" inputmode="numeric" placeholder="จำนวน (บาท)" class="bcf-bill-amount w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex gap-2">
+          <select class="bcf-bill-week flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="1">สัปดาห์ที่ 1</option>
+            <option value="2">สัปดาห์ที่ 2</option>
+            <option value="3">สัปดาห์ที่ 3</option>
+            <option value="4">สัปดาห์ที่ 4</option>
+          </select>
+          <button type="button" class="bcf-remove-btn rounded-md border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50">ลบ</button>
+        </div>
+      `;
+      div.querySelector('.bcf-remove-btn').addEventListener('click', () => div.remove());
+      return div;
+    }
+
+    addBillBtn?.addEventListener('click', () => {
+      if (billCount < 8) {
+        billsContainer.appendChild(createBillRow());
+        billCount++;
+      }
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('bcf-income-error', '');
+
+      const income = parseNum(document.getElementById('bcf-income').value);
+      const payday = parseInt(document.getElementById('bcf-payday').value, 10);
+
+      let hasError = false;
+      if (!income || income <= 0) { setErr('bcf-income-error', 'กรอกรายได้มากกว่า 0'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const billRows = billsContainer.querySelectorAll('.bcf-bill-row');
+      const billsByWeek = { 1: [], 2: [], 3: [], 4: [] };
+      let totalBills = 0;
+
+      billRows.forEach(row => {
+        const name = row.querySelector('.bcf-bill-name')?.value.trim() || 'ไม่ระบุ';
+        const amount = parseNum(row.querySelector('.bcf-bill-amount')?.value || '0');
+        const week = parseInt(row.querySelector('.bcf-bill-week')?.value || '1', 10);
+        if (amount > 0) {
+          billsByWeek[week].push({ name, amount });
+          totalBills += amount;
+        }
+      });
+
+      // Calculate running balance week by week
+      let balance = 0;
+      let minBalance = Infinity;
+      const weeks = [1, 2, 3, 4];
+      const weekLabels = ['สัปดาห์ที่ 1 (1-7)', 'สัปดาห์ที่ 2 (8-15)', 'สัปดาห์ที่ 3 (16-22)', 'สัปดาห์ที่ 4 (23-31)'];
+      const rows = [];
+
+      for (const w of weeks) {
+        const inflow = payday === w ? income : (payday === 2 && (w === 2 || w === 3) ? (w === 2 ? income : 0) : 0);
+        const outflow = billsByWeek[w].reduce((sum, b) => sum + b.amount, 0);
+        balance = balance + inflow - outflow;
+        if (balance < minBalance) minBalance = balance;
+        rows.push({ label: weekLabels[w - 1], inflow, outflow, balance });
+      }
+
+      setText('res-bcf-total-bills', formatMoney(totalBills));
+      setText('res-bcf-min-balance', formatMoney(minBalance === Infinity ? 0 : minBalance));
+
+      const tbody = document.getElementById('bcf-table-body');
+      tbody.innerHTML = rows.map(r => {
+        const isLow = r.balance < 5000;
+        const isNeg = r.balance < 0;
+        return `
+          <tr class="${isNeg ? 'bg-red-50' : isLow ? 'bg-amber-50' : ''}">
+            <td class="px-3 py-2 text-gray-700">${r.label}</td>
+            <td class="px-3 py-2 text-right text-green-700">${r.inflow > 0 ? '+' + formatMoney(r.inflow) : '-'}</td>
+            <td class="px-3 py-2 text-right text-red-600">${r.outflow > 0 ? '-' + formatMoney(r.outflow) : '-'}</td>
+            <td class="px-3 py-2 text-right font-semibold ${isNeg ? 'text-red-700' : isLow ? 'text-amber-700' : 'text-gray-900'}">${formatMoney(r.balance)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,102 @@
+---
+import type { RelatedLink } from '../../lib/internal-links';
+import { getCalculatorLinks } from '../../lib/internal-links';
+
+interface Props {
+  /** Current calculator href — used to auto-look up related links. */
+  currentHref?: string;
+  /** Override the auto-lookup with explicit links. */
+  calculators?: RelatedLink[];
+  /** Section heading override. */
+  heading?: string;
+}
+
+const {
+  currentHref = Astro.url.pathname,
+  calculators: explicitCalcs,
+  heading = 'เครื่องคำนวณที่เกี่ยวข้อง',
+} = Astro.props;
+
+const links = explicitCalcs ?? getCalculatorLinks(currentHref).calculators;
+
+// Determine hub page links based on URL pattern
+type HubLink = { href: string; title: string; icon: string };
+const hubLinks: HubLink[] = [];
+
+const href = currentHref.toLowerCase();
+
+if (href.includes('ภาษี') || href.includes('ลดหย่อน') || href.includes('tax')) {
+  hubLinks.push({ href: '/เปรียบเทียบเครื่องคำนวณภาษี/', title: 'เปรียบเทียบเครื่องคำนวณภาษีทุกประเภท', icon: '📊' });
+  hubLinks.push({ href: '/ตรวจสอบหักลดหย่อนภาษี/', title: 'เช็คลิสต์ลดหย่อนภาษีครบทุกรายการ', icon: '✅' });
+  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
+} else if (href.includes('ผ่อน') || href.includes('สินเชื่อ') || href.includes('กู้') || href.includes('loan')) {
+  hubLinks.push({ href: '/เปรียบเทียบสินเชื่อ/', title: 'เปรียบเทียบสินเชื่อทุกประเภท', icon: '🏦' });
+  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
+  hubLinks.push({ href: '/เครื่องคำนวณออมเงินและการลงทุน/', title: 'เครื่องคำนวณออมเงินและการลงทุน', icon: '💹' });
+} else if (href.includes('เงินเดือน') || href.includes('เงินค่า') || href.includes('ค่าแรง') || href.includes('โบนัส') || href.includes('ชดเชย')) {
+  hubLinks.push({ href: '/เครื่องคำนวณเงินเดือนและค่าแรง/', title: 'เครื่องคำนวณเงินเดือนและค่าแรงทุกประเภท', icon: '💼' });
+  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
+} else if (href.includes('bmi') || href.includes('สุขภาพ') || href.includes('แคลอรี') || href.includes('วันคลอด') || href.includes('น้ำหนัก')) {
+  hubLinks.push({ href: '/เครื่องคำนวณสุขภาพ/', title: 'เครื่องคำนวณสุขภาพทุกประเภท', icon: '🏥' });
+} else if (href.includes('บ้าน') || href.includes('อสังหา') || href.includes('ที่ดิน') || href.includes('คอนโด')) {
+  hubLinks.push({ href: '/เครื่องคำนวณอสังหาริมทรัพย์/', title: 'เครื่องคำนวณอสังหาริมทรัพย์ทุกประเภท', icon: '🏠' });
+  hubLinks.push({ href: '/เครื่องคำนวณค่าใช้จ่ายบ้าน/', title: 'เครื่องคำนวณค่าใช้จ่ายในบ้าน', icon: '🔧' });
+} else if (href.includes('รถ') || href.includes('vehicle') || href.includes('car')) {
+  hubLinks.push({ href: '/เครื่องคำนวณรถยนต์/', title: 'เครื่องคำนวณรถยนต์ทุกประเภท', icon: '🚗' });
+  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
+} else if (href.includes('ออม') || href.includes('ลงทุน') || href.includes('rmf') || href.includes('ssf') || href.includes('เกษียณ')) {
+  hubLinks.push({ href: '/เครื่องคำนวณออมเงินและการลงทุน/', title: 'เครื่องคำนวณออมเงินและการลงทุน', icon: '💹' });
+  hubLinks.push({ href: '/แผนการเกษียณ/', title: 'วางแผนเกษียณด้วย RMF และ SSF', icon: '🌴' });
+  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
+} else if (href.includes('ไฟฟ้า') || href.includes('น้ำ') || href.includes('ค่าส่ง') || href.includes('internet')) {
+  hubLinks.push({ href: '/เครื่องคำนวณค่าใช้จ่ายบ้าน/', title: 'เครื่องคำนวณค่าใช้จ่ายในบ้าน', icon: '🔧' });
+} else if (href.includes('คณิต') || href.includes('เปอร์เซ็น') || href.includes('ดอกเบี้ย') || href.includes('math')) {
+  hubLinks.push({ href: '/เครื่องคำนวณคณิตศาสตร์/', title: 'เครื่องคำนวณคณิตศาสตร์ทุกประเภท', icon: '🔢' });
+} else if (href.includes('ธุรกิจ') || href.includes('vat') || href.includes('กำไร') || href.includes('ต้นทุน')) {
+  hubLinks.push({ href: '/เครื่องคำนวณธุรกิจ/', title: 'เครื่องคำนวณธุรกิจทุกประเภท', icon: '🏢' });
+} else {
+  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
+  hubLinks.push({ href: '/เครื่องคำนวณการเงินชั้นยอด/', title: 'เครื่องคำนวณยอดนิยม', icon: '⭐' });
+}
+---
+
+{links.length > 0 && (
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">{heading}</h2>
+    <div class="grid gap-3 md:grid-cols-3">
+      {links.slice(0, 3).map((link) => (
+        <a
+          href={link.href}
+          data-preserve-utm
+          data-ct-event="related_calc_click"
+          class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all"
+        >
+          <span class="text-primary-600 font-medium block">{link.title}</span>
+          {link.desc && <span class="text-gray-400 text-sm block">{link.desc}</span>}
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<section class="mb-8">
+  <h2 class="text-xl font-semibold text-gray-900 mb-3">คู่มือและเครื่องมือที่เกี่ยวข้อง</h2>
+  <div class="flex flex-wrap gap-2">
+    {hubLinks.map((hub) => (
+      <a
+        href={hub.href}
+        class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-50 text-primary-700 rounded-full text-sm font-medium hover:bg-primary-100 transition-colors border border-primary-200"
+      >
+        <span>{hub.icon}</span>
+        <span>{hub.title}</span>
+      </a>
+    ))}
+    <a
+      href="/เลือกเครื่องคำนวณ/"
+      class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors border border-gray-200"
+    >
+      <span>🔍</span>
+      <span>ช่วยเลือกเครื่องคำนวณ</span>
+    </a>
+  </div>
+</section>

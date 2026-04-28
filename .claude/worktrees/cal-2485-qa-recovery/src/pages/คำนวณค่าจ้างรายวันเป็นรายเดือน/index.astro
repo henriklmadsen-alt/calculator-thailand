@@ -1,0 +1,315 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจ้างรายวันเป็นรายเดือน ปี 2569 อัตราค่าจ้างรายวัน × วันทำงาน | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างรายวันเป็นรายเดือน หรือรายเดือนเป็นรายวัน กรอกอัตราค่าจ้างต่อวันและจำนวนวันทำงาน คำนวณรายได้รวมต่อเดือนอย่างรวดเร็ว';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างรายวันเป็นรายเดือน/`;
+
+const faqData = [
+  {
+    question: 'คำนวณค่าจ้างรายวันเป็นรายเดือนอย่างไร?',
+    answer: 'รายได้รายเดือน = อัตราค่าจ้างต่อวัน × จำนวนวันทำงานจริงในเดือนนั้น ซึ่งอาจต่างกันในแต่ละเดือนตามวันทำงานจริง',
+  },
+  {
+    question: 'วันทำงานมาตรฐานต่อเดือนคือกี่วัน?',
+    answer: 'โดยทั่วไปเดือนที่มีวันทำงาน 5 วัน/สัปดาห์ จะมีประมาณ 20-23 วันทำงาน ส่วนที่ทำงาน 6 วัน/สัปดาห์ จะมีประมาณ 25-26 วัน',
+  },
+  {
+    question: 'แปลงเงินเดือนรายเดือนเป็นรายวันทำอย่างไร?',
+    answer: 'อัตราค่าจ้างต่อวัน = เงินเดือนรายเดือน ÷ วันทำงานต่อเดือน ใช้สูตรนี้ในการคำนวณค่าโอที ค่าขาด หรือค่าจ้างสำหรับวันที่ทำงานไม่ครบเดือน',
+  },
+  {
+    question: 'ค่าแรงขั้นต่ำรายวัน ปี 2569 คือเท่าไร?',
+    answer: 'ค่าแรงขั้นต่ำปี 2569 แตกต่างตามจังหวัด ตั้งแต่ 330-400+ บาท/วัน ขึ้นอยู่กับประกาศคณะกรรมการค่าจ้างล่าสุด',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจ้างรายวันเป็นรายเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างรายวันเป็นรายเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณได้ทั้งสองทิศทาง</p>
+      <p class="mt-1 text-sm text-slate-700">แปลงค่าจ้างรายวันเป็นรายเดือน หรือรายเดือนเป็นรายวัน ตามวันทำงานจริง</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับแรงงานรายวัน พนักงานชั่วคราว และการคำนวณค่าจ้างส่วนเกิน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจ้างรายวันเป็นรายเดือน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกอัตราค่าจ้างและจำนวนวันทำงาน ระบบจะคำนวณรายได้รายเดือน พร้อมแสดงอัตรารายวันและรายชั่วโมง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="daily-monthly-form" class="space-y-5">
+        <p id="daily-monthly-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700">โหมดการคำนวณ</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="calc-mode" value="daily-to-monthly" checked class="accent-primary-600" /> รายวัน → รายเดือน
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="calc-mode" value="monthly-to-daily" class="accent-primary-600" /> รายเดือน → รายวัน
+            </label>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div id="daily-rate-group">
+            <label for="daily-rate" class="mb-1 block text-sm font-medium text-gray-700">
+              อัตราค่าจ้างรายวัน (บาท/วัน)
+            </label>
+            <input
+              type="text"
+              id="daily-rate"
+              inputmode="numeric"
+              placeholder="เช่น 500"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="daily-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div id="monthly-salary-group" class="hidden">
+            <label for="monthly-salary-input" class="mb-1 block text-sm font-medium text-gray-700">
+              เงินเดือนรายเดือน (บาท/เดือน)
+            </label>
+            <input
+              type="text"
+              id="monthly-salary-input"
+              inputmode="numeric"
+              placeholder="เช่น 15,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="monthly-salary-input-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="working-days-month" class="mb-1 block text-sm font-medium text-gray-700">
+              วันทำงานต่อเดือน (วัน)
+            </label>
+            <input
+              type="text"
+              id="working-days-month"
+              inputmode="numeric"
+              placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="working-days-month-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="hours-per-day" class="mb-1 block text-sm font-medium text-gray-700">
+            ชั่วโมงทำงานต่อวัน (ชั่วโมง, ไม่บังคับ)
+          </label>
+          <input
+            type="text"
+            id="hours-per-day"
+            inputmode="decimal"
+            placeholder="เช่น 8"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="daily-monthly-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600" id="main-result-label">รายได้รายเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายวัน</div>
+            <div id="res-daily" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างต่อชั่วโมง</div>
+            <div id="res-hourly" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">วันทำงานต่อเดือน</span>
+            <span id="res-days" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายได้รายปี (ประมาณ)</span>
+            <span id="res-annual" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้รายเดือน = อัตราค่าจ้าง/วัน × วันทำงานต่อเดือน</li>
+        <li>อัตราค่าจ้าง/วัน = เงินเดือน ÷ วันทำงานต่อเดือน</li>
+        <li>อัตราค่าจ้าง/ชั่วโมง = อัตราค่าจ้าง/วัน ÷ ชั่วโมงทำงานต่อวัน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าจ้างรายวัน/">คำนวณค่าจ้างรายวัน</a></li>
+        <li><a href="/คำนวณค่าโอที/">คำนวณค่าโอที</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#daily-monthly-results" />
+    <RelatedArticles currentHref="/คำนวณค่าจ้างรายวันเป็นรายเดือน/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างรายวันเป็นรายเดือน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณเพื่อประมาณการเบื้องต้น รายได้จริงอาจต่างกันตามวันหยุดนักขัตฤกษ์ การขาดงาน และเงื่อนไขสัญญาจ้างของแต่ละองค์กร
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+
+    const modeRadios = document.querySelectorAll('input[name="calc-mode"]');
+    const dailyGroup = document.getElementById('daily-rate-group');
+    const monthlyGroup = document.getElementById('monthly-salary-group');
+
+    modeRadios.forEach((r) => {
+      r.addEventListener('change', () => {
+        const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+        if (mode === 'daily-to-monthly') {
+          dailyGroup.classList.remove('hidden');
+          monthlyGroup.classList.add('hidden');
+          document.getElementById('main-result-label').textContent = 'รายได้รายเดือน';
+        } else {
+          dailyGroup.classList.add('hidden');
+          monthlyGroup.classList.remove('hidden');
+          document.getElementById('main-result-label').textContent = 'ค่าจ้างรายวัน';
+        }
+      });
+    });
+
+    const form = document.getElementById('daily-monthly-form');
+    const formError = document.getElementById('daily-monthly-form-error');
+    const resultBox = document.getElementById('daily-monthly-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['daily-rate-error', 'monthly-salary-input-error', 'working-days-month-error'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.add('hidden'); el.textContent = ''; }
+      });
+
+      const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+      const workingDays = parseNum(document.getElementById('working-days-month').value);
+      const hoursPerDay = parseNum(document.getElementById('hours-per-day').value) || 8;
+
+      let hasError = false;
+
+      if (!Number.isFinite(workingDays) || workingDays <= 0 || workingDays > 31) {
+        const el = document.getElementById('working-days-month-error');
+        el.textContent = 'กรอกวันทำงานต่อเดือนระหว่าง 1 - 31 วัน';
+        el.classList.remove('hidden');
+        hasError = true;
+      }
+
+      let dailyRate, monthlyTotal;
+
+      if (mode === 'daily-to-monthly') {
+        dailyRate = parseNum(document.getElementById('daily-rate').value);
+        if (!Number.isFinite(dailyRate) || dailyRate <= 0) {
+          const el = document.getElementById('daily-rate-error');
+          el.textContent = 'กรอกอัตราค่าจ้างรายวันมากกว่า 0';
+          el.classList.remove('hidden');
+          hasError = true;
+        }
+        if (!hasError) monthlyTotal = dailyRate * workingDays;
+      } else {
+        monthlyTotal = parseNum(document.getElementById('monthly-salary-input').value);
+        if (!Number.isFinite(monthlyTotal) || monthlyTotal <= 0) {
+          const el = document.getElementById('monthly-salary-input-error');
+          el.textContent = 'กรอกเงินเดือนรายเดือนมากกว่า 0';
+          el.classList.remove('hidden');
+          hasError = true;
+        }
+        if (!hasError) dailyRate = monthlyTotal / workingDays;
+      }
+
+      if (hasError) {
+        formError.classList.remove('hidden');
+        resultBox.classList.add('hidden');
+        return;
+      }
+
+      const hourlyRate = dailyRate / hoursPerDay;
+
+      setText('res-monthly', formatMoney(monthlyTotal));
+      setText('res-daily', formatMoney(dailyRate));
+      setText('res-hourly', Number.isFinite(hoursPerDay) && hoursPerDay > 0 ? formatMoney(hourlyRate) : 'ไม่ได้ระบุ');
+      setText('res-days', `${workingDays} วัน`);
+      setText('res-annual', formatMoney(monthlyTotal * 12));
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

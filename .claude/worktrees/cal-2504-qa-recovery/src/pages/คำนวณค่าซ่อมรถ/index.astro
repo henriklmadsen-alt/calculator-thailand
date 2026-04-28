@@ -1,0 +1,632 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าซ่อมรถ 2569 | ค่าอะไหล่ + ค่าแรง ทุกประเภทงานซ่อม | Kamnuanlek';
+const pageDescription = 'คำนวณค่าซ่อมรถยนต์ออนไลน์ฟรี ประเมินค่าอะไหล่และค่าแรงช่างตามประเภทงานซ่อม เครื่องยนต์ เบรก แอร์ ตัวถังสี ช่วงล่าง ระบบไฟฟ้า อัตราตลาดไทย 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าซ่อมรถ/`;
+
+const faqData = [
+  {
+    question: 'ค่าซ่อมรถยนต์ในไทยเฉลี่ยเท่าไร?',
+    answer: 'ขึ้นอยู่กับประเภทงานซ่อม งานเบรกทั่วไปอยู่ที่ 1,500-8,000 บาท งานแอร์รถยนต์ 1,500-15,000 บาท งานเครื่องยนต์ 2,000-80,000+ บาท และงานตัวถังสีเริ่มต้น 3,000-50,000+ บาท ราคาจริงขึ้นอยู่กับรุ่นรถ ศูนย์บริการ และความรุนแรงของปัญหา',
+  },
+  {
+    question: 'ซ่อมรถที่ศูนย์กับอู่ทั่วไป ราคาต่างกันเท่าไร?',
+    answer: 'โดยทั่วไปศูนย์บริการมีราคาสูงกว่าอู่ทั่วไปประมาณ 30-100% ขึ้นอยู่กับประเภทงาน ศูนย์ใช้อะไหล่แท้และมีการรับประกัน ขณะที่อู่ทั่วไปอาจใช้อะไหล่เทียบหรืออะไหล่มือสองเพื่อลดต้นทุน',
+  },
+  {
+    question: 'ค่าแรงช่างซ่อมรถคิดอย่างไร?',
+    answer: 'ค่าแรงช่างคิดตามประเภทงานและความยากง่าย งานทั่วไปเช่นเปลี่ยนผ้าเบรกค่าแรง 300-800 บาท งานซับซ้อนเช่นโอเวอร์ฮอลเครื่องยนต์ค่าแรง 8,000-20,000 บาท ศูนย์บริการมักคิดค่าแรงตามอัตรามาตรฐาน (flat rate) ส่วนอู่ทั่วไปอาจคิดตามชั่วโมงการทำงานจริง',
+  },
+  {
+    question: 'รถญี่ปุ่นกับรถยุโรป ค่าซ่อมต่างกันมากไหม?',
+    answer: 'ค่าซ่อมรถยุโรปมักสูงกว่ารถญี่ปุ่น 50-200% เนื่องจากอะไหล่แท้มีราคาสูงกว่า ต้องใช้เครื่องมือเฉพาะ และช่างต้องมีความชำนาญเฉพาะทาง รถญี่ปุ่นมีอะไหล่หาง่ายและราคาถูกกว่าในตลาดไทย',
+  },
+  {
+    question: 'ควรเปลี่ยนผ้าเบรกเมื่อไร?',
+    answer: 'ควรตรวจสอบผ้าเบรกทุก 20,000-30,000 กม. และเปลี่ยนเมื่อผ้าเบรกบางกว่า 3 มม. สัญญาณที่ควรสังเกต: เสียงเอี๊ยดเวลาเบรก เบรกสั่น ระยะเบรกยาวขึ้น หรือไฟเตือนเบรกขึ้นที่หน้าปัด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าซ่อมรถ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าซ่อมรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าซ่อมรถ (Car Repair Cost Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประเมินค่าซ่อมรถยนต์ตามประเภทงาน แยกค่าอะไหล่และค่าแรงช่าง เปรียบเทียบราคาศูนย์บริการกับอู่ทั่วไป อัตราตลาดไทยปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Repair Category -->
+      <div class="mb-5">
+        <label for="repair-category" class="block text-sm font-medium text-gray-700 mb-1">
+          ประเภทงานซ่อม
+        </label>
+        <select
+          id="repair-category"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <optgroup label="เครื่องยนต์">
+            <option value="engine-oil">เปลี่ยนถ่ายน้ำมันเครื่อง + กรอง</option>
+            <option value="engine-timing">เปลี่ยนสายพานไทม์มิ่ง</option>
+            <option value="engine-radiator">ซ่อม/เปลี่ยนหม้อน้ำ</option>
+            <option value="engine-starter">เปลี่ยนไดสตาร์ท</option>
+            <option value="engine-alternator">เปลี่ยนไดชาร์จ</option>
+            <option value="engine-overhaul">โอเวอร์ฮอลเครื่องยนต์</option>
+          </optgroup>
+          <optgroup label="เบรก">
+            <option value="brake-pad-front">เปลี่ยนผ้าเบรกหน้า</option>
+            <option value="brake-pad-rear">เปลี่ยนผ้าเบรกหลัง</option>
+            <option value="brake-disc-front">เปลี่ยนจานเบรกหน้า (คู่)</option>
+            <option value="brake-disc-rear">เปลี่ยนจานเบรกหลัง (คู่)</option>
+            <option value="brake-fluid">เปลี่ยนน้ำมันเบรก</option>
+          </optgroup>
+          <optgroup label="แอร์รถยนต์">
+            <option value="ac-recharge">เติมน้ำยาแอร์</option>
+            <option value="ac-compressor">เปลี่ยนคอมเพรสเซอร์แอร์</option>
+            <option value="ac-condenser">เปลี่ยนแผงคอนเดนเซอร์</option>
+            <option value="ac-evaporator">เปลี่ยนตู้แอร์ (Evaporator)</option>
+          </optgroup>
+          <optgroup label="ตัวถัง/สี">
+            <option value="body-scratch">ขัดสีลบรอยขีดข่วน (1 แผง)</option>
+            <option value="body-dent">เคาะ/ดึงบุบ (1 แผง)</option>
+            <option value="body-repaint">ทำสีใหม่ (1 แผง)</option>
+            <option value="body-bumper">เปลี่ยนกันชน</option>
+            <option value="body-windshield">เปลี่ยนกระจกหน้า</option>
+          </optgroup>
+          <optgroup label="ช่วงล่าง">
+            <option value="susp-shockabs">เปลี่ยนโช้คอัพ (คู่)</option>
+            <option value="susp-tierod">เปลี่ยนลูกหมากคันชัก</option>
+            <option value="susp-balljoint">เปลี่ยนลูกหมากปีกนก</option>
+            <option value="susp-alignment">ตั้งศูนย์ล้อ</option>
+          </optgroup>
+          <optgroup label="ระบบไฟฟ้า">
+            <option value="elec-battery">เปลี่ยนแบตเตอรี่</option>
+            <option value="elec-sparkplug">เปลี่ยนหัวเทียน (ชุด 4)</option>
+            <option value="elec-headlight">เปลี่ยนไฟหน้า (ข้าง)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Car Type -->
+      <div class="mb-5">
+        <label for="car-type" class="block text-sm font-medium text-gray-700 mb-1">
+          ประเภทรถ
+        </label>
+        <select
+          id="car-type"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <option value="eco">เก๋งเล็ก/อีโค่คาร์ (เช่น Yaris, City, Almera)</option>
+          <option value="sedan">เก๋งกลาง (เช่น Civic, Altis, Mazda3)</option>
+          <option value="suv">SUV / PPV (เช่น Fortuner, CX-5, CR-V)</option>
+          <option value="pickup">กระบะ (เช่น Hilux, D-Max, Triton)</option>
+          <option value="euro">รถยุโรป (เช่น BMW, Benz, Audi)</option>
+        </select>
+      </div>
+
+      <!-- Service Location -->
+      <div class="mb-5">
+        <label for="service-type" class="block text-sm font-medium text-gray-700 mb-1">
+          สถานที่ซ่อม
+        </label>
+        <select
+          id="service-type"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <option value="garage">อู่ทั่วไป</option>
+          <option value="dealer">ศูนย์บริการ / ดีลเลอร์</option>
+        </select>
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าซ่อม
+      </button>
+
+      <!-- Results -->
+      <div id="repair-result" class="hidden mt-6">
+        <!-- Total estimated cost -->
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ค่าซ่อมโดยประมาณ</div>
+          <div id="res-total" class="text-4xl sm:text-5xl font-bold text-primary-700 mb-1">-</div>
+          <div id="res-total-range" class="text-sm text-gray-500"></div>
+        </div>
+
+        <!-- Parts & Labor breakdown -->
+        <div class="grid gap-3 sm:grid-cols-2 mb-4">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-gray-600 mb-1">ค่าอะไหล่</div>
+            <div id="res-parts" class="text-2xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-gray-600 mb-1">ค่าแรงช่าง</div>
+            <div id="res-labor" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <!-- Service type comparison -->
+        <div id="compare-section" class="bg-gray-50 rounded-lg p-4 mb-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">เปรียบเทียบราคา</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">อู่ทั่วไป</span>
+              <span id="res-garage-price" class="font-bold text-gray-700">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">ศูนย์บริการ</span>
+              <span id="res-dealer-price" class="font-bold text-gray-700">-</span>
+            </div>
+            <div class="flex justify-between items-center border-t border-gray-200 pt-2">
+              <span class="text-gray-600">ส่วนต่าง</span>
+              <span id="res-price-diff" class="font-bold text-amber-600">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Repair detail -->
+        <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">รายละเอียดงานซ่อม</h3>
+          <div id="res-description" class="text-sm text-gray-600 mb-2"></div>
+          <div id="res-duration" class="text-sm text-gray-500"></div>
+        </div>
+
+        <!-- Tips -->
+        <div class="bg-amber-50 rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-amber-700 mb-2">คำแนะนำ</h3>
+          <div id="res-tips" class="text-sm text-amber-600"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าซ่อมรถยนต์ไทย 2569</h2>
+
+      <p>
+        ค่าซ่อมรถยนต์เป็นค่าใช้จ่ายที่เจ้าของรถทุกคนต้องเตรียมพร้อม
+        ราคาขึ้นอยู่กับประเภทงานซ่อม รุ่นรถ และสถานที่ซ่อม
+        การเปรียบเทียบราคาระหว่างศูนย์บริการกับอู่ทั่วไปช่วยให้ตัดสินใจได้ดีขึ้น
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราค่าซ่อมตามประเภทงาน</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">ประเภทงาน</th>
+              <th class="py-2 pr-4">อู่ทั่วไป (บาท)</th>
+              <th class="py-2">ศูนย์บริการ (บาท)</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">เปลี่ยนถ่ายน้ำมันเครื่อง</td>
+              <td class="py-2 pr-4">800 - 2,000</td>
+              <td class="py-2">1,500 - 4,000</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">เปลี่ยนผ้าเบรกหน้า</td>
+              <td class="py-2 pr-4">1,200 - 3,000</td>
+              <td class="py-2">2,000 - 5,500</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">เติมน้ำยาแอร์</td>
+              <td class="py-2 pr-4">800 - 1,500</td>
+              <td class="py-2">1,200 - 2,500</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ทำสีใหม่ (1 แผง)</td>
+              <td class="py-2 pr-4">3,000 - 6,000</td>
+              <td class="py-2">5,000 - 12,000</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">เปลี่ยนโช้คอัพ (คู่)</td>
+              <td class="py-2 pr-4">4,000 - 10,000</td>
+              <td class="py-2">6,000 - 18,000</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">โอเวอร์ฮอลเครื่องยนต์</td>
+              <td class="py-2 pr-4">25,000 - 60,000</td>
+              <td class="py-2">40,000 - 100,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัจจัยที่ส่งผลต่อค่าซ่อมรถ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>รุ่นรถ:</strong> รถยุโรปมีค่าอะไหล่สูงกว่ารถญี่ปุ่น 50-200%</li>
+        <li><strong>ประเภทอะไหล่:</strong> อะไหล่แท้แพงกว่าอะไหล่เทียบ 30-100%</li>
+        <li><strong>สถานที่ซ่อม:</strong> ศูนย์บริการแพงกว่าอู่ทั่วไป 30-100%</li>
+        <li><strong>ความรุนแรง:</strong> ความเสียหายรุนแรงอาจต้องเปลี่ยนชิ้นส่วนทั้งชุด</li>
+        <li><strong>อายุรถ:</strong> รถเก่ากว่า 10 ปีอาจต้องเปลี่ยนชิ้นส่วนเพิ่มเติม</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ศูนย์บริการ vs อู่ทั่วไป</h3>
+
+      <p>
+        ศูนย์บริการมักใช้อะไหล่แท้ มีการรับประกันงาน และมีมาตรฐานการซ่อมที่ชัดเจน
+        อู่ทั่วไปมีราคาถูกกว่า มีความยืดหยุ่นในการเลือกอะไหล่ แต่ควรเลือกอู่ที่มีชื่อเสียงและไว้ใจได้
+        สำหรับรถที่ยังอยู่ในประกัน แนะนำซ่อมที่ศูนย์บริการเพื่อรักษาสิทธิ์ประกัน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>ตัวอย่าง: เปลี่ยนผ้าเบรกหน้า รถเก๋งกลาง (Civic) ที่อู่ทั่วไป:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าผ้าเบรก = 1,200 - 2,200 บาท</li>
+        <li>ค่าแรงช่าง = 400 - 600 บาท</li>
+        <li>รวมค่าซ่อม = 1,600 - 2,800 บาท</li>
+        <li>ถ้าซ่อมที่ศูนย์ = 2,800 - 5,000 บาท (แพงกว่าประมาณ 75%)</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าซ่อมรถ/" />
+    <RelatedCalculators currentHref="/คำนวณค่าซ่อมรถ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องคำนวณนี้ให้ผลลัพธ์โดยประมาณเพื่อการวางแผนเบื้องต้นเท่านั้น
+      ค่าซ่อมจริงขึ้นอยู่กับสภาพรถ รุ่นรถ สถานที่ซ่อม และราคาอะไหล่ ณ เวลานั้น
+      กรุณาสอบถามราคาจากอู่หรือศูนย์บริการก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    interface RepairData {
+      partsMin: number;
+      partsMax: number;
+      laborMin: number;
+      laborMax: number;
+      description: string;
+      duration: string;
+      tips: string;
+    }
+
+    // Base prices for eco car at garage — multiplied by car type & service type factors
+    const repairs: Record<string, RepairData> = {
+      // Engine
+      'engine-oil': {
+        partsMin: 600, partsMax: 1400,
+        laborMin: 200, laborMax: 400,
+        description: 'เปลี่ยนถ่ายน้ำมันเครื่องและกรองน้ำมันเครื่อง ควรเปลี่ยนทุก 5,000-10,000 กม. ขึ้นอยู่กับประเภทน้ำมันเครื่อง (กึ่งสังเคราะห์หรือสังเคราะห์แท้)',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'ใช้น้ำมันเครื่องตามสเปคที่คู่มือรถกำหนด น้ำมันสังเคราะห์แท้แพงกว่าแต่เปลี่ยนถ่ายได้นานกว่า (10,000 กม.)',
+      },
+      'engine-timing': {
+        partsMin: 2500, partsMax: 5000,
+        laborMin: 2000, laborMax: 4000,
+        description: 'เปลี่ยนสายพานไทม์มิ่ง (หรือโซ่ไทม์มิ่ง) พร้อมลูกรอกและปั๊มน้ำ ควรเปลี่ยนตามระยะที่กำหนด (80,000-120,000 กม.)',
+        duration: 'ระยะเวลา: 3-6 ชั่วโมง',
+        tips: 'หากสายพานขาดขณะขับจะทำให้เครื่องยนต์เสียหายหนัก ควรเปลี่ยนตามระยะที่กำหนดเสมอ แนะนำเปลี่ยนปั๊มน้ำพร้อมกัน',
+      },
+      'engine-radiator': {
+        partsMin: 2000, partsMax: 5000,
+        laborMin: 800, laborMax: 1500,
+        description: 'ซ่อมรอยรั่วหรือเปลี่ยนหม้อน้ำ (Radiator) พร้อมเติมน้ำยาหล่อเย็นใหม่ หม้อน้ำมีอายุใช้งานประมาณ 5-10 ปี',
+        duration: 'ระยะเวลา: 2-4 ชั่วโมง',
+        tips: 'ตรวจสอบน้ำหล่อเย็นสม่ำเสมอ หากมีการรั่วซึมเล็กน้อยอาจซ่อมได้โดยไม่ต้องเปลี่ยนใหม่',
+      },
+      'engine-starter': {
+        partsMin: 2500, partsMax: 5000,
+        laborMin: 500, laborMax: 1500,
+        description: 'เปลี่ยนไดสตาร์ท (Starter Motor) เมื่อรถไม่ติดหรือมีเสียงผิดปกติเวลาสตาร์ท',
+        duration: 'ระยะเวลา: 1-3 ชั่วโมง',
+        tips: 'ก่อนเปลี่ยนไดสตาร์ท ควรตรวจสอบแบตเตอรี่และสายไฟก่อน อาจเป็นปัญหาจากแบตเตอรี่อ่อน',
+      },
+      'engine-alternator': {
+        partsMin: 3000, partsMax: 6000,
+        laborMin: 500, laborMax: 1500,
+        description: 'เปลี่ยนไดชาร์จ (Alternator) เมื่อไฟชาร์จไม่เข้าแบตเตอรี่หรือไฟเตือนแบตเตอรี่ขึ้นที่หน้าปัด',
+        duration: 'ระยะเวลา: 1-3 ชั่วโมง',
+        tips: 'ไดชาร์จเสียอาจทำให้แบตเตอรี่หมดเร็ว ควรตรวจสอบแรงดันไฟขณะเครื่องยนต์ทำงาน (ควรอยู่ที่ 13.5-14.5V)',
+      },
+      'engine-overhaul': {
+        partsMin: 15000, partsMax: 40000,
+        laborMin: 8000, laborMax: 20000,
+        description: 'โอเวอร์ฮอลเครื่องยนต์ทั้งหมด รวมเปลี่ยนแหวนลูกสูบ ซีลวาล์ว ประเก็นฝาสูบ แบริ่ง และชิ้นส่วนภายในที่สึกหรอ',
+        duration: 'ระยะเวลา: 3-7 วัน',
+        tips: 'เปรียบเทียบค่าโอเวอร์ฮอลกับค่ารถมือสอง หากค่าซ่อมเกิน 50% ของมูลค่ารถ อาจพิจารณาเปลี่ยนรถใหม่',
+      },
+
+      // Brake
+      'brake-pad-front': {
+        partsMin: 800, partsMax: 1800,
+        laborMin: 300, laborMax: 600,
+        description: 'เปลี่ยนผ้าเบรกหน้า (1 คู่/2 ล้อ) ผ้าเบรกมีอายุใช้งานประมาณ 30,000-50,000 กม.',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'ควรตรวจสอบจานเบรกพร้อมกัน หากจานเบรกบางเกินสเปคควรเปลี่ยนพร้อมผ้าเบรก',
+      },
+      'brake-pad-rear': {
+        partsMin: 700, partsMax: 1600,
+        laborMin: 300, laborMax: 600,
+        description: 'เปลี่ยนผ้าเบรกหลัง (1 คู่/2 ล้อ) ผ้าเบรกหลังมักมีอายุใช้งานยาวกว่าหน้าเนื่องจากรับภาระน้อยกว่า',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'ผ้าเบรกหลังสึกช้ากว่าหน้าประมาณ 2 เท่า ตรวจสอบทุกครั้งที่เปลี่ยนผ้าเบรกหน้า',
+      },
+      'brake-disc-front': {
+        partsMin: 1500, partsMax: 3500,
+        laborMin: 400, laborMax: 800,
+        description: 'เปลี่ยนจานเบรกหน้า (1 คู่/2 ล้อ) จานเบรกมีอายุใช้งานประมาณ 60,000-100,000 กม.',
+        duration: 'ระยะเวลา: 1-2 ชั่วโมง',
+        tips: 'แนะนำเปลี่ยนผ้าเบรกพร้อมจานเบรกใหม่เสมอ ไม่ควรเจียจานเบรกซ้ำเพราะทำให้บางเกินสเปค',
+      },
+      'brake-disc-rear': {
+        partsMin: 1200, partsMax: 3000,
+        laborMin: 400, laborMax: 800,
+        description: 'เปลี่ยนจานเบรกหลัง (1 คู่/2 ล้อ)',
+        duration: 'ระยะเวลา: 1-2 ชั่วโมง',
+        tips: 'จานเบรกหลังมักมีอายุใช้งานยาวกว่าจานหน้า ตรวจวัดความหนาก่อนตัดสินใจเปลี่ยน',
+      },
+      'brake-fluid': {
+        partsMin: 200, partsMax: 500,
+        laborMin: 200, laborMax: 400,
+        description: 'เปลี่ยนน้ำมันเบรกทั้งระบบ ควรเปลี่ยนทุก 2 ปี หรือ 40,000 กม.',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'น้ำมันเบรกดูดความชื้นจากอากาศตลอดเวลา ทำให้จุดเดือดลดลงและเบรกอาจวูบได้ ควรเปลี่ยนตามกำหนด',
+      },
+
+      // AC
+      'ac-recharge': {
+        partsMin: 400, partsMax: 800,
+        laborMin: 300, laborMax: 500,
+        description: 'เติมน้ำยาแอร์ (R134a) เมื่อแอร์ไม่เย็นเท่าเดิม อาจต้องตรวจสอบรอยรั่วด้วย',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'หากต้องเติมน้ำยาบ่อย แสดงว่าระบบมีรอยรั่ว ควรตรวจหาจุดรั่วและซ่อมก่อนเติมน้ำยา',
+      },
+      'ac-compressor': {
+        partsMin: 5000, partsMax: 12000,
+        laborMin: 1500, laborMax: 3000,
+        description: 'เปลี่ยนคอมเพรสเซอร์แอร์ พร้อมเติมน้ำมันคอมเพรสเซอร์และน้ำยาแอร์ใหม่',
+        duration: 'ระยะเวลา: 3-5 ชั่วโมง',
+        tips: 'เมื่อคอมเพรสเซอร์เสียควรล้างระบบทั้งหมดและเปลี่ยนดรายเออร์พร้อมกัน เพื่อป้องกันเศษโลหะทำลายชิ้นส่วนใหม่',
+      },
+      'ac-condenser': {
+        partsMin: 2500, partsMax: 6000,
+        laborMin: 800, laborMax: 1500,
+        description: 'เปลี่ยนแผงคอนเดนเซอร์แอร์ (แผงระบายความร้อนด้านหน้ารถ) เมื่อมีรอยรั่วหรือตัน',
+        duration: 'ระยะเวลา: 2-4 ชั่วโมง',
+        tips: 'คอนเดนเซอร์อยู่ด้านหน้ารถจึงมักเสียหายจากหินกระเด็น ควรล้างแผงคอนเดนเซอร์เป็นประจำ',
+      },
+      'ac-evaporator': {
+        partsMin: 3000, partsMax: 8000,
+        laborMin: 2000, laborMax: 4000,
+        description: 'เปลี่ยนตู้แอร์ (Evaporator) ซึ่งอยู่ภายในแผงหน้าปัด ต้องถอดแผงหน้าปัดจึงเป็นงานใหญ่',
+        duration: 'ระยะเวลา: 4-8 ชั่วโมง',
+        tips: 'การเปลี่ยนตู้แอร์เป็นงานที่ต้องถอดแผงหน้าปัด ควรเปลี่ยนดรายเออร์และวาล์วขยายตัวพร้อมกัน',
+      },
+
+      // Body
+      'body-scratch': {
+        partsMin: 200, partsMax: 800,
+        laborMin: 500, laborMax: 1500,
+        description: 'ขัดสีลบรอยขีดข่วนที่ไม่ลึกถึงชั้นสีพื้น (1 แผง) รอยตื้นอาจขัดออกได้โดยไม่ต้องทำสี',
+        duration: 'ระยะเวลา: 1-3 ชั่วโมง',
+        tips: 'รอยขีดข่วนตื้นๆ อาจใช้น้ำยาขัดสี (compound) ลบเองได้ รอยลึกที่เห็นเนื้อโลหะควรทำสีเพื่อป้องกันสนิม',
+      },
+      'body-dent': {
+        partsMin: 0, partsMax: 500,
+        laborMin: 1000, laborMax: 3000,
+        description: 'เคาะหรือดึงบุบ (PDR - Paintless Dent Repair) 1 แผง สำหรับรอยบุบที่ไม่ทำให้สีแตก',
+        duration: 'ระยะเวลา: 1-4 ชั่วโมง',
+        tips: 'รอยบุบเล็กที่สีไม่แตกสามารถใช้เทคนิค PDR (ดึงบุบไม่ทำสี) ได้ ราคาถูกกว่าและรักษาสีเดิมไว้',
+      },
+      'body-repaint': {
+        partsMin: 1500, partsMax: 4000,
+        laborMin: 1500, laborMax: 3500,
+        description: 'ทำสีใหม่ 1 แผง (เช่น ฝากระโปรง ประตู บังโคลน) รวมขัดสี โป๊วสี พ่นสี และเคลือบเงา',
+        duration: 'ระยะเวลา: 2-5 วัน',
+        tips: 'เลือกอู่ทำสีที่มีห้องพ่นสีปิดมิดชิด (spray booth) เพื่อคุณภาพสีที่ดี สีเมทัลลิกและมุกราคาสูงกว่าสีธรรมดา',
+      },
+      'body-bumper': {
+        partsMin: 2000, partsMax: 6000,
+        laborMin: 1000, laborMax: 2500,
+        description: 'เปลี่ยนกันชนหน้าหรือหลัง พร้อมทำสีให้ตรงกับตัวรถ',
+        duration: 'ระยะเวลา: 2-4 วัน',
+        tips: 'กันชนมือสอง (เซียงกง) มีราคาถูกกว่ากันชนใหม่ 50-70% แต่ต้องตรวจสอบสภาพให้ดี อาจต้องทำสีเพิ่ม',
+      },
+      'body-windshield': {
+        partsMin: 2500, partsMax: 6000,
+        laborMin: 500, laborMax: 1500,
+        description: 'เปลี่ยนกระจกหน้ารถบานใหม่ กระจกมีทั้งของแท้และของเทียบ',
+        duration: 'ระยะเวลา: 2-4 ชั่วโมง',
+        tips: 'กระจกแท้มีเครื่องหมายยี่ห้อรถ กระจกเทียบถูกกว่า 50% แต่ความใสและทนทานอาจต่ำกว่า หากรอยร้าวเล็กกว่าเหรียญ 10 บาท อาจซ่อมได้โดยไม่ต้องเปลี่ยน',
+      },
+
+      // Suspension
+      'susp-shockabs': {
+        partsMin: 2500, partsMax: 6000,
+        laborMin: 1000, laborMax: 2000,
+        description: 'เปลี่ยนโช้คอัพ 1 คู่ (หน้าหรือหลัง) โช้คอัพมีอายุใช้งานประมาณ 80,000-100,000 กม.',
+        duration: 'ระยะเวลา: 2-4 ชั่วโมง',
+        tips: 'ควรเปลี่ยนโช้คอัพเป็นคู่ (ซ้าย-ขวา) เสมอ เพื่อให้รถทรงตัวสม่ำเสมอ และตั้งศูนย์ล้อหลังเปลี่ยน',
+      },
+      'susp-tierod': {
+        partsMin: 600, partsMax: 1500,
+        laborMin: 400, laborMax: 800,
+        description: 'เปลี่ยนลูกหมากคันชัก (Tie Rod End) เมื่อลูกหมากหลวมหรือมีเสียงดังเวลาเลี้ยว',
+        duration: 'ระยะเวลา: 1-2 ชั่วโมง',
+        tips: 'หลังเปลี่ยนลูกหมากคันชักต้องตั้งศูนย์ล้อใหม่เสมอ ไม่เช่นนั้นยางจะสึกไม่สม่ำเสมอ',
+      },
+      'susp-balljoint': {
+        partsMin: 800, partsMax: 2000,
+        laborMin: 500, laborMax: 1200,
+        description: 'เปลี่ยนลูกหมากปีกนก (Ball Joint) เมื่อมีเสียงดังจากช่วงล่าง หรือรถเสียการทรงตัว',
+        duration: 'ระยะเวลา: 1-3 ชั่วโมง',
+        tips: 'ลูกหมากปีกนกที่เสียอาจทำให้ล้อหลุดขณะขับ อันตรายมาก หากมีอาการควรรีบเปลี่ยนทันที',
+      },
+      'susp-alignment': {
+        partsMin: 0, partsMax: 0,
+        laborMin: 400, laborMax: 800,
+        description: 'ตั้งศูนย์ล้อ (Wheel Alignment) ด้วยเครื่องคอมพิวเตอร์ แนะนำทำทุก 20,000 กม. หรือหลังเปลี่ยนชิ้นส่วนช่วงล่าง',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'ศูนย์ล้อเพี้ยนทำให้ยางสึกเร็วและไม่สม่ำเสมอ แนะนำตั้งศูนย์หลังเปลี่ยนยาง ลูกหมาก หรือโช้คอัพ',
+      },
+
+      // Electrical
+      'elec-battery': {
+        partsMin: 1800, partsMax: 3500,
+        laborMin: 0, laborMax: 200,
+        description: 'เปลี่ยนแบตเตอรี่รถยนต์ แบตเตอรี่มีอายุใช้งานประมาณ 2-3 ปี',
+        duration: 'ระยะเวลา: 15-30 นาที',
+        tips: 'เลือกแบตเตอรี่ขนาดแอมป์ (Ah) ตามที่คู่มือรถกำหนด ไม่ควรใช้ขนาดเล็กกว่า แบตแบบ Maintenance Free สะดวกกว่า',
+      },
+      'elec-sparkplug': {
+        partsMin: 400, partsMax: 2000,
+        laborMin: 200, laborMax: 600,
+        description: 'เปลี่ยนหัวเทียน (ชุด 4 หัว) หัวเทียนธรรมดาเปลี่ยนทุก 20,000 กม. หัวเทียนอิริเดียมเปลี่ยนทุก 100,000 กม.',
+        duration: 'ระยะเวลา: 30-60 นาที',
+        tips: 'หัวเทียนอิริเดียมแพงกว่าแต่อายุใช้งานยาวกว่า 4-5 เท่า คุ้มค่ากว่าในระยะยาว',
+      },
+      'elec-headlight': {
+        partsMin: 500, partsMax: 3000,
+        laborMin: 200, laborMax: 500,
+        description: 'เปลี่ยนไฟหน้ารถ 1 ข้าง (หลอดไฟหรือชุดโคมไฟ) ขึ้นอยู่กับประเภทหลอดไฟ (ฮาโลเจน, LED, HID)',
+        duration: 'ระยะเวลา: 30 นาที - 2 ชั่วโมง',
+        tips: 'หลอดฮาโลเจนถูกสุดแต่อายุสั้น LED มีอายุยาวและสว่าง ถ้าเปลี่ยนเป็น LED ควรเลือกรุ่นที่มี มอก.',
+      },
+    };
+
+    // Car type multipliers (relative to eco car)
+    const carMultipliers: Record<string, { parts: number; labor: number; label: string }> = {
+      'eco':    { parts: 1.0, labor: 1.0, label: 'เก๋งเล็ก/อีโค่คาร์' },
+      'sedan':  { parts: 1.25, labor: 1.1, label: 'เก๋งกลาง' },
+      'suv':    { parts: 1.4, labor: 1.2, label: 'SUV / PPV' },
+      'pickup': { parts: 1.15, labor: 1.1, label: 'กระบะ' },
+      'euro':   { parts: 2.2, labor: 1.5, label: 'รถยุโรป' },
+    };
+
+    // Dealer markup factor (on top of garage price)
+    const dealerMarkup = { parts: 1.5, labor: 1.6 };
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    function calculate() {
+      const repairKey = (document.getElementById('repair-category') as HTMLSelectElement).value;
+      const carType = (document.getElementById('car-type') as HTMLSelectElement).value;
+      const serviceType = (document.getElementById('service-type') as HTMLSelectElement).value;
+
+      const repair = repairs[repairKey];
+      const carMul = carMultipliers[carType];
+      if (!repair || !carMul) return;
+
+      // Garage prices
+      const garagePartsMin = Math.round(repair.partsMin * carMul.parts);
+      const garagePartsMax = Math.round(repair.partsMax * carMul.parts);
+      const garageLaborMin = Math.round(repair.laborMin * carMul.labor);
+      const garageLaborMax = Math.round(repair.laborMax * carMul.labor);
+      const garageTotalMin = garagePartsMin + garageLaborMin;
+      const garageTotalMax = garagePartsMax + garageLaborMax;
+
+      // Dealer prices
+      const dealerPartsMin = Math.round(garagePartsMin * dealerMarkup.parts);
+      const dealerPartsMax = Math.round(garagePartsMax * dealerMarkup.parts);
+      const dealerLaborMin = Math.round(garageLaborMin * dealerMarkup.labor);
+      const dealerLaborMax = Math.round(garageLaborMax * dealerMarkup.labor);
+      const dealerTotalMin = dealerPartsMin + dealerLaborMin;
+      const dealerTotalMax = dealerPartsMax + dealerLaborMax;
+
+      // Which set to display as primary
+      const isDealer = serviceType === 'dealer';
+      const primaryPartsMin = isDealer ? dealerPartsMin : garagePartsMin;
+      const primaryPartsMax = isDealer ? dealerPartsMax : garagePartsMax;
+      const primaryLaborMin = isDealer ? dealerLaborMin : garageLaborMin;
+      const primaryLaborMax = isDealer ? dealerLaborMax : garageLaborMax;
+      const primaryTotalMin = isDealer ? dealerTotalMin : garageTotalMin;
+      const primaryTotalMax = isDealer ? dealerTotalMax : garageTotalMax;
+
+      // Show results
+      const resultEl = document.getElementById('repair-result') as HTMLDivElement;
+      resultEl.classList.remove('hidden');
+
+      (document.getElementById('res-total') as HTMLElement).textContent = `${fmt(primaryTotalMin)} - ${fmt(primaryTotalMax)} บาท`;
+      (document.getElementById('res-total-range') as HTMLElement).textContent =
+        `ราคา${isDealer ? 'ศูนย์บริการ' : 'อู่ทั่วไป'} สำหรับ${carMul.label}`;
+
+      (document.getElementById('res-parts') as HTMLElement).textContent =
+        primaryPartsMin === 0 && primaryPartsMax === 0
+          ? 'ไม่มีค่าอะไหล่'
+          : `${fmt(primaryPartsMin)} - ${fmt(primaryPartsMax)} บาท`;
+
+      (document.getElementById('res-labor') as HTMLElement).textContent =
+        `${fmt(primaryLaborMin)} - ${fmt(primaryLaborMax)} บาท`;
+
+      // Comparison
+      (document.getElementById('res-garage-price') as HTMLElement).textContent =
+        `${fmt(garageTotalMin)} - ${fmt(garageTotalMax)} บาท`;
+      (document.getElementById('res-dealer-price') as HTMLElement).textContent =
+        `${fmt(dealerTotalMin)} - ${fmt(dealerTotalMax)} บาท`;
+
+      const diffMin = dealerTotalMin - garageTotalMin;
+      const diffMax = dealerTotalMax - garageTotalMax;
+      (document.getElementById('res-price-diff') as HTMLElement).textContent =
+        `+${fmt(diffMin)} ถึง +${fmt(diffMax)} บาท`;
+
+      // Detail
+      (document.getElementById('res-description') as HTMLElement).textContent = repair.description;
+      (document.getElementById('res-duration') as HTMLElement).textContent = repair.duration;
+      (document.getElementById('res-tips') as HTMLElement).textContent = repair.tips;
+
+      trackCalculatorUsed('car-repair-cost');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    const repairResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('car-repair-cost');
+          repairResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    repairResultObserver.observe(document.getElementById('repair-result')!);
+  </script>
+</BaseLayout>

@@ -1,0 +1,210 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลดหย่อนภาษีที่ดิน 2569 | Tax Deduction | Kamnuanlek';
+const pageDescription = 'คำนวณลดหย่อนภาษีที่ดิน ดอกเบี้ยจำนอง ค่าใช้จ่ายในการดำเนินการ ตามกฎหมายภาษีไทย ออนไลน์ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลดหย่อนภาษีที่ดิน/`;
+
+const faqData = [
+  {
+    question: 'ลดหย่อนภาษีที่ดินมีกี่ประเภท?',
+    answer: 'ลดหย่อนภาษีที่ดินมี 2 ประเภท: (1) ดอกเบี้ยจำนองสูงสุด 100,000 บาท (2) ค่าใช้จ่ายบ้านหลังแรกสูงสุด 15,000 บาท แต่จำได้ใช้ได้เพียงอันใดอันหนึ่ง',
+  },
+  {
+    question: 'บ้านหลักของผู้เสียภาษีตามกฎหมายคือ?',
+    answer: 'บ้านหลักของผู้เสียภาษี คือบ้านที่ผู้เสียภาษี หรือคู่สมรส อยู่อาศัยตั้งแต่ 180 วันขึ้นไป ต่อปีอากร และเป็นโครงการจัดสรรที่ได้รับการจดทะเบียน',
+  },
+  {
+    question: 'ค่าใช้จ่ายต่างประเทศต้องลดหย่อนได้หรือ?',
+    answer: 'ไม่ได้ ลดหย่อนได้เฉพาะบ้านหลักในประเทศไทย',
+  },
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' },
+  { question: 'ซื้อบ้านมือสองต้องระวังค่าใช้จ่ายอะไร?', answer: 'ค่าธรรมเนียมโอน ค่าภาษีธุรกิจเฉพาะหรืออากรแสตมป์ ค่าจดจำนอง ค่าตรวจสอบภาระผูกพัน ค่าประเมินราคา ค่าซ่อมแซม และค่าประกันภัย รวมกันอาจสูงถึง 5-10% ของราคาซื้อ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลดหย่อนภาษีที่ดิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนภาษีที่ดิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประหยัดภาษีตามกฎหมาย</p>
+      <p class="mt-1 text-sm text-slate-700">ลดหย่อนภาษีที่ดิน ดอกเบี้ยจำนอง ค่าใช้จ่าย</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ตามกฎหมายภาษีไทย 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณลดหย่อนภาษีที่ดิน
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณลดหย่อนภาษีสำหรับการซื้อบ้านหลัก
+      รวมดอกเบี้ยจำนอง ค่าใช้จ่าย และส่วนลดสูงสุดตามกฎหมาย
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลการลดหย่อน</h2>
+
+      <form id="deduction-form" class="space-y-6">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="mortgage-interest" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ยจำนองจ่ายแล้ว (บาท)
+            </label>
+            <input
+              type="text"
+              id="mortgage-interest"
+              inputmode="numeric"
+              placeholder="เช่น 50,000"
+              value="50000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ดอกเบี้ยที่ปรากฏในหนังสือรายงานค่าใช้จ่าย</p>
+          </div>
+          <div>
+            <label for="home-expense" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าใช้จ่ายบ้าน (บาท)
+            </label>
+            <input
+              type="text"
+              id="home-expense"
+              inputmode="numeric"
+              placeholder="เช่น 10,000"
+              value="10000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ค่าดูแลรักษา ประกัน ค่าน้ำไฟ ส่วนกลาง</p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณลดหย่อน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณลดหย่อน</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center border border-blue-100">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนดอกเบี้ยจำนอง</div>
+            <div id="result-interest" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center border border-green-100">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนค่าใช้จ่าย</div>
+            <div id="result-expense" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-6">
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-2">ลดหย่อนทั้งหมด</p>
+            <p id="total-deduction" class="text-3xl font-bold text-yellow-700">-</p>
+            <p id="deduction-note" class="text-sm text-yellow-800 mt-3">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณลดหย่อนภาษีที่ดิน/" />
+    <RelatedCalculators currentHref="/คำนวณลดหย่อนภาษีที่ดิน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการตามกฎหมายปัจจุบัน ท่านควรตรวจสอบกับสำนักงานสรรพกรอบรูณ์
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(val: string): number {
+      return Math.max(0, parseFloat(val.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(num));
+    }
+
+    const form = document.getElementById('deduction-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const mortgageInterest = parseNumber((document.getElementById('mortgage-interest') as HTMLInputElement).value);
+      const homeExpense = parseNumber((document.getElementById('home-expense') as HTMLInputElement).value);
+
+      const maxInterest = 100000;
+      const maxExpense = 15000;
+
+      const interestDeduction = Math.min(mortgageInterest, maxInterest);
+      const expenseDeduction = Math.min(homeExpense, maxExpense);
+      const totalDeduction = interestDeduction + expenseDeduction;
+
+      (document.getElementById('result-interest') as HTMLElement).textContent = `${formatThai(interestDeduction)} บาท`;
+      (document.getElementById('result-expense') as HTMLElement).textContent = `${formatThai(expenseDeduction)} บาท`;
+      (document.getElementById('total-deduction') as HTMLElement).textContent = `${formatThai(totalDeduction)} บาท`;
+
+      let note = '';
+      if (mortgageInterest > maxInterest) {
+        note += `ดอกเบี้ยจำนองลดหย่อนได้เพียง ${formatThai(maxInterest)} บาท (ลิมิตกฎหมาย)`;
+      }
+      if (homeExpense > maxExpense) {
+        note += (note ? ' | ' : '') + `ค่าใช้จ่ายลดหย่อนได้เพียง ${formatThai(maxExpense)} บาท (ลิมิตกฎหมาย)`;
+      }
+      (document.getElementById('deduction-note') as HTMLElement).textContent = note || 'ลดหย่อนทั้งหมดตามจำนวนที่คุณป้อน';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('property_tax_deduction');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('property_tax_deduction');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('property_tax_deduction');
+    }, { once: true });
+  </script>
+</BaseLayout>

@@ -1,0 +1,357 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณดอกเบี้ยออมทรัพย์ 2569 | ทบต้นรายเดือน หักภาษี | Kamnuanlek';
+const pageDescription = 'คำนวณดอกเบี้ยบัญชีออมทรัพย์ทบต้นรายเดือน หักภาษี 15% อัตโนมัติ รวมเงินฝากเพิ่มรายเดือน แสดงตารางยอดเงินรายปี อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณดอกเบี้ยออมทรัพย์/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ยออมทรัพย์คำนวณอย่างไร?',
+    answer: 'บัญชีออมทรัพย์คิดดอกเบี้ยทบต้นรายเดือน ดอกเบี้ยที่ได้รับในแต่ละเดือนจะถูกนำไปรวมกับเงินต้นเพื่อคิดดอกเบี้ยงวดถัดไป ทำให้ยอดรวมเติบโตเร็วกว่าการคิดดอกเบี้ยอย่างง่าย สูตร: ยอดใหม่ = ยอดเดิม × (1 + อัตราดอกเบี้ยรายเดือน)',
+  },
+  {
+    question: 'ดอกเบี้ยออมทรัพย์ถูกหักภาษีไหม?',
+    answer: 'ดอกเบี้ยออมทรัพย์รวมทั้งปีไม่เกิน 20,000 บาทได้รับยกเว้นภาษี หากเกิน 20,000 บาทจะถูกหักภาษี ณ ที่จ่าย 15% ทั้งหมด เครื่องคำนวณนี้คิดภาษี 15% เพื่อแสดงผลตอบแทนขั้นต่ำที่ได้รับจริง',
+  },
+  {
+    question: 'บัญชีออมทรัพย์พิเศษต่างจากออมทรัพย์ธรรมดาอย่างไร?',
+    answer: 'ออมทรัพย์พิเศษมักให้ดอกเบี้ยสูงกว่าออมทรัพย์ธรรมดา 2-3 เท่า แต่มีเงื่อนไข เช่น ถอนได้เดือนละครั้ง หรือมียอดเงินขั้นต่ำ ปัจจุบันบางธนาคารให้ดอกเบี้ยออมทรัพย์พิเศษสูงถึง 1.5-2% ต่อปี',
+  },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณดอกเบี้ยออมทรัพย์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยออมทรัพย์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณดอกเบี้ยออมทรัพย์ 2569 — ทบต้นรายเดือน หักภาษีอัตโนมัติ
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณดอกเบี้ยบัญชีออมทรัพย์แบบทบต้นรายเดือน รวมเงินฝากเพิ่ม หักภาษี 15% แสดงตารางยอดเงินรายปี
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="savings-interest-form" class="space-y-5">
+        <p id="savings-interest-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="si-principal" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินต้นเริ่มต้น (บาท)
+            </label>
+            <input
+              type="text"
+              id="si-principal"
+              inputmode="numeric"
+              placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="si-principal-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="si-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินฝากเพิ่มรายเดือน (บาท, ไม่บังคับ)
+            </label>
+            <input
+              type="text"
+              id="si-monthly"
+              inputmode="numeric"
+              placeholder="เช่น 3,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="si-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="si-rate"
+              inputmode="decimal"
+              placeholder="เช่น 1.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="si-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="si-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <select
+              id="si-years"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="1">1 ปี</option>
+              <option value="2">2 ปี</option>
+              <option value="3" selected>3 ปี</option>
+              <option value="5">5 ปี</option>
+              <option value="7">7 ปี</option>
+              <option value="10">10 ปี</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="savings-interest-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม (ก่อนภาษี)</div>
+            <div id="res-gross" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีหัก ณ ที่จ่าย (15%)</div>
+            <div id="res-tax" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยสุทธิ</div>
+            <div id="res-net" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดเงินรวม</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางยอดเงินรายปี (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">ปีที่</th>
+                  <th class="py-2 pr-2 text-right">เงินฝากสะสม</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ยสะสม (ก่อนภาษี)</th>
+                  <th class="py-2 text-right">ยอดสุทธิ</th>
+                </tr>
+              </thead>
+              <tbody id="si-yearly-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณดอกเบี้ยออมทรัพย์</h2>
+
+      <p>
+        บัญชีออมทรัพย์คิดดอกเบี้ยทบต้นรายเดือน ดอกเบี้ยที่ได้จะถูกเพิ่มเข้าเงินต้นทุกเดือน
+        ทำให้ยอดเงินเติบโตแบบเอกซ์โปเนนเชียล
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">การทบต้นรายเดือน</h3>
+      <p>
+        ยอดใหม่ = ยอดเดิม × (1 + r/12) + เงินฝากเพิ่ม<br />
+        โดย r คืออัตราดอกเบี้ยต่อปี การทบต้นรายเดือนให้ผลตอบแทนสูงกว่าการทบต้นรายปี
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ภาษีดอกเบี้ยออมทรัพย์</h3>
+      <p>
+        ดอกเบี้ยออมทรัพย์รวมทั้งปีเกิน 20,000 บาทจะถูกหักภาษี 15% ทั้งหมด
+        ผู้มีดอกเบี้ยไม่เกิน 20,000 บาทต่อปีได้รับยกเว้น
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณดอกเบี้ยออมทรัพย์/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      อัตราดอกเบี้ยจริงอาจแตกต่างตามเงื่อนไขของธนาคาร ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const WITHHOLDING_TAX = 0.15;
+
+    const form = document.getElementById('savings-interest-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('savings-interest-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('savings-interest-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    const principalInput = document.getElementById('si-principal') as HTMLInputElement;
+    const monthlyInput = document.getElementById('si-monthly') as HTMLInputElement;
+    const rateInput = document.getElementById('si-rate') as HTMLInputElement;
+
+    function setFieldError(id: string, msg: string) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(id: string) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      ['si-principal-error', 'si-rate-error'].forEach(clearFieldError);
+    }
+
+    [principalInput, monthlyInput, rateInput].forEach(input => {
+      input.addEventListener('input', clearValidation);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearValidation();
+
+      const principal = parseNum(principalInput.value);
+      const monthly = parseNum(monthlyInput.value);
+      const annualRate = parseFloat(rateInput.value.replace(/,/g, '')) || 0;
+      const years = parseInt((document.getElementById('si-years') as HTMLSelectElement).value) || 3;
+
+      let hasError = false;
+      if (principal <= 0) { setFieldError('si-principal-error', 'กรุณากรอกเงินต้นที่ถูกต้อง'); hasError = true; }
+      if (annualRate <= 0) { setFieldError('si-rate-error', 'กรุณากรอกอัตราดอกเบี้ยที่ถูกต้อง'); hasError = true; }
+
+      if (hasError) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('savings-interest');
+
+      const r = annualRate / 100 / 12;
+      const n = years * 12;
+      let balance = principal;
+      let totalDeposited = principal;
+      let totalInterest = 0;
+
+      interface YearRow { year: number; deposited: number; grossInterest: number; netBalance: number; }
+      const yearlyRows: YearRow[] = [];
+
+      for (let month = 1; month <= n; month++) {
+        const interest = balance * r;
+        totalInterest += interest;
+        balance += interest;
+        if (month > 1 && monthly > 0) {
+          balance += monthly;
+          totalDeposited += monthly;
+        }
+        if (month % 12 === 0) {
+          const tax = totalInterest * WITHHOLDING_TAX;
+          yearlyRows.push({
+            year: month / 12,
+            deposited: totalDeposited,
+            grossInterest: totalInterest,
+            netBalance: totalDeposited + totalInterest - tax,
+          });
+        }
+      }
+
+      const grossInterest = totalInterest;
+      const tax = grossInterest * WITHHOLDING_TAX;
+      const netInterest = grossInterest - tax;
+      const total = totalDeposited + netInterest;
+
+      (document.getElementById('res-gross') as HTMLElement).textContent = fmt(grossInterest) + ' บาท';
+      (document.getElementById('res-tax') as HTMLElement).textContent = fmt(tax) + ' บาท';
+      (document.getElementById('res-net') as HTMLElement).textContent = fmt(netInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total) + ' บาท';
+
+      const tbody = document.getElementById('si-yearly-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      yearlyRows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${row.year}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.deposited)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.grossInterest)}</td>
+          <td class="py-2 text-right font-medium">${fmt(row.netBalance)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('savings-interest');
+      trackCalculatorUsed('savings-interest');
+    });
+  </script>
+</BaseLayout>

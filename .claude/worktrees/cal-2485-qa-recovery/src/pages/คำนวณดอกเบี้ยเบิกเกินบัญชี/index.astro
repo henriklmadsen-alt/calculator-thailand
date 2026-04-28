@@ -1,0 +1,132 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณดอกเบี้ย Overdraft 2569 | ดอกเบี้ยเบิกเกินบัญชี | Kamnuanlek';
+const pageDescription = 'คำนวณดอกเบี้ยเบิกเกินบัญชี (Overdraft) ตามยอดที่เบิกเกินและระยะเวลา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณดอกเบี้ยเบิกเกินบัญชี/`;
+
+const faqData = [
+  {
+    question: 'อัตราดอกเบี้ย Overdraft ของธนาคารไทยเป็นเท่าไร?',
+    answer: 'อัตราดอกเบี้ยเบิกเกินบัญชี (OD) ของธนาคารไทยโดยทั่วไปอยู่ที่ 18-21% ต่อปี ซึ่งสูงกว่าอัตราดอกเบี้ยสินเชื่อส่วนบุคคลทั่วไป อัตราจริงขึ้นอยู่กับประเภทบัญชีและวงเงินที่ธนาคารอนุมัติ',
+  },
+  {
+    question: 'Overdraft ต่างจากบัตรเครดิตอย่างไร?',
+    answer: 'Overdraft คือวงเงินสำรองที่ผูกกับบัญชีเดินสะพัด ชำระดอกเบี้ยเฉพาะส่วนที่ใช้จริง คล้ายบัตรเครดิตแต่ไม่มีรอบบัญชี ดอกเบี้ยคำนวณรายวัน ส่วนบัตรเครดิตมีช่วงปลอดดอกเบี้ย 45-55 วัน แต่ดอกเบี้ยหลังจากนั้นสูงมาก',
+  },
+  {
+    question: 'ควรใช้ Overdraft หรือกู้ยืมส่วนบุคคลดีกว่า?',
+    answer: 'สำหรับความต้องการเงินระยะสั้นมาก (ไม่กี่วัน) Overdraft อาจคุ้มกว่าเพราะดอกเบี้ยคำนวณรายวัน แต่ถ้าต้องการเงินระยะกลาง-ยาว สินเชื่อส่วนบุคคลหรือบัตรกดเงินสดอาจมีดอกเบี้ยต่ำกว่า ควรคำนวณต้นทุนรวมก่อนตัดสินใจ',
+  },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณดอกเบี้ย Overdraft',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณดอกเบี้ยเบิกเกินบัญชี">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณดอกเบี้ย Overdraft 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณดอกเบี้ยเบิกเกินบัญชี (OD) ตามยอดที่เบิกเกินและจำนวนวัน</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div>
+          <label for="od-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดที่เบิกเกิน (บาท)</label>
+          <input id="od-amount" type="text" inputmode="numeric" placeholder="เช่น 50000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="od-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราดอกเบี้ย OD (% ต่อปี)</label>
+          <input id="od-rate" type="text" inputmode="decimal" value="18"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <div>
+          <label for="od-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันที่ค้างชำระ</label>
+          <input id="od-days" type="text" inputmode="numeric" placeholder="เช่น 30" value="30"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ดอกเบี้ย OD/วัน</div>
+            <div id="res-daily" class="text-2xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมดอกเบี้ย</div>
+            <div id="res-interest" class="text-3xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดที่ต้องชำระคืนทั้งหมด</div>
+            <div id="res-total" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณดอกเบี้ยเบิกเกินบัญชี/" categoryId="loan" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + v.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const amount = parseNum((document.getElementById('od-amount') as HTMLInputElement).value);
+    const rate = parseNum((document.getElementById('od-rate') as HTMLInputElement).value);
+    const days = parseNum((document.getElementById('od-days') as HTMLInputElement).value);
+    if (!amount || !rate || !days) return;
+
+    const dailyInterest = amount * (rate / 100) / 365;
+    const totalInterest = dailyInterest * days;
+    const totalPayback = amount + totalInterest;
+
+    document.getElementById('res-daily')!.textContent = fmt(dailyInterest);
+    document.getElementById('res-interest')!.textContent = fmt(totalInterest);
+    document.getElementById('res-total')!.textContent = fmt(totalPayback);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

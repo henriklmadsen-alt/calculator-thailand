@@ -1,0 +1,229 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณภาษีรายได้จากต่างประเทศ 2567/2569 | กฎใหม่โอนปีเดียวกัน | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีเงินได้บุคคลธรรมดาจากรายได้ต่างประเทศที่นำเข้าไทย ตามกฎใหม่ปี 2567: รายได้ที่โอนมาในปีเดียวกันต้องเสียภาษี อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณภาษีรายได้ต่างประเทศ/`;
+
+const faqData = [
+  {
+    question: 'กฎภาษีรายได้จากต่างประเทศเปลี่ยนแปลงอย่างไรในปี 2567?',
+    answer: 'ก่อนปี 2567 รายได้จากต่างประเทศจะต้องเสียภาษีไทยก็ต่อเมื่อนำเงินเข้าไทยในปีถัดไปจากปีที่ได้รับเงิน แต่ตั้งแต่วันที่ 1 มกราคม 2567 กรมสรรพากรออกคำสั่งใหม่ (ป.161/2566) ให้รายได้ต่างประเทศที่นำเข้าไทยในปีเดียวกันกับที่ได้รับ ต้องนำมารวมคำนวณภาษีเงินได้บุคคลธรรมดาด้วย',
+  },
+  {
+    question: 'ใครบ้างที่ต้องเสียภาษีจากรายได้ต่างประเทศ?',
+    answer: 'ผู้มีถิ่นที่อยู่ในประเทศไทย (อยู่ในไทยรวมกันตั้งแต่ 180 วันขึ้นไปในปีภาษีนั้น) และนำรายได้จากแหล่งต่างประเทศเข้ามาในไทยในปีเดียวกันกับที่ได้รับ ต้องนำมายื่นภาษีเงินได้บุคคลธรรมดา',
+  },
+  {
+    question: 'เงินออมที่เก็บไว้ก่อนปี 2567 แล้วโอนเข้าไทยต้องเสียภาษีไหม?',
+    answer: 'ไม่ต้อง เงินที่ได้รับและสะสมไว้ก่อนวันที่ 1 มกราคม 2567 เมื่อโอนเข้าไทยในภายหลังจะได้รับการยกเว้น เฉพาะรายได้ที่เกิดขึ้นตั้งแต่ 1 มกราคม 2567 เป็นต้นไป และนำเข้าไทยในปีเดียวกันเท่านั้นที่ต้องเสียภาษี',
+  },
+  {
+    question: 'ภาษีที่เสียไว้ต่างประเทศแล้ว สามารถขอเครดิตได้ไหม?',
+    answer: 'หากประเทศที่รายได้เกิดขึ้นมีอนุสัญญาภาษีซ้อนกับไทย สามารถขอเครดิตภาษีที่จ่ายไว้ต่างประเทศได้ตามเงื่อนไขในอนุสัญญานั้น ควรปรึกษาผู้เชี่ยวชาญด้านภาษีระหว่างประเทศ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีรายได้จากต่างประเทศ 2567',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีรายได้ต่างประเทศ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
+      <p class="text-sm font-semibold text-amber-700">⚠️ กฎใหม่ปี 2567 — รายได้ต่างประเทศที่โอนเข้าไทยปีเดียวกันต้องเสียภาษี</p>
+      <p class="mt-1 text-sm text-slate-700">อ้างอิงคำสั่งกรมสรรพากร ป.161/2566</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณภาษีรายได้จากต่างประเทศ กฎใหม่ 2567
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประมาณภาษีจากรายได้ต่างประเทศที่นำเข้าไทย ตามกฎใหม่ที่บังคับใช้ตั้งแต่ 1 มกราคม 2567
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรายได้</h2>
+      <div class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fi-foreign" class="block text-sm font-medium text-gray-700 mb-1">
+              รายได้ต่างประเทศที่นำเข้าไทย (บาท/ปี)
+            </label>
+            <input type="text" id="fi-foreign" inputmode="numeric" placeholder="เช่น 1,200,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p class="mt-1 text-xs text-gray-400">ใช้อัตราแลกเปลี่ยน ณ วันที่โอนเงิน</p>
+          </div>
+          <div>
+            <label for="fi-thai" class="block text-sm font-medium text-gray-700 mb-1">
+              รายได้ในประเทศไทย (บาท/ปี)
+            </label>
+            <input type="text" id="fi-thai" inputmode="numeric" placeholder="เช่น 0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fi-deductions" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าลดหย่อนรวม (บาท)
+            </label>
+            <input type="text" id="fi-deductions" inputmode="numeric" placeholder="เช่น 60,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p class="mt-1 text-xs text-gray-400">ส่วนตัว 60,000 + ค่าลดหย่อนอื่นๆ</p>
+          </div>
+          <div>
+            <label for="fi-foreign-tax" class="block text-sm font-medium text-gray-700 mb-1">
+              ภาษีที่จ่ายไว้ต่างประเทศ (บาท) <span class="text-gray-400 font-normal">— ถ้ามี</span>
+            </label>
+            <input type="text" id="fi-foreign-tax" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          </div>
+        </div>
+        <button type="button" id="btn-fi-calc"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </div>
+
+      <div id="fi-result" class="hidden mt-6">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รายได้รวมต่อปี</div>
+            <div id="fi-r-total" class="text-lg font-bold text-gray-900">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รายได้สุทธิหลังหัก</div>
+            <div id="fi-r-net" class="text-lg font-bold text-gray-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีที่ต้องจ่าย (ไทย)</div>
+            <div id="fi-r-tax" class="text-lg font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">หลังหักเครดิตต่างประเทศ</div>
+            <div id="fi-r-net-tax" class="text-lg font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-1 text-sm bg-gray-50 rounded-lg p-3">
+          <div class="flex justify-between"><span class="text-gray-500">รายได้รวม</span><span id="fi-d-income" class="font-medium"></span></div>
+          <div class="flex justify-between"><span class="text-gray-500">หักค่าใช้จ่าย 50% (สูงสุด 100,000)</span><span id="fi-d-expense" class="font-medium text-red-600"></span></div>
+          <div class="flex justify-between"><span class="text-gray-500">หักค่าลดหย่อน</span><span id="fi-d-deduct" class="font-medium text-red-600"></span></div>
+          <div class="flex justify-between border-t border-gray-200 pt-1"><span class="font-semibold">รายได้สุทธิ</span><span id="fi-d-taxable" class="font-bold"></span></div>
+          <div class="flex justify-between"><span class="text-gray-500">ภาษีตามขั้นบันได</span><span id="fi-d-pit" class="font-medium text-red-600"></span></div>
+          <div class="flex justify-between"><span class="text-gray-500">เครดิตภาษีต่างประเทศ</span><span id="fi-d-credit" class="font-medium text-green-600"></span></div>
+        </div>
+        <p class="mt-3 text-xs text-gray-400">* เครดิตภาษีต่างประเทศใช้ได้เฉพาะประเทศที่มีอนุสัญญาภาษีซ้อนกับไทย ควรปรึกษาผู้เชี่ยวชาญก่อนยื่นแบบ</p>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">กฎภาษีรายได้จากต่างประเทศ ปี 2567</h2>
+      <p>กรมสรรพากรออกคำสั่ง ป.161/2566 มีผลบังคับใช้วันที่ 1 มกราคม 2567 โดยกำหนดให้ผู้มีถิ่นที่อยู่ในไทย (อยู่ไทย ≥ 180 วัน/ปี) ที่มีรายได้จากต่างประเทศและนำเงินเข้าไทยในปีเดียวกับที่ได้รับ ต้องนำมารวมคำนวณภาษีเงินได้บุคคลธรรมดา</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประเภทรายได้ที่ได้รับผลกระทบ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เงินเดือนหรือค่าจ้างจากนายจ้างต่างประเทศ (Remote Work)</li>
+        <li>กำไรจากการลงทุนในหุ้น กองทุน หรือสินทรัพย์ต่างประเทศ</li>
+        <li>รายได้จากอสังหาริมทรัพย์ในต่างประเทศ</li>
+        <li>เงินปันผลและดอกเบี้ยจากต่างประเทศ</li>
+        <li>รายได้จากธุรกิจออนไลน์หรือฟรีแลนซ์ต่างประเทศ</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณภาษีรายได้ต่างประเทศ/" />
+    <RelatedCalculators currentHref="/คำนวณภาษีรายได้ต่างประเทศ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีระหว่างประเทศสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+    function calcPIT(taxable: number): number {
+      const brackets = [
+        { max: 150000, rate: 0 }, { max: 300000, rate: 0.05 },
+        { max: 500000, rate: 0.10 }, { max: 750000, rate: 0.15 },
+        { max: 1000000, rate: 0.20 }, { max: 2000000, rate: 0.25 },
+        { max: 5000000, rate: 0.30 }, { max: Infinity, rate: 0.35 },
+      ];
+      let tax = 0; let prev = 0;
+      for (const b of brackets) {
+        if (taxable <= prev) break;
+        tax += (Math.min(taxable, b.max) - prev) * b.rate;
+        prev = b.max;
+      }
+      return tax;
+    }
+
+    document.getElementById('btn-fi-calc')!.addEventListener('click', () => {
+      const foreign = parseNum((document.getElementById('fi-foreign') as HTMLInputElement).value);
+      const thai = parseNum((document.getElementById('fi-thai') as HTMLInputElement).value);
+      const deductions = parseNum((document.getElementById('fi-deductions') as HTMLInputElement).value) || 60000;
+      const foreignTax = parseNum((document.getElementById('fi-foreign-tax') as HTMLInputElement).value);
+      if (foreign <= 0 && thai <= 0) return;
+
+      const totalIncome = foreign + thai;
+      const expense = Math.min(totalIncome * 0.5, 100000);
+      const taxableIncome = Math.max(0, totalIncome - expense - deductions);
+      const grossTax = calcPIT(taxableIncome);
+      const credit = Math.min(foreignTax, grossTax);
+      const netTax = Math.max(0, grossTax - credit);
+
+      (document.getElementById('fi-r-total') as HTMLElement).textContent = fmt(totalIncome);
+      (document.getElementById('fi-r-net') as HTMLElement).textContent = fmt(taxableIncome);
+      (document.getElementById('fi-r-tax') as HTMLElement).textContent = fmt(grossTax);
+      (document.getElementById('fi-r-net-tax') as HTMLElement).textContent = fmt(netTax);
+      (document.getElementById('fi-d-income') as HTMLElement).textContent = fmt(totalIncome);
+      (document.getElementById('fi-d-expense') as HTMLElement).textContent = '−' + fmt(expense);
+      (document.getElementById('fi-d-deduct') as HTMLElement).textContent = '−' + fmt(deductions);
+      (document.getElementById('fi-d-taxable') as HTMLElement).textContent = fmt(taxableIncome);
+      (document.getElementById('fi-d-pit') as HTMLElement).textContent = fmt(grossTax);
+      (document.getElementById('fi-d-credit') as HTMLElement).textContent = credit > 0 ? '−' + fmt(credit) : '—';
+      (document.getElementById('fi-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('foreign-income-tax');
+    });
+  </script>
+</BaseLayout>

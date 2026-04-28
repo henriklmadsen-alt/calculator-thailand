@@ -1,0 +1,479 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าทองคำ ราคาทองวันนี้ 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าทองคำออนไลน์ฟรี ทองคำแท่งและทองรูปพรรณ รองรับบาททอง สลึง กรัม พร้อมราคาซื้อ-ขาย อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าทองคำ/`;
+
+const faqData = [
+  {
+    question: 'ทองคำ 96.5% คืออะไร?',
+    answer: 'ทองคำ 96.5% หรือทอง 23 กะรัต เป็นมาตรฐานทองคำไทยที่สมาคมค้าทองคำกำหนด มีส่วนผสมทอง 96.5% และโลหะอื่น 3.5% เพื่อให้ทองมีความแข็งแรง ทนทาน เหมาะสำหรับทำเครื่องประดับ',
+  },
+  {
+    question: '1 บาททอง เท่ากับกี่กรัม?',
+    answer: '1 บาททอง (บาทหนัก) เท่ากับ 15.244 กรัม หรือ 4 สลึง น้ำหนักนี้เป็นมาตรฐานที่สมาคมค้าทองคำกำหนดไว้สำหรับการซื้อขายทองคำในประเทศไทย',
+  },
+  {
+    question: 'ทองคำแท่งกับทองรูปพรรณต่างกันอย่างไร?',
+    answer: 'ทองคำแท่งเป็นทองบริสุทธิ์ที่หล่อเป็นแท่ง เหมาะสำหรับการลงทุน มีราคาซื้อ-ขายใกล้เคียงกัน ส่วนทองรูปพรรณเป็นทองที่ขึ้นรูปเป็นเครื่องประดับ มีค่ากำเหน็จ (ค่าแรงช่าง) เพิ่มเติม ทำให้ราคาขายออกสูงกว่าทองแท่ง และราคารับซื้อคืนต่ำกว่า',
+  },
+  {
+    question: 'ราคาทองคำอัปเดตเมื่อไร?',
+    answer: 'สมาคมค้าทองคำประกาศราคาทองคำทุกวันทำการ โดยอาจปรับเปลี่ยนได้หลายครั้งต่อวันตามราคาทองคำตลาดโลก ควรตรวจสอบราคาล่าสุดจากสมาคมค้าทองคำก่อนซื้อขาย',
+  },
+  {
+    question: 'สลึงคิดยังไร?',
+    answer: '1 สลึง = 1/4 ของ 1 บาททอง = 3.811 กรัม เป็นหน่วยวัดน้ำหนักทองคำที่ใช้กันทั่วไปในไทย เช่น สร้อยคอ 1 สลึง หมายถึงทองคำหนัก 3.811 กรัม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าทองคำ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าทองคำ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
+      <p class="text-sm font-semibold text-amber-700">คำนวณมูลค่าทองคำง่ายๆ ใน 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">กรอกน้ำหนักทองและราคาต่อบาท คำนวณทั้งราคาซื้อและราคาขาย</p>
+      <p class="mt-1 text-xs font-medium text-amber-800">ทองคำ 96.5% มาตรฐานสมาคมค้าทองคำ</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าทองคำ — ราคาทองวันนี้ 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณราคาทองคำแท่งและทองรูปพรรณ รองรับหน่วยบาททอง สลึง และกรัม พร้อมแสดงราคาซื้อ-ขายและส่วนต่าง
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="gold-form" class="space-y-5">
+        <p id="gold-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <!-- Gold Type Toggle -->
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-2">ประเภททองคำ</legend>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="gold-type" value="bar" checked class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">ทองคำแท่ง</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="gold-type" value="ornament" class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">ทองรูปพรรณ</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Weight Input -->
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="gold-weight" class="block text-sm font-medium text-gray-700 mb-1">
+              น้ำหนักทองคำ
+            </label>
+            <input
+              type="text"
+              id="gold-weight"
+              inputmode="decimal"
+              placeholder="เช่น 1"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="gold-weight-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="weight-unit" class="block text-sm font-medium text-gray-700 mb-1">
+              หน่วยน้ำหนัก
+            </label>
+            <select
+              id="weight-unit"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="baht" selected>บาททอง</option>
+              <option value="salung">สลึง</option>
+              <option value="gram">กรัม</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Price Inputs -->
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="buy-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาขายออก (บาท/บาททอง)
+            </label>
+            <input
+              type="text"
+              id="buy-price"
+              inputmode="numeric"
+              placeholder="เช่น 43,250"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ราคาที่ร้านขายให้ลูกค้า (ราคาซื้อของคุณ)</p>
+            <p id="buy-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="sell-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคารับซื้อ (บาท/บาททอง)
+            </label>
+            <input
+              type="text"
+              id="sell-price"
+              inputmode="numeric"
+              placeholder="เช่น 43,150"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ราคาที่ร้านรับซื้อคืน (ราคาขายของคุณ)</p>
+            <p id="sell-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <!-- Default price hint -->
+        <div class="rounded-lg border border-sky-100 bg-sky-50 px-3 py-2">
+          <p class="text-xs text-sky-700">
+            ตรวจสอบราคาทองวันนี้ได้ที่ <strong>สมาคมค้าทองคำ</strong> (goldtraders.or.th) แล้วกรอกราคาขายออก/รับซื้อด้านบน
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณราคาทองคำ
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="gold-result" class="hidden mt-6">
+        <!-- Summary Cards -->
+        <div class="grid gap-4 sm:grid-cols-2 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-green-700 mb-1">ราคาซื้อ (ราคาขายออก)</div>
+            <div id="result-buy-price" class="text-2xl sm:text-3xl font-bold text-green-800">-</div>
+            <div class="text-xs text-green-600 mt-1">บาท</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-blue-700 mb-1">ราคาขาย (ราคารับซื้อ)</div>
+            <div id="result-sell-price" class="text-2xl sm:text-3xl font-bold text-blue-800">-</div>
+            <div class="text-xs text-blue-600 mt-1">บาท</div>
+          </div>
+        </div>
+
+        <!-- Spread -->
+        <div class="bg-amber-50 rounded-lg p-4 mb-6">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-amber-800">ส่วนต่างราคาซื้อ-ขาย</span>
+            <span id="result-spread" class="text-lg font-bold text-amber-900">-</span>
+          </div>
+        </div>
+
+        <!-- Weight Conversion Table -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">น้ำหนักที่เทียบเท่า</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <tbody>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 text-gray-600">บาททอง</td>
+                  <td id="result-baht" class="py-2 text-right font-medium text-gray-900">-</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-2 text-gray-600">สลึง</td>
+                  <td id="result-salung" class="py-2 text-right font-medium text-gray-900">-</td>
+                </tr>
+                <tr>
+                  <td class="py-2 text-gray-600">กรัม</td>
+                  <td id="result-gram" class="py-2 text-right font-medium text-gray-900">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Per-unit breakdown -->
+        <div class="mt-4 bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">ราคาต่อหน่วย</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left border-b-2 border-gray-300">
+                  <th class="py-2 pr-4">หน่วย</th>
+                  <th class="py-2 pr-4 text-right">ราคาซื้อ</th>
+                  <th class="py-2 text-right">ราคาขาย</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-gray-100">
+                  <td class="py-2 pr-4 text-gray-600">ต่อบาททอง</td>
+                  <td id="unit-buy-baht" class="py-2 pr-4 text-right font-medium text-gray-900">-</td>
+                  <td id="unit-sell-baht" class="py-2 text-right font-medium text-gray-900">-</td>
+                </tr>
+                <tr class="border-b border-gray-100">
+                  <td class="py-2 pr-4 text-gray-600">ต่อสลึง</td>
+                  <td id="unit-buy-salung" class="py-2 pr-4 text-right font-medium text-gray-900">-</td>
+                  <td id="unit-sell-salung" class="py-2 text-right font-medium text-gray-900">-</td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-4 text-gray-600">ต่อกรัม</td>
+                  <td id="unit-buy-gram" class="py-2 pr-4 text-right font-medium text-gray-900">-</td>
+                  <td id="unit-sell-gram" class="py-2 text-right font-medium text-gray-900">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ทองคำไทย 96.5% คืออะไร?</h2>
+
+      <p>
+        ทองคำไทยมาตรฐาน 96.5% (23 กะรัต) เป็นมาตรฐานที่สมาคมค้าทองคำกำหนดสำหรับการซื้อขายทองคำในประเทศไทย
+        มีส่วนผสมทองคำบริสุทธิ์ 96.5% และโลหะผสมอื่น 3.5% เพื่อเพิ่มความแข็งแรง
+        ราคาทองคำไทยประกาศเป็นราคาต่อ 1 บาททอง (15.244 กรัม)
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณราคาทองคำ</h3>
+
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-lg font-semibold">ราคาทอง = น้ำหนัก (บาททอง) × ราคาต่อบาททอง</p>
+        <p class="text-sm text-gray-500 mt-1">ตัวอย่าง: ทอง 2 บาท × ราคาขายออก 43,250 = 86,500 บาท</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตารางแปลงน้ำหนักทองคำ</h3>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-gray-300">
+              <th class="py-2 pr-4">หน่วย</th>
+              <th class="py-2 pr-4">เทียบเท่า</th>
+              <th class="py-2">น้ำหนัก (กรัม)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 font-medium">1 บาททอง</td>
+              <td class="py-2 pr-4">4 สลึง</td>
+              <td class="py-2">15.244 กรัม</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 font-medium">1 สลึง</td>
+              <td class="py-2 pr-4">0.25 บาททอง</td>
+              <td class="py-2">3.811 กรัม</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 font-medium">2 บาททอง</td>
+              <td class="py-2 pr-4">8 สลึง</td>
+              <td class="py-2">30.488 กรัม</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4 font-medium">5 บาททอง</td>
+              <td class="py-2 pr-4">20 สลึง</td>
+              <td class="py-2">76.220 กรัม</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ทองคำแท่ง vs ทองรูปพรรณ</h3>
+
+      <p>
+        <strong>ทองคำแท่ง</strong> เหมาะสำหรับการลงทุนเพราะมีส่วนต่างราคาซื้อ-ขายน้อย
+        โดยทั่วไปส่วนต่างจะอยู่ที่ประมาณ 100 บาทต่อบาททอง
+      </p>
+
+      <p>
+        <strong>ทองรูปพรรณ</strong> มีค่ากำเหน็จ (ค่าแรงช่าง) เพิ่มเข้ามา ทำให้ราคาขายออกสูงกว่าทองแท่ง
+        และราคารับซื้อคืนต่ำกว่า ส่วนต่างจะอยู่ที่ประมาณ 500-700 บาทต่อบาททอง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับการซื้อทองคำ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ตรวจสอบราคาทองล่าสุดจากสมาคมค้าทองคำก่อนซื้อ</li>
+        <li>เปรียบเทียบราคาซื้อ-ขายระหว่างร้านทอง</li>
+        <li>หากลงทุน เลือกทองคำแท่งเพราะส่วนต่างน้อยกว่า</li>
+        <li>เก็บใบรับประกัน (ใบเสร็จ) ไว้สำหรับการขายคืน</li>
+        <li>พิจารณาซื้อทีละน้อยเพื่อเฉลี่ยต้นทุน (DCA)</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าทองคำ/" />
+    <RelatedCalculators currentHref="/คำนวณค่าทองคำ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ
+      ราคาทองคำเปลี่ยนแปลงตลอดเวลา กรุณาตรวจสอบราคาล่าสุดจากสมาคมค้าทองคำก่อนซื้อขายจริง
+    </div>
+  </article>
+
+  <script>
+    import {
+      GRAMS_PER_BAHT_WEIGHT,
+      SALUNG_PER_BAHT_WEIGHT,
+      GRAMS_PER_SALUNG,
+      calculateGoldPrice,
+      type WeightUnit,
+      type GoldType,
+    } from '../../lib/gold-price-calculator';
+
+    const fmt = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtWeight = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    const form = document.getElementById('gold-form') as HTMLFormElement;
+    const weightInput = document.getElementById('gold-weight') as HTMLInputElement;
+    const unitSelect = document.getElementById('weight-unit') as HTMLSelectElement;
+    const buyPriceInput = document.getElementById('buy-price') as HTMLInputElement;
+    const sellPriceInput = document.getElementById('sell-price') as HTMLInputElement;
+    const formError = document.getElementById('gold-form-error') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const weight = parseNum(weightInput.value);
+      const buyPrice = parseNum(buyPriceInput.value);
+      const sellPrice = parseNum(sellPriceInput.value);
+      const weightUnit = unitSelect.value as WeightUnit;
+      const goldType = (document.querySelector('input[name="gold-type"]:checked') as HTMLInputElement).value as GoldType;
+
+      // Validation
+      let hasError = false;
+      const weightError = document.getElementById('gold-weight-error') as HTMLElement;
+      const buyError = document.getElementById('buy-price-error') as HTMLElement;
+      const sellError = document.getElementById('sell-price-error') as HTMLElement;
+
+      [weightError, buyError, sellError].forEach(el => { el.classList.add('hidden'); el.textContent = ''; });
+      formError.classList.add('hidden');
+
+      if (weight <= 0) {
+        weightError.textContent = 'กรุณากรอกน้ำหนักทองคำ';
+        weightError.classList.remove('hidden');
+        weightInput.focus();
+        hasError = true;
+      }
+      if (buyPrice <= 0) {
+        buyError.textContent = 'กรุณากรอกราคาขายออก';
+        buyError.classList.remove('hidden');
+        if (!hasError) buyPriceInput.focus();
+        hasError = true;
+      }
+      if (sellPrice <= 0) {
+        sellError.textContent = 'กรุณากรอกราคารับซื้อ';
+        sellError.classList.remove('hidden');
+        if (!hasError) sellPriceInput.focus();
+        hasError = true;
+      }
+
+      if (hasError) {
+        formError.textContent = 'กรอกข้อมูลให้ครบก่อนคำนวณ';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      const result = calculateGoldPrice({
+        weight,
+        weightUnit,
+        goldType,
+        buyPricePerBaht: buyPrice,
+        sellPricePerBaht: sellPrice,
+      });
+
+      // Total prices
+      (document.getElementById('result-buy-price') as HTMLElement).textContent = fmt.format(result.totalBuyPrice);
+      (document.getElementById('result-sell-price') as HTMLElement).textContent = fmt.format(result.totalSellPrice);
+      (document.getElementById('result-spread') as HTMLElement).textContent = fmt.format(result.spread) + ' บาท';
+
+      // Weight conversions
+      (document.getElementById('result-baht') as HTMLElement).textContent = fmtWeight.format(result.weightInBaht) + ' บาททอง';
+      (document.getElementById('result-salung') as HTMLElement).textContent = fmtWeight.format(result.weightInSalung) + ' สลึง';
+      (document.getElementById('result-gram') as HTMLElement).textContent = fmtWeight.format(result.weightInGrams) + ' กรัม';
+
+      // Per-unit prices
+      const buyPerBaht = result.buyPricePerBaht;
+      const sellPerBaht = result.sellPricePerBaht;
+      const buyPerSalung = buyPerBaht / SALUNG_PER_BAHT_WEIGHT;
+      const sellPerSalung = sellPerBaht / SALUNG_PER_BAHT_WEIGHT;
+      const buyPerGram = buyPerBaht / GRAMS_PER_BAHT_WEIGHT;
+      const sellPerGram = sellPerBaht / GRAMS_PER_BAHT_WEIGHT;
+
+      (document.getElementById('unit-buy-baht') as HTMLElement).textContent = fmt.format(buyPerBaht);
+      (document.getElementById('unit-sell-baht') as HTMLElement).textContent = fmt.format(sellPerBaht);
+      (document.getElementById('unit-buy-salung') as HTMLElement).textContent = fmt.format(buyPerSalung);
+      (document.getElementById('unit-sell-salung') as HTMLElement).textContent = fmt.format(sellPerSalung);
+      (document.getElementById('unit-buy-gram') as HTMLElement).textContent = fmt.format(buyPerGram);
+      (document.getElementById('unit-sell-gram') as HTMLElement).textContent = fmt.format(sellPerGram);
+
+      // Show result
+      const resultEl = document.getElementById('gold-result') as HTMLElement;
+      resultEl.classList.remove('hidden');
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      trackCalculatorUsed('gold-price');
+    });
+
+    // Allow Enter key on inputs
+    [weightInput, buyPriceInput, sellPriceInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          form.dispatchEvent(new Event('submit'));
+        }
+      });
+    });
+
+    // Track when result section enters viewport
+    const goldResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('gold-price');
+          goldResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    goldResultObserver.observe(document.getElementById('gold-result')!);
+  </script>
+</BaseLayout>

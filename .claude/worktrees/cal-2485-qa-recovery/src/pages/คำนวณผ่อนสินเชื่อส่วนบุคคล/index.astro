@@ -1,0 +1,338 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณผ่อนสินเชื่อส่วนบุคคล 2569 | Flat Rate + EIR | Kamnuanlek';
+const pageDescription = 'คำนวณค่าผ่อนสินเชื่อส่วนบุคคลแบบ flat rate พร้อมอัตราดอกเบี้ยที่แท้จริง (EIR) ดอกเบี้ยรวม และยอดชำระรวม ง่าย ถูกต้อง ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณผ่อนสินเชื่อส่วนบุคคล/`;
+
+const faqData = [
+  {
+    question: 'Flat rate คืออะไร ต่างจากลดต้นลดดอกอย่างไร?',
+    answer: 'Flat rate คือการคำนวณดอกเบี้ยจากเงินต้นเต็มก้อนตลอดสัญญา ทำให้ดอกเบี้ยรวมสูงกว่า ส่วนลดต้นลดดอกคำนวณดอกเบี้ยจากยอดหนี้คงเหลือ เมื่อผ่อนไปเรื่อยๆ ดอกเบี้ยก็ลดลง สินเชื่อส่วนบุคคลในไทยส่วนใหญ่ใช้ flat rate',
+  },
+  {
+    question: 'อัตราดอกเบี้ยที่แท้จริง (EIR) คืออะไร?',
+    answer: 'EIR (Effective Interest Rate) หรืออัตราดอกเบี้ยที่แท้จริง คืออัตราดอกเบี้ยแบบลดต้นลดดอกที่ให้ค่างวดเดียวกัน โดยทั่วไป EIR ≈ Flat Rate × 1.8 เช่น flat rate 10% ต่อปี มีค่า EIR ประมาณ 18% ต่อปี ธนาคารแห่งประเทศไทยกำหนดให้ต้องแจ้ง EIR ต่อลูกค้า',
+  },
+  {
+    question: 'สินเชื่อส่วนบุคคล flat rate ดอกเบี้ยสูงสุดเท่าไร?',
+    answer: 'ธนาคารแห่งประเทศไทยกำหนดเพดาน EIR สินเชื่อส่วนบุคคลไม่เกิน 25% ต่อปี คิดเป็น flat rate ประมาณ 13-14% ต่อปี บัตรกดเงินสดมักคิด EIR 25% ส่วนสินเชื่อจากธนาคารพาณิชย์มักอยู่ที่ EIR 18-22%',
+  },
+  {
+    question: 'กู้สินเชื่อส่วนบุคคลได้สูงสุดเท่าไร?',
+    answer: 'วงเงินสินเชื่อส่วนบุคคลโดยทั่วไปอยู่ที่ 5 เท่าของรายได้ต่อเดือน เช่น รายได้ 30,000 บาท/เดือน กู้ได้สูงสุดประมาณ 150,000 บาท ระยะผ่อนมักสูงสุด 60 เดือน (5 ปี) สำหรับสินเชื่อส่วนบุคคลทั่วไป',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผ่อนสินเชื่อส่วนบุคคล',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณผ่อนสินเชื่อส่วนบุคคล ปี 2569",
+  "description": "ขั้นตอนการคำนวณเงินผ่อนรายเดือน อัตราดอกเบี้ย และเงินรวมทั้งสิ้นของสินเชื่อส่วนบุคคล ตามหลักการของธนาคารแห่งชาติไทย",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ระบุจำนวนเงินกู้ (Principal)",
+      "text": "บันทึกจำนวนเงินที่ต้องการกู้ยืม ตัวอย่าง: ต้องการกู้ 200,000 บาท (ซื้อรถยนต์ หรือทำบ้าน)"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ตรวจสอบอัตราดอกเบี้ยต่อปี",
+      "text": "ศึกษาอัตราดอกเบี้ยจากธนาคาร โดยปกติ 3.5%-6.5% ต่อปี ขึ้นอยู่กับสินเชื่อประเภท ตัวอย่าง: อัตราดอกเบี้ย 5% ต่อปี"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "ระบุระยะเวลาการผ่อน (Loan Term)",
+      "text": "ระยะเวลาการผ่อนทั่วไป 1-7 ปี (12-84 เดือน) ตัวอย่าง: ผ่อน 5 ปี = 60 เดือน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณเงินผ่อนรายเดือน",
+      "text": "ใช้สูตร: PMT = P × [r(1+r)^n] / [(1+r)^n - 1] เมื่อ P=200,000, r=5%/12=0.4167%, n=60 เดือน PMT = 200,000 × [0.004167(1.004167)^60] / [(1.004167)^60 - 1] ≈ 3,864 บาท/เดือน เงินรวม = 3,864 × 60 = 231,840 บาท (ดอกเบี้ย 31,840 บาท)"
+    }
+  ]
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนสินเชื่อส่วนบุคคล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      💳 คำนวณผ่อนสินเชื่อส่วนบุคคล — Flat Rate + อัตราดอกเบี้ยที่แท้จริง (EIR)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่างวดรายเดือน ดอกเบี้ยรวม และอัตราดอกเบี้ยที่แท้จริง (EIR) สำหรับสินเชื่อส่วนบุคคลแบบ flat rate
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="personal-loan-form" class="space-y-5">
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนเงินกู้ (บาท)
+          </label>
+          <input
+            type="text"
+            id="principal"
+            inputmode="numeric"
+            placeholder="เช่น 100,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="flat-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ย Flat Rate ต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="flat-rate"
+              inputmode="decimal"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="term-months" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาผ่อน (เดือน)
+            </label>
+            <input
+              type="text"
+              id="term-months"
+              inputmode="numeric"
+              placeholder="เช่น 36"
+              value="36"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราดอกเบี้ยที่แท้จริง (EIR)</div>
+            <div id="res-eir" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินกู้</span>
+            <span id="res-principal" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Flat Rate ต่อปี</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนงวด</span>
+            <span id="res-term" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="personal-loan"
+      affiliateUrl="/go/ttb-cash2go/"
+      partnerName="TTB Cash 2 Go"
+      ctaText="สมัครสินเชื่อ TTB Cash 2 Go"
+      subtext="วงเงินสูง อนุมัติเร็ว ดอกเบี้ยคงที่"
+    />
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณสินเชื่อส่วนบุคคลแบบ Flat Rate</h2>
+
+      <p>
+        สินเชื่อส่วนบุคคลในประเทศไทยส่วนใหญ่คำนวณดอกเบี้ยแบบ flat rate
+        นั่นคือดอกเบี้ยคำนวณจากเงินต้นเต็มก้อนตลอดระยะสัญญา ไม่ใช่จากยอดหนี้คงเหลือ
+        ทำให้ดอกเบี้ยรวมสูงกว่าการคำนวณแบบลดต้นลดดอก
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ Flat Rate</h3>
+      <p>ค่างวด = (เงินต้น + เงินต้น × Flat Rate% × ระยะเวลาปี) ÷ จำนวนงวด</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราดอกเบี้ยที่แท้จริง (EIR)</h3>
+      <p>
+        EIR คืออัตราดอกเบี้ยแบบลดต้นลดดอกที่ให้ค่างวดเท่ากัน
+        คำนวณด้วยวิธี Newton-Raphson เพื่อหาอัตราดอกเบี้ยรายเดือน r ที่ทำให้
+        ผลรวมมูลค่าปัจจุบันของค่างวดทั้งหมดเท่ากับเงินต้น
+        โดยทั่วไป EIR ≈ Flat Rate × 1.8
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>กู้ 100,000 บาท flat rate 10% ต่อปี ผ่อน 36 เดือน</li>
+        <li>ค่างวด = (100,000 + 100,000 × 10% × 3) ÷ 36 = 3,611 บาท/เดือน</li>
+        <li>ดอกเบี้ยรวม = 30,000 บาท | ยอดชำระรวม = 130,000 บาท</li>
+        <li>EIR ≈ 18-19% ต่อปี</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับเปรียบเทียบสินเชื่อ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ใช้ EIR เปรียบเทียบสินเชื่อต่างสถาบัน ไม่ใช่ flat rate</li>
+        <li>ตรวจสอบค่าธรรมเนียมการจัดการและค่าประกัน</li>
+        <li>ค่างวดไม่ควรเกิน 30% ของรายได้สุทธิ</li>
+        <li>ชำระคืนก่อนกำหนดได้ลดดอกเบี้ยได้ (ขึ้นกับเงื่อนไขสัญญา)</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณผ่อนสินเชื่อส่วนบุคคล/" />
+    <RelatedCalculators currentHref="/คำนวณผ่อนสินเชื่อส่วนบุคคล/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      อัตราดอกเบี้ยที่แท้จริง (EIR) อาจแตกต่างเล็กน้อยขึ้นกับวิธีคำนวณของสถาบันการเงิน
+      ไม่ถือเป็นคำแนะนำทางการเงิน โปรดตรวจสอบเงื่อนไขกับสถาบันการเงินโดยตรง
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function calcEIR(pmt: number, principal: number, n: number): number {
+      // Newton-Raphson to find monthly rate r such that PMT * (1-(1+r)^-n)/r = principal
+      let r = 0.01; // initial guess
+      for (let i = 0; i < 100; i++) {
+        const pow = Math.pow(1 + r, n);
+        const f = pmt * (1 - 1 / pow) / r - principal;
+        const df = pmt * ((1 - 1 / pow) * (-1 / (r * r)) + (n / (r * Math.pow(1 + r, n + 1))));
+        const r1 = r - f / df;
+        if (Math.abs(r1 - r) < 1e-10) { r = r1; break; }
+        r = r1;
+        if (r <= 0) r = 0.001;
+      }
+      return r * 12 * 100; // annual EIR %
+    }
+
+    const form = document.getElementById('personal-loan-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const principal = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const flatRate = parseNum((document.getElementById('flat-rate') as HTMLInputElement).value);
+      const termMonths = Math.round(parseNum((document.getElementById('term-months') as HTMLInputElement).value));
+
+      if (principal <= 0) { (document.getElementById('principal') as HTMLInputElement).focus(); return; }
+      if (flatRate <= 0) { (document.getElementById('flat-rate') as HTMLInputElement).focus(); return; }
+      if (termMonths <= 0) { (document.getElementById('term-months') as HTMLInputElement).focus(); return; }
+
+      const termYears = termMonths / 12;
+      const totalInterest = principal * (flatRate / 100) * termYears;
+      const monthlyPayment = (principal + totalInterest) / termMonths;
+      const totalPaid = principal + totalInterest;
+
+      let eir = 0;
+      try {
+        eir = calcEIR(monthlyPayment, principal, termMonths);
+      } catch {
+        eir = flatRate * 1.8; // fallback approximation
+      }
+
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPayment) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+      (document.getElementById('res-eir') as HTMLElement).textContent = eir.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-principal') as HTMLElement).textContent = fmt(principal) + ' บาท';
+      (document.getElementById('res-rate') as HTMLElement).textContent = flatRate.toFixed(2) + '%';
+      (document.getElementById('res-term') as HTMLElement).textContent = termMonths + ' งวด';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      trackCalculatorUsed('personal-loan');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('personal-loan');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

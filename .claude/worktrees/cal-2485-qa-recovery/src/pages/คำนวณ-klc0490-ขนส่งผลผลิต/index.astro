@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่าขนส่งผลผลิตการเกษตร | Kamnuanlek';
+const pageDescription = 'คำนวณค่าขนส่งผลผลิตเกษตรจากไร่นาสู่ตลาด ต้นทุนต่อกิโลกรัม ต่อเที่ยว';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0490-ขนส่งผลผลิต/`;
+const faqData = [
+  { question: 'ค่าขนส่งผลผลิตเกษตรคิดอย่างไร?', answer: 'ค่าขนส่งคิดจากระยะทาง น้ำหนักสินค้า น้ำมัน ค่าแรงคนขับ ค่าเสื่อมรถ โดยทั่วไปอยู่ที่ 0.5-2 บาท/กก. สำหรับระยะทางใกล้ สูงกว่าสำหรับระยะไกล' },
+  { question: 'รวมกลุ่มขนส่งช่วยประหยัดได้แค่ไหน?', answer: 'รวมกลุ่มขนส่งลดต้นทุนได้ 30-50% เปรียบเทียบกับขนส่งเดี่ยว เหมารถใหญ่คุ้มกว่ารถเล็กหลายคัน เหมาะสำหรับสินค้าที่ขายพร้อมกันในฤดูเดียว' },
+  { question: 'ห้องเย็นสำหรับผักผลไม้จำเป็นไหม?', answer: 'ผักผลไม้สด ดอกไม้ ต้องการห้องเย็น 2-8°C ค่าขนส่งห้องเย็นสูงกว่าปกติ 30-50% แต่ลดการสูญเสียระหว่างทาง ช่วยเพิ่มมูลค่าและเข้าถึงตลาดไกลขึ้น' },
+  { question: 'ขายผ่านตลาดไทยต้องเสียค่าใช้จ่ายอะไรบ้าง?', answer: 'ตลาดไท ตลาดสี่มุมเมือง มีค่าเข้าตลาด 50-200 บาท/วัน ค่าจอดรถ ค่าแรงยกสินค้า ค่านายหน้า 3-5% ถ้าขายผ่านพ่อค้าคนกลาง' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าขนส่งผลผลิตการเกษตร">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าขนส่งผลผลิตการเกษตร</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนขนส่งผลผลิตต่อกิโลกรัมและต่อรอบ</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="transport_trips" class="block text-sm font-medium text-gray-700 mb-1">จำนวนเที่ยวขนส่ง/ฤดูกาล</label><input type="number" id="transport_trips" min="1" placeholder="เช่น 10" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="cost_per_trip" class="block text-sm font-medium text-gray-700 mb-1">ค่าใช้จ่ายต่อเที่ยว (บาท)</label><input type="text" id="cost_per_trip" inputmode="decimal" placeholder="เช่น 2000" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="kg_per_trip" class="block text-sm font-medium text-gray-700 mb-1">น้ำหนักต่อเที่ยว (กก.)</label><input type="number" id="kg_per_trip" min="1" placeholder="เช่น 2000" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าขนส่งรวม/ฤดูกาล</p><p id="transport_total" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนขนส่งต่อกก.</p><p id="transport_per_kg" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const trips = parseFloat((document.getElementById('transport_trips') as HTMLInputElement).value) || 0;
+      const costTrip = parseFloat((document.getElementById('cost_per_trip') as HTMLInputElement).value) || 0;
+      const kgTrip = parseFloat((document.getElementById('kg_per_trip') as HTMLInputElement).value) || 1;
+      const total = trips * costTrip;
+      const totalKg = trips * kgTrip;
+      const perKg = totalKg > 0 ? total / totalKg : 0;
+      (document.getElementById('transport_total') as HTMLElement).textContent = Math.round(total).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('transport_per_kg') as HTMLElement).textContent = perKg.toLocaleString('th-TH', {maximumFractionDigits: 2}) + ' บาท/กก.';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('farm-transport-cost');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

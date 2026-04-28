@@ -1,0 +1,420 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเปอร์เซ็นต์ ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเปอร์เซ็นต์ ทั่ว เพิ่ม ลด หา ตัวตั้ง ไฟนอลตัวเสีย ฉบับสมบูรณ์ 2569 ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเปอร์เซ็นต์/`;
+
+const faqData = [
+  {
+    question: 'คำนวณเปอร์เซ็นต์ส่วนลดยังไงให้เร็วที่สุด?',
+    answer: 'นำราคาตั้งต้นคูณเปอร์เซ็นต์ส่วนลดเพื่อหาจำนวนเงินที่ลด จากนั้นนำราคาตั้งต้นลบจำนวนเงินส่วนลด จะได้ราคาสุทธิที่ต้องจ่าย',
+  },
+  {
+    question: 'เปอร์เซ็นต์เพิ่ม/ลดจากเดือนก่อนใช้สูตรอะไร?',
+    answer: 'ใช้สูตร ((ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม) × 100 ถ้าค่าที่ได้เป็นบวกคือเพิ่มขึ้น ถ้าเป็นลบคือลดลง',
+  },
+  {
+    question: 'กำไรคิดเป็นกี่เปอร์เซ็นต์ควรดูจากต้นทุนหรือราคาขาย?',
+    answer: 'ถ้าดูผลตอบแทนเทียบเงินลงทุนให้ใช้กำไรเทียบต้นทุน แต่ถ้าดูความหนาของกำไรบนราคาขายให้ใช้ Margin ซึ่งเทียบกำไรกับราคาขาย',
+  },
+  {
+    question: 'ทำไมคำนวณเปอร์เซ็นต์แล้วตัวเลขไม่ตรงทุกระบบ?',
+    answer: 'ความต่างมักมาจากการปัดเศษทศนิยมไม่เท่ากัน เช่น ปัดสองตำแหน่งเทียบกับปัดสี่ตำแหน่ง หรือปัดทุกขั้นตอนกับปัดเฉพาะผลลัพธ์สุดท้าย',
+  },
+  {
+    question: 'ข้อผิดพลาดทั่วไปในการคำนวณเปอร์เซ็นต์ที่ต้องหลีกเลี่ยงอะไรบ้าง?',
+    answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) คำนวณส่วนลดจากราคาใหม่แทนราคาตั้งต้น (2) ลืมบวกหรือลบส่วนลดหลายชั้น (3) ใช้เปอร์เซ็นต์เพิ่ม/ลดกับฐานที่ผิด (4) ไม่ปัดเศษให้เหมาะสมตรงท้าย และ (5) สับสนระหว่างเปอร์เซ็นต์ของเพิ่มขึ้นกับเปอร์เซ็นต์ของทั้งหมด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเปอร์เซ็นต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเปอร์เซ็นต์ของจำนวนใดๆ',
+  description: 'ขั้นตอนการคำนวณเปอร์เซ็นต์ โดยใช้สูตรง่ายๆ และตัวอย่างการคำนวณเบื้องต้น',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุจำนวนทั้งหมด (100%)',
+      text: 'กำหนดจำนวนทั้งหมด (ค่ามูลค่า 100%) ที่ต้องการหาเปอร์เซ็นต์ เช่น จำนวนเงิน 1,000 บาท หรือจำนวนคนทั้งหมด 200 คน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุเปอร์เซ็นต์ที่ต้องการคำนวณ',
+      text: 'กำหนดเปอร์เซ็นต์ที่ต้องการคำนวณออกมา เช่น 15% ของ 1,000 หรือ 30% ของ 200 คน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ใช้สูตร: จำนวน × เปอร์เซ็นต์ ÷ 100',
+      text: 'คำนวณโดยนำจำนวนทั้งหมด (1,000) × เปอร์เซ็นต์ (15) ÷ 100 = 150 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบผลลัพธ์',
+      text: 'ผลลัพธ์ที่ได้คือ 150 บาท ซึ่งหมายถึง 15% ของ 1,000 บาท หรือ 0.15 เท่าของจำนวนเดิม',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเปอร์เซ็นต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณเปอร์เซ็นต์ได้หลายรูปแบบในหน้าเดียว</p>
+      <p class="mt-1 text-sm text-slate-700">รองรับส่วนลด กำไร และเปอร์เซ็นต์เพิ่ม/ลด สำหรับงานขาย การเงิน และงานประจำวัน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตโครงสร้างเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเปอร์เซ็นต์ ปี 2569 (ส่วนลด กำไร และอัตราเพิ่ม/ลด)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกข้อมูลแล้วคำนวณได้ทันที ทั้งหา X% ของจำนวน, หาเปอร์เซ็นต์ของส่วนหนึ่งเทียบทั้งหมด,
+      เปอร์เซ็นต์เพิ่ม/ลด และคำนวณส่วนลดจากราคาป้ายในหน่วยเงินบาท
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="16 เม.ย. 2569"
+      sources={[
+        'สสวท. (SciMath) เรื่องอัตราส่วนและร้อยละ',
+        'กรมสรรพากร ข่าวภาษีมูลค่าเพิ่ม 7% (ใช้เป็นตัวอย่างงานคำนวณร้อยละเชิงธุรกิจ)',
+      ]}
+      assumptions={[
+        'ผลลัพธ์คำนวณจากข้อมูลที่ผู้ใช้กรอกเท่านั้น',
+        'ตัวเลขเหมาะสำหรับการวางแผนเบื้องต้น ก่อนยืนยันด้วยเอกสารจริง',
+      ]}
+      references={[
+        {
+          label: 'SciMath (สสวท.): อัตราส่วนและร้อยละ',
+          href: 'https://www.scimath.org/article-mathematics/item/11474-3',
+        },
+        {
+          label: 'กรมสรรพากร: ขยายเวลาลด VAT 7% ถึง 30 ก.ย. 2569',
+          href: 'https://www.rd.go.th/fileadmin/user_upload/news/2568thai/news34_2568.pdf',
+        },
+      ]}
+    />
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) หา X% ของจำนวน</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: 20% ของ 1,500 บาท = 300 บาท</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="part-percent" class="block text-sm font-medium text-gray-700 mb-1">เปอร์เซ็นต์ (%)</label>
+          <input id="part-percent" type="text" inputmode="decimal" placeholder="เช่น 20" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="part-base" class="block text-sm font-medium text-gray-700 mb-1">จำนวนฐาน</label>
+          <input id="part-base" type="text" inputmode="decimal" placeholder="เช่น 1500" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-part" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="part-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="part-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="part-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) หาว่าคิดเป็นกี่เปอร์เซ็นต์</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: 300 จาก 1,500 = 20%</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="ratio-part" class="block text-sm font-medium text-gray-700 mb-1">ส่วนที่ต้องการเทียบ</label>
+          <input id="ratio-part" type="text" inputmode="decimal" placeholder="เช่น 300" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="ratio-whole" class="block text-sm font-medium text-gray-700 mb-1">จำนวนทั้งหมด</label>
+          <input id="ratio-whole" type="text" inputmode="decimal" placeholder="เช่น 1500" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-ratio" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="ratio-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="ratio-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="ratio-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">3) คำนวณเปอร์เซ็นต์เพิ่ม/ลด</h2>
+      <p class="text-sm text-gray-500 mb-4">สูตร: ((ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม) × 100</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="change-old" class="block text-sm font-medium text-gray-700 mb-1">ค่าเดิม</label>
+          <input id="change-old" type="text" inputmode="decimal" placeholder="เช่น 12000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="change-new" class="block text-sm font-medium text-gray-700 mb-1">ค่าใหม่</label>
+          <input id="change-new" type="text" inputmode="decimal" placeholder="เช่น 13800" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-change" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="change-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="change-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="change-result-value" class="text-xl font-bold text-primary-700">-</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">4) คำนวณส่วนลดและราคาสุทธิ</h2>
+      <p class="text-sm text-gray-500 mb-4">เหมาะกับงานขายหน้าร้านและออนไลน์</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="discount-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาตั้งต้น (บาท)</label>
+          <input id="discount-price" type="text" inputmode="decimal" placeholder="เช่น 2490" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="discount-percent" class="block text-sm font-medium text-gray-700 mb-1">ส่วนลด (%)</label>
+          <input id="discount-percent" type="text" inputmode="decimal" placeholder="เช่น 15" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-discount" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="discount-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="discount-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4">
+        <p id="discount-result-value" class="text-base font-semibold text-primary-800">-</p>
+      </div>
+    </div>
+
+    <div id="percent-next-action" class="mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">อ่านวิธีคิดเปอร์เซ็นต์แบบละเอียดพร้อมตัวอย่าง</p>
+      <p class="mt-1 text-sm text-primary-700">รวมสูตรส่วนลด กำไร และเปอร์เซ็นต์เพิ่ม/ลดที่ใช้กับงานจริงในไทย</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a
+          href="/บทความ/คำนวณเปอร์เซ็นต์-2569-ส่วนลด-กำไร/"
+          data-preserve-utm
+          class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
+        >
+          อ่านบทความคำนวณเปอร์เซ็นต์
+        </a>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#percent-next-action"
+    />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรเปอร์เซ็นต์ที่ใช้บ่อย</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>หา X% ของจำนวน: (X ÷ 100) × จำนวนฐาน</li>
+        <li>หาเปอร์เซ็นต์ของส่วนหนึ่งเทียบทั้งหมด: (ส่วนที่ต้องการเทียบ ÷ จำนวนทั้งหมด) × 100</li>
+        <li>หาเปอร์เซ็นต์เพิ่ม/ลด: ((ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม) × 100</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">แหล่งอ้างอิงทางการที่เกี่ยวข้อง</h2>
+      <p>
+        นิยามและตัวอย่างการใช้งานร้อยละอ้างอิงจากคลังความรู้ SciMath ของ สสวท. (หน่วยงานภายใต้กระทรวงศึกษาธิการ)
+        และตัวอย่างการใช้ร้อยละเชิงธุรกิจอ้างอิงประกาศกรมสรรพากรเรื่อง VAT 7% ที่ใช้ถึงวันที่ 30 กันยายน 2569
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-8 mb-3">ตัวอย่างการคำนวณเปอร์เซ็นต์ที่ใช้บ่อยในชีวิตประจำวัน</h3>
+
+      <div class="space-y-4 text-sm">
+        <div class="bg-blue-50 rounded-lg p-4">
+          <p class="font-semibold text-gray-900 mb-2">ตัวอย่าง 1: หา 10% ของ 500 บาท</p>
+          <p class="text-gray-700 mb-2">สูตร: (10 ÷ 100) × 500 = 0.1 × 500 = 50 บาท</p>
+          <p class="text-gray-600">วิธีใช้: ใส่ 10 ในช่อง "เปอร์เซ็นต์" และ 500 ในช่อง "จำนวนฐาน" → ผลลัพธ์คือ 50 บาท</p>
+        </div>
+
+        <div class="bg-green-50 rounded-lg p-4">
+          <p class="font-semibold text-gray-900 mb-2">ตัวอย่าง 2: คำนวณส่วนลดซื้อสินค้า 1,200 บาท ลด 20%</p>
+          <p class="text-gray-700 mb-2">ส่วนลด: (20 ÷ 100) × 1,200 = 240 บาท</p>
+          <p class="text-gray-700 mb-2">ราคาสุทธิ: 1,200 - 240 = 960 บาท</p>
+          <p class="text-gray-600">วิธีใช้: ใส่ 1,200 ในช่อง "ราคาตั้งต้น" และ 20 ในช่อง "ส่วนลด" → ได้ส่วนลด 240 บาท และราคาสุทธิ 960 บาท</p>
+        </div>
+
+        <div class="bg-orange-50 rounded-lg p-4">
+          <p class="font-semibold text-gray-900 mb-2">ตัวอย่าง 3: เงินเดือนเพิ่มขึ้นจาก 25,000 เป็น 27,500 บาท เพิ่มกี่เปอร์เซ็นต์?</p>
+          <p class="text-gray-700 mb-2">สูตร: ((27,500 - 25,000) ÷ 25,000) × 100 = (2,500 ÷ 25,000) × 100 = 10%</p>
+          <p class="text-gray-600">วิธีใช้: ใส่ 25,000 ในช่อง "ค่าเดิม" และ 27,500 ในช่อง "ค่าใหม่" → ผลลัพธ์คือ เพิ่มขึ้น 10%</p>
+        </div>
+
+        <div class="bg-purple-50 rounded-lg p-4">
+          <p class="font-semibold text-gray-900 mb-2">ตัวอย่าง 4: ขาย 80 ชิ้นจากสินค้าทั้งหมด 200 ชิ้น คิดเป็นกี่เปอร์เซ็นต์?</p>
+          <p class="text-gray-700 mb-2">สูตร: (80 ÷ 200) × 100 = 0.4 × 100 = 40%</p>
+          <p class="text-gray-600">วิธีใช้: ใส่ 80 ในช่อง "ส่วนที่ต้องการเทียบ" และ 200 ในช่อง "จำนวนทั้งหมด" → ผลลัพธ์คือ 40%</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณเปอร์เซ็นต์</h2>
+      <p class="text-gray-700 mb-4">
+        ในการคำนวณเปอร์เซ็นต์ ผู้ใช้มักตกหลุมพระเล้าเดียวกัน โปรดตรวจสอบว่าไม่ได้ทำข้อผิดพลาดเหล่านี้:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>สับสนระหว่าง "เปอร์เซ็นต์ของจำนวน" กับ "เปลี่ยนแปลงร้อยละ"</strong><br/>
+          ราคาลดจาก 1,000 บาท เป็น 800 บาท หลายคนคิดว่าลด 200 บาท = 20% ซึ่งถูก แต่ถ้าถามว่า "ลดราคาเท่าไร" ต้องคิด (1,000 - 800) ÷ 1,000 × 100 = 20% (ซึ่งบังเอิญตัวเลขเหมือนกัน แต่สูตรต่างกัน)
+        </li>
+        <li>
+          <strong>ไม่เข้าใจ Percentage Point vs Percentage Change</strong><br/>
+          อัตราดอกเบี้ยขึ้นจาก 2% เป็น 3% = "ขึ้น 1 percentage point" หรือ "ขึ้น 50% ของ 2%" (เพราะ 3÷2=1.5=50% เพิ่ม) ผู้คนมักสับสนว่าใช้คำไหน
+        </li>
+        <li>
+          <strong>ลืมว่าเปอร์เซ็นต์ต้องเริ่มจากจำนวนเดิม ไม่ใช่ผลลัพธ์หลังลด/เพิ่ม</strong><br/>
+          ราคา 100 บาท เพิ่ม 20% = 120 บาท แล้วลด 20% = ? หลายคนตอบ 100 (ผิด) แต่จริงๆ = 120 × 0.8 = 96 บาท เพราะการคำนวณแต่ละครั้งต้องใช้ฐานที่เปลี่ยนไปแล้ว
+        </li>
+        <li>
+          <strong>บวกเปอร์เซ็นต์ผิด (5% + 3% ≠ 8%)</strong><br/>
+          ส่วนลด 10% ตามการ์ดสมาชิก + ส่วนลด 5% QR = 15%? ไม่ใช่ คูณแทน 0.9 × 0.95 = 0.855 = ลด 14.5% ทั้งหมด
+        </li>
+        <li>
+          <strong>ไม่คิดรายละเอียดในการลดแบบ "ซ้อน"</strong><br/>
+          ราคาก่อนภาษี 100 บาท เพิ่ม 5% (ภาษี) = 105 บาท ถ้าต้องหลังหักภาษี = 105 ÷ 1.05 ไม่ใช่ 105 - 5 = 100 การบวกลบกับการคูณหารให้ผลต่างกันในเปอร์เซ็นต์
+        </li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณเปอร์เซ็นต์/" />
+    <RelatedCalculators currentHref="/คำนวณเปอร์เซ็นต์/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNumber = (value) => {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  };
+
+  const formatMoney = (value) =>
+    new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+
+  const formatPercent = (value) =>
+    new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+
+  const setError = (id, message) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (message) {
+      el.textContent = message;
+      el.classList.remove('hidden');
+      return;
+    }
+    el.textContent = '';
+    el.classList.add('hidden');
+  };
+
+  const showResult = (containerId, valueId, valueText) => {
+    const container = document.getElementById(containerId);
+    const value = document.getElementById(valueId);
+    if (!container || !value) return;
+    value.textContent = valueText;
+    container.classList.remove('hidden');
+  };
+
+  document.getElementById('btn-part')?.addEventListener('click', () => {
+    setError('part-error', '');
+    const percent = parseNumber(document.getElementById('part-percent')?.value);
+    const base = parseNumber(document.getElementById('part-base')?.value);
+    if (!Number.isFinite(percent) || !Number.isFinite(base)) {
+      setError('part-error', 'กรุณากรอกตัวเลขให้ครบ');
+      return;
+    }
+    const result = (percent / 100) * base;
+    showResult('part-result', 'part-result-value', `${formatMoney(result)} บาท`);
+  });
+
+  document.getElementById('btn-ratio')?.addEventListener('click', () => {
+    setError('ratio-error', '');
+    const part = parseNumber(document.getElementById('ratio-part')?.value);
+    const whole = parseNumber(document.getElementById('ratio-whole')?.value);
+    if (!Number.isFinite(part) || !Number.isFinite(whole)) {
+      setError('ratio-error', 'กรุณากรอกตัวเลขให้ครบ');
+      return;
+    }
+    if (whole === 0) {
+      setError('ratio-error', 'จำนวนทั้งหมดห้ามเป็น 0');
+      return;
+    }
+    const result = (part / whole) * 100;
+    showResult('ratio-result', 'ratio-result-value', `${formatPercent(result)}%`);
+  });
+
+  document.getElementById('btn-change')?.addEventListener('click', () => {
+    setError('change-error', '');
+    const oldValue = parseNumber(document.getElementById('change-old')?.value);
+    const newValue = parseNumber(document.getElementById('change-new')?.value);
+    if (!Number.isFinite(oldValue) || !Number.isFinite(newValue)) {
+      setError('change-error', 'กรุณากรอกตัวเลขให้ครบ');
+      return;
+    }
+    if (oldValue === 0) {
+      setError('change-error', 'ค่าเดิมห้ามเป็น 0');
+      return;
+    }
+    const result = ((newValue - oldValue) / oldValue) * 100;
+    const direction = result >= 0 ? 'เพิ่มขึ้น' : 'ลดลง';
+    showResult('change-result', 'change-result-value', `${direction} ${formatPercent(Math.abs(result))}%`);
+  });
+
+  document.getElementById('btn-discount')?.addEventListener('click', () => {
+    setError('discount-error', '');
+    const price = parseNumber(document.getElementById('discount-price')?.value);
+    const percent = parseNumber(document.getElementById('discount-percent')?.value);
+    if (!Number.isFinite(price) || !Number.isFinite(percent)) {
+      setError('discount-error', 'กรุณากรอกตัวเลขให้ครบ');
+      return;
+    }
+    if (percent < 0) {
+      setError('discount-error', 'ส่วนลดต้องไม่ติดลบ');
+      return;
+    }
+    const discount = (percent / 100) * price;
+    const net = price - discount;
+    showResult(
+      'discount-result',
+      'discount-result-value',
+      `ส่วนลด ${formatMoney(discount)} บาท | ราคาสุทธิ ${formatMoney(net)} บาท`
+    );
+  });
+</script>

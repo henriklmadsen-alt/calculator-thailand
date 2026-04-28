@@ -1,0 +1,396 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าคอนโด 2569 | ค่าผ่อน ส่วนกลาง สาธารณูปโภค | Kamnuanlek';
+const pageDescription = 'คำนวณค่าใช้จ่ายคอนโดรายเดือน ค่าผ่อนสินเชื่อ ค่าส่วนกลาง เงินกองทุน ประกันภัย ค่าน้ำ ค่าไฟ อินเทอร์เน็ต รวมทุกรายการในหน้าเดียว อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าคอนโด/`;
+
+const faqData = [
+  {
+    question: 'ค่าส่วนกลางคอนโดคิดอย่างไร?',
+    answer: 'ค่าส่วนกลางคิดจากพื้นที่ห้อง (ตร.ม.) คูณอัตราต่อตารางเมตรต่อเดือน ซึ่งนิติบุคคลแต่ละโครงการกำหนดเอง โดยทั่วไปอยู่ที่ 30–80 บาท/ตร.ม./เดือน ขึ้นอยู่กับสิ่งอำนวยความสะดวกในโครงการ',
+  },
+  {
+    question: 'เงินกองทุน (Sinking Fund) คืออะไร?',
+    answer: 'เงินกองทุนเป็นค่าใช้จ่ายจ่ายครั้งเดียวตอนรับโอนห้อง สำหรับสำรองไว้ซ่อมแซมส่วนกลางในอนาคต เช่น ลิฟต์ สระว่ายน้ำ อาคาร โดยทั่วไปอยู่ที่ 400–600 บาท/ตร.ม.',
+  },
+  {
+    question: 'ค่าผ่อนคอนโดคิดแบบไหน?',
+    answer: 'เครื่องมือนี้คำนวณค่าผ่อนแบบลดต้นลดดอก (Reducing Balance / Annuity) ซึ่งเป็นวิธีที่ธนาคารในไทยใช้กับสินเชื่อบ้านและคอนโดทั่วไป สูตร: M = P × [r(1+r)^n] / [(1+r)^n − 1]',
+  },
+  {
+    question: 'ควรจ่ายเงินดาวน์คอนโดเท่าไร?',
+    answer: 'โดยทั่วไปธนาคารให้กู้ได้สูงสุด 90–95% ของราคาห้อง จึงควรเตรียมเงินดาวน์อย่างน้อย 5–10% บวกค่าธรรมเนียมโอน จดจำนอง และเงินกองทุน ยิ่งดาวน์มากยิ่งผ่อนต่อเดือนน้อยลง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าคอนโดรายเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าคอนโด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณค่าคอนโด 2569 รวมทุกค่าใช้จ่ายรายเดือนในหน้าเดียว</p>
+      <p class="mt-1 text-sm text-slate-700">ค่าผ่อนสินเชื่อ ค่าส่วนกลาง เงินกองทุน ประกันภัย ค่าน้ำ ค่าไฟ อินเทอร์เน็ต</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับวางแผนงบก่อนซื้อคอนโดหรือเปรียบเทียบโครงการ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าคอนโด 2569 — ค่าผ่อน + ส่วนกลาง + สาธารณูปโภค
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกราคาห้อง เงินดาวน์ ดอกเบี้ย และค่าใช้จ่ายอื่น ๆ ระบบจะสรุปค่าใช้จ่ายรายเดือนทั้งหมด
+      พร้อมแสดงยอดรวมตลอดสัญญาเงินกู้ ช่วยวางแผนการเงินก่อนตัดสินใจซื้อ
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="20 เม.ย. 2569"
+      sources={[
+        'สูตรค่าผ่อนแบบลดต้นลดดอก (Reducing Balance) ตามมาตรฐานธนาคารพาณิชย์ไทย',
+        'อัตราค่าส่วนกลางและเงินกองทุนอ้างอิงจากค่าเฉลี่ยตลาดคอนโดมิเนียมปี 2569',
+      ]}
+      assumptions={[
+        'ค่าผ่อนคำนวณแบบลดต้นลดดอก (Annuity) ดอกเบี้ยคงที่ตลอดสัญญา — ดอกเบี้ยจริงอาจลอยตัว',
+        'เงินกองทุนเฉลี่ยต่อเดือนคำนวณจากยอดรวมหารด้วยระยะเวลาผ่อน เพื่อประมาณภาระรายเดือน',
+        'ค่าสาธารณูปโภคเป็นประมาณการจากผู้ใช้กรอก ยอดจริงขึ้นอยู่กับการใช้งาน',
+      ]}
+      references={[
+        {
+          label: 'ธนาคารแห่งประเทศไทย: อัตราดอกเบี้ยสินเชื่อที่อยู่อาศัย',
+          href: 'https://www.bot.or.th/th/statistics/interest-rate.html',
+        },
+        {
+          label: 'พ.ร.บ. อาคารชุด พ.ศ. 2522: ค่าส่วนกลางและเงินกองทุน',
+          href: 'https://www.dol.go.th/',
+        },
+      ]}
+    />
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="condo-form" class="space-y-6">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <!-- Section: ข้อมูลสินเชื่อ -->
+        <fieldset>
+          <legend class="mb-3 text-base font-semibold text-gray-900">ข้อมูลสินเชื่อ</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="unit-price" class="mb-1 block text-sm font-medium text-gray-700">ราคาห้อง (บาท)</label>
+              <input id="unit-price" type="text" inputmode="decimal" placeholder="เช่น 2,500,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="down-payment" class="mb-1 block text-sm font-medium text-gray-700">เงินดาวน์ (%)</label>
+              <input id="down-payment" type="text" inputmode="decimal" value="10" placeholder="เช่น 10" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="interest-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราดอกเบี้ยต่อปี (%)</label>
+              <input id="interest-rate" type="text" inputmode="decimal" value="6.5" placeholder="เช่น 6.5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="loan-term" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลาผ่อน (ปี)</label>
+              <input id="loan-term" type="text" inputmode="decimal" value="30" placeholder="เช่น 30" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Section: ค่าส่วนกลางและกองทุน -->
+        <fieldset>
+          <legend class="mb-3 text-base font-semibold text-gray-900">ค่าส่วนกลางและกองทุน</legend>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label for="area-sqm" class="mb-1 block text-sm font-medium text-gray-700">ขนาดห้อง (ตร.ม.)</label>
+              <input id="area-sqm" type="text" inputmode="decimal" placeholder="เช่น 30" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="common-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าส่วนกลาง (บาท/ตร.ม./เดือน)</label>
+              <input id="common-fee" type="text" inputmode="decimal" value="50" placeholder="เช่น 50" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="sinking-fund" class="mb-1 block text-sm font-medium text-gray-700">เงินกองทุน (บาท/ตร.ม.)</label>
+              <input id="sinking-fund" type="text" inputmode="decimal" value="500" placeholder="เช่น 500" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Section: ประกันภัยและสาธารณูปโภค -->
+        <fieldset>
+          <legend class="mb-3 text-base font-semibold text-gray-900">ประกันภัยและสาธารณูปโภค</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="insurance" class="mb-1 block text-sm font-medium text-gray-700">ประกันภัยรายปี (บาท/ปี)</label>
+              <input id="insurance" type="text" inputmode="decimal" value="2000" placeholder="เช่น 2000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="electricity" class="mb-1 block text-sm font-medium text-gray-700">ค่าไฟฟ้า (บาท/เดือน)</label>
+              <input id="electricity" type="text" inputmode="decimal" value="1500" placeholder="เช่น 1500" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="water" class="mb-1 block text-sm font-medium text-gray-700">ค่าน้ำ (บาท/เดือน)</label>
+              <input id="water" type="text" inputmode="decimal" value="300" placeholder="เช่น 300" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="internet" class="mb-1 block text-sm font-medium text-gray-700">ค่าอินเทอร์เน็ต (บาท/เดือน)</label>
+              <input id="internet" type="text" inputmode="decimal" value="599" placeholder="เช่น 599" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าคอนโด
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณค่าคอนโดรายเดือน</h2>
+
+        <!-- Summary cards -->
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมค่าใช้จ่ายต่อเดือน</div>
+            <div id="res-total-monthly" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าผ่อนต่อเดือน</div>
+            <div id="res-mortgage" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-indigo-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมค่าใช้จ่ายต่อปี</div>
+            <div id="res-total-annual" class="text-xl font-bold text-indigo-700">-</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <h3 class="mb-3 text-base font-semibold text-gray-900">แจกแจงรายเดือน</h3>
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าผ่อนสินเชื่อ (ลดต้นลดดอก)</span>
+            <span id="res-mortgage-detail" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าส่วนกลาง</span>
+            <span id="res-common-fee" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินกองทุน (เฉลี่ยต่อเดือน)</span>
+            <span id="res-sinking-fund" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ประกันภัย (เฉลี่ยต่อเดือน)</span>
+            <span id="res-insurance" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าไฟฟ้า</span>
+            <span id="res-electricity" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าน้ำ</span>
+            <span id="res-water" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าอินเทอร์เน็ต</span>
+            <span id="res-internet" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-t-2 border-gray-300 py-2 font-semibold">
+            <span class="text-gray-900">รวมต่อเดือน</span>
+            <span id="res-total-row" class="text-emerald-700">-</span>
+          </div>
+        </div>
+
+        <!-- Loan summary -->
+        <h3 class="mb-3 text-base font-semibold text-gray-900">สรุปข้อมูลสินเชื่อ</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินดาวน์</span>
+            <span id="res-down-payment" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดกู้</span>
+            <span id="res-loan-amount" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินกองทุนแรกเข้า (จ่ายครั้งเดียว)</span>
+            <span id="res-sinking-total" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ดอกเบี้ยรวมตลอดสัญญา</span>
+            <span id="res-total-interest" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดผ่อนรวมตลอดสัญญา</span>
+            <span id="res-total-mortgage-paid" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-t-2 border-gray-300 py-2 font-semibold">
+            <span class="text-gray-900">ค่าใช้จ่ายรวมตลอดสัญญา</span>
+            <span id="res-total-cost" class="text-red-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าผ่อนรายเดือน (ลดต้นลดดอก) = P × [r(1+r)<sup>n</sup>] / [(1+r)<sup>n</sup> − 1] โดย P = ยอดกู้, r = ดอกเบี้ยต่อเดือน, n = จำนวนเดือน</li>
+        <li>ค่าส่วนกลาง = ขนาดห้อง (ตร.ม.) × อัตราค่าส่วนกลาง (บาท/ตร.ม./เดือน)</li>
+        <li>เงินกองทุนเฉลี่ย/เดือน = (ขนาดห้อง × อัตราเงินกองทุน) ÷ จำนวนเดือนผ่อน</li>
+        <li>ประกันภัย/เดือน = เบี้ยประกันรายปี ÷ 12</li>
+        <li>รวมรายเดือน = ค่าผ่อน + ส่วนกลาง + กองทุนเฉลี่ย + ประกัน + ค่าไฟ + ค่าน้ำ + อินเทอร์เน็ต</li>
+      </ul>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณค่าคอนโด/" />
+    <RelatedCalculators currentHref="/คำนวณค่าคอนโด/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อประมาณการค่าใช้จ่ายเบื้องต้นสำหรับวางแผนงบประมาณก่อนซื้อคอนโด
+      ค่าผ่อนจริงขึ้นอยู่กับเงื่อนไขธนาคาร อัตราดอกเบี้ยลอยตัว และค่าส่วนกลางอาจปรับขึ้นตามมตินิติบุคคล
+    </div>
+  </article>
+
+  <script>
+    import { calculateCondoCost } from '../../lib/condo-cost-calculator';
+
+    const form = document.getElementById('condo-form');
+    const formError = document.getElementById('form-error');
+    const results = document.getElementById('results');
+
+    const show = (el: HTMLElement | null) => el?.classList.remove('hidden');
+    const hide = (el: HTMLElement | null) => el?.classList.add('hidden');
+
+    const parseNumber = (value: string | undefined | null): number => {
+      const normalized = String(value ?? '').replace(/,/g, '').trim();
+      if (!normalized) return NaN;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    };
+
+    const formatMoney = (value: number): string =>
+      `${new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value)} บาท`;
+
+    const getVal = (id: string): number =>
+      parseNumber((document.getElementById(id) as HTMLInputElement)?.value);
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hide(formError);
+
+      const unitPrice = getVal('unit-price');
+      const downPaymentPercent = getVal('down-payment');
+      const annualInterestRate = getVal('interest-rate');
+      const loanTermYears = getVal('loan-term');
+      const areaSqm = getVal('area-sqm');
+      const commonFeePerSqm = getVal('common-fee');
+      const sinkingFundPerSqm = getVal('sinking-fund');
+      const insuranceAnnual = getVal('insurance');
+      const electricityMonthly = getVal('electricity');
+      const waterMonthly = getVal('water');
+      const internetMonthly = getVal('internet');
+
+      if (
+        !Number.isFinite(unitPrice) || unitPrice <= 0 ||
+        !Number.isFinite(downPaymentPercent) || downPaymentPercent < 0 || downPaymentPercent >= 100 ||
+        !Number.isFinite(annualInterestRate) || annualInterestRate < 0 ||
+        !Number.isFinite(loanTermYears) || loanTermYears <= 0 ||
+        !Number.isFinite(areaSqm) || areaSqm <= 0 ||
+        !Number.isFinite(commonFeePerSqm) || commonFeePerSqm < 0 ||
+        !Number.isFinite(sinkingFundPerSqm) || sinkingFundPerSqm < 0 ||
+        !Number.isFinite(insuranceAnnual) || insuranceAnnual < 0 ||
+        !Number.isFinite(electricityMonthly) || electricityMonthly < 0 ||
+        !Number.isFinite(waterMonthly) || waterMonthly < 0 ||
+        !Number.isFinite(internetMonthly) || internetMonthly < 0
+      ) {
+        show(formError);
+        hide(results);
+        return;
+      }
+
+      const result = calculateCondoCost({
+        unitPrice,
+        downPaymentPercent,
+        annualInterestRate,
+        loanTermYears,
+        areaSqm,
+        commonFeePerSqm,
+        sinkingFundPerSqm,
+        insuranceAnnual,
+        electricityMonthly,
+        waterMonthly,
+        internetMonthly,
+      });
+
+      // Summary cards
+      document.getElementById('res-total-monthly')!.textContent = formatMoney(result.totalMonthly);
+      document.getElementById('res-mortgage')!.textContent = formatMoney(result.mortgageMonthly);
+      document.getElementById('res-total-annual')!.textContent = formatMoney(result.totalAnnual);
+
+      // Breakdown
+      document.getElementById('res-mortgage-detail')!.textContent = formatMoney(result.mortgageMonthly);
+      document.getElementById('res-common-fee')!.textContent = formatMoney(result.commonFeeMonthly);
+      document.getElementById('res-sinking-fund')!.textContent = formatMoney(result.sinkingFundMonthly);
+      document.getElementById('res-insurance')!.textContent = formatMoney(result.insuranceMonthly);
+      document.getElementById('res-electricity')!.textContent = formatMoney(result.electricityMonthly);
+      document.getElementById('res-water')!.textContent = formatMoney(result.waterMonthly);
+      document.getElementById('res-internet')!.textContent = formatMoney(result.internetMonthly);
+      document.getElementById('res-total-row')!.textContent = formatMoney(result.totalMonthly);
+
+      // Loan summary
+      document.getElementById('res-down-payment')!.textContent = formatMoney(result.downPaymentAmount);
+      document.getElementById('res-loan-amount')!.textContent = formatMoney(result.loanAmount);
+      document.getElementById('res-sinking-total')!.textContent = formatMoney(result.sinkingFundTotal);
+      document.getElementById('res-total-interest')!.textContent = formatMoney(result.totalInterest);
+      document.getElementById('res-total-mortgage-paid')!.textContent = formatMoney(result.totalMortgagePaid);
+      document.getElementById('res-total-cost')!.textContent = formatMoney(result.totalCostOverLoan);
+
+      show(results);
+      results!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof (window as any).trackCalculatorStart === 'function') (window as any).trackCalculatorStart('condo_cost');
+      if (typeof (window as any).trackCalculatorComplete === 'function') (window as any).trackCalculatorComplete('condo_cost', result.totalMonthly);
+      if (typeof (window as any).trackCalculatorUsed === 'function') (window as any).trackCalculatorUsed('condo_cost');
+      if (typeof (window as any).trackResultViewed === 'function') (window as any).trackResultViewed('condo_cost');
+    });
+  </script>
+</BaseLayout>

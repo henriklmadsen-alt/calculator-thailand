@@ -1,0 +1,225 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณแผนออมทอง 2569 | ออมทองแท่งรายเดือน | Kamnuanlek';
+const pageDescription = 'คำนวณมูลค่าการออมทองแท่งหรือทองรูปพรรณรายเดือน ตามราคาทองและอัตราการเติบโต';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณแผนออมทอง/`;
+
+const faqData = [
+  {
+    question: 'การออมทองรายเดือนดีอย่างไร?',
+    answer: 'การออมทองรายเดือนช่วยเฉลี่ยต้นทุนตามหลัก DCA (Dollar Cost Averaging) ซื้อทองได้มากขึ้นเมื่อราคาต่ำ และน้อยลงเมื่อราคาสูง ลดความเสี่ยงจากการซื้อครั้งเดียวที่ราคาพีค',
+  },
+  {
+    question: 'ทองคำแท่งกับทองรูปพรรณต่างกันอย่างไรสำหรับการออม?',
+    answer: 'ทองคำแท่งเหมาะสำหรับการออมมากกว่า เพราะค่ากำเหน็จต่ำกว่า (50–150 บาท/ชิ้น) ในขณะที่ทองรูปพรรณมีค่ากำเหน็จสูง 500–2,000 บาท/ชิ้นขึ้นไป ทำให้ต้นทุนรวมสูงกว่า',
+  },
+  {
+    question: 'ออมทองผ่านแอปดีกว่าซื้อจากร้านทองหรือไม่?',
+    answer: 'การออมทองผ่านแอป (เช่น YLG, SCB Gold Savings) สะดวกกว่า ซื้อได้ทุกจำนวน ไม่มีค่ากำเหน็จ แต่อาจมีส่วนต่างราคาซื้อ-ขาย (Spread) ประมาณ 0.5–1% ควรเปรียบเทียบก่อนเลือก',
+  },
+  {
+    question: 'ควรออมทองสัดส่วนเท่าไหร่ของพอร์ต?',
+    answer: 'โดยทั่วไปแนะนำให้มีทองคำ 5–15% ของพอร์ตลงทุนทั้งหมด เพื่อป้องกันความเสี่ยงเงินเฟ้อและวิกฤตการเงิน ไม่ควรเกิน 20% เพราะทองไม่สร้างรายได้แบบปันผล',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณแผนออมทอง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแผนออมทอง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-yellow-100 bg-yellow-50 p-4">
+      <p class="text-sm font-semibold text-yellow-700">🥇 คำนวณแผนออมทองรายเดือน</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ทองสะสม (บาท) = ออมต่อเดือน ÷ ราคาทอง × จำนวนเดือน | มูลค่า = ทองสะสม × ราคาเป้าหมาย</p>
+      <p class="mt-1 text-xs font-medium text-yellow-800">วางแผนออมทองแบบ DCA ให้มีวินัยและถึงเป้าหมาย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณแผนออมทอง ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกงบออมทองต่อเดือน ราคาทองปัจจุบัน เป้าหมาย และระยะเวลา เพื่อดูแผนการสะสมทอง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="gold-form" class="space-y-5">
+        <p id="gold-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="gold-monthly" class="mb-1 block text-sm font-medium text-gray-700">ออมทองต่อเดือน (บาท)</label>
+            <input type="text" id="gold-monthly" inputmode="numeric" placeholder="เช่น 3,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="gold-monthly-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="gold-price" class="mb-1 block text-sm font-medium text-gray-700">ราคาทองคำแท่งปัจจุบัน (บาท/บาททอง)</label>
+            <input type="text" id="gold-price" inputmode="numeric" placeholder="เช่น 47,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="gold-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">1 บาททอง = 15.244 กรัม</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="gold-current" class="mb-1 block text-sm font-medium text-gray-700">ทองที่มีอยู่แล้ว (บาททอง)</label>
+            <input type="text" id="gold-current" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="gold-target" class="mb-1 block text-sm font-medium text-gray-700">เป้าหมายทอง (บาททอง)</label>
+            <input type="text" id="gold-target" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="gold-target-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="gold-target-price" class="mb-1 block text-sm font-medium text-gray-700">ราคาทองเป้าหมาย (บาท/บาททอง)</label>
+            <input type="text" id="gold-target-price" inputmode="numeric" placeholder="เช่น 55,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ประมาณราคาทองในอนาคต</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณแผนออมทอง
+        </button>
+      </form>
+    </div>
+
+    <div id="gold-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-yellow-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ทองที่จะสะสมได้/เดือน</div>
+            <div id="res-gold-monthly-baht" class="text-xl font-bold text-yellow-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เดือนถึงเป้า</div>
+            <div id="res-gold-months" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ทองรวม (บาททอง)</div>
+            <div id="res-gold-total-baht" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าที่ราคาเป้าหมาย</div>
+            <div id="res-gold-value" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="gold-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ทองที่ซื้อได้/เดือน = งบออมต่อเดือน ÷ ราคาทองปัจจุบัน</li>
+        <li>เดือนถึงเป้า = (เป้าหมาย − ทองปัจจุบัน) ÷ ทองที่ซื้อได้/เดือน</li>
+        <li>มูลค่ารวม = ทองรวม × ราคาเป้าหมาย</li>
+        <li>1 บาททอง = 15.244 กรัม ทอง 96.5% (มาตรฐานไทย)</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#gold-results" />
+    <RelatedArticles currentHref="/คำนวณแผนออมทอง/" />
+    <RelatedCalculators currentHref="/คำนวณแผนออมทอง/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ราคาทองคำผันผวนตามตลาดโลก ผลลัพธ์เป็นการประมาณการ ไม่ใช่การรับประกันผลตอบแทน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function formatGold(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(n)} บาททอง`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('gold-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('gold-error').classList.add('hidden');
+      ['gold-monthly-error','gold-price-error','gold-target-error'].forEach(id => setErr(id, ''));
+
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('gold-savings-plan');
+      const monthly = parseNum(document.getElementById('gold-monthly').value);
+      const price = parseNum(document.getElementById('gold-price').value);
+      const current = parseNum(document.getElementById('gold-current').value);
+      const target = parseNum(document.getElementById('gold-target').value);
+      const targetPrice = parseNum(document.getElementById('gold-target-price').value) || price;
+
+      let hasError = false;
+      if (!monthly || monthly <= 0) { setErr('gold-monthly-error', 'กรอกงบออมต่อเดือน'); hasError = true; }
+      if (!price || price <= 0) { setErr('gold-price-error', 'กรอกราคาทอง'); hasError = true; }
+      if (!target || target <= 0) { setErr('gold-target-error', 'กรอกเป้าหมายทอง'); hasError = true; }
+      if (hasError) { document.getElementById('gold-error').classList.remove('hidden'); document.getElementById('gold-results').classList.add('hidden'); return; }
+
+      const monthlyGold = monthly / price;
+      const remainingGold = Math.max(0, target - current);
+      const monthsToTarget = remainingGold > 0 ? Math.ceil(remainingGold / monthlyGold) : 0;
+      const totalGold = current + monthlyGold * monthsToTarget;
+      const totalValue = totalGold * targetPrice;
+
+      setText('res-gold-monthly-baht', formatGold(monthlyGold));
+      setText('res-gold-months', monthsToTarget === 0 ? 'ถึงแล้ว!' : `${monthsToTarget} เดือน`);
+      setText('res-gold-total-baht', `${target.toFixed(2)} บาททอง`);
+      setText('res-gold-value', formatMoney(totalValue));
+
+      const statusEl = document.getElementById('gold-status');
+      if (monthsToTarget === 0) {
+        statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        statusEl.textContent = `ยอดเยี่ยม! คุณมีทองครบ ${target} บาททองแล้ว`;
+      } else {
+        statusEl.className = 'rounded-lg bg-yellow-50 p-3 text-sm font-medium text-yellow-800 border border-yellow-200';
+        statusEl.textContent = `ออมเดือนละ ${formatMoney(monthly)} จะสะสมทองได้ ${monthlyGold.toFixed(4)} บาท/เดือน ถึงเป้า ${target} บาททองใน ${monthsToTarget} เดือน`;
+      }
+
+      document.getElementById('gold-results').classList.remove('hidden');
+      document.getElementById('gold-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('gold-savings-plan');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('gold-savings-plan');
+    });
+  </script>
+</BaseLayout>

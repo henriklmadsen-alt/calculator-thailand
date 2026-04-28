@@ -1,0 +1,382 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าตั๋วเครื่องบิน รวมค่าธรรมเนียม 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าตั๋วเครื่องบิน 2569 ฟรี — รวมค่าน้ำมัน ค่าสนามบิน ค่าประกัน รู้ราคาจริงที่จ่ายก่อนจอง ทั้งในประเทศและต่างประเทศ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าตั๋วเครื่องบิน/`;
+
+const faqData = [
+  {
+    question: 'ค่าตั๋วเครื่องบินประกอบด้วยอะไรบ้าง?',
+    answer: 'ค่าตั๋วเครื่องบินประกอบด้วย: (1) ค่าโดยสารฐาน (Base Airfare) (2) ค่าเชื้อเพลิง (Fuel Surcharge) (3) ค่าสนามบิน (Airport Service Charge) (4) ภาษีสรรพสามิต (5) ค่าธรรมเนียมการจอง',
+  },
+  {
+    question: 'เที่ยวบินในประเทศและต่างประเทศมีค่าสนามบินต่างกันหรือไม่?',
+    answer: 'ใช่ค่าสนามบินต่างกัน เที่ยวบินในประเทศประมาณ 60-90 บาท ต่อคน เที่ยวบินต่างประเทศประมาณ 100-150 บาท ต่อคน',
+  },
+  {
+    question: 'ค่าเชื้อเพลิง (Fuel Surcharge) คำนวณอย่างไร?',
+    answer: 'ค่าเชื้อเพลิงขึ้นอยู่กับราคาน้ำมันเชื้อเพลิง โดยทั่วไปจะเป็น 5-15% ของค่าโดยสารฐาน สายการบินแต่ละสายอาจมีอัตราต่างกัน',
+  },
+  {
+    question: 'บัตรเครดิตมีการหักค่าธรรมเนียมการจองหรือไม่?',
+    answer: 'บางสายการบินเรียกเก็บค่าธรรมเนียมการจองออนไลน์ประมาณ 0-100 บาท บางที่ก็ไม่มี ส่วนการจองผ่านตัวแทนจะมีค่าธรรมเนียม 200-500 บาท',
+  },
+  {
+    question: 'ประกันการเดินทางเป็นบังคับหรือ?',
+    answer: 'ประกันการเดินทางไม่บังคับ แต่ขอแนะนำให้ซื้อเพื่อป้องกันความเสี่ยงจากการยกเลิกเที่ยวบินหรืออุบัติเหตุ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าตั๋วเครื่องบิน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่าตั๋วเครื่องบิน',
+  description: 'ขั้นตอนการคำนวณค่าตั๋วเครื่องบิง ค่าเชื้อเพลิง ค่าสนามบิน ปี 2569',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกประเภทเที่ยวบิน',
+      text: 'เลือกว่าเป็นเที่ยวบินในประเทศหรือต่างประเทศ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุค่าโดยสารฐาน',
+      text: 'ระบุราคาตั๋วเครื่องบินฐาน (Base Airfare) ที่คุณเห็นจากเว็บไซต์จองตั๋ว',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุจำนวนผู้โดยสาร',
+      text: 'ระบุจำนวนคนทั้งหมดที่เดินทาง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกตัวเลือกเพิ่มเติม',
+      text: 'เลือกว่าต้องการประกันการเดินทาง หรือ มีค่าธรรมเนียมกระเป๋าเสริมหรือไม่',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ดูผลการคำนวณ',
+      text: 'ระบบจะแสดงรายละเอียดค่าใช้จ่ายทั้งหมดและยอดรวมสุดท้าย',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าตั๋วเครื่องบิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณค่าตั๋วเครื่องบิน
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2">
+      <p class="text-xs font-semibold text-blue-800">[ปี 2569 — อัปเดต]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าตั๋วเครื่องบิน ค่าเชื้อเพลิง ค่าสนามบิน และค่าบริการเพิ่มเติม สำหรับเที่ยวบินในประเทศและต่างประเทศ ออนไลน์ฟรี
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="flightType" class="block text-sm font-medium text-gray-700 mb-1">
+            ประเภทเที่ยวบิน
+          </label>
+          <select
+            id="flightType"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          >
+            <option value="domestic">เที่ยวบินในประเทศ</option>
+            <option value="international">เที่ยวบินต่างประเทศ</option>
+          </select>
+        </div>
+        <div>
+          <label for="baseAirfare" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าโดยสารฐาน (บาท)
+          </label>
+          <input
+            type="text"
+            id="baseAirfare"
+            inputmode="decimal"
+            placeholder="เช่น 2500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="passengers" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนผู้โดยสาร (คน)
+          </label>
+          <input
+            type="number"
+            id="passengers"
+            min="1"
+            max="9"
+            value="1"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="bookingMethod" class="block text-sm font-medium text-gray-700 mb-1">
+            วิธีการจอง
+          </label>
+          <select
+            id="bookingMethod"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          >
+            <option value="online">จองออนไลน์</option>
+            <option value="agent">จองผ่านตัวแทน</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-3">
+          บริการเพิ่มเติม (ถ้ามี)
+        </label>
+        <div class="space-y-2">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              id="includeInsurance"
+              class="w-4 h-4 border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+            />
+            <span class="ml-2 text-sm text-gray-700">ประกันการเดินทาง</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              id="includeExtraBaggage"
+              class="w-4 h-4 border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+            />
+            <span class="ml-2 text-sm text-gray-700">กระเป๋าเสริม</span>
+          </label>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าตั๋ว
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h3 class="font-semibold text-gray-900 mb-4">สรุปค่าใช้จ่าย</h3>
+
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">ค่าโดยสารฐาน (ต่อคน)</span>
+              <span id="fee-base" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">ค่าเชื้อเพลิง (ต่อคน)</span>
+              <span id="fee-fuel" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">ค่าสนามบิน (ต่อคน)</span>
+              <span id="fee-airport" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">ภาษีสรรพสามิต (ต่อคน)</span>
+              <span id="fee-tax" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">ค่าธรรมเนียมการจอง (ต่อคน)</span>
+              <span id="fee-booking" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">ประกันการเดินทาง (ถ้ามี)</span>
+              <span id="fee-insurance" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-700">กระเป๋าเสริม (ถ้ามี)</span>
+              <span id="fee-baggage" class="font-medium text-gray-900">-</span>
+            </div>
+          </div>
+
+          <div class="border-t border-blue-300 my-3"></div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-sm font-medium text-gray-700">ค่าต่อคน</span>
+              <span id="cost-per-person" class="font-semibold text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm font-medium text-gray-700">รวมทั้งหมด (<span id="num-passengers">-</span> คน)</span>
+              <span id="subtotal" class="font-semibold text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm font-medium text-gray-700">ภาษี VAT 7%</span>
+              <span id="vat-amount" class="font-semibold text-gray-900">-</span>
+            </div>
+          </div>
+
+          <div class="border-t-2 border-blue-400 my-3"></div>
+
+          <div class="flex justify-between">
+            <span class="text-base font-bold text-gray-900">ยอดรวมสุดท้าย</span>
+            <span id="total" class="text-2xl font-bold text-primary-600">-</span>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+          <p class="text-sm text-gray-700">
+            <strong>หมายเหตุ:</strong> ค่าใช้จ่ายข้างต้นเป็นการประมาณตามสถานการณ์ทั่วไป อาจแตกต่างจริง
+            โปรดตรวจสอบกับสายการบินหรือเว็บไซต์จองตั๋วเพื่อยืนยันราคาที่แน่นอน
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าตั๋วเครื่องบินประกอบด้วยอะไรบ้าง?</h2>
+      <p>ค่าตั๋วเครื่องบิน (Total Airfare) ไม่ได้เป็นแค่ค่าโดยสารฐาน แต่ประกอบด้วยค่าต่างๆ มากมาย</p>
+
+      <h3>1. ค่าโดยสารฐาน (Base Airfare)</h3>
+      <p>เป็นราคาพื้นฐานของตั๋วเครื่องบิน ซึ่งเป็นราคาหลักที่สายการบินกำหนด</p>
+
+      <h3>2. ค่าเชื้อเพลิง (Fuel Surcharge)</h3>
+      <p>เป็นค่าเพิ่มเติมที่เรียกเก็บเนื่องจากราคาน้ำมันเชื้อเพลิง โดยทั่วไปจะเป็น 5-15% ของค่าโดยสารฐาน</p>
+
+      <h3>3. ค่าสนามบิน (Airport Service Charge)</h3>
+      <p>เป็นค่าธรรมเนียมสนามบิน ซึ่งแตกต่างกันตามเที่ยวบิน เที่ยวบินในประเทศ 60-90 บาท ต่างประเทศ 100-150 บาท</p>
+
+      <h3>4. ภาษีสรรพสามิต (Airline Tax)</h3>
+      <p>ภาษีที่สรรพสามิตเรียกเก็บจากการให้บริการเที่ยวบิน</p>
+
+      <h3>5. ค่าธรรมเนียมการจอง (Booking Fee)</h3>
+      <p>บางสายการบินเรียกเก็บค่าธรรมเนียมสำหรับการจองออนไลน์ (0-100 บาท) หรือจองผ่านตัวแทน (200-500 บาท)</p>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((item) => (
+          <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+            <h3 class="font-semibold text-gray-900 mb-2">{item.question}</h3>
+            <p class="text-gray-600 text-sm">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Trust Panel -->
+    <section class="bg-gray-50 rounded-lg p-4 sm:p-6 mb-8 border border-gray-200">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">📌 แหล่งข้อมูลอ้างอิง</h2>
+      <ul class="text-sm text-gray-700 space-y-2">
+        <li>• สายการบินไทยหลัก — Thai Airways (THAI), Bangkok Airways (BA), AirAsia (FD), Nok Air (DD), Thai Vietjet (VJ)</li>
+        <li>• การท่องเที่ยวแห่งประเทศไทย (TAT) — อัตราค่าบริการสนามบิน</li>
+        <li>• การบินพลเรือนแห่งประเทศไทย (CAAT) — บัญญัติการบิน</li>
+        <li>• กรมสรรพสามิต — อัตราภาษีสรรพสามิตการขนส่งทางอากาศ</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  import { calculateFlightCost } from '../../lib/flight-cost-calculator';
+
+  const btnCalculate = document.getElementById('btn-calculate');
+  const flightTypeSelect = document.getElementById('flightType');
+  const baseAirfareInput = document.getElementById('baseAirfare');
+  const passengersInput = document.getElementById('passengers');
+  const bookingMethodSelect = document.getElementById('bookingMethod');
+  const includeInsuranceCheckbox = document.getElementById('includeInsurance');
+  const includeExtraBaggageCheckbox = document.getElementById('includeExtraBaggage');
+  const resultDiv = document.getElementById('result');
+
+  function formatCurrency(value: number): string {
+    return new Intl.NumberFormat('th-TH', {
+      style: 'currency',
+      currency: 'THB',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
+  function handleCalculate() {
+    const baseAirfareStr = baseAirfareInput.value.replace(/,/g, '');
+    const baseAirfare = parseFloat(baseAirfareStr);
+    const passengers = parseInt(passengersInput.value);
+
+    if (!baseAirfare || baseAirfare <= 0 || isNaN(baseAirfare)) {
+      alert('โปรดระบุค่าโดยสารฐานที่ถูกต้อง');
+      return;
+    }
+
+    if (!passengers || passengers < 1) {
+      alert('โปรดระบุจำนวนผู้โดยสารที่ถูกต้อง');
+      return;
+    }
+
+    const result = calculateFlightCost({
+      flightType: flightTypeSelect.value as any,
+      baseAirfare: baseAirfare,
+      passengersCount: passengers,
+      includeInsurance: includeInsuranceCheckbox.checked,
+      baggageOption: includeExtraBaggageCheckbox.checked ? 'extra' : 'included',
+      bookingMethod: bookingMethodSelect.value as any,
+    });
+
+    // Update UI
+    document.getElementById('fee-base').textContent = formatCurrency(result.baseAirfarePerPerson);
+    document.getElementById('fee-fuel').textContent = formatCurrency(result.fuelSurcharge / result.passengersCount);
+    document.getElementById('fee-airport').textContent = formatCurrency(result.airportServiceCharge / result.passengersCount);
+    document.getElementById('fee-tax').textContent = formatCurrency(result.airlineTax / result.passengersCount);
+    document.getElementById('fee-booking').textContent = formatCurrency(result.bookingFee / result.passengersCount);
+    document.getElementById('fee-insurance').textContent = formatCurrency(result.insuranceCost / result.passengersCount);
+    document.getElementById('fee-baggage').textContent = formatCurrency(result.baggageFee / result.passengersCount);
+    document.getElementById('num-passengers').textContent = result.passengersCount.toString();
+    document.getElementById('cost-per-person').textContent = formatCurrency(result.costPerPerson);
+    document.getElementById('subtotal').textContent = formatCurrency(result.totalForAllPassengers);
+    document.getElementById('vat-amount').textContent = formatCurrency(result.vat);
+    document.getElementById('total').textContent = formatCurrency(result.grandTotal);
+
+    resultDiv.classList.remove('hidden');
+  }
+
+  btnCalculate.addEventListener('click', handleCalculate);
+
+  // Allow Enter key to calculate
+  baseAirfareInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleCalculate();
+  });
+</script>

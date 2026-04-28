@@ -1,0 +1,274 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณครัวเรือน ปี 2569 รายรับ-รายจ่ายครอบครัว เกินดุล-ขาดดุล | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณครัวเรือน รายรับสองคน หักรายจ่ายทุกหมวดบ้าน อาหาร สาธารณูปโภค การศึกษา สุขภาพ แสดงเกินดุล/ขาดดุล และอัตราการออมของครอบครัว';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณครัวเรือน/`;
+
+const faqData = [
+  {
+    question: 'อัตราการออมที่ดีสำหรับครัวเรือนไทยควรเป็นเท่าไร?',
+    answer: 'นักการเงินแนะนำให้ครัวเรือนออมอย่างน้อย 10-20% ของรายได้รวม หากยังไม่มีเงินสำรองฉุกเฉิน (3-6 เดือนของค่าใช้จ่าย) ควรเร่งออมให้ถึงเป้าหมายนั้นก่อน',
+  },
+  {
+    question: 'ค่าใช้จ่ายที่อยู่อาศัยไม่ควรเกินเท่าไรของรายได้?',
+    answer: 'โดยทั่วไปค่าที่พักรวมค่าผ่อนบ้าน/เช่า ไม่ควรเกิน 25-30% ของรายได้รวมครัวเรือน เพื่อให้มีงบเพียงพอสำหรับค่าใช้จ่ายอื่นและเงินออม',
+  },
+  {
+    question: 'ครัวเรือนขาดดุลทุกเดือนต้องทำอย่างไร?',
+    answer: 'หากขาดดุลต่อเนื่อง ควรทบทวนรายจ่ายแต่ละหมวดและตัดรายจ่ายที่ไม่จำเป็นออก พร้อมพิจารณาหารายได้เสริม เช่น งานพาร์ทไทม์หรือขายของออนไลน์',
+  },
+  {
+    question: 'ควรรวมงบครอบครัวหรือแยกบัญชีระหว่างสามีภรรยา?',
+    answer: 'ขึ้นอยู่กับความเห็นพ้องของคู่รัก วิธีที่นิยมคือ มีบัญชีร่วมสำหรับค่าใช้จ่ายครัวเรือน และบัญชีส่วนตัวสำหรับค่าใช้จ่ายส่วนบุคคล โดยกำหนดสัดส่วนที่แต่ละคนต้องออกตามรายได้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณครัวเรือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณครัวเรือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณงบประมาณครัวเรือน รองรับรายได้ 1-2 คน</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: รายได้รวม - รายจ่ายทุกหมวด = เกินดุล/ขาดดุล</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">อัตราการออม = (เกินดุล ÷ รายได้รวม) × 100%</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณครัวเรือน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้ครัวเรือน และค่าใช้จ่ายแต่ละหมวด ระบบจะคำนวณเกินดุล/ขาดดุลและอัตราการออมของครอบครัว
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="hh-form" class="space-y-5">
+        <p id="hh-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <p class="text-sm font-semibold text-gray-700">รายได้ครัวเรือน</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="hh-income1" class="mb-1 block text-sm font-medium text-gray-700">รายได้คนที่ 1 (บาท/เดือน)</label>
+            <input type="text" id="hh-income1" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="hh-income1-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="hh-income2" class="mb-1 block text-sm font-medium text-gray-700">รายได้คนที่ 2 (บาท/เดือน)</label>
+            <input type="text" id="hh-income2" inputmode="numeric" placeholder="0 ถ้ามีรายได้เดี่ยว"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-gray-700">รายจ่ายครัวเรือน (บาท/เดือน)</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="hh-housing" class="mb-1 block text-sm font-medium text-gray-700">ที่อยู่อาศัย (เช่า/ผ่อน/ส่วนกลาง)</label>
+            <input type="text" id="hh-housing" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-food" class="mb-1 block text-sm font-medium text-gray-700">อาหาร / เครื่องดื่ม</label>
+            <input type="text" id="hh-food" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-utilities" class="mb-1 block text-sm font-medium text-gray-700">สาธารณูปโภค (ไฟ/น้ำ/อินเทอร์เน็ต)</label>
+            <input type="text" id="hh-utilities" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-transport" class="mb-1 block text-sm font-medium text-gray-700">การเดินทาง / น้ำมัน / ผ่อนรถ</label>
+            <input type="text" id="hh-transport" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-education" class="mb-1 block text-sm font-medium text-gray-700">การศึกษา / ค่าเรียน</label>
+            <input type="text" id="hh-education" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-health" class="mb-1 block text-sm font-medium text-gray-700">สุขภาพ / ยา / ประกัน</label>
+            <input type="text" id="hh-health" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-entertainment" class="mb-1 block text-sm font-medium text-gray-700">บันเทิง / ช้อปปิ้ง</label>
+            <input type="text" id="hh-entertainment" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-savings" class="mb-1 block text-sm font-medium text-gray-700">เงินออม / ลงทุน</label>
+            <input type="text" id="hh-savings" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="hh-misc" class="mb-1 block text-sm font-medium text-gray-700">เบ็ดเตล็ดอื่นๆ</label>
+            <input type="text" id="hh-misc" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณงบประมาณครัวเรือน
+        </button>
+      </form>
+    </div>
+
+    <div id="hh-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้รวม</div>
+            <div id="res-hh-income" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายจ่ายรวม</div>
+            <div id="res-hh-expense" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div id="hh-surplus-box" class="rounded-lg p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เกินดุล/ขาดดุล</div>
+            <div id="res-hh-surplus" class="text-xl font-bold">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราการออม</div>
+            <div id="res-hh-saverate" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="hh-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายได้รวม = รายได้คนที่ 1 + รายได้คนที่ 2</li>
+        <li>รายจ่ายรวม = ผลรวมรายจ่ายทุกหมวด</li>
+        <li>เกินดุล/ขาดดุล = รายได้รวม - รายจ่ายรวม</li>
+        <li>อัตราการออม = (เกินดุล ÷ รายได้รวม) × 100%</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณงบประมาณสองรายได้/">คำนวณงบประมาณสองรายได้</a></li>
+        <li><a href="/วางแผนงบประมาณครอบครัว/">วางแผนงบประมาณครอบครัว</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#hh-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณครัวเรือน/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณครัวเรือน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการเพื่อการวางแผน ตัวเลขจริงอาจแตกต่างตามสถานการณ์
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function parseRequired(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) && n > 0 ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('hh-form');
+    const formError = document.getElementById('hh-error');
+    const resultBox = document.getElementById('hh-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('hh-income1-error', '');
+
+      const income1 = parseRequired(document.getElementById('hh-income1').value);
+      let hasError = false;
+      if (!Number.isFinite(income1)) { setErr('hh-income1-error', 'กรอกรายได้คนที่ 1 มากกว่า 0'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const income2 = parseNum(document.getElementById('hh-income2').value);
+      const totalIncome = income1 + income2;
+
+      const expenseFields = ['housing','food','utilities','transport','education','health','entertainment','savings','misc'];
+      const totalExpense = expenseFields.reduce((sum, f) => sum + parseNum(document.getElementById(`hh-${f}`)?.value || '0'), 0);
+
+      const surplus = totalIncome - totalExpense;
+      const saveRate = totalIncome > 0 ? (surplus / totalIncome) * 100 : 0;
+
+      setText('res-hh-income', formatMoney(totalIncome));
+      setText('res-hh-expense', formatMoney(totalExpense));
+      setText('res-hh-surplus', surplus >= 0 ? `+${formatMoney(surplus)}` : formatMoney(surplus));
+      setText('res-hh-saverate', `${saveRate.toFixed(1)}%`);
+
+      const surplusBox = document.getElementById('hh-surplus-box');
+      const surplusEl = document.getElementById('res-hh-surplus');
+      const statusEl = document.getElementById('hh-status');
+
+      if (surplus >= 0) {
+        surplusBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+        surplusEl.className = 'text-xl font-bold text-green-700';
+        if (saveRate >= 20) {
+          statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+          statusEl.textContent = `อัตราการออม ${saveRate.toFixed(1)}% — ดีเยี่ยม! ครัวเรือนของคุณมีวินัยทางการเงินสูง`;
+        } else if (saveRate >= 10) {
+          statusEl.className = 'rounded-lg bg-blue-50 p-3 text-sm font-medium text-blue-800 border border-blue-200';
+          statusEl.textContent = `อัตราการออม ${saveRate.toFixed(1)}% — ดี แต่ควรเพิ่มเงินออมให้ถึง 20% ของรายได้`;
+        } else {
+          statusEl.className = 'rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 border border-amber-200';
+          statusEl.textContent = `อัตราการออม ${saveRate.toFixed(1)}% — ควรเพิ่มเงินออมให้มากขึ้น เป้าหมายที่ดีคือ 20%`;
+        }
+      } else {
+        surplusBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+        surplusEl.className = 'text-xl font-bold text-red-700';
+        statusEl.className = 'rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800 border border-red-200';
+        statusEl.textContent = `ขาดดุล ${formatMoney(Math.abs(surplus))} ต่อเดือน — ต้องลดรายจ่ายหรือเพิ่มรายได้อย่างเร่งด่วน`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,129 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมเช็คคืน 2569 | ต้นทุนเช็คเด้ง | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียมเช็คคืน (เช็คเด้ง) จากธนาคารและค่าใช้จ่ายเพิ่มเติมที่อาจเกิดขึ้น';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมเช็คคืน/`;
+
+const faqData = [
+  {
+    question: 'เช็คคืน (เช็คเด้ง) มีโทษทางกฎหมายอย่างไรในไทย?',
+    answer: 'ตามพระราชบัญญัติว่าด้วยความผิดอันเกิดจากการใช้เช็ค พ.ศ. 2534 การออกเช็คที่รู้อยู่แล้วว่าไม่มีเงินพอชำระมีโทษจำคุกไม่เกิน 1 ปี ปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ นอกจากนี้ยังเสียค่าธรรมเนียมธนาคารอีกด้วย',
+  },
+  {
+    question: 'ค่าธรรมเนียมเช็คคืนของธนาคารไทยเป็นเท่าไร?',
+    answer: 'ค่าธรรมเนียมเช็คคืนของธนาคารไทยโดยทั่วไปอยู่ที่ 200-500 บาทต่อฉบับ บางธนาคารอาจมีค่าธรรมเนียมสูงกว่า และผู้รับเช็คอาจเรียกร้องค่าใช้จ่ายเพิ่มเติมได้ตามกฎหมายแพ่ง',
+  },
+  {
+    question: 'หากออกเช็คแล้วรู้ว่าเงินไม่พอ ควรทำอย่างไร?',
+    answer: 'แจ้งธนาคารเพื่อระงับการจ่ายเงินทันที (แต่ต้องมีเหตุผลที่ชอบด้วยกฎหมาย) และติดต่อผู้รับเช็คเพื่อชำระเงินสดทดแทนก่อนที่เช็คจะถูกนำเข้าเรียกเก็บ เพื่อหลีกเลี่ยงการถูกดำเนินคดีอาญา',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมเช็คคืน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมเช็คคืน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าธรรมเนียมเช็คคืน 2569</h1>
+    <p class="mb-4 text-gray-600">คำนวณต้นทุนรวมจากเช็คคืน (เช็คเด้ง) รวมค่าธรรมเนียมธนาคาร</p>
+    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+      ⚠️ คำเตือน: เช็คคืนมีโทษทางอาญาตามกฎหมายไทย — พระราชบัญญัติว่าด้วยความผิดอันเกิดจากการใช้เช็ค พ.ศ. 2534
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div>
+          <label for="cheque-count" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเช็คคืน (ฉบับ)</label>
+          <input id="cheque-count" type="text" inputmode="numeric" placeholder="เช่น 1" value="1"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <div>
+          <label for="fee-per-cheque" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมต่อฉบับ (บาท)</label>
+          <input id="fee-per-cheque" type="text" inputmode="numeric" value="300"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p class="mt-1 text-xs text-gray-500">ค่าธรรมเนียมทั่วไป 200-500 บาท/ฉบับ</p>
+        </div>
+        <div>
+          <label for="cheque-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าเช็ค (บาท)</label>
+          <input id="cheque-value" type="text" inputmode="numeric" placeholder="เช่น 50000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียมรวม</div>
+            <div id="res-fee" class="text-3xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ค่าธรรมเนียมต่อมูลค่าเช็ค</div>
+            <div id="res-pct" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <div class="mt-4 rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800">
+          <p class="font-semibold">⚠️ ข้อควรระวังทางกฎหมาย</p>
+          <p class="mt-1">การออกเช็คโดยรู้อยู่แล้วว่าไม่มีเงินพอชำระ มีโทษจำคุกไม่เกิน 1 ปี ปรับไม่เกิน 60,000 บาท หรือทั้งจำทั้งปรับ ตาม พ.ร.บ. ว่าด้วยความผิดอันเกิดจากการใช้เช็ค พ.ศ. 2534</p>
+        </div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมเช็คคืน/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const count = parseNum((document.getElementById('cheque-count') as HTMLInputElement).value);
+    const feePerCheque = parseNum((document.getElementById('fee-per-cheque') as HTMLInputElement).value);
+    const value = parseNum((document.getElementById('cheque-value') as HTMLInputElement).value);
+    if (!count || !feePerCheque) return;
+
+    const totalFee = count * feePerCheque;
+    const pct = value > 0 ? (totalFee / (value * count)) * 100 : 0;
+
+    document.getElementById('res-fee')!.textContent = fmt(totalFee);
+    document.getElementById('res-pct')!.textContent = pct > 0 ? pct.toFixed(2) + '%' : '-';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

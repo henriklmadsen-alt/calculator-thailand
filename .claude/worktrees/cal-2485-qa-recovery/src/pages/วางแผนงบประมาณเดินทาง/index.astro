@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const pageTitle = 'วางแผนงบประมาณเดินทาง | บัดจেตท่องเที่ยว | ฟรี | Kamnuanlek';
+const pageDescription = 'วางแผนงบประมาณเดินทาง คำนวณค่าใช้จ่ายทั้งหมดสำหรับการเดินทาง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/วางแผนงบประมาณเดินทาง/`;
+
+const faqData = [
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลที่ต้องการในช่องที่กำหนด แล้วกดปุ่มคำนวณ ผลลัพธ์จะแสดงทันทีพร้อมรายละเอียด' },
+  { question: 'ผลลัพธ์ที่ได้ถูกต้องแค่ไหน?', answer: 'เครื่องคำนวณใช้สูตรมาตรฐานและข้อมูลอัปเดต ผลลัพธ์เป็นการประมาณการเพื่อช่วยวางแผน ควรปรึกษาผู้เชี่ยวชาญสำหรับการตัดสินใจสำคัญ' },
+  { question: 'ข้อมูลที่ใช้คำนวณมาจากไหน?', answer: 'อิงจากกฎหมายและระเบียบปัจจุบันของประเทศไทย อัตราที่ประกาศโดยหน่วยงานรัฐ และสูตรมาตรฐานที่ใช้กันทั่วไป' },
+  { question: 'มีค่าใช้จ่ายในการใช้งานไหม?', answer: 'ใช้งานฟรีทั้งหมด ไม่ต้องสมัครสมาชิก ไม่มีค่าธรรมเนียม เครื่องคำนวณทั้งหมดบน Kamnuanlek ให้บริการฟรี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="วางแผนงบประมาณเดินทาง">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">วางแผนงบประมาณเดินทาง</h1>
+    <p class="text-gray-600 mb-6">คำนวณค่าใช้จ่ายทั้งหมดสำหรับการเดินทางของคุณ</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="days" class="block text-sm font-medium text-gray-700 mb-1">จำนวนวัน</label>
+          <input type="number" id="days" min="1" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+        <div>
+          <label for="accommodation" class="block text-sm font-medium text-gray-700 mb-1">ค่าที่พัก/วัน (บาท)</label>
+          <input type="number" id="accommodation" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+        <div>
+          <label for="food" class="block text-sm font-medium text-gray-700 mb-1">ค่าอาหาร/วัน (บาท)</label>
+          <input type="number" id="food" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+        <div>
+          <label for="activities" class="block text-sm font-medium text-gray-700 mb-1">ค่ากิจกรรม/วัน (บาท)</label>
+          <input type="number" id="activities" value="1500" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+        <div>
+          <label for="transport" class="block text-sm font-medium text-gray-700 mb-1">ค่าขนส่งรวม (บาท)</label>
+          <input type="number" id="transport" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+        </div>
+      </div>
+      <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white rounded-md">คำนวณ</button>
+      <div id="result" class="hidden mt-6 p-4 bg-blue-50 rounded-lg space-y-2">
+        <div class="flex justify-between"><span class="text-sm">ที่พัก</span><span id="acc">-</span></div>
+        <div class="flex justify-between"><span class="text-sm">อาหาร</span><span id="fd">-</span></div>
+        <div class="flex justify-between"><span class="text-sm">กิจกรรม</span><span id="act">-</span></div>
+        <div class="flex justify-between"><span class="text-sm">ขนส่ง</span><span id="trp">-</span></div>
+        <div class="border-t my-2"></div>
+        <div class="flex justify-between"><span class="text-sm">รวม</span><span id="sub" class="font-semibold">-</span></div>
+        <div class="flex justify-between"><span class="text-sm">VAT 7%</span><span id="vat" class="font-semibold">-</span></div>
+        <div class="border-t-2 my-2"></div>
+        <div class="flex justify-between"><span class="text-base font-bold">ยอดรวม</span><span id="total" class="text-lg font-bold text-primary-600">-</span></div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  import { calculateTravelBudget } from '../../lib/travel-budget-calculator';
+  document.getElementById('btn-calculate').addEventListener('click', () => {
+    const result = calculateTravelBudget({
+      days: parseInt(document.getElementById('days').value),
+      accommodation: parseInt(document.getElementById('accommodation').value),
+      food: parseInt(document.getElementById('food').value),
+      activities: parseInt(document.getElementById('activities').value),
+      transport: parseInt(document.getElementById('transport').value)
+    });
+    document.getElementById('acc').textContent = result.accommodationTotal.toLocaleString('th-TH');
+    document.getElementById('fd').textContent = result.foodTotal.toLocaleString('th-TH');
+    document.getElementById('act').textContent = result.activitiesTotal.toLocaleString('th-TH');
+    document.getElementById('trp').textContent = result.transportTotal.toLocaleString('th-TH');
+    document.getElementById('sub').textContent = result.subtotal.toLocaleString('th-TH');
+    document.getElementById('vat').textContent = result.vat.toLocaleString('th-TH');
+    document.getElementById('total').textContent = result.total.toLocaleString('th-TH') + ' บาท';
+    document.getElementById('result').classList.remove('hidden');
+  });
+</script>

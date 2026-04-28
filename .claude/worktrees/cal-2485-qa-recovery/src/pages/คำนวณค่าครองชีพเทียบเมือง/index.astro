@@ -1,0 +1,136 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าครองชีพเทียบเมือง 2569 | กรุงเทพ vs ต่างจังหวัด | Kamnuanlek';
+const pageDescription = 'เปรียบเทียบค่าครองชีพระหว่างกรุงเทพและต่างจังหวัด ค่าที่พัก อาหาร เดินทาง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าครองชีพเทียบเมือง/`;
+
+const faqData = [
+  {
+    question: 'ค่าครองชีพต่างจังหวัดถูกกว่ากรุงเทพแค่ไหน?',
+    answer: 'โดยเฉลี่ยค่าครองชีพต่างจังหวัดถูกกว่ากรุงเทพประมาณ 25-40% ขึ้นอยู่กับเมืองและไลฟ์สไตล์ ขอนแก่นและนครราชสีมาถูกกว่าประมาณ 35% ส่วนเชียงใหม่ถูกกว่าประมาณ 25% และภูเก็ตถูกกว่าเพียง 15%',
+  },
+  {
+    question: 'ย้ายไปต่างจังหวัดแล้วคุ้มไหม ถ้าเงินเดือนลดลง?',
+    answer: 'ต้องคำนวณเทียบค่าครองชีพจริง หากเงินเดือนลด 20% แต่ค่าครองชีพลดลง 30% ก็ยังคุ้มค่าอยู่ ควรเปรียบเทียบ "กำลังซื้อ" มากกว่าตัวเลขเงินเดือน โดยเฉพาะค่าที่พักที่มักเป็นสัดส่วนใหญ่ที่สุด',
+  },
+  {
+    question: 'เมืองไหนน่าอยู่สุดสำหรับ Digital Nomad ชาวไทย?',
+    answer: 'เชียงใหม่ได้รับความนิยมสูงสุด เนื่องจากมีคาเฟ่ coworking space internet ที่ดี ค่าครองชีพสมเหตุสมผล และสภาพแวดล้อมน่าอยู่ ขอนแก่นกำลังพัฒนาอย่างรวดเร็วและมีค่าครองชีพต่ำกว่า',
+  },
+];
+
+const cities = [
+  { id: 'bkk', name: 'กรุงเทพมหานคร', multiplier: 1.0 },
+  { id: 'cnx', name: 'เชียงใหม่', multiplier: 0.75 },
+  { id: 'hkt', name: 'ภูเก็ต', multiplier: 0.85 },
+  { id: 'kkn', name: 'ขอนแก่น', multiplier: 0.65 },
+  { id: 'nma', name: 'นครราชสีมา', multiplier: 0.65 },
+  { id: 'sgz', name: 'หาดใหญ่', multiplier: 0.70 },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าครองชีพเทียบเมือง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าครองชีพเทียบเมือง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าครองชีพเทียบเมือง 2569</h1>
+    <p class="mb-6 text-gray-600">กรอกค่าใช้จ่ายที่กรุงเทพ แล้วเลือกเมืองปลายทาง เพื่อดูประมาณการค่าใช้จ่ายที่เมืองนั้น สามารถดูการแบ่งค่าใช้จ่ายครัวเรือนเพิ่มเติมได้ที่ <a href="/คำนวณแบ่งค่าใช้จ่ายครัวเรือน/" class="text-primary-600 underline hover:text-primary-800">คำนวณแบ่งค่าใช้จ่ายครัวเรือน</a> หรือ <a href="/คำนวณอัตราออม/" class="text-primary-600 underline hover:text-primary-800">คำนวณอัตราการออม</a></p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="col-form" class="space-y-4">
+        <div>
+          <label for="bkk-expense" class="mb-1 block text-sm font-medium text-gray-700">ค่าใช้จ่ายรายเดือน ณ กรุงเทพ (บาท)</label>
+          <input id="bkk-expense" type="text" inputmode="numeric" placeholder="เช่น 30000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="dest-city" class="mb-1 block text-sm font-medium text-gray-700">เมืองปลายทาง</label>
+          <select id="dest-city"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64">
+            {cities.filter(c => c.id !== 'bkk').map((c) => (
+              <option value={c.multiplier}>{c.name} (~{Math.round((1 - c.multiplier) * 100)}% ถูกกว่า)</option>
+            ))}
+          </select>
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการเปรียบเทียบ</h2>
+        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายโดยประมาณ ณ เมืองปลายทาง/เดือน</div>
+            <div id="res-dest" class="text-2xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ประหยัดต่อเดือน</div>
+            <div id="res-save-mo" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ประหยัดต่อปี</div>
+            <div id="res-save-yr" class="text-2xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500">* ตัวเลขเป็นการประมาณการจากดัชนีค่าครองชีพเฉลี่ย อาจแตกต่างตามไลฟ์สไตล์จริง</p>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณค่าครองชีพเทียบเมือง/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('col-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const bkkExp = parseNum((document.getElementById('bkk-expense') as HTMLInputElement).value);
+    const multiplier = parseFloat((document.getElementById('dest-city') as HTMLSelectElement).value);
+
+    if (bkkExp <= 0) return;
+
+    const destExp = bkkExp * multiplier;
+    const saveMo = bkkExp - destExp;
+    const saveYr = saveMo * 12;
+
+    document.getElementById('res-dest')!.textContent = fmt(destExp);
+    document.getElementById('res-save-mo')!.textContent = fmt(saveMo);
+    document.getElementById('res-save-yr')!.textContent = fmt(saveYr);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

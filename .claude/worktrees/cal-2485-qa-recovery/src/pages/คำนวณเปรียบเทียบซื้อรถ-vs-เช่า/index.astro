@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'เปรียบเทียบซื้อรถ vs เช่ารถ 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเปรียบเทียบซื้อรถ vs เช่ารถ 2569 ฟรี — รู้ว่าแบบไหนประหยัดกว่าในระยะยาว';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/calc/`;
+
+const faqData = [
+  { question: 'Cap Rate ที่ดีสำหรับอสังหาริมทรัพย์ไทยคือเท่าไร?', answer: 'Cap Rate ที่ดีในไทยมักอยู่ที่ 5-8% ต่อปี ขึ้นอยู่กับทำเลและประเภทอสังหาฯ ทำเลกรุงเทพฯ ชั้นในมักได้ cap rate ต่ำกว่าต่างจังหวัด' },
+  { question: 'ค่าใช้จ่ายแฝงในการซื้ออสังหาฯ มีอะไรบ้าง?', answer: 'ค่าโอน ค่าจดจำนอง ค่าอากรแสตมป์ ภาษีธุรกิจเฉพาะ ค่านายหน้า ค่าซ่อมแซม รวมกันอาจสูงถึง 3-7% ของราคาซื้อ' },
+  { question: 'ผลตอบแทนการลงทุนอสังหาฯ ที่ดีต้องเป็นเท่าไร?', answer: 'นักลงทุนส่วนใหญ่ต้องการ IRR อย่างน้อย 8-12% ต่อปี หรือ Yield ค่าเช่า 5-7% ขึ้นอยู่กับทำเลและเป้าหมาย' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกราคาซื้อ ค่าเช่า ค่าใช้จ่ายรายเดือน เครื่องจะคำนวณ Yield, Cash Flow และ Cap Rate ให้อัตโนมัติ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุน">  <article><h1>คำนวณต้นทุน</h1>
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <input type="number" id="amount" placeholder="0" value="100000" class="w-full px-3 py-2 border mb-4 rounded-md" />
+      <button id="btn" class="w-full bg-orange-600 text-white py-2 rounded-md">คำนวณ</button>
+    </div>
+    <div id="results" class="hidden"><p id="result" class="text-2xl font-bold text-orange-600">ผล</p></div>
+  </article>
+  <script>
+    document.getElementById('btn').addEventListener('click', () => {
+      const v = parseFloat(document.getElementById('amount').value) || 100000;
+      document.getElementById('result').textContent = Math.round(v * 1.2) + ' บาท';
+      document.getElementById('results').classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,358 @@
+---
+interface Props {
+  slot?: 'below-calculator' | 'in-content' | 'sidebar' | 'sticky-anchor';
+  slotId?: string;
+  templateType?: 'calculator' | 'article';
+  className?: string;
+  rolloutVariantId?: string;
+}
+
+const {
+  slot = 'in-content',
+  slotId = '',
+  templateType = 'article',
+  className = '',
+  rolloutVariantId = '',
+} = Astro.props;
+
+const env = import.meta.env;
+
+function parseBool(raw: unknown, fallback: boolean): boolean {
+  if (typeof raw !== 'string') return fallback;
+  const normalized = raw.trim().toLowerCase();
+  if (!normalized) return fallback;
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) return true;
+  if (['0', 'false', 'no', 'off'].includes(normalized)) return false;
+  return fallback;
+}
+
+function parsePercent(raw: unknown, fallback: number): number {
+  const parsed = Number(typeof raw === 'string' ? raw.trim() : raw);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(100, Math.max(0, Math.round(parsed)));
+}
+
+function parseCsv(raw: unknown): string[] {
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  return raw
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+const adsenseEnabled = parseBool(env.PUBLIC_ADSENSE_ENABLED, false);
+const adsenseClientId = String(env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
+
+const slotConfigMap: Record<string, {
+  slotCode: string;
+  enabled: boolean;
+  rolloutPercent: number;
+  allowedRoutes: string[];
+  defaultSlotId: string;
+  adFormat: string;
+}> = {
+  'below-calculator': {
+    slotCode: String(env.PUBLIC_ADSENSE_SLOT_BELOW_CALCULATOR || '').trim(),
+    enabled: parseBool(env.PUBLIC_ADSENSE_SLOT_BELOW_CALCULATOR_ENABLED, adsenseEnabled),
+    rolloutPercent: parsePercent(env.PUBLIC_ADSENSE_ROLLOUT_BELOW_CALCULATOR_PERCENT, 0),
+    allowedRoutes: parseCsv(env.PUBLIC_ADSENSE_ROLLOUT_ROUTES_BELOW_CALCULATOR),
+    defaultSlotId: 'C1',
+    adFormat: 'horizontal',
+  },
+  'in-content': {
+    slotCode: String(env.PUBLIC_ADSENSE_SLOT_IN_CONTENT || '').trim(),
+    enabled: parseBool(env.PUBLIC_ADSENSE_SLOT_IN_CONTENT_ENABLED, adsenseEnabled),
+    rolloutPercent: parsePercent(env.PUBLIC_ADSENSE_ROLLOUT_IN_CONTENT_PERCENT, 0),
+    allowedRoutes: parseCsv(env.PUBLIC_ADSENSE_ROLLOUT_ROUTES_IN_CONTENT),
+    defaultSlotId: 'A1',
+    adFormat: 'rectangle',
+  },
+  'sidebar': {
+    slotCode: String(env.PUBLIC_ADSENSE_SLOT_SIDEBAR || '').trim(),
+    enabled: parseBool(env.PUBLIC_ADSENSE_SLOT_SIDEBAR_ENABLED, adsenseEnabled),
+    rolloutPercent: parsePercent(env.PUBLIC_ADSENSE_ROLLOUT_SIDEBAR_PERCENT, 0),
+    allowedRoutes: parseCsv(env.PUBLIC_ADSENSE_ROLLOUT_ROUTES_SIDEBAR),
+    defaultSlotId: 'S1',
+    adFormat: 'vertical',
+  },
+  'sticky-anchor': {
+    slotCode: String(env.PUBLIC_ADSENSE_SLOT_STICKY_ANCHOR || '').trim(),
+    enabled: parseBool(env.PUBLIC_ADSENSE_SLOT_STICKY_ANCHOR_ENABLED, adsenseEnabled),
+    rolloutPercent: parsePercent(env.PUBLIC_ADSENSE_ROLLOUT_STICKY_ANCHOR_PERCENT, 0),
+    allowedRoutes: parseCsv(env.PUBLIC_ADSENSE_ROLLOUT_ROUTES_STICKY_ANCHOR),
+    defaultSlotId: 'M1',
+    adFormat: 'auto',
+  },
+};
+
+const slotConfig = slotConfigMap[slot] || slotConfigMap['in-content'];
+const variantId = (rolloutVariantId || String(env.PUBLIC_ADSENSE_VARIANT_ID || '').trim() || 'control').trim();
+const experimentId = String(env.PUBLIC_ADSENSE_EXPERIMENT_ID || '').trim() || 'cal75-rollout';
+const resolvedSlotId = (slotId || slotConfig.defaultSlotId || '').trim();
+const shouldRenderAd = Boolean(adsenseClientId && slotConfig.slotCode && slotConfig.enabled);
+---
+
+{
+  shouldRenderAd && (
+    <div
+      class:list={['ad-unit', `ad-unit--${slot}`, className]}
+      data-ct-ad-unit
+      data-ad-slot-type={slot}
+      data-ad-slot-id={resolvedSlotId}
+      data-template-type={templateType}
+      data-variant-id={variantId}
+      data-experiment-id={experimentId}
+      data-rollout-percent={String(slotConfig.rolloutPercent)}
+      data-rollout-routes={slotConfig.allowedRoutes.join(',')}
+      hidden
+    >
+      <div class="ad-placeholder" aria-hidden="true">
+        <!-- Reserved slot box to prevent CLS when ads render. -->
+      </div>
+
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={adsenseClientId}
+        data-ad-slot={slotConfig.slotCode}
+        data-ad-format={slotConfig.adFormat}
+        data-full-width-responsive="true"
+      ></ins>
+    </div>
+  )
+}
+
+<script is:inline>
+  (() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    function parseRoutes(raw) {
+      if (!raw) return [];
+      return String(raw)
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function normalizePath(pathname) {
+      if (!pathname) return '/';
+      try {
+        return decodeURIComponent(pathname);
+      } catch {
+        return pathname;
+      }
+    }
+
+    function deviceType() {
+      if (window.matchMedia('(max-width: 767px)').matches) return 'mobile';
+      if (window.matchMedia('(max-width: 1023px)').matches) return 'tablet';
+      return 'desktop';
+    }
+
+    function getBucket() {
+      const key = 'ct.ads.rollout.bucket.v1';
+      try {
+        const existing = window.localStorage.getItem(key);
+        if (existing !== null) {
+          const parsed = Number(existing);
+          if (Number.isFinite(parsed) && parsed >= 0 && parsed < 100) return parsed;
+        }
+        const next = Math.floor(Math.random() * 100);
+        window.localStorage.setItem(key, String(next));
+        return next;
+      } catch {
+        return 100;
+      }
+    }
+
+    function emit(eventName, payload) {
+      if (typeof window.trackLanguageAwareEvent === 'function') {
+        window.trackLanguageAwareEvent(eventName, payload);
+        return;
+      }
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, payload);
+      }
+    }
+
+    function slotPayload(unit) {
+      return {
+        slot_type: unit.dataset.adSlotType || 'unknown',
+        slot_id: unit.dataset.adSlotId || 'unknown',
+        route_path: normalizePath(window.location.pathname),
+        device_type: deviceType(),
+        variant_id: unit.dataset.variantId || 'control',
+        template_type: unit.dataset.templateType || 'unknown',
+        experiment_id: unit.dataset.experimentId || 'cal75-rollout',
+      };
+    }
+
+    function shouldActivate(unit) {
+      const percent = Number(unit.dataset.rolloutPercent || '0');
+      if (!Number.isFinite(percent) || percent <= 0) return false;
+      const routes = parseRoutes(unit.dataset.rolloutRoutes || '');
+      const path = normalizePath(window.location.pathname);
+      if (routes.length > 0 && !routes.includes(path)) return false;
+      if (percent >= 100) return true;
+      return getBucket() < percent;
+    }
+
+    function bindClickHeuristic(unit) {
+      if (unit.dataset.clickBound === '1') return;
+      unit.dataset.clickBound = '1';
+      window.__ctAdClickState = window.__ctAdClickState || { activePayload: null, activeTs: 0 };
+
+      unit.addEventListener(
+        'pointerdown',
+        () => {
+          const state = window.__ctAdClickState;
+          state.activePayload = slotPayload(unit);
+          state.activeTs = Date.now();
+        },
+        { passive: true, capture: true },
+      );
+
+      if (window.__ctAdClickBlurBound) return;
+      window.__ctAdClickBlurBound = true;
+      window.addEventListener(
+        'blur',
+        () => {
+          const state = window.__ctAdClickState;
+          if (!state || !state.activePayload) return;
+          const ageMs = Date.now() - (state.activeTs || 0);
+          if (ageMs >= 0 && ageMs <= 1600) {
+            emit('ad_slot_click', state.activePayload);
+          }
+          state.activePayload = null;
+          state.activeTs = 0;
+        },
+        true,
+      );
+    }
+
+    function bindViewTracking(unit) {
+      if (unit.dataset.viewBound === '1') return;
+      unit.dataset.viewBound = '1';
+      const payload = slotPayload(unit);
+
+      if (typeof IntersectionObserver === 'undefined') {
+        emit('ad_slot_view', payload);
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            emit('ad_slot_view', payload);
+            observer.disconnect();
+          });
+        },
+        { threshold: 0.35 },
+      );
+      observer.observe(unit);
+    }
+
+    function lazyPush(unit) {
+      const adNode = unit.querySelector('.adsbygoogle');
+      if (!adNode || adNode.dataset.pushed === '1') return;
+
+      const pushAd = () => {
+        if (adNode.dataset.pushed === '1') return;
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          adNode.dataset.pushed = '1';
+        } catch {
+          // Script can race on first paint; retry on next viewport pass.
+        }
+      };
+
+      if (typeof IntersectionObserver === 'undefined') {
+        pushAd();
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            pushAd();
+            if (adNode.dataset.pushed === '1') {
+              observer.disconnect();
+            }
+          });
+        },
+        { rootMargin: '200px' },
+      );
+      observer.observe(adNode);
+    }
+
+    function initUnit(unit) {
+      if (unit.dataset.initialized === '1') return;
+      unit.dataset.initialized = '1';
+
+      if (!shouldActivate(unit)) {
+        unit.remove();
+        return;
+      }
+
+      unit.removeAttribute('hidden');
+      bindClickHeuristic(unit);
+      bindViewTracking(unit);
+      lazyPush(unit);
+    }
+
+    function initAll() {
+      document.querySelectorAll('[data-ct-ad-unit]').forEach((unit) => initUnit(unit));
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+      return;
+    }
+    initAll();
+  })();
+</script>
+
+<style>
+  .ad-unit {
+    margin: 1.5rem 0;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-unit--below-calculator {
+    min-height: 90px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .ad-unit--in-content {
+    min-height: 250px;
+  }
+
+  .ad-unit--sidebar {
+    min-height: 600px;
+  }
+
+  .ad-unit--sticky-anchor {
+    min-height: 64px;
+    margin: 1rem 0;
+  }
+
+  .ad-placeholder {
+    width: 100%;
+    background: var(--ct-surface-muted, #f8fafc);
+    border: 1px dashed var(--ct-border, #e2e8f0);
+    border-radius: 0.5rem;
+    min-height: inherit;
+  }
+
+  /* Hide placeholder once real ad loads */
+  .ad-unit:has(.adsbygoogle[data-ad-status="filled"]) .ad-placeholder {
+    display: none;
+  }
+</style>

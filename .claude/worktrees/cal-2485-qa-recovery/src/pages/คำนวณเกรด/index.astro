@@ -1,0 +1,304 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเกรด คะแนนเปอร์เซ็นต์ และ GPA ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเกรดจากคะแนน หา % ที่ได้ เทียบระดับเกรด A-F และ GPA 4.0 ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเกรด/`;
+
+const faqData = [
+  {
+    question: 'ระบบเกรดมหาวิทยาลัยไทยใช้เกณฑ์อะไร?',
+    answer: 'มหาวิทยาลัยส่วนใหญ่ในไทยใช้ระบบ GPA 4.0 โดย A (4.0) ≥ 80%, B+ (3.5) ≥ 75%, B (3.0) ≥ 70%, C+ (2.5) ≥ 65%, C (2.0) ≥ 60%, D+ (1.5) ≥ 55%, D (1.0) ≥ 50%, F (0) < 50% แต่ละสถาบันอาจปรับเกณฑ์เล็กน้อย',
+  },
+  {
+    question: 'GPA เฉลี่ยคำนวณยังไง?',
+    answer: 'GPA เฉลี่ย = Σ(หน่วยกิต × คะแนนเกรด) ÷ Σหน่วยกิตรวม ตัวอย่าง: วิชา A 3 หน่วยกิต เกรด 4.0 + วิชา B 2 หน่วยกิต เกรด 3.0 = (3×4.0 + 2×3.0) ÷ (3+2) = (12+6) ÷ 5 = 3.6',
+  },
+  {
+    question: 'เกรด B+ กับ B ต่างกันอย่างไร?',
+    answer: 'B+ = 3.5 คะแนน สอดคล้องกับคะแนน 75-79% และ B = 3.0 คะแนน สอดคล้องกับ 70-74% ระบบมหาวิทยาลัยไทยใช้เกรดครึ่ง (B+, C+, D+) ซึ่งช่วยแยกความแตกต่างของผลการเรียนได้ละเอียดขึ้น',
+  },
+  {
+    question: 'ต้องได้คะแนนเท่าไหร่ถึงจะผ่าน?',
+    answer: 'เกณฑ์ผ่านของมหาวิทยาลัยไทยส่วนใหญ่คือ D (1.0) ขึ้นไป ซึ่งต้องการคะแนน ≥ 50% แต่สำหรับวิชาหลักหรือวิชาบังคับ อาจต้องได้ C (2.0) หรือ 60% ขึ้นไปจึงจะนับหน่วยกิตได้',
+  },
+  {
+    question: 'GPA เฉลี่ยสะสมต่ำกว่า 2.0 มีผลอะไร?',
+    answer: 'นักศึกษาที่มี GPA สะสมต่ำกว่า 2.00 มักถูกแจ้งเตือน (probation) และอาจต้องเพิ่มผลการเรียนภายในเวลาที่กำหนด หากยังต่ำกว่าเกณฑ์อาจถูกพักการศึกษาหรือพ้นสภาพ ขึ้นอยู่กับระเบียบของแต่ละสถาบัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเกรดและ GPA',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'EducationApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเกรดและ GPA เฉลี่ยแบบมหาวิทยาลัยไทย',
+  description: 'ขั้นตอนการคำนวณเกรดจากคะแนน และ GPA เฉลี่ยสะสมแบบถ่วงน้ำหนักหน่วยกิต',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณเกรดจากคะแนน',
+      text: 'กรอกคะแนนที่ได้และคะแนนเต็ม เครื่องจะคำนวณเปอร์เซ็นต์และเทียบเกรด A ถึง F ตามมาตรฐานมหาวิทยาลัยไทย',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เพิ่มรายวิชาสำหรับ GPA',
+      text: 'กดปุ่ม "เพิ่มวิชา" เพื่อเพิ่มรายวิชา กรอกหน่วยกิตและเกรดของแต่ละวิชา (สูงสุด 10 วิชา)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณ GPA เฉลี่ย',
+      text: 'กดปุ่ม "คำนวณ GPA" เครื่องจะถ่วงน้ำหนักด้วยหน่วยกิตและคำนวณ CGPA ออกมา',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'อ่านผลและวางแผน',
+      text: 'ผลลัพธ์แสดง GPA เฉลี่ย พร้อมหน่วยกิตรวม ใช้ประเมินผลการเรียนและวางแผนการลงทะเบียนภาคต่อไป',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเกรด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณเกรดและ GPA ตามระบบมหาวิทยาลัยไทย</p>
+      <p class="mt-1 text-sm text-slate-700">รองรับเกรด A-F และ GPA 4.0 ถ่วงน้ำหนักหน่วยกิต</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเนื้อหาปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเกรด คะแนนเปอร์เซ็นต์ และ GPA ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเกรดจากคะแนนสอบหรือคะแนนสะสม แปลงเป็นระดับเกรด A-F และ GPA 4.0
+      พร้อมคำนวณ GPA เฉลี่ยสะสมจากหลายวิชาแบบถ่วงน้ำหนักหน่วยกิต
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="21 เม.ย. 2569"
+      sources={[
+        'สำนักงาน กพ.: มาตรฐานการศึกษาและระบบเกรด',
+        'สกอ. (สำนักงานคณะกรรมการการอุดมศึกษา): ระเบียบการวัดผล',
+      ]}
+      assumptions={[
+        'ใช้เกณฑ์เกรดมาตรฐานมหาวิทยาลัยไทย (A ≥ 80%)',
+        'แต่ละสถาบันอาจมีเกณฑ์ที่แตกต่างกัน',
+      ]}
+      references={[
+        {
+          label: 'สกอ.: ระเบียบการวัดและประเมินผลการศึกษา',
+          href: 'https://www.mua.go.th/',
+        },
+      ]}
+    />
+
+    <!-- Mode 1: Score to grade -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">1) คำนวณเกรดจากคะแนน</h2>
+      <p class="text-sm text-gray-500 mb-4">ตัวอย่าง: ได้ 75 จาก 100 → 75% → B+ (3.5)</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label for="grade-score" class="block text-sm font-medium text-gray-700 mb-1">คะแนนที่ได้</label>
+          <input id="grade-score" type="text" inputmode="decimal" placeholder="เช่น 75" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div>
+          <label for="grade-max" class="block text-sm font-medium text-gray-700 mb-1">คะแนนเต็ม</label>
+          <input id="grade-max" type="text" inputmode="decimal" placeholder="เช่น 100" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <div class="flex items-end">
+          <button id="btn-grade" type="button" class="w-full rounded-md bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">คำนวณ</button>
+        </div>
+      </div>
+      <p id="grade-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="grade-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="grade-pct" class="text-xl font-bold text-primary-700">-</p>
+        <p id="grade-letter" class="text-lg font-semibold text-primary-600">-</p>
+        <p id="grade-gpa" class="text-base text-gray-600">-</p>
+      </div>
+    </div>
+
+    <!-- Mode 2: CGPA -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">2) คำนวณ GPA เฉลี่ยสะสม (CGPA)</h2>
+      <p class="text-sm text-gray-500 mb-4">กรอกหน่วยกิตและเกรดแต่ละวิชา (สูงสุด 10 วิชา)</p>
+
+      <div id="gpa-rows" class="space-y-2 mb-3">
+        <div class="gpa-row grid grid-cols-3 gap-2">
+          <input type="text" inputmode="decimal" placeholder="หน่วยกิต" class="gpa-credit rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <select class="gpa-grade col-span-2 rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="4.0">A (4.0)</option>
+            <option value="3.5">B+ (3.5)</option>
+            <option value="3.0">B (3.0)</option>
+            <option value="2.5">C+ (2.5)</option>
+            <option value="2.0">C (2.0)</option>
+            <option value="1.5">D+ (1.5)</option>
+            <option value="1.0">D (1.0)</option>
+            <option value="0">F (0.0)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex gap-2 flex-wrap mb-3">
+        <button id="btn-gpa-add" type="button" class="rounded-md border border-primary-600 px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50">+ เพิ่มวิชา</button>
+        <button id="btn-gpa-calc" type="button" class="rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">คำนวณ GPA</button>
+      </div>
+
+      <p id="gpa-error" class="mt-2 hidden text-sm text-red-600"></p>
+      <div id="gpa-result" class="mt-4 hidden rounded-lg bg-primary-50 p-4 space-y-1">
+        <p class="text-sm text-gray-600">ผลลัพธ์</p>
+        <p id="gpa-value" class="text-2xl font-bold text-primary-700">-</p>
+        <p id="gpa-credits" class="text-sm text-gray-600">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#gpa-result" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ตารางเกรดมาตรฐานมหาวิทยาลัยไทย</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">เกรด</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">คะแนน GPA</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-700">เปอร์เซ็นต์</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="px-4 py-2 font-semibold">A</td><td class="px-4 py-2">4.0</td><td class="px-4 py-2">≥ 80%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">B+</td><td class="px-4 py-2">3.5</td><td class="px-4 py-2">75 – 79%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">B</td><td class="px-4 py-2">3.0</td><td class="px-4 py-2">70 – 74%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">C+</td><td class="px-4 py-2">2.5</td><td class="px-4 py-2">65 – 69%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">C</td><td class="px-4 py-2">2.0</td><td class="px-4 py-2">60 – 64%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">D+</td><td class="px-4 py-2">1.5</td><td class="px-4 py-2">55 – 59%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">D</td><td class="px-4 py-2">1.0</td><td class="px-4 py-2">50 – 54%</td></tr>
+            <tr><td class="px-4 py-2 font-semibold">F</td><td class="px-4 py-2">0.0</td><td class="px-4 py-2">&lt; 50%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณเกรด/" />
+    <RelatedCalculators currentHref="/คำนวณเกรด/" />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v) => parseFloat(String(v).replace(/,/g, '').trim());
+
+  const setError = (id, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || '';
+    msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+  };
+
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  function pctToGrade(pct) {
+    if (pct >= 80) return { letter: 'A', gpa: 4.0 };
+    if (pct >= 75) return { letter: 'B+', gpa: 3.5 };
+    if (pct >= 70) return { letter: 'B', gpa: 3.0 };
+    if (pct >= 65) return { letter: 'C+', gpa: 2.5 };
+    if (pct >= 60) return { letter: 'C', gpa: 2.0 };
+    if (pct >= 55) return { letter: 'D+', gpa: 1.5 };
+    if (pct >= 50) return { letter: 'D', gpa: 1.0 };
+    return { letter: 'F', gpa: 0 };
+  }
+
+  document.getElementById('btn-grade')?.addEventListener('click', () => {
+    setError('grade-error', '');
+    const score = parseNum(document.getElementById('grade-score')?.value);
+    const max = parseNum(document.getElementById('grade-max')?.value);
+    if (!Number.isFinite(score) || !Number.isFinite(max)) { setError('grade-error', 'กรุณากรอกตัวเลขให้ครบ'); return; }
+    if (max <= 0) { setError('grade-error', 'คะแนนเต็มต้องมากกว่า 0'); return; }
+    if (score < 0 || score > max) { setError('grade-error', 'คะแนนที่ได้ต้องอยู่ระหว่าง 0 ถึงคะแนนเต็ม'); return; }
+    const pct = (score / max) * 100;
+    const { letter, gpa } = pctToGrade(pct);
+    setText('grade-pct', `${pct.toFixed(2)}%`);
+    setText('grade-letter', `เกรด ${letter}`);
+    setText('grade-gpa', `GPA = ${gpa.toFixed(1)}`);
+    document.getElementById('grade-result')?.classList.remove('hidden');
+  });
+
+  let rowCount = 1;
+  document.getElementById('btn-gpa-add')?.addEventListener('click', () => {
+    if (rowCount >= 10) return;
+    rowCount++;
+    const container = document.getElementById('gpa-rows');
+    const row = document.createElement('div');
+    row.className = 'gpa-row grid grid-cols-3 gap-2';
+    row.innerHTML = `
+      <input type="text" inputmode="decimal" placeholder="หน่วยกิต" class="gpa-credit rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+      <select class="gpa-grade col-span-2 rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <option value="4.0">A (4.0)</option>
+        <option value="3.5">B+ (3.5)</option>
+        <option value="3.0">B (3.0)</option>
+        <option value="2.5">C+ (2.5)</option>
+        <option value="2.0">C (2.0)</option>
+        <option value="1.5">D+ (1.5)</option>
+        <option value="1.0">D (1.0)</option>
+        <option value="0">F (0.0)</option>
+      </select>`;
+    container?.appendChild(row);
+  });
+
+  document.getElementById('btn-gpa-calc')?.addEventListener('click', () => {
+    setError('gpa-error', '');
+    const rows = document.querySelectorAll('.gpa-row');
+    let totalCredits = 0;
+    let totalPoints = 0;
+    let valid = true;
+    rows.forEach((row) => {
+      const creditEl = row.querySelector('.gpa-credit');
+      const gradeEl = row.querySelector('.gpa-grade');
+      const creditVal = creditEl ? creditEl.value.trim() : '';
+      if (!creditVal) return; // skip empty rows
+      const credit = parseNum(creditVal);
+      const gpa = parseFloat(gradeEl?.value || '0');
+      if (!Number.isFinite(credit) || credit <= 0) { valid = false; return; }
+      totalCredits += credit;
+      totalPoints += credit * gpa;
+    });
+    if (!valid) { setError('gpa-error', 'กรุณากรอกหน่วยกิตที่ถูกต้อง (มากกว่า 0)'); return; }
+    if (totalCredits === 0) { setError('gpa-error', 'กรุณากรอกหน่วยกิตอย่างน้อย 1 วิชา'); return; }
+    const cgpa = totalPoints / totalCredits;
+    setText('gpa-value', `GPA = ${cgpa.toFixed(2)}`);
+    setText('gpa-credits', `หน่วยกิตรวม = ${totalCredits} หน่วย | คะแนนสะสม = ${totalPoints.toFixed(2)}`);
+    document.getElementById('gpa-result')?.classList.remove('hidden');
+  });
+</script>

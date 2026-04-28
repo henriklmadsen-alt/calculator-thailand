@@ -1,0 +1,362 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณแต่งงาน 2569 | แบ่งต้นทุนแต่ละหมวด | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณแต่งงานออนไลน์ฟรี แบ่งตามหมวดค่าใช้จ่าย: สถานที่ ค่าเลี้ยง ถ่ายรูป ตกแต่ง ความบันเทิง และอื่นๆ ด้วยมูลค่าจริง ประมาณการบาท พร้อมสรุปรวม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-งบประมาณ-แต่งงาน/`;
+
+const faqData = [
+  {
+    question: 'งบประมาณแต่งงานเฉลี่ยในประเทศไทยเป็นเท่าไหร่?',
+    answer: 'ค่าใช้จ่ายแต่งงานในประเทศไทยโดยเฉลี่ยอยู่ที่ 500,000-2,000,000 บาท ขึ้นอยู่กับขนาดของงาน จำนวนแขก และคุณภาพของสถานที่และบริการ วิธีดีที่สุดคือกำหนดงบประมาณที่เป็นไปได้ก่อน แล้วจึงวางแผนรายละเอียด',
+  },
+  {
+    question: 'ค่าใช้จ่ายส่วนใหญ่ของงานแต่งงานไทยจ่ายไปเพื่ออะไร?',
+    answer: 'ค่าใช้จ่ายที่สูงที่สุดมักเป็นค่าเลี้ยง (40-50% ของงบ) รองลงมาคือค่าสถานที่ (20-30%) ถ่ายรูป/วีดีโอ (10-15%) และตกแต่ง (5-10%) ส่วนที่เหลือจ่ายไปเป็นค่าความบันเทิง เลี้ยงเหล้า ลูกเสบี้ยง ของขวัญ และค่าใช้จ่ายอื่นๆ',
+  },
+  {
+    question: 'จะลดค่าใช้จ่ายแต่งงานได้อย่างไรโดยไม่เสียคุณภาพ?',
+    answer: 'วิธีลดค่าใช้จ่าย: (1) เลือกวันและเวลาที่ไม่ใช่ช่วงวันหยุด เทศกาล (2) จำกัดจำนวนแขกให้พอประมาณ (3) เลือกสถานที่ที่รวมค่าเลี้ยง (4) ใช้ดีเจคนเดียว ไม่ว่งวิทยุ (5) ตกแต่งจากดอกไม้ธรรมชาติแทนดอกไม้ประดิษฐ์',
+  },
+  {
+    question: 'ควรจัดสรรงบประมาณแต่งงานอย่างไร?',
+    answer: 'สัดส่วนที่แนะนำ: ค่าเลี้ยง 40-50% สถานที่ 20-30% ถ่ายรูป 10-15% ตกแต่ง 5-10% ความบันเทิง 5% อื่นๆ 5% แต่ควรปรับตามความสำคัญและความต้องการของคุณ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณแต่งงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณงบประมาณแต่งงาน',
+  description: 'ขั้นตอนการคำนวณงบประมาณแต่งงานโดยแบ่งตามหมวดค่าใช้จ่ายต่างๆ',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'กำหนดจำนวนแขกที่คาดหวัง',
+      text: 'ประมาณจำนวนแขกทั้งหมด รวมครอบครัว เพื่อนฝูง และคนที่เกี่ยวข้อง ซึ่งจะช่วยในการคำนวณค่าเลี้ยงและสถานที่',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ประมาณค่าใช้จ่ายในแต่ละหมวด',
+      text: 'ติดต่อโรงแรม, ห้องจัดเลี้ยง, ร้านถ่ายรูป, ดีเจ เพื่อรับราคาอ้างอิง จากนั้นบวกค่าใช้จ่ายทั้งหมด',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'รวมค่าใช้จ่ายทั้งหมด',
+      text: 'บวกค่าใช้จ่ายจากทุกหมวด เพื่อได้งบประมาณรวมของงานแต่งงาน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เปรียบเทียบกับงบประมาณที่มี',
+      text: 'เปรียบเทียบผลการคำนวณกับจำนวนเงินที่ตั้งไว้ หากเกินกว่า ให้หาวิธีลดค่าใช้จ่ายในส่วนที่สามารถปรับลดได้',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณแต่งงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณงบประมาณแต่งงาน
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-pink-200 bg-pink-50 px-3 py-2">
+      <p class="text-xs font-semibold text-pink-800">[ค่าใช้จ่ายแต่งงาน 2569]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณงบประมาณแต่งงานออนไลน์ฟรี แบ่งตามหมวดค่าใช้จ่ายต่างๆ เพื่อให้การวางแผนและควบคุมค่าใช้จ่ายเป็นไปอย่างมีประสิทธิภาพ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <!-- Venue -->
+        <div>
+          <label for="venue" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเช่าสถานที่ (บาท)
+          </label>
+          <input
+            type="text"
+            id="venue"
+            inputmode="decimal"
+            placeholder="เช่น 200000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Catering -->
+        <div>
+          <label for="catering" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเลี้ยง/อาหาร (บาท)
+          </label>
+          <input
+            type="text"
+            id="catering"
+            inputmode="decimal"
+            placeholder="เช่น 800000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Photography -->
+        <div>
+          <label for="photography" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าถ่ายรูป/วิดีโอ (บาท)
+          </label>
+          <input
+            type="text"
+            id="photography"
+            inputmode="decimal"
+            placeholder="เช่น 150000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Entertainment -->
+        <div>
+          <label for="entertainment" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าความบันเทิง/ดีเจ (บาท)
+          </label>
+          <input
+            type="text"
+            id="entertainment"
+            inputmode="decimal"
+            placeholder="เช่น 80000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Decoration -->
+        <div>
+          <label for="decoration" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าตกแต่ง/ดอกไม้ (บาท)
+          </label>
+          <input
+            type="text"
+            id="decoration"
+            inputmode="decimal"
+            placeholder="เช่น 100000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Invitation -->
+        <div>
+          <label for="invitation" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเชิญ/สติกเกอร์ (บาท)
+          </label>
+          <input
+            type="text"
+            id="invitation"
+            inputmode="decimal"
+            placeholder="เช่น 30000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Favors -->
+        <div>
+          <label for="favors" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าของขวัญ/ลูกเสบี้ยง (บาท)
+          </label>
+          <input
+            type="text"
+            id="favors"
+            inputmode="decimal"
+            placeholder="เช่น 50000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+
+        <!-- Other -->
+        <div>
+          <label for="other" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าอื่นๆ (บาท)
+          </label>
+          <input
+            type="text"
+            id="other"
+            inputmode="decimal"
+            placeholder="เช่น 40000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-pink-600 text-white font-semibold rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณรวม
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-8 border-t pt-6">
+        <div class="grid gap-6 sm:grid-cols-2">
+          <!-- Individual Breakdown -->
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">รายละเอียดค่าใช้จ่าย</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span>ค่าสถานที่</span>
+                <span class="font-medium" id="show-venue">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าเลี้ยง</span>
+                <span class="font-medium" id="show-catering">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าถ่ายรูป</span>
+                <span class="font-medium" id="show-photography">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าความบันเทิง</span>
+                <span class="font-medium" id="show-entertainment">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าตกแต่ง</span>
+                <span class="font-medium" id="show-decoration">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าเชิญ</span>
+                <span class="font-medium" id="show-invitation">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าของขวัญ</span>
+                <span class="font-medium" id="show-favors">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าอื่นๆ</span>
+                <span class="font-medium" id="show-other">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">สรุปงบประมาณ</h3>
+            <div class="bg-pink-50 rounded-lg p-4 mb-4">
+              <div class="text-sm text-gray-600 mb-1">งบประมาณรวม</div>
+              <div class="text-4xl font-bold text-pink-700 mb-2">
+                <span id="total">-</span>
+              </div>
+              <div class="text-xs text-gray-600">บาท</div>
+            </div>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span>ค่าเลี้ยง %</span>
+                <span id="pct-catering">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าสถานที่ %</span>
+                <span id="pct-venue">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ค่าถ่ายรูป %</span>
+                <span id="pct-photography">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Section -->
+    <section class="mb-10">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">ข้อมูลงบประมาณแต่งงานประเทศไทย</h2>
+      <div class="prose prose-sm max-w-none">
+        <p>
+          ค่าใช้จ่ายแต่งงานในประเทศไทยแตกต่างกันไปตามสถานที่ประจำที่ ขนาดของงาน และคุณภาพของบริการที่เลือก โดยค่าใช้จ่ายที่มากที่สุดมักเป็นค่าอาหารและเครื่องดื่มสำหรับแขกที่ยิ่งมากขึ้น
+        </p>
+        <p>
+          ราคาอ้างอิงสำหรับจำนวนแขก 150 คน:
+        </p>
+        <ul>
+          <li>ค่าสถานที่จัดเลี้ยง: 150,000-300,000 บาท</li>
+          <li>ค่าอาหารและเครื่องดื่ม: 1,000-2,000 บาท/คน (150,000-300,000 บาท)</li>
+          <li>ค่าถ่ายรูปและวีดีโอ: 100,000-200,000 บาท</li>
+          <li>ค่าตกแต่ง/ดอกไม้: 80,000-150,000 บาท</li>
+          <li>ค่าความบันเทิง/ดีเจ: 50,000-100,000 บาท</li>
+          <li>ค่าเชิญพิมพ์: 20,000-40,000 บาท</li>
+          <li>ค่าของขวัญ: 30,000-60,000 บาท</li>
+        </ul>
+        <p>
+          เคล็ดลับประหยัดค่าใช้จ่าย: ลองจัดงานในวันธรรมดาหรือช่วงนอกเทศกาล อาจลดค่าเช่าสถานที่ได้ 20-30% และเลือกเมนูอาหารที่เป็นตามปกติแต่เสิร์ฟอย่างสวยงาม มักประหยัดค่าอาหารได้สูงถึง 30%
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators />
+    <RelatedArticles />
+  </article>
+</BaseLayout>
+
+<script>
+  document.getElementById('btn-calculate')?.addEventListener('click', () => {
+    const venue = parseFloat(document.getElementById('venue')?.value || 0);
+    const catering = parseFloat(document.getElementById('catering')?.value || 0);
+    const photography = parseFloat(document.getElementById('photography')?.value || 0);
+    const entertainment = parseFloat(document.getElementById('entertainment')?.value || 0);
+    const decoration = parseFloat(document.getElementById('decoration')?.value || 0);
+    const invitation = parseFloat(document.getElementById('invitation')?.value || 0);
+    const favors = parseFloat(document.getElementById('favors')?.value || 0);
+    const other = parseFloat(document.getElementById('other')?.value || 0);
+
+    const total = venue + catering + photography + entertainment + decoration + invitation + favors + other;
+
+    if (total === 0) {
+      alert('กรุณาป้อนค่าใช้จ่ายอย่างน้อยหนึ่งรายการ');
+      return;
+    }
+
+    document.getElementById('show-venue').textContent = venue.toLocaleString('th-TH');
+    document.getElementById('show-catering').textContent = catering.toLocaleString('th-TH');
+    document.getElementById('show-photography').textContent = photography.toLocaleString('th-TH');
+    document.getElementById('show-entertainment').textContent = entertainment.toLocaleString('th-TH');
+    document.getElementById('show-decoration').textContent = decoration.toLocaleString('th-TH');
+    document.getElementById('show-invitation').textContent = invitation.toLocaleString('th-TH');
+    document.getElementById('show-favors').textContent = favors.toLocaleString('th-TH');
+    document.getElementById('show-other').textContent = other.toLocaleString('th-TH');
+
+    document.getElementById('total').textContent = total.toLocaleString('th-TH');
+
+    document.getElementById('pct-catering').textContent = `${((catering / total) * 100).toFixed(1)}%`;
+    document.getElementById('pct-venue').textContent = `${((venue / total) * 100).toFixed(1)}%`;
+    document.getElementById('pct-photography').textContent = `${((photography / total) * 100).toFixed(1)}%`;
+
+    document.getElementById('result').classList.remove('hidden');
+  });
+</script>

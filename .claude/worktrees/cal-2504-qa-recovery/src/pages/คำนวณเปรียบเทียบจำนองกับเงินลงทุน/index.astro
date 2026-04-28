@@ -1,0 +1,305 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'เปรียบเทียบจำนองกับเงินลงทุน 2569 | ดอกเบี้ย vs ผลตอบแทน | Kamnuanlek';
+const pageDescription = 'เปรียบเทียบค่าดอกเบี้ยจำนองกับผลตอบแทนจากการลงทุน คุ้มค่าที่จะจ่ายเงินดาวน์เพิ่มหรือไม่? ประเมินโครงการลงทุน ส่วนต่างดอกเบี้ย ออนไลน์ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเปรียบเทียบจำนองกับเงินลงทุน/`;
+
+const faqData = [
+  {
+    question: 'ควรจ่ายเงินดาวน์เพิ่มเพื่อลดจำนอง หรือเอาเงินนั้นไปลงทุน?',
+    answer: 'ถ้าอัตราผลตอบแทนจากการลงทุน สูงกว่าอัตราดอกเบี้ยจำนอง ควรลงทุน ถ้าต่ำกว่า ควรจ่ายเงินดาวน์เพิ่มเพื่อลดสินเชื่อ คำนวณนี้ช่วยเปรียบเทียบได้',
+  },
+  {
+    question: 'ผลตอบแทนจากการลงทุนเกี่ยวข้องอะไรบ้าง?',
+    answer: 'ผลตอบแทนสามารถเป็น: (1) ดอกเบี้ยเงินฝาก/พันธบัตร (2) เงินปันผล จากหุ้น (3) ค่าเช่า จากอสังหาริมทรัพย์ (4) กำไรจากการขายหุ้น/พื้นที่ เป็นต้น',
+  },
+  {
+    question: 'การคำนวณครั้งนี้ใช้ได้กับสินเชื่อทุกประเภทหรือ?',
+    answer: 'ใช้ได้กับสินเชื่อบ้าน รถยนต์ และสินเชื่อส่วนบุคคลในทุกประเภท เพียงแต่ต้องทำให้ชัดว่าผลตอบแทนการลงทุนอ้างอิงจากอะไร',
+  },
+  {
+    question: 'ระยะเวลาสินเชื่อเท่าไหร่?',
+    answer: 'สินเชื่อบ้าน ปกติ 15-20 ปี สินเชื่อรถ ปกติ 3-7 ปี สินเชื่อส่วนบุคคล ปกติ 1-5 ปี การคำนวณนี้รองรับทั้งหมด เพียงแต่ระบุระยะเวลาเป็นปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องเปรียบเทียบจำนองกับเงินลงทุน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="เปรียบเทียบจำนองกับเงินลงทุน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">เอาเงินดาวน์ไปลงทุนจะคุ้มหรือไม่?</p>
+      <p class="mt-1 text-sm text-slate-700">เปรียบเทียบต้นทุนดอกเบี้ยกับผลตอบแทน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ตามอัตราตลาดไทย 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      เปรียบเทียบจำนองกับเงินลงทุน
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      เปรียบเทียบต้นทุนดอกเบี้ยจำนองกับผลตอบแทนจากการลงทุนทางเลือก
+      เพื่อตัดสินใจว่าควรจ่ายเงินดาวน์เพิ่มเพื่อลดสินเชื่อ หรือลงทุนแทน
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลสินเชื่อและการลงทุน</h2>
+
+      <form id="mortgage-vs-invest-form" class="space-y-6">
+        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-blue-900 mb-2">รายละเอียดสินเชื่อ</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="loan-amount" class="block text-sm font-medium text-gray-700 mb-1">
+                จำนวนสินเชื่อ (บาท)
+              </label>
+              <input
+                type="text"
+                id="loan-amount"
+                inputmode="numeric"
+                placeholder="เช่น 3,000,000"
+                value="3000000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="loan-rate" class="block text-sm font-medium text-gray-700 mb-1">
+                ดอกเบี้ยสินเชื่อ (%) ต่อปี
+              </label>
+              <input
+                type="text"
+                id="loan-rate"
+                inputmode="numeric"
+                placeholder="เช่น 3.5"
+                value="3.5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+          </div>
+          <div class="mt-4">
+            <label for="loan-term" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาสินเชื่อ (ปี)
+            </label>
+            <input
+              type="text"
+              id="loan-term"
+              inputmode="numeric"
+              placeholder="เช่น 20"
+              value="20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="bg-green-50 border border-green-100 rounded-lg p-4">
+          <h3 class="font-semibold text-green-900 mb-2">ทางเลือกการลงทุน</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="investment-amount" class="block text-sm font-medium text-gray-700 mb-1">
+                เงินจำนวนลงทุน (บาท)
+              </label>
+              <input
+                type="text"
+                id="investment-amount"
+                inputmode="numeric"
+                placeholder="เช่น 1,000,000"
+                value="1000000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+              <p class="mt-1 text-xs text-gray-500">เงินที่จะลงทุนแทน</p>
+            </div>
+            <div>
+              <label for="investment-return" class="block text-sm font-medium text-gray-700 mb-1">
+                ผลตอบแทนการลงทุน (%) ต่อปี
+              </label>
+              <input
+                type="text"
+                id="investment-return"
+                inputmode="numeric"
+                placeholder="เช่น 5"
+                value="5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          เปรียบเทียบตอนนี้
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการเปรียบเทียบ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-red-50 rounded-lg p-4 text-center border border-red-100">
+            <div class="text-sm text-gray-600 mb-1">ต้นทุนดอกเบี้ยสินเชื่อ</div>
+            <div id="result-interest-cost" class="text-2xl font-bold text-red-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center border border-green-100">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนการลงทุน</div>
+            <div id="result-investment-return" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-blue-50 border border-blue-200 p-6 mb-6">
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-2">ผลต่างระหว่างต้นทุนและผลตอบแทน</p>
+            <p id="net-benefit" class="text-3xl font-bold text-blue-700 mb-2">-</p>
+            <p id="recommendation" class="text-sm text-blue-900 font-semibold">-</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">ต้นทุนสินเชื่อ</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">จำนวนสินเชื่อ</span>
+                <span id="detail-loan" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ดอกเบี้ยรวม</span>
+                <span id="detail-interest" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ยอดรวมจ่าย</span>
+                <span id="detail-total-payment" class="font-medium">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">ผลตอบแทนการลงทุน</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">เงินลงทุน</span>
+                <span id="detail-investment" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ผลตอบแทนรวม</span>
+                <span id="detail-total-return" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">มูลค่ารวม</span>
+                <span id="detail-final-value" class="font-medium">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณเปรียบเทียบจำนองกับเงินลงทุน/" />
+    <RelatedCalculators currentHref="/คำนวณเปรียบเทียบจำนองกับเงินลงทุน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลตอบแทนการลงทุนไม่มีการรับประกัน และปราศจากความเสี่ยง
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(val: string): number {
+      return Math.max(0, parseFloat(val.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(num));
+    }
+
+    const form = document.getElementById('mortgage-vs-invest-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const loanAmount = parseNumber((document.getElementById('loan-amount') as HTMLInputElement).value);
+      const loanRate = parseNumber((document.getElementById('loan-rate') as HTMLInputElement).value) / 100;
+      const loanTerm = parseNumber((document.getElementById('loan-term') as HTMLInputElement).value);
+      const investmentAmount = parseNumber((document.getElementById('investment-amount') as HTMLInputElement).value);
+      const investmentReturn = parseNumber((document.getElementById('investment-return') as HTMLInputElement).value) / 100;
+
+      // Calculate loan interest (simple calculation)
+      const totalInterest = loanAmount * loanRate * loanTerm;
+      const totalPayment = loanAmount + totalInterest;
+
+      // Calculate investment return (compound)
+      const finalValue = investmentAmount * Math.pow(1 + investmentReturn, loanTerm);
+      const totalReturn = finalValue - investmentAmount;
+
+      // Comparison
+      const netBenefit = totalReturn - totalInterest;
+
+      // Update display
+      (document.getElementById('result-interest-cost') as HTMLElement).textContent = `${formatThai(totalInterest)} บาท`;
+      (document.getElementById('result-investment-return') as HTMLElement).textContent = `${formatThai(totalReturn)} บาท`;
+
+      (document.getElementById('detail-loan') as HTMLElement).textContent = `${formatThai(loanAmount)} บาท`;
+      (document.getElementById('detail-interest') as HTMLElement).textContent = `${formatThai(totalInterest)} บาท`;
+      (document.getElementById('detail-total-payment') as HTMLElement).textContent = `${formatThai(totalPayment)} บาท`;
+
+      (document.getElementById('detail-investment') as HTMLElement).textContent = `${formatThai(investmentAmount)} บาท`;
+      (document.getElementById('detail-total-return') as HTMLElement).textContent = `${formatThai(totalReturn)} บาท`;
+      (document.getElementById('detail-final-value') as HTMLElement).textContent = `${formatThai(finalValue)} บาท`;
+
+      (document.getElementById('net-benefit') as HTMLElement).textContent = `${formatThai(netBenefit)} บาท`;
+
+      let recommendation = '';
+      if (netBenefit > 0) {
+        recommendation = `✓ คุ้มที่จะเอาเงินไปลงทุน ได้ผลตอบแทนเพิ่มเติม`;
+      } else if (netBenefit < 0) {
+        recommendation = `✗ ไม่คุ้มที่จะลงทุน ควรจ่ายเงินดาวน์เพิ่มเพื่อลดสินเชื่อแทน`;
+      } else {
+        recommendation = `= เสมอกัน ทั้งสองทางให้ผลเท่าเทียม`;
+      }
+      (document.getElementById('recommendation') as HTMLElement).textContent = recommendation;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('mortgage_vs_invest');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('mortgage_vs_invest');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('mortgage_vs_invest');
+    }, { once: true });
+  </script>
+</BaseLayout>

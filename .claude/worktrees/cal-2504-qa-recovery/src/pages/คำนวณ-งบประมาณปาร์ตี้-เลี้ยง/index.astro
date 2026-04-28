@@ -1,0 +1,350 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculatePartyBudget } from '../../lib/party-celebration-budget-calculator';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณปาร์ตี้/เลี้ยง ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณปาร์ตี้หรือพิธีเลี้ยง รวมค่าใช้จ่ายทั้งหมดและคำนวณค่าใช้จ่ายต่อคนแขก ได้ผลลัพธ์ทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-งบประมาณปาร์ตี้-เลี้ยง/`;
+
+const faqData = [
+  {
+    question: 'ควรตั้งงบประมาณงบประมาณปาร์ตี้เท่าไร?',
+    answer: 'ขึ้นอยู่กับจำนวนแขก ระดับความหรูหรา และประเภทของปาร์ตี้ อนุมานได้ว่า 200-800 บาทต่อคนแขก ขึ้นอยู่กับการเลี้ยงอาหาร สถานที่ และบริการ',
+  },
+  {
+    question: 'ค่าใช้จ่ายใดสำคัญที่สุด?',
+    answer: 'ค่าเลี้ยงอาหารมักเป็นค่าใช้จ่ายที่สำคัญที่สุด (40-50% ของงบประมาณ) รองลงมาคือค่าเช่าสถานที่ (20-30%) ค่าตกแต่ง (10-20%) และบริการอื่นๆ',
+  },
+  {
+    question: 'วิธีประหยัดงบประมาณปาร์ตี้อย่างไร?',
+    answer: 'เลือกเวลาที่ไม่ใช่เวลาอำเภอ ลดจำนวนแขก เลือกเมนูอาหารง่ายๆ ทำการตกแต่งเอง และเชิญเพื่อสนิทมาช่วย',
+  },
+  {
+    question: 'ต้องคิดสำรองงบประมาณเพิ่มเติมหรือไม่?',
+    answer: 'ควรสำรองงบประมาณ 10-15% เพื่อรองรับค่าใช้จ่ายเพิ่มเติมหรือจำนวนแขกที่คาดเดาไม่ได้ เพื่อหลีกเลี่ยงการเกินงบประมาณ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณปาร์ตี้/เลี้ยง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณงบประมาณปาร์ตี้/เลี้ยง',
+  description: 'ขั้นตอนการคำนวณงบประมาณปาร์ตี้โดยรวมค่าใช้จ่ายทั้งหมด',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'กำหนดจำนวนแขก',
+      text: 'ประมาณจำนวนแขกที่จะมาร่วมงาน ควรมีการยืนยันตัวตนอย่างน้อย 2-3 สัปดาห์ก่อนงาน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตั้งค่าเช่าสถานที่',
+      text: 'เลือกสถานที่ที่เหมาะสมและกำหนดค่าเช่า โดยคำนึงถึงจำนวนแขกและประเภทของงาน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณค่าเลี้ยงต่อคน',
+      text: 'กำหนดค่าเลี้ยงอาหารต่อคนแขก แล้วนำมาคูณกับจำนวนแขก',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'รวมค่าใช้จ่ายอื่นๆ',
+      text: 'เพิ่มค่าตกแต่ง ค่าความบันเทิง และค่าใช้จ่ายอื่นๆ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณค่าต่อคนแขก',
+      text: 'หารค่าใช้จ่ายรวมด้วยจำนวนแขก เพื่อดูว่าค่าใช้จ่ายต่อคนแขกเป็นเท่าไร',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณปาร์ตี้/เลี้ยง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณงบประมาณปาร์ตี้/เลี้ยง
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณงบประมาณรวมของปาร์ตี้หรือพิธีเลี้ยง โดยรวมค่าใช้จ่ายทั้งหมดและคำนวณค่าใช้จ่ายต่อคนแขก
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="guestCount" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนแขก (คน)
+          </label>
+          <input
+            type="text"
+            id="guestCount"
+            inputmode="decimal"
+            placeholder="เช่น 100"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="venueCost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเช่าสถานที่ (บาท)
+          </label>
+          <input
+            type="text"
+            id="venueCost"
+            inputmode="decimal"
+            placeholder="เช่น 10000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="cateringPerPerson" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเลี้ยงต่อคน (บาท)
+          </label>
+          <input
+            type="text"
+            id="cateringPerPerson"
+            inputmode="decimal"
+            placeholder="เช่น 300"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="decorationCost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าตกแต่ง (บาท)
+          </label>
+          <input
+            type="text"
+            id="decorationCost"
+            inputmode="decimal"
+            placeholder="เช่น 5000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="entertainmentCost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าความบันเทิง (บาท)
+          </label>
+          <input
+            type="text"
+            id="entertainmentCost"
+            inputmode="decimal"
+            placeholder="เช่น 3000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="miscellaneousCost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าใช้จ่ายอื่นๆ (บาท)
+          </label>
+          <input
+            type="text"
+            id="miscellaneousCost"
+            inputmode="decimal"
+            placeholder="เช่น 1000 (ไม่จำเป็น)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณงบประมาณ
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <div class="grid gap-4 sm:grid-cols-2 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายรวมทั้งสิ้น</div>
+            <div id="totalCost" class="text-3xl font-bold text-blue-600">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายต่อคนแขก</div>
+            <div id="costPerGuest" class="text-3xl font-bold text-green-600">-</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">รายละเอียดค่าใช้จ่าย</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">ค่าเช่าสถานที่:</span>
+              <span id="detail-venue" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">ค่าเลี้ยงรวม:</span>
+              <span id="detail-catering" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">ค่าตกแต่ง:</span>
+              <span id="detail-decoration" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">ค่าความบันเทิง:</span>
+              <span id="detail-entertainment" class="font-medium text-gray-900">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">ค่าใช้จ่ายอื่นๆ:</span>
+              <span id="detail-misc" class="font-medium text-gray-900">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีการคำนวณงบประมาณปาร์ตี้/เลี้ยง</h2>
+      <p class="text-gray-600">
+        การวางแผนงบประมาณปาร์ตี้หรือพิธีเลี้ยงเป็นสิ่งสำคัญเพื่อไม่ให้เกินงบประมาณและประหยัดค่าใช้จ่าย เครื่องคำนวณนี้จะช่วยให้คุณสามารถรวมค่าใช้จ่ายทั้งหมด รวมถึงค่าเลี้ยง ค่าเช่าสถานที่ ค่าตกแต่ง และความบันเทิง เพื่อให้ได้งบประมาณรวมและค่าใช้จ่ายต่อคนแขก
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">ประเภทค่าใช้จ่าย</h3>
+      <ul class="list-disc list-inside text-gray-600 space-y-1">
+        <li><strong>ค่าเช่าสถานที่:</strong> ค่าเช่าห้องจัดงาน พื้นที่สำหรับจัดระเบียบ</li>
+        <li><strong>ค่าเลี้ยงต่อคน:</strong> ค่าอาหารและเครื่องดื่ม คูณด้วยจำนวนแขก</li>
+        <li><strong>ค่าตกแต่ง:</strong> ดอกไม้ บอลลูน ไฟประดับ แสงสว่าง</li>
+        <li><strong>ค่าความบันเทิง:</strong> ดีเจ วงดนตรี เกม กิจกรรมพิเศษ</li>
+        <li><strong>ค่าอื่นๆ:</strong> ค่าจดทะเบียน ใบอนุญาต ความเอกประมาณ</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">เคล็ดลับการประหยัดงบประมาณ</h3>
+      <ul class="list-disc list-inside text-gray-600 space-y-1">
+        <li>เลือกเวลาและวันที่ไม่ใช่ช่วงสูงสุด (วันธรรมดา เวลากลางวัน)</li>
+        <li>ลดจำนวนแขก หรือสำหรับจำนวนแขกที่แน่นอน</li>
+        <li>เลือกเมนูอาหารง่ายๆ หรือบุฟเฟต์แทนการเสิร์ฟจาน</li>
+        <li>ทำการตกแต่งเองหรือเชื่อมโยงกับธรรมชาติ</li>
+        <li>เชิญเพื่อสนิทมาช่วยหรือเช่าบริการขั้นต่ำ</li>
+        <li>เลือกสถานที่ที่รวมอาหารอยู่แล้ว</li>
+      </ul>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {
+          faqData.map((faq) => (
+            <details class="bg-white rounded-lg border border-gray-200 p-4">
+              <summary class="font-semibold text-gray-900 cursor-pointer">{faq.question}</summary>
+              <p class="text-gray-600 mt-3">{faq.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- References -->
+    <section class="bg-gray-50 rounded-lg p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">อ้างอิง</h2>
+      <ul class="text-sm text-gray-600 space-y-1">
+        <li>• สมาคมจัดงานไทย - แนวทางการจัดงานมืออาชีพ</li>
+        <li>• กรมการสถิติ - ข้อมูลค่าใช้จ่ายครัวเรือนปี 2569</li>
+        <li>• สำนักงานคุ้มครองผู้บริโภค - มาตรฐานค่าบริการ</li>
+      </ul>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
+      <strong>หมายเหตุ:</strong> ผลลัพธ์จากเครื่องคำนวณนี้เป็นการประมาณการเท่านั้น ค่าใช้จ่ายจริงอาจแตกต่างไปตามสถานการณ์และเป็นการตกลงกับผู้ให้บริการแต่ละราย
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  const form = {
+    guestCount: document.getElementById('guestCount') as HTMLInputElement,
+    venueCost: document.getElementById('venueCost') as HTMLInputElement,
+    cateringPerPerson: document.getElementById('cateringPerPerson') as HTMLInputElement,
+    decorationCost: document.getElementById('decorationCost') as HTMLInputElement,
+    entertainmentCost: document.getElementById('entertainmentCost') as HTMLInputElement,
+    miscellaneousCost: document.getElementById('miscellaneousCost') as HTMLInputElement,
+  };
+
+  const resultDiv = document.getElementById('result');
+  const btn = document.getElementById('btn-calculate');
+
+  btn?.addEventListener('click', () => {
+    const guestCount = parseFloat(form.guestCount.value) || 0;
+    const venueCost = parseFloat(form.venueCost.value) || 0;
+    const cateringPerPerson = parseFloat(form.cateringPerPerson.value) || 0;
+    const decorationCost = parseFloat(form.decorationCost.value) || 0;
+    const entertainmentCost = parseFloat(form.entertainmentCost.value) || 0;
+    const miscellaneousCost = parseFloat(form.miscellaneousCost.value) || 0;
+
+    if (guestCount <= 0) {
+      alert('กรุณาระบุจำนวนแขก');
+      return;
+    }
+
+    const cateringTotal = cateringPerPerson * guestCount;
+    const totalCost = Math.round(
+      venueCost +
+      cateringTotal +
+      decorationCost +
+      entertainmentCost +
+      miscellaneousCost
+    );
+    const costPerGuest = Math.round(totalCost / guestCount);
+
+    (document.getElementById('totalCost') as HTMLElement).textContent = totalCost.toLocaleString('th-TH', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }) + ' บาท';
+    (document.getElementById('costPerGuest') as HTMLElement).textContent = costPerGuest.toLocaleString('th-TH', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }) + ' บาท';
+
+    (document.getElementById('detail-venue') as HTMLElement).textContent =
+      venueCost.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' บาท';
+    (document.getElementById('detail-catering') as HTMLElement).textContent =
+      cateringTotal.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' บาท';
+    (document.getElementById('detail-decoration') as HTMLElement).textContent =
+      decorationCost.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' บาท';
+    (document.getElementById('detail-entertainment') as HTMLElement).textContent =
+      entertainmentCost.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' บาท';
+    (document.getElementById('detail-misc') as HTMLElement).textContent =
+      miscellaneousCost.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' บาท';
+
+    resultDiv?.classList.remove('hidden');
+    resultDiv?.scrollIntoView({ behavior: 'smooth' });
+  });
+</script>

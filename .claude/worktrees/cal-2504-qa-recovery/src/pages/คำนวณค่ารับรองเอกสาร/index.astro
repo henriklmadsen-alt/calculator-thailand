@@ -1,0 +1,196 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมรับรองเอกสาร ปี 2569 | นิติกรณ์ Notarization | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียมรับรองเอกสาร นิติกรณ์ (Notarization) และการรับรองเอกสารสำหรับใช้ต่างประเทศ อัตรากรมการกงสุล อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่ารับรองเอกสาร/`;
+
+const serviceTypes = [
+  { id: 'notary_doc', label: 'รับรองเอกสาร (นิติกรณ์) — ต่อฉบับ', feePerUnit: 200, unit: 'ฉบับ' },
+  { id: 'notary_sig', label: 'รับรองลายมือชื่อ — ต่อลายมือชื่อ', feePerUnit: 200, unit: 'ลายมือชื่อ' },
+  { id: 'apostille', label: 'ประทับตราอโพสทิล (Apostille) — ต่อฉบับ', feePerUnit: 200, unit: 'ฉบับ' },
+  { id: 'translation', label: 'แปลเอกสาร + รับรอง (บริการรัฐ) — ต่อหน้า', feePerUnit: 200, unit: 'หน้า' },
+  { id: 'copy_cert', label: 'รับรองสำเนาถูกต้อง — ต่อฉบับ', feePerUnit: 100, unit: 'ฉบับ' },
+];
+
+const faqData = [
+  {
+    question: 'นิติกรณ์ (Notarization) คืออะไร?',
+    answer: 'นิติกรณ์คือการรับรองเอกสารโดยเจ้าหน้าที่ของรัฐที่มีอำนาจ เช่น กรมการกงสุล กระทรวงการต่างประเทศ เพื่อรับรองว่าเอกสารนั้นถูกต้องและสามารถใช้ในต่างประเทศได้ มักต้องการสำหรับเอกสารที่จะนำไปใช้ยื่นขอวีซ่า จดทะเบียนนิติบุคคลต่างประเทศ หรือการศึกษาต่างแดน',
+  },
+  {
+    question: 'Apostille คืออะไร แตกต่างจาก Notarization อย่างไร?',
+    answer: 'Apostille เป็นการรับรองเอกสารตามอนุสัญญาเฮก ค.ศ. 1961 ใช้สำหรับประเทศสมาชิก (ไทยเป็นสมาชิกตั้งแต่ปี 2018) การประทับตรา Apostille ทำให้เอกสารได้รับการยอมรับในประเทศสมาชิกโดยไม่ต้องผ่านขั้นตอนรับรองเพิ่มเติม',
+  },
+  {
+    question: 'ขอรับรองเอกสารได้ที่ไหน?',
+    answer: 'ขอรับรองเอกสาร (นิติกรณ์) ได้ที่กองสัญชาติและนิติกรณ์ กรมการกงสุล กระทรวงการต่างประเทศ (แจ้งวัฒนะ) หรือสำนักงานกงสุลในภูมิภาค และสถานเอกอัครราชทูตไทยในต่างประเทศ',
+  },
+  {
+    question: 'ค่าธรรมเนียมรับรองเอกสารเท่าไร?',
+    answer: 'ค่าธรรมเนียมนิติกรณ์ของกรมการกงสุลอยู่ที่ 200 บาทต่อฉบับ (ต่อลายมือชื่อ) สำหรับการรับรองเอกสารและ Apostille ค่าใช้จ่ายจริงอาจแตกต่างตามประเภทบริการและจำนวนชุด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมรับรองเอกสาร',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่ารับรองเอกสาร">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าธรรมเนียมรับรองเอกสาร (นิติกรณ์)
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าธรรมเนียมรับรองเอกสาร Apostille และนิติกรณ์ ตามอัตรากรมการกงสุล กระทรวงการต่างประเทศ ปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">เลือกบริการและจำนวน</h2>
+
+      <!-- Service rows -->
+      <div id="service-list" class="space-y-3">
+        {serviceTypes.map((s) => (
+          <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+            <div class="flex-1 text-sm text-gray-800">{s.label}</div>
+            <div class="flex items-center gap-2 shrink-0">
+              <label class="text-xs text-gray-500">{s.unit}:</label>
+              <input
+                type="number"
+                data-fee={s.feePerUnit}
+                data-id={s.id}
+                min="0"
+                max="999"
+                value="0"
+                class="service-qty w-16 px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <span class="text-xs text-gray-500">{s.feePerUnit} บ./หน่วย</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="mt-5 w-full sm:w-auto px-8 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+        คำนวณค่าธรรมเนียม
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+        <h3 class="font-semibold text-primary-900 mb-3">สรุปค่าธรรมเนียม</h3>
+        <div id="result-rows" class="space-y-2 text-sm"></div>
+        <div class="flex justify-between border-t border-primary-300 pt-2 mt-3">
+          <span class="font-bold text-primary-900">รวมค่าธรรมเนียมทั้งสิ้น</span>
+          <span id="res-total" class="font-bold text-primary-700 text-lg">-</span>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">* ค่าธรรมเนียมตามอัตรากรมการกงสุล ปี 2569 อาจมีค่าใช้จ่ายเพิ่มเติมสำหรับบริการเร่งด่วนหรือล่าม</p>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">การรับรองเอกสารสำหรับใช้ต่างประเทศ</h2>
+      <p>
+        เอกสารราชการไทยที่ต้องนำไปใช้ในต่างประเทศมักต้องผ่านกระบวนการรับรองเพื่อให้ประเทศปลายทางยอมรับ
+        กรมการกงสุลให้บริการรับรองเอกสาร (นิติกรณ์) ในอัตราที่กำหนดตามกฎกระทรวง
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ขั้นตอนการรับรองเอกสาร</h3>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>เตรียมเอกสารต้นฉบับและสำเนา</li>
+        <li>แปลเอกสารเป็นภาษาที่ต้องการ (โดยนักแปลที่ได้รับการรับรอง)</li>
+        <li>นำเอกสารมารับรองที่กองสัญชาติและนิติกรณ์ กรมการกงสุล</li>
+        <li>ชำระค่าธรรมเนียม 200 บาท/ฉบับ</li>
+        <li>รับเอกสารที่รับรองแล้ว (ปกติใช้เวลา 1–3 วันทำการ)</li>
+      </ol>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เอกสารที่ต้องรับรองบ่อย</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ใบเกิด ทะเบียนบ้าน บัตรประชาชน</li>
+        <li>วุฒิการศึกษา ใบปริญญา</li>
+        <li>ทะเบียนสมรส / ทะเบียนหย่า</li>
+        <li>หนังสือรับรองบริษัท</li>
+        <li>เอกสารเพื่อยื่นขอวีซ่าหรือถิ่นพำนักถาวร</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่ารับรองเอกสาร/" />
+    <RelatedCalculators currentHref="/คำนวณค่ารับรองเอกสาร/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ค่าธรรมเนียมจริงตามประกาศกระทรวงการต่างประเทศ กรุณาตรวจสอบที่ consular.mfa.go.th
+    </div>
+  </article>
+
+  <script>
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n) + ' บาท';
+    }
+
+    const SERVICE_LABELS: Record<string, string> = {
+      notary_doc: 'รับรองเอกสาร (นิติกรณ์)',
+      notary_sig: 'รับรองลายมือชื่อ',
+      apostille: 'ประทับตราอโพสทิล (Apostille)',
+      translation: 'แปลเอกสาร + รับรอง',
+      copy_cert: 'รับรองสำเนาถูกต้อง',
+    };
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const qtyInputs = document.querySelectorAll<HTMLInputElement>('.service-qty');
+      let total = 0;
+      const rows: { label: string; qty: number; fee: number; subtotal: number }[] = [];
+
+      qtyInputs.forEach((input) => {
+        const qty = parseInt(input.value) || 0;
+        const fee = parseInt(input.dataset.fee || '0');
+        const id = input.dataset.id || '';
+        if (qty > 0) {
+          const subtotal = qty * fee;
+          total += subtotal;
+          rows.push({ label: SERVICE_LABELS[id] || id, qty, fee, subtotal });
+        }
+      });
+
+      if (rows.length === 0) { qtyInputs[0].focus(); return; }
+
+      const container = document.getElementById('result-rows') as HTMLElement;
+      container.innerHTML = '';
+      rows.forEach((r) => {
+        const div = document.createElement('div');
+        div.className = 'flex justify-between';
+        div.innerHTML = `<span class="text-gray-700">${r.label} (${r.qty} หน่วย × ${r.fee} บ.)</span><span class="font-semibold text-gray-900">${fmt(r.subtotal)}</span>`;
+        container.appendChild(div);
+      });
+
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
+      document.getElementById('result')!.classList.remove('hidden');
+      trackCalculatorUsed('notarization-fee');
+    });
+  </script>
+</BaseLayout>

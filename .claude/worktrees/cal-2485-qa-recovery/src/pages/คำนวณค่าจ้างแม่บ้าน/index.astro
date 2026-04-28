@@ -1,0 +1,484 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจ้างแม่บ้าน 2569 | ค่าทำความสะอาด รายวัน รายเดือน | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างแม่บ้านออนไลน์ฟรี คิดค่าบริการทำความสะอาดบ้าน รายวัน รายสัปดาห์ รายเดือน ตามขนาดพื้นที่และประเภทบริการ เปรียบเทียบจ้างประจำ vs เรียกครั้งคราว อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างแม่บ้าน/`;
+
+const faqData = [
+  {
+    question: 'ค่าจ้างแม่บ้านทำความสะอาดบ้านอยู่ที่เท่าไร?',
+    answer: 'ค่าจ้างแม่บ้านในปี 2569 แตกต่างตามประเภท: แม่บ้านรายวัน (เรียกเป็นครั้ง) อยู่ที่ 500-1,500 บาท/ครั้ง แม่บ้านรายเดือน (ประจำ) อยู่ที่ 10,000-18,000 บาท/เดือน ราคาขึ้นอยู่กับขนาดบ้าน ประเภทบริการ พื้นที่ และบริษัทผู้ให้บริการ',
+  },
+  {
+    question: 'จ้างแม่บ้านประจำกับเรียกเป็นครั้ง แบบไหนคุ้มกว่า?',
+    answer: 'หากต้องการทำความสะอาดมากกว่า 3 ครั้ง/สัปดาห์ การจ้างแม่บ้านประจำรายเดือนจะคุ้มกว่า เช่น จ้างประจำ 12,000 บาท/เดือน เทียบกับเรียกรายครั้ง 800 บาท × 20 วัน = 16,000 บาท แต่หากทำความสะอาดสัปดาห์ละ 1-2 ครั้ง การเรียกรายครั้งจะประหยัดกว่า',
+  },
+  {
+    question: 'แม่บ้านทำอะไรบ้าง ขอบเขตงานครอบคลุมอะไร?',
+    answer: 'บริการทำความสะอาดทั่วไป ได้แก่ กวาด ถู ดูดฝุ่น เช็ดกระจก ทำความสะอาดห้องน้ำ ล้างจาน ซักรีดผ้า จัดเตียง เก็บกวาดทั่วไป บริการเสริม เช่น ทำความสะอาดแบบ Deep Clean ทำอาหาร ดูแลผู้สูงอายุ/เด็ก จะคิดค่าบริการเพิ่มเติม',
+  },
+  {
+    question: 'ค่าจ้างแม่บ้านขึ้นอยู่กับปัจจัยอะไรบ้าง?',
+    answer: 'ปัจจัยหลัก: 1) ขนาดพื้นที่ — บ้านใหญ่กว่าค่าบริการสูงกว่า 2) ประเภทบริการ — Deep Clean แพงกว่าทำความสะอาดทั่วไป 3) ความถี่ — จ้างประจำถูกกว่ารายครั้ง 4) พื้นที่/จังหวัด — กรุงเทพฯ และปริมณฑลราคาสูงกว่าต่างจังหวัด 5) บริษัทผู้ให้บริการ — บริษัทรับรองราคาสูงกว่าจ้างตรง',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจ้างแม่บ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างแม่บ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าจ้างแม่บ้าน (Maid Service Cost)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าจ้างแม่บ้านทำความสะอาดบ้าน เลือกประเภทบริการ ขนาดพื้นที่ ความถี่ เปรียบเทียบจ้างประจำกับเรียกรายครั้ง อัปเดตอัตราตลาดปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+
+      <!-- ประเภทการจ้าง -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทการจ้าง</label>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" id="btn-per-visit" class="hire-type-btn px-4 py-3 rounded-lg border-2 border-primary-500 bg-primary-50 text-primary-700 font-medium text-sm transition-colors text-center">
+            🧹 เรียกเป็นครั้ง
+          </button>
+          <button type="button" id="btn-monthly" class="hire-type-btn px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-gray-600 font-medium text-sm hover:border-gray-300 transition-colors text-center">
+            📅 จ้างประจำรายเดือน
+          </button>
+        </div>
+      </div>
+
+      <!-- ประเภทบริการ -->
+      <div class="mb-5">
+        <label for="service-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทบริการ</label>
+        <select id="service-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="general">ทำความสะอาดทั่วไป</option>
+          <option value="deep">Deep Clean ทำความสะอาดเชิงลึก</option>
+          <option value="with-laundry">ทำความสะอาด + ซักรีดผ้า</option>
+          <option value="with-cooking">ทำความสะอาด + ทำอาหาร</option>
+          <option value="full">ทำความสะอาด + ซักรีด + ทำอาหาร</option>
+        </select>
+      </div>
+
+      <!-- ขนาดพื้นที่ -->
+      <div class="mb-5">
+        <label for="area-size" class="block text-sm font-medium text-gray-700 mb-1">ขนาดพื้นที่ (ตร.ม.)</label>
+        <input
+          type="text"
+          id="area-size"
+          inputmode="numeric"
+          placeholder="เช่น 120"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <div class="flex flex-wrap gap-2 mt-2">
+          <button type="button" class="area-preset px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100 transition-colors" data-area="35">คอนโด 35</button>
+          <button type="button" class="area-preset px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100 transition-colors" data-area="60">อพาร์ทเมนต์ 60</button>
+          <button type="button" class="area-preset px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100 transition-colors" data-area="120">ทาวน์เฮ้าส์ 120</button>
+          <button type="button" class="area-preset px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100 transition-colors" data-area="200">บ้านเดี่ยว 200</button>
+          <button type="button" class="area-preset px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100 transition-colors" data-area="350">บ้านใหญ่ 350</button>
+        </div>
+      </div>
+
+      <!-- ความถี่ (per-visit mode) -->
+      <div id="freq-section" class="mb-5">
+        <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">ความถี่ต่อสัปดาห์</label>
+        <select id="frequency" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="1">สัปดาห์ละ 1 ครั้ง</option>
+          <option value="2">สัปดาห์ละ 2 ครั้ง</option>
+          <option value="3">สัปดาห์ละ 3 ครั้ง</option>
+          <option value="5">สัปดาห์ละ 5 ครั้ง (วันจันทร์-ศุกร์)</option>
+          <option value="7">ทุกวัน</option>
+        </select>
+      </div>
+
+      <!-- พื้นที่/จังหวัด -->
+      <div class="mb-5">
+        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่</label>
+        <select id="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="bkk">กรุงเทพฯ และปริมณฑล</option>
+          <option value="major">หัวเมืองใหญ่ (เชียงใหม่ ภูเก็ต พัทยา ขอนแก่น)</option>
+          <option value="other">จังหวัดอื่นๆ</option>
+        </select>
+      </div>
+
+      <!-- ปุ่มคำนวณ -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 active:bg-primary-800 transition-colors text-base"
+      >
+        คำนวณค่าจ้างแม่บ้าน
+      </button>
+
+      <!-- ผลลัพธ์ -->
+      <div id="result" class="hidden mt-6">
+        <div class="bg-gradient-to-br from-primary-50 to-blue-50 rounded-xl p-5 mb-4">
+          <p class="text-sm text-gray-500 mb-1">ค่าจ้างโดยประมาณ</p>
+          <div class="flex items-baseline gap-2">
+            <span id="result-cost" class="text-3xl sm:text-4xl font-bold text-primary-700">0</span>
+            <span id="result-unit" class="text-lg text-gray-500">บาท/ครั้ง</span>
+          </div>
+          <p id="result-monthly" class="text-base font-medium text-gray-700 mt-2"></p>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+          <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+            <h3 class="font-semibold text-gray-900 text-sm">รายละเอียดค่าใช้จ่าย</h3>
+          </div>
+          <div class="divide-y divide-gray-100" id="breakdown-list">
+          </div>
+        </div>
+
+        <!-- Comparison -->
+        <div id="comparison-section" class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+          <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+            <h3 class="font-semibold text-gray-900 text-sm">เปรียบเทียบ: จ้างรายครั้ง vs จ้างประจำ</h3>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="text-center p-3 rounded-lg bg-blue-50">
+                <p class="text-xs text-gray-500 mb-1">จ้างรายครั้ง/เดือน</p>
+                <p id="comp-per-visit" class="text-lg font-bold text-blue-700">-</p>
+              </div>
+              <div class="text-center p-3 rounded-lg bg-green-50">
+                <p class="text-xs text-gray-500 mb-1">จ้างประจำ/เดือน</p>
+                <p id="comp-monthly" class="text-lg font-bold text-green-700">-</p>
+              </div>
+            </div>
+            <p id="comp-verdict" class="text-sm text-center mt-3 font-medium"></p>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <h3 class="font-semibold text-amber-800 text-sm mb-2">💡 เคล็ดลับ</h3>
+          <p id="tips-text" class="text-sm text-amber-700"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2>ค่าจ้างแม่บ้านในไทย 2569 อัตราเท่าไร?</h2>
+      <p>
+        ค่าจ้างแม่บ้านในประเทศไทยปี 2569 มีหลายรูปแบบ ขึ้นอยู่กับประเภทการจ้างและขอบเขตงาน
+        โดยทั่วไปแบ่งเป็น 2 ประเภทหลัก คือ การจ้างเป็นรายครั้ง (Part-time) และการจ้างประจำรายเดือน (Full-time)
+      </p>
+
+      <h3>อัตราค่าจ้างแม่บ้านตามประเภท</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="text-left px-3 py-2 border">ประเภท</th>
+              <th class="text-left px-3 py-2 border">อัตราโดยประมาณ</th>
+              <th class="text-left px-3 py-2 border">เหมาะสำหรับ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="px-3 py-2 border">ทำความสะอาดทั่วไป (รายครั้ง)</td>
+              <td class="px-3 py-2 border">500–1,200 บาท/ครั้ง</td>
+              <td class="px-3 py-2 border">คอนโด อพาร์ทเมนต์</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">Deep Clean (รายครั้ง)</td>
+              <td class="px-3 py-2 border">1,000–3,000 บาท/ครั้ง</td>
+              <td class="px-3 py-2 border">ทำความสะอาดเชิงลึก</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">แม่บ้านประจำ (รายเดือน)</td>
+              <td class="px-3 py-2 border">10,000–18,000 บาท/เดือน</td>
+              <td class="px-3 py-2 border">บ้านเดี่ยว ครอบครัว</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">ประจำ + ทำอาหาร</td>
+              <td class="px-3 py-2 border">13,000–22,000 บาท/เดือน</td>
+              <td class="px-3 py-2 border">ครอบครัว ดูแลครบ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>ปัจจัยที่มีผลต่อค่าจ้างแม่บ้าน</h3>
+      <ul>
+        <li><strong>ขนาดพื้นที่</strong> — บ้านขนาดใหญ่ใช้เวลาทำงานมากขึ้น ค่าบริการสูงขึ้น</li>
+        <li><strong>ประเภทบริการ</strong> — Deep Clean หรือบริการเสริม (ซักรีด ทำอาหาร) มีค่าใช้จ่ายเพิ่ม</li>
+        <li><strong>ความถี่</strong> — จ้างบ่อยขึ้น อาจได้ส่วนลดต่อครั้ง หรือจ้างประจำจะคุ้มกว่า</li>
+        <li><strong>ทำเลที่ตั้ง</strong> — กรุงเทพฯ และหัวเมืองท่องเที่ยวราคาสูงกว่าต่างจังหวัด</li>
+        <li><strong>ผู้ให้บริการ</strong> — จ้างผ่านบริษัทมีค่าดำเนินการเพิ่ม แต่มีประกันและมาตรฐาน</li>
+      </ul>
+
+      <h3>วิธีคำนวณค่าจ้างแม่บ้าน</h3>
+      <div class="bg-gray-50 rounded-lg p-4 not-prose">
+        <p class="font-mono text-sm mb-2"><strong>รายครั้ง:</strong> ค่าฐาน + (ค่าเพิ่มตามพื้นที่) + (ค่าบริการเสริม)</p>
+        <p class="font-mono text-sm mb-2"><strong>รายเดือน:</strong> เงินเดือนฐาน + (ค่าเพิ่มตามพื้นที่) + (ค่าทักษะเสริม)</p>
+        <p class="font-mono text-sm"><strong>ต่อเดือน (รายครั้ง):</strong> ค่าต่อครั้ง × ความถี่/สัปดาห์ × 4.33 สัปดาห์</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related Content -->
+    <RelatedArticles currentHref="/คำนวณค่าจ้างแม่บ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างแม่บ้าน/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ค่าจ้างที่แสดงเป็นการประมาณการจากอัตราตลาดเฉลี่ยในปี 2569 ราคาจริงอาจแตกต่างตามผู้ให้บริการ ทำเล สภาพบ้าน และข้อตกลงระหว่างนายจ้างกับลูกจ้าง กรุณาสอบถามราคาจริงจากผู้ให้บริการโดยตรง
+    </div>
+  </article>
+
+  <script>
+    // ── Rate tables (THB, 2569 market rates) ──
+    // Per-visit base rates by area bracket (sq.m.)
+    interface AreaRate {
+      maxSqm: number;
+      base: number;       // general cleaning base price
+    }
+
+    const perVisitAreaRates: AreaRate[] = [
+      { maxSqm: 50,  base: 500 },
+      { maxSqm: 80,  base: 700 },
+      { maxSqm: 120, base: 900 },
+      { maxSqm: 200, base: 1100 },
+      { maxSqm: 350, base: 1400 },
+      { maxSqm: Infinity, base: 1800 },
+    ];
+
+    // Service type multipliers (per-visit)
+    const serviceMultipliers: Record<string, number> = {
+      general: 1.0,
+      deep: 1.8,
+      'with-laundry': 1.25,
+      'with-cooking': 1.4,
+      full: 1.6,
+    };
+
+    // Monthly salary base by area bracket
+    const monthlyAreaRates: AreaRate[] = [
+      { maxSqm: 50,  base: 10000 },
+      { maxSqm: 80,  base: 11000 },
+      { maxSqm: 120, base: 12000 },
+      { maxSqm: 200, base: 14000 },
+      { maxSqm: 350, base: 16000 },
+      { maxSqm: Infinity, base: 18000 },
+    ];
+
+    // Monthly service add-ons
+    const monthlyServiceAddon: Record<string, number> = {
+      general: 0,
+      deep: 2000,      // includes periodic deep cleaning
+      'with-laundry': 1500,
+      'with-cooking': 3000,
+      full: 4000,
+    };
+
+    // Location multiplier
+    const locationMultiplier: Record<string, number> = {
+      bkk: 1.0,
+      major: 0.9,
+      other: 0.8,
+    };
+
+    // ── State ──
+    let hireType: 'per-visit' | 'monthly' = 'per-visit';
+
+    // ── Helpers ──
+    function parseNum(v: string): number {
+      return parseFloat(v.replace(/,/g, '')) || 0;
+    }
+
+    function fmt(n: number): string {
+      return n.toLocaleString('th-TH', { maximumFractionDigits: 0 });
+    }
+
+    function getBaseRate(sqm: number, table: AreaRate[]): number {
+      for (const r of table) {
+        if (sqm <= r.maxSqm) return r.base;
+      }
+      return table[table.length - 1].base;
+    }
+
+    // ── Hire type toggle ──
+    const btnPerVisit = document.getElementById('btn-per-visit') as HTMLButtonElement;
+    const btnMonthly = document.getElementById('btn-monthly') as HTMLButtonElement;
+    const freqSection = document.getElementById('freq-section') as HTMLElement;
+
+    function setHireType(type: 'per-visit' | 'monthly') {
+      hireType = type;
+      if (type === 'per-visit') {
+        btnPerVisit.className = 'hire-type-btn px-4 py-3 rounded-lg border-2 border-primary-500 bg-primary-50 text-primary-700 font-medium text-sm transition-colors text-center';
+        btnMonthly.className = 'hire-type-btn px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-gray-600 font-medium text-sm hover:border-gray-300 transition-colors text-center';
+        freqSection.classList.remove('hidden');
+      } else {
+        btnMonthly.className = 'hire-type-btn px-4 py-3 rounded-lg border-2 border-primary-500 bg-primary-50 text-primary-700 font-medium text-sm transition-colors text-center';
+        btnPerVisit.className = 'hire-type-btn px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-gray-600 font-medium text-sm hover:border-gray-300 transition-colors text-center';
+        freqSection.classList.add('hidden');
+      }
+    }
+
+    btnPerVisit.addEventListener('click', () => setHireType('per-visit'));
+    btnMonthly.addEventListener('click', () => setHireType('monthly'));
+
+    // ── Area presets ──
+    const areaInput = document.getElementById('area-size') as HTMLInputElement;
+    document.querySelectorAll('.area-preset').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        areaInput.value = (btn as HTMLElement).dataset.area || '';
+      });
+    });
+
+    // ── Calculate ──
+    function calculate() {
+      const area = parseNum(areaInput.value);
+      if (area <= 0) { areaInput.focus(); return; }
+
+      const serviceType = (document.getElementById('service-type') as HTMLSelectElement).value;
+      const location = (document.getElementById('location') as HTMLSelectElement).value;
+      const frequency = parseInt((document.getElementById('frequency') as HTMLSelectElement).value);
+      const locMult = locationMultiplier[location] || 1.0;
+
+      const breakdownEl = document.getElementById('breakdown-list') as HTMLElement;
+      const rows: string[] = [];
+
+      let perVisitCost = 0;
+      let monthlyCost = 0;
+
+      // Calculate per-visit cost
+      const pvBase = getBaseRate(area, perVisitAreaRates);
+      const pvServiceMult = serviceMultipliers[serviceType] || 1.0;
+      perVisitCost = Math.round(pvBase * pvServiceMult * locMult);
+      const perVisitMonthly = Math.round(perVisitCost * frequency * 4.33);
+
+      // Calculate monthly cost
+      const mBase = getBaseRate(area, monthlyAreaRates);
+      const mAddon = monthlyServiceAddon[serviceType] || 0;
+      monthlyCost = Math.round((mBase + mAddon) * locMult);
+
+      if (hireType === 'per-visit') {
+        // Show per-visit result
+        (document.getElementById('result-cost') as HTMLElement).textContent = fmt(perVisitCost);
+        (document.getElementById('result-unit') as HTMLElement).textContent = 'บาท/ครั้ง';
+        (document.getElementById('result-monthly') as HTMLElement).textContent =
+          `≈ ${fmt(perVisitMonthly)} บาท/เดือน (${frequency} ครั้ง/สัปดาห์ × 4.33 สัปดาห์)`;
+
+        rows.push(makeRow('ค่าบริการฐาน', `${fmt(pvBase)} บาท`));
+        if (pvServiceMult !== 1.0) rows.push(makeRow('ค่าเพิ่มประเภทบริการ', `×${pvServiceMult}`));
+        if (locMult !== 1.0) rows.push(makeRow('ปรับตามพื้นที่', `×${locMult}`));
+        rows.push(makeRow('ค่าต่อครั้ง', `<strong>${fmt(perVisitCost)} บาท</strong>`));
+        rows.push(makeRow('ค่าต่อเดือน', `<strong>${fmt(perVisitMonthly)} บาท</strong>`));
+      } else {
+        // Show monthly result
+        (document.getElementById('result-cost') as HTMLElement).textContent = fmt(monthlyCost);
+        (document.getElementById('result-unit') as HTMLElement).textContent = 'บาท/เดือน';
+        (document.getElementById('result-monthly') as HTMLElement).textContent =
+          `≈ ${fmt(Math.round(monthlyCost / 26))} บาท/วัน (26 วันทำงาน)`;
+
+        rows.push(makeRow('เงินเดือนฐาน', `${fmt(mBase)} บาท`));
+        if (mAddon > 0) rows.push(makeRow('ค่าทักษะเสริม', `+${fmt(mAddon)} บาท`));
+        if (locMult !== 1.0) rows.push(makeRow('ปรับตามพื้นที่', `×${locMult}`));
+        rows.push(makeRow('รวมต่อเดือน', `<strong>${fmt(monthlyCost)} บาท</strong>`));
+        rows.push(makeRow('รวมต่อปี', `<strong>${fmt(monthlyCost * 12)} บาท</strong>`));
+      }
+
+      breakdownEl.innerHTML = rows.join('');
+
+      // Comparison
+      (document.getElementById('comp-per-visit') as HTMLElement).textContent = `${fmt(perVisitMonthly)} บาท`;
+      (document.getElementById('comp-monthly') as HTMLElement).textContent = `${fmt(monthlyCost)} บาท`;
+
+      const diff = perVisitMonthly - monthlyCost;
+      const verdictEl = document.getElementById('comp-verdict') as HTMLElement;
+      if (diff > 0) {
+        verdictEl.textContent = `💰 จ้างประจำประหยัดกว่า ${fmt(diff)} บาท/เดือน`;
+        verdictEl.className = 'text-sm text-center mt-3 font-medium text-green-700';
+      } else if (diff < 0) {
+        verdictEl.textContent = `💰 เรียกรายครั้งประหยัดกว่า ${fmt(Math.abs(diff))} บาท/เดือน`;
+        verdictEl.className = 'text-sm text-center mt-3 font-medium text-blue-700';
+      } else {
+        verdictEl.textContent = 'ค่าใช้จ่ายใกล้เคียงกัน';
+        verdictEl.className = 'text-sm text-center mt-3 font-medium text-gray-600';
+      }
+
+      // Tips
+      const tipsEl = document.getElementById('tips-text') as HTMLElement;
+      if (frequency >= 5 && hireType === 'per-visit' && diff > 0) {
+        tipsEl.textContent = `ที่ความถี่ ${frequency} ครั้ง/สัปดาห์ การจ้างแม่บ้านประจำรายเดือนจะคุ้มกว่าถึง ${fmt(diff)} บาท/เดือน แนะนำพิจารณาเปลี่ยนเป็นจ้างประจำ`;
+      } else if (hireType === 'monthly') {
+        tipsEl.textContent = 'การจ้างแม่บ้านประจำควรมีสัญญาจ้างเป็นลายลักษณ์อักษร ระบุขอบเขตงาน วันหยุด ค่าล่วงเวลา และสวัสดิการชัดเจน นายจ้างต้องขึ้นทะเบียนประกันสังคมตามกฎหมาย';
+      } else if (area <= 50) {
+        tipsEl.textContent = 'สำหรับคอนโดหรือห้องขนาดเล็ก การเรียกแม่บ้านสัปดาห์ละ 1-2 ครั้ง เป็นตัวเลือกที่คุ้มค่าที่สุด ราคาเริ่มต้นประมาณ 500 บาท/ครั้ง';
+      } else {
+        tipsEl.textContent = 'เปรียบเทียบราคาจากหลายผู้ให้บริการก่อนตัดสินใจ บริษัทรับทำความสะอาดมีประกันความเสียหาย แต่จ้างตรงราคาถูกกว่า 20-30%';
+      }
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('maid-service');
+    }
+
+    function makeRow(label: string, value: string): string {
+      return `<div class="flex justify-between items-center px-4 py-2.5"><span class="text-sm text-gray-600">${label}</span><span class="text-sm text-gray-900">${value}</span></div>`;
+    }
+
+    // ── Bind events ──
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Enter key support
+    [areaInput].forEach(input => {
+      input.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+
+    // Result visibility observer for analytics
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('maid-service');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(document.getElementById('result')!);
+  </script>
+</BaseLayout>

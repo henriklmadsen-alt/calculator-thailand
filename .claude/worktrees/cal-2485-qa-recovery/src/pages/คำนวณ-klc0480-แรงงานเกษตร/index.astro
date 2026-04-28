@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่าแรงงานเกษตร | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างแรงงานเกษตร ค่าเกี่ยวข้าว ค่าดำนา ค่าแรงงานต่อไร่ ต้นทุนแรงงานทั้งฤดูกาล';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0480-แรงงานเกษตร/`;
+const faqData = [
+  { question: 'ค่าจ้างแรงงานเกษตรต่อวันเฉลี่ยเท่าไหร่?', answer: 'ค่าแรงเกษตรทั่วไป 300-400 บาท/วัน งานเฉพาะทาง เช่น ตัดอ้อย เก็บเกี่ยวผลไม้ อาจสูงถึง 400-600 บาท/วัน ขึ้นอยู่กับพื้นที่และฤดูกาล' },
+  { question: 'ค่าเกี่ยวข้าวต่อไร่เฉลี่ยเท่าไหร่?', answer: 'ค่าเกี่ยวข้าวด้วยรถ 500-700 บาท/ไร่ เกี่ยวมือ 800-1,200 บาท/ไร่ รถเกี่ยวข้าวประหยัดแรงงานแต่ต้องจองคิวล่วงหน้า' },
+  { question: 'แรงงานต่างด้าวทำงานเกษตรได้ไหม?', answer: 'แรงงานต่างด้าวถูกกฎหมายทำงานเกษตรได้ ต้องมีใบอนุญาตทำงาน ค่าแรงต้องไม่ต่ำกว่าค่าแรงขั้นต่ำ นายจ้างต้องจดทะเบียนกับกรมการจัดหางาน' },
+  { question: 'เครื่องจักรทดแทนแรงงานได้แค่ไหน?', answer: 'รถไถ รถดำนา รถเกี่ยวข้าว ลดแรงงานได้ 60-80% แต่ต้องลงทุนสูง เหมาะธุรกิจขนาดกลาง-ใหญ่ หรือเช่าบริการช่วงเก็บเกี่ยว' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าแรงงานเกษตร">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าแรงงานเกษตร</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนค่าแรงงานเกษตรต่อฤดูกาล</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="agri_workers" class="block text-sm font-medium text-gray-700 mb-1">จำนวนแรงงาน (คน)</label><input type="number" id="agri_workers" min="1" placeholder="เช่น 5" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="agri_wage_day" class="block text-sm font-medium text-gray-700 mb-1">ค่าแรงต่อวัน (บาท)</label><input type="text" id="agri_wage_day" inputmode="decimal" placeholder="เช่น 350" value="350" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="agri_days" class="block text-sm font-medium text-gray-700 mb-1">จำนวนวันทำงาน/ฤดูกาล</label><input type="number" id="agri_days" min="1" placeholder="เช่น 30" value="30" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="harvest_cost" class="block text-sm font-medium text-gray-700 mb-1">ค่าเก็บเกี่ยว (รถ/เครื่องจักร) (บาท)</label><input type="text" id="harvest_cost" inputmode="decimal" placeholder="เช่น 10000" value="10000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าแรงรายวันรวม</p><p id="daily_labor_total" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนแรงงานรวม/ฤดู</p><p id="season_labor_total" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const workers = parseFloat((document.getElementById('agri_workers') as HTMLInputElement).value) || 0;
+      const wageDay = parseFloat((document.getElementById('agri_wage_day') as HTMLInputElement).value) || 0;
+      const days = parseFloat((document.getElementById('agri_days') as HTMLInputElement).value) || 0;
+      const harvest = parseFloat((document.getElementById('harvest_cost') as HTMLInputElement).value) || 0;
+      const dailyTotal = workers * wageDay;
+      const seasonTotal = (dailyTotal * days) + harvest;
+      (document.getElementById('daily_labor_total') as HTMLElement).textContent = Math.round(dailyTotal).toLocaleString('th-TH') + ' บาท/วัน';
+      (document.getElementById('season_labor_total') as HTMLElement).textContent = Math.round(seasonTotal).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('agricultural-labor-cost');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.mol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กระทรวงแรงงาน (mol.go.th)</a> — อัตราค่าจ้างขั้นต่ำและสิทธิแรงงาน</li>
+        <li><a href="https://www.labour.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กรมสวัสดิการและคุ้มครองแรงงาน — พ.ร.บ.คุ้มครองแรงงาน 2541</a></li>
+      </ul>
+    </div>
+</BaseLayout>

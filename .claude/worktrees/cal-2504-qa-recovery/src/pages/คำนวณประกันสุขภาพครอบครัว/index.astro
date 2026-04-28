@@ -1,0 +1,225 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณประกันสุขภาพครอบครัว (Family Floater) 2569 | ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันสุขภาพครอบครัว Family Floater 2569 สำหรับสมาชิกหลายคน วงเงินรวมทั้งครอบครัว เปรียบเทียบกับประกันรายบุคคล ประหยัดได้เท่าไร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันสุขภาพครอบครัว/`;
+
+const faqData = [
+  {
+    question: 'Family Floater Insurance คืออะไร?',
+    answer: 'Family Floater Insurance คือประกันสุขภาพที่ครอบคลุมสมาชิกทั้งครอบครัวในกรมธรรม์เดียว โดยมีวงเงินรวม (Sum Insured) ที่สามารถใช้ร่วมกันได้ทุกคน เบี้ยถูกกว่าซื้อแยกรายบุคคลสำหรับแต่ละคน',
+  },
+  {
+    question: 'Family Floater เหมาะกับครอบครัวแบบไหน?',
+    answer: 'เหมาะกับครอบครัวที่สมาชิกมีสุขภาพดี ไม่ป่วยบ่อยพร้อมกัน เพราะวงเงินรวมกัน หากสมาชิกคนใดใช้วงเงินมาก คนอื่นจะเหลือน้อยลง ไม่เหมาะหากสมาชิกมีโรคประจำตัวหลายคน',
+  },
+  {
+    question: 'วงเงินประกันครอบครัวควรเลือกเท่าไร?',
+    answer: 'แนะนำวงเงินรวม 500,000-1,000,000 บาท ต่อครอบครัว (2-4 คน) เนื่องจากค่ารักษาพยาบาลโรงพยาบาลเอกชนในไทยเฉลี่ย 50,000-200,000 บาทต่อการเข้าพักรักษา',
+  },
+  {
+    question: 'บุตรอายุเท่าไรสามารถเพิ่มเข้าในประกันครอบครัวได้?',
+    answer: 'โดยทั่วไปบุตรอายุ 15 วันขึ้นไปถึง 18-25 ปี สามารถเพิ่มเข้าในกรมธรรม์ Family Floater ได้ บางบริษัทรับบุตรอายุตั้งแต่แรกเกิด ขึ้นอยู่กับเงื่อนไขของแต่ละบริษัท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกันสุขภาพครอบครัว 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสุขภาพครอบครัว">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณ Family Floater Insurance</p>
+      <p class="mt-1 text-sm text-slate-700">ประมาณการเบี้ยและเปรียบเทียบกับซื้อแยกรายบุคคล</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประกันสุขภาพครอบครัว 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">ประมาณเบี้ยประกัน Family Floater และเปรียบเทียบกับการซื้อประกันรายบุคคลสำหรับแต่ละคน</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลครอบครัว</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="age-1" class="block text-sm font-medium text-gray-700 mb-1">อายุผู้เอาประกันหลัก (ปี)</label>
+            <input type="text" id="age-1" inputmode="numeric" placeholder="เช่น 35"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          </div>
+          <div>
+            <label for="age-2" class="block text-sm font-medium text-gray-700 mb-1">อายุคู่สมรส (ปี, ถ้ามี)</label>
+            <input type="text" id="age-2" inputmode="numeric" placeholder="เช่น 33"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          </div>
+        </div>
+
+        <div>
+          <label for="children" class="block text-sm font-medium text-gray-700 mb-1">จำนวนบุตร (คน)</label>
+          <select id="children" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="0">ไม่มีบุตร</option>
+            <option value="1">1 คน</option>
+            <option value="2" selected>2 คน</option>
+            <option value="3">3 คน</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="sum-insured" class="block text-sm font-medium text-gray-700 mb-1">วงเงินคุ้มครองรวม (บาท)</label>
+          <select id="sum-insured" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="300000">300,000 บาท</option>
+            <option value="500000" selected>500,000 บาท</option>
+            <option value="1000000">1,000,000 บาท</option>
+            <option value="2000000">2,000,000 บาท</option>
+          </select>
+        </div>
+
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+          คำนวณเบี้ยประกัน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-5 text-center">
+          <p class="text-sm text-primary-700 mb-1">Family Floater (ประหยัดกว่า)</p>
+          <p class="text-3xl font-bold text-primary-700" id="floater-premium">-</p>
+          <p class="text-xs text-primary-600 mt-1">บาท/ปี</p>
+        </div>
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 text-center">
+          <p class="text-sm text-gray-600 mb-1">ซื้อแยกรายบุคคล</p>
+          <p class="text-3xl font-bold text-gray-700" id="individual-premium">-</p>
+          <p class="text-xs text-gray-500 mt-1">บาท/ปี</p>
+        </div>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 text-center">
+        <p class="text-sm text-green-700">ประหยัดได้ประมาณ</p>
+        <p class="text-2xl font-bold text-green-700" id="saving">-</p>
+        <p class="text-xs text-green-600">บาท/ปี เมื่อเลือก Family Floater</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">Family Floater vs ประกันรายบุคคล</h2>
+      <p>Family Floater มีข้อดีคือเบี้ยรวมถูกกว่า แต่วงเงินใช้ร่วมกัน หากสมาชิกคนใดป่วยหนักและใช้วงเงินมาก สมาชิกคนอื่นอาจเหลือวงเงินไม่พอ ดังนั้นควรเลือกวงเงินที่สูงเพียงพอ</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="/go/rabbit-care-health-cpl/?sub_id=คำนวณประกันสุขภาพครอบครัว"
+      partnerName="Rabbit Care"
+      ctaText="เปรียบเทียบประกันสุขภาพฟรี"
+      subtext="รับใบเสนอราคาจากหลายบริษัทภายใน 2 นาที"
+    />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.anamai.moph.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมอนามัย (anamai.moph.go.th)</a> — เกณฑ์สุขภาพและตัวชี้วัดสำหรับคนไทย</li>
+        <li><a href="https://www.moph.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กระทรวงสาธารณสุข (moph.go.th)</a> — นโยบายและข้อมูลสุขภาพแห่งชาติ</li>
+      </ul>
+    </div>
+    <RelatedCalculators currentHref="/คำนวณประกันสุขภาพครอบครัว/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงขึ้นกับบริษัทประกันและสุขภาพของสมาชิก
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    // Age-based annual base premium (per person, 500k coverage)
+    function getIndividualPremium(age: number, sumInsured: number): number {
+      const base500k = age < 20 ? 4000 : age < 30 ? 5000 : age < 40 ? 7000 : age < 50 ? 11000 : age < 60 ? 18000 : 28000;
+      return base500k * (sumInsured / 500000);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const age1 = parseNum((document.getElementById('age-1') as HTMLInputElement).value);
+      const age2 = parseNum((document.getElementById('age-2') as HTMLInputElement).value);
+      const children = parseInt((document.getElementById('children') as HTMLSelectElement).value);
+      const sumInsured = parseFloat((document.getElementById('sum-insured') as HTMLSelectElement).value);
+      const err = document.getElementById('form-error')!;
+
+      if (age1 < 18 || age1 > 70) {
+        err.textContent = 'กรุณากรอกอายุผู้เอาประกันหลัก 18-70 ปี';
+        err.classList.remove('hidden'); return;
+      }
+      err.classList.add('hidden');
+
+      const indiv1 = getIndividualPremium(age1, sumInsured);
+      const indiv2 = age2 > 0 ? getIndividualPremium(age2, sumInsured) : 0;
+      const childPremium = 4000 * (sumInsured / 500000);
+      const totalIndividual = indiv1 + indiv2 + (children * childPremium);
+      const memberCount = 1 + (age2 > 0 ? 1 : 0) + children;
+
+      // Family floater discount: typically 15-25% less than sum of individuals
+      const floaterDiscount = memberCount >= 3 ? 0.20 : 0.10;
+      const floaterPremium = totalIndividual * (1 - floaterDiscount);
+
+      const rows = [
+        ['ผู้เอาประกันหลัก', `อายุ ${age1} ปี`, `${fmt(indiv1)} บาท`],
+        age2 > 0 ? ['คู่สมรส', `อายุ ${age2} ปี`, `${fmt(indiv2)} บาท`] : null,
+        children > 0 ? ['บุตร', `${children} คน`, `${fmt(children * childPremium)} บาท`] : null,
+        ['รวมหากซื้อแยก', '', `${fmt(totalIndividual)} บาท`],
+        ['ส่วนลด Family Floater', `${(floaterDiscount*100).toFixed(0)}%`, `-${fmt(totalIndividual * floaterDiscount)} บาท`],
+        ['เบี้ย Family Floater/ปี', '', `<strong>${fmt(floaterPremium)} บาท</strong>`],
+      ].filter(Boolean) as string[][];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td>
+        </tr>`).join('');
+
+      (document.getElementById('floater-premium') as HTMLElement).textContent = fmt(floaterPremium);
+      (document.getElementById('individual-premium') as HTMLElement).textContent = fmt(totalIndividual);
+      (document.getElementById('saving') as HTMLElement).textContent = fmt(totalIndividual - floaterPremium) + ' บาท';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

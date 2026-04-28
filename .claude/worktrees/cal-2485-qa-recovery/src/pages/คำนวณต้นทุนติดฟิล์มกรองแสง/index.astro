@@ -1,0 +1,310 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนติดฟิล์มกรองแสงรถยนต์ ปี 2569 | Window Tinting | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนติดฟิล์มกรองแสงรถยนต์ เปรียบเทียบฟิล์มหลายระดับ ประมาณค่าใช้จ่าย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนติดฟิล์มกรองแสง/`;
+
+const faqData = [
+  {
+    question: 'ฟิล์มกรองแสง Ceramic กับ Premium ต่างกันอย่างไร?',
+    answer: 'ฟิล์ม Ceramic ใช้อนุภาคเซรามิกนาโนในการกรองแสงและความร้อน มีประสิทธิภาพสูงกว่า กรองความร้อนได้ 50-70% และ UV ได้ถึง 99% โดยไม่ต้องใช้โลหะ จึงไม่รบกวนสัญญาณวิทยุและ GPS ส่วนฟิล์ม Premium ใช้เทคโนโลยีโพลิเมอร์หลายชั้น กรองความร้อนได้ 40-55% เป็นตัวเลือกที่คุ้มค่าระหว่างราคากับประสิทธิภาพ',
+  },
+  {
+    question: 'กฎหมายไทยกำหนดค่าการส่องผ่านแสง (VLT) เท่าไร?',
+    answer: 'กฎหมายจราจรไทยกำหนดให้กระจกหน้ารถต้องมีค่า VLT ไม่น้อยกว่า 70% กระจกด้านข้างและหลังต้องไม่น้อยกว่า 40% ฟิล์มที่มีความทึบมากเกินไปผิดกฎหมายและอาจถูกปรับ ควรเลือกฟิล์มที่มีค่า VLT ตามมาตรฐาน และขอใบรับรองจากร้านติดตั้ง',
+  },
+  {
+    question: 'ฟิล์มกรองแสงช่วยประหยัดน้ำมันได้ไหม?',
+    answer: 'ฟิล์มกรองแสงคุณภาพดีสามารถลดความร้อนในรถได้ 30-60% ทำให้ระบบแอร์ทำงานหนักน้อยลง ประหยัดน้ำมันได้ประมาณ 3-8% สำหรับรถที่ใช้แอร์บ่อย ในประเทศไทยที่อากาศร้อนตลอดปี ฟิล์มกรองแสงจึงมีส่วนช่วยลดค่าน้ำมันได้จริง',
+  },
+  {
+    question: 'ฟิล์มกรองแสงมีอายุการใช้งานกี่ปี?',
+    answer: 'ฟิล์มเกรด Economy มีอายุ 3-5 ปี ฟิล์ม Mid-range 5-7 ปี ฟิล์ม Premium 7-10 ปี และฟิล์ม Ceramic 10+ ปี สัญญาณที่บอกว่าต้องเปลี่ยนฟิล์ม ได้แก่ ฟิล์มเป็นฟอง สีฟิล์มเปลี่ยนเป็นสีม่วงหรือน้ำตาล และมีรอยลอกที่ขอบ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนติดฟิล์มกรองแสงรถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนติดฟิล์มกรองแสง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณต้นทุนติดฟิล์มกรองแสงรถยนต์
+    </h1>
+    <p class="text-gray-600 mb-6">
+      ประมาณค่าใช้จ่ายติดฟิล์มกรองแสงรถยนต์ เปรียบเทียบฟิล์ม 4 ระดับคุณภาพ พร้อมข้อมูลประสิทธิภาพการกรองความร้อนและรังสี UV อัตราตลาดไทยปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-5">
+        <div>
+          <label for="vehicle-type" class="block text-sm font-medium text-gray-700 mb-1">
+            ประเภทรถยนต์
+          </label>
+          <select
+            id="vehicle-type"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+          >
+            <option value="sedan-s">รถเก๋งเล็ก (Eco Car/City Car)</option>
+            <option value="sedan-l" selected>รถเก๋งใหญ่ (Sedan กลาง-ใหญ่)</option>
+            <option value="pickup">รถกระบะ (Pickup Truck)</option>
+            <option value="suv">SUV / PPV / Crossover</option>
+            <option value="van">รถตู้ (Van/MPV)</option>
+          </select>
+        </div>
+        <div>
+          <label for="film-quality" class="block text-sm font-medium text-gray-700 mb-1">
+            ระดับคุณภาพฟิล์ม
+          </label>
+          <select
+            id="film-quality"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+          >
+            <option value="economy">Economy — ราคาประหยัด</option>
+            <option value="mid" selected>Mid-range — คุ้มค่า</option>
+            <option value="premium">Premium — คุณภาพสูง</option>
+            <option value="ceramic">Ceramic — สูงสุด</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2">ติดฟิล์มกระจกหน้าด้วยหรือไม่?</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="windshield" value="no" checked class="h-4 w-4 text-primary-600 border-gray-300" />
+              <span class="text-sm text-gray-700">ไม่ติด (กระจกข้างและหลัง)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="windshield" value="yes" class="h-4 w-4 text-primary-600 border-gray-300" />
+              <span class="text-sm text-gray-700">ติดกระจกหน้าด้วย (+ค่าเพิ่ม)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าติดฟิล์มกรองแสง
+      </button>
+
+      <!-- Results -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-blue-50 rounded-lg p-4 sm:col-span-2">
+            <div class="text-sm text-blue-700 font-medium mb-1">ค่าติดฟิล์มกรองแสงรวม</div>
+            <div id="res-total" class="text-3xl font-bold text-blue-800">-</div>
+            <div id="res-label" class="text-xs text-blue-600 mt-1">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4">
+            <div class="text-sm text-amber-700 font-medium mb-1">กรองความร้อน (Heat Rejection)</div>
+            <div id="res-heat" class="text-2xl font-bold text-amber-800">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4">
+            <div class="text-sm text-purple-700 font-medium mb-1">กรองรังสี UV</div>
+            <div id="res-uv" class="text-2xl font-bold text-purple-800">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-green-700 font-medium mb-1">อายุใช้งานโดยประมาณ</div>
+            <div id="res-lifespan" class="text-2xl font-bold text-green-800">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4">
+            <div class="text-sm text-gray-700 font-medium mb-1">ค่าใช้จ่ายต่อปี</div>
+            <div id="res-annual" class="text-2xl font-bold text-gray-800">-</div>
+          </div>
+        </div>
+
+        <!-- Film comparison table -->
+        <div class="bg-white border border-gray-200 rounded-lg p-4">
+          <div class="text-sm font-semibold text-gray-700 mb-3">เปรียบเทียบทุกระดับคุณภาพ</div>
+          <div id="film-comparison" class="space-y-2 text-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ฟิล์มกรองแสงรถยนต์: เปรียบเทียบราคาและประสิทธิภาพ</h2>
+      <p>
+        การติดฟิล์มกรองแสงเป็นสิ่งจำเป็นสำหรับรถยนต์ในประเทศไทย เนื่องจากแสงแดดแรงตลอดปี
+        นอกจากช่วยลดความร้อนในรถแล้ว ยังปกป้องผิวหนังจากรังสี UV และลดการสิ้นเปลืองน้ำมันจากระบบแอร์
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ราคาติดฟิล์มกรองแสงในตลาดไทย 2569</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-3">ระดับฟิล์ม</th>
+              <th class="py-2 pr-3">เก๋งเล็ก</th>
+              <th class="py-2 pr-3">เก๋งใหญ่</th>
+              <th class="py-2 pr-3">SUV</th>
+              <th class="py-2">อายุ</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-3">Economy</td>
+              <td class="py-2 pr-3">2,500</td>
+              <td class="py-2 pr-3">3,500</td>
+              <td class="py-2 pr-3">3,500</td>
+              <td class="py-2">3-5 ปี</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-3">Mid-range</td>
+              <td class="py-2 pr-3">3,500</td>
+              <td class="py-2 pr-3">4,500</td>
+              <td class="py-2 pr-3">4,500</td>
+              <td class="py-2">5-7 ปี</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-3">Premium</td>
+              <td class="py-2 pr-3">5,250</td>
+              <td class="py-2 pr-3">7,000</td>
+              <td class="py-2 pr-3">7,000</td>
+              <td class="py-2">7-10 ปี</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-3">Ceramic</td>
+              <td class="py-2 pr-3">7,000</td>
+              <td class="py-2 pr-3">9,000</td>
+              <td class="py-2 pr-3">9,000</td>
+              <td class="py-2">10+ ปี</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัจจัยที่ควรพิจารณาเลือกฟิล์ม</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>งบประมาณ:</strong> ฟิล์ม Economy เหมาะสำหรับรถเก่าหรืองบจำกัด</li>
+        <li><strong>อายุการใช้งาน:</strong> ฟิล์มดีกว่ามีอายุยาวกว่า คุ้มค่าในระยะยาว</li>
+        <li><strong>ประสิทธิภาพ:</strong> ฟิล์ม Ceramic กรองความร้อนได้ดีที่สุด</li>
+        <li><strong>กฎหมาย:</strong> ตรวจสอบค่า VLT ให้ถูกต้องตามกฎหมายจราจรไทย</li>
+        <li><strong>แบรนด์:</strong> เลือกร้านที่มีใบรับประกันและชื่อเสียงเชื่อถือได้</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณต้นทุนติดฟิล์มกรองแสง/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนติดฟิล์มกรองแสง/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ราคาเป็นการประมาณการจากตลาดทั่วไปในปี 2569
+      ประสิทธิภาพการกรองแสงขึ้นอยู่กับยี่ห้อและรุ่นฟิล์มที่ใช้จริง
+      กรุณาสอบถามร้านค้าที่เชื่อถือได้และขอดูตัวอย่างฟิล์มก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    // Base economy prices by vehicle type
+    const economyBase: Record<string, { price: number; label: string }> = {
+      'sedan-s': { price: 2500, label: 'รถเก๋งเล็ก' },
+      'sedan-l': { price: 3500, label: 'รถเก๋งใหญ่' },
+      'pickup':  { price: 2500, label: 'รถกระบะ' },
+      'suv':     { price: 3500, label: 'SUV' },
+      'van':     { price: 4500, label: 'รถตู้' },
+    };
+
+    // Windshield extra cost ranges by vehicle type (mid-point)
+    const windshieldExtra: Record<string, number> = {
+      'sedan-s': 1500,
+      'sedan-l': 2000,
+      'pickup':  1500,
+      'suv':     2000,
+      'van':     2500,
+    };
+
+    // Film quality multipliers from economy base
+    const filmMultipliers: Record<string, { mult: number; label: string; lifespan: number; heat: number; uv: number }> = {
+      'economy': { mult: 1.0, label: 'Economy',   lifespan: 4,  heat: 30, uv: 80 },
+      'mid':     { mult: 1.4, label: 'Mid-range', lifespan: 6,  heat: 45, uv: 95 },
+      'premium': { mult: 2.1, label: 'Premium',   lifespan: 8,  heat: 55, uv: 99 },
+      'ceramic': { mult: 2.8, label: 'Ceramic',   lifespan: 12, heat: 65, uv: 99 },
+    };
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const vehicleType = (document.getElementById('vehicle-type') as HTMLSelectElement).value;
+      const filmQuality = (document.getElementById('film-quality') as HTMLSelectElement).value;
+      const includeWindshield = (document.querySelector('input[name="windshield"]:checked') as HTMLInputElement).value === 'yes';
+
+      const base = economyBase[vehicleType];
+      const film = filmMultipliers[filmQuality];
+      if (!base || !film) return;
+
+      const filmCost = Math.round(base.price * film.mult);
+      const wsExtra = includeWindshield ? windshieldExtra[vehicleType] : 0;
+      const totalCost = filmCost + wsExtra;
+      const annualCost = totalCost / film.lifespan;
+
+      (document.getElementById('res-total') as HTMLElement).textContent = `฿${fmt(totalCost)}`;
+      (document.getElementById('res-label') as HTMLElement).textContent =
+        `ฟิล์ม${film.label} | ${base.label}${includeWindshield ? ' + กระจกหน้า' : ''}`;
+      (document.getElementById('res-heat') as HTMLElement).textContent = `${film.heat}%`;
+      (document.getElementById('res-uv') as HTMLElement).textContent = `${film.uv}%`;
+      (document.getElementById('res-lifespan') as HTMLElement).textContent = `${film.lifespan} ปี`;
+      (document.getElementById('res-annual') as HTMLElement).textContent = `฿${fmt(Math.round(annualCost))} / ปี`;
+
+      // Comparison table
+      const compEl = document.getElementById('film-comparison') as HTMLElement;
+      const rows = Object.entries(filmMultipliers).map(([k, f]) => {
+        const c = Math.round(base.price * f.mult) + (includeWindshield ? windshieldExtra[vehicleType] : 0);
+        const annual = c / f.lifespan;
+        const isSelected = k === filmQuality;
+        const highlightClass = isSelected ? 'bg-primary-50 rounded px-2 py-1 -mx-2' : '';
+        return `<div class="flex items-center justify-between py-1 border-b border-gray-100 last:border-0 ${highlightClass}">
+          <div>
+            <span class="font-medium text-gray-900 ${isSelected ? 'text-primary-700' : ''}">${f.label}</span>
+            <span class="text-gray-500 ml-2 text-xs">UV ${f.uv}% | ความร้อน ${f.heat}% | ${f.lifespan} ปี</span>
+          </div>
+          <div class="text-right">
+            <div class="font-bold ${isSelected ? 'text-primary-700' : 'text-gray-700'}">฿${fmt(c)}</div>
+            <div class="text-xs text-gray-500">฿${fmt(Math.round(annual))}/ปี</div>
+          </div>
+        </div>`;
+      }).join('');
+      compEl.innerHTML = rows;
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>

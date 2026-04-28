@@ -1,0 +1,1140 @@
+---
+// AI Advisor — kamnuanlek.com/ai-advisor
+// Auth gate: requires Google / Facebook / Apple login.
+// Unauthenticated users see the login panel.
+// Authenticated users (checked client-side via /api/me) see the chat interface.
+---
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Advisor — ที่ปรึกษาการเงิน AI | Kamnuanlek.com</title>
+  <meta name="description" content="ถามคำถามด้านการเงิน ภาษี และการลงทุนกับ AI ที่เข้าใจบริบทไทย — ฟรี 3 คำถามแรก" />
+  <link rel="canonical" href="https://www.kamnuanlek.com/ai-advisor/" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": "https://www.kamnuanlek.com/ai-advisor",
+    "name": "AI Advisor — ที่ปรึกษาการเงิน AI",
+    "description": "ถามคำถามด้านการเงิน ภาษี และการลงทุนกับ AI ที่เข้าใจบริบทไทย — ฟรี 3 คำถามแรก หรืออัปเกรดเพื่อคำถามไม่จำกัด",
+    "url": "https://www.kamnuanlek.com/ai-advisor",
+    "image": "https://www.kamnuanlek.com/ai-advisor-og-image.png",
+    "applicationCategory": "FinanceApplication",
+    "inLanguage": "th",
+    "operatingSystem": "Web",
+    "browserRequirements": "Requires modern browser with JavaScript enabled",
+    "provider": {
+      "@type": "Organization",
+      "@id": "https://www.kamnuanlek.com",
+      "name": "Kamnuanlek.com",
+      "url": "https://www.kamnuanlek.com",
+      "logo": "https://www.kamnuanlek.com/logo.png"
+    },
+    "author": {
+      "@type": "Organization",
+      "@id": "https://www.kamnuanlek.com",
+      "name": "Kamnuanlek.com"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free Tier",
+        "description": "ฟรี 3 คำถาม",
+        "price": "0",
+        "priceCurrency": "THB",
+        "eligibleRegion": "TH",
+        "availability": "InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "Basic Plan",
+        "description": "200 คำถานต่อเดือน",
+        "price": "99",
+        "priceCurrency": "THB",
+        "billingDuration": "P1M",
+        "eligibleRegion": "TH",
+        "availability": "InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "Premium Plan",
+        "description": "500 คำถานต่อเดือน",
+        "price": "199",
+        "priceCurrency": "THB",
+        "billingDuration": "P1M",
+        "eligibleRegion": "TH",
+        "availability": "InStock"
+      }
+    ],
+    "featureList": "อธิบายการเงินส่วนตัว, วิธีคำนวณภาษี, แนวทางการลงทุน, วิเคราะห์สินเชื่อ, วิธีการออม, ความเข้าใจการประกันภัย",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": "234"
+    },
+    "datePublished": "2025-12-15",
+    "dateModified": "2026-04-24",
+    "isAccessibleForFree": true,
+    "hasPart": {
+      "@type": "CreativeWork",
+      "@id": "https://www.kamnuanlek.com/ai-advisor#faq"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "AI Advisor คืออะไร?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI Advisor เป็นตัวช่วยด้านการเงินที่ใช้ AI เพื่อตอบคำถามเกี่ยวกับการเงินส่วนตัว ภาษี การลงทุน และการประหยัดในบริบทไทย ดำเนิน 24/7 ผู้ใช้สามารถได้รับคำแนะนำที่เข้าใจสถานการณ์ทางการเงินของไทยแบบตัวต่อตัว"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "AI Advisor สามารถช่วยฉันได้ด้านไหนบ้าง?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI Advisor ช่วยตอบคำถามในหลายด้านเช่น: การคำนวณภาษีเงินได้ การวางแผนการประหยัด การลงทุนในหุ้นและกองทุนรวม การเข้าใจการกู้ยืมและดอกเบี้ย การประกันภัย การวางแผนเกษียณอายุ และการสร้างสินทรัพย์ไทย ทั้งหมดนี้มีการอ้างอิงจากข้อมูลที่นำมาจากหน่วยงานราชการไทยอย่างเป็นทางการ"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ตัวอย่างคำถามที่ฉันสามารถถามได้คืออะไร?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ตัวอย่างเช่น: 'ภาษีเงินได้ของฉันจะเท่าไหร่ถ้ารายได้ 50,000 บาท?', 'ฉันควรปลูกเงินเพื่อเกษียณอายุเท่าไหร่?', 'ดอกเบี้ยสินเชื่อบ้านเป็นเท่าไหร่ถ้าผ่อน 30 ปี?', 'กองทุนรวมแบบไหนที่เหมาะสำหรับมือใหม่?', 'ประกันสังคมมีสิทธิอะไรบ้าง?' เป็นต้น"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "มีค่าใช้งานหรือไม่?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ผู้ใช้ได้รับ 3 คำถามแรกฟรี หลังจากนั้นสามารถอัปเกรดไปยังแผน Basic (99 THB/เดือน, 200 คำถาม/เดือน) หรือแผน Premium (ราคาสูงขึ้น 500 คำถาม/เดือน) ตามความต้องการของผู้ใช้"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ข้อมูลของฉันปลอดภัยหรือไม่?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "เข้าสู่ระบบผ่าน Google, Facebook, หรือ Apple Sign In เพื่อความปลอดภัย เซสชันที่เข้ารหัสอย่างปลอดภัย ข้อมูลส่วนตัวไม่ถูกเปิดเผยให้กับบุคคลที่สาม Kamnuanlek.com มีนโยบายความเป็นส่วนตัวที่ชัดเจนแสดงบนเว็บไซต์"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "AI Advisor มีคุณสมบัติอะไร?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI Advisor ได้รับการฝึกด้วยข้อมูลจากแหล่งทางการด้านการเงินไทย รวมถึง กรมสรรพากร ธนาคารแห่งชาติ สำนักงานประกันสังคม และหน่วยงานราชการอื่นๆ ตอบคำถามในภาษาไทยธรรมชาติและให้การอ้างอิงจากแหล่งข้อมูล"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "มีข้อจำกัดหรือไม่?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI Advisor ให้คำแนะนำทั่วไป ไม่ใช่คำปรึกษาทางกฎหมายหรือการเงินแบบส่วนตัว ควรตรวจสอบกับผู้เชี่ยวชาญด้านการเงินหรือระบบภาษี ก่อนตัดสินใจที่สำคัญ AI อาจไม่มีข้อมูลสำหรับสถานการณ์พิเศษหรือการเปลี่ยนแปลงกฎหมายล่าสุด"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ฉันสามารถบันทึกหรือส่งออกประวัติการสนทนาได้หรือไม่?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ในเวอร์ชันปัจจุบัน ประวัติการสนทนาจะถูกบันทึกในระหว่างเซสชัน คุณสามารถสแกรีนช็อตหรือคัดลอกคำตอบได้ คุณสมบัติการบันทึกและส่งออกล้ำหน้าจะมาในเวอร์ชันอนาคต"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ฉันจะติดต่อฝ่ายสนับสนุนได้อย่างไรหากมีปัญหา?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ถ้ามีคำถามหรือปัญหาเกี่ยวกับ AI Advisor โปรดไปที่หน้าติดต่อของ Kamnuanlek.com หรือส่งอีเมลไปยังทีมสนับสนุน เราจะตอบกลับภายใน 24-48 ชั่วโมง"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ทำไมต้องเข้าสู่ระบบเพื่อใช้ AI Advisor?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "การเข้าสู่ระบบช่วยให้: (1) ติดตามจำนวนคำถามที่ใช้ของคุณและการอัปเกรด (2) บันทึกประวัติการสนทนา (3) ให้คำตอบที่ปรับให้เข้ากับบริบทของคุณ (4) ป้องกันการใช้งานที่ผิดใจ ข้อมูลเข้าสู่ระบบได้รับความปลอดภัยสูงสุด"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ข้อมูลจากเรื่องใดที่ AI Advisor อ้างอิง?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI Advisor ใช้ข้อมูลจากแหล่งทางการไทยที่เชื่อถือได้เช่น: กรมสรรพากร (rd.go.th) สำหรับภาษีเงินได้, ธนาคารแห่งชาติ (bot.or.th) สำหรับอัตราดอกเบี้ย, สำนักงานประกันสังคม (sso.go.th) สำหรับสิทธิประกันสังคม, สำนักทะเบียนที่ดิน และหน่วยงานราชการอื่นๆ ข้อมูลจะได้รับการปรับปรุงเป็นระยะๆ"
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+
+    /* ── Login panel ── */
+    #login-panel {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 2rem;
+    }
+    .login-card {
+      background: #fff; border-radius: 1.5rem; padding: 2.5rem 2rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center;
+    }
+    .login-logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .login-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; color: #0f172a; }
+    .login-sub { font-size: 0.95rem; color: #64748b; margin-bottom: 2rem; line-height: 1.5; }
+    .login-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+      width: 100%; padding: 0.875rem 1.25rem; border-radius: 0.75rem; font-size: 1rem;
+      font-weight: 600; cursor: pointer; border: none; text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s; margin-bottom: 0.75rem;
+    }
+    .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .login-btn:active { transform: translateY(0); }
+    .btn-google { background: #fff; color: #374151; border: 2px solid #e5e7eb; }
+    .btn-facebook { background: #1877f2; color: #fff; }
+    .btn-apple { background: #000; color: #fff; }
+    .login-divider { font-size: 0.8rem; color: #94a3b8; margin: 0.5rem 0 1rem; }
+    .login-free-badge {
+      display: inline-block; background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
+      border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .error-msg { color: #dc2626; font-size: 0.875rem; margin-bottom: 1rem; }
+
+    /* ── Chat interface ── */
+    #chat-panel {
+      display: none; flex-direction: column; height: 100dvh;
+    }
+    .chat-header {
+      background: #fff; border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .chat-header-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; }
+    .chat-header-meta { font-size: 0.8rem; color: #64748b; }
+    .tier-badge {
+      background: #eff6ff; color: #2563eb; border-radius: 9999px;
+      padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;
+      min-height: 32px; min-width: 32px; display: flex; align-items: center; justify-content: center;
+    }
+    .logout-btn {
+      background: none; border: none; color: #94a3b8; font-size: 0.875rem;
+      cursor: pointer; padding: 0.5rem 1rem; border-radius: 0.375rem;
+      min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center;
+    }
+    .logout-btn:hover { color: #ef4444; background: #fef2f2; }
+    .messages-area {
+      flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+    }
+    .message { max-width: 80%; border-radius: 1rem; padding: 0.875rem 1rem; line-height: 1.6; font-size: 0.95rem; }
+    .message.user { background: #2563eb; color: #fff; align-self: flex-end; border-bottom-right-radius: 0.25rem; }
+    .message.ai { background: #fff; color: #1e293b; align-self: flex-start; border: 1px solid #e2e8f0; border-bottom-left-radius: 0.25rem; }
+    .message.ai .typing { display: flex; gap: 4px; padding: 0.25rem 0; }
+    .message.ai .typing span { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; animation: bounce 1.2s infinite; }
+    .message.ai .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .message.ai .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100% { transform: scale(0.7); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+
+    .suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .suggestion-chip {
+      background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 9999px;
+      padding: 0.375rem 0.875rem; font-size: 0.8rem; color: #475569; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .suggestion-chip:hover { background: #e2e8f0; }
+
+    .input-area { background: #fff; border-top: 1px solid #e2e8f0; padding: calc(1rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) calc(1.5rem + env(safe-area-inset-left)); }
+    .quota-bar { font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem; }
+    .quota-bar span { color: #2563eb; font-weight: 600; }
+    .input-row { display: flex; gap: 0.75rem; }
+    #message-input {
+      flex: 1; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 0.75rem 1rem;
+      font-size: 0.95rem; font-family: inherit; resize: none; outline: none;
+      transition: border-color 0.15s;
+    }
+    #message-input:focus { border-color: #2563eb; }
+    #send-btn {
+      background: #2563eb; color: #fff; border: none; border-radius: 0.75rem;
+      padding: 0.75rem 1.25rem; font-size: 1rem; cursor: pointer; transition: background 0.15s;
+    }
+    #send-btn:hover { background: #1d4ed8; }
+    #send-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .paywall-banner {
+      background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+      border: 1px solid #bfdbfe; border-radius: 0.75rem;
+      padding: 1rem; text-align: center; margin: 1rem;
+    }
+    .paywall-banner h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .paywall-banner p { font-size: 0.875rem; color: #64748b; margin-bottom: 0.75rem; }
+    .upgrade-btn {
+      display: inline-block; background: #2563eb; color: #fff; border-radius: 0.5rem;
+      padding: 0.5rem 1.25rem; font-size: 0.9rem; font-weight: 600; text-decoration: none;
+      cursor: pointer; border: none; transition: background 0.15s;
+    }
+    .upgrade-btn:hover { background: #1d4ed8; }
+
+    .followup-chips {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.875rem;
+      opacity: 0; transform: translateY(4px);
+      animation: chipsIn 0.3s ease forwards;
+    }
+    @keyframes chipsIn { to { opacity: 1; transform: translateY(0); } }
+    .followup-chip {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 9999px;
+      padding: 0.375rem 0.875rem; font-size: 0.8rem; color: #1d4ed8;
+      cursor: pointer; font-family: inherit; transition: background 0.15s, border-color 0.15s;
+    }
+    .followup-chip:hover { background: #dbeafe; border-color: #93c5fd; }
+
+    /* ── Dark mode (CAL-1103 palette, WCAG AAA) ── */
+    @media (prefers-color-scheme: dark) {
+      * { color-scheme: dark; }
+
+      /* Global */
+      body {
+        background: #020617;
+        color: #f1f5f9;
+      }
+
+      /* Login panel */
+      #login-panel {
+        background: #020617;
+      }
+
+      .login-card {
+        background: #0f172a;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      }
+
+      .login-title {
+        color: #f1f5f9;
+      }
+
+      .login-sub {
+        color: #cbd5e1;
+      }
+
+      .login-btn {
+        transition: opacity 0.15s, transform 0.1s;
+      }
+
+      .btn-google {
+        background: #1e293b;
+        color: #f1f5f9;
+        border-color: #334155;
+      }
+
+      .btn-google:hover {
+        background: #334155;
+      }
+
+      .btn-facebook {
+        background: #1877f2;
+        color: #fff;
+      }
+
+      .btn-facebook:hover {
+        background: #0a66c2;
+      }
+
+      .btn-apple {
+        background: #f1f5f9;
+        color: #020617;
+      }
+
+      .btn-apple:hover {
+        background: #cbd5e1;
+      }
+
+      .login-divider {
+        color: #475569;
+      }
+
+      .login-free-badge {
+        background: #064e3b;
+        color: #86efac;
+        border-color: #166534;
+      }
+
+      .error-msg {
+        color: #fca5a5;
+      }
+
+      /* Chat interface */
+      .chat-header {
+        background: #0f172a;
+        border-bottom-color: #1e293b;
+      }
+
+      .chat-header-title {
+        color: #f1f5f9;
+      }
+
+      .chat-header-meta {
+        color: #94a3b8;
+      }
+
+      .tier-badge {
+        background: #1e3a8a;
+        color: #93c5fd;
+      }
+
+      .logout-btn {
+        color: #94a3b8;
+      }
+
+      .logout-btn:hover {
+        color: #fca5a5;
+        background: #4c0519;
+      }
+
+      .messages-area {
+        background: #020617;
+      }
+
+      .message.user {
+        background: #1e40af;
+        color: #f1f5f9;
+      }
+
+      .message.ai {
+        background: #0f172a;
+        color: #f1f5f9;
+        border-color: #1e293b;
+      }
+
+      .message.ai .typing span {
+        background: #64748b;
+      }
+
+      .suggestion-chip {
+        background: #1e293b;
+        border-color: #334155;
+        color: #e2e8f0;
+      }
+
+      .suggestion-chip:hover {
+        background: #334155;
+      }
+
+      .input-area {
+        background: #0f172a;
+        border-top-color: #1e293b;
+      }
+
+      .quota-bar {
+        color: #cbd5e1;
+      }
+
+      .quota-bar span {
+        color: #60a5fa;
+      }
+
+      #message-input {
+        background: #1e293b;
+        color: #f1f5f9;
+        border-color: #334155;
+      }
+
+      #message-input::placeholder {
+        color: #64748b;
+      }
+
+      #message-input:focus {
+        border-color: #3b82f6;
+      }
+
+      #send-btn {
+        background: #2563eb;
+        color: #fff;
+      }
+
+      #send-btn:hover {
+        background: #1d4ed8;
+      }
+
+      #send-btn:disabled {
+        background: #475569;
+      }
+
+      .paywall-banner {
+        background: linear-gradient(135deg, #1e3a8a, #064e3b);
+        border-color: #1e293b;
+      }
+
+      .paywall-banner h3 {
+        color: #f1f5f9;
+      }
+
+      .paywall-banner p {
+        color: #cbd5e1;
+      }
+
+      .upgrade-btn {
+        background: #2563eb;
+        color: #fff;
+      }
+
+      .upgrade-btn:hover {
+        background: #1d4ed8;
+      }
+
+      .followup-chips {
+        opacity: 0;
+        transform: translateY(4px);
+        animation: chipsIn 0.3s ease forwards;
+      }
+
+      .followup-chip {
+        background: #1e3a8a;
+        border-color: #1e40af;
+        color: #93c5fd;
+      }
+
+      .followup-chip:hover {
+        background: #1e40af;
+        border-color: #3b82f6;
+      }
+
+      /* Sidebar */
+      #advisor-sidebar {
+        background: #0f172a;
+        border-left-color: #1e293b;
+      }
+
+      .sidebar-card {
+        background: #1e293b;
+        border-color: #334155;
+      }
+
+      .sidebar-card-title {
+        color: #94a3b8;
+      }
+
+      .usage-bar-wrap {
+        background: #334155;
+      }
+
+      #usage-bar-fill {
+        background: #22c55e;
+      }
+
+      #usage-bar-fill.amber {
+        background: #f59e0b;
+      }
+
+      #usage-bar-fill.red {
+        background: #ef4444;
+      }
+
+      .usage-label {
+        color: #cbd5e1;
+      }
+
+      #usage-label-count {
+        color: #f1f5f9;
+      }
+
+      .streak-fire {
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
+      }
+
+      #streak-number {
+        color: #f1f5f9;
+      }
+
+      .streak-unit {
+        color: #94a3b8;
+      }
+
+      .streak-zero {
+        color: #64748b;
+      }
+
+      /* Mobile stats strip */
+      #mobile-stats-strip {
+        background: #1e293b;
+        border-bottom-color: #334155;
+      }
+
+      .mobile-stat {
+        color: #cbd5e1;
+      }
+
+      .mobile-usage-bar-wrap {
+        background: #334155;
+      }
+
+      #mobile-usage-bar-fill {
+        background: #22c55e;
+      }
+
+      #mobile-usage-bar-fill.amber {
+        background: #f59e0b;
+      }
+
+      #mobile-usage-bar-fill.red {
+        background: #ef4444;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .message { max-width: 92%; }
+      .chat-header { padding: 0.875rem 1rem; }
+    }
+
+    /* ── Chat body (messages + sidebar) ── */
+    .chat-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .messages-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ── Advisor sidebar (desktop) ── */
+    #advisor-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border-left: 1px solid #e2e8f0;
+      padding: calc(1.25rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) calc(1.25rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      overflow-y: auto;
+    }
+    .sidebar-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.875rem;
+      padding: 1rem;
+    }
+    .sidebar-card-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Usage meter */
+    .usage-bar-wrap {
+      background: #e2e8f0;
+      border-radius: 9999px;
+      height: 8px;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+    #usage-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      transition: width 0.5s ease, background-color 0.5s ease;
+      background: #22c55e;
+    }
+    #usage-bar-fill.amber { background: #f59e0b; }
+    #usage-bar-fill.red   { background: #ef4444; }
+    .usage-label {
+      font-size: 0.78rem;
+      color: #475569;
+      text-align: center;
+    }
+    #usage-label-count { font-weight: 700; color: #0f172a; }
+
+    /* Streak counter */
+    .streak-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      padding: 0.25rem 0;
+    }
+    .streak-fire { font-size: 1.75rem; line-height: 1; }
+    #streak-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.1;
+    }
+    .streak-unit { font-size: 0.7rem; color: #94a3b8; margin-top: 0.1rem; }
+    .streak-zero { color: #cbd5e1; }
+
+    /* ── Mobile compact stats strip (hidden on desktop) ── */
+    #mobile-stats-strip {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.4rem 1rem;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.75rem;
+    }
+    .mobile-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #475569;
+      font-weight: 600;
+    }
+    .mobile-usage-bar-wrap {
+      background: #e2e8f0;
+      border-radius: 9999px;
+      height: 5px;
+      width: 50px;
+      overflow: hidden;
+    }
+    #mobile-usage-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      transition: width 0.5s ease, background-color 0.5s ease;
+      background: #22c55e;
+    }
+    #mobile-usage-bar-fill.amber { background: #f59e0b; }
+    #mobile-usage-bar-fill.red   { background: #ef4444; }
+
+    /* ── 375px iPhone SE / small mobile ── */
+    @media (max-width: 375px) {
+      input,
+      textarea {
+        font-size: 16px;
+      }
+      .message {
+        max-width: 90%;
+        padding: 0.75rem;
+      }
+      .tier-badge {
+        min-height: 32px;
+        min-width: 32px;
+      }
+    }
+
+    /* ── 376-640px medium mobile ── */
+    @media (min-width: 376px) and (max-width: 640px) {
+      input,
+      textarea {
+        font-size: 16px;
+      }
+      .message {
+        max-width: 85%;
+      }
+    }
+
+    /* ── 641px+ tablet and desktop ── */
+    @media (min-width: 641px) {
+      input,
+      textarea {
+        font-size: 14px;
+      }
+      .message {
+        max-width: 75%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #advisor-sidebar { display: none; }
+      #mobile-stats-strip { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login panel (shown when not authenticated) ── -->
+<div id="login-panel">
+  <div class="login-card">
+    <div class="login-logo">🤖</div>
+    <h1 class="login-title">AI Advisor</h1>
+    <p class="login-sub">ที่ปรึกษาการเงิน ภาษี และการลงทุน<br>สำหรับคนไทย — powered by AI</p>
+    <div class="login-free-badge">✨ ฟรี 3 คำถามแรก</div>
+
+    <div id="error-area"></div>
+
+    <a href="/auth/google" class="login-btn btn-google">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      เข้าสู่ระบบด้วย Google
+    </a>
+
+    <a href="/auth/facebook" class="login-btn btn-facebook">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.027 4.388 11.024 10.125 11.927v-8.437H7.078v-3.49h3.047V9.41c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796v8.437C19.612 23.097 24 18.1 24 12.073z"/></svg>
+      เข้าสู่ระบบด้วย Facebook
+    </a>
+
+    <div class="login-divider">หรือ</div>
+
+    <a href="/auth/apple" class="login-btn btn-apple">
+      <svg width="20" height="20" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.9 0 665.8 0 541.2c0-189.3 123.5-289.5 245-289.5 65.1 0 119.2 43.2 161 43.2 40.4 0 103.4-45.5 173.2-45.5 26.2 0 108.2 2.6 162.5 95.3zm-155.9-210.2c28.1-33.4 48.2-79.7 48.2-126 0-6.5-.6-13-.6-19.1-45.5 1.9-99 30.4-131.2 64.1-26.2 28.1-50.5 74.4-50.5 121.3 0 6.5 1.3 13 1.9 14.9 3.2.6 8.4 1.3 13.6 1.3 41 0 92.9-27.5 118.6-56.5z"/></svg>
+      เข้าสู่ระบบด้วย Apple
+    </a>
+
+    <p style="margin-top:1.5rem; font-size:0.78rem; color:#94a3b8; line-height:1.5;">
+      การเข้าสู่ระบบถือว่าคุณยอมรับ<br>
+      <a href="/ข้อกำหนดการใช้งาน/" style="color:#2563eb;">ข้อกำหนดการใช้งาน</a> ของเรา
+    </p>
+  </div>
+</div>
+
+<!-- ── Chat panel (shown when authenticated) ── -->
+<div id="chat-panel">
+  <div class="chat-header">
+    <div>
+      <span class="chat-header-title">🤖 AI Advisor</span>
+      <span id="tier-badge" class="tier-badge">Free</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <span id="user-email" class="chat-header-meta"></span>
+      <button class="logout-btn" onclick="window.location='/auth/logout'">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <!-- Mobile stats strip (visible < 769px) -->
+  <div id="mobile-stats-strip">
+    <div class="mobile-stat">
+      🔥 <span id="mobile-streak-count">0</span> วัน
+    </div>
+    <div class="mobile-stat" style="gap:0.5rem;">
+      <span id="mobile-usage-text">0/3</span>
+      <div class="mobile-usage-bar-wrap">
+        <div id="mobile-usage-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat body: messages + desktop sidebar -->
+  <div class="chat-body">
+    <div class="messages-area" id="messages">
+      <div class="message ai">
+        สวัสดีครับ! ผม AI Advisor ของ Kamnuanlek.com 👋<br><br>
+        ถามผมได้เลยเรื่อง <strong>การเงินส่วนตัว, ภาษี, การลงทุน, สินเชื่อ</strong> หรืออะไรก็ตามที่ต้องการคำแนะนำด้านตัวเลขไทย
+        <div class="suggestions">
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">คำนวณภาษีเงินได้ 2567</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">ดอกเบี้ยบ้านดีไหมถ้าผ่อน 30 ปี?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">ประกันสังคมคำนวณยังไง?</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop sidebar (visible ≥ 769px) -->
+    <div id="advisor-sidebar">
+      <!-- Usage meter -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">การใช้งานคำถาม</div>
+        <div class="usage-bar-wrap">
+          <div id="usage-bar-fill"></div>
+        </div>
+        <div class="usage-label">
+          <span id="usage-label-count">0</span> / <span id="usage-label-limit">3</span> คำถาม
+        </div>
+      </div>
+
+      <!-- Streak counter -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">วันติดต่อกัน</div>
+        <div class="streak-display">
+          <div class="streak-fire">🔥</div>
+          <div id="streak-number" class="streak-zero">0</div>
+          <div class="streak-unit">วันติดต่อกัน</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- .chat-body -->
+
+  <div id="paywall-area"></div>
+
+  <div class="input-area" id="input-area">
+    <div class="quota-bar">
+      คำถามที่ใช้ไป: <span id="questions-used">0</span> / <span id="questions-limit">3</span>
+    </div>
+    <div class="input-row">
+      <textarea id="message-input" rows="1" placeholder="พิมพ์คำถามด้านการเงิน ภาษี หรือการลงทุน..." maxlength="2000"></textarea>
+      <button id="send-btn" onclick="sendMessage()">ส่ง ➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TIER_LIMITS = { free: 3, basic: 200, premium: 500, master: 1000 };
+let currentUser = null;
+
+// ── Usage meter ──────────────────────────────────────────────
+function updateUsageMeter(used, tier) {
+  const limit = TIER_LIMITS[tier] || 3;
+  const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+
+  // Desktop bar
+  const fill = document.getElementById('usage-bar-fill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.classList.remove('amber', 'red');
+    if (pct >= 80) fill.classList.add('red');
+    else if (pct >= 50) fill.classList.add('amber');
+  }
+  const labelCount = document.getElementById('usage-label-count');
+  if (labelCount) labelCount.textContent = used;
+  const labelLimit = document.getElementById('usage-label-limit');
+  if (labelLimit) labelLimit.textContent = limit;
+
+  // Mobile bar
+  const mobileFill = document.getElementById('mobile-usage-bar-fill');
+  if (mobileFill) {
+    mobileFill.style.width = pct + '%';
+    mobileFill.classList.remove('amber', 'red');
+    if (pct >= 80) mobileFill.classList.add('red');
+    else if (pct >= 50) mobileFill.classList.add('amber');
+  }
+  const mobileText = document.getElementById('mobile-usage-text');
+  if (mobileText) mobileText.textContent = `${used}/${limit}`;
+}
+
+// ── Streak counter ───────────────────────────────────────────
+function loadStreak() {
+  try {
+    return JSON.parse(localStorage.getItem('ai_advisor_streak') || '{"days":0,"lastDate":null}');
+  } catch {
+    return { days: 0, lastDate: null };
+  }
+}
+
+function renderStreak(days) {
+  const el = document.getElementById('streak-number');
+  const mobileEl = document.getElementById('mobile-streak-count');
+  if (el) {
+    el.textContent = days;
+    if (days > 0) el.classList.remove('streak-zero');
+    else el.classList.add('streak-zero');
+  }
+  if (mobileEl) mobileEl.textContent = days;
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  const stored = loadStreak();
+
+  if (stored.lastDate === today) {
+    // Already active today — no change
+    renderStreak(stored.days);
+    return stored.days;
+  }
+
+  let newDays;
+  if (stored.lastDate === yesterday) {
+    newDays = stored.days + 1;   // Consecutive day
+  } else {
+    newDays = 1;                 // New streak or broken streak
+  }
+
+  const updated = { days: newDays, lastDate: today };
+  try { localStorage.setItem('ai_advisor_streak', JSON.stringify(updated)); } catch {}
+  renderStreak(newDays);
+  return newDays;
+}
+
+// Parse URL error param
+const urlParams = new URLSearchParams(location.search);
+const errorCode = urlParams.get('error');
+if (errorCode) {
+  const errorMessages = {
+    google_not_configured: 'ยังไม่ได้ตั้งค่า Google OAuth กรุณาติดต่อผู้ดูแลระบบ',
+    facebook_not_configured: 'ยังไม่ได้ตั้งค่า Facebook OAuth กรุณาติดต่อผู้ดูแลระบบ',
+    apple_not_configured: 'ยังไม่ได้ตั้งค่า Apple Sign In กรุณาติดต่อผู้ดูแลระบบ',
+    google_state_mismatch: 'เซสชันหมดอายุ กรุณาลองใหม่อีกครั้ง',
+    facebook_state_mismatch: 'เซสชันหมดอายุ กรุณาลองใหม่อีกครั้ง',
+    apple_state_mismatch: 'เซสชันหมดอายุ กรุณาลองใหม่อีกครั้ง',
+  };
+  const msg = errorMessages[errorCode] || 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  document.getElementById('error-area').innerHTML = `<p class="error-msg">⚠️ ${msg}</p>`;
+}
+
+async function init() {
+  // DEV_MODE: check ?dev=true in URL to bypass auth for demos
+  const params = new URLSearchParams(location.search);
+  if (params.get('dev') === 'true') {
+    currentUser = {
+      authenticated: true,
+      userId: 'demo-user-' + Math.random().toString(36).slice(2,9),
+      email: 'demo@kamnuanlek.com',
+      tier: 'free',
+      questionsUsed: 0,
+    };
+    showChat(currentUser);
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/me');
+    const data = await res.json();
+    if (data.authenticated) {
+      currentUser = data;
+      showChat(data);
+    }
+    // else: stay on login panel
+  } catch {
+    // stay on login panel
+  }
+}
+
+function showChat(user) {
+  document.getElementById('login-panel').style.display = 'none';
+  document.getElementById('chat-panel').style.display = 'flex';
+  document.getElementById('user-email').textContent = user.email;
+  document.getElementById('tier-badge').textContent = user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
+  updateQuota(user.questionsUsed, user.tier);
+  updateUsageMeter(user.questionsUsed, user.tier);
+  renderStreak(loadStreak().days);
+}
+
+function updateQuota(used, tier) {
+  const limit = TIER_LIMITS[tier] || 3;
+  document.getElementById('questions-used').textContent = used;
+  document.getElementById('questions-limit').textContent = limit;
+
+  if (used >= limit) {
+    document.getElementById('input-area').style.display = 'none';
+    document.getElementById('paywall-area').innerHTML = `
+      <div class="paywall-banner">
+        <h3>คุณใช้ครบ ${limit} คำถามแล้ว 🎯</h3>
+        <p>อัปเกรดเพื่อถามได้อีก ${tier === 'free' ? '200' : '500'} คำถาม/เดือน</p>
+        <button class="upgrade-btn" onclick="alert('Stripe integration coming soon')">อัปเกรด Basic — 99 THB/เดือน</button>
+      </div>`;
+  }
+}
+
+function appendMessage(role, text) {
+  const area = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.textContent = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+function appendTyping() {
+  const area = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ai';
+  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('message-input');
+  const text = input.value.trim();
+  if (!text || !currentUser) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  input.value = '';
+
+  appendMessage('user', text);
+  const typingDiv = appendTyping();
+
+  try {
+    const res = await fetch('/api/ai-advisor/message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text }),
+    });
+    const data = await res.json();
+    typingDiv.remove();
+
+    if (res.status === 402) {
+      // Quota exceeded
+      updateQuota(currentUser.questionsUsed, currentUser.tier);
+      return;
+    }
+
+    if (data.error) {
+      appendMessage('ai', `ขออภัย เกิดข้อผิดพลาด: ${data.error}`);
+      return;
+    }
+
+    const aiDiv = appendMessage('ai', data.reply);
+    currentUser.questionsUsed = data.questionsUsed;
+    updateQuota(data.questionsUsed, currentUser.tier);
+    updateUsageMeter(data.questionsUsed, currentUser.tier);
+    updateStreak();
+    loadFollowups(text, data.reply, aiDiv);
+  } catch {
+    typingDiv.remove();
+    appendMessage('ai', 'ขออภัย ไม่สามารถเชื่อมต่อได้ในขณะนี้ กรุณาลองใหม่');
+  } finally {
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+async function loadFollowups(question, answer, messageDiv) {
+  try {
+    const res = await fetch('/api/ai-advisor/followups', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, answer, calculatorSlug: 'ai-advisor' }),
+    });
+    const data = await res.json();
+    if (!data.success || !data.followups?.length) return;
+    const chips = document.createElement('div');
+    chips.className = 'followup-chips';
+    data.followups.forEach(q => {
+      const btn = document.createElement('button');
+      btn.className = 'followup-chip';
+      btn.textContent = q;
+      btn.addEventListener('click', () => {
+        document.getElementById('message-input').value = q;
+        chips.remove();
+        sendMessage();
+      });
+      chips.appendChild(btn);
+    });
+    messageDiv.appendChild(chips);
+    const area = document.getElementById('messages');
+    area.scrollTop = area.scrollHeight;
+  } catch {
+    // Chips are non-critical — silent failure is acceptable
+  }
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('message-input').value = btn.textContent;
+  btn.closest('.suggestions')?.remove();
+  sendMessage();
+}
+
+document.getElementById('message-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Auto-resize textarea
+document.getElementById('message-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,727 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณประกันสังคม มาตรา 33 39 40 ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณเงินสมทบประกันสังคม 2569 ฟรี — มาตรา 33 39 40 รู้ส่วนที่หักจากเงินเดือนและที่นายจ้างจ่าย พร้อมสิทธิประโยชน์ที่ได้รับ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันสังคม/`;
+
+const faqData = [
+  {
+    question: 'ประกันสังคมมาตรา 33 หักเท่าไร?',
+    answer: 'ลูกจ้างจ่ายสมทบ 5% ของเงินเดือน โดยคำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท ดังนั้นจ่ายขั้นต่ำ 83 บาท สูงสุด 750 บาทต่อเดือน นายจ้างจ่ายสมทบเท่ากัน',
+  },
+  {
+    question: 'ประกันสังคมมาตรา 39 จ่ายเท่าไร?',
+    answer: 'ผู้ประกันตนมาตรา 39 จ่ายเงินสมทบเดือนละ 432 บาท โดยรัฐบาลร่วมจ่าย 120 บาท เหมาะสำหรับผู้ที่เคยเป็นลูกจ้างมาตรา 33 แล้วลาออกแต่ต้องการรักษาสิทธิ์ประกันสังคมต่อ',
+  },
+  {
+    question: 'ประกันสังคมมาตรา 40 มีกี่ทางเลือก?',
+    answer: 'มาตรา 40 มี 3 ทางเลือก: ทางเลือกที่ 1 จ่าย 70 บาท/เดือน (คุ้มครอง 3 กรณี) ทางเลือกที่ 2 จ่าย 100 บาท/เดือน (คุ้มครอง 4 กรณี) และทางเลือกที่ 3 จ่าย 300 บาท/เดือน (คุ้มครอง 5 กรณี)',
+  },
+  {
+    question: 'ประกันสังคมมาตรา 33 39 40 ต่างกันอย่างไร?',
+    answer: 'มาตรา 33 สำหรับลูกจ้างที่มีนายจ้าง จ่าย 5% ของเงินเดือน คุ้มครอง 7 กรณี มาตรา 39 สำหรับผู้ที่ลาออกแต่ต้องการรักษาสิทธิ์ จ่ายเดือนละ 432 บาท คุ้มครอง 6 กรณี มาตรา 40 สำหรับผู้ประกอบอาชีพอิสระ จ่าย 70-300 บาท คุ้มครอง 3-5 กรณี',
+  },
+,
+  { question: 'ผู้ประกันตนมาตรา 33 จ่ายเงินสมทบเท่าไรต่อเดือน?', answer: 'จ่าย 5% ของค่าจ้าง (ฐานคำนวณ 1,650-15,000 บาท) สูงสุด 750 บาท/เดือน นายจ้างจ่ายเพิ่ม 5% และรัฐบาลสมทบ 2.75% เงินสมทบรวม 3 ฝ่ายเข้ากองทุนประกันสังคม' },
+  { question: 'สิทธิ์ประกันสังคมมาตรา 33 ครอบคลุมอะไรบ้าง?', answer: '7 กรณี: เจ็บป่วย, คลอดบุตร, ทุพพลภาพ, เสียชีวิต, ชราภาพ (บำนาญ/บำเหน็จ), สงเคราะห์บุตร 800 บาท/เดือน (สูงสุด 3 คน), ว่างงาน (70% ของค่าจ้าง สูงสุด 180 วัน)' },
+  { question: 'ส่งประกันสังคมต่อเนื่องกี่ปีถึงได้รับบำนาญเกษียณ?', answer: 'ต้องส่งเงินสมทบไม่น้อยกว่า 180 เดือน (15 ปี) จึงได้รับบำนาญชราภาพ 20% ของค่าจ้างเฉลี่ย 60 เดือนสุดท้าย + 1.5% ต่อปีสำหรับปีที่เกิน 15 ปี ถ้าส่งไม่ถึง 180 เดือนได้รับบำเหน็จแทน' },
+  { question: 'ลาออกจากงานแล้วสิทธิ์ประกันสังคมจะเป็นอย่างไร?', answer: 'สามารถสมัครต่อเองได้ในฐานะผู้ประกันตนมาตรา 39 ภายใน 6 เดือนหลังออกจากงาน จ่ายเงินสมทบ 432 บาท/เดือน (9% ของฐาน 4,800 บาท) รักษาสิทธิ์ 6 กรณีเดิม (ยกเว้นว่างงาน)' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกันสังคม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณเงินสมทบประกันสังคม (SSO) ปี 2569",
+  "description": "ขั้นตอนการคำนวณเงินสมทบประกันสังคมของพนักงาน ตามอัตรา 5% ของเงินเดือน และเพดานเงินเดือนสูงสุด 15,000 บาท ตามสำนักงานประกันสังคม",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบเงินเดือนเต็ม (Gross Salary)", "text": "ระบุเงินเดือนรายเดือนที่ได้รับจากนายจ้าง ก่อนหักภาษีและประกันสังคม เช่น 30,000 บาท"},
+    {"@type": "HowToStep", "name": "ตรวจสอบเพดานเงินเดือนประกันสังคม", "text": "เงินเดือนสำหรับคำนวณ SSO มีเพดานสูงสุด 15,000 บาท/เดือน ตัวอย่าง: เงินเดือน 30,000 → ใช้ 15,000 สำหรับคำนวณ SSO"},
+    {"@type": "HowToStep", "name": "คำนวณเงินสมทบพนักงาน 5%", "text": "เงินเดือนสำหรับ SSO × 5% = เงินสมทบของพนักงาน ตัวอย่าง: 15,000 × 5% = 750 บาท/เดือน (พนักงานจ่าย)"},
+    {"@type": "HowToStep", "name": "คำนวณเงินสมทบนายจ้าง 5%", "text": "เงินเดือนสำหรับ SSO × 5% = เงินสมทบของนายจ้าง ตัวอย่าง: 15,000 × 5% = 750 บาท/เดือน (นายจ้างจ่าย)"},
+    {"@type": "HowToStep", "name": "คำนวณยอดรวมประกันสังคม", "text": "รวมเงินสมทบทั้งหมด = พนักงาน 750 + นายจ้าง 750 + รัฐบาล 75 (0.5%) = 1,575 บาท/เดือน"}
+  ]
+};
+
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันสังคม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตอัตราปี 2569 ตามสำนักงานประกันสังคม (SSO)</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณประกันสังคม มาตรา 33 39 40 ปี 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเงินสมทบประกันสังคมรายเดือนและรายปี แสดงส่วนที่ลูกจ้าง นายจ้าง และรัฐบาลจ่าย
+    </p>
+
+    <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm">
+      <div class="font-semibold text-green-900 mb-1">📋 อัตราประกันสังคม 2569 (ฉบับย่อ)</div>
+      <div class="text-green-800 text-xs space-y-0.5">
+        <div>ลูกจ้าง: <span class="font-medium">5% ของเงินเดือน สูงสุด 750 บาท/เดือน</span></div>
+        <div>นายจ้าง: <span class="font-medium">5% ของเงินเดือน สูงสุด 750 บาท/เดือน</span></div>
+        <div>ฐานคำนวณ: <span class="font-medium">1,650 – 15,000 บาท/เดือน</span></div>
+        <div>สิทธิ์ 7 กรณี: เจ็บป่วย คลอดบุตร ทุพพลภาพ ชราภาพ ตาย สงเคราะห์บุตร ว่างงาน</div>
+      </div>
+    </div>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <p id="ss-form-error" class="mb-4 hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+        กรอกข้อมูลให้ครบก่อนคำนวณ
+      </p>
+
+      <!-- Section selector -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทผู้ประกันตน</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" data-section="33" class="section-btn px-3 py-2 text-sm font-medium rounded-md border-2 border-primary-500 bg-primary-50 text-primary-700">
+            มาตรา 33
+          </button>
+          <button type="button" data-section="39" class="section-btn px-3 py-2 text-sm font-medium rounded-md border-2 border-gray-200 bg-white text-gray-700 hover:border-gray-300">
+            มาตรา 39
+          </button>
+          <button type="button" data-section="40" class="section-btn px-3 py-2 text-sm font-medium rounded-md border-2 border-gray-200 bg-white text-gray-700 hover:border-gray-300">
+            มาตรา 40
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 33 inputs -->
+      <div id="input-s33" class="space-y-4 mb-6">
+        <div>
+          <label for="salary" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินเดือน (บาท/เดือน)
+          </label>
+          <input
+            type="text"
+            id="salary"
+            inputmode="numeric"
+            placeholder="เช่น 25,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+        <p class="text-xs text-gray-500">ฐานค่าจ้างขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท อัตราสมทบ 5%</p>
+      </div>
+
+      <!-- Section 39 inputs (no input needed) -->
+      <div id="input-s39" class="hidden mb-6">
+        <div class="bg-blue-50 rounded-lg p-4">
+          <p class="text-sm text-blue-800 font-medium">มาตรา 39: จ่ายเงินสมทบคงที่ เดือนละ 432 บาท</p>
+          <p class="text-xs text-blue-600 mt-1">สำหรับผู้ที่เคยเป็นลูกจ้างมาตรา 33 แล้วลาออก</p>
+        </div>
+      </div>
+
+      <!-- Section 40 inputs -->
+      <div id="input-s40" class="hidden mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">เลือกทางเลือก</label>
+        <div class="space-y-2">
+          <label class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-primary-300 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+            <input type="radio" name="s40-option" value="1" checked class="mt-0.5 text-primary-600" />
+            <div>
+              <span class="text-sm font-medium text-gray-900">ทางเลือกที่ 1 — 70 บาท/เดือน</span>
+              <span class="block text-xs text-gray-500">คุ้มครอง 3 กรณี: เจ็บป่วย ทุพพลภาพ เสียชีวิต</span>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-primary-300 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+            <input type="radio" name="s40-option" value="2" class="mt-0.5 text-primary-600" />
+            <div>
+              <span class="text-sm font-medium text-gray-900">ทางเลือกที่ 2 — 100 บาท/เดือน</span>
+              <span class="block text-xs text-gray-500">คุ้มครอง 4 กรณี: เจ็บป่วย ทุพพลภาพ เสียชีวิต ชราภาพ</span>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-primary-300 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+            <input type="radio" name="s40-option" value="3" class="mt-0.5 text-primary-600" />
+            <div>
+              <span class="text-sm font-medium text-gray-900">ทางเลือกที่ 3 — 300 บาท/เดือน</span>
+              <span class="block text-xs text-gray-500">คุ้มครอง 5 กรณี: เจ็บป่วย ทุพพลภาพ เสียชีวิต ชราภาพ สงเคราะห์บุตร</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณทันที
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินสมทบของคุณ/เดือน</div>
+            <div id="res-employee" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินสมทบรวม/เดือน</div>
+            <div id="res-total" class="text-2xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="space-y-2 text-sm mb-6">
+          <h3 class="font-semibold text-gray-900">รายละเอียดเงินสมทบ (ต่อเดือน)</h3>
+          <div id="row-employee" class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">ลูกจ้าง/ผู้ประกันตน</span>
+            <span id="res-employee-detail" class="font-medium text-green-700">-</span>
+          </div>
+          <div id="row-employer" class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">นายจ้าง</span>
+            <span id="res-employer" class="font-medium text-blue-600">-</span>
+          </div>
+          <div id="row-govt" class="flex justify-between py-2 border-b border-gray-100">
+            <span class="text-gray-600">รัฐบาล</span>
+            <span id="res-govt" class="font-medium text-purple-600">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-gray-300 font-semibold text-base">
+            <span class="text-gray-900">เงินสมทบรวม/เดือน</span>
+            <span id="res-total-bottom" class="text-blue-700">-</span>
+          </div>
+        </div>
+
+        <!-- Annual Summary -->
+        <div class="bg-gray-50 rounded-lg p-4 text-sm">
+          <h3 class="font-semibold text-gray-900 mb-2">สรุปรายปี</h3>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600">คุณจ่าย/ปี</span>
+              <span id="res-annual-employee" class="font-medium">-</span>
+            </div>
+            <div id="row-annual-employer" class="flex justify-between">
+              <span class="text-gray-600">นายจ้างจ่าย/ปี</span>
+              <span id="res-annual-employer" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">รัฐบาลจ่าย/ปี</span>
+              <span id="res-annual-govt" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">เงินสมทบรวม/ปี</span>
+              <span id="res-annual-total" class="font-medium">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section info box -->
+        <div id="section-info" class="mt-4 p-4 bg-indigo-50 rounded-lg text-sm text-indigo-800"></div>
+
+        <!-- Link to related calculators -->
+        <div class="mt-4 p-3 bg-primary-50 rounded-lg text-sm">
+          <a href="/คำนวณเงินเดือนสุทธิ/" class="text-primary-600 font-medium hover:text-primary-700">
+            → คำนวณเงินเดือนสุทธิ หลังหักภาษีและประกันสังคม
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="ss-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณเงินเดือนสุทธิ</p>
+      <p class="mt-1 text-sm text-primary-700">ดูเงินเดือนหลังหักประกันสังคมและภาษี ณ ที่จ่าย</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณเงินเดือนสุทธิ/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณเงินเดือนสุทธิ</a>
+        <a data-next-action-link href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">คำนวณภาษีเงินได้บุคคลธรรมดา</a>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#result"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณประกันสังคม</h2>
+
+      <p>
+        ประกันสังคมเป็นระบบสวัสดิการที่คุ้มครองผู้ประกันตนใน 7 กรณี ได้แก่ เจ็บป่วย คลอดบุตร
+        ทุพพลภาพ เสียชีวิต สงเคราะห์บุตร ชราภาพ และว่างงาน โดยมี 3 มาตราหลักคือ มาตรา 33, 39 และ 40
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เปรียบเทียบประกันสังคม มาตรา 33 vs 39 vs 40</h3>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left border-b border-r font-semibold">รายการ</th>
+              <th class="px-3 py-2 text-center border-b border-r font-semibold">มาตรา 33</th>
+              <th class="px-3 py-2 text-center border-b border-r font-semibold">มาตรา 39</th>
+              <th class="px-3 py-2 text-center border-b font-semibold">มาตรา 40</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">ผู้มีสิทธิ</td>
+              <td class="px-3 py-2 border-r text-center">ลูกจ้างที่มีนายจ้าง</td>
+              <td class="px-3 py-2 border-r text-center">อดีตผู้ประกันตน ม.33</td>
+              <td class="px-3 py-2 text-center">ผู้ประกอบอาชีพอิสระ</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">เงินสมทบ/เดือน</td>
+              <td class="px-3 py-2 border-r text-center">5% ของเงินเดือน<br/>(สูงสุด 750 บาท)</td>
+              <td class="px-3 py-2 border-r text-center">432 บาท (คงที่)</td>
+              <td class="px-3 py-2 text-center">70 / 100 / 300 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">นายจ้างร่วมจ่าย</td>
+              <td class="px-3 py-2 border-r text-center text-green-600 font-medium">✓ 5%</td>
+              <td class="px-3 py-2 border-r text-center text-red-500">✗</td>
+              <td class="px-3 py-2 text-center text-red-500">✗</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">จำนวนสิทธิประโยชน์</td>
+              <td class="px-3 py-2 border-r text-center font-semibold text-green-700">7 กรณี</td>
+              <td class="px-3 py-2 border-r text-center font-semibold text-blue-700">6 กรณี</td>
+              <td class="px-3 py-2 text-center font-semibold text-amber-700">3-5 กรณี</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">เจ็บป่วย</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-green-600">✓</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">คลอดบุตร</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-red-500">✗</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">ทุพพลภาพ</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-green-600">✓</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">เสียชีวิต</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-green-600">✓</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-3 py-2 border-r font-medium">ชราภาพ (บำนาญ)</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-amber-600">เฉพาะทางเลือก 2, 3</td>
+            </tr>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <td class="px-3 py-2 border-r font-medium">สงเคราะห์บุตร</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 text-center text-amber-600">เฉพาะทางเลือก 3</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border-r font-medium">ว่างงาน</td>
+              <td class="px-3 py-2 border-r text-center text-green-600">✓</td>
+              <td class="px-3 py-2 border-r text-center text-red-500">✗</td>
+              <td class="px-3 py-2 text-center text-red-500">✗</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-sm text-gray-500 mt-1">ที่มา: <a href="https://www.sso.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">สำนักงานประกันสังคม (sso.go.th)</a> อัปเดต 2569</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">มาตรา 33 — ลูกจ้างที่มีนายจ้าง</h3>
+
+      <p>
+        ผู้ประกันตนมาตรา 33 คือลูกจ้างที่ทำงานในสถานประกอบการที่มีลูกจ้างตั้งแต่ 1 คนขึ้นไป
+        โดยจ่ายเงินสมทบ 5% ของค่าจ้าง คำนวณจากฐานค่าจ้างขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท
+      </p>
+
+      <div class="bg-gray-50 rounded-lg p-4 my-4">
+        <p class="font-semibold">สูตร: เงินสมทบ = เงินเดือน × 5% (ขั้นต่ำ 83 บาท สูงสุด 750 บาท)</p>
+        <p class="text-sm text-gray-500 mt-1">ตัวอย่าง: เงินเดือน 25,000 บาท → 25,000 × 5% = 1,250 → หัก 750 บาท (เกินเพดาน)</p>
+      </div>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-gray-300">
+              <th class="py-2 pr-4">ผู้จ่าย</th>
+              <th class="py-2 pr-4">อัตราสมทบ</th>
+              <th class="py-2">สูงสุด/เดือน</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">ลูกจ้าง</td><td class="py-2 pr-4">5%</td><td class="py-2">750 บาท</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">นายจ้าง</td><td class="py-2 pr-4">5%</td><td class="py-2">750 บาท</td></tr>
+            <tr><td class="py-2 pr-4">รัฐบาล</td><td class="py-2 pr-4">2.75%</td><td class="py-2">412.50 บาท</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">มาตรา 39 — ผู้ประกันตนโดยสมัครใจ</h3>
+
+      <p>
+        ผู้ที่เคยเป็นลูกจ้างมาตรา 33 มาแล้วไม่น้อยกว่า 12 เดือน
+        และลาออกจากงานไม่เกิน 6 เดือน สามารถสมัครเป็นผู้ประกันตนมาตรา 39
+        จ่ายเงินสมทบคงที่เดือนละ 432 บาท โดยรัฐบาลร่วมจ่าย 120 บาท
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">มาตรา 40 — ผู้ประกอบอาชีพอิสระ</h3>
+
+      <p>
+        ผู้ประกอบอาชีพอิสระ อายุ 15-65 ปี สามารถสมัครเป็นผู้ประกันตนมาตรา 40
+        เลือกจ่ายได้ 3 ทางเลือก:
+      </p>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-gray-300">
+              <th class="py-2 pr-4">ทางเลือก</th>
+              <th class="py-2 pr-4">เงินสมทบ/เดือน</th>
+              <th class="py-2">สิทธิประโยชน์</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">ทางเลือก 1</td><td class="py-2 pr-4">70 บาท</td><td class="py-2">เจ็บป่วย ทุพพลภาพ เสียชีวิต</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-2 pr-4">ทางเลือก 2</td><td class="py-2 pr-4">100 บาท</td><td class="py-2">เจ็บป่วย ทุพพลภาพ เสียชีวิต ชราภาพ</td></tr>
+            <tr><td class="py-2 pr-4">ทางเลือก 3</td><td class="py-2 pr-4">300 บาท</td><td class="py-2">เจ็บป่วย ทุพพลภาพ เสียชีวิต ชราภาพ สงเคราะห์บุตร</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p><strong>ตัวอย่างที่ 1:</strong> เงินเดือน 25,000 บาท (มาตรา 33)</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าจ้างเกินเพดาน 15,000 บาท → คำนวณจาก 15,000 บาท</li>
+        <li>ลูกจ้าง: 15,000 × 5% = 750 บาท/เดือน</li>
+        <li>นายจ้าง: 15,000 × 5% = 750 บาท/เดือน</li>
+        <li>รัฐบาล: 15,000 × 2.75% = 412.50 บาท/เดือน</li>
+      </ul>
+
+      <p class="mt-4"><strong>ตัวอย่างที่ 2:</strong> เงินเดือน 10,000 บาท (มาตรา 33)</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าจ้างไม่เกินเพดาน → คำนวณจาก 10,000 บาท</li>
+        <li>ลูกจ้าง: 10,000 × 5% = 500 บาท/เดือน</li>
+        <li>นายจ้าง: 10,000 × 5% = 500 บาท/เดือน</li>
+        <li>รัฐบาล: 10,000 × 2.75% = 275 บาท/เดือน</li>
+      </ul>
+
+      <p class="mt-4"><strong>ตัวอย่างที่ 3:</strong> เงินเดือน 1,000 บาท (มาตรา 33)</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าจ้างต่ำกว่าขั้นต่ำ 1,650 บาท → คำนวณจาก 1,650 บาท</li>
+        <li>ลูกจ้าง: 1,650 × 5% = 82.50 → 83 บาท/เดือน</li>
+        <li>นายจ้าง: 1,650 × 5% = 82.50 → 83 บาท/เดือน</li>
+        <li>รัฐบาล: 1,650 × 2.75% = 45.38 บาท/เดือน</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <p><strong>ประกันสังคมพนักงาน = รายได้เดือนที่คำนวณได้ × 5%</strong> (สูงสุด 750 บาท/เดือน)</p>
+      <p><strong>เงินเดือนฐานสำหรับคำนวณ:</strong> เงินเดือนที่มีค่าตั้งแต่ 3,000 ถึง 15,000 บาท (ถ้าเงินเดือนต่ำกว่า 3,000 จะคิดตั้งแต่ 3,000 แทน) พนักงานต้องสมทบประกันสังคม 5% ของเงินเดือน (เดือนละสูงสุด 750 บาท) นายจ้างต้องสมทบ 5% เช่นกัน</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณ</h3>
+      <p><strong>ตัวอย่างที่ 1: เงินเดือน 10,000 บาท</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>เงินเดือนคำนวณ</strong> = 10,000 บาท</li>
+        <li><strong>ประกันสังคมพนักงาน</strong> = 10,000 × 5% = <strong>500 บาท/เดือน</strong></li>
+        <li><strong>ประกันสังคมนายจ้าง</strong> = 10,000 × 5% = 500 บาท/เดือน</li>
+        <li><strong>รวมเงินสมทบ</strong> = 1,000 บาท/เดือน (500 + 500)</li>
+      </ul>
+
+      <p class="mt-4"><strong>ตัวอย่างที่ 2: เงินเดือน 20,000 บาท (คิดจากขีดสูงสุด 15,000)</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>เงินเดือนคำนวณ</strong> = 15,000 บาท (ใช้ขีดสูงสุด)</li>
+        <li><strong>ประกันสังคมพนักงาน</strong> = 15,000 × 5% = <strong>750 บาท/เดือน</strong> (ขีดสูงสุด)</li>
+        <li><strong>ประกันสังคมนายจ้าง</strong> = 15,000 × 5% = 750 บาท/เดือน</li>
+        <li><strong>รวมเงินสมทบ</strong> = 1,500 บาท/เดือน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สรุป</h3>
+      <p>ประกันสังคมเป็นสิทธิหลักของพนักงาน เงินสมทบนี้จะไปเก็บไว้เพื่อใช้เมื่อเกษียณอายุ บาดเจ็บ หรือพิการ การสมทบนี้ถือเป็นหนึ่งในค่าลดหย่อนภาษีทั้งปีด้วย</p>
+      <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.sso.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">สำนักงานประกันสังคม: อัตราการสมทบประกันสังคม</a> [อัปเดต 2569]</p>
+    </section>
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณประกันสังคม/" />
+    <RelatedCalculators currentHref="/คำนวณประกันสังคม/" />
+
+    <!-- Related Article -->
+<!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      อัตราเงินสมทบอ้างอิงจากสำนักงานประกันสังคม (www.sso.go.th) ปี 2567/2568
+      กรุณาตรวจสอบอัตราล่าสุดจากสำนักงานประกันสังคมอีกครั้ง
+    </div>
+  </article>
+
+  <script>
+    // === Social Security Rates (SSO official) ===
+    const SS_RATE = 0.05;
+    const SS_MIN_BASE = 1_650;
+    const SS_MAX_BASE = 15_000;
+    const SS_GOVT_RATE = 0.0275;
+
+    // Section 39 fixed
+    const S39_EMPLOYEE = 432;
+    const S39_GOVT = 120;
+
+    // Section 40 options
+    const S40_OPTIONS: Record<string, { employee: number; govt: number }> = {
+      '1': { employee: 70, govt: 30 },
+      '2': { employee: 100, govt: 50 },
+      '3': { employee: 300, govt: 150 },
+    };
+
+    let currentSection = '33';
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function calculateS33(salary: number) {
+      const base = Math.min(Math.max(salary, SS_MIN_BASE), SS_MAX_BASE);
+      const employee = base * SS_RATE;
+      const employer = base * SS_RATE;
+      const govt = base * SS_GOVT_RATE;
+      const total = employee + employer + govt;
+      return { employee, employer, govt, total };
+    }
+
+    function calculateS39() {
+      const employee = S39_EMPLOYEE;
+      const employer = 0;
+      const govt = S39_GOVT;
+      const total = employee + govt;
+      return { employee, employer, govt, total };
+    }
+
+    function calculateS40(option: string) {
+      const opt = S40_OPTIONS[option] || S40_OPTIONS['1'];
+      const employee = opt.employee;
+      const employer = 0;
+      const govt = opt.govt;
+      const total = employee + govt;
+      return { employee, employer, govt, total };
+    }
+
+    // DOM refs
+    const sectionBtns = document.querySelectorAll('.section-btn') as NodeListOf<HTMLButtonElement>;
+    const inputS33 = document.getElementById('input-s33') as HTMLElement;
+    const inputS39 = document.getElementById('input-s39') as HTMLElement;
+    const inputS40 = document.getElementById('input-s40') as HTMLElement;
+    const salaryInput = document.getElementById('salary') as HTMLInputElement;
+    const salaryError = document.getElementById('salary-error') as HTMLElement;
+    const formError = document.getElementById('ss-form-error') as HTMLElement;
+    const submitBtn = document.getElementById('btn-calculate') as HTMLButtonElement;
+    const resultDiv = document.getElementById('result') as HTMLElement;
+    const nextActionCard = document.getElementById('ss-next-action') as HTMLElement;
+    const rowEmployer = document.getElementById('row-employer') as HTMLElement;
+    const rowAnnualEmployer = document.getElementById('row-annual-employer') as HTMLElement;
+    const sectionInfo = document.getElementById('section-info') as HTMLElement;
+
+    // Section switching
+    sectionBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentSection = btn.dataset.section || '33';
+        sectionBtns.forEach((b) => {
+          b.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+          b.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
+        });
+        btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
+        btn.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+
+        inputS33.classList.toggle('hidden', currentSection !== '33');
+        inputS39.classList.toggle('hidden', currentSection !== '39');
+        inputS40.classList.toggle('hidden', currentSection !== '40');
+
+        resultDiv.classList.add('hidden');
+        nextActionCard.classList.add('hidden');
+        clearValidation();
+        updateSubmitState();
+      });
+    });
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      salaryError.textContent = '';
+      salaryError.classList.add('hidden');
+    }
+
+    function updateSubmitState() {
+      if (currentSection === '33') {
+        const ready = parseNum(salaryInput.value) > 0;
+        submitBtn.disabled = !ready;
+        submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+        submitBtn.classList.toggle('opacity-70', !ready);
+        submitBtn.classList.toggle('cursor-not-allowed', !ready);
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'คำนวณทันที';
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      }
+    }
+
+    salaryInput.addEventListener('input', () => {
+      clearValidation();
+      updateSubmitState();
+    });
+    updateSubmitState();
+
+    function showResults(r: { employee: number; employer: number; govt: number; total: number }) {
+      (document.getElementById('res-employee') as HTMLElement).textContent = fmt(r.employee) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(r.total) + ' บาท';
+      (document.getElementById('res-employee-detail') as HTMLElement).textContent = fmt(r.employee) + ' บาท';
+      (document.getElementById('res-employer') as HTMLElement).textContent = fmt(r.employer) + ' บาท';
+      (document.getElementById('res-govt') as HTMLElement).textContent = fmt(r.govt) + ' บาท';
+      (document.getElementById('res-total-bottom') as HTMLElement).textContent = fmt(r.total) + ' บาท';
+      (document.getElementById('res-annual-employee') as HTMLElement).textContent = fmt(r.employee * 12) + ' บาท';
+      (document.getElementById('res-annual-employer') as HTMLElement).textContent = fmt(r.employer * 12) + ' บาท';
+      (document.getElementById('res-annual-govt') as HTMLElement).textContent = fmt(r.govt * 12) + ' บาท';
+      (document.getElementById('res-annual-total') as HTMLElement).textContent = fmt(r.total * 12) + ' บาท';
+
+      // Show/hide employer rows
+      const hasEmployer = r.employer > 0;
+      rowEmployer.classList.toggle('hidden', !hasEmployer);
+      rowAnnualEmployer.classList.toggle('hidden', !hasEmployer);
+
+      // Section-specific info
+      if (currentSection === '33') {
+        sectionInfo.innerHTML = '<strong>มาตรา 33:</strong> คุ้มครอง 7 กรณี — เจ็บป่วย คลอดบุตร ทุพพลภาพ เสียชีวิต สงเคราะห์บุตร ชราภาพ ว่างงาน';
+      } else if (currentSection === '39') {
+        sectionInfo.innerHTML = '<strong>มาตรา 39:</strong> คุ้มครอง 6 กรณี — เจ็บป่วย คลอดบุตร ทุพพลภาพ เสียชีวิต สงเคราะห์บุตร ชราภาพ';
+      } else {
+        const opt = (document.querySelector('input[name="s40-option"]:checked') as HTMLInputElement)?.value || '1';
+        const coverage: Record<string, string> = {
+          '1': 'คุ้มครอง 3 กรณี — เจ็บป่วย ทุพพลภาพ เสียชีวิต',
+          '2': 'คุ้มครอง 4 กรณี — เจ็บป่วย ทุพพลภาพ เสียชีวิต ชราภาพ',
+          '3': 'คุ้มครอง 5 กรณี — เจ็บป่วย ทุพพลภาพ เสียชีวิต ชราภาพ สงเคราะห์บุตร',
+        };
+        sectionInfo.innerHTML = `<strong>มาตรา 40 ทางเลือกที่ ${opt}:</strong> ${coverage[opt]}`;
+      }
+
+      resultDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
+    }
+
+    submitBtn.addEventListener('click', () => {
+      clearValidation();
+
+      if (currentSection === '33') {
+        if (hasInvalidNumber(salaryInput.value)) {
+          formError.classList.remove('hidden');
+          salaryError.textContent = 'รูปแบบข้อมูลไม่ถูกต้อง';
+          salaryError.classList.remove('hidden');
+          salaryInput.focus();
+          updateSubmitState();
+          return;
+        }
+        const salary = parseNum(salaryInput.value);
+        if (salary <= 0) {
+          formError.classList.remove('hidden');
+          salaryError.textContent = 'กรุณากรอกจำนวนเงินมากกว่า 0';
+          salaryError.classList.remove('hidden');
+          salaryInput.focus();
+          updateSubmitState();
+          return;
+        }
+        trackCalculatorStart('social_security');
+        showResults(calculateS33(salary));
+      } else if (currentSection === '39') {
+        trackCalculatorStart('social_security');
+        showResults(calculateS39());
+      } else {
+        const opt = (document.querySelector('input[name="s40-option"]:checked') as HTMLInputElement)?.value || '1';
+        trackCalculatorStart('social_security');
+        showResults(calculateS40(opt));
+      }
+
+      trackCalculatorComplete('social_security');
+      trackCalculatorUsed('social_security');
+    });
+
+    // Next action tracking
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'social_security',
+            target_href: href,
+          });
+        }
+      });
+    });
+
+    // Enter key for salary input
+    salaryInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitBtn.click();
+      }
+    });
+
+    // Track result section viewport
+    const ssResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('social_security');
+          ssResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    ssResultObserver.observe(document.getElementById('result')!);
+  </script>
+</BaseLayout>

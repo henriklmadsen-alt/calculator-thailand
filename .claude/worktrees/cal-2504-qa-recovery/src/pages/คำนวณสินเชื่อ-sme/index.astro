@@ -1,0 +1,313 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณสินเชื่อ SME 2569 | วงเงินหมุนเวียน ดอกเบี้ย MOR/MLR | Kamnuanlek';
+const pageDescription = 'คำนวณดอกเบี้ยสินเชื่อ SME วงเงินหมุนเวียน (revolving credit) รายเดือน ต้นทุนรายปี และอัตราดอกเบี้ยที่แท้จริงรวมค่าธรรมเนียม สำหรับธุรกิจขนาดเล็ก-กลาง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณสินเชื่อ-sme/`;
+
+const faqData = [
+  {
+    question: 'สินเชื่อ SME วงเงินหมุนเวียนคืออะไร?',
+    answer: 'วงเงินหมุนเวียน (revolving credit line) คือวงเงินที่ธนาคารอนุมัติให้ธุรกิจ SME ดึงใช้ได้ตามต้องการ จ่ายดอกเบี้ยเฉพาะยอดที่ใช้จริง คล้ายบัตรเครดิตธุรกิจ เหมาะสำหรับสภาพคล่องระยะสั้น เช่น รับออเดอร์ใหญ่ก่อนได้รับเงิน',
+  },
+  {
+    question: 'MOR และ MLR คืออะไร?',
+    answer: 'MOR (Minimum Overdraft Rate) คืออัตราดอกเบี้ยขั้นต่ำสำหรับวงเงินเบิกเกินบัญชี MLR (Minimum Loan Rate) คืออัตราดอกเบี้ยขั้นต่ำสำหรับสินเชื่อระยะยาว ธนาคารพาณิชย์แต่ละแห่งกำหนดต่างกัน ปัจจุบันอยู่ที่ประมาณ 6.5-8.5% ต่อปี',
+  },
+  {
+    question: 'ค่าธรรมเนียมรายปีสินเชื่อ SME มีอะไรบ้าง?',
+    answer: 'ค่าธรรมเนียมที่พบบ่อยได้แก่ ค่าธรรมเนียมวงเงิน (commitment fee) ประมาณ 0.5-1% ของวงเงินที่ไม่ได้ใช้ต่อปี ค่าธรรมเนียมการจัดการสินเชื่อ และค่าประกันภัย ควรนำมารวมในการคำนวณต้นทุนที่แท้จริง',
+  },
+  {
+    question: 'SME กู้วงเงินหมุนเวียนได้สูงสุดเท่าไร?',
+    answer: 'วงเงินขึ้นกับยอดขายและงบการเงินของธุรกิจ โดยทั่วไปธนาคารให้วงเงินไม่เกิน 25-30% ของยอดขายรายปี หรือพิจารณาจากกระแสเงินสด บางธนาคารมีโครงการ SME พิเศษผ่าน บสย. (บรรษัทประกันสินเชื่ออุตสาหกรรมขนาดย่อม) ช่วยค้ำประกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณสินเชื่อ SME',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อ SME">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      🏪 คำนวณสินเชื่อ SME — วงเงินหมุนเวียน ดอกเบี้ย MOR/MLR
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณดอกเบี้ยรายเดือน ต้นทุนรายปี และอัตราดอกเบี้ยที่แท้จริงรวมค่าธรรมเนียม
+      สำหรับวงเงินสินเชื่อ SME แบบหมุนเวียน (revolving credit line)
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="sme-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="credit-limit" class="block text-sm font-medium text-gray-700 mb-1">
+              วงเงินสินเชื่อที่ได้รับอนุมัติ (บาท)
+            </label>
+            <input
+              type="text"
+              id="credit-limit"
+              inputmode="numeric"
+              placeholder="เช่น 1,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="amount-used" class="block text-sm font-medium text-gray-700 mb-1">
+              ยอดที่ใช้จริง (บาท)
+            </label>
+            <input
+              type="text"
+              id="amount-used"
+              inputmode="numeric"
+              placeholder="เช่น 700,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="annual-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ย MOR/MLR (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="annual-rate"
+              inputmode="decimal"
+              placeholder="7.5"
+              value="7.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="days-used" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนวันที่ใช้ (วัน)
+            </label>
+            <input
+              type="text"
+              id="days-used"
+              inputmode="numeric"
+              placeholder="30"
+              value="30"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="annual-fee" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าธรรมเนียมรายปี (บาท)
+            </label>
+            <input
+              type="text"
+              id="annual-fee"
+              inputmode="numeric"
+              placeholder="0 (ถ้ามี)"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยตามจำนวนวันที่ระบุ</div>
+            <div id="res-period-interest" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ต้นทุนรายปีหากใช้ตลอด</div>
+            <div id="res-annual-cost" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราที่แท้จริงรวมค่าธรรมเนียม</div>
+            <div id="res-effective-rate" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">วงเงินอนุมัติ</span>
+            <span id="res-limit" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดที่ใช้จริง</span>
+            <span id="res-used" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ดอกเบี้ยรายวัน</span>
+            <span id="res-daily-interest" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ค่าธรรมเนียมรายปี</span>
+            <span id="res-fee" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">วงเงินที่ไม่ได้ใช้</span>
+            <span id="res-unused" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณต้นทุนสินเชื่อ SME</h2>
+
+      <p>
+        สินเชื่อวงเงินหมุนเวียนสำหรับ SME คิดดอกเบี้ยแบบรายวัน
+        จากยอดเงินที่ดึงใช้จริง ทำให้ยืดหยุ่นกว่าสินเชื่อระยะยาวแบบกำหนดงวด
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ดอกเบี้ยรายวัน = ยอดที่ใช้จริง × (อัตราดอกเบี้ยต่อปี ÷ 365)</li>
+        <li>ดอกเบี้ยตามจำนวนวัน = ดอกเบี้ยรายวัน × จำนวนวัน</li>
+        <li>ต้นทุนรายปี = ยอดที่ใช้ × อัตราดอกเบี้ยต่อปี + ค่าธรรมเนียม</li>
+        <li>อัตราที่แท้จริง = (ต้นทุนรายปี ÷ ยอดที่ใช้จริง) × 100%</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <p>วงเงิน 1,000,000 บาท ใช้จริง 700,000 บาท MOR 7.5% ค่าธรรมเนียม 5,000 บาท/ปี:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ดอกเบี้ยรายวัน = 700,000 × 7.5% / 365 = 143.84 บาท/วัน</li>
+        <li>ดอกเบี้ย 30 วัน = 4,315 บาท</li>
+        <li>ต้นทุนรายปีรวมค่าธรรมเนียม = 52,500 + 5,000 = 57,500 บาท</li>
+        <li>อัตราที่แท้จริง = 57,500 / 700,000 = 8.21% ต่อปี</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับลดต้นทุนสินเชื่อ SME</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ใช้วงเงินเฉพาะช่วงที่จำเป็น ชำระคืนเร็วเพื่อลดดอกเบี้ยรายวัน</li>
+        <li>เปรียบเทียบ MOR ของหลายธนาคาร อาจต่างกันถึง 1-2%</li>
+        <li>ตรวจสอบว่ามี commitment fee สำหรับวงเงินที่ไม่ได้ใช้</li>
+        <li>พิจารณาการค้ำประกันผ่าน บสย. เพื่อได้อัตราดอกเบี้ยที่ดีขึ้น</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณสินเชื่อ-sme/" />
+    <RelatedCalculators currentHref="/คำนวณสินเชื่อ-sme/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเบื้องต้นเท่านั้น
+      อัตราดอกเบี้ย MOR/MLR และค่าธรรมเนียมจริงขึ้นอยู่กับนโยบายของสถาบันการเงินแต่ละแห่ง
+      ไม่ถือเป็นคำแนะนำทางการเงิน โปรดตรวจสอบเงื่อนไขกับธนาคารโดยตรง
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('sme-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const creditLimit = parseNum((document.getElementById('credit-limit') as HTMLInputElement).value);
+      const amountUsed = parseNum((document.getElementById('amount-used') as HTMLInputElement).value);
+      const annualRate = parseNum((document.getElementById('annual-rate') as HTMLInputElement).value) || 7.5;
+      const daysUsed = parseNum((document.getElementById('days-used') as HTMLInputElement).value) || 30;
+      const annualFee = parseNum((document.getElementById('annual-fee') as HTMLInputElement).value);
+
+      if (creditLimit <= 0) { (document.getElementById('credit-limit') as HTMLInputElement).focus(); return; }
+      if (amountUsed <= 0) { (document.getElementById('amount-used') as HTMLInputElement).focus(); return; }
+      if (amountUsed > creditLimit) {
+        alert('ยอดที่ใช้จริงต้องไม่เกินวงเงินอนุมัติ');
+        (document.getElementById('amount-used') as HTMLInputElement).focus();
+        return;
+      }
+
+      const dailyRate = annualRate / 100 / 365;
+      const dailyInterest = amountUsed * dailyRate;
+      const periodInterest = dailyInterest * daysUsed;
+      const annualInterestCost = amountUsed * (annualRate / 100);
+      const totalAnnualCost = annualInterestCost + annualFee;
+      const effectiveRate = (totalAnnualCost / amountUsed) * 100;
+      const unusedAmount = creditLimit - amountUsed;
+
+      (document.getElementById('res-period-interest') as HTMLElement).textContent = fmt(periodInterest) + ' บาท';
+      (document.getElementById('res-annual-cost') as HTMLElement).textContent = fmt(totalAnnualCost) + ' บาท/ปี';
+      (document.getElementById('res-effective-rate') as HTMLElement).textContent = effectiveRate.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-limit') as HTMLElement).textContent = fmt(creditLimit) + ' บาท';
+      (document.getElementById('res-used') as HTMLElement).textContent = fmt(amountUsed) + ' บาท';
+      (document.getElementById('res-daily-interest') as HTMLElement).textContent = fmt(dailyInterest) + ' บาท/วัน';
+      (document.getElementById('res-fee') as HTMLElement).textContent = annualFee > 0 ? fmt(annualFee) + ' บาท/ปี' : 'ไม่มี';
+      (document.getElementById('res-unused') as HTMLElement).textContent = fmt(unusedAmount) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('sme-loan');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('sme-loan');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

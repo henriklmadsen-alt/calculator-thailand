@@ -1,0 +1,238 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ ค่าพัฒนาแอป 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนพัฒนาแอป iOS Android ROI ประเมินความคุ้มค่าของการพัฒนา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่า-mobile-app/`;
+
+const faqData = [
+  {
+    question: 'ค่าพัฒนาแอปทั่วไป?',
+    answer: 'Simple App (MVP): 300,000-1,000,000 บาท Medium App: 1,000,000-5,000,000 บาท Complex App: 5,000,000+ บาท ขึ้นอยู่กับ Features ความซับซ้อน',
+  },
+  {
+    question: 'เช่า Freelancer หรือ Agency?',
+    answer: 'Freelancer: ถูกกว่า ยืดหยุ่น เสี่ยง Quality Agency: ดีกว่า แต่แพง มี Process Hybrid: บางส่วน In-house บางส่วน Outsource',
+  },
+  {
+    question: 'ต้นทุนอื่นอีก?',
+    answer: 'Design: 20-30% Development: 40-50% Testing: 10-20% Deployment/Marketing: 10-20% Maintenance: 15-20% ต่อปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าพัฒนาแอป',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าพัฒนาแอป">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      📱 คำนวณค่าพัฒนาแอป
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณต้นทุนพัฒนาแอป iOS Android
+      ROI ประเมินความคุ้มค่าของการพัฒนา
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="app-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="dev-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ต้นทุนพัฒนา (บาท)
+            </label>
+            <input
+              type="text"
+              id="dev-cost"
+              inputmode="numeric"
+              placeholder="เช่น 500000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="maintenance-pct" class="block text-sm font-medium text-gray-700 mb-1">
+              Maintenance % ต่อปี
+            </label>
+            <input
+              type="text"
+              id="maintenance-pct"
+              inputmode="numeric"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="expected-revenue" class="block text-sm font-medium text-gray-700 mb-1">
+              รายได้ปีแรก (บาท)
+            </label>
+            <input
+              type="text"
+              id="expected-revenue"
+              inputmode="numeric"
+              placeholder="เช่น 1000000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="years" class="block text-sm font-medium text-gray-700 mb-1">
+              คิดถึงปีที่เท่าไร
+            </label>
+            <input
+              type="text"
+              id="years"
+              inputmode="numeric"
+              placeholder="เช่น 3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณค่า
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">Dev Cost</div>
+            <div id="res-dev" class="text-xl font-bold text-blue-600">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">Maintenance รวม</div>
+            <div id="res-maintenance" class="text-xl font-bold text-green-600">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">Total Cost</div>
+            <div id="res-total-cost" class="text-xl font-bold text-purple-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ROI %</div>
+            <div id="res-roi" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">รายได้ปีแรก</span>
+            <span id="res-y1-revenue" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">รายได้รวม (ทั้งหมด)</span>
+            <span id="res-total-revenue" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">Payback Period</span>
+            <span id="res-payback" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <GuardedAdSlot />
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณ-ค่า-mobile-app/" />
+    <RelatedCalculators currentHref="/คำนวณ-ค่า-mobile-app/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('app-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const devCost = parseNum((document.getElementById('dev-cost') as HTMLInputElement).value);
+      const maintenancePct = parseNum((document.getElementById('maintenance-pct') as HTMLInputElement).value);
+      const expectedRevenue = parseNum((document.getElementById('expected-revenue') as HTMLInputElement).value);
+      const years = parseNum((document.getElementById('years') as HTMLInputElement).value);
+
+      if (devCost <= 0) { (document.getElementById('dev-cost') as HTMLInputElement).focus(); return; }
+      if (expectedRevenue <= 0) { (document.getElementById('expected-revenue') as HTMLInputElement).focus(); return; }
+      if (years <= 0) { (document.getElementById('years') as HTMLInputElement).focus(); return; }
+
+      const maintenanceAnnual = (devCost * maintenancePct) / 100;
+      const maintenanceTotal = maintenanceAnnual * years;
+      const totalCost = devCost + maintenanceTotal;
+      const totalRevenue = expectedRevenue * years;
+      const profit = totalRevenue - totalCost;
+      const roi = (profit / totalCost) * 100;
+      const payback = expectedRevenue > 0 ? devCost / expectedRevenue : 0;
+
+      (document.getElementById('res-dev') as HTMLElement).textContent = fmt(devCost) + ' บาท';
+      (document.getElementById('res-maintenance') as HTMLElement).textContent = fmt(maintenanceTotal) + ' บาท';
+      (document.getElementById('res-total-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+      (document.getElementById('res-roi') as HTMLElement).textContent = roi.toFixed(0) + '%';
+      (document.getElementById('res-y1-revenue') as HTMLElement).textContent = fmt(expectedRevenue) + ' บาท';
+      (document.getElementById('res-total-revenue') as HTMLElement).textContent = fmt(totalRevenue) + ' บาท';
+      (document.getElementById('res-payback') as HTMLElement).textContent = payback.toFixed(1) + ' ปี';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('mobile-app-cost');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('mobile-app-cost');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

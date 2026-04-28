@@ -1,0 +1,199 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณสินเชื่อ Top-Up 2569 — กู้เพิ่มบนบ้านเดิม | Kamnuanlek';
+const pageDescription = 'คำนวณวงเงิน Top-Up สินเชื่อบ้านเพิ่มเติมบนหลักประกันเดิม ค่างวดใหม่รวมทั้งหมด และดอกเบี้ยรวมที่เพิ่มขึ้น ช่วยตัดสินใจกู้เพิ่มอย่างรอบคอบ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณสินเชื่อ-top-up/`;
+
+const faqData = [
+  {
+    question: 'สินเชื่อ Top-Up คืออะไร?',
+    answer: 'สินเชื่อ Top-Up คือการกู้เงินเพิ่มเติมบนหลักประกันอสังหาริมทรัพย์ที่มีอยู่แล้ว โดยใช้ส่วนต่างระหว่างราคาประเมินกับยอดหนี้คงเหลือ เป็น "Home Equity Loan" รูปแบบหนึ่ง ดอกเบี้ยมักต่ำกว่าสินเชื่อส่วนบุคคลมาก',
+  },
+  {
+    question: 'กู้ Top-Up ได้วงเงินเท่าไร?',
+    answer: 'วงเงิน Top-Up สูงสุด = (ราคาประเมิน × 70-80%) - ยอดหนี้คงเหลือ ตัวอย่าง บ้านราคาประเมิน 5 ล้าน ยอดคงเหลือ 2 ล้าน Top-Up ได้สูงสุด (5×0.8) - 2 = 2 ล้านบาท',
+  },
+  {
+    question: 'Top-Up vs สินเชื่อส่วนบุคคล อะไรดีกว่า?',
+    answer: 'Top-Up ดีกว่าถ้ามีหลักประกัน: ดอกเบี้ยต่ำกว่ามาก (6-8% vs 18-28%) วงเงินสูงกว่า ผ่อนนานกว่า แต่เสี่ยงกว่าเพราะใช้บ้านค้ำประกัน ถ้าผ่อนไม่ไหวอาจถูกยึดบ้าน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณสินเชื่อ Top-Up',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อ Top-Up">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณสินเชื่อ Top-Up — กู้เพิ่มบนบ้านเดิม
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณวงเงิน Top-Up สูงสุด ค่างวดรวมใหม่ และความสามารถในการชำระ</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="topup-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="property-value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ราคาประเมินบ้าน (บาท)</label>
+            <input type="text" id="property-value" inputmode="numeric" placeholder="เช่น 5,000,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="current-balance" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ยอดหนี้บ้านคงเหลือ (บาท)</label>
+            <input type="text" id="current-balance" inputmode="numeric" placeholder="เช่น 2,000,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="topup-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วงเงิน Top-Up ที่ต้องการ (บาท)</label>
+            <input type="text" id="topup-amount" inputmode="numeric" placeholder="เช่น 500,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="topup-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย Top-Up (%/ปี)</label>
+            <input type="text" id="topup-rate" inputmode="decimal" placeholder="เช่น 7.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="topup-term" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลา Top-Up (ปี)</label>
+            <input type="text" id="topup-term" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+          <div>
+            <label for="existing-payment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ค่างวดบ้านปัจจุบัน (บาท)</label>
+            <input type="text" id="existing-payment" inputmode="numeric" placeholder="เช่น 15,000"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">วงเงิน Top-Up สูงสุด</div>
+            <div id="res-max-topup" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ค่างวด Top-Up/เดือน</div>
+            <div id="res-topup-pay" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+          <div class="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ค่างวดรวมทั้งหมด</div>
+            <div id="res-total-pay" class="text-xl font-bold text-orange-700 dark:text-orange-300">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm mb-4">
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">Equity ที่มี (ราคาประเมิน × 80% - หนี้คงเหลือ)</span>
+            <span id="res-equity" class="font-medium text-gray-900 dark:text-gray-100">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">ดอกเบี้ย Top-Up รวม</span>
+            <span id="res-topup-interest" class="font-medium text-red-600">-</span>
+          </div>
+        </div>
+        <div id="eligibility" class="p-3 rounded-lg text-sm"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">วงเงิน Top-Up คำนวณอย่างไร?</h2>
+      <p>ธนาคารจะประเมินราคาทรัพย์สินใหม่ แล้วคำนวณ LTV รวม (หนี้เดิม + Top-Up) ไม่เกิน 70-80% ของราคาประเมิน นอกจากนี้ยังพิจารณา DTI รวมค่างวดทั้งหมดไม่เกิน 40% ของรายได้</p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณสินเชื่อ-top-up/" />
+    <RelatedCalculators currentHref="/คำนวณสินเชื่อ-top-up/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ วงเงินและเงื่อนไขจริงขึ้นอยู่กับการพิจารณาของธนาคาร
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('topup-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const propVal = parseNum((document.getElementById('property-value') as HTMLInputElement).value);
+      const curBal = parseNum((document.getElementById('current-balance') as HTMLInputElement).value);
+      const topupAmt = parseNum((document.getElementById('topup-amount') as HTMLInputElement).value);
+      const topupRate = parseNum((document.getElementById('topup-rate') as HTMLInputElement).value) || 7.5;
+      const topupTerm = parseNum((document.getElementById('topup-term') as HTMLInputElement).value) || 10;
+      const existingPay = parseNum((document.getElementById('existing-payment') as HTMLInputElement).value);
+      if (!propVal) return;
+
+      const maxEquity = propVal * 0.80 - curBal;
+      const n = topupTerm * 12;
+      const r = topupRate / 100 / 12;
+      const topupPay = r === 0 ? topupAmt / n : topupAmt * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const totalPay = topupPay + existingPay;
+      const topupInterest = topupPay * n - topupAmt;
+
+      (document.getElementById('res-max-topup') as HTMLElement).textContent = fmt(maxEquity) + ' บาท';
+      (document.getElementById('res-topup-pay') as HTMLElement).textContent = fmt(topupPay) + ' บาท';
+      (document.getElementById('res-total-pay') as HTMLElement).textContent = fmt(totalPay) + ' บาท';
+      (document.getElementById('res-equity') as HTMLElement).textContent = fmt(maxEquity) + ' บาท';
+      (document.getElementById('res-topup-interest') as HTMLElement).textContent = fmt(topupInterest) + ' บาท';
+
+      const elig = document.getElementById('eligibility') as HTMLElement;
+      if (topupAmt > maxEquity) {
+        elig.className = 'p-3 rounded-lg text-sm bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300';
+        elig.textContent = `⚠️ วงเงิน Top-Up ที่ต้องการ (${fmt(topupAmt)} บาท) เกินกว่า Equity ที่มี (${fmt(maxEquity)} บาท)`;
+      } else {
+        elig.className = 'p-3 rounded-lg text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300';
+        elig.textContent = `✓ วงเงินอยู่ในเกณฑ์ที่รับได้ ค่างวดรวม ${fmt(totalPay)} บาท/เดือน`;
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('top-up-loan');
+    });
+  </script>
+</BaseLayout>

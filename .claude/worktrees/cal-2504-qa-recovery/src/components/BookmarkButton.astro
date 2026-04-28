@@ -1,0 +1,201 @@
+---
+// BookmarkButton Component
+// Adds a star/bookmark icon to calculator headers
+// Click to add/remove from favorites (max 5, stored in localStorage)
+//
+// Props:
+//   - calcTitle: string — the calculator name
+//   - calcHref: string — the calculator path (e.g., "/คำนวณ-bmi/")
+//   - calcEmoji?: string — optional emoji for the favorite card
+//   - isDarkMode?: boolean — optional dark mode styling
+
+interface Props {
+  calcTitle: string;
+  calcHref: string;
+  calcEmoji?: string;
+  isDarkMode?: boolean;
+}
+
+const { calcTitle, calcHref, calcEmoji, isDarkMode = false } = Astro.props;
+
+// Generate unique ID for this button
+const buttonId = `bookmark-btn-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<button
+  id={buttonId}
+  type="button"
+  class="ct-bookmark-btn"
+  data-calc-title={calcTitle}
+  data-calc-href={calcHref}
+  data-calc-emoji={calcEmoji || ''}
+  aria-label={`เพิ่ม ${calcTitle} ลงในรายการโปรด`}
+  title={`เพิ่ม ${calcTitle} ลงในรายการโปรด`}
+>
+  <!-- Outlined star (default) -->
+  <svg
+    class="ct-bookmark-icon-outline"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 15.09 10.26 24 10.35 17.18 16.54 19.34 24.63 12 19.31 4.66 24.63 6.82 16.54 0 10.35 8.91 10.26 12 2"></polygon>
+  </svg>
+
+  <!-- Filled star (favorited) -->
+  <svg
+    class="ct-bookmark-icon-filled ct-hidden"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 15.09 10.26 24 10.35 17.18 16.54 19.34 24.63 12 19.31 4.66 24.63 6.82 16.54 0 10.35 8.91 10.26 12 2"></polygon>
+  </svg>
+</button>
+
+<style>
+  .ct-bookmark-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+  }
+
+  .ct-bookmark-btn:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+    color: #3b82f6;
+  }
+
+  .ct-bookmark-btn:active {
+    transform: scale(0.95);
+  }
+
+  .ct-bookmark-btn.ct-favorited {
+    color: #fbbf24;
+  }
+
+  .ct-bookmark-btn.ct-favorited:hover {
+    background-color: rgba(251, 191, 36, 0.1);
+    color: #f59e0b;
+  }
+
+  .ct-bookmark-icon-outline {
+    display: block;
+  }
+
+  .ct-bookmark-icon-filled {
+    position: absolute;
+  }
+
+  .ct-hidden {
+    display: none !important;
+  }
+</style>
+
+<script define:vars={{ buttonId, calcTitle, calcHref, calcEmoji }}>
+  // Import favorites functions
+  // (These are imported and called dynamically at runtime)
+
+  async function initBookmarkButton() {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+
+    // Dynamically import the favorites module
+    const { getFavorites, isFavorited, addFavorite, removeFavorite } =
+      await import('../lib/favorites.ts');
+
+    // Check initial state
+    function updateButtonState() {
+      const isBookmarked = isFavorited(calcHref);
+      const outlineIcon = btn.querySelector('.ct-bookmark-icon-outline');
+      const filledIcon = btn.querySelector('.ct-bookmark-icon-filled');
+
+      if (isBookmarked) {
+        btn.classList.add('ct-favorited');
+        outlineIcon?.classList.add('ct-hidden');
+        filledIcon?.classList.remove('ct-hidden');
+        btn.setAttribute(
+          'aria-label',
+          `ลบ ${calcTitle} ออกจากรายการโปรด`
+        );
+        btn.setAttribute(
+          'title',
+          `ลบ ${calcTitle} ออกจากรายการโปรด`
+        );
+      } else {
+        btn.classList.remove('ct-favorited');
+        outlineIcon?.classList.remove('ct-hidden');
+        filledIcon?.classList.add('ct-hidden');
+        btn.setAttribute(
+          'aria-label',
+          `เพิ่ม ${calcTitle} ลงในรายการโปรด`
+        );
+        btn.setAttribute(
+          'title',
+          `เพิ่ม ${calcTitle} ลงในรายการโปรด`
+        );
+      }
+    }
+
+    // Update on init
+    updateButtonState();
+
+    // Handle click
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const isCurrentlyFavorited = isFavorited(calcHref);
+
+      if (isCurrentlyFavorited) {
+        removeFavorite(calcHref);
+      } else {
+        // Check if we're at max (5 favorites)
+        const currentFavorites = getFavorites();
+        if (currentFavorites.length >= 5) {
+          // Show a toast/notification (optional)
+          console.log('최대 5개까지만 저장할 수 있습니다');
+        }
+        addFavorite(calcTitle, calcHref, calcEmoji);
+      }
+
+      // Trigger custom event so other components can react
+      window.dispatchEvent(
+        new CustomEvent('ct:favorites-changed', {
+          detail: { href: calcHref, isFavorited: !isCurrentlyFavorited },
+        })
+      );
+
+      updateButtonState();
+    });
+
+    // Listen for external favorites changes
+    window.addEventListener('ct:favorites-changed', () => {
+      updateButtonState();
+    });
+  }
+
+  // Initialize when DOM is ready or immediately if already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBookmarkButton);
+  } else {
+    initBookmarkButton();
+  }
+</script>

@@ -1,0 +1,226 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจ้างลาคลอดบิดา ภาครัฐ 15 วัน เอกชนตามนโยบายบริษัท ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างลาคลอดบิดา ภาครัฐ 15 วันมีสิทธิ์ตามกฎหมาย ภาคเอกชนไม่มีกฎหมายบังคับแต่หลายบริษัทให้ 3-15 วัน คำนวณรายได้ที่ได้รับ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างลาคลอดบิดา/`;
+
+const faqData = [
+  {
+    question: 'พนักงานเอกชนมีสิทธิ์ลาคลอดบิดาตามกฎหมายหรือไม่?',
+    answer: 'พระราชบัญญัติคุ้มครองแรงงานไม่ได้กำหนดให้นายจ้างเอกชนต้องให้สิทธิ์ลาคลอดบิดา สิทธิ์นี้ขึ้นอยู่กับนโยบายของแต่ละบริษัท หลายบริษัทกำหนดให้ 3-15 วัน',
+  },
+  {
+    question: 'ข้าราชการลาคลอดบิดาได้กี่วัน?',
+    answer: 'ข้าราชการและพนักงานรัฐวิสาหกิจมีสิทธิ์ลาเพื่อกิจของครอบครัว ซึ่งรวมถึงการดูแลภรรยาหลังคลอด ได้ 15 วัน โดยได้รับเงินเดือนเต็ม ตาม พ.ร.บ. ระเบียบข้าราชการพลเรือน',
+  },
+  {
+    question: 'บริษัทเอกชนทั่วไปให้ลาคลอดบิดากี่วัน?',
+    answer: 'บริษัทเอกชนส่วนใหญ่กำหนดให้ลาคลอดบิดา 3-15 วัน โดย SME มักให้ 3-5 วัน และบริษัทขนาดใหญ่หรือบริษัทต่างชาติมักให้ 10-15 วัน ขึ้นอยู่กับนโยบายของแต่ละองค์กร',
+  },
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจ้างลาคลอดบิดา',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างลาคลอดบิดา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">👨‍👶 สิทธิ์ลาคลอดบิดา: รัฐ 15 วัน / เอกชนตามนโยบายบริษัท</p>
+      <p class="mt-1 text-sm text-slate-700">กฎหมายแรงงานเอกชนไม่บังคับ แต่หลายบริษัทกำหนด 3-15 วัน ข้าราชการมีสิทธิ์ 15 วันโดยได้รับเงินเดือน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ตรวจสอบสัญญาจ้างหรือข้อบังคับการทำงานของบริษัทท่าน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจ้างลาคลอดบิดา ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน จำนวนวันลา และประเภทการจ้างงาน เพื่อคำนวณค่าจ้างที่ได้รับระหว่างลาคลอดบิดา
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="paternity-form" class="space-y-5">
+        <p id="paternity-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pat-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="pat-salary" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pat-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pat-emp-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทการจ้างงาน</label>
+            <select id="pat-emp-type"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="government">ภาครัฐ / ข้าราชการ (15 วัน)</option>
+              <option value="private">ภาคเอกชน (ตามนโยบายบริษัท)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="pat-leave-days-wrapper">
+          <label for="pat-leave-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันลา (วัน)</label>
+          <select id="pat-leave-days"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64">
+            <option value="3">3 วัน (นโยบายพื้นฐาน)</option>
+            <option value="5">5 วัน (นโยบายทั่วไป)</option>
+            <option value="10">10 วัน (นโยบายดี)</option>
+            <option value="15" selected>15 วัน (ภาครัฐ / นโยบายดีมาก)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าจ้างลาคลอดบิดา
+        </button>
+      </form>
+    </div>
+
+    <div id="paternity-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายวัน</div>
+            <div id="res-pat-daily" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">วันลาที่ได้รับ</div>
+            <div id="res-pat-days" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างระหว่างลา</div>
+            <div id="res-pat-total" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div id="res-pat-note" class="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800"></div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าจ้างรายวัน = เงินเดือน ÷ 30</li>
+        <li>ค่าจ้างระหว่างลา = ค่าจ้างรายวัน × จำนวนวันลา</li>
+        <li>ภาครัฐ: ลาได้ 15 วัน ได้รับค่าจ้างเต็ม</li>
+        <li>ภาคเอกชน: ขึ้นอยู่กับนโยบายบริษัท กฎหมายไม่บังคับ</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าจ้างลาคลอด/">คำนวณค่าจ้างลาคลอด (มารดา)</a></li>
+        <li><a href="/คำนวณค่าจ้างลาป่วย/">คำนวณค่าจ้างลาป่วย</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#paternity-results" />
+    <RelatedArticles currentHref="/คำนวณค่าจ้างลาคลอดบิดา/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างลาคลอดบิดา/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> สิทธิ์ลาคลอดบิดาสำหรับพนักงานเอกชนไม่ได้บัญญัติไว้ในกฎหมายแรงงาน ผลลัพธ์เป็นการประมาณการตามจำนวนวันที่ระบุ กรุณาตรวจสอบนโยบายบริษัทและสัญญาจ้างงานของท่าน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('paternity-form');
+    const formError = document.getElementById('paternity-form-error');
+    const resultBox = document.getElementById('paternity-results');
+    const empTypeSelect = document.getElementById('pat-emp-type');
+    const leaveDaysSelect = document.getElementById('pat-leave-days');
+
+    empTypeSelect?.addEventListener('change', () => {
+      if (empTypeSelect.value === 'government') {
+        leaveDaysSelect.value = '15';
+      }
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('pat-salary-error', '');
+
+      const salary = parseNum(document.getElementById('pat-salary').value);
+      const empType = empTypeSelect.value;
+      const leaveDays = parseInt(leaveDaysSelect.value, 10);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('pat-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const dailyRate = salary / 30;
+      const totalPay = dailyRate * leaveDays;
+
+      setText('res-pat-daily', formatMoney(dailyRate));
+      setText('res-pat-days', `${leaveDays} วัน`);
+      setText('res-pat-total', formatMoney(totalPay));
+
+      const noteEl = document.getElementById('res-pat-note');
+      if (noteEl) {
+        if (empType === 'government') {
+          noteEl.textContent = 'ข้าราชการมีสิทธิ์ลา 15 วันโดยได้รับเงินเดือนเต็มตามระเบียบข้าราชการพลเรือน';
+        } else {
+          noteEl.textContent = `หมายเหตุ: พ.ร.บ. คุ้มครองแรงงานไม่บังคับให้นายจ้างเอกชนต้องให้สิทธิ์ลาคลอดบิดา สิทธิ์นี้ขึ้นอยู่กับนโยบายบริษัทของท่าน`;
+        }
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

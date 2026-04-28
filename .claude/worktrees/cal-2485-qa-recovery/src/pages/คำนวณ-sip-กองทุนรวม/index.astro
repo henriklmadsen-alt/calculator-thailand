@@ -1,0 +1,287 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ SIP กองทุนรวม 2569 | ลงทุนสม่ำเสมอรายเดือน | Kamnuanlek';
+const pageDescription = 'คำนวณ SIP กองทุนรวม จากการลงทุนสม่ำเสมอรายเดือน คำนวณมูลค่ากองทุนในอนาคต ผลตอบแทนสะสม และเปรียบเทียบกับการออมในบัญชีเงินฝาก อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-sip-กองทุนรวม/`;
+
+const faqData = [
+  {
+    question: 'SIP คืออะไร และแตกต่างจากการลงทุนครั้งเดียวอย่างไร?',
+    answer: 'SIP (Systematic Investment Plan) คือการลงทุนเป็นจำนวนเงินคงที่ทุกเดือนอย่างสม่ำเสมอ ต่างจากการลงทุนครั้งเดียวตรงที่ช่วยลดความเสี่ยงด้านจังหวะลงทุน (timing risk) ผ่านการเฉลี่ยต้นทุน (dollar-cost averaging)',
+  },
+  {
+    question: 'ผลตอบแทนกองทุนรวมหุ้นไทยเฉลี่ยอยู่ที่กี่เปอร์เซ็นต์?',
+    answer: 'กองทุนรวมหุ้นไทยในระยะยาว 10+ ปี มีผลตอบแทนเฉลี่ยประมาณ 6-10% ต่อปี ขึ้นอยู่กับประเภทกองทุนและช่วงเวลาลงทุน กองทุน Index SET50 มักให้ผลตอบแทนใกล้เคียงตลาด ส่วนกองทุนแอคทีฟอาจสูงหรือต่ำกว่า',
+  },
+  {
+    question: 'ควรเริ่มต้น SIP ด้วยเงินเท่าไรต่อเดือน?',
+    answer: 'สามารถเริ่มต้น SIP ได้ตั้งแต่ 500-1,000 บาทต่อเดือนในกองทุนหลายแห่ง สิ่งสำคัญคือความสม่ำเสมอ ไม่ใช่จำนวนเงิน ควรตั้งเป้าลงทุนอย่างน้อย 10-20% ของรายได้ต่อเดือน',
+  },
+  {
+    question: 'SIP เหมาะกับนักลงทุนแบบไหน?',
+    answer: 'SIP เหมาะกับทุกคน โดยเฉพาะมนุษย์เงินเดือนที่มีรายได้ประจำ ต้องการสะสมเงินระยะยาว และไม่มีเวลาติดตามตลาดทุกวัน การลงทุนสม่ำเสมอช่วยสร้างวินัยและใช้ประโยชน์จากการทบต้นในระยะยาว',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ SIP กองทุนรวม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-sip-กองทุนรวม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณ SIP กองทุนรวม 2569 — ลงทุนสม่ำเสมอรายเดือน คำนวณมูลค่าในอนาคต
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณมูลค่ากองทุนรวมจากการลงทุนสม่ำเสมอรายเดือน (SIP) พร้อมตารางมูลค่า ณ จุดสำคัญ 5, 10, 15, 20, 25, 30 ปี
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="sip-form" class="space-y-5">
+        <p id="sip-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="sip-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="sip-monthly"
+              inputmode="numeric"
+              placeholder="เช่น 5,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="sip-initial" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนเริ่มต้น (บาท) <span class="text-gray-400 font-normal">ไม่บังคับ</span>
+            </label>
+            <input
+              type="text"
+              id="sip-initial"
+              inputmode="numeric"
+              placeholder="เช่น 50,000 (ถ้ามี)"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="sip-return" class="block text-sm font-medium text-gray-700 mb-1">
+              ผลตอบแทนคาดหวัง (%/ปี)
+            </label>
+            <input
+              type="text"
+              id="sip-return"
+              inputmode="decimal"
+              placeholder="เช่น 8.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">กองทุนหุ้นระยะยาวโดยเฉลี่ยประมาณ 6-10%</p>
+          </div>
+          <div>
+            <label for="sip-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาลงทุน (ปี)
+            </label>
+            <input
+              type="number"
+              id="sip-years"
+              min="1"
+              max="50"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่ากองทุน</div>
+            <div id="sip-res-fv" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ต้นทุนรวม</div>
+            <div id="sip-res-cost" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไรสุทธิ</div>
+            <div id="sip-res-profit" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-yellow-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนรวม</div>
+            <div id="sip-res-pct" class="text-xl font-bold text-yellow-700">-</div>
+          </div>
+        </div>
+
+        <h3 class="font-semibold text-gray-900 mb-3">ตารางมูลค่า ณ จุดสำคัญ</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-4">ระยะเวลา</th>
+                <th class="py-2 pr-4 text-right">ต้นทุนสะสม</th>
+                <th class="py-2 pr-4 text-right">มูลค่ากองทุน</th>
+                <th class="py-2 text-right">กำไร</th>
+              </tr>
+            </thead>
+            <tbody id="sip-milestone-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณ SIP กองทุนรวม</h2>
+      <p>
+        SIP (Systematic Investment Plan) หรือการลงทุนสม่ำเสมอรายเดือน เป็นกลยุทธ์ที่ช่วยสะสมความมั่งคั่งในระยะยาวผ่านพลังทบต้น เมื่อลงทุนทุกเดือนไม่ว่าตลาดจะขึ้นหรือลง คุณจะได้เฉลี่ยต้นทุน (dollar-cost averaging)
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ SIP</h3>
+      <p>
+        FV = PMT × [(1 + r)^n − 1] / r + PV × (1 + r)^n<br />
+        โดย PMT = เงินลงทุนรายเดือน, r = อัตราดอกเบี้ยต่อเดือน (ผลตอบแทนรายปี ÷ 12), n = จำนวนเดือน, PV = เงินลงทุนเริ่มต้น
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+      <p>ลงทุน 5,000 บาท/เดือน ผลตอบแทน 8%/ปี เป็นเวลา 20 ปี:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ต้นทุนรวม: 5,000 × 240 เดือน = <strong>1,200,000 บาท</strong></li>
+        <li>มูลค่ากองทุน: <strong>ประมาณ 2,950,000 บาท</strong></li>
+        <li>กำไรจากการลงทุน: <strong>ประมาณ 1,750,000 บาท</strong></li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณ-sip-กองทุนรวม/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ผลตอบแทนจริงขึ้นอยู่กับผลการดำเนินงานของกองทุน ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('sip-form') as HTMLFormElement;
+    const formError = document.getElementById('sip-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    function calcSIP(monthly: number, initial: number, annualRate: number, months: number): number {
+      const r = annualRate / 100 / 12;
+      if (r === 0) return initial + monthly * months;
+      const fvAnnuity = monthly * ((Math.pow(1 + r, months) - 1) / r);
+      const fvLump = initial * Math.pow(1 + r, months);
+      return fvAnnuity + fvLump;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const monthly = parseNum((document.getElementById('sip-monthly') as HTMLInputElement).value);
+      const initial = parseNum((document.getElementById('sip-initial') as HTMLInputElement).value);
+      const annualRate = parseNum((document.getElementById('sip-return') as HTMLInputElement).value);
+      const years = parseInt((document.getElementById('sip-years') as HTMLInputElement).value) || 0;
+
+      if (monthly <= 0 || annualRate <= 0 || years <= 0) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorStart('sip');
+
+      const totalMonths = years * 12;
+      const fv = calcSIP(monthly, initial, annualRate, totalMonths);
+      const totalCost = initial + monthly * totalMonths;
+      const profit = fv - totalCost;
+      const pct = totalCost > 0 ? (profit / totalCost) * 100 : 0;
+
+      (document.getElementById('sip-res-fv') as HTMLElement).textContent = fmt(fv) + ' บาท';
+      (document.getElementById('sip-res-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+      (document.getElementById('sip-res-profit') as HTMLElement).textContent = fmt(profit) + ' บาท';
+      (document.getElementById('sip-res-pct') as HTMLElement).textContent = pct.toFixed(1) + '%';
+
+      const milestones = [5, 10, 15, 20, 25, 30].filter(y => y <= years);
+      if (!milestones.includes(years)) milestones.push(years);
+
+      const tbody = document.getElementById('sip-milestone-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      milestones.forEach((y) => {
+        const m = y * 12;
+        const val = calcSIP(monthly, initial, annualRate, m);
+        const cost = initial + monthly * m;
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-4">${y} ปี</td>
+          <td class="py-2 pr-4 text-right">${fmt(cost)}</td>
+          <td class="py-2 pr-4 text-right font-medium text-green-700">${fmt(val)}</td>
+          <td class="py-2 text-right text-primary-700">${fmt(val - cost)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('sip');
+      trackCalculatorUsed('sip');
+    });
+  </script>
+</BaseLayout>

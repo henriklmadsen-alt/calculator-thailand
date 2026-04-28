@@ -1,0 +1,290 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าคอมมิชชั่น ปี 2569 แบบอัตราคงที่และขั้นบันได | Kamnuanlek';
+const pageDescription = 'คำนวณค่าคอมมิชชั่น แบบอัตราคงที่เปอร์เซ็นต์ของยอดขาย หรือแบบขั้นบันไดหลายระดับ พร้อมสรุปรายได้รวมต่อเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าคอมมิชชั่น/`;
+
+const faqData = [
+  {
+    question: 'คอมมิชชั่นแบบขั้นบันไดคืออะไร?',
+    answer: 'คอมมิชชั่นแบบขั้นบันได (Tiered Commission) คือระบบที่ใช้อัตราคอมมิชชั่นต่างกันตามช่วงยอดขาย เช่น ยอดขาย 0-100,000 บาทแรก = 3%, ส่วนที่เกิน 100,000 = 5%',
+  },
+  {
+    question: 'คอมมิชชั่นแบบอัตราคงที่คืออะไร?',
+    answer: 'คอมมิชชั่นอัตราคงที่ (Flat Rate) คิดเปอร์เซ็นต์เดียวกับยอดขายทั้งหมด เช่น 5% ของยอดขายทุกบาท',
+  },
+  {
+    question: 'ภาษีหัก ณ ที่จ่ายสำหรับคอมมิชชั่นคือเท่าไร?',
+    answer: 'คอมมิชชั่นจัดเป็นรายได้ประเภท 40(2) ถ้าเป็นลูกจ้างหัก ณ ที่จ่ายตามอัตราก้าวหน้า ถ้าเป็นตัวแทนอิสระหัก 3% ของยอดที่จ่าย',
+  },
+  {
+    question: 'คอมมิชชั่นรวมกับเงินเดือนคิดภาษีอย่างไร?',
+    answer: 'คอมมิชชั่นจากนายจ้างเดียวกันรวมกับเงินเดือนเป็นรายได้ 40(1) คิดภาษีรวมกัน โดยหักค่าใช้จ่าย 50% สูงสุด 100,000 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าคอมมิชชั่น',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าคอมมิชชั่น">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คอมมิชชั่นแบบคงที่และขั้นบันได</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณค่าคอมมิชชั่นจากยอดขาย ทั้งแบบอัตราเดียวและแบบหลายระดับ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับพนักงานขาย ตัวแทนประกัน และผู้ที่มีรายได้จากคอมมิชชั่น</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าคอมมิชชั่น ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกประเภทคอมมิชชั่นและกรอกข้อมูลยอดขาย ระบบจะคำนวณค่าคอมมิชชั่นพร้อมสรุปรายได้รวม
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="commission-form" class="space-y-5">
+        <p id="commission-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700">ประเภทคอมมิชชั่น</label>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="comm-type" value="flat" checked class="accent-primary-600" /> อัตราคงที่ (Flat Rate)
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="comm-type" value="tiered" class="accent-primary-600" /> ขั้นบันได (Tiered)
+            </label>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="comm-sales" class="mb-1 block text-sm font-medium text-gray-700">ยอดขายรวม (บาท)</label>
+            <input type="text" id="comm-sales" inputmode="numeric" placeholder="เช่น 500,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="comm-sales-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="comm-base-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือนพื้นฐาน (บาท, ถ้ามี)</label>
+            <input type="text" id="comm-base-salary" inputmode="numeric" placeholder="เช่น 15,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <!-- Flat rate section -->
+        <div id="flat-section">
+          <label for="comm-flat-pct" class="mb-1 block text-sm font-medium text-gray-700">อัตราคอมมิชชั่น (%)</label>
+          <input type="text" id="comm-flat-pct" inputmode="decimal" placeholder="เช่น 5"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+          <p id="comm-flat-pct-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <!-- Tiered section -->
+        <div id="tiered-section" class="hidden space-y-3">
+          <p class="text-sm font-medium text-gray-700">กำหนดขั้นบันได (ยอดขายแรก N บาท = X%)</p>
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div>
+              <label class="mb-1 block text-xs font-medium text-gray-600">ขั้นที่ 1: ยอดสูงสุด (บาท)</label>
+              <input type="text" id="tier1-cap" inputmode="numeric" placeholder="เช่น 100,000"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-gray-600">อัตรา %</label>
+              <input type="text" id="tier1-pct" inputmode="decimal" placeholder="เช่น 3"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-gray-600">ขั้นที่ 2: ยอดสูงสุด (บาท, 0=ไม่จำกัด)</label>
+              <input type="text" id="tier2-cap" inputmode="numeric" placeholder="เช่น 300,000 หรือ 0"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div>
+              <label class="mb-1 block text-xs font-medium text-gray-600">ขั้นที่ 2: อัตรา %</label>
+              <input type="text" id="tier2-pct" inputmode="decimal" placeholder="เช่น 5"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-medium text-gray-600">ขั้นที่ 3: อัตรา % (ส่วนที่เกิน)</label>
+              <input type="text" id="tier3-pct" inputmode="decimal" placeholder="เช่น 8"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าคอมมิชชั่น
+        </button>
+      </form>
+    </div>
+
+    <div id="commission-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าคอมมิชชั่น</div>
+            <div id="res-comm-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้รวม (เงินเดือน + คอม)</div>
+            <div id="res-comm-grand" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราคอมมิชชั่นเฉลี่ย</div>
+            <div id="res-comm-eff-rate" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div id="res-comm-breakdown" class="space-y-2 text-sm"></div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">ตัวอย่างการคำนวณ</h2>
+      <p><strong>อัตราคงที่:</strong> ยอดขาย 500,000 บาท × 5% = 25,000 บาท</p>
+      <p><strong>ขั้นบันได:</strong> ยอดขาย 500,000 บาท, ขั้น 1: 100,000 บาทแรก × 3% = 3,000 บาท, ขั้น 2: 200,000 บาทถัดไป × 5% = 10,000 บาท, ขั้น 3: 200,000 บาทที่เหลือ × 8% = 16,000 บาท, รวม = 29,000 บาท</p>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณโบนัสการขาย/">คำนวณโบนัสการขาย</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+        <li><a href="/คำนวณรายได้ฟรีแลนซ์รายเดือน/">คำนวณรายได้ฟรีแลนซ์รายเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#commission-results" />
+    <RelatedArticles currentHref="/คำนวณค่าคอมมิชชั่น/" />
+    <RelatedCalculators currentHref="/คำนวณค่าคอมมิชชั่น/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการเบื้องต้น ยอดจริงขึ้นอยู่กับเงื่อนไขสัญญาและนโยบายบริษัท
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.querySelectorAll('input[name="comm-type"]').forEach((r) => {
+      r.addEventListener('change', () => {
+        const type = document.querySelector('input[name="comm-type"]:checked').value;
+        document.getElementById('flat-section').classList.toggle('hidden', type !== 'flat');
+        document.getElementById('tiered-section').classList.toggle('hidden', type !== 'tiered');
+      });
+    });
+
+    const form = document.getElementById('commission-form');
+    const formError = document.getElementById('commission-form-error');
+    const resultBox = document.getElementById('commission-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['comm-sales-error','comm-flat-pct-error'].forEach((id) => setErr(id, ''));
+
+      const sales = parseNum(document.getElementById('comm-sales').value);
+      const baseSalary = parseNum(document.getElementById('comm-base-salary').value) || 0;
+      const type = document.querySelector('input[name="comm-type"]:checked').value;
+
+      let hasError = false;
+      if (!Number.isFinite(sales) || sales < 0) { setErr('comm-sales-error', 'กรอกยอดขายมากกว่าหรือเท่ากับ 0'); hasError = true; }
+
+      let commission = 0;
+      let breakdown = [];
+
+      if (type === 'flat') {
+        const flatPct = parseNum(document.getElementById('comm-flat-pct').value);
+        if (!Number.isFinite(flatPct) || flatPct < 0 || flatPct > 100) { setErr('comm-flat-pct-error', 'กรอกอัตรา 0-100%'); hasError = true; }
+        if (!hasError) {
+          commission = sales * (flatPct / 100);
+          breakdown = [{ label: `ยอดขาย ${new Intl.NumberFormat('th-TH').format(sales)} บาท × ${flatPct}%`, amount: commission }];
+        }
+      } else {
+        const t1cap = parseNum(document.getElementById('tier1-cap').value) || 0;
+        const t1pct = parseNum(document.getElementById('tier1-pct').value) || 0;
+        const t2cap = parseNum(document.getElementById('tier2-cap').value) || 0;
+        const t2pct = parseNum(document.getElementById('tier2-pct').value) || 0;
+        const t3pct = parseNum(document.getElementById('tier3-pct').value) || 0;
+
+        if (!hasError) {
+          let remaining = sales;
+          if (t1cap > 0) {
+            const chunk = Math.min(remaining, t1cap);
+            const amt = chunk * (t1pct / 100);
+            commission += amt;
+            breakdown.push({ label: `${new Intl.NumberFormat('th-TH').format(chunk)} บาทแรก × ${t1pct}%`, amount: amt });
+            remaining -= chunk;
+          }
+          if (remaining > 0 && t2cap > 0) {
+            const maxChunk = t2cap - t1cap;
+            const chunk = Math.min(remaining, maxChunk);
+            const amt = chunk * (t2pct / 100);
+            commission += amt;
+            breakdown.push({ label: `${new Intl.NumberFormat('th-TH').format(chunk)} บาทถัดไป × ${t2pct}%`, amount: amt });
+            remaining -= chunk;
+          }
+          if (remaining > 0 && t3pct > 0) {
+            const amt = remaining * (t3pct / 100);
+            commission += amt;
+            breakdown.push({ label: `${new Intl.NumberFormat('th-TH').format(remaining)} บาทที่เหลือ × ${t3pct}%`, amount: amt });
+          }
+        }
+      }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const effRate = sales > 0 ? (commission / sales * 100).toFixed(2) : '0.00';
+      setText('res-comm-total', formatMoney(commission));
+      setText('res-comm-grand', formatMoney(baseSalary + commission));
+      setText('res-comm-eff-rate', `${effRate}%`);
+
+      const bdEl = document.getElementById('res-comm-breakdown');
+      bdEl.innerHTML = breakdown.map(({ label, amount }) =>
+        `<div class="flex justify-between border-b border-gray-100 py-1"><span class="text-gray-600">${label}</span><span class="font-medium">${formatMoney(amount)}</span></div>`
+      ).join('');
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

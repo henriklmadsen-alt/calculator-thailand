@@ -1,0 +1,316 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ กำไร Dropshipping 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณกำไรจากการขาย Dropshipping ประเมินความสามารถในการทำกำไรหลังหักค่า Payment Gateway และ Logistics';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-กำไร-dropshipping/`;
+
+const faqData = [
+  {
+    question: 'Dropshipping คืออะไร?',
+    answer: 'Dropshipping เป็นรูปแบบการค้าปลีก ซึ่งคุณไม่เก็บสินค้า เมื่อได้รับคำสั่งซื้อ คุณสั่งซื้อจากซัพพลายเยอร์และส่งให้ลูกค้าโดยตรง คุณมีกำไรจากความต่างราคา (Markup) ไม่ต้องลงทุนในสินค้าล่วงหน้า',
+  },
+  {
+    question: 'ข้อดีและข้อเสียของ Dropshipping?',
+    answer: 'ข้อดี: ต่ำ startup cost, ไม่มี stock risk, ความยืดหยุ่นสูง ข้อเสีย: ค่า shipping สูง, margin ต่ำ, ความแข่งขันรุนแรง, ปัญหา quality ควบคุมยาก จำเป็นต้องต่อรองกับซัพพลายเยอร์เพื่อลดค่าสินค้า',
+  },
+  {
+    question: 'Margin Dropshipping ควรเป็นเท่าไร?',
+    answer: '2-4 เท่าราคาต้นทุนเป็นไปได้ยาก ส่วนใหญ่ 1.3-1.8 เท่า (30-80% markup) เพื่อครอบคลุม shipping, payment gateway, ads ตัวอย่าง: ต้นทุน 100 บาท ขาย 250-400 บาท = 40-75% margin ก่อนแบบลงทุนส่วนหนึ่ง',
+  },
+  {
+    question: 'ควรเลือก Dropshipping ที่ไหน?',
+    answer: 'Aliexpress — ถูกแต่ช้า 20-40 วัน, Shopee — เร็ว แต่ค่า > Taobao — ราคาต่ำ แต่ใช้ Agent, Alibaba — Wholesale สำหรับ bulk ตรวจสอบ rating และ review ของซัพพลายเยอร์เสมอ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกำไร Dropshipping',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไร Dropshipping">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      📦 คำนวณกำไร Dropshipping
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณกำไรจากการขาย Dropshipping ประเมินความสามารถในการทำกำไร
+      หลังหักค่า Payment Gateway, Logistics และค่าใช้จ่ายอื่นๆ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="dropship-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="product-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาต้นทุนสินค้า (บาท)
+            </label>
+            <input
+              type="text"
+              id="product-cost"
+              inputmode="numeric"
+              placeholder="เช่น 150"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="selling-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาขาย (บาท)
+            </label>
+            <input
+              type="text"
+              id="selling-price"
+              inputmode="numeric"
+              placeholder="เช่น 399"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="shipping-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าจัดส่ง (บาท)
+            </label>
+            <input
+              type="text"
+              id="shipping-cost"
+              inputmode="numeric"
+              placeholder="เช่น 50"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="pgw-fee" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่า Payment Gateway (%)
+            </label>
+            <input
+              type="text"
+              id="pgw-fee"
+              inputmode="numeric"
+              placeholder="เช่น 2.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="packing-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าพัสดุ บรรจุ (บาท)
+              <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+            </label>
+            <input
+              type="text"
+              id="packing-cost"
+              inputmode="numeric"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="monthly-orders" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนรายการต่อเดือน
+              <span class="text-gray-400 font-normal">— สำหรับรวมกำไร</span>
+            </label>
+            <input
+              type="text"
+              id="monthly-orders"
+              inputmode="numeric"
+              placeholder="เช่น 100"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณกำไร
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณกำไร Dropshipping</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไรต่อรายการ</div>
+            <div id="res-profit-per-item" class="text-xl font-bold text-green-600">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">% Margin</div>
+            <div id="res-margin-percent" class="text-xl font-bold text-blue-600">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไรต่อเดือน</div>
+            <div id="res-monthly-profit" class="text-xl font-bold text-purple-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไรต่อปี</div>
+            <div id="res-annual-profit" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ราคาต้นทุนสินค้า</span>
+            <span id="res-product-cost" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ราคาขาย</span>
+            <span id="res-selling-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">รายรับต่อรายการ</span>
+            <span id="res-revenue" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ค่าใช้จ่ายรวม</span>
+            <span id="res-total-cost" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">จำนวนรายการต่อเดือน</span>
+            <span id="res-orders" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <GuardedAdSlot />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">Dropshipping: ต้องรู้เรื่องกำไรหลัก</h2>
+
+      <p>
+        Dropshipping ถูกเรียกว่าธุรกิจ "ต่ำลงทุน" แต่ต้องคิดกำไรให้ดี จำนวนมากมีความเข้าใจผิดว่า Dropshipping ทำกำไรง่าย
+        ความจริงแล้ว margin ต่ำมาก โดยเฉพาะหลังหักค่า Shipping, Payment Gateway และ Ads
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณกำไร</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ต้นทุน 100 บาท ขาย 300 บาท ดูเหมือนกำไร 200 บาท</li>
+        <li>ลบ: Shipping 50 บาท, PGW 7.5 บาท, บรรจุ 20 บาท = 77.5 บาท</li>
+        <li>กำไรจริง: 200 - 77.5 = 122.5 บาท (40.8% margin)</li>
+        <li>หลัง 100 ขาย/เดือน = 12,250 บาทต่อเดือน หลังหักค่า Ads และระบบ</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีเพิ่มกำไร Dropshipping</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ต่อรองสินค้า: ลดต้นทุนจากซัพพลายเยอร์ 10-20%</li>
+        <li>หากัน Shipping: ส่งเองจากซัพพลายเยอร์ในไทย แทน Dropship</li>
+        <li>Niche ที่ต่อขาง: สินค้าปลายน้อย Margin สูง</li>
+        <li>Bundle Product: รวมสินค้า 2-3 ชิ้น ขึ้นราคาได้</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ความเสี่ยง Dropshipping</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>Quality Control: ต้องเชื่อใจซัพพลายเยอร์ 100%</li>
+        <li>Return Rate สูง: ถ้าสินค้าไม่ตรงคำบรรยาย</li>
+        <li>Slow Shipping: 2-4 สัปดาห์รอซัพพลายเยอร์ ลูกค้าไม่พอใจ</li>
+        <li>Supplier ปิด: ซัพพลายเยอร์อาจเลิกขายสินค้า ตัวแทน</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณ-กำไร-dropshipping/" />
+    <RelatedCalculators currentHref="/คำนวณ-กำไร-dropshipping/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการอิงตามข้อมูลที่ป้อน
+      กำไรจริงอาจแตกต่างขึ้นอยู่กับปัจจัยอื่นๆ เช่น Return Rate, Chargeback
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('dropship-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const productCost = parseNum((document.getElementById('product-cost') as HTMLInputElement).value);
+      const sellingPrice = parseNum((document.getElementById('selling-price') as HTMLInputElement).value);
+      const shippingCost = parseNum((document.getElementById('shipping-cost') as HTMLInputElement).value);
+      const pgwFee = parseNum((document.getElementById('pgw-fee') as HTMLInputElement).value);
+      const packingCost = parseNum((document.getElementById('packing-cost') as HTMLInputElement).value);
+      const monthlyOrders = parseNum((document.getElementById('monthly-orders') as HTMLInputElement).value);
+
+      if (productCost <= 0) { (document.getElementById('product-cost') as HTMLInputElement).focus(); return; }
+      if (sellingPrice <= 0) { (document.getElementById('selling-price') as HTMLInputElement).focus(); return; }
+
+      const pgwFeeAmount = (sellingPrice * pgwFee) / 100;
+      const totalCost = productCost + shippingCost + pgwFeeAmount + packingCost;
+      const profitPerItem = sellingPrice - totalCost;
+      const marginPercent = (profitPerItem / sellingPrice) * 100;
+      const monthlyProfit = profitPerItem * monthlyOrders;
+      const annualProfit = monthlyProfit * 12;
+
+      (document.getElementById('res-profit-per-item') as HTMLElement).textContent = fmt(profitPerItem) + ' บาท';
+      (document.getElementById('res-margin-percent') as HTMLElement).textContent = marginPercent.toFixed(1) + '%';
+      (document.getElementById('res-monthly-profit') as HTMLElement).textContent = fmt(monthlyProfit) + ' บาท';
+      (document.getElementById('res-annual-profit') as HTMLElement).textContent = fmt(annualProfit) + ' บาท';
+      (document.getElementById('res-product-cost') as HTMLElement).textContent = fmt(productCost) + ' บาท';
+      (document.getElementById('res-selling-price') as HTMLElement).textContent = fmt(sellingPrice) + ' บาท';
+      (document.getElementById('res-revenue') as HTMLElement).textContent = fmt(sellingPrice) + ' บาท';
+      (document.getElementById('res-total-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+      (document.getElementById('res-orders') as HTMLElement).textContent = monthlyOrders.toFixed(0);
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('dropshipping-profit');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('dropshipping-profit');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

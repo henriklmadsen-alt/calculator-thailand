@@ -1,0 +1,193 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนระบบรักษาความปลอดภัยบ้าน 2569 | CCTV ล็อคปลอดภัย | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนติดตั้งระบบรักษาความปลอดภัยบ้าน กล้อง CCTV ล็อคอัจฉริยะ ไซเรน และตัวตรวจจับการเคลื่อนไหว ครบครันและถูกที่สุด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนระบบรักษาความปลอดภัย/`;
+
+const faqData = [
+  {
+    question: 'ระบบรักษาความปลอดภัยที่ดีต้องมีอะไรบ้าง?',
+    answer: 'ระบบรักษาความปลอดภัยที่สมบูรณ์ควรมี (1) กล้องวงจรปิด CCTV ที่สามารถบันทึกได้ 24 ชั่วโมง (2) ตัวตรวจจับการเคลื่อนไหว Motion Sensor (3) ล็อคประตูและหน้าต่างอัจฉริยะ (4) ไซเรนหรือระบบเตือนเมื่อตรวจพบการบุกรุก (5) ระบบสำรองไฟฟ้า',
+  },
+  {
+    question: 'ต้นทุนการติดตั้งระบบรักษาความปลอดภัยประมาณเท่าไหร่?',
+    answer: 'สำหรับบ้านขนาดเล็ก (ระบบพื้นฐาน) ประมาณ 30,000-50,000 บาท ส่วนบ้านขนาดกลาง (ระบบมาตรฐาน) 50,000-100,000 บาท และบ้านขนาดใหญ่ (ระบบเทพ) 100,000-300,000 บาท ขึ้นอยู่กับจำนวนกล้องและคุณสมบัติของอุปกรณ์',
+  },
+  {
+    question: 'ควรซ่อมแซมและตรวจสอบระบบบ่อยแค่ไหน?',
+    answer: 'ควรตรวจสอบและบำรุงรักษาอย่างน้อยครั้งละ 6 เดือน ตรวจสอบการทำงานของกล้อง เลนส์ เซ็นเซอร์ และปรึกษาช่างผู้เชี่ยวชาญเมื่อพบปัญหา ต้นทุนบำรุงรักษารายปีโดยทั่วไป 2,000-5,000 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนระบบรักษาความปลอดภัย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนระบบรักษาความปลอดภัย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณต้นทุนระบบรักษาความปลอดภัยบ้าน
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2">
+      <p class="text-xs font-semibold text-red-800">[อัปเดต 2569 - ราคาตลาดปัจจุบัน]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณต้นทุนการติดตั้งระบบรักษาความปลอดภัยบ้าน กล้อง CCTV ล็อคอัจฉริยะ เซ็นเซอร์ และอุปกรณ์เตือนเหตุฉุกเฉิน
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="cameras" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนกล้อง CCTV
+          </label>
+          <input
+            type="number"
+            id="cameras"
+            placeholder="เช่น 6"
+            min="1"
+            max="20"
+            value="6"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="cameraType" class="block text-sm font-medium text-gray-700 mb-1">
+            ประเภทกล้อง
+          </label>
+          <select
+            id="cameraType"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
+          >
+            <option value="basic">พื้นฐาน (1,500-2,500 บาท)</option>
+            <option value="standard">มาตรฐาน (2,500-4,000 บาท)</option>
+            <option value="premium">พรีเมียม (4,000-6,000 บาท)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="smartLocks" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนล็อคอัจฉริยะ
+          </label>
+          <input
+            type="number"
+            id="smartLocks"
+            placeholder="เช่น 2"
+            min="0"
+            max="10"
+            value="2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="sensors" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนตัวตรวจจับการเคลื่อนไหว
+          </label>
+          <input
+            type="number"
+            id="sensors"
+            placeholder="เช่น 4"
+            min="0"
+            max="20"
+            value="4"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
+          />
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label for="installationType" class="block text-sm font-medium text-gray-700 mb-1">
+          ประเภทการติดตั้ง
+        </label>
+        <select
+          id="installationType"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
+        >
+          <option value="wired">ระบบสายไฟ (มีเสถียรภาพสูง)</option>
+          <option value="wireless">ระบบไร้สาย WiFi (ทำการติดตั้งง่าย)</option>
+        </select>
+      </div>
+
+      <button
+        id="calculateBtn"
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md transition-colors"
+      >
+        คำนวณต้นทุน
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="bg-red-50 rounded-lg border border-red-200 p-6 mb-8 hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="bg-white rounded-lg p-4 mb-4 border border-red-100">
+        <p class="text-sm text-gray-600 mb-2">ต้นทุนรวมโดยประมาณ</p>
+        <p id="totalCost" class="text-3xl font-bold text-red-600 mb-2">0 บาท</p>
+        <p class="text-xs text-gray-500">ราคาอาจแตกต่างตามการติดตั้งและท้องถิ่น</p>
+      </div>
+    </div>
+
+    <RelatedCalculators exclude="security" />
+    <RelatedArticles category="home" />
+  </article>
+
+  <script define:vars={{ pageTitle }}>
+    const calculateBtn = document.getElementById('calculateBtn');
+    const resultsDiv = document.getElementById('results');
+    const totalCostSpan = document.getElementById('totalCost');
+
+    calculateBtn.addEventListener('click', () => {
+      const cameras = parseInt(document.getElementById('cameras').value) || 4;
+      const cameraType = document.getElementById('cameraType').value;
+      const smartLocks = parseInt(document.getElementById('smartLocks').value) || 1;
+      const sensors = parseInt(document.getElementById('sensors').value) || 3;
+      const installationType = document.getElementById('installationType').value;
+
+      let cameraPrice = 2000; // avg
+      if (cameraType === 'basic') cameraPrice = 1500;
+      else if (cameraType === 'premium') cameraPrice = 5000;
+
+      let totalCost = cameras * cameraPrice;
+      totalCost += smartLocks * 5000;
+      totalCost += sensors * 800;
+      totalCost += 3000; // hub/dvr
+      totalCost += installationType === 'wired' ? 15000 : 5000;
+
+      resultsDiv.classList.remove('hidden');
+      totalCostSpan.textContent = new Intl.NumberFormat('th-TH', {
+        style: 'currency',
+        currency: 'THB',
+        maximumFractionDigits: 0,
+      }).format(totalCost);
+    });
+  </script>
+</BaseLayout>

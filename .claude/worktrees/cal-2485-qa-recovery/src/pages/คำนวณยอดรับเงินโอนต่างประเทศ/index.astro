@@ -1,0 +1,194 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณยอดรับเงินโอนต่างประเทศสุทธิ ปี 2569 — Remittance Receive Net | Kamnuanlek';
+const pageDescription = 'คำนวณยอดรับเงินโอนต่างประเทศสุทธิหลังหักค่าธรรมเนียมและแปลงอัตราแลกเปลี่ยน ป้อนยอดโอน สกุลเงิน อัตราแลกเปลี่ยน และค่าธรรมเนียม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณยอดรับเงินโอนต่างประเทศ/`;
+
+const faqData = [
+  {
+    question: 'การรับเงินโอนต่างประเทศมีค่าธรรมเนียมอะไรบ้าง?',
+    answer: 'ค่าธรรมเนียมหลัก: (1) ค่าธรรมเนียมรับโอน (Inward Remittance Fee) ของธนาคารไทย ประมาณ 200–500 บาท (2) FX Spread จากการแปลงเงิน',
+  },
+  {
+    question: 'อัตราแลกเปลี่ยนที่ธนาคารให้ต่างกับตลาดเท่าไหร่?',
+    answer: 'ธนาคารมักให้อัตราต่ำกว่าตลาดประมาณ 0.5–2% ขึ้นอยู่กับสกุลเงิน ยอดโอน และธนาคาร ควรเปรียบเทียบกับ TT Rate ของแต่ละธนาคาร',
+  },
+  {
+    question: 'วิธีรับเงินโอนต่างประเทศให้ได้มากที่สุด?',
+    answer: 'เลือกธนาคารที่ให้อัตรา TT Buying สูงที่สุด ใช้บริการ FinTech เช่น Wise สำหรับอัตราใกล้ตลาดจริง หรือโอนยอดใหญ่เพื่อลดสัดส่วนค่าธรรมเนียมคงที่',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณยอดรับเงินโอนต่างประเทศ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณยอดรับเงินโอนต่างประเทศ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+      <p class="text-sm font-semibold text-blue-700">คำนวณยอดรับเงินโอนต่างประเทศสุทธิ</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ยอดรับ (บาท) = (ยอดโอน × อัตราแลก) − ค่าธรรมเนียมรับโอน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณยอดรับเงินโอนต่างประเทศสุทธิ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดโอน สกุลเงิน อัตราแลกเปลี่ยน และค่าธรรมเนียม เพื่อดูยอดรับสุทธิเป็นบาท
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="rem-form" class="space-y-5">
+        <p id="rem-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rem-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดโอน (สกุลเงินต่างประเทศ)</label>
+            <input type="text" id="rem-amount" inputmode="decimal" placeholder="เช่น 1,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="rem-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="rem-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราแลกเปลี่ยน (บาท/1 หน่วย)</label>
+            <input type="text" id="rem-rate" inputmode="decimal" placeholder="เช่น 34.50 (USD→THB)"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="rem-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ใช้ TT Buying Rate ของธนาคาร</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rem-inward-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าธรรมเนียมรับโอน (บาท)</label>
+            <input type="text" id="rem-inward-fee" inputmode="numeric" placeholder="เช่น 300"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 200–500 บาท (ถ้าฟรีใส่ 0)</p>
+          </div>
+          <div>
+            <label for="rem-corr-usd" class="mb-1 block text-sm font-medium text="gray-700">ค่าธรรมเนียมตัวกลาง (บาท) — ไม่บังคับ</label>
+            <input type="text" id="rem-corr-usd" inputmode="numeric" placeholder="เช่น 0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณยอดรับ
+        </button>
+      </form>
+    </div>
+
+    <div id="rem-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรับสุทธิ (บาท)</div>
+            <div id="res-rem-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดก่อนหักค่าธรรมเนียม</div>
+            <div id="res-rem-gross" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียมรวม</div>
+            <div id="res-rem-fee" class="text-xl font-bold text-red-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ยอดก่อนหักค่าธรรมเนียม = ยอดโอน × อัตราแลกเปลี่ยน</li>
+        <li>ค่าธรรมเนียมรวม = ค่าธรรมเนียมรับโอน + ค่าธรรมเนียมตัวกลาง</li>
+        <li>ยอดรับสุทธิ = ยอดก่อนหักค่าธรรมเนียม − ค่าธรรมเนียมรวม</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณต้นทุนชำระเงินข้ามประเทศ/">คำนวณต้นทุนชำระเงินข้ามประเทศ</a></li>
+        <li><a href="/คำนวณแปลงรายรับส่งออก/">คำนวณแปลงรายรับส่งออกเป็นบาท</a></li>
+        <li><a href="/คำนวณ-wire-transfer/">เปรียบเทียบ Wire Transfer</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#rem-results" />
+    <RelatedArticles currentHref="/คำนวณยอดรับเงินโอนต่างประเทศ/" />
+    <RelatedCalculators currentHref="/คำนวณยอดรับเงินโอนต่างประเทศ/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราแลกเปลี่ยนและค่าธรรมเนียมเปลี่ยนแปลงได้ทุกวัน ควรยืนยันอัตราจริงกับธนาคารก่อนทำรายการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('rem-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('rem-error').classList.add('hidden');
+      ['rem-amount-error','rem-rate-error'].forEach(id => setErr(id, ''));
+
+      const amount = parseNum(document.getElementById('rem-amount').value);
+      const rate = parseNum(document.getElementById('rem-rate').value);
+      const inwardFee = parseNum(document.getElementById('rem-inward-fee').value) || 0;
+      const corrFee = parseNum(document.getElementById('rem-corr-usd').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(amount) || amount <= 0) { setErr('rem-amount-error', 'กรอกยอดโอนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(rate) || rate <= 0) { setErr('rem-rate-error', 'กรอกอัตราแลกเปลี่ยนมากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('rem-error').classList.remove('hidden'); document.getElementById('rem-results').classList.add('hidden'); return; }
+
+      const gross = amount * rate;
+      const totalFee = inwardFee + corrFee;
+      const net = gross - totalFee;
+
+      setText('res-rem-net', fmt(net));
+      setText('res-rem-gross', fmt(gross));
+      setText('res-rem-fee', fmt(totalFee));
+
+      document.getElementById('rem-results').classList.remove('hidden');
+      document.getElementById('rem-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

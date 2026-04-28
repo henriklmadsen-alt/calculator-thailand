@@ -1,0 +1,597 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าปรับจราจร 2569 | ค่าปรับ + ตัดคะแนน ตาม พ.ร.บ.จราจรทางบก | Kamnuanlek';
+const pageDescription = 'คำนวณค่าปรับจราจรออนไลน์ฟรี ตาม พ.ร.บ.จราจรทางบก ครอบคลุมทุกประเภทความผิด พร้อมระบบตัดคะแนนใบขับขี่ กฎการพักใช้ใบอนุญาต อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าปรับจราจร/`;
+
+const faqData = [
+  {
+    question: 'ระบบตัดคะแนนใบขับขี่ทำงานอย่างไร?',
+    answer: 'ตาม พ.ร.บ.จราจรทางบก (ฉบับที่ 13) พ.ศ. 2565 ผู้ขับขี่เริ่มต้นมี 12 คะแนนต่อรอบปี เมื่อกระทำผิดจะถูกตัดคะแนนตามความรุนแรง หากคะแนนเหลือ 0 จะถูกพักใช้ใบอนุญาตขับขี่ 90 วัน คะแนนจะรีเซ็ตเมื่อครบรอบปี',
+  },
+  {
+    question: 'เมาแล้วขับโดนปรับเท่าไร?',
+    answer: 'ผู้ขับขี่ที่มีปริมาณแอลกอฮอล์ในเลือดเกิน 50 มิลลิกรัมเปอร์เซ็นต์ มีโทษจำคุกไม่เกิน 1 ปี หรือปรับ 5,000-20,000 บาท หรือทั้งจำทั้งปรับ และถูกตัดคะแนนทั้งหมด 12 คะแนน (พักใช้ใบขับขี่ทันที)',
+  },
+  {
+    question: 'ขับรถเร็วเกินกำหนดปรับเท่าไร?',
+    answer: 'ขับรถเร็วเกินกำหนดมีโทษปรับไม่เกิน 1,000 บาท โดยอัตราปรับจริงขึ้นอยู่กับความเร็วที่เกิน และดุลยพินิจเจ้าหน้าที่ ถูกตัดคะแนน 1-2 คะแนน',
+  },
+  {
+    question: 'ฝ่าไฟแดงปรับเท่าไร?',
+    answer: 'ฝ่าฝืนสัญญาณไฟจราจร มีโทษปรับไม่เกิน 1,000 บาท ตัดคะแนน 1 คะแนน หากเป็นการฝ่าไฟแดงจากกล้องจับอัตโนมัติ จะได้รับใบสั่งทางไปรษณีย์',
+  },
+  {
+    question: 'ใบสั่งค่าปรับจราจรชำระได้ที่ไหน?',
+    answer: 'ชำระได้หลายช่องทาง: สถานีตำรวจทั่วประเทศ, เคาน์เตอร์เซอร์วิส, ไปรษณีย์ไทย, ธนาคารกรุงไทย, แอป Krungthai NEXT, และระบบออนไลน์ ptm.police.go.th โดยต้องชำระภายใน 15 วันนับแต่วันที่ได้รับใบสั่ง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าปรับจราจร',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าปรับจราจร">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <!-- Info banner -->
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ข้อมูลสำคัญ</p>
+      <p class="mt-1 text-sm text-slate-700">
+        อัตราค่าปรับตาม พ.ร.บ.จราจรทางบก พ.ศ. 2522 (แก้ไขเพิ่มเติม ฉบับที่ 13 พ.ศ. 2565) — ระบบตัดคะแนนใบขับขี่เริ่มต้น 12 คะแนนต่อรอบปี
+      </p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าปรับจราจร (Traffic Fine Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าปรับจราจรตามประเภทความผิด พร้อมแสดงคะแนนที่ถูกตัด กฎการพักใช้ใบอนุญาตขับขี่ และช่องทางชำระค่าปรับ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Violation Type -->
+      <div class="mb-5">
+        <label for="violation-type" class="block text-sm font-medium text-gray-700 mb-1">
+          ประเภทความผิด
+        </label>
+        <select
+          id="violation-type"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <optgroup label="ความผิดร้ายแรง">
+            <option value="dui">เมาแล้วขับ (แอลกอฮอล์เกิน 50 mg%)</option>
+            <option value="racing">ขับรถแข่งบนถนน / ขับรถโดยประมาทน่าหวาดเสียว</option>
+            <option value="hit-and-run">ชนแล้วหนี / ไม่หยุดให้ความช่วยเหลือ</option>
+          </optgroup>
+          <optgroup label="ความผิดเกี่ยวกับความเร็ว">
+            <option value="speed-minor">ขับรถเร็วเกินกำหนด (ไม่เกิน 30 กม./ชม.)</option>
+            <option value="speed-major">ขับรถเร็วเกินกำหนด (เกิน 30 กม./ชม.)</option>
+          </optgroup>
+          <optgroup label="ความผิดเกี่ยวกับสัญญาณจราจร">
+            <option value="red-light">ฝ่าไฟแดง / ฝ่าฝืนสัญญาณจราจร</option>
+            <option value="stop-sign">ไม่หยุดรถตรงป้ายหยุด</option>
+          </optgroup>
+          <optgroup label="ความผิดเกี่ยวกับการขับขี่">
+            <option value="wrong-way">ขับรถย้อนศร</option>
+            <option value="illegal-overtake">แซงในที่ห้ามแซง</option>
+            <option value="illegal-uturn">กลับรถในที่ห้ามกลับ</option>
+            <option value="lane-violation">ขับรถไม่ชิดซ้าย / ขับบนไหล่ทาง</option>
+            <option value="phone-driving">ใช้โทรศัพท์ขณะขับรถ</option>
+          </optgroup>
+          <optgroup label="ความผิดเกี่ยวกับความปลอดภัย">
+            <option value="no-seatbelt">ไม่คาดเข็มขัดนิรภัย</option>
+            <option value="no-helmet">ไม่สวมหมวกกันน็อค</option>
+            <option value="no-child-seat">ไม่ใช้ที่นั่งนิรภัยสำหรับเด็ก</option>
+          </optgroup>
+          <optgroup label="ความผิดเกี่ยวกับการจอดรถ">
+            <option value="illegal-parking">จอดรถในที่ห้ามจอด</option>
+            <option value="double-parking">จอดรถซ้อนคัน</option>
+          </optgroup>
+          <optgroup label="ความผิดเกี่ยวกับเอกสาร">
+            <option value="no-license">ไม่มีใบอนุญาตขับขี่ / ใบขับขี่หมดอายุ</option>
+            <option value="no-tax-sticker">ไม่ติดเครื่องหมายการเสียภาษี (ป้ายวงกลม)</option>
+            <option value="no-insurance">ไม่มี พ.ร.บ. คุ้มครองผู้ประสบภัยจากรถ</option>
+          </optgroup>
+          <optgroup label="ความผิดอื่นๆ">
+            <option value="noise">ใช้เสียงสัญญาณแตรโดยไม่จำเป็น / ท่อไอเสียดัง</option>
+            <option value="overload">บรรทุกน้ำหนักเกินกำหนด / ไม่ปิดคลุมสิ่งของ</option>
+            <option value="no-light">ไม่เปิดไฟหน้ารถเวลากลางคืน</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Number of violations for points calculation -->
+      <div class="mb-5">
+        <label for="violation-count" class="block text-sm font-medium text-gray-700 mb-1">
+          จำนวนครั้งที่ถูกจับ (ในรอบปีนี้)
+        </label>
+        <input
+          type="number"
+          id="violation-count"
+          min="1"
+          max="20"
+          value="1"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <p class="mt-1 text-xs text-gray-500">ใช้สำหรับคำนวณคะแนนสะสมที่ถูกตัด</p>
+      </div>
+
+      <!-- Current remaining points -->
+      <div class="mb-5">
+        <label for="current-points" class="block text-sm font-medium text-gray-700 mb-1">
+          คะแนนใบขับขี่คงเหลือ (ก่อนครั้งนี้)
+        </label>
+        <input
+          type="number"
+          id="current-points"
+          min="0"
+          max="12"
+          value="12"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <p class="mt-1 text-xs text-gray-500">เริ่มต้น 12 คะแนนต่อรอบปี — ถ้าไม่ทราบให้ใส่ 12</p>
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าปรับ
+      </button>
+
+      <!-- Results -->
+      <div id="traffic-result" class="hidden mt-6">
+        <!-- Fine amount -->
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">ค่าปรับ</div>
+          <div id="res-fine" class="text-4xl sm:text-5xl font-bold text-primary-700 mb-1">-</div>
+          <div id="res-fine-range" class="text-sm text-gray-500"></div>
+        </div>
+
+        <!-- Points & penalty cards -->
+        <div class="grid gap-3 sm:grid-cols-2 mb-4">
+          <div class="bg-amber-50 rounded-lg p-4">
+            <div class="text-sm text-gray-600 mb-1">คะแนนที่ถูกตัด (ครั้งนี้)</div>
+            <div id="res-points-deducted" class="text-2xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-gray-600 mb-1">คะแนนคงเหลือ</div>
+            <div id="res-points-remaining" class="text-2xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+
+        <!-- Total points deducted this year -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">คะแนนถูกตัดสะสม (ทั้งรอบปี)</span>
+            <span id="res-total-deducted" class="font-bold text-gray-700">-</span>
+          </div>
+        </div>
+
+        <!-- License suspension warning -->
+        <div id="suspension-warning" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-sm font-semibold text-red-700">พักใช้ใบอนุญาตขับขี่</p>
+          <p id="suspension-detail" class="mt-1 text-sm text-red-600"></p>
+        </div>
+
+        <!-- Criminal penalty notice -->
+        <div id="criminal-notice" class="hidden mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+          <p class="text-sm font-semibold text-orange-700">โทษทางอาญา</p>
+          <p id="criminal-detail" class="mt-1 text-sm text-orange-600"></p>
+        </div>
+
+        <!-- Violation detail -->
+        <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">รายละเอียดความผิด</h3>
+          <div id="res-law-ref" class="text-sm text-gray-600 mb-2"></div>
+          <div id="res-description" class="text-sm text-gray-600"></div>
+        </div>
+
+        <!-- Payment channels -->
+        <div class="bg-green-50 rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-green-700 mb-2">ช่องทางชำระค่าปรับ</h3>
+          <ul class="text-sm text-green-600 space-y-1">
+            <li>- สถานีตำรวจทั่วประเทศ</li>
+            <li>- เคาน์เตอร์เซอร์วิส (7-Eleven)</li>
+            <li>- ไปรษณีย์ไทย</li>
+            <li>- ธนาคารกรุงไทย / แอป Krungthai NEXT</li>
+            <li>- ระบบออนไลน์ ptm.police.go.th</li>
+          </ul>
+          <p class="mt-2 text-xs text-green-500">* ต้องชำระภายใน 15 วันนับแต่วันที่ได้รับใบสั่ง</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าปรับจราจรไทย 2569</h2>
+
+      <p>
+        ค่าปรับจราจรในประเทศไทยกำหนดตาม พ.ร.บ.จราจรทางบก พ.ศ. 2522 และฉบับแก้ไขเพิ่มเติม
+        โดยเริ่มใช้ระบบตัดคะแนนใบขับขี่ตามฉบับที่ 13 พ.ศ. 2565
+        ผู้ขับขี่ทุกคนเริ่มต้นมี 12 คะแนนต่อรอบปี หากถูกตัดจนเหลือ 0 คะแนน จะถูกพักใช้ใบอนุญาตขับขี่ 90 วัน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราค่าปรับตามประเภทความผิด</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">ประเภทความผิด</th>
+              <th class="py-2 pr-4">ค่าปรับ (บาท)</th>
+              <th class="py-2">คะแนนที่ตัด</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">เมาแล้วขับ</td>
+              <td class="py-2 pr-4">5,000 - 20,000</td>
+              <td class="py-2">12 (พักใช้ทันที)</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ขับรถแข่งบนถนน</td>
+              <td class="py-2 pr-4">ไม่เกิน 1,000</td>
+              <td class="py-2">4</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ฝ่าไฟแดง</td>
+              <td class="py-2 pr-4">ไม่เกิน 1,000</td>
+              <td class="py-2">1</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ขับรถเร็วเกินกำหนด</td>
+              <td class="py-2 pr-4">ไม่เกิน 1,000</td>
+              <td class="py-2">1 - 2</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ใช้โทรศัพท์ขณะขับรถ</td>
+              <td class="py-2 pr-4">400 - 1,000</td>
+              <td class="py-2">1</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ไม่คาดเข็มขัดนิรภัย</td>
+              <td class="py-2 pr-4">ไม่เกิน 500</td>
+              <td class="py-2">1</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ไม่สวมหมวกกันน็อค</td>
+              <td class="py-2 pr-4">ไม่เกิน 500</td>
+              <td class="py-2">1</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">จอดรถในที่ห้ามจอด</td>
+              <td class="py-2 pr-4">ไม่เกิน 500</td>
+              <td class="py-2">1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ระบบตัดคะแนนใบขับขี่</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ผู้ขับขี่เริ่มต้นมี 12 คะแนนต่อรอบปี</li>
+        <li>เมื่อกระทำความผิดจราจร จะถูกตัดคะแนนตามความรุนแรงของความผิด</li>
+        <li>คะแนนเหลือ 0 = พักใช้ใบอนุญาตขับขี่ 90 วัน</li>
+        <li>เมาแล้วขับ = ตัดคะแนนทั้งหมด 12 คะแนน (พักใช้ใบขับขี่ทันที)</li>
+        <li>คะแนนจะถูกรีเซ็ตกลับเป็น 12 คะแนนเมื่อครบรอบปี</li>
+        <li>ระหว่างถูกพักใช้ใบขับขี่ หากขับรถจะมีโทษเพิ่มเติม</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">กำหนดเวลาชำระค่าปรับ</h3>
+
+      <p>
+        เมื่อได้รับใบสั่งค่าปรับจราจร ต้องชำระค่าปรับภายใน 15 วันนับแต่วันที่ได้รับใบสั่ง
+        หากไม่ชำระตามกำหนด จะมีหนังสือเตือนและอาจถูกระงับการต่อภาษีรถประจำปี
+        สำหรับใบสั่งจากกล้องจับอัตโนมัติ จะจัดส่งทางไปรษณีย์ไปยังที่อยู่ตามทะเบียนรถ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>ตัวอย่าง: ถูกจับฝ่าไฟแดง 2 ครั้ง ในรอบปี โดยเริ่มต้นมี 12 คะแนน:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าปรับ = ไม่เกิน 1,000 บาท/ครั้ง</li>
+        <li>คะแนนที่ตัด = 1 คะแนน × 2 ครั้ง = 2 คะแนน</li>
+        <li>คะแนนคงเหลือ = 12 - 2 = 10 คะแนน</li>
+        <li>ยังไม่ถูกพักใช้ใบขับขี่ (ต้องเหลือ 0 คะแนนจึงถูกพักใช้)</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าปรับจราจร/" />
+    <RelatedCalculators currentHref="/คำนวณค่าปรับจราจร/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องคำนวณนี้ให้ผลลัพธ์โดยประมาณเพื่อการวางแผนเบื้องต้นเท่านั้น
+      ค่าปรับจริงขึ้นอยู่กับดุลยพินิจของเจ้าหน้าที่ตำรวจ
+      กรุณาติดต่อสถานีตำรวจในพื้นที่สำหรับข้อมูลที่ถูกต้องที่สุด
+    </div>
+  </article>
+
+  <script>
+    interface ViolationData {
+      fineMin: number;
+      fineMax: number;
+      points: number;
+      criminal: string | null;
+      lawRef: string;
+      description: string;
+    }
+
+    const violations: Record<string, ViolationData> = {
+      'dui': {
+        fineMin: 5000, fineMax: 20000, points: 12,
+        criminal: 'จำคุกไม่เกิน 1 ปี หรือปรับ 5,000-20,000 บาท หรือทั้งจำทั้งปรับ — หากเป็นเหตุให้ผู้อื่นได้รับอันตราย โทษจะหนักขึ้น',
+        lawRef: 'มาตรา 43(2) ประกอบมาตรา 160 ตรี แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ขับรถในขณะเมาสุราหรือของมึนเมาอย่างอื่น (แอลกอฮอล์ในเลือดเกิน 50 มิลลิกรัมเปอร์เซ็นต์) ถูกตัดคะแนนทั้งหมด 12 คะแนน ส่งผลให้ถูกพักใช้ใบอนุญาตขับขี่ทันที',
+      },
+      'racing': {
+        fineMin: 500, fineMax: 1000, points: 4,
+        criminal: 'จำคุกไม่เกิน 3 เดือน หรือปรับ 2,000-10,000 บาท หรือทั้งจำทั้งปรับ (กรณีขับรถแข่ง)',
+        lawRef: 'มาตรา 43(8) ประกอบมาตรา 160 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ขับรถแข่งบนถนนสาธารณะ หรือขับรถโดยประมาทหวาดเสียว อาจเป็นอันตรายแก่คนหรือทรัพย์สิน',
+      },
+      'hit-and-run': {
+        fineMin: 1000, fineMax: 10000, points: 4,
+        criminal: 'จำคุกไม่เกิน 3 เดือน หรือปรับไม่เกิน 5,000 บาท หรือทั้งจำทั้งปรับ',
+        lawRef: 'มาตรา 78 ประกอบมาตรา 160 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ขับรถชนแล้วหนี ไม่หยุดให้ความช่วยเหลือผู้ประสบเหตุ ไม่แจ้งเหตุต่อเจ้าหน้าที่ตำรวจ',
+      },
+      'speed-minor': {
+        fineMin: 200, fineMax: 1000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 67 ประกอบมาตรา 152 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ขับรถเร็วเกินอัตราที่กฎหมายกำหนด ไม่เกิน 30 กม./ชม. เช่น ในเขตเมืองกำหนด 80 กม./ชม. ขับ 100 กม./ชม.',
+      },
+      'speed-major': {
+        fineMin: 500, fineMax: 1000, points: 2,
+        criminal: null,
+        lawRef: 'มาตรา 67 ประกอบมาตรา 152 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ขับรถเร็วเกินอัตราที่กฎหมายกำหนดมากกว่า 30 กม./ชม. ถือว่าเป็นความผิดที่มีความรุนแรงสูง',
+      },
+      'red-light': {
+        fineMin: 500, fineMax: 1000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 22 ประกอบมาตรา 152 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ฝ่าฝืนสัญญาณไฟจราจรสีแดง ไม่หยุดรถหลังเส้นหยุดเมื่อสัญญาณไฟแดง รวมถึงกรณีจับจากกล้องตรวจจับอัตโนมัติ',
+      },
+      'stop-sign': {
+        fineMin: 200, fineMax: 1000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 23 ประกอบมาตรา 152 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ไม่หยุดรถตรงป้ายหยุด (STOP) ก่อนถึงทางแยก ทางร่วม หรือวงเวียน',
+      },
+      'wrong-way': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 41 ประกอบมาตรา 157 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ขับรถสวนทางหรือย้อนศรในทางเดินรถทางเดียว',
+      },
+      'illegal-overtake': {
+        fineMin: 400, fineMax: 1000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 45 ประกอบมาตรา 157 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'แซงรถคันอื่นในเขตห้ามแซง ทางโค้ง ทางลาดชัน สะพาน หรือทางแคบ',
+      },
+      'illegal-uturn': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 53 ประกอบมาตรา 157 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'กลับรถในเขตที่มีเครื่องหมายห้ามกลับรถ หรือกลับรถในทางที่ไม่ปลอดภัย',
+      },
+      'lane-violation': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 33 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ไม่ขับรถชิดด้านซ้ายของทางเดินรถ หรือขับรถบนไหล่ทาง',
+      },
+      'phone-driving': {
+        fineMin: 400, fineMax: 1000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 43(9) ประกอบมาตรา 157/1 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ใช้โทรศัพท์เคลื่อนที่ขณะขับรถ โดยไม่ใช้อุปกรณ์เสริมแฮนด์ฟรี',
+      },
+      'no-seatbelt': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 123 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ผู้ขับขี่หรือผู้โดยสารไม่คาดเข็มขัดนิรภัย ทั้งที่นั่งหน้าและที่นั่งหลัง',
+      },
+      'no-helmet': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 122 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ผู้ขับขี่หรือผู้โดยสารรถจักรยานยนต์ไม่สวมหมวกกันน็อคที่ได้มาตรฐาน',
+      },
+      'no-child-seat': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 123/1 แห่ง พ.ร.บ.จราจรทางบก (ฉบับที่ 13)',
+        description: 'ไม่จัดให้เด็กอายุไม่เกิน 6 ปีนั่งในที่นั่งนิรภัยสำหรับเด็ก (Child Car Seat)',
+      },
+      'illegal-parking': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 55 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'จอดรถในบริเวณที่มีเครื่องหมายห้ามจอด ทางเท้า สะพาน ทางข้ามทางรถไฟ หรือในลักษณะกีดขวางการจราจร',
+      },
+      'double-parking': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 57 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'จอดรถซ้อนคัน หรือจอดรถในลักษณะที่กีดขวางการจราจร',
+      },
+      'no-license': {
+        fineMin: 200, fineMax: 1000, points: 2,
+        criminal: null,
+        lawRef: 'มาตรา 64 แห่ง พ.ร.บ.รถยนต์ พ.ศ. 2522 ประกอบมาตรา 66',
+        description: 'ขับรถโดยไม่มีใบอนุญาตขับขี่ หรือใบขับขี่หมดอายุ หรือไม่พกใบขับขี่ขณะขับรถ',
+      },
+      'no-tax-sticker': {
+        fineMin: 200, fineMax: 2000, points: 0,
+        criminal: null,
+        lawRef: 'มาตรา 6 ประกอบมาตรา 60 แห่ง พ.ร.บ.รถยนต์ พ.ศ. 2522',
+        description: 'ใช้รถที่ไม่ได้เสียภาษีรถประจำปี หรือไม่ติดเครื่องหมายการเสียภาษี (ป้ายวงกลม) ไว้ที่กระจกหน้ารถ',
+      },
+      'no-insurance': {
+        fineMin: 5000, fineMax: 10000, points: 0,
+        criminal: null,
+        lawRef: 'มาตรา 7 ประกอบมาตรา 37 แห่ง พ.ร.บ.คุ้มครองผู้ประสบภัยจากรถ พ.ศ. 2535',
+        description: 'ใช้รถที่ไม่มีประกันภัยตาม พ.ร.บ. (ประกันภัยภาคบังคับ) คุ้มครองผู้ประสบภัยจากรถ',
+      },
+      'noise': {
+        fineMin: 200, fineMax: 1000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 14 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ใช้เสียงสัญญาณแตรโดยไม่มีเหตุจำเป็น หรือใช้รถที่มีเสียงท่อไอเสียดังเกินกำหนด',
+      },
+      'overload': {
+        fineMin: 500, fineMax: 10000, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 18 ประกอบมาตรา 142 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'บรรทุกน้ำหนักเกินกำหนด ไม่ปิดคลุมสิ่งของที่บรรทุกให้เรียบร้อย หรือบรรทุกยื่นเกินตัวรถ',
+      },
+      'no-light': {
+        fineMin: 200, fineMax: 500, points: 1,
+        criminal: null,
+        lawRef: 'มาตรา 11 ประกอบมาตรา 148 แห่ง พ.ร.บ.จราจรทางบก',
+        description: 'ไม่เปิดไฟหน้ารถขณะขับรถในเวลาที่มีแสงสว่างไม่เพียงพอ หรือเวลากลางคืน',
+      },
+    };
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    function calculate() {
+      const violationType = (document.getElementById('violation-type') as HTMLSelectElement).value;
+      const violationCount = Math.max(1, parseInt((document.getElementById('violation-count') as HTMLInputElement).value) || 1);
+      const currentPoints = Math.min(12, Math.max(0, parseInt((document.getElementById('current-points') as HTMLInputElement).value) || 12));
+
+      const v = violations[violationType];
+      if (!v) return;
+
+      // Calculate fine
+      const totalFineMin = v.fineMin * violationCount;
+      const totalFineMax = v.fineMax * violationCount;
+
+      // Calculate points
+      const pointsDeducted = v.points * violationCount;
+      const pointsRemaining = Math.max(0, currentPoints - pointsDeducted);
+      const totalDeducted = 12 - pointsRemaining;
+
+      // Update DOM
+      const resultEl = document.getElementById('traffic-result') as HTMLDivElement;
+      resultEl.classList.remove('hidden');
+
+      if (v.fineMin === v.fineMax) {
+        (document.getElementById('res-fine') as HTMLElement).textContent = `${fmt(totalFineMax)} บาท`;
+        (document.getElementById('res-fine-range') as HTMLElement).textContent =
+          violationCount > 1 ? `${fmt(v.fineMax)} บาท × ${violationCount} ครั้ง` : '';
+      } else {
+        (document.getElementById('res-fine') as HTMLElement).textContent = `${fmt(totalFineMin)} - ${fmt(totalFineMax)} บาท`;
+        (document.getElementById('res-fine-range') as HTMLElement).textContent =
+          violationCount > 1 ? `${fmt(v.fineMin)}-${fmt(v.fineMax)} บาท × ${violationCount} ครั้ง` : `ขึ้นอยู่กับดุลยพินิจเจ้าหน้าที่`;
+      }
+
+      (document.getElementById('res-points-deducted') as HTMLElement).textContent =
+        v.points > 0 ? `-${v.points * violationCount} คะแนน` : 'ไม่ตัดคะแนน';
+      (document.getElementById('res-points-remaining') as HTMLElement).textContent = `${pointsRemaining} / 12 คะแนน`;
+      (document.getElementById('res-total-deducted') as HTMLElement).textContent = `${totalDeducted} / 12 คะแนน`;
+
+      // Points remaining color
+      const remainingEl = document.getElementById('res-points-remaining') as HTMLElement;
+      remainingEl.className = 'text-2xl font-bold';
+      if (pointsRemaining === 0) {
+        remainingEl.classList.add('text-red-700');
+      } else if (pointsRemaining <= 3) {
+        remainingEl.classList.add('text-amber-700');
+      } else {
+        remainingEl.classList.add('text-blue-700');
+      }
+
+      // Suspension warning
+      const suspensionEl = document.getElementById('suspension-warning') as HTMLDivElement;
+      const suspensionDetailEl = document.getElementById('suspension-detail') as HTMLElement;
+      if (pointsRemaining === 0) {
+        suspensionEl.classList.remove('hidden');
+        if (violationType === 'dui') {
+          suspensionDetailEl.textContent =
+            'เมาแล้วขับ — ถูกตัดคะแนนทั้งหมด 12 คะแนน ส่งผลให้ถูกพักใช้ใบอนุญาตขับขี่ทันที 90 วัน หากขับรถระหว่างถูกพักใช้ใบขับขี่จะมีโทษเพิ่มเติม';
+        } else {
+          suspensionDetailEl.textContent =
+            'คะแนนเหลือ 0 — ถูกพักใช้ใบอนุญาตขับขี่ 90 วัน นับแต่วันที่ได้รับแจ้งคำสั่ง หากขับรถระหว่างถูกพักใช้ใบขับขี่จะมีโทษเพิ่มเติม';
+        }
+      } else {
+        suspensionEl.classList.add('hidden');
+      }
+
+      // Criminal notice
+      const criminalEl = document.getElementById('criminal-notice') as HTMLDivElement;
+      const criminalDetailEl = document.getElementById('criminal-detail') as HTMLElement;
+      if (v.criminal) {
+        criminalEl.classList.remove('hidden');
+        criminalDetailEl.textContent = v.criminal;
+      } else {
+        criminalEl.classList.add('hidden');
+      }
+
+      // Law reference and description
+      (document.getElementById('res-law-ref') as HTMLElement).textContent = v.lawRef;
+      (document.getElementById('res-description') as HTMLElement).textContent = v.description;
+
+      trackCalculatorUsed('traffic-fine');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Track when result section enters viewport
+    const trafficResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('traffic-fine');
+          trafficResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    trafficResultObserver.observe(document.getElementById('traffic-result')!);
+  </script>
+</BaseLayout>

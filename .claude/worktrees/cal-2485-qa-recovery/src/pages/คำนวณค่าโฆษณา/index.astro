@@ -1,0 +1,554 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าโฆษณา 2569 | CPC CPM ROAS Facebook Google LINE | Kamnuanlek';
+const pageDescription = 'คำนวณค่าโฆษณาออนไลน์ฟรี Facebook Ads, Google Ads, LINE OA คำนวณ CPC CPM อัตราคอนเวอร์ชัน ROAS ต้นทุนต่อลูกค้า วางแผนงบโฆษณาสำหรับธุรกิจไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าโฆษณา/`;
+
+const faqData = [
+  {
+    question: 'CPC, CPM, CTR คืออะไร?',
+    answer: 'CPC (Cost Per Click) คือค่าใช้จ่ายต่อคลิก, CPM (Cost Per Mille) คือค่าใช้จ่ายต่อการแสดงผล 1,000 ครั้ง, CTR (Click-Through Rate) คืออัตราคลิกต่อจำนวนการแสดงผล คำนวณจาก (จำนวนคลิก ÷ จำนวนแสดงผล) × 100',
+  },
+  {
+    question: 'ROAS คืออะไร แตกต่างจาก ROI อย่างไร?',
+    answer: 'ROAS (Return on Ad Spend) คืออัตราผลตอบแทนต่อค่าโฆษณา คำนวณจาก รายได้ ÷ ค่าโฆษณา เช่น ROAS 5x หมายความว่าจ่ายโฆษณา 1 บาท ได้รายได้กลับ 5 บาท ส่วน ROI คิดรวมต้นทุนทั้งหมด ไม่ใช่แค่ค่าโฆษณา',
+  },
+  {
+    question: 'ค่าโฆษณา Facebook ในไทยเท่าไร?',
+    answer: 'ค่าโฆษณา Facebook ในไทยเฉลี่ย CPC ประมาณ 1-5 บาท, CPM ประมาณ 30-150 บาท ขึ้นอยู่กับกลุ่มเป้าหมาย อุตสาหกรรม ช่วงเวลา และคุณภาพโฆษณา ช่วงเทศกาลอาจแพงขึ้น 2-3 เท่า',
+  },
+  {
+    question: 'ค่าโฆษณา Google Ads ในไทยเท่าไร?',
+    answer: 'Google Ads ในไทยเฉลี่ย CPC ประมาณ 2-15 บาท สำหรับ Search Ads ขึ้นกับ keyword competition ส่วน Display Ads มี CPM ประมาณ 10-50 บาท keyword ที่แข่งสูงอาจถึง 30-100 บาทต่อคลิก',
+  },
+  {
+    question: 'งบโฆษณาเริ่มต้นควรตั้งเท่าไร?',
+    answer: 'สำหรับธุรกิจ SME ในไทย แนะนำเริ่มต้นที่ 3,000-10,000 บาท/เดือน เพื่อทดสอบโฆษณา เก็บข้อมูล และปรับปรุง ควรทดสอบอย่างน้อย 2-4 สัปดาห์ก่อนเพิ่มงบ โดยกระจายงบไป 2-3 แคมเปญ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าโฆษณา',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโฆษณา">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าโฆษณา (Ad Cost Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าโฆษณาออนไลน์ Facebook, Google, LINE วิเคราะห์ CPC, CPM, อัตราคอนเวอร์ชัน, ROAS และต้นทุนต่อลูกค้า วางแผนงบโฆษณาอย่างมีประสิทธิภาพ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Ad Platform -->
+      <div class="mb-5">
+        <label for="ad-platform" class="block text-sm font-medium text-gray-700 mb-1">
+          แพลตฟอร์มโฆษณา
+        </label>
+        <select
+          id="ad-platform"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <option value="facebook">Facebook / Instagram Ads</option>
+          <option value="google">Google Ads (Search)</option>
+          <option value="google-display">Google Ads (Display)</option>
+          <option value="line">LINE OA / LINE Ads</option>
+          <option value="tiktok">TikTok Ads</option>
+          <option value="custom">กำหนดเอง</option>
+        </select>
+      </div>
+
+      <!-- Pricing Model -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          รูปแบบการคิดค่าโฆษณา
+        </label>
+        <div class="flex flex-wrap gap-2" id="pricing-model">
+          <button type="button" data-model="cpc" class="model-btn px-4 py-2 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors">CPC (ต่อคลิก)</button>
+          <button type="button" data-model="cpm" class="model-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors">CPM (ต่อ 1,000 วิว)</button>
+        </div>
+      </div>
+
+      <!-- Budget -->
+      <div class="mb-5">
+        <label for="ad-budget" class="block text-sm font-medium text-gray-700 mb-1">
+          งบโฆษณาทั้งหมด (บาท)
+        </label>
+        <input
+          type="text"
+          id="ad-budget"
+          inputmode="decimal"
+          placeholder="เช่น 10,000"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+      </div>
+
+      <!-- CPC Input (shown for CPC model) -->
+      <div id="cpc-section" class="mb-5">
+        <label for="cost-per-click" class="block text-sm font-medium text-gray-700 mb-1">
+          ค่าต่อคลิก - CPC (บาท)
+        </label>
+        <input
+          type="text"
+          id="cost-per-click"
+          inputmode="decimal"
+          placeholder="เช่น 3.50"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <p class="text-xs text-gray-400 mt-1" id="cpc-hint">Facebook ไทยเฉลี่ย 1-5 บาท</p>
+      </div>
+
+      <!-- CPM Input (hidden by default) -->
+      <div id="cpm-section" class="mb-5 hidden">
+        <label for="cost-per-mille" class="block text-sm font-medium text-gray-700 mb-1">
+          ค่าต่อ 1,000 การแสดงผล - CPM (บาท)
+        </label>
+        <input
+          type="text"
+          id="cost-per-mille"
+          inputmode="decimal"
+          placeholder="เช่น 80"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <p class="text-xs text-gray-400 mt-1" id="cpm-hint">Facebook ไทยเฉลี่ย 30-150 บาท</p>
+      </div>
+
+      <!-- CTR (for CPM model) -->
+      <div id="ctr-section" class="mb-5 hidden">
+        <label for="ctr-rate" class="block text-sm font-medium text-gray-700 mb-1">
+          อัตราคลิก - CTR (%)
+        </label>
+        <input
+          type="text"
+          id="ctr-rate"
+          inputmode="decimal"
+          placeholder="เช่น 1.5"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <p class="text-xs text-gray-400 mt-1">CTR เฉลี่ย Facebook 0.9-1.6%, Google Search 3-5%</p>
+      </div>
+
+      <!-- Conversion Rate -->
+      <div class="mb-5">
+        <label for="conversion-rate" class="block text-sm font-medium text-gray-700 mb-1">
+          อัตราคอนเวอร์ชัน (%)
+        </label>
+        <input
+          type="text"
+          id="conversion-rate"
+          inputmode="decimal"
+          placeholder="เช่น 2.5"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+        <p class="text-xs text-gray-400 mt-1">อัตราเฉลี่ยในไทย 1-3% สำหรับ e-commerce</p>
+      </div>
+
+      <!-- Average Order Value -->
+      <div class="mb-5">
+        <label for="avg-order-value" class="block text-sm font-medium text-gray-700 mb-1">
+          มูลค่าเฉลี่ยต่อออเดอร์ (บาท)
+        </label>
+        <input
+          type="text"
+          id="avg-order-value"
+          inputmode="decimal"
+          placeholder="เช่น 500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณ
+      </button>
+
+      <!-- Results -->
+      <div id="ad-result" class="hidden mt-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">ผลการคำนวณ</h3>
+
+        <!-- Traffic Metrics -->
+        <div class="mb-4">
+          <h4 class="text-sm font-medium text-gray-500 mb-2">ปริมาณการเข้าถึง</h4>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="bg-blue-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">จำนวนคลิกที่ได้</div>
+              <div id="res-clicks" class="text-xl font-bold text-blue-700">-</div>
+            </div>
+            <div id="impressions-card" class="bg-indigo-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">จำนวนการแสดงผล</div>
+              <div id="res-impressions" class="text-xl font-bold text-indigo-700">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost Metrics -->
+        <div class="mb-4">
+          <h4 class="text-sm font-medium text-gray-500 mb-2">ต้นทุน</h4>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="bg-amber-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ต้นทุนต่อคลิก (CPC)</div>
+              <div id="res-effective-cpc" class="text-xl font-bold text-amber-700">-</div>
+            </div>
+            <div class="bg-orange-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ต้นทุนต่อลูกค้า (CPA)</div>
+              <div id="res-cpa" class="text-xl font-bold text-orange-700">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conversion Metrics -->
+        <div class="mb-4">
+          <h4 class="text-sm font-medium text-gray-500 mb-2">คอนเวอร์ชันและผลตอบแทน</h4>
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div class="bg-green-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">จำนวนคอนเวอร์ชัน</div>
+              <div id="res-conversions" class="text-xl font-bold text-green-700">-</div>
+            </div>
+            <div class="bg-emerald-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">รายได้คาดการณ์</div>
+              <div id="res-revenue" class="text-xl font-bold text-emerald-700">-</div>
+            </div>
+            <div class="bg-primary-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ROAS</div>
+              <div id="res-roas" class="text-xl font-bold text-primary-700">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profit/Loss -->
+        <div class="mb-4">
+          <div id="profit-card" class="rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไร/ขาดทุนจากโฆษณา</div>
+            <div id="res-profit" class="text-2xl font-bold">-</div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div id="res-summary"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">คำนวณค่าโฆษณาออนไลน์สำหรับธุรกิจไทย</h2>
+
+      <p>
+        การทำโฆษณาออนไลน์เป็นหนึ่งในช่องทางการตลาดที่สำคัญที่สุดสำหรับธุรกิจในยุคปัจจุบัน
+        ไม่ว่าจะเป็น Facebook Ads, Google Ads หรือ LINE OA การคำนวณต้นทุนและผลตอบแทนอย่างแม่นยำ
+        จะช่วยให้วางแผนงบโฆษณาได้อย่างมีประสิทธิภาพ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่าโฆษณา</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>CPC (Cost Per Click)</strong> = งบโฆษณา ÷ จำนวนคลิก</li>
+        <li><strong>CPM (Cost Per Mille)</strong> = (งบโฆษณา ÷ จำนวนแสดงผล) × 1,000</li>
+        <li><strong>CTR (Click-Through Rate)</strong> = (จำนวนคลิก ÷ จำนวนแสดงผล) × 100</li>
+        <li><strong>CPA (Cost Per Acquisition)</strong> = งบโฆษณา ÷ จำนวนคอนเวอร์ชัน</li>
+        <li><strong>ROAS</strong> = รายได้จากโฆษณา ÷ ค่าโฆษณา</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เปรียบเทียบค่าโฆษณาแต่ละแพลตฟอร์ม</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">แพลตฟอร์ม</th>
+              <th class="py-2 pr-4">CPC เฉลี่ย</th>
+              <th class="py-2 pr-4">CPM เฉลี่ย</th>
+              <th class="py-2">CTR เฉลี่ย</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">Facebook / Instagram</td>
+              <td class="py-2 pr-4">1-5 บาท</td>
+              <td class="py-2 pr-4">30-150 บาท</td>
+              <td class="py-2">0.9-1.6%</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">Google Search</td>
+              <td class="py-2 pr-4">2-15 บาท</td>
+              <td class="py-2 pr-4">-</td>
+              <td class="py-2">3-5%</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">Google Display</td>
+              <td class="py-2 pr-4">0.50-3 บาท</td>
+              <td class="py-2 pr-4">10-50 บาท</td>
+              <td class="py-2">0.3-0.5%</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">LINE OA</td>
+              <td class="py-2 pr-4">2-8 บาท</td>
+              <td class="py-2 pr-4">50-200 บาท</td>
+              <td class="py-2">0.5-2%</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">TikTok</td>
+              <td class="py-2 pr-4">0.50-4 บาท</td>
+              <td class="py-2 pr-4">20-100 บาท</td>
+              <td class="py-2">1-3%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-xs text-gray-500 mt-1">* ข้อมูลเป็นค่าเฉลี่ยในตลาดไทย อาจเปลี่ยนแปลงตามอุตสาหกรรม ช่วงเวลา และคุณภาพโฆษณา</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีเพิ่มประสิทธิภาพค่าโฆษณา</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ทดสอบ A/B Testing:</strong> สร้างโฆษณาหลายชิ้น เปรียบเทียบผลลัพธ์ เพื่อหาชิ้นที่ให้ CPC ต่ำสุด</li>
+        <li><strong>กำหนดกลุ่มเป้าหมายชัด:</strong> ยิ่งเจาะกลุ่มแม่น ยิ่งได้ CTR สูง ค่าโฆษณาต่อคลิกจะถูกลง</li>
+        <li><strong>ติดตาม Conversion:</strong> ติดตั้ง Pixel/Tag เพื่อวัดผลจริงว่าแต่ละบาทที่จ่ายได้ลูกค้ากลับมากี่คน</li>
+        <li><strong>เลือกเวลาที่เหมาะสม:</strong> วิเคราะห์ช่วงเวลาที่ลูกค้าเป้าหมายใช้งาน ตั้งเวลาโฆษณาให้ตรง</li>
+        <li><strong>ปรับ Landing Page:</strong> ปรับหน้าเว็บรับลูกค้าให้โหลดเร็ว เนื้อหาตรง CTA ชัด เพิ่มอัตราคอนเวอร์ชัน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        ธุรกิจขายเสื้อผ้าออนไลน์ ตั้งงบโฆษณา Facebook 10,000 บาท/เดือน:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>CPC เฉลี่ย 3 บาท → ได้คลิก = 10,000 ÷ 3 = 3,333 คลิก</li>
+        <li>อัตราคอนเวอร์ชัน 2% → ได้ลูกค้า = 3,333 × 0.02 = 67 คน</li>
+        <li>มูลค่าเฉลี่ยต่อออเดอร์ 500 บาท → รายได้ = 67 × 500 = 33,500 บาท</li>
+        <li>ROAS = 33,500 ÷ 10,000 = 3.35x</li>
+        <li>กำไร = 33,500 - 10,000 = 23,500 บาท</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าโฆษณา/" />
+    <RelatedCalculators currentHref="/คำนวณค่าโฆษณา/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>หมายเหตุ:</strong> ค่าโฆษณาและอัตราเฉลี่ยที่แสดงเป็นข้อมูลอ้างอิงจากตลาดไทย
+      ผลลัพธ์จริงอาจแตกต่างขึ้นอยู่กับอุตสาหกรรม กลุ่มเป้าหมาย คุณภาพโฆษณา และช่วงเวลา
+      ควรติดตามผลและปรับปรุงแคมเปญอย่างสม่ำเสมอ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function fmtInt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(Math.round(n));
+    }
+
+    // Platform default values
+    const platformDefaults: Record<string, { cpc: string; cpm: string; ctr: string; cpcHint: string; cpmHint: string }> = {
+      facebook: { cpc: '', cpm: '', ctr: '1.2', cpcHint: 'Facebook ไทยเฉลี่ย 1-5 บาท', cpmHint: 'Facebook ไทยเฉลี่ย 30-150 บาท' },
+      google: { cpc: '', cpm: '', ctr: '4', cpcHint: 'Google Search ไทยเฉลี่ย 2-15 บาท', cpmHint: '-' },
+      'google-display': { cpc: '', cpm: '', ctr: '0.4', cpcHint: 'Google Display ไทยเฉลี่ย 0.50-3 บาท', cpmHint: 'Google Display ไทยเฉลี่ย 10-50 บาท' },
+      line: { cpc: '', cpm: '', ctr: '1', cpcHint: 'LINE ไทยเฉลี่ย 2-8 บาท', cpmHint: 'LINE ไทยเฉลี่ย 50-200 บาท' },
+      tiktok: { cpc: '', cpm: '', ctr: '2', cpcHint: 'TikTok ไทยเฉลี่ย 0.50-4 บาท', cpmHint: 'TikTok ไทยเฉลี่ย 20-100 บาท' },
+      custom: { cpc: '', cpm: '', ctr: '', cpcHint: 'กรอกค่า CPC ของคุณ', cpmHint: 'กรอกค่า CPM ของคุณ' },
+    };
+
+    const platformSelect = document.getElementById('ad-platform') as HTMLSelectElement;
+    const modelBtns = document.querySelectorAll<HTMLButtonElement>('.model-btn');
+    const cpcSection = document.getElementById('cpc-section') as HTMLDivElement;
+    const cpmSection = document.getElementById('cpm-section') as HTMLDivElement;
+    const ctrSection = document.getElementById('ctr-section') as HTMLDivElement;
+    const budgetInput = document.getElementById('ad-budget') as HTMLInputElement;
+    const cpcInput = document.getElementById('cost-per-click') as HTMLInputElement;
+    const cpmInput = document.getElementById('cost-per-mille') as HTMLInputElement;
+    const ctrInput = document.getElementById('ctr-rate') as HTMLInputElement;
+    const conversionInput = document.getElementById('conversion-rate') as HTMLInputElement;
+    const aovInput = document.getElementById('avg-order-value') as HTMLInputElement;
+    const cpcHint = document.getElementById('cpc-hint') as HTMLElement;
+    const cpmHint = document.getElementById('cpm-hint') as HTMLElement;
+
+    let pricingModel = 'cpc';
+
+    // Platform change
+    platformSelect.addEventListener('change', () => {
+      const defaults = platformDefaults[platformSelect.value] || platformDefaults.custom;
+      cpcHint.textContent = defaults.cpcHint;
+      cpmHint.textContent = defaults.cpmHint;
+      if (defaults.ctr && !ctrInput.value) {
+        ctrInput.value = defaults.ctr;
+      }
+    });
+
+    // Pricing model toggle
+    modelBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        pricingModel = btn.dataset.model || 'cpc';
+        updateModelUI();
+      });
+    });
+
+    function updateModelUI() {
+      modelBtns.forEach((btn) => {
+        if (btn.dataset.model === pricingModel) {
+          btn.className = 'model-btn px-4 py-2 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors';
+        } else {
+          btn.className = 'model-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors';
+        }
+      });
+
+      if (pricingModel === 'cpc') {
+        cpcSection.classList.remove('hidden');
+        cpmSection.classList.add('hidden');
+        ctrSection.classList.add('hidden');
+      } else {
+        cpcSection.classList.add('hidden');
+        cpmSection.classList.remove('hidden');
+        ctrSection.classList.remove('hidden');
+      }
+    }
+
+    // Calculate
+    function calculate() {
+      const budget = parseNum(budgetInput.value);
+      if (budget <= 0) { budgetInput.focus(); return; }
+
+      let clicks = 0;
+      let impressions = 0;
+      let effectiveCpc = 0;
+
+      if (pricingModel === 'cpc') {
+        const cpc = parseNum(cpcInput.value);
+        if (cpc <= 0) { cpcInput.focus(); return; }
+        clicks = budget / cpc;
+        effectiveCpc = cpc;
+        // Estimate impressions from typical CTR
+        const defaults = platformDefaults[platformSelect.value] || platformDefaults.custom;
+        const estimatedCtr = parseFloat(defaults.ctr) || 1;
+        impressions = clicks / (estimatedCtr / 100);
+      } else {
+        const cpm = parseNum(cpmInput.value);
+        const ctr = parseNum(ctrInput.value);
+        if (cpm <= 0) { cpmInput.focus(); return; }
+        if (ctr <= 0) { ctrInput.focus(); return; }
+        impressions = (budget / cpm) * 1000;
+        clicks = impressions * (ctr / 100);
+        effectiveCpc = clicks > 0 ? budget / clicks : 0;
+      }
+
+      const convRate = parseNum(conversionInput.value) / 100;
+      const aov = parseNum(aovInput.value);
+      const conversions = clicks * convRate;
+      const revenue = conversions * aov;
+      const roas = budget > 0 ? revenue / budget : 0;
+      const cpa = conversions > 0 ? budget / conversions : 0;
+      const profit = revenue - budget;
+
+      // Display results
+      (document.getElementById('res-clicks') as HTMLElement).textContent = fmtInt(clicks) + ' คลิก';
+      (document.getElementById('res-impressions') as HTMLElement).textContent = fmtInt(impressions) + ' ครั้ง';
+      (document.getElementById('res-effective-cpc') as HTMLElement).textContent = fmt(effectiveCpc) + ' บาท';
+      (document.getElementById('res-cpa') as HTMLElement).textContent = conversions > 0 ? fmt(cpa) + ' บาท' : '-';
+      (document.getElementById('res-conversions') as HTMLElement).textContent = conversions > 0 ? fmtInt(conversions) + ' ราย' : '0 ราย';
+      (document.getElementById('res-revenue') as HTMLElement).textContent = fmt(revenue) + ' บาท';
+      (document.getElementById('res-roas') as HTMLElement).textContent = roas > 0 ? roas.toFixed(2) + 'x' : '-';
+
+      // Profit card styling
+      const profitCard = document.getElementById('profit-card') as HTMLDivElement;
+      const profitEl = document.getElementById('res-profit') as HTMLElement;
+
+      if (revenue > 0) {
+        if (profit >= 0) {
+          profitCard.className = 'rounded-lg p-4 text-center bg-green-50';
+          profitEl.className = 'text-2xl font-bold text-green-700';
+          profitEl.textContent = '+' + fmt(profit) + ' บาท';
+        } else {
+          profitCard.className = 'rounded-lg p-4 text-center bg-red-50';
+          profitEl.className = 'text-2xl font-bold text-red-600';
+          profitEl.textContent = fmt(profit) + ' บาท';
+        }
+      } else {
+        profitCard.className = 'rounded-lg p-4 text-center bg-gray-50';
+        profitEl.className = 'text-2xl font-bold text-gray-500';
+        profitEl.textContent = '-';
+      }
+
+      // Summary
+      const platform = platformSelect.options[platformSelect.selectedIndex].text;
+      let summary = `แพลตฟอร์ม: ${platform} | งบ: ${fmt(budget)} บาท | `;
+      if (pricingModel === 'cpc') {
+        summary += `CPC: ${fmt(effectiveCpc)} บาท → คลิก: ${fmtInt(clicks)}`;
+      } else {
+        summary += `CPM: ${fmt(parseNum(cpmInput.value))} บาท, CTR: ${ctrInput.value}% → คลิก: ${fmtInt(clicks)}`;
+      }
+      if (convRate > 0 && aov > 0) {
+        summary += ` | คอนเวอร์ชัน ${fmtInt(conversions)} ราย | รายได้ ${fmt(revenue)} บาท | ROAS ${roas.toFixed(2)}x`;
+      }
+      (document.getElementById('res-summary') as HTMLElement).textContent = summary;
+
+      (document.getElementById('ad-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('ad-cost');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Enter key on budget input
+    budgetInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); calculate(); }
+    });
+
+    // Track when result section enters viewport
+    const adResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('ad-cost');
+          adResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    adResultObserver.observe(document.getElementById('ad-result')!);
+  </script>
+</BaseLayout>

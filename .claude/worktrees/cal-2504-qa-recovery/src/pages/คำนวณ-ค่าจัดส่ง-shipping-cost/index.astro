@@ -1,0 +1,184 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจัดส่ง ค่า Shipping Cost ปี 2569 — Kamnuanlek';
+const pageDescription = 'คำนวณค่าจัดส่งสินค้าออนไลน์ตามน้ำหนักและระยะทาง ป้อนข้อมูลและทราบค่าจัดส่งทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่าจัดส่ง-shipping-cost/`;
+
+const faqData = [
+  {
+    question: 'ค่าจัดส่งคำนวณอย่างไร?',
+    answer: 'ค่าจัดส่ง = ค่าบริการพื้นฐาน + (น้ำหนัก × อัตราต่อ kg) + ค่าเพิ่มเติมตามระยะทาง โดยปกติบริษัทขนส่งมีอัตราแตกต่างกัน',
+  },
+  {
+    question: 'ใครควรใช้เครื่องคำนวณนี้?',
+    answer: 'ผู้ขายออนไลน์ ร้านค้า ธุรกิจ e-commerce และบุคคลธรรมดา ที่ต้องจัดส่งสินค้า',
+  },
+  {
+    question: 'อัตราค่าจัดส่งแตกต่างกันอย่างไร?',
+    answer: 'อัตราขึ้นอยู่กับ: บริษัทขนส่ง ประเภทสินค้า น้ำหนัก ระยะทาง และบริการพิเศษ (เย็น เร่ง ประกัน)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจัดส่ง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-ค่าจัดส่ง-shipping-cost">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
+      <p class="text-sm font-semibold text-green-700">คำนวณค่าจัดส่ง — ค่า Shipping Cost สินค้าออนไลน์</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ค่าจัดส่ง = ค่าพื้นฐาน + (น้ำหนัก × อัตรา) + ค่าเพิ่มเติม</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจัดส่งสินค้า ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนน้ำหนักสินค้า ระยะทาง และเลือกบริษัทขนส่ง เพื่อประมาณการค่าจัดส่งทันที
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="shipping-form" class="space-y-5">
+        <p id="shipping-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="weight" class="mb-1 block text-sm font-medium text-gray-700">น้ำหนัก (กิโลกรัม)</label>
+            <input type="text" id="weight" inputmode="decimal" placeholder="เช่น 2.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="weight-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="distance" class="mb-1 block text-sm font-medium text-gray-700">ระยะทาง (กม.)</label>
+            <input type="text" id="distance" inputmode="decimal" placeholder="เช่น 50"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="distance-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="base-fee" class="mb-1 block text-sm font-medium text-gray-700">ค่าบริการพื้นฐาน (บาท)</label>
+          <input type="text" id="base-fee" inputmode="decimal" placeholder="เช่น 50"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">ทั่วไป 30–100 บาท ขึ้นอยู่กับบริษัท</p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าจัดส่ง
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="shipping-results" class="mb-8 hidden rounded-lg border border-green-200 bg-green-50 p-6">
+      <h2 class="mb-4 text-lg font-bold text-gray-900">ผลการคำนวณ</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between border-b border-green-200 pb-2">
+          <span class="text-gray-700">น้ำหนัก</span>
+          <span id="result-weight" class="font-semibold text-gray-900">0 กิโลกรัม</span>
+        </div>
+        <div class="flex justify-between border-b border-green-200 pb-2">
+          <span class="text-gray-700">ระยะทาง</span>
+          <span id="result-distance" class="font-semibold text-gray-900">0 กิโลเมตร</span>
+        </div>
+        <div class="flex justify-between bg-green-100 p-2 rounded font-bold">
+          <span class="text-green-700">ค่าจัดส่งประมาณการ</span>
+          <span id="result-total" class="text-green-700">0 บาท</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+      <h2 class="mb-4 text-lg font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="border-b border-gray-200 pb-4">
+            <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <p class="mt-2 text-sm text-gray-600">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-4">
+      <p class="text-sm text-amber-800">
+        <strong>หมายเหตุ:</strong> ค่าจัดส่งที่คำนวณได้เป็นเพียงประมาณการ อัตราจริงอาจแตกต่างตามนโยบายของบริษัทขนส่งแต่ละแห่ง
+      </p>
+    </div>
+  </article>
+
+  <GuardedAdSlot position="after-content" class="my-8" />
+  <RelatedCalculators currentPath="/คำนวณ-ค่าจัดส่ง-shipping-cost/" limit={3} />
+  <RelatedArticles limit={3} />
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('shipping-form') as HTMLFormElement;
+  const resultsDiv = document.getElementById('shipping-results') as HTMLDivElement;
+  const errorDiv = document.getElementById('shipping-error') as HTMLDivElement;
+
+  const weightInput = document.getElementById('weight') as HTMLInputElement;
+  const distanceInput = document.getElementById('distance') as HTMLInputElement;
+  const baseFeeInput = document.getElementById('base-fee') as HTMLInputElement;
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const weight = parseFloat(weightInput.value.trim());
+      const distance = parseFloat(distanceInput.value.trim());
+      const baseFee = parseFloat(baseFeeInput.value.trim()) || 50;
+
+      if (!weight || weight <= 0 || !distance || distance < 0) {
+        errorDiv.classList.remove('hidden');
+        resultsDiv.classList.add('hidden');
+        return;
+      }
+
+      // Simple shipping cost formula: base fee + (weight × 5) + (distance × 0.5)
+      const weightCharge = weight * 5;
+      const distanceCharge = Math.max(0, distance * 0.5);
+      const total = Math.round((baseFee + weightCharge + distanceCharge) * 100) / 100;
+
+      document.getElementById('result-weight')!.textContent = weight.toFixed(2) + ' กิโลกรัม';
+      document.getElementById('result-distance')!.textContent = distance.toFixed(1) + ' กิโลเมตร';
+      document.getElementById('result-total')!.textContent = total.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+    });
+  }
+</script>

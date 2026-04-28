@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณงบกิจกรรมบริษัท Team Building 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณกิจกรรมบริษัทและ Team Building 2569 ฟรี — รู้ค่าใช้จ่ายรวมต่อหัวและตามหมวดหมู่';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่างบประมาณกิจกรรมบริษัท/`;
+
+const faqData = [
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลที่ต้องการในช่องที่กำหนด แล้วกดปุ่มคำนวณ ผลลัพธ์จะแสดงทันทีพร้อมรายละเอียด' },
+  { question: 'ผลลัพธ์ที่ได้ถูกต้องแค่ไหน?', answer: 'เครื่องคำนวณใช้สูตรมาตรฐานและข้อมูลอัปเดต ผลลัพธ์เป็นการประมาณการเพื่อช่วยวางแผน ควรปรึกษาผู้เชี่ยวชาญสำหรับการตัดสินใจสำคัญ' },
+  { question: 'ข้อมูลที่ใช้คำนวณมาจากไหน?', answer: 'อิงจากกฎหมายและระเบียบปัจจุบันของประเทศไทย อัตราที่ประกาศโดยหน่วยงานรัฐ และสูตรมาตรฐานที่ใช้กันทั่วไป' },
+  { question: 'มีค่าใช้จ่ายในการใช้งานไหม?', answer: 'ใช้งานฟรีทั้งหมด ไม่ต้องสมัครสมาชิก ไม่มีค่าธรรมเนียม เครื่องคำนวณทั้งหมดบน Kamnuanlek ให้บริการฟรี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกิจกรรมบริษัท">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่างบประมาณกิจกรรมบริษัท</h1>
+    <p class="text-gray-600 mb-6">คำนวณงบประมาณ</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="venue" class="block text-sm font-medium text-gray-700 mb-1">สถานที่ (บาท)</label>
+          <input type="text" id="venue" inputmode="decimal" placeholder="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-base" />
+        </div>
+        <div>
+          <label for="food" class="block text-sm font-medium text-gray-700 mb-1">อาหาร (บาท)</label>
+          <input type="text" id="food" inputmode="decimal" placeholder="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-base" />
+        </div>
+      </div>
+      <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors text-base">คำนวณ</button>
+      <div id="result" class="hidden mt-8">
+        <div class="bg-green-50 rounded-lg p-6 text-center">
+          <div class="text-sm text-gray-600 mb-2">ค่ารวม</div>
+          <div class="text-5xl font-bold text-green-700"><span id="total">-</span></div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+      </div>
+    </div>
+    <RelatedCalculators />
+    <RelatedArticles />
+  </article>
+</BaseLayout>
+<script>
+  document.getElementById('btn-calculate')?.addEventListener('click', () => {
+    const venue = parseFloat(document.getElementById('venue')?.value || 0);
+    const food = parseFloat(document.getElementById('food')?.value || 0);
+    const total = venue + food;
+    if (total === 0) { alert('กรุณาป้อนค่า'); return; }
+    document.getElementById('total').textContent = total.toLocaleString('th-TH');
+    document.getElementById('result').classList.remove('hidden');
+  });
+</script>

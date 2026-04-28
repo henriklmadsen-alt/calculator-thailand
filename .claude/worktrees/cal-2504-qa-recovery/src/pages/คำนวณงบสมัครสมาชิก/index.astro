@@ -1,0 +1,146 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบสมัครสมาชิก 2569 | Netflix Spotify Gym และบริการอื่นๆ | Kamnuanlek';
+const pageDescription = 'รวมค่าสมัครสมาชิกทุกบริการ Netflix Disney+ YouTube Premium Spotify Apple Music Gym iCloud และอื่นๆ คำนวณต่อเดือนและต่อปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบสมัครสมาชิก/`;
+
+const faqData = [
+  {
+    question: 'คนไทยเฉลี่ยจ่ายค่าสมาชิกเดือนละเท่าไร?',
+    answer: 'คนไทยในเมืองที่ใช้บริการหลายอย่างอาจจ่ายค่าสมาชิกรวมถึง 1,000-2,500 บาทต่อเดือน หากรวม streaming, เพลง, gym, cloud storage และซอฟต์แวร์ต่างๆ',
+  },
+  {
+    question: 'วิธีลดค่าสมาชิกทำอย่างไร?',
+    answer: 'ยกเลิกบริการที่ไม่ได้ใช้งานสม่ำเสมอ แชร์แผนครอบครัวกับคนอื่น เลือกแผนรายปีที่ถูกกว่ารายเดือน และประเมินทุก 6 เดือนว่ายังคุ้มค่าหรือไม่',
+  },
+  {
+    question: 'บริการไหนที่คุ้มค่าที่สุด?',
+    answer: 'ขึ้นอยู่กับการใช้งาน แต่โดยทั่วไป YouTube Premium (189 บาท) คุ้มค่าหากดูยูทูบบ่อย เพราะรวมเพลงด้วย Spotify (149 บาท) เหมาะสำหรับคนฟังเพลงมาก ส่วน Netflix คุ้มเมื่อดูซีรีส์และหนังบ่อย',
+  },
+];
+
+const services = [
+  { id: 'netflix-std', name: 'Netflix (มาตรฐาน)', price: 329 },
+  { id: 'netflix-pre', name: 'Netflix (พรีเมียม)', price: 439 },
+  { id: 'disney', name: 'Disney+', price: 299 },
+  { id: 'youtube', name: 'YouTube Premium', price: 189 },
+  { id: 'spotify', name: 'Spotify', price: 149 },
+  { id: 'apple-music', name: 'Apple Music', price: 169 },
+  { id: 'gym', name: 'Gym/ฟิตเนส', price: 600 },
+  { id: 'icloud', name: 'iCloud+ / Google One', price: 99 },
+  { id: 'adobe', name: 'Adobe Creative Cloud', price: 899 },
+  { id: 'ms365', name: 'Microsoft 365', price: 269 },
+  { id: 'linetv', name: 'LINE TV / MONOMAX', price: 99 },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบสมัครสมาชิก',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบสมัครสมาชิก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบสมัครสมาชิก 2569</h1>
+    <p class="mb-6 text-gray-600">รวมค่าสมัครสมาชิกทุกบริการ เลือกบริการที่ใช้เพื่อดูยอดรวมต่อเดือนและต่อปี</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="sub-form" class="space-y-3">
+        <p class="mb-3 text-sm font-medium text-gray-700">เลือกบริการที่สมัครอยู่</p>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {services.map((s) => (
+            <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 hover:border-primary-300">
+              <input type="checkbox" data-price={s.price} id={s.id} class="sub-check h-5 w-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+              <div>
+                <div class="text-sm font-medium text-gray-900">{s.name}</div>
+                <div class="text-xs text-gray-500">฿{s.price.toLocaleString('th-TH')}/เดือน</div>
+              </div>
+            </label>
+          ))}
+        </div>
+        <div class="mt-2">
+          <label for="other-sub" class="mb-1 block text-sm font-medium text-gray-700">บริการอื่นๆ (บาท/เดือน)</label>
+          <input id="other-sub" type="text" inputmode="numeric" placeholder="เช่น 200"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ค่าสมาชิกรวม</h2>
+        <div class="mb-4 grid grid-cols-2 gap-4">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต่อเดือน</div>
+            <div id="res-monthly" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต่อปี</div>
+            <div id="res-yearly" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <div id="sub-list" class="space-y-1 text-sm text-gray-700"></div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณงบสมัครสมาชิก/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('sub-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const checks = document.querySelectorAll<HTMLInputElement>('.sub-check:checked');
+    const other = parseNum((document.getElementById('other-sub') as HTMLInputElement).value);
+
+    let monthly = other;
+    const lines: string[] = [];
+
+    checks.forEach((cb) => {
+      const price = parseNum(cb.getAttribute('data-price') ?? '0');
+      const label = cb.parentElement?.querySelector('.text-sm.font-medium')?.textContent ?? '';
+      monthly += price;
+      lines.push(`• ${label}: ${fmt(price)}/เดือน`);
+    });
+
+    if (other > 0) lines.push(`• บริการอื่นๆ: ${fmt(other)}/เดือน`);
+
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-yearly')!.textContent = fmt(monthly * 12);
+    document.getElementById('sub-list')!.innerHTML = lines.length > 0 ? lines.join('<br/>') : 'ยังไม่ได้เลือกบริการ';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

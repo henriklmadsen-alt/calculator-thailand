@@ -1,0 +1,498 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import PublicTrustPanel from '../../components/templates/PublicTrustPanel.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'แปลงค่าเงิน 2569 | คำนวณอัตราแลกเปลี่ยนสด | Kamnuanlek';
+const pageDescription = 'คำนวณอัตราแลกเปลี่ยนสดปี 2569 แปลงเงินบาทและสกุลเงินหลัก พร้อมอัตราย้อนกลับ ค่าสเปรด/ค่าธรรมเนียม และเวลาอัปเดตล่าสุดจากระบบสำรองสองชั้น';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณอัตราแลกเปลี่ยน/`;
+
+const currencies = [
+  { code: 'THB', label: 'บาทไทย (THB)' },
+  { code: 'USD', label: 'ดอลลาร์สหรัฐ (USD)' },
+  { code: 'EUR', label: 'ยูโร (EUR)' },
+  { code: 'GBP', label: 'ปอนด์สเตอร์ลิง (GBP)' },
+  { code: 'JPY', label: 'เยนญี่ปุ่น (JPY)' },
+  { code: 'CNY', label: 'หยวนจีน (CNY)' },
+  { code: 'HKD', label: 'ดอลลาร์ฮ่องกง (HKD)' },
+  { code: 'SGD', label: 'ดอลลาร์สิงคโปร์ (SGD)' },
+  { code: 'MYR', label: 'ริงกิตมาเลเซีย (MYR)' },
+  { code: 'KRW', label: 'วอนเกาหลีใต้ (KRW)' },
+  { code: 'AUD', label: 'ดอลลาร์ออสเตรเลีย (AUD)' },
+  { code: 'NZD', label: 'ดอลลาร์นิวซีแลนด์ (NZD)' },
+  { code: 'CAD', label: 'ดอลลาร์แคนาดา (CAD)' },
+  { code: 'CHF', label: 'ฟรังก์สวิส (CHF)' },
+  { code: 'INR', label: 'รูปีอินเดีย (INR)' },
+  { code: 'IDR', label: 'รูเปียห์อินโดนีเซีย (IDR)' },
+  { code: 'PHP', label: 'เปโซฟิลิปปินส์ (PHP)' },
+  { code: 'VND', label: 'ด่องเวียดนาม (VND)' },
+];
+
+const faqData = [
+  {
+    question: 'เครื่องคำนวณนี้ใช้อัตราแลกเปลี่ยนจากแหล่งไหน?',
+    answer: 'ระบบเรียกข้อมูลฝั่งเซิร์ฟเวอร์จาก exchangerate.host เป็นหลัก และสลับไป Frankfurter อัตโนมัติเมื่อแหล่งหลักล้มเหลว พร้อมย้อนใช้ข้อมูลล่าสุดที่ยังเชื่อถือได้เมื่อทั้งสองแหล่งขัดข้อง',
+  },
+  {
+    question: 'ค่าสเปรด/ค่าธรรมเนียมคิดอย่างไร?',
+    answer: 'ระบบคิดจากยอดแปลงก่อนหักค่าธรรมเนียม เช่น สเปรด 0.5% = ยอดก่อนหัก × 0.5% แล้วหักออกเพื่อได้ยอดสุทธิ',
+  },
+  {
+    question: 'อัตราที่เห็นใช้ทำธุรกรรมจริงได้เลยไหม?',
+    answer: 'ไม่ควรใช้ยืนยันธุรกรรมจริงโดยตรง เพราะแต่ละธนาคาร/ผู้ให้บริการมีเรตซื้อขายจริงและค่าธรรมเนียมเฉพาะของตนเอง',
+  },
+  {
+    question: 'ทำไมมีสถานะข้อมูลล้าสมัย (stale)?',
+    answer: 'สถานะนี้หมายถึงแหล่งข้อมูลสดชั่วคราวใช้งานไม่ได้ ระบบจึงใช้ last-known-good เพื่อไม่ให้หน้าคำนวณล่ม แต่ควรตรวจเรตกับผู้ให้บริการจริงก่อนตัดสินใจ',
+  },
+  {
+    question: 'ต้องแปลงหน่วยปริมาณก่อนแปลงค่าเงินไหม?',
+    answer: 'ถ้าคุณเทียบต้นทุนสินค้าที่ใช้คนละหน่วย (เช่น กก. กับ ปอนด์ หรือ ลิตรกับแกลลอน) ควรแปลงหน่วยให้ตรงกันก่อน แล้วค่อยคำนวณอัตราแลกเปลี่ยนเพื่อเทียบต้นทุนต่อหน่วยได้แม่นยำขึ้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณอัตราแลกเปลี่ยน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอัตราแลกเปลี่ยน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">แปลงสกุลเงินแบบสด พร้อมระบบสำรอง</p>
+      <p class="mt-1 text-sm text-slate-700">แสดงเรตล่าสุด เวลาอัปเดต และรองรับการหักค่าสเปรด/ค่าธรรมเนียมก่อนตัดสินใจ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">Indicative rates only, not for settlement/trading.</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณอัตราแลกเปลี่ยน ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกจำนวนเงิน เลือกสกุลเงินต้นทาง/ปลายทาง แล้วดูยอดแปลง อัตราย้อนกลับ และยอดสุทธิหลังหักค่าสเปรดได้ทันที
+    </p>
+
+    <PublicTrustPanel
+      lastUpdated="16 เม.ย. 2569"
+      sources={[
+        'ธนาคารแห่งประเทศไทย: อัตราแลกเปลี่ยนประจำวัน',
+        'exchangerate.host documentation',
+        'Frankfurter API documentation',
+      ]}
+      assumptions={[
+        'ข้อมูลอัตราแลกเปลี่ยนใช้เพื่อการประมาณการเท่านั้น ไม่ใช่เรตรับซื้อ/ขายจริง ณ จุดทำธุรกรรม',
+        'ค่าสเปรดและค่าธรรมเนียมจริงขึ้นกับผู้ให้บริการปลายทาง',
+      ]}
+      references={[
+        {
+          label: 'ธนาคารแห่งประเทศไทย: อัตราแลกเปลี่ยนประจำวัน',
+          href: 'https://www.bot.or.th/th/statistics/exchange-rate.html',
+        },
+        {
+          label: 'ExchangeRate Host API Documentation',
+          href: 'https://exchangerate.host/documentation',
+        },
+        {
+          label: 'Frankfurter API Docs',
+          href: 'https://frankfurter.dev/',
+        },
+      ]}
+    />
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="fx-form" class="space-y-5">
+        <p id="fx-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fx-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนเงินต้นทาง
+            </label>
+            <input
+              id="fx-amount"
+              type="text"
+              inputmode="decimal"
+              placeholder="เช่น 10,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="fx-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="fx-spread" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าสเปรด/ค่าธรรมเนียม (% ไม่บังคับ)
+            </label>
+            <input
+              id="fx-spread"
+              type="text"
+              inputmode="decimal"
+              placeholder="เช่น 0.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p class="mt-1 text-xs text-gray-500">ระบบจะหักจากยอดแปลงก่อนสรุปยอดสุทธิ</p>
+            <p id="fx-spread-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fx-from" class="block text-sm font-medium text-gray-700 mb-1">
+              จากสกุลเงิน
+            </label>
+            <select
+              id="fx-from"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">เลือกสกุลเงินต้นทาง</option>
+            </select>
+            <p id="fx-from-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+          <div>
+            <label for="fx-to" class="block text-sm font-medium text-gray-700 mb-1">
+              ไปสกุลเงิน
+            </label>
+            <select
+              id="fx-to"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">เลือกสกุลเงินปลายทาง</option>
+            </select>
+            <p id="fx-to-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button
+          id="fx-submit-btn"
+          type="submit"
+          class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        >
+          คำนวณอัตราแลกเปลี่ยน
+        </button>
+      </form>
+    </div>
+
+    <div id="fx-results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดสุทธิหลังหักสเปรด</div>
+            <div id="res-net-amount" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดก่อนหักสเปรด</div>
+            <div id="res-gross-amount" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราแลกเปลี่ยน</div>
+            <div id="res-rate" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราย้อนกลับ</div>
+            <div id="res-inverse-rate" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm mb-4">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">จำนวนเงินต้นทาง</span>
+            <span id="res-input-amount" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าสเปรด/ค่าธรรมเนียม</span>
+            <span id="res-spread-amount" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราที่ได้รับจริงหลังหักสเปรด</span>
+            <span id="res-effective-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">แหล่งข้อมูล</span>
+            <span id="res-source" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">เวลาอัปเดตล่าสุด</span>
+            <span id="res-updated-at" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <p id="res-stale-warning" class="hidden rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          ขณะนี้ระบบใช้ข้อมูลล่าสุดที่มี (last-known-good) เนื่องจากแหล่งข้อมูลสดไม่พร้อมใช้งานชั่วคราว กรุณาตรวจสอบเรตจริงอีกครั้งก่อนทำธุรกรรม
+        </p>
+
+        <p class="mt-4 text-xs text-gray-500">
+          <strong>Indicative rates only, not for settlement/trading.</strong> ผลลัพธ์นี้ใช้เพื่อประมาณการเท่านั้น
+        </p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#fx-results" />
+
+    <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ยอดก่อนหักสเปรด = จำนวนเงินต้นทาง × อัตราแลกเปลี่ยน</li>
+        <li>ค่าสเปรด = ยอดก่อนหักสเปรด × (สเปรด ÷ 100)</li>
+        <li>ยอดสุทธิ = ยอดก่อนหักสเปรด - ค่าสเปรด</li>
+        <li>อัตราย้อนกลับ = 1 ÷ อัตราแลกเปลี่ยน</li>
+      </ul>
+      <p>
+        ระบบดึงอัตราแลกเปลี่ยนผ่านบริการฝั่งเซิร์ฟเวอร์ของเว็บไซต์ (ไม่เรียกผู้ให้บริการจากเบราว์เซอร์โดยตรง) เพื่อรองรับการแคช 5 นาทีและการสลับแหล่งข้อมูลอัตโนมัติเมื่อเกิดปัญหา
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#fx-results" />
+
+    <RelatedArticles currentHref="/คำนวณอัตราแลกเปลี่ยน/" />
+    <RelatedCalculators currentHref="/คำนวณอัตราแลกเปลี่ยน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องมือนี้ใช้เพื่อการวางแผนเท่านั้น ไม่ใช่ใบเสนอราคา หรือคำยืนยันอัตราแลกเปลี่ยนสำหรับการชำระราคาและการซื้อขายจริง
+    </div>
+  </article>
+
+  <script define:vars={{ currencies }}>
+    const form = document.getElementById('fx-form');
+    const submitBtn = document.getElementById('fx-submit-btn');
+    const formError = document.getElementById('fx-form-error');
+    const results = document.getElementById('fx-results');
+    const staleWarning = document.getElementById('res-stale-warning');
+
+    const amountInput = document.getElementById('fx-amount');
+    const spreadInput = document.getElementById('fx-spread');
+    const fromSelect = document.getElementById('fx-from');
+    const toSelect = document.getElementById('fx-to');
+
+    const amountError = document.getElementById('fx-amount-error');
+    const spreadError = document.getElementById('fx-spread-error');
+    const fromError = document.getElementById('fx-from-error');
+    const toError = document.getElementById('fx-to-error');
+
+    function setFieldError(element, message) {
+      if (!element) return;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    function clearFieldError(element) {
+      if (!element) return;
+      element.textContent = '';
+      element.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError(amountError);
+      clearFieldError(spreadError);
+      clearFieldError(fromError);
+      clearFieldError(toError);
+    }
+
+    function parseNumber(value) {
+      const normalized = String(value || '').replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    }
+
+    function formatNumber(value, maxDigits = 6) {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: maxDigits,
+      }).format(value);
+    }
+
+    function formatRate(value) {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 8,
+      }).format(value);
+    }
+
+    function formatDateTime(isoString) {
+      if (!isoString) return '-';
+      const date = new Date(isoString);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleString('th-TH', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+    }
+
+    function getSourceLabel(source) {
+      if (source === 'exchangerate.host') return 'exchangerate.host (แหล่งหลัก)';
+      if (source === 'frankfurter') return 'Frankfurter (แหล่งสำรอง)';
+      if (source === 'last_known_good') return 'last-known-good cache';
+      if (source === 'same_currency') return 'ค่าสกุลเงินเดียวกัน (อัตรา 1:1)';
+      return source || '-';
+    }
+
+    function calculateConversion(amount, rate, spreadPercent) {
+      const grossConvertedAmount = amount * rate;
+      const spreadAmount = grossConvertedAmount * (spreadPercent / 100);
+      const netConvertedAmount = grossConvertedAmount - spreadAmount;
+      const inverseRate = 1 / rate;
+      const effectiveRate = amount > 0 ? netConvertedAmount / amount : 0;
+
+      return {
+        grossConvertedAmount,
+        spreadAmount,
+        netConvertedAmount,
+        inverseRate,
+        effectiveRate,
+      };
+    }
+
+    function setResult(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    function populateCurrencyOptions() {
+      const sorted = [...currencies].sort((a, b) => a.code.localeCompare(b.code));
+      [fromSelect, toSelect].forEach((select) => {
+        sorted.forEach((currency) => {
+          const option = document.createElement('option');
+          option.value = currency.code;
+          option.textContent = currency.label;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    async function fetchRate(base, quote) {
+      const response = await fetch(`/api/exchange-rates?base=${encodeURIComponent(base)}&symbols=${encodeURIComponent(quote)}`);
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload?.error || 'ไม่สามารถดึงอัตราแลกเปลี่ยนได้');
+      }
+      const rate = Number(payload?.rates?.[quote]);
+      if (!Number.isFinite(rate) || rate <= 0) {
+        throw new Error('ไม่พบอัตราแลกเปลี่ยนของคู่สกุลเงินนี้');
+      }
+      return {
+        rate,
+        source: payload.source,
+        stale: Boolean(payload.stale),
+        lastUpdatedAt: payload.lastUpdatedAt,
+      };
+    }
+
+    populateCurrencyOptions();
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearValidation();
+
+      const amount = parseNumber(amountInput.value);
+      const spreadPercentRaw = spreadInput.value.trim() === '' ? 0 : parseNumber(spreadInput.value);
+      const fromCurrency = fromSelect.value;
+      const toCurrency = toSelect.value;
+
+      const amountValid = Number.isFinite(amount) && amount > 0;
+      const spreadValid = Number.isFinite(spreadPercentRaw) && spreadPercentRaw >= 0 && spreadPercentRaw <= 100;
+      const fromValid = /^[A-Z]{3}$/.test(fromCurrency);
+      const toValid = /^[A-Z]{3}$/.test(toCurrency);
+
+      if (!amountValid) setFieldError(amountError, 'กรอกจำนวนเงินมากกว่า 0');
+      if (!spreadValid) setFieldError(spreadError, 'ค่าสเปรดต้องอยู่ระหว่าง 0 ถึง 100');
+      if (!fromValid) setFieldError(fromError, 'เลือกสกุลเงินต้นทาง');
+      if (!toValid) setFieldError(toError, 'เลือกสกุลเงินปลายทาง');
+
+      if (!amountValid || !spreadValid || !fromValid || !toValid) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      const spreadPercent = spreadPercentRaw;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('exchange_rate');
+
+      try {
+        let liveRate = 1;
+        let source = 'same_currency';
+        let stale = false;
+        let lastUpdatedAt = new Date().toISOString();
+
+        if (fromCurrency !== toCurrency) {
+          const ratePayload = await fetchRate(fromCurrency, toCurrency);
+          liveRate = ratePayload.rate;
+          source = ratePayload.source;
+          stale = ratePayload.stale;
+          lastUpdatedAt = ratePayload.lastUpdatedAt;
+        }
+
+        const converted = calculateConversion(amount, liveRate, spreadPercent);
+        const netLabel = `${formatNumber(converted.netConvertedAmount)} ${toCurrency}`;
+        const grossLabel = `${formatNumber(converted.grossConvertedAmount)} ${toCurrency}`;
+        const spreadLabel = `${formatNumber(converted.spreadAmount)} ${toCurrency} (${formatNumber(spreadPercent, 2)}%)`;
+
+        setResult('res-net-amount', netLabel);
+        setResult('res-gross-amount', grossLabel);
+        setResult('res-rate', `1 ${fromCurrency} = ${formatRate(liveRate)} ${toCurrency}`);
+        setResult('res-inverse-rate', `1 ${toCurrency} = ${formatRate(converted.inverseRate)} ${fromCurrency}`);
+        setResult('res-input-amount', `${formatNumber(amount)} ${fromCurrency}`);
+        setResult('res-spread-amount', spreadLabel);
+        setResult('res-effective-rate', `${formatRate(converted.effectiveRate)} ${toCurrency} ต่อ 1 ${fromCurrency}`);
+        setResult('res-source', getSourceLabel(source));
+        setResult('res-updated-at', formatDateTime(lastUpdatedAt));
+
+        staleWarning.classList.toggle('hidden', !stale);
+        results.classList.remove('hidden');
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('exchange_rate', converted.netConvertedAmount);
+        if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('exchange_rate');
+      } catch (error) {
+        formError.classList.remove('hidden');
+        formError.textContent = error instanceof Error ? error.message : 'ไม่สามารถคำนวณได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'คำนวณอัตราแลกเปลี่ยน';
+      }
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && typeof trackResultViewed === 'function') {
+          trackResultViewed('exchange_rate');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    resultObserver.observe(results);
+  </script>
+</BaseLayout>

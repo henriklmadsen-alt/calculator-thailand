@@ -1,0 +1,286 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ ราคาสินค้าดิจิทัล 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณราคาสินค้าดิจิทัล (E-book, Course, Template) ประเมิน Margin และ ROI สำหรับผลิตภัณฑ์ดิจิทัลของคุณ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ราคา-สินค้าดิจิทัล/`;
+
+const faqData = [
+  {
+    question: 'ราคาสินค้าดิจิทัลควรตั้งเท่าไร?',
+    answer: 'ควรคิด 50-80% Margin คือเป้าหมายปกติ หากต้นทุนสร้าง 5,000 บาท ควรขาย 10,000-25,000 บาท ขึ้นอยู่กับคุณภาพ ชื่อเสียง และปัญหาที่แก้ไข ผลิตภัณฑ์ดิจิทัล Margin สูง เพราะไม่มีค่าการผลิตซ้ำ',
+  },
+  {
+    question: 'ต้นทุนสร้างผลิตภัณฑ์ดิจิทัลอะไรบ้าง?',
+    answer: 'เวลา: เวลาที่ใช้สร้างคอร์สหรือ E-book ซอฟต์แวร์: Adobe Creative Suite, Canva, Teachable Platform โฆษณา: โปรโมทสินค้า Hosting/Platform: Gumroad, SendOwl ที่รับภาษีอากร ไม่ใช่การผลิตที่กินทำให้ราคาได้สูง',
+  },
+  {
+    question: 'จะรู้ได้อย่างไรว่าราคาเหมาะสม?',
+    answer: 'ทดลองหลายราคา: ลองเสนออีกครั้งด้วยราคาต่างกัน เสนออีกครั้ง 1-2 เดือน ดูว่าการขายเปลี่ยนแปลงไหม ถ้าขายหลายๆ ชุดที่ราคาขึ้น ลองขึ้นราคาอีก หากขายลดลงมาก ลดราคาลง มิฉะนั้น ราคาเหมาะสม',
+  },
+  {
+    question: 'ควรจ่ายค่าการแจกแจง (Platform Fee)?',
+    answer: 'ใช่ Platform ส่วนใหญ่ (Gumroad, SendOwl, Teachable) คิด 5-30% ของยอดขาย บางทีอาจถูกกว่าการโฮสต์เอง นอกจากนี้ยังจัดการ VAT ให้ ประหยัดเวลา แต่ Margin ลดลง คิดให้รอบคอบว่าสินค้าราคา vs. Fee คุ้มไหม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณราคาสินค้าดิจิทัล',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณราคาสินค้าดิจิทัล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      💿 คำนวณราคาสินค้าดิจิทัล
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณราคาสินค้าดิจิทัล (E-book, Course, Template)
+      ประเมิน Margin และ ROI สำหรับผลิตภัณฑ์ดิจิทัลของคุณ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="digital-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="dev-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ต้นทุนสร้าง/พัฒนา (บาท)
+            </label>
+            <input
+              type="text"
+              id="dev-cost"
+              inputmode="numeric"
+              placeholder="เช่น 5000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="desired-margin" class="block text-sm font-medium text-gray-700 mb-1">
+              Margin ที่ต้องการ (%)
+            </label>
+            <input
+              type="text"
+              id="desired-margin"
+              inputmode="numeric"
+              placeholder="เช่น 60"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="platform-fee" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่า Platform (%)
+              <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+            </label>
+            <input
+              type="text"
+              id="platform-fee"
+              inputmode="numeric"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="expected-sales" class="block text-sm font-medium text-gray-700 mb-1">
+              ยอดขายอื่น (หน่วย)
+              <span class="text-gray-400 font-normal">— สำหรับหา ROI</span>
+            </label>
+            <input
+              type="text"
+              id="expected-sales"
+              inputmode="numeric"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณราคา
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณราคาสินค้าดิจิทัล</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาขายปกติ</div>
+            <div id="res-base-price" class="text-xl font-bold text-green-600">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">หลังหักค่า Platform</div>
+            <div id="res-net-price" class="text-xl font-bold text-blue-600">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไรต่อชิ้น</div>
+            <div id="res-profit-per-unit" class="text-xl font-bold text-purple-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ROI ที่ใด</div>
+            <div id="res-roi" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ต้นทุนสร้าง</span>
+            <span id="res-dev-cost" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Margin ที่ต้องการ</span>
+            <span id="res-margin" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ค่า Platform</span>
+            <span id="res-platform" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-gray-600">จำนวนขายเพื่อหา ROI</span>
+            <span id="res-roi-units" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <GuardedAdSlot />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">กำหนดราคาสินค้าดิจิทัลที่ถูกต้อง</h2>
+
+      <p>
+        ราคาสินค้าดิจิทัลเป็นการตัดสินใจสำคัญ ราคาต่ำเกินไป = ต้นทุนสร้างไม่คุ้ม
+        ราคาสูงเกินไป = ขายน้อย ต้องหาจุดสมดุลระหว่าง Margin และความต้องการตลาด
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประเภทสินค้าดิจิทัลและราคาทั่วไป</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>E-book</strong> — ขาย 200-1,000 บาท ต้นทุนต่ำ Margin สูง 70-90%</li>
+        <li><strong>Online Course</strong> — ขาย 2,000-20,000 บาท Margin 60-80%</li>
+        <li><strong>Template/Tool</strong> — ขาย 1,000-5,000 บาท Margin 70-85%</li>
+        <li><strong>Software/App</strong> — ขาย 5,000+ บาท Subscription Model Margin 80%+</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีคิด Margin สินค้าดิจิทัล</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>Markup Ratio</strong> — (ราคาขาย - ต้นทุน) ÷ ต้นทุน ตัวอย่าง: (10,000 - 5,000) ÷ 5,000 = 100% Markup</li>
+        <li><strong>Margin %</strong> — (ราคาขาย - ต้นทุน) ÷ ราคาขาย ตัวอย่าง: (10,000 - 5,000) ÷ 10,000 = 50% Margin</li>
+        <li>หลังหักค่า Platform (10%) = กำไรสุทธิ 40%</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัจจัยที่ส่งผลต่อการกำหนดราคา</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>คุณภาพ: คอร์สคุณภาพสูง ขึ้นราคาได้</li>
+        <li>ชื่อเสียง: ผู้สอนมีชื่อเสียง ลูกค้าเต็มใจจ่ายมากขึ้น</li>
+        <li>ความต้องการ: ถ้าต้องการสูง ขึ้นราคาได้</li>
+        <li>Platform: Teachable, Udemy มี Marketplace ลูกค้าเยอะ ขึ้นราคาได้</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณ-ราคา-สินค้าดิจิทัล/" />
+    <RelatedCalculators currentHref="/คำนวณ-ราคา-สินค้าดิจิทัล/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ
+      ราคาจริงควรพิจารณาปัจจัยตลาด คู่แข่ง และค่าใช้จ่ายเพิ่มเติมเช่น Ads Marketing
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('digital-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const devCost = parseNum((document.getElementById('dev-cost') as HTMLInputElement).value);
+      const desiredMargin = parseNum((document.getElementById('desired-margin') as HTMLInputElement).value);
+      const platformFee = parseNum((document.getElementById('platform-fee') as HTMLInputElement).value);
+      const expectedSales = parseNum((document.getElementById('expected-sales') as HTMLInputElement).value);
+
+      if (devCost <= 0) { (document.getElementById('dev-cost') as HTMLInputElement).focus(); return; }
+      if (desiredMargin <= 0) { (document.getElementById('desired-margin') as HTMLInputElement).focus(); return; }
+
+      // ราคาที่ต้องขายเพื่อได้ margin ที่ต้องการ
+      // ราคา = ต้นทุน / (1 - margin%)
+      const basePrice = devCost / (1 - desiredMargin / 100);
+      const platformFeeAmount = (basePrice * platformFee) / 100;
+      const netPrice = basePrice - platformFeeAmount;
+      const profitPerUnit = netPrice - (devCost / expectedSales);
+
+      // ROI = (ยอดขายหลังหักต้นทุน / ต้นทุน) * 100
+      const totalSalesPrice = basePrice * expectedSales;
+      const roiUnits = Math.ceil(devCost / (netPrice - (devCost / expectedSales)));
+      const roi = ((totalSalesPrice - devCost) / devCost) * 100;
+
+      (document.getElementById('res-base-price') as HTMLElement).textContent = fmt(basePrice) + ' บาท';
+      (document.getElementById('res-net-price') as HTMLElement).textContent = fmt(netPrice) + ' บาท';
+      (document.getElementById('res-profit-per-unit') as HTMLElement).textContent = fmt(profitPerUnit) + ' บาท';
+      (document.getElementById('res-roi') as HTMLElement).textContent = roi.toFixed(0) + '%';
+      (document.getElementById('res-dev-cost') as HTMLElement).textContent = fmt(devCost) + ' บาท';
+      (document.getElementById('res-margin') as HTMLElement).textContent = desiredMargin.toFixed(1) + '%';
+      (document.getElementById('res-platform') as HTMLElement).textContent = platformFee.toFixed(1) + '%';
+      (document.getElementById('res-roi-units') as HTMLElement).textContent = roiUnits.toFixed(0) + ' หน่วย';
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('digital-product-pricing');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('digital-product-pricing');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

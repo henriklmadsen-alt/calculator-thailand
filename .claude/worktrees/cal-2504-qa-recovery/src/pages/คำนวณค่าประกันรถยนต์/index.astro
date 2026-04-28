@@ -1,0 +1,603 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าประกันรถยนต์ ชั้น 1-3 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันรถยนต์ 2569 ฟรี — เปรียบเทียบชั้น 1, 2+, 2, 3+, 3 ตามมูลค่ารถและอายุ รู้ค่าประกันโดยประมาณก่อนตัดสินใจ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าประกันรถยนต์/`;
+
+const faqData = [
+  {
+    question: 'ประกันรถยนต์ชั้น 1, 2+, 2, 3+, 3 ต่างกันอย่างไร?',
+    answer: 'ชั้น 1 คุ้มครองรอบด้านสุด ทั้งรถตัวเอง ไฟไหม้ โจรกรรม น้ำท่วม และบุคคลภายนอก ชั้น 2+ คุ้มครองชนกับยานพาหนะ+ไฟไหม้+โจรกรรม+บุคคลภายนอก ชั้น 2 คุ้มครองไฟไหม้+โจรกรรม+บุคคลภายนอก ชั้น 3+ คุ้มครองชนกับยานพาหนะ+บุคคลภายนอก ชั้น 3 คุ้มครองบุคคลภายนอกอย่างเดียว เบี้ยถูกที่สุด',
+  },
+  {
+    question: 'กลุ่มรถ 1-5 คืออะไร?',
+    answer: 'บริษัทประกันจัดกลุ่มรถตามความเสี่ยง กลุ่ม 1 คือรถเล็กเศรษฐกิจ (City, Vios) เบี้ยต่ำสุด กลุ่ม 2 คือรถซีดานกลาง (Civic, Corolla) กลุ่ม 3 คือกระบะ/SUV (Hilux, Fortuner) กลุ่ม 4 คือรถหรู (Benz C, BMW 3) กลุ่ม 5 คือรถสปอร์ต/พรีเมียม เบี้ยสูงสุด',
+  },
+  {
+    question: 'อายุรถมีผลกับเบี้ยประกันอย่างไร?',
+    answer: 'รถใหม่จะมีเบี้ยสูงกว่าเพราะทุนประกัน (มูลค่ารถ) สูง เมื่อรถเก่าลง ทุนประกันลดลงตามค่าเสื่อม เบี้ยจึงลดตาม แต่รถเก่ามากอาจมีข้อจำกัดในการทำประกันชั้น 1 บางบริษัทรับรถอายุไม่เกิน 7-10 ปี',
+  },
+  {
+    question: 'ผู้ขับอายุน้อยเสียเบี้ยแพงกว่าจริงไหม?',
+    answer: 'ใช่ ผู้ขับอายุต่ำกว่า 25 ปี มักถูกคิดเบี้ยเพิ่ม 10-20% เพราะสถิติอุบัติเหตุสูงกว่า ส่วนผู้ขับอายุ 35-50 ปี อาจได้ส่วนลดเล็กน้อย',
+  },
+  {
+    question: 'ทุนประกันคืออะไร ต่างจากมูลค่ารถอย่างไร?',
+    answer: 'ทุนประกัน คือวงเงินสูงสุดที่บริษัทจะจ่ายเมื่อรถเสียหายทั้งคัน โดยปกติจะลดลงตามค่าเสื่อมของรถ เช่น รถราคา 1,000,000 บาท อายุ 3 ปี ทุนประกันอาจอยู่ที่ 760,000 บาท มูลค่ารถเป็นราคาตลาดปัจจุบัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าประกันรถยนต์ 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันรถยนต์',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันรถยนต์ ชั้น 1 ชั้น 2+ และชั้น 3 ตามประเภทรถและความครอบคลุม',
+  step: [
+    { '@type': 'HowToStep', name: 'เลือกประเภทประกันรถยนต์', text: 'เลือกชั้นประกันที่ต้องการ: ชั้น 1 (คุ้มครองครบถ้วน รวมกรณีไม่มีคู่กรณี), ชั้น 2+ (คุ้มครองบางส่วน), ชั้น 3 (คุ้มครองเฉพาะคู่กรณี) ประกันชั้น 1 เบี้ยสูงสุด แต่คุ้มครองมากที่สุด' },
+    { '@type': 'HowToStep', name: 'ระบุข้อมูลรถยนต์', text: 'กรอกข้อมูล: ยี่ห้อ รุ่น ปีรถ และมูลค่ารถ เบี้ยประกันคำนวณจากมูลค่ารถ (ประมาณ 3-5% ของราคารถสำหรับชั้น 1) รถใหม่มีเบี้ยสูงกว่ารถเก่า' },
+    { '@type': 'HowToStep', name: 'กรอกข้อมูลผู้ขับขี่', text: 'ระบุอายุผู้ขับขี่หลัก (อายุน้อยกว่า 25 ปี = เบี้ยสูงกว่า) ประวัติอุบัติเหตุ (ไม่มีประวัติ = ส่วนลด) และจำนวนผู้ขับขี่ที่ต้องการคุ้มครอง' },
+    { '@type': 'HowToStep', name: 'เปรียบเทียบราคาจากหลายบริษัท', text: 'เบี้ยประกันต่างกันตามบริษัทประกัน ควรเปรียบเทียบอย่างน้อย 3 บริษัท (เช่น AXA, MSIG, Chubb, Cigna) และตรวจสอบความครอบคลุมที่แตกต่างกันก่อนตัดสินใจ' },
+    { '@type': 'HowToStep', name: 'ตรวจสอบความครอบคลุมและเงื่อนไข', text: 'ก่อนซื้อตรวจสอบ: วงเงินคุ้มครองต่อเหตุการณ์, ค่าเบี้ยขั้นต่ำ (Deductible), บริการช่วยเหลือฉุกเฉิน 24 ชั่วโมง, และเครือข่ายอู่ซ่อมรถที่ครอบคลุม' },
+  ],
+};
+
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าประกันรถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">เปรียบเทียบทุกชั้นความคุ้มครองในหน้าเดียว</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการประมาณการเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อ้างอิงโครงสร้างเบี้ย <a href="https://www.oic.or.th/th/consumer/insurance/non-life/motor" target="_blank" rel="noopener noreferrer" class="underline hover:text-sky-900">คปภ.</a> ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าประกันรถยนต์ 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      เปรียบเทียบเบี้ยประกันรถยนต์ ชั้น 1, 2+, 2, 3+, 3 ตามมูลค่ารถ กลุ่มรถ อายุรถ
+      และอายุผู้ขับขี่ ดูความคุ้มครองแต่ละชั้น ผลลัพธ์ทันที ใช้งานฟรี
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรถยนต์</h2>
+
+      <form id="insurance-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณากรอกข้อมูลให้ครบถ้วน
+        </p>
+
+        <!-- Car Value -->
+        <div>
+          <label for="car-value" class="block text-sm font-medium text-gray-700 mb-1">
+            มูลค่ารถ (บาท)
+          </label>
+          <input
+            type="text"
+            id="car-value"
+            inputmode="numeric"
+            placeholder="เช่น 800,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">ราคาตลาดปัจจุบันหรือราคาซื้อ</p>
+        </div>
+
+        <!-- Car Group -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">กลุ่มรถ</label>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <button type="button" data-group="1" class="car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-gray-300 text-gray-600 hover:border-primary-400">
+              <span class="block text-xs text-gray-400 mb-0.5">กลุ่ม 1</span>
+              รถเล็ก
+            </button>
+            <button type="button" data-group="2" class="car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-gray-300 text-gray-600 hover:border-primary-400">
+              <span class="block text-xs text-gray-400 mb-0.5">กลุ่ม 2</span>
+              ซีดานกลาง
+            </button>
+            <button type="button" data-group="3" class="car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-primary-500 bg-primary-50 text-primary-700">
+              <span class="block text-xs text-primary-400 mb-0.5">กลุ่ม 3</span>
+              กระบะ/SUV
+            </button>
+            <button type="button" data-group="4" class="car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-gray-300 text-gray-600 hover:border-primary-400">
+              <span class="block text-xs text-gray-400 mb-0.5">กลุ่ม 4</span>
+              หรู
+            </button>
+            <button type="button" data-group="5" class="car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-gray-300 text-gray-600 hover:border-primary-400">
+              <span class="block text-xs text-gray-400 mb-0.5">กลุ่ม 5</span>
+              สปอร์ต
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-gray-500">กลุ่ม 1: City, Vios | กลุ่ม 2: Civic, Corolla | กลุ่ม 3: Hilux, Fortuner | กลุ่ม 4: Benz C, BMW 3 | กลุ่ม 5: Benz S, Porsche</p>
+        </div>
+
+        <!-- Car Age -->
+        <div>
+          <label for="car-age" class="block text-sm font-medium text-gray-700 mb-1">
+            อายุรถ (ปี)
+          </label>
+          <input
+            type="text"
+            id="car-age"
+            inputmode="numeric"
+            placeholder="เช่น 3"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">0 = รถป้ายแดง, นับจากปีจดทะเบียนครั้งแรก</p>
+        </div>
+
+        <!-- Driver Age -->
+        <div>
+          <label for="driver-age" class="block text-sm font-medium text-gray-700 mb-1">
+            อายุผู้ขับขี่หลัก (ปี)
+          </label>
+          <input
+            type="text"
+            id="driver-age"
+            inputmode="numeric"
+            placeholder="เช่น 35"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">อายุต่ำกว่า 25 ปีอาจมีเบี้ยเพิ่ม</p>
+        </div>
+
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          เปรียบเทียบเบี้ยประกัน
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการเปรียบเทียบ</h2>
+
+      <!-- Comparison Cards -->
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6" id="comparison-cards"></div>
+
+      <!-- Coverage Comparison Table -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">เปรียบเทียบความคุ้มครอง</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm" id="coverage-table">
+            <thead>
+              <tr class="bg-gray-50 border-b">
+                <th class="px-3 py-2 text-left text-gray-600 font-medium">ความคุ้มครอง</th>
+                <th class="px-3 py-2 text-center text-gray-600 font-medium">ชั้น 1</th>
+                <th class="px-3 py-2 text-center text-gray-600 font-medium">ชั้น 2+</th>
+                <th class="px-3 py-2 text-center text-gray-600 font-medium">ชั้น 2</th>
+                <th class="px-3 py-2 text-center text-gray-600 font-medium">ชั้น 3+</th>
+                <th class="px-3 py-2 text-center text-gray-600 font-medium">ชั้น 3</th>
+              </tr>
+            </thead>
+            <tbody id="coverage-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Input Summary -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">ข้อมูลที่ใช้คำนวณ</h3>
+        <table class="w-full text-sm">
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">มูลค่ารถ</td>
+              <td id="sum-car-value" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">กลุ่มรถ</td>
+              <td id="sum-car-group" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">อายุรถ</td>
+              <td id="sum-car-age" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">อายุผู้ขับขี่</td>
+              <td id="sum-driver-age" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-3 text-gray-600">ปรับตามอายุรถ</td>
+              <td id="sum-car-adj" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 text-gray-600">ปรับตามอายุผู้ขับ</td>
+              <td id="sum-driver-adj" class="px-4 py-3 text-right font-medium text-gray-900">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="/go/tipinsure/?sub_id=คำนวณค่าประกันรถยนต์"
+      partnerName="TIPINSURE"
+      ctaText="เปรียบเทียบประกันรถผ่าน TIPINSURE"
+      subtext="เปรียบเทียบแผนประกันรถจากหลายบริษัท"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ประกันรถยนต์คืออะไร?</h2>
+
+      <p>
+        ประกันรถยนต์ (ประกันภัยภาคสมัครใจ) คือประกันภัยที่เจ้าของรถเลือกทำเพิ่มเติม
+        นอกเหนือจาก พ.ร.บ. (ประกันภัยภาคบังคับ) เพื่อคุ้มครองความเสียหายต่อรถตัวเอง
+        ทรัพย์สินบุคคลภายนอก และค่ารักษาพยาบาล โดยแบ่งเป็น 5 ชั้นตามระดับความคุ้มครอง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประกันชั้น 1 — คุ้มครองสูงสุด</h3>
+
+      <p>คุ้มครองครอบคลุมที่สุด เหมาะกับรถใหม่หรือรถที่มีมูลค่าสูง:</p>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ความเสียหายต่อรถตัวเอง (ชนเอง ถูกชน)</li>
+        <li>ไฟไหม้และภัยธรรมชาติ (รวมน้ำท่วม)</li>
+        <li>รถถูกโจรกรรม</li>
+        <li>ความรับผิดต่อทรัพย์สินบุคคลภายนอก</li>
+        <li>ความรับผิดต่อชีวิตและร่างกายบุคคลภายนอก</li>
+        <li>ค่ารักษาพยาบาลผู้ขับขี่และผู้โดยสาร</li>
+        <li>ประกันตัวผู้ขับขี่ (กรณีคดีอาญา)</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประกันชั้น 2+ — คุ้มครองชนกับยานพาหนะ</h3>
+
+      <p>
+        เพิ่มความคุ้มครองจากชั้น 2 โดยครอบคลุมความเสียหายกรณีชนกับยานพาหนะอื่น
+        เหมาะกับผู้ที่ต้องการความคุ้มครองรถตัวเองในราคาย่อมเยา
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประกันชั้น 2 — ไฟไหม้ โจรกรรม บุคคลภายนอก</h3>
+
+      <p>คุ้มครอง 3 ส่วนหลัก: ไฟไหม้ โจรกรรม และความรับผิดต่อบุคคลภายนอก ไม่คุ้มครองรถชน</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประกันชั้น 3+ และชั้น 3 — เบี้ยต่ำสุด</h3>
+
+      <p>
+        ชั้น 3 คุ้มครองเฉพาะความรับผิดต่อบุคคลภายนอก เบี้ยต่ำที่สุด เหมาะกับรถเก่า
+        ส่วนชั้น 3+ เพิ่มความคุ้มครองกรณีชนกับยานพาหนะอื่น
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัจจัยที่ส่งผลต่อเบี้ยประกัน</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-4 py-2 text-left border-b">ปัจจัย</th>
+              <th class="px-4 py-2 text-left border-b">ผลต่อเบี้ย</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-2">มูลค่ารถ/ทุนประกัน</td>
+              <td class="px-4 py-2">ยิ่งสูง เบี้ยยิ่งแพง</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">กลุ่มรถ</td>
+              <td class="px-4 py-2">รถหรู/สปอร์ตเบี้ยสูงกว่ารถเล็ก</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">อายุรถ</td>
+              <td class="px-4 py-2">รถเก่าทุนประกันลด เบี้ยลดตาม</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">อายุผู้ขับ</td>
+              <td class="px-4 py-2">ต่ำกว่า 25 ปี เบี้ยเพิ่ม ~20%</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">ประวัติเคลม</td>
+              <td class="px-4 py-2">ไม่เคลมได้ส่วนลด NCD สูงสุด 50%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เปรียบเทียบประกันแต่ละชั้น</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-4 py-2 text-left border-b">ความคุ้มครอง</th>
+              <th class="px-4 py-2 text-center border-b">ชั้น 1</th>
+              <th class="px-4 py-2 text-center border-b">ชั้น 2+</th>
+              <th class="px-4 py-2 text-center border-b">ชั้น 2</th>
+              <th class="px-4 py-2 text-center border-b">ชั้น 3+</th>
+              <th class="px-4 py-2 text-center border-b">ชั้น 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-2">รถตัวเองเสียหาย</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-yellow-600 font-bold">*</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+              <td class="px-4 py-2 text-center text-yellow-600 font-bold">*</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">ไฟไหม้</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">โจรกรรม</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">น้ำท่วม/ภัยธรรมชาติ</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+              <td class="px-4 py-2 text-center text-red-400">&#10007;</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2">ทรัพย์สินบุคคลภายนอก</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">บาดเจ็บ/เสียชีวิตบุคคลภายนอก</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+              <td class="px-4 py-2 text-center text-green-600 font-bold">&#10003;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">* ชั้น 2+ และ 3+ คุ้มครองเฉพาะกรณีชนกับยานพาหนะที่มีคู่กรณี</p>
+
+      <p class="mt-4">
+        เครื่องคำนวณนี้ช่วยประมาณเบี้ยประกันภัยรถยนต์ เปรียบเทียบทุกชั้นในหน้าเดียว
+        ช่วยให้ตัดสินใจเลือกประกันได้ง่ายขึ้น อัตราจริงอาจแตกต่างตามบริษัทประกันและโปรโมชั่น
+      </p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related Calculators -->
+    <RelatedArticles currentHref="/คำนวณค่าประกันรถยนต์/" />
+    <RelatedCalculators currentHref="/คำนวณค่าประกันรถยนต์/" />
+
+    <!-- Disclaimer -->
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/non-life/motor" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">สำนักงาน คปภ. — ประกันภัยรถยนต์</a> — โครงสร้างชั้นความคุ้มครองและอัตราเบี้ยประกันรถยนต์</li>
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/non-life/motor/motor-voluntary" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ประกันภัยรถยนต์ภาคสมัครใจ — คปภ.</a></li>
+        <li><a href="https://www.oic.or.th/th/consumer/knowledge/car_insurance" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:underline">ข้อมูลประกันรถยนต์จากสำนักงาน คปภ.</a> — ความรู้ประกันรถยนต์สำหรับผู้บริโภค</li>
+        <li><a href="https://www.oic.or.th/th/consumer/knowledge/vehicle_act" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">พรบ. รถยนต์ภาคบังคับ — ข้อมูลจาก คปภ.</a> — ข้อมูล พ.ร.บ. ประกันภัยรถยนต์ภาคบังคับ</li>
+      </ul>
+    </div>
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      เบี้ยประกันจริงขึ้นอยู่กับบริษัทประกันภัย เงื่อนไขกรมธรรม์ ประวัติการเคลม
+      และส่วนลดไม่มีเรียกร้อง (NCD) อ้างอิงโครงสร้างเบี้ยจาก <a href="https://www.oic.or.th" target="_blank" rel="noopener noreferrer" class="underline font-medium">คปภ.</a>
+      กรุณาสอบถามบริษัทประกันภัยโดยตรงเพื่อเบี้ยที่แม่นยำ
+    </div>
+  </article>
+
+  <script>
+    import { calculateAllTypes } from '../../lib/car-insurance-calculator';
+    import type { CarGroup } from '../../lib/car-insurance-calculator';
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    let currentGroup: CarGroup = 3;
+
+    const groupButtons = document.querySelectorAll('.car-group-btn') as NodeListOf<HTMLButtonElement>;
+    const carValueInput = document.getElementById('car-value') as HTMLInputElement;
+    const carAgeInput = document.getElementById('car-age') as HTMLInputElement;
+    const driverAgeInput = document.getElementById('driver-age') as HTMLInputElement;
+    const formError = document.getElementById('form-error') as HTMLParagraphElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const comparisonCards = document.getElementById('comparison-cards') as HTMLDivElement;
+    const coverageTbody = document.getElementById('coverage-tbody') as HTMLTableSectionElement;
+
+    function setGroup(group: CarGroup) {
+      currentGroup = group;
+      groupButtons.forEach(btn => {
+        const g = parseInt(btn.dataset.group || '3', 10);
+        if (g === group) {
+          btn.className = 'car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-primary-500 bg-primary-50 text-primary-700';
+          const span = btn.querySelector('span');
+          if (span) span.className = 'block text-xs text-primary-400 mb-0.5';
+        } else {
+          btn.className = 'car-group-btn py-2 px-3 rounded-md text-sm font-medium transition-colors border border-gray-300 text-gray-600 hover:border-primary-400';
+          const span = btn.querySelector('span');
+          if (span) span.className = 'block text-xs text-gray-400 mb-0.5';
+        }
+      });
+    }
+
+    groupButtons.forEach(btn => {
+      btn.addEventListener('click', () => setGroup(parseInt(btn.dataset.group || '3', 10) as CarGroup));
+    });
+
+    const groupNames: Record<number, string> = {
+      1: 'กลุ่ม 1 (รถเล็ก)',
+      2: 'กลุ่ม 2 (ซีดานกลาง)',
+      3: 'กลุ่ม 3 (กระบะ/SUV)',
+      4: 'กลุ่ม 4 (หรู)',
+      5: 'กลุ่ม 5 (สปอร์ต)',
+    };
+
+    const typeColors: Record<string, { bg: string; border: string; text: string; badge: string }> = {
+      type1: { bg: 'bg-primary-50', border: 'border-primary-200', text: 'text-primary-700', badge: 'bg-primary-600' },
+      type2plus: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', badge: 'bg-blue-600' },
+      type2: { bg: 'bg-teal-50', border: 'border-teal-200', text: 'text-teal-700', badge: 'bg-teal-600' },
+      type3plus: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', badge: 'bg-amber-600' },
+      type3: { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', badge: 'bg-gray-600' },
+    };
+
+    function doCalculate() {
+      formError.classList.add('hidden');
+
+      const carValue = parseNum(carValueInput.value);
+      const carAge = Math.max(0, Math.floor(parseNum(carAgeInput.value)));
+      const driverAge = Math.max(18, Math.floor(parseNum(driverAgeInput.value)));
+
+      if (carValue <= 0) {
+        formError.textContent = 'กรุณากรอกมูลค่ารถ';
+        formError.classList.remove('hidden');
+        carValueInput.focus();
+        return;
+      }
+      if (driverAge < 18 || parseNum(driverAgeInput.value) <= 0) {
+        formError.textContent = 'กรุณากรอกอายุผู้ขับขี่ (18 ปีขึ้นไป)';
+        formError.classList.remove('hidden');
+        driverAgeInput.focus();
+        return;
+      }
+
+      trackCalculatorStart('car_insurance');
+
+      const results = calculateAllTypes(carValue, currentGroup, carAge, driverAge);
+
+      // Render comparison cards
+      comparisonCards.innerHTML = results.map((r) => {
+        const c = typeColors[r.insuranceType];
+        const isRecommended = r.insuranceType === 'type1' || r.insuranceType === 'type2plus';
+        return `
+          <div class="${c.bg} rounded-lg p-4 border ${c.border} ${isRecommended ? 'ring-2 ring-primary-300' : ''}">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-white px-2 py-0.5 rounded ${c.badge}">${r.insuranceTypeName}</span>
+              ${isRecommended ? '<span class="text-xs text-primary-600 font-medium">แนะนำ</span>' : ''}
+            </div>
+            <div class="text-2xl font-bold ${c.text} mb-1">${fmt(r.estimatedPremium)} <span class="text-sm font-normal">บาท/ปี</span></div>
+            ${r.coverageAmount > 0 ? `<div class="text-xs text-gray-500">ทุนประกัน ${fmt(r.coverageAmount)} บาท</div>` : '<div class="text-xs text-gray-500">ไม่มีทุนประกัน</div>'}
+            <div class="mt-3 space-y-1 text-xs text-gray-600">
+              <div>${r.ownDamage ? '<span class="text-green-600">&#10003;</span> รถตัวเอง' : '<span class="text-gray-300">&#10007;</span> <span class="text-gray-400">รถตัวเอง</span>'}</div>
+              <div>${r.fireTheft ? '<span class="text-green-600">&#10003;</span> ไฟไหม้/โจรกรรม' : '<span class="text-gray-300">&#10007;</span> <span class="text-gray-400">ไฟไหม้/โจรกรรม</span>'}</div>
+              <div><span class="text-green-600">&#10003;</span> บุคคลภายนอก ${fmt(r.thirdPartyProperty)} บาท</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render coverage comparison table
+      const coverageRows = [
+        { label: 'เบี้ยประกันโดยประมาณ', values: results.map(r => `<strong>${fmt(r.estimatedPremium)}</strong> บาท`) },
+        { label: 'ทุนประกัน', values: results.map(r => r.coverageAmount > 0 ? `${fmt(r.coverageAmount)} บาท` : '-') },
+        { label: 'รถตัวเองเสียหาย (ชนเอง)', values: results.map(r => r.ownDamage ? '<span class="text-green-600 font-bold">&#10003;</span>' : '<span class="text-red-400">&#10007;</span>') },
+        { label: 'ชนกับยานพาหนะอื่น', values: results.map(r => r.insuranceType === 'type1' || r.insuranceType === 'type2plus' || r.insuranceType === 'type3plus' ? '<span class="text-green-600 font-bold">&#10003;</span>' : '<span class="text-red-400">&#10007;</span>') },
+        { label: 'ไฟไหม้', values: results.map(r => r.fireTheft ? '<span class="text-green-600 font-bold">&#10003;</span>' : '<span class="text-red-400">&#10007;</span>') },
+        { label: 'โจรกรรม', values: results.map(r => r.fireTheft ? '<span class="text-green-600 font-bold">&#10003;</span>' : '<span class="text-red-400">&#10007;</span>') },
+        { label: 'น้ำท่วม/ภัยธรรมชาติ', values: results.map(r => r.floodCoverage ? '<span class="text-green-600 font-bold">&#10003;</span>' : '<span class="text-red-400">&#10007;</span>') },
+        { label: 'ทรัพย์สินบุคคลภายนอก', values: results.map(r => `${fmt(r.thirdPartyProperty)} บาท`) },
+        { label: 'บาดเจ็บ/เสียชีวิตบุคคลภายนอก', values: results.map(r => `${fmt(r.thirdPartyBodily)} บาท`) },
+        { label: 'ประกันอุบัติเหตุส่วนบุคคล', values: results.map(r => r.personalAccident > 0 ? `${fmt(r.personalAccident)} บาท` : '-') },
+        { label: 'ค่ารักษาพยาบาล', values: results.map(r => r.medicalExpense > 0 ? `${fmt(r.medicalExpense)} บาท` : '-') },
+        { label: 'ประกันตัวผู้ขับขี่', values: results.map(r => `${fmt(r.bailBond)} บาท`) },
+      ];
+
+      coverageTbody.innerHTML = coverageRows.map((row, i) => `
+        <tr class="${i < coverageRows.length - 1 ? 'border-b border-gray-100' : ''} ${i === 0 ? 'bg-green-50' : ''}">
+          <td class="px-3 py-2 text-gray-600 whitespace-nowrap">${row.label}</td>
+          ${row.values.map(v => `<td class="px-3 py-2 text-center text-gray-900 text-xs">${v}</td>`).join('')}
+        </tr>
+      `).join('');
+
+      // Input summary
+      (document.getElementById('sum-car-value') as HTMLElement).textContent = fmt(carValue) + ' บาท';
+      (document.getElementById('sum-car-group') as HTMLElement).textContent = groupNames[currentGroup];
+      (document.getElementById('sum-car-age') as HTMLElement).textContent = carAge + ' ปี';
+      (document.getElementById('sum-driver-age') as HTMLElement).textContent = driverAge + ' ปี';
+      (document.getElementById('sum-car-adj') as HTMLElement).textContent = `x${results[0].carAgeAdjustment.toFixed(2)}`;
+      (document.getElementById('sum-driver-adj') as HTMLElement).textContent = `x${results[0].driverAgeAdjustment.toFixed(2)}`;
+
+      resultsDiv.classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      trackCalculatorUsed('car_insurance');
+      trackCalculatorComplete('car_insurance', results[0].estimatedPremium);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', doCalculate);
+
+    // Enter key support
+    [carValueInput, carAgeInput, driverAgeInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); doCalculate(); }
+      });
+    });
+
+    // Track result viewed
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('car_insurance');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

@@ -1,0 +1,528 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมศาล 2569 | ค่าขึ้นศาลคดีแพ่ง อาญา แรงงาน | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียมศาลออนไลน์ฟรี ค่าขึ้นศาลคดีแพ่ง คดีอาญา ศาลแรงงาน ตามประมวลกฎหมายวิธีพิจารณาความแพ่ง ทั้งศาลชั้นต้น อุทธรณ์ ฎีกา อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าธรรมเนียมศาล/`;
+
+const faqData = [
+  {
+    question: 'ค่าขึ้นศาลคดีแพ่งคิดอย่างไร?',
+    answer: 'ค่าขึ้นศาลคดีแพ่งที่มีทุนทรัพย์คิดในอัตรา 2% ของทุนทรัพย์ที่ฟ้อง (ขั้นต่ำ 200 บาท) สำหรับทุนทรัพย์ส่วนที่เกิน 50 ล้านบาทคิดในอัตรา 0.1% ตามตาราง 1 ท้ายประมวลกฎหมายวิธีพิจารณาความแพ่ง',
+  },
+  {
+    question: 'คดีแรงงานต้องเสียค่าธรรมเนียมศาลหรือไม่?',
+    answer: 'ลูกจ้างที่ฟ้องคดีในศาลแรงงานได้รับยกเว้นค่าธรรมเนียมศาลทั้งหมด ตาม พ.ร.บ. จัดตั้งศาลแรงงานและวิธีพิจารณาคดีแรงงาน พ.ศ. 2522 มาตรา 27 แต่นายจ้างที่ฟ้องต้องเสียค่าธรรมเนียมตามปกติ',
+  },
+  {
+    question: 'ค่าธรรมเนียมศาลชั้นอุทธรณ์และฎีกาเท่าไร?',
+    answer: 'ค่าขึ้นศาลชั้นอุทธรณ์และฎีกาคิดในอัตราเดียวกับศาลชั้นต้น คือ 2% ของทุนทรัพย์ที่อุทธรณ์หรือฎีกา (ขั้นต่ำ 200 บาท) ส่วนที่เกิน 50 ล้านบาทคิด 0.1%',
+  },
+  {
+    question: 'คดีไม่มีทุนทรัพย์ค่าขึ้นศาลเท่าไร?',
+    answer: 'คดีไม่มีทุนทรัพย์ เช่น คดีขับไล่ คดีหย่า คดีขอเป็นผู้จัดการมรดก ค่าขึ้นศาลเรื่องละ 200 บาท ค่าคำร้องหรือคำขออื่นๆ เรื่องละ 200 บาท',
+  },
+  {
+    question: 'ค่าธรรมเนียมบังคับคดีคิดอย่างไร?',
+    answer: 'ค่าธรรมเนียมบังคับคดีในส่วนของการบังคับชำระเงิน คิด 2% ของจำนวนเงินที่ได้รับ สำหรับการขายทอดตลาดทรัพย์สิน คิด 3% ของราคาที่ขายได้ แต่ไม่เกิน 100,000 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมศาล',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าธรรมเนียมศาล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <!-- Info banner -->
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ข้อมูลสำคัญ</p>
+      <p class="mt-1 text-sm text-slate-700">
+        อัตราค่าธรรมเนียมศาลตามตาราง 1 ท้ายประมวลกฎหมายวิธีพิจารณาความแพ่ง — คดีมีทุนทรัพย์ 2% (ส่วนเกิน 50 ล้านบาท 0.1%)
+      </p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าธรรมเนียมศาล (Court Fee Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าขึ้นศาลตามประเภทคดีและทุนทรัพย์ ครอบคลุมคดีแพ่ง คดีอาญา ศาลแรงงาน ทั้งศาลชั้นต้น อุทธรณ์ และฎีกา
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Case Type -->
+      <div class="mb-5">
+        <label for="case-type" class="block text-sm font-medium text-gray-700 mb-1">
+          ประเภทคดี
+        </label>
+        <select
+          id="case-type"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <option value="civil-monetary">คดีแพ่ง — มีทุนทรัพย์</option>
+          <option value="civil-non-monetary">คดีแพ่ง — ไม่มีทุนทรัพย์ (ขับไล่, หย่า, ผู้จัดการมรดก ฯลฯ)</option>
+          <option value="criminal-private">คดีอาญา — ราษฎรเป็นโจทก์ (ส่วนแพ่ง)</option>
+          <option value="labor-employee">ศาลแรงงาน — ลูกจ้างเป็นโจทก์</option>
+          <option value="labor-employer">ศาลแรงงาน — นายจ้างเป็นโจทก์</option>
+        </select>
+      </div>
+
+      <!-- Court Level -->
+      <div class="mb-5">
+        <label for="court-level" class="block text-sm font-medium text-gray-700 mb-1">
+          ชั้นศาล
+        </label>
+        <select
+          id="court-level"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+        >
+          <option value="first">ศาลชั้นต้น</option>
+          <option value="appeal">ศาลอุทธรณ์</option>
+          <option value="supreme">ศาลฎีกา</option>
+        </select>
+      </div>
+
+      <!-- Claim Amount -->
+      <div class="mb-5" id="claim-amount-section">
+        <label for="claim-amount" class="block text-sm font-medium text-gray-700 mb-1">
+          ทุนทรัพย์ / จำนวนเงินที่ฟ้อง (บาท)
+        </label>
+        <input
+          type="text"
+          id="claim-amount"
+          inputmode="decimal"
+          placeholder="เช่น 500,000"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        />
+      </div>
+
+      <!-- Additional fees checkboxes -->
+      <div class="mb-5" id="extra-fees-section">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          ค่าธรรมเนียมเพิ่มเติม (ถ้ามี)
+        </label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input type="checkbox" id="fee-service-local" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            ค่านำส่งหมายในเขต (300 บาท/ครั้ง)
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input type="checkbox" id="fee-service-remote" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            ค่านำส่งหมายนอกเขต (500 บาท/ครั้ง)
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input type="checkbox" id="fee-petition" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            ค่าคำร้อง/คำขอ (200 บาท/เรื่อง)
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input type="checkbox" id="fee-document" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            ค่าอ้างเอกสาร (50 บาท/ฉบับ)
+          </label>
+        </div>
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าธรรมเนียม
+      </button>
+
+      <!-- Results -->
+      <div id="court-result" class="hidden mt-6">
+        <!-- Labor exempt notice -->
+        <div id="labor-exempt-notice" class="hidden mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p class="text-sm font-semibold text-green-700">ได้รับยกเว้นค่าธรรมเนียม</p>
+          <p class="mt-1 text-sm text-green-600">
+            ลูกจ้างที่ฟ้องคดีในศาลแรงงานได้รับยกเว้นค่าธรรมเนียมศาลทั้งหมด ตาม พ.ร.บ. จัดตั้งศาลแรงงานฯ มาตรา 27
+          </p>
+        </div>
+
+        <!-- Fee breakdown -->
+        <div id="fee-breakdown" class="space-y-3">
+          <div class="bg-primary-50 rounded-lg p-4">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">ค่าขึ้นศาล</span>
+              <span id="res-filing-fee" class="text-lg font-bold text-primary-700">-</span>
+            </div>
+            <div id="res-filing-detail" class="text-xs text-gray-500 mt-1"></div>
+          </div>
+
+          <div id="extra-fees-result" class="hidden">
+            <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+              <div id="extra-line-service-local" class="hidden flex justify-between items-center text-sm">
+                <span class="text-gray-600">ค่านำส่งหมายในเขต</span>
+                <span class="font-medium text-gray-700">300.00 บาท</span>
+              </div>
+              <div id="extra-line-service-remote" class="hidden flex justify-between items-center text-sm">
+                <span class="text-gray-600">ค่านำส่งหมายนอกเขต</span>
+                <span class="font-medium text-gray-700">500.00 บาท</span>
+              </div>
+              <div id="extra-line-petition" class="hidden flex justify-between items-center text-sm">
+                <span class="text-gray-600">ค่าคำร้อง/คำขอ</span>
+                <span class="font-medium text-gray-700">200.00 บาท</span>
+              </div>
+              <div id="extra-line-document" class="hidden flex justify-between items-center text-sm">
+                <span class="text-gray-600">ค่าอ้างเอกสาร</span>
+                <span class="font-medium text-gray-700">50.00 บาท</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium text-gray-700">รวมค่าธรรมเนียมทั้งหมด</span>
+              <span id="res-total-fee" class="text-xl font-bold text-green-700">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div id="res-summary"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าธรรมเนียมศาลไทย</h2>
+
+      <p>
+        ค่าธรรมเนียมศาลเป็นค่าใช้จ่ายที่ต้องชำระเมื่อยื่นฟ้องคดีต่อศาล
+        กำหนดไว้ตามตาราง 1 ท้ายประมวลกฎหมายวิธีพิจารณาความแพ่ง
+        แบ่งเป็นค่าขึ้นศาลและค่าธรรมเนียมอื่นๆ ที่เกี่ยวข้อง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราค่าขึ้นศาล</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">ประเภทคดี</th>
+              <th class="py-2">อัตราค่าธรรมเนียม</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">คดีมีทุนทรัพย์ (ส่วนไม่เกิน 50 ล้าน)</td>
+              <td class="py-2">2% ของทุนทรัพย์ (ขั้นต่ำ 200 บาท)</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">คดีมีทุนทรัพย์ (ส่วนเกิน 50 ล้าน)</td>
+              <td class="py-2">0.1% ของส่วนเกิน</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">คดีไม่มีทุนทรัพย์</td>
+              <td class="py-2">200 บาท/เรื่อง</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ศาลแรงงาน (ลูกจ้างฟ้อง)</td>
+              <td class="py-2">ยกเว้นค่าธรรมเนียมทั้งหมด</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">อุทธรณ์ / ฎีกา</td>
+              <td class="py-2">อัตราเดียวกับศาลชั้นต้น</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่าขึ้นศาล</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ทุนทรัพย์ไม่เกิน 50 ล้านบาท: ค่าขึ้นศาล = ทุนทรัพย์ × 2% (ขั้นต่ำ 200 บาท)</li>
+        <li>ทุนทรัพย์เกิน 50 ล้านบาท: ค่าขึ้นศาล = (50,000,000 × 2%) + (ส่วนเกิน × 0.1%)</li>
+        <li>คดีไม่มีทุนทรัพย์: ค่าขึ้นศาล = 200 บาท</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>ฟ้องเรียกค่าเสียหาย 1,000,000 บาท ที่ศาลชั้นต้น:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าขึ้นศาล = 1,000,000 × 2% = 20,000 บาท</li>
+        <li>ค่านำส่งหมายในเขต = 300 บาท</li>
+        <li>รวมค่าธรรมเนียม = 20,300 บาท</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าธรรมเนียมอื่นๆ</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">รายการ</th>
+              <th class="py-2">อัตรา</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ค่านำส่งหมายในเขต</td>
+              <td class="py-2">300 บาท/ครั้ง</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ค่านำส่งหมายนอกเขต</td>
+              <td class="py-2">500 บาท/ครั้ง</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ค่าคำร้อง/คำขอ</td>
+              <td class="py-2">200 บาท/เรื่อง</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ค่าอ้างเอกสาร</td>
+              <td class="py-2">50 บาท/ฉบับ</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ค่าธรรมเนียมบังคับคดี (เงิน)</td>
+              <td class="py-2">2% ของเงินที่ได้รับ</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">ค่าธรรมเนียมบังคับคดี (ขายทอดตลาด)</td>
+              <td class="py-2">3% ของราคาขาย (ไม่เกิน 100,000 บาท)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ศาลแรงงาน</h3>
+
+      <p>
+        ลูกจ้างที่ยื่นฟ้องในศาลแรงงานได้รับยกเว้นค่าธรรมเนียมศาลทั้งหมด
+        ตาม พ.ร.บ. จัดตั้งศาลแรงงานและวิธีพิจารณาคดีแรงงาน พ.ศ. 2522 มาตรา 27
+        แต่นายจ้างที่เป็นโจทก์ต้องเสียค่าธรรมเนียมศาลตามอัตราปกติ
+      </p>
+
+      <p class="mt-4">
+        เครื่องคำนวณค่าธรรมเนียมศาลนี้ช่วยให้คุณประเมินค่าใช้จ่ายเบื้องต้นในการดำเนินคดี
+        ครอบคลุมคดีแพ่ง คดีอาญาที่ราษฎรเป็นโจทก์ และคดีแรงงาน
+        เหมาะสำหรับทนายความ ที่ปรึกษากฎหมาย และประชาชนทั่วไป
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าธรรมเนียมศาล/" />
+    <RelatedCalculators currentHref="/คำนวณค่าธรรมเนียมศาล/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> เครื่องคำนวณนี้ให้ผลลัพธ์โดยประมาณเพื่อการวางแผนเบื้องต้นเท่านั้น
+      ค่าธรรมเนียมจริงอาจแตกต่างตามรายละเอียดของคดีและดุลยพินิจของศาล
+      กรุณาปรึกษาทนายความหรือเจ้าหน้าที่ศาลสำหรับข้อมูลที่ถูกต้องที่สุด
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const caseTypeEl = document.getElementById('case-type') as HTMLSelectElement;
+    const courtLevelEl = document.getElementById('court-level') as HTMLSelectElement;
+    const claimAmountEl = document.getElementById('claim-amount') as HTMLInputElement;
+    const claimAmountSection = document.getElementById('claim-amount-section') as HTMLDivElement;
+    const extraFeesSection = document.getElementById('extra-fees-section') as HTMLDivElement;
+
+    // Show/hide claim amount based on case type
+    function updateFormVisibility() {
+      const caseType = caseTypeEl.value;
+
+      if (caseType === 'civil-non-monetary' || caseType === 'labor-employee') {
+        claimAmountSection.classList.add('hidden');
+      } else {
+        claimAmountSection.classList.remove('hidden');
+      }
+
+      if (caseType === 'labor-employee') {
+        extraFeesSection.classList.add('hidden');
+      } else {
+        extraFeesSection.classList.remove('hidden');
+      }
+    }
+
+    caseTypeEl.addEventListener('change', updateFormVisibility);
+    updateFormVisibility();
+
+    // Calculate filing fee based on claim amount
+    function calcFilingFee(amount: number): { fee: number; detail: string } {
+      if (amount <= 0) return { fee: 200, detail: 'ค่าขึ้นศาลขั้นต่ำ 200 บาท' };
+
+      const threshold = 50_000_000;
+      if (amount <= threshold) {
+        const fee = Math.max(200, amount * 0.02);
+        const detail = `${fmt(amount)} × 2% = ${fmt(amount * 0.02)} บาท` +
+          (amount * 0.02 < 200 ? ' (ปรับเป็นขั้นต่ำ 200 บาท)' : '');
+        return { fee, detail };
+      } else {
+        const baseFee = threshold * 0.02; // 1,000,000
+        const excessFee = (amount - threshold) * 0.001;
+        const totalFee = baseFee + excessFee;
+        const detail = `ส่วนแรก 50 ล้าน × 2% = ${fmt(baseFee)} + ส่วนเกิน ${fmt(amount - threshold)} × 0.1% = ${fmt(excessFee)}`;
+        return { fee: totalFee, detail };
+      }
+    }
+
+    function calculate() {
+      const caseType = caseTypeEl.value;
+      const courtLevel = courtLevelEl.value;
+
+      // Labor employee: fully exempt
+      if (caseType === 'labor-employee') {
+        const resultEl = document.getElementById('court-result') as HTMLDivElement;
+        resultEl.classList.remove('hidden');
+
+        (document.getElementById('labor-exempt-notice') as HTMLDivElement).classList.remove('hidden');
+        (document.getElementById('fee-breakdown') as HTMLDivElement).classList.add('hidden');
+
+        const courtLevelText = courtLevel === 'first' ? 'ศาลชั้นต้น' :
+          courtLevel === 'appeal' ? 'ศาลอุทธรณ์' : 'ศาลฎีกา';
+        (document.getElementById('res-summary') as HTMLElement).textContent =
+          `คดีแรงงาน ลูกจ้างเป็นโจทก์ (${courtLevelText}) — ได้รับยกเว้นค่าธรรมเนียมศาลทั้งหมด`;
+
+        trackCalculatorUsed('court-fee');
+        return;
+      }
+
+      // Show fee breakdown, hide labor notice
+      (document.getElementById('labor-exempt-notice') as HTMLDivElement).classList.add('hidden');
+      (document.getElementById('fee-breakdown') as HTMLDivElement).classList.remove('hidden');
+
+      let filingFee = 0;
+      let filingDetail = '';
+
+      if (caseType === 'civil-non-monetary') {
+        filingFee = 200;
+        filingDetail = 'คดีไม่มีทุนทรัพย์ = 200 บาท';
+      } else {
+        // civil-monetary, criminal-private, labor-employer
+        const claimAmount = parseNum(claimAmountEl.value);
+        if (claimAmount <= 0 && caseType !== 'civil-non-monetary') {
+          claimAmountEl.focus();
+          return;
+        }
+        const result = calcFilingFee(claimAmount);
+        filingFee = result.fee;
+        filingDetail = result.detail;
+      }
+
+      // Extra fees
+      let extraTotal = 0;
+      const extras: { id: string; lineId: string; amount: number }[] = [
+        { id: 'fee-service-local', lineId: 'extra-line-service-local', amount: 300 },
+        { id: 'fee-service-remote', lineId: 'extra-line-service-remote', amount: 500 },
+        { id: 'fee-petition', lineId: 'extra-line-petition', amount: 200 },
+        { id: 'fee-document', lineId: 'extra-line-document', amount: 50 },
+      ];
+
+      let hasExtras = false;
+      for (const extra of extras) {
+        const checked = (document.getElementById(extra.id) as HTMLInputElement).checked;
+        const lineEl = document.getElementById(extra.lineId) as HTMLDivElement;
+        if (checked) {
+          lineEl.classList.remove('hidden');
+          extraTotal += extra.amount;
+          hasExtras = true;
+        } else {
+          lineEl.classList.add('hidden');
+        }
+      }
+
+      const extraResultEl = document.getElementById('extra-fees-result') as HTMLDivElement;
+      if (hasExtras) {
+        extraResultEl.classList.remove('hidden');
+      } else {
+        extraResultEl.classList.add('hidden');
+      }
+
+      const totalFee = filingFee + extraTotal;
+
+      // Update DOM
+      (document.getElementById('res-filing-fee') as HTMLElement).textContent = fmt(filingFee) + ' บาท';
+      (document.getElementById('res-filing-detail') as HTMLElement).textContent = filingDetail;
+      (document.getElementById('res-total-fee') as HTMLElement).textContent = fmt(totalFee) + ' บาท';
+
+      // Summary
+      const caseTypeText: Record<string, string> = {
+        'civil-monetary': 'คดีแพ่งมีทุนทรัพย์',
+        'civil-non-monetary': 'คดีแพ่งไม่มีทุนทรัพย์',
+        'criminal-private': 'คดีอาญาราษฎรเป็นโจทก์',
+        'labor-employer': 'คดีแรงงานนายจ้างเป็นโจทก์',
+      };
+      const courtLevelText = courtLevel === 'first' ? 'ศาลชั้นต้น' :
+        courtLevel === 'appeal' ? 'ศาลอุทธรณ์' : 'ศาลฎีกา';
+
+      let summary = `${caseTypeText[caseType]} (${courtLevelText}) — ค่าขึ้นศาล ${fmt(filingFee)} บาท`;
+      if (hasExtras) {
+        summary += ` + ค่าธรรมเนียมอื่น ${fmt(extraTotal)} บาท = รวม ${fmt(totalFee)} บาท`;
+      }
+      (document.getElementById('res-summary') as HTMLElement).textContent = summary;
+
+      // Show result
+      const resultEl = document.getElementById('court-result') as HTMLDivElement;
+      resultEl.classList.remove('hidden');
+
+      trackCalculatorUsed('court-fee');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Enter key on claim amount
+    claimAmountEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculate();
+      }
+    });
+
+    // Track when result section enters viewport
+    const courtResultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('court-fee');
+          courtResultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    courtResultObserver.observe(document.getElementById('court-result')!);
+  </script>
+</BaseLayout>

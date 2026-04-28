@@ -1,0 +1,225 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import { PROVINCE_RATES } from '../../lib/minimum-wage-calculator.ts';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าแรงขั้นต่ำตามจังหวัด 2568 อัตราใหม่ทุกจังหวัด ปี 2569 | Kamnuanlek';
+const pageDescription = 'ค้นหาและคำนวณค่าแรงขั้นต่ำรายจังหวัด ปี 2568 (มีผล 1 ก.ค. 2568) ครอบคลุมทุกจังหวัดทั่วไทย คำนวณรายวัน รายเดือน และรายชั่วโมง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าแรงขั้นต่ำตามจังหวัด/`;
+
+const provinceRatesJson = JSON.stringify(PROVINCE_RATES);
+
+const faqData = [
+  {
+    question: 'ค่าแรงขั้นต่ำปี 2568 มีผลบังคับใช้เมื่อไร?',
+    answer: 'อัตราค่าแรงขั้นต่ำใหม่ปี 2568 มีผลบังคับใช้ตั้งแต่วันที่ 1 กรกฎาคม พ.ศ. 2568 ตามประกาศคณะกรรมการค่าจ้าง',
+  },
+  {
+    question: 'จังหวัดไหนได้รับค่าแรงขั้นต่ำสูงสุด?',
+    answer: 'กรุงเทพมหานคร ชลบุรี ระยอง ฉะเชิงเทรา ภูเก็ต และเกาะสมุย (สุราษฎร์ธานี) ได้รับค่าแรงขั้นต่ำสูงสุดที่ 400 บาทต่อวัน',
+  },
+  {
+    question: 'ค่าแรงขั้นต่ำรายชั่วโมงคำนวณอย่างไร?',
+    answer: 'ค่าแรงขั้นต่ำต่อชั่วโมง = อัตราค่าแรงรายวัน ÷ 8 ชั่วโมง เช่น กรุงเทพฯ 400 ÷ 8 = 50 บาท/ชั่วโมง',
+  },
+  {
+    question: '3 จังหวัดชายแดนใต้ได้ค่าแรงเท่าไร?',
+    answer: 'นราธิวาส ปัตตานี และยะลา ได้รับค่าแรงขั้นต่ำ 337 บาทต่อวัน ซึ่งเป็นอัตราต่ำสุดตามประกาศปี 2568',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าแรงขั้นต่ำตามจังหวัด',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าแรงขั้นต่ำตามจังหวัด">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script id="province-data" type="application/json" set:html={provinceRatesJson} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">อัตราค่าแรงขั้นต่ำปี 2568 (มีผล 1 ก.ค. 2568)</p>
+      <p class="mt-1 text-sm text-slate-700">ครอบคลุมทุกจังหวัดทั่วไทย ตามประกาศคณะกรรมการค่าจ้าง ฉบับที่ 14</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">คำนวณค่าแรงรายวัน รายเดือน และรายชั่วโมงตามจังหวัดที่ทำงาน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าแรงขั้นต่ำตามจังหวัด ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกจังหวัดที่ทำงานและกรอกจำนวนวันทำงาน ระบบจะแสดงค่าแรงขั้นต่ำรายวัน รายเดือน และรายชั่วโมงตามอัตราล่าสุด
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="mw-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="mw-province" class="mb-1 block text-sm font-medium text-gray-700">เลือกจังหวัด</label>
+            <select id="mw-province"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="">-- เลือกจังหวัด --</option>
+            </select>
+            <p id="mw-province-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="mw-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานต่อเดือน (วัน)</label>
+            <input type="text" id="mw-days" inputmode="numeric" placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">โดยทั่วไป 26 วัน (6 วัน/สัปดาห์) หรือ 22 วัน (5 วัน/สัปดาห์)</p>
+            <p id="mw-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าแรงขั้นต่ำ
+        </button>
+      </form>
+    </div>
+
+    <div id="mw-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-1 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <p id="res-mw-province-name" class="mb-4 text-sm text-gray-500"></p>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงขั้นต่ำรายวัน</div>
+            <div id="res-mw-daily" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงขั้นต่ำรายเดือน</div>
+            <div id="res-mw-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าแรงขั้นต่ำรายชั่วโมง</div>
+            <div id="res-mw-hourly" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">วันทำงานที่ใช้คำนวณ</span>
+            <span id="res-mw-days" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราอ้างอิง</span>
+            <span class="font-medium text-xs text-gray-500">ประกาศฉบับที่ 14 มีผล 1 ก.ค. 2568</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าแรงรายวัน = อัตราขั้นต่ำตามจังหวัด (บาท/วัน)</li>
+        <li>ค่าแรงรายเดือน = ค่าแรงรายวัน × วันทำงาน/เดือน</li>
+        <li>ค่าแรงรายชั่วโมง = ค่าแรงรายวัน ÷ 8 ชั่วโมง</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าแรงขั้นต่ำ/">คำนวณค่าแรงขั้นต่ำ</a></li>
+        <li><a href="/คำนวณค่าจ้างรายชั่วโมง/">คำนวณค่าจ้างรายชั่วโมง</a></li>
+        <li><a href="/คำนวณค่าจ้างรายวันเป็นรายเดือน/">คำนวณค่าจ้างรายวันเป็นรายเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#mw-results" />
+    <RelatedArticles currentHref="/คำนวณค่าแรงขั้นต่ำตามจังหวัด/" />
+    <RelatedCalculators currentHref="/คำนวณค่าแรงขั้นต่ำตามจังหวัด/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราค่าแรงขั้นต่ำอ้างอิงจากประกาศคณะกรรมการค่าจ้าง ฉบับที่ 14 มีผลบังคับใช้ 1 กรกฎาคม 2568 กรุณาตรวจสอบอัตราล่าสุดกับกระทรวงแรงงานก่อนนำไปใช้จริง
+    </div>
+  </article>
+
+  <script type="module">
+    const provinceData = JSON.parse(document.getElementById('province-data').textContent);
+
+    const select = document.getElementById('mw-province');
+    provinceData.forEach((p, idx) => {
+      const opt = document.createElement('option');
+      opt.value = String(idx);
+      opt.textContent = p.name;
+      select.appendChild(opt);
+    });
+
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('mw-form');
+    const resultBox = document.getElementById('mw-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      ['mw-province-error', 'mw-days-error'].forEach((id) => setErr(id, ''));
+
+      const provinceIdx = select.value;
+      const days = parseNum(document.getElementById('mw-days').value);
+
+      let hasError = false;
+      if (provinceIdx === '') { setErr('mw-province-error', 'กรุณาเลือกจังหวัด'); hasError = true; }
+      if (!Number.isFinite(days) || days <= 0 || days > 31) { setErr('mw-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true; }
+      if (hasError) { resultBox.classList.add('hidden'); return; }
+
+      const province = provinceData[Number(provinceIdx)];
+      const dailyRate = province.dailyRate;
+      const monthly = dailyRate * days;
+      const hourly = dailyRate / 8;
+
+      setText('res-mw-province-name', `จังหวัด: ${province.name}`);
+      setText('res-mw-daily', formatMoney(dailyRate));
+      setText('res-mw-monthly', formatMoney(monthly));
+      setText('res-mw-hourly', formatMoney(hourly));
+      setText('res-mw-days', `${days} วัน`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

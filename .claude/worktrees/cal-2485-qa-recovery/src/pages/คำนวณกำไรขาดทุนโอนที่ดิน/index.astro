@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณกำไรโอนที่ดิน หลังหักภาษี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณกำไรสุทธิจากการโอนที่ดิน 2569 ฟรี — หักค่าโอน ภาษีธุรกิจเฉพาะ ต้นทุน รู้ว่าได้กำไรจริงเท่าไร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกำไรขาดทุนโอนที่ดิน/`;
+
+const faqData = [
+  { question: 'ค่าลดหย่อนภาษีที่ใช้บ่อยมีอะไรบ้าง?', answer: 'ค่าลดหย่อนยอดนิยม ได้แก่ ค่าลดหย่อนส่วนตัว 60,000 บาท คู่สมรส 60,000 บาท บุตร 30,000 บาท/คน ประกันชีวิต สูงสุด 100,000 บาท และ LTF/RMF' },
+  { question: 'ยื่นภาษีคืนได้เมื่อไร?', answer: 'ยื่นแบบ ภ.ง.ด.90/91 ได้ตั้งแต่ 1 มกราคม ถึง 31 มีนาคมของทุกปี สำหรับรายได้ปีก่อน หากยื่นทางออนไลน์ได้ขยายเวลาถึง 8 เมษายน' },
+  { question: 'ค่าลดหย่อนทางการแพทย์ใช้ได้เท่าไร?', answer: 'ลดหย่อนค่ารักษาพยาบาลตนเอง คู่สมรส บุตร และบิดามารดาได้ตามจริง สูงสุด 15,000 บาท โดยต้องมีใบเสร็จรับเงินจากสถานพยาบาล' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลรายได้และค่าลดหย่อนที่มี เครื่องคำนวณจะแสดงรายได้สุทธิ ภาษีที่ต้องจ่าย และผลประโยชน์ทางภาษี' }
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' },
+  { question: 'ซื้อบ้านมือสองต้องระวังค่าใช้จ่ายอะไร?', answer: 'ค่าธรรมเนียมโอน ค่าภาษีธุรกิจเฉพาะหรืออากรแสตมป์ ค่าจดจำนอง ค่าตรวจสอบภาระผูกพัน ค่าประเมินราคา ค่าซ่อมแซม และค่าประกันภัย รวมกันอาจสูงถึง 5-10% ของราคาซื้อ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไรขาดทุนโอนที่ดิน">  <article>
+    <h1 class="text-2xl font-bold mb-4">คำนวณกำไรขาดทุนโอนที่ดิน</h1>
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <form id="form">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="block text-sm font-medium mb-1">ราคาซื้อ (บาท)</label>
+            <input type="text" id="buy" inputmode="numeric" value="2000000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ราคาขาย (บาท)</label>
+            <input type="text" id="sell" inputmode="numeric" value="2500000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ค่าใช้จ่ายซื้อ (บาท)</label>
+            <input type="text" id="buy-cost" inputmode="numeric" value="40000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ค่าใช้จ่ายขาย (บาท)</label>
+            <input type="text" id="sell-cost" inputmode="numeric" value="100000" class="w-full px-3 py-2 border rounded"/>
+          </div>
+        </div>
+        <button type="submit" class="mt-6 px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-700">คำนวณ</button>
+      </form>
+    </div>
+    <div id="result" class="hidden bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">ผลการคำนวณ</h2>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between"><span>ราคาซื้อ</span><span id="r-buy">-</span></div>
+        <div class="flex justify-between"><span>ราคาขาย</span><span id="r-sell">-</span></div>
+        <div class="flex justify-between"><span>ส่วนต่างราคา</span><span id="r-diff">-</span></div>
+        <div class="flex justify-between"><span>หักค่าใช้จ่ายซื้อ</span><span id="r-bcost">-</span></div>
+        <div class="flex justify-between"><span>หักค่าใช้จ่ายขาย</span><span id="r-scost">-</span></div>
+        <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>กำไร/ขาดทุนสุทธิ</span><span id="r-net">-</span></div>
+      </div>
+    </div>
+  </article>
+  <script>
+    const form = document.getElementById('form');
+    const result = document.getElementById('result');
+
+    function fmt(n) {
+      return new Intl.NumberFormat('th-TH').format(Math.round(n));
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const buy = parseFloat(document.getElementById('buy').value.replace(/,/g, '')) || 0;
+      const sell = parseFloat(document.getElementById('sell').value.replace(/,/g, '')) || 0;
+      const bcost = parseFloat(document.getElementById('buy-cost').value.replace(/,/g, '')) || 0;
+      const scost = parseFloat(document.getElementById('sell-cost').value.replace(/,/g, '')) || 0;
+
+      const diff = sell - buy;
+      const net = diff - bcost - scost;
+
+      document.getElementById('r-buy').textContent = fmt(buy) + ' บาท';
+      document.getElementById('r-sell').textContent = fmt(sell) + ' บาท';
+      document.getElementById('r-diff').textContent = fmt(diff) + ' บาท';
+      document.getElementById('r-bcost').textContent = fmt(bcost) + ' บาท';
+      document.getElementById('r-scost').textContent = fmt(scost) + ' บาท';
+      document.getElementById('r-net').textContent = fmt(net) + ' บาท';
+
+      result.classList.remove('hidden');
+    });
+  </script>
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
+</BaseLayout>

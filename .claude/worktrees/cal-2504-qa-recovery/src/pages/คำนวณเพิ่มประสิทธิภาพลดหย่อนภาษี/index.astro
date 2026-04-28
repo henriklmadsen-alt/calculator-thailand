@@ -1,0 +1,297 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี 2569 | หาลดหย่อนที่คุ้มสุด | Kamnuanlek';
+const pageDescription = 'วิเคราะห์ว่าควรเพิ่มค่าลดหย่อนประเภทใดก่อนเพื่อประหยัดภาษีสูงสุด แสดงอัตราภาษีส่วนเพิ่ม (Marginal Rate) และมูลค่าภาษีที่ประหยัดได้ต่อบาทที่ลดหย่อนเพิ่ม ปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี/`;
+
+const faqData = [
+  {
+    question: 'อัตราภาษีส่วนเพิ่ม (Marginal Rate) คืออะไร?',
+    answer: 'อัตราภาษีส่วนเพิ่ม คืออัตราภาษีที่ใช้กับรายได้ส่วนสุดท้ายของคุณ ถ้าคุณอยู่ในขั้น 20% หมายความว่าทุก 1,000 บาทที่ลดหย่อนเพิ่มจะประหยัดภาษีได้ 200 บาท',
+  },
+  {
+    question: 'ค่าลดหย่อนที่ควรใช้ประโยชน์ก่อนคืออะไร?',
+    answer: 'ควรใช้ลดหย่อนที่มีเพดานสูงและอัตราดอกเบี้ยจริงสูงก่อน เช่น กองทุน SSF (30% ของรายได้ สูงสุด 200,000), RMF (30% สูงสุด 500,000 รวมกองทุนอื่น), ประกันชีวิต (สูงสุด 100,000) และประกันสุขภาพ (สูงสุด 25,000)',
+  },
+  {
+    question: 'SSF และ RMF ลดหย่อนได้เท่าไร?',
+    answer: 'กองทุน SSF ลดหย่อนได้ 30% ของรายได้ สูงสุด 200,000 บาทต่อปี ส่วน RMF ลดหย่อนได้ 30% ของรายได้ แต่เมื่อรวมกับกองทุนสำรองเลี้ยงชีพ/ประกันชีวิตบำนาญ ต้องไม่เกิน 500,000 บาท',
+  },
+  {
+    question: 'ลดหย่อนเพิ่มแล้วได้ภาษีคืนจริงหรือไม่?',
+    answer: 'หากปัจจุบันถูกหักภาษี ณ ที่จ่ายเกินจริง การลดหย่อนเพิ่มจะทำให้ได้ภาษีคืนมากขึ้น แต่ถ้าถูกหักน้อยกว่าจริง การลดหย่อนเพิ่มจะลดยอดที่ต้องจ่ายเพิ่มเมื่อปิดปีภาษี',
+  },
+  {
+    question: 'ซื้อ SSF ภายในเมื่อไร?',
+    answer: 'ต้องซื้อและชำระเงินภายในวันที่ 31 ธันวาคมของปีภาษีนั้น เพื่อนำมาลดหย่อนในปีนั้น ไม่สามารถย้อนหลังได้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">วิเคราะห์การลดหย่อนอย่างชาญฉลาด</p>
+      <p class="mt-1 text-sm text-slate-700">ดูว่าควรเพิ่มลดหย่อนประเภทใดก่อนเพื่อประหยัดภาษีสูงสุด</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกรายได้และค่าลดหย่อนปัจจุบัน ระบบจะวิเคราะห์อัตราภาษีส่วนเพิ่ม
+      และแนะนำว่าควรเพิ่มลดหย่อนประเภทใดก่อนเพื่อประหยัดภาษีได้มากที่สุด
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรายได้และลดหย่อนปัจจุบัน</h2>
+      <form id="optimizer-form" class="space-y-5">
+        <div>
+          <label for="annual-income" class="block text-sm font-medium text-gray-700 mb-1">รายได้รวมทั้งปี (บาท)</label>
+          <input type="text" id="annual-income" inputmode="numeric" placeholder="เช่น 600,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-3">ค่าลดหย่อนที่มีอยู่แล้ว</legend>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="d-personal" class="block text-sm text-gray-700 mb-1">ส่วนตัว + คู่สมรส + บุตร</label>
+              <input type="text" id="d-personal" inputmode="numeric" placeholder="60,000" value="60000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-sso" class="block text-sm text-gray-700 mb-1">ประกันสังคม (สูงสุด 9,000)</label>
+              <input type="text" id="d-sso" inputmode="numeric" placeholder="9,000" value="9000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-life" class="block text-sm text-gray-700 mb-1">ประกันชีวิต (สูงสุด 100,000)</label>
+              <input type="text" id="d-life" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-health" class="block text-sm text-gray-700 mb-1">ประกันสุขภาพ (สูงสุด 25,000)</label>
+              <input type="text" id="d-health" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-pvd" class="block text-sm text-gray-700 mb-1">กองทุนสำรองเลี้ยงชีพ (สูงสุด 10,000)</label>
+              <input type="text" id="d-pvd" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-ssf" class="block text-sm text-gray-700 mb-1">SSF (สูงสุด 30% สูงสุด 200,000)</label>
+              <input type="text" id="d-ssf" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-rmf" class="block text-sm text-gray-700 mb-1">RMF (สูงสุด 30% รวมไม่เกิน 500,000)</label>
+              <input type="text" id="d-rmf" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="d-home" class="block text-sm text-gray-700 mb-1">ดอกเบี้ยบ้าน (สูงสุด 100,000)</label>
+              <input type="text" id="d-home" inputmode="numeric" placeholder="0"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          วิเคราะห์ทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8 space-y-4">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการวิเคราะห์</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีปัจจุบัน</div>
+            <div id="r-current-tax" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">อัตราภาษีส่วนเพิ่ม</div>
+            <div id="r-marginal-rate" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ประหยัดได้ต่อ 1,000 บาทที่ลดหย่อน</div>
+            <div id="r-saving-per-1000" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div id="r-opportunities" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีเพิ่มประสิทธิภาพการลดหย่อนภาษี</h2>
+      <p>กลยุทธ์หลักคือการเพิ่มลดหย่อนในขั้นภาษีที่สูงที่สุดที่คุณอยู่ก่อน เช่น ถ้าอยู่ในขั้น 20% การลงทุนใน SSF 100,000 บาทจะประหยัดภาษีได้ถึง 20,000 บาท</p>
+      <h3 class="text-lg font-semibold mt-4 mb-2">ลำดับความสำคัญของค่าลดหย่อน</h3>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>ใช้สิทธิ์พื้นฐานก่อน: ส่วนตัว, ประกันสังคม</li>
+        <li>ประกันชีวิตและสุขภาพ (ได้ความคุ้มครองด้วย)</li>
+        <li>กองทุน SSF / RMF (เพิ่มการออมระยะยาว)</li>
+        <li>ดอกเบี้ยบ้าน (ถ้ามี)</li>
+      </ol>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมสรรพากร (rd.go.th)</a> — อัตราภาษีเงินได้บุคคลธรรมดาและนิติบุคคล</li>
+        <li><a href="https://www.rd.go.th/publish/20595.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ตารางภาษีเงินได้บุคคลธรรมดา — กรมสรรพากร 2567/2568</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี/" />
+    <RelatedCalculators currentHref="/คำนวณเพิ่มประสิทธิภาพลดหย่อนภาษี/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการวิเคราะห์เป็นเพียงการประมาณการ อ้างอิงอัตราภาษีปี 2569 จากกรมสรรพากร กรุณาปรึกษาผู้เชี่ยวชาญด้านการวางแผนภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    const TAX_BRACKETS = [
+      { min: 0, max: 150_000, rate: 0 },
+      { min: 150_000, max: 300_000, rate: 0.05 },
+      { min: 300_000, max: 500_000, rate: 0.10 },
+      { min: 500_000, max: 750_000, rate: 0.15 },
+      { min: 750_000, max: 1_000_000, rate: 0.20 },
+      { min: 1_000_000, max: 2_000_000, rate: 0.25 },
+      { min: 2_000_000, max: 5_000_000, rate: 0.30 },
+      { min: 5_000_000, max: Infinity, rate: 0.35 },
+    ];
+
+    function parseNum(v: string) { return Math.max(0, parseFloat((v || '0').replace(/,/g, '')) || 0); }
+    function fmt(n: number) { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท'; }
+    function fmtPct(r: number) { return (r * 100).toFixed(0) + '%'; }
+
+    function calcTax(netIncome: number): number {
+      let remaining = Math.max(0, netIncome);
+      let tax = 0;
+      for (const b of TAX_BRACKETS) {
+        const w = b.max === Infinity ? Infinity : b.max - b.min;
+        const taxable = Math.min(remaining, w);
+        tax += taxable * b.rate;
+        remaining -= taxable;
+        if (remaining <= 0) break;
+      }
+      return tax;
+    }
+
+    function getMarginalRate(netIncome: number): number {
+      for (let i = TAX_BRACKETS.length - 1; i >= 0; i--) {
+        if (netIncome > TAX_BRACKETS[i].min) return TAX_BRACKETS[i].rate;
+      }
+      return 0;
+    }
+
+    function getInput(id: string): number { return parseNum((document.getElementById(id) as HTMLInputElement).value); }
+
+    const form = document.getElementById('optimizer-form') as HTMLFormElement;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const annualIncome = getInput('annual-income');
+      if (annualIncome <= 0) return;
+
+      const expense = Math.min(annualIncome * 0.5, 100_000);
+      const currentDeductions = getInput('d-personal') + getInput('d-sso') + getInput('d-life') +
+        getInput('d-health') + getInput('d-pvd') + getInput('d-ssf') + getInput('d-rmf') + getInput('d-home');
+
+      const netIncome = Math.max(0, annualIncome - expense - currentDeductions);
+      const currentTax = calcTax(netIncome);
+      const marginalRate = getMarginalRate(netIncome);
+
+      (document.getElementById('r-current-tax') as HTMLElement).textContent = fmt(currentTax);
+      (document.getElementById('r-marginal-rate') as HTMLElement).textContent = fmtPct(marginalRate);
+      (document.getElementById('r-saving-per-1000') as HTMLElement).textContent = fmt(marginalRate * 1000);
+
+      // Build opportunity cards
+      interface Opportunity { label: string; remaining: number; savingPer1000: number; }
+      const opps: Opportunity[] = [];
+
+      const lifeUsed = getInput('d-life');
+      if (lifeUsed < 100_000) opps.push({ label: 'ประกันชีวิต', remaining: 100_000 - lifeUsed, savingPer1000: marginalRate * 1000 });
+
+      const healthUsed = getInput('d-health');
+      if (healthUsed < 25_000) opps.push({ label: 'ประกันสุขภาพ', remaining: 25_000 - healthUsed, savingPer1000: marginalRate * 1000 });
+
+      const ssfUsed = getInput('d-ssf');
+      const ssfMax = Math.min(annualIncome * 0.3, 200_000);
+      if (ssfUsed < ssfMax) opps.push({ label: 'กองทุน SSF', remaining: ssfMax - ssfUsed, savingPer1000: marginalRate * 1000 });
+
+      const rmfUsed = getInput('d-rmf');
+      const pvdUsed = getInput('d-pvd');
+      const rmfMax = Math.min(annualIncome * 0.3, 500_000) - pvdUsed;
+      if (rmfUsed < rmfMax && rmfMax > 0) opps.push({ label: 'กองทุน RMF', remaining: rmfMax - rmfUsed, savingPer1000: marginalRate * 1000 });
+
+      const homeUsed = getInput('d-home');
+      if (homeUsed < 100_000) opps.push({ label: 'ดอกเบี้ยบ้าน', remaining: 100_000 - homeUsed, savingPer1000: marginalRate * 1000 });
+
+      const container = document.getElementById('r-opportunities') as HTMLElement;
+      if (opps.length === 0 || marginalRate === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">คุณใช้สิทธิ์ลดหย่อนครบแล้ว หรืออยู่ในขั้นภาษี 0% จึงไม่มีโอกาสลดหย่อนเพิ่มเติม</p>';
+      } else {
+        container.innerHTML = '<h3 class="text-sm font-semibold text-gray-900 mb-2">โอกาสลดหย่อนที่เหลือ</h3>' +
+          opps.map(o => `
+            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
+              <div>
+                <span class="text-sm font-semibold text-gray-900">${o.label}</span>
+                <span class="ml-2 text-xs text-gray-500">เหลือช่องว่าง ${new Intl.NumberFormat('th-TH', {maximumFractionDigits:0}).format(o.remaining)} บาท</span>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-bold text-green-700">ประหยัด ${new Intl.NumberFormat('th-TH', {minimumFractionDigits:2,maximumFractionDigits:2}).format(o.savingPer1000)} บาท</div>
+                <div class="text-xs text-gray-500">ต่อทุก 1,000 บาท</div>
+              </div>
+            </div>
+          `).join('');
+      }
+
+      const resultsDiv = document.getElementById('results') as HTMLElement;
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('deduction_optimizer');
+      trackCalculatorUsed('deduction_optimizer');
+    });
+
+    form.addEventListener('input', () => { trackCalculatorStart('deduction_optimizer'); }, { once: true });
+  </script>
+</BaseLayout>

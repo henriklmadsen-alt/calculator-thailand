@@ -1,0 +1,386 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณปลดหนี้ Snowball 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณแผนปลดหนี้แบบ Snowball 2569 ฟรี — ชำระหนี้ก้อนเล็กก่อน เห็นผลเร็ว รู้ว่าจะหมดหนี้เมื่อไรและประหยัดดอกเบี้ยได้เท่าไร';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกำจัดหนี้-snowball/`;
+
+const faqData = [
+  {
+    question: 'วิธี Snowball คืออะไร?',
+    answer: 'วิธี Snowball คือการจ่ายขั้นต่ำในหนี้ทุกก้อน แล้วนำเงินส่วนเกินทั้งหมดไปโปะหนี้ที่มียอดคงเหลือน้อยที่สุดก่อน เมื่อปิดหนี้ก้อนนั้นแล้ว นำค่างวดที่เคยจ่ายไปต่อยอดให้หนี้ก้อนถัดไป ได้ผลทางจิตวิทยาดี เพราะเห็นหนี้หายไปเร็ว',
+  },
+  {
+    question: 'Snowball ต่างจาก Avalanche อย่างไร?',
+    answer: 'Snowball จัดการหนี้จากยอดน้อยไปมาก ส่วน Avalanche จัดการจากดอกเบี้ยสูงไปต่ำ Avalanche ประหยัดดอกเบี้ยรวมมากกว่า แต่ Snowball ให้แรงจูงใจสูงกว่าเพราะปิดหนี้ได้เร็วในช่วงแรก',
+  },
+  {
+    question: 'ควรใส่จำนวนหนี้กี่ก้อน?',
+    answer: 'ใส่หนี้ทุกก้อนที่มีอยู่ เช่น บัตรเครดิต สินเชื่อส่วนบุคคล หนี้รถ เครื่องคำนวณรองรับสูงสุด 6 ก้อน หากมีมากกว่านั้นให้รวมหนี้ที่มีอัตราดอกเบี้ยใกล้เคียงกัน',
+  },
+  {
+    question: 'เงินผ่อนพิเศษควรตั้งไว้เท่าไร?',
+    answer: 'ตั้งเงินผ่อนพิเศษเท่าที่จ่ายได้จริงทุกเดือน แม้แค่ 500-1,000 บาทก็ช่วยได้มาก ยิ่งมากยิ่งดี เพราะลดดอกเบี้ยและระยะเวลาได้มาก ลองปรับตัวเลขเพื่อเปรียบเทียบผลต่างได้เลย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกำจัดหนี้ Snowball',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำจัดหนี้ Snowball ⛄">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      ⛄ คำนวณกำจัดหนี้ — วิธี Snowball (จากน้อยไปมาก)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ใส่ข้อมูลหนี้แต่ละก้อน + เงินโปะพิเศษต่อเดือน แล้วดูว่าจะหมดหนี้เมื่อไร จ่ายดอกเบี้ยรวมเท่าไร และปิดหนี้ตามลำดับใด
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="snowball-form" class="space-y-5">
+
+        <!-- Debt Table -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-sm font-semibold text-gray-900">รายการหนี้</h2>
+            <button type="button" id="add-debt-btn" class="text-sm text-primary-600 hover:text-primary-700 font-medium">+ เพิ่มหนี้</button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm" id="debt-table">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="pb-2 pr-2 font-medium min-w-[120px]">ชื่อหนี้</th>
+                  <th class="pb-2 pr-2 font-medium min-w-[120px] text-right">ยอดคงเหลือ (บาท)</th>
+                  <th class="pb-2 pr-2 font-medium min-w-[120px] text-right">ค่างวดขั้นต่ำ (บาท)</th>
+                  <th class="pb-2 pr-2 font-medium min-w-[100px] text-right">ดอกเบี้ย (%/ปี)</th>
+                  <th class="pb-2 w-8"></th>
+                </tr>
+              </thead>
+              <tbody id="debt-rows">
+                <!-- Rows inserted by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Extra Payment -->
+        <div>
+          <label for="extra-payment" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินโปะพิเศษต่อเดือน (บาท)
+          </label>
+          <input
+            type="text"
+            id="extra-payment"
+            inputmode="numeric"
+            placeholder="เช่น 2000"
+            value="0"
+            class="w-full sm:w-48 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="text-xs text-gray-400 mt-1">นอกเหนือจากค่างวดขั้นต่ำ</p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณแผน Snowball
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ — Snowball</h2>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนเดือนจนหมดหนี้</div>
+            <div id="res-months" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวมทั้งหมด</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="res-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <!-- Payoff Order -->
+        <h3 class="font-semibold text-gray-900 mb-3">ลำดับการปลดหนี้</h3>
+        <ol id="payoff-order" class="space-y-2 mb-4"></ol>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธี Snowball คืออะไร และใช้อย่างไร</h2>
+
+      <p>
+        วิธี Snowball (หิมะก้อนโต) เป็นกลยุทธ์การปลดหนี้ที่คิดค้นโดย Dave Ramsey
+        หลักการคือจ่ายขั้นต่ำสำหรับหนี้ทุกก้อน แล้วนำเงินที่เหลือทั้งหมดโปะหนี้ที่มียอดน้อยที่สุดก่อน
+        เมื่อปิดหนี้ก้อนแรกได้ นำค่างวดที่เคยจ่ายต่อยอดไปหนี้ก้อนถัดไป ก้อนเงินจึงใหญ่ขึ้นเรื่อยๆ เหมือนลูกหิมะ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ขั้นตอนการใช้วิธี Snowball</h3>
+
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>รวบรวมหนี้ทุกก้อน พร้อมยอดคงเหลือ ค่างวดขั้นต่ำ และอัตราดอกเบี้ย</li>
+        <li>เรียงหนี้จากยอดน้อยไปมาก</li>
+        <li>จ่ายขั้นต่ำในหนี้ทุกก้อน</li>
+        <li>นำเงินส่วนเกินโปะหนี้ก้อนที่ยอดน้อยที่สุด</li>
+        <li>เมื่อปิดก้อนนั้นได้ นำค่างวดรวมไปโปะก้อนถัดไป</li>
+        <li>ทำซ้ำจนหมดหนี้ทุกก้อน</li>
+      </ol>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ข้อดีและข้อเสียของ Snowball</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ข้อดี:</strong> เห็นผลเร็ว ปิดหนี้ก้อนเล็กได้ไว สร้างแรงจูงใจ เหมาะกับคนที่ต้องการกำลังใจ</li>
+        <li><strong>ข้อเสีย:</strong> จ่ายดอกเบี้ยรวมมากกว่าวิธี Avalanche หากหนี้ก้อนเล็กมีดอกเบี้ยต่ำ</li>
+        <li><strong>เหมาะกับ:</strong> คนที่มีหนี้หลายก้อน ต้องการความสำเร็จเร็วๆ เพื่อสร้างนิสัยการออม</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณกำจัดหนี้-snowball/" />
+    <RelatedCalculators currentHref="/คำนวณกำจัดหนี้-snowball/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเท่านั้น
+      ตัวเลขจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงิน ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function fmtInt(n: number): string {
+      return new Intl.NumberFormat('th-TH').format(Math.round(n));
+    }
+
+    let debtCount = 3;
+    const MAX_DEBTS = 6;
+
+    function createDebtRow(index: number): HTMLTableRowElement {
+      const tr = document.createElement('tr');
+      tr.className = 'debt-row border-b border-gray-100';
+      tr.dataset.index = String(index);
+      tr.innerHTML = `
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-name-${index}" placeholder="เช่น บัตรเครดิต A"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-balance-${index}" inputmode="numeric" placeholder="50000"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-min-${index}" inputmode="numeric" placeholder="1500"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-rate-${index}" inputmode="decimal" placeholder="18"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 text-center">
+          <button type="button" class="remove-debt text-red-400 hover:text-red-600 text-lg leading-none" title="ลบ">×</button>
+        </td>
+      `;
+      tr.querySelector('.remove-debt')!.addEventListener('click', () => {
+        tr.remove();
+        updateAddButton();
+      });
+      return tr;
+    }
+
+    function updateAddButton() {
+      const rows = document.querySelectorAll('.debt-row').length;
+      const btn = document.getElementById('add-debt-btn') as HTMLButtonElement;
+      btn.disabled = rows >= MAX_DEBTS;
+      btn.classList.toggle('opacity-40', rows >= MAX_DEBTS);
+    }
+
+    const tbody = document.getElementById('debt-rows') as HTMLTableSectionElement;
+
+    // Initial 3 rows
+    for (let i = 1; i <= debtCount; i++) {
+      tbody.appendChild(createDebtRow(i));
+    }
+
+    document.getElementById('add-debt-btn')!.addEventListener('click', () => {
+      if (document.querySelectorAll('.debt-row').length >= MAX_DEBTS) return;
+      debtCount++;
+      tbody.appendChild(createDebtRow(debtCount));
+      updateAddButton();
+    });
+
+    interface Debt {
+      name: string;
+      balance: number;
+      minPayment: number;
+      rate: number; // annual %
+    }
+
+    function runSnowball(debts: Debt[], extraPayment: number) {
+      // Clone
+      const ds = debts.map((d) => ({ ...d, remaining: d.balance, paid: 0 }));
+      // Sort by balance ascending (snowball)
+      ds.sort((a, b) => a.balance - b.balance);
+
+      let month = 0;
+      let totalInterest = 0;
+      let totalPaid = 0;
+      const payoffOrder: { name: string; month: number; interestPaid: number }[] = [];
+
+      const MAX_MONTHS = 600;
+
+      while (ds.some((d) => d.remaining > 0) && month < MAX_MONTHS) {
+        month++;
+        // Compute interest for each active debt
+        for (const d of ds) {
+          if (d.remaining <= 0) continue;
+          const monthlyRate = d.rate / 100 / 12;
+          const interest = d.remaining * monthlyRate;
+          totalInterest += interest;
+          d.remaining += interest;
+        }
+
+        // Determine available extra this month (freed minimums roll in automatically)
+        let extra = extraPayment;
+
+        for (const d of ds) {
+          if (d.remaining <= 0) continue;
+          const pay = Math.min(d.remaining, d.minPayment);
+          d.remaining -= pay;
+          d.paid += pay;
+          totalPaid += pay;
+        }
+
+        // Apply extra to first non-zero debt
+        if (extra > 0) {
+          for (const d of ds) {
+            if (d.remaining <= 0) continue;
+            const pay = Math.min(d.remaining, extra);
+            d.remaining -= pay;
+            d.paid += pay;
+            totalPaid += pay;
+            extra -= pay;
+            if (extra <= 0) break;
+          }
+        }
+
+        // Check payoffs
+        for (const d of ds) {
+          if (d.remaining <= 0.01 && d.remaining >= 0 && !payoffOrder.find((p) => p.name === d.name)) {
+            d.remaining = 0;
+            payoffOrder.push({ name: d.name, month, interestPaid: d.paid - d.balance });
+          }
+        }
+      }
+
+      return { months: month, totalInterest, totalPaid: totalPaid + ds.reduce((s, d) => s + d.balance, 0), payoffOrder };
+    }
+
+    const form = document.getElementById('snowball-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const rows = document.querySelectorAll('.debt-row');
+      const debts: Debt[] = [];
+
+      rows.forEach((row) => {
+        const idx = (row as HTMLElement).dataset.index!;
+        const balance = parseNum((row.querySelector(`[name="debt-balance-${idx}"]`) as HTMLInputElement).value);
+        const minPayment = parseNum((row.querySelector(`[name="debt-min-${idx}"]`) as HTMLInputElement).value);
+        const rate = parseFloat((row.querySelector(`[name="debt-rate-${idx}"]`) as HTMLInputElement).value) || 0;
+        const name = (row.querySelector(`[name="debt-name-${idx}"]`) as HTMLInputElement).value.trim() || `หนี้ ${idx}`;
+        if (balance > 0 && minPayment > 0) {
+          debts.push({ name, balance, minPayment, rate });
+        }
+      });
+
+      if (debts.length === 0) return;
+
+      const extraPayment = parseNum((document.getElementById('extra-payment') as HTMLInputElement).value);
+      const result = runSnowball(debts, extraPayment);
+
+      (document.getElementById('res-months') as HTMLElement).textContent = `${result.months} เดือน (${(result.months / 12).toFixed(1)} ปี)`;
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(result.totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(result.totalPaid) + ' บาท';
+
+      const ol = document.getElementById('payoff-order') as HTMLOListElement;
+      ol.innerHTML = '';
+      result.payoffOrder.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center gap-3 bg-green-50 rounded-lg px-4 py-2 text-sm';
+        li.innerHTML = `
+          <span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center font-bold">${i + 1}</span>
+          <span class="font-medium text-gray-900">${item.name}</span>
+          <span class="text-gray-500">— เดือนที่ ${item.month}</span>
+          <span class="ml-auto text-red-500 text-xs">ดอกเบี้ย ${fmt(Math.max(0, item.interestPaid))} บาท</span>
+        `;
+        ol.appendChild(li);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('debt-snowball');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('debt-snowball');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

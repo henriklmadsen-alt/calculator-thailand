@@ -1,0 +1,194 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณราคาขายสินค้าหลังหักค่าแพลตฟอร์ม ปี 2569 — Kamnuanlek';
+const pageDescription = 'คำนวณราคาสินค้าหลังหักค่าธรรมเนียมแพลตฟอร์ม ป้อนต้นทุน margin และอัตราค่าธรรมเนียม ทราบราคาขายและกำไรสุทธิ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ราคาสินค้า-platform-fee/`;
+
+const faqData = [
+  {
+    question: 'ทำไมต้องคำนวณราคาหลังหักค่าธรรมเนียม?',
+    answer: 'เพราะแพลตฟอร์มจะหักค่าธรรมเนียมจากยอดขาย คุณต้องคำนวณราคาขายให้เพียงพอต่อต้นทุนและกำไร',
+  },
+  {
+    question: 'สูตรคำนวณคืออะไร?',
+    answer: 'ราคาขาย = ต้นทุน ÷ (1 − อัตราธรรมเนียม%) + Margin ต้องมีกำไร',
+  },
+  {
+    question: 'Margin ควรตั้งเท่าไหร่?',
+    answer: 'ขึ้นอยู่กับประเภทสินค้า ทั่วไป 20–50% แต่ของราคาแพงอาจ 10–20%',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณราคาสินค้าหลังหักค่าแพลตฟอร์ม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-ราคาสินค้า-platform-fee">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-purple-100 bg-purple-50 p-4">
+      <p class="text-sm font-semibold text-purple-700">คำนวณราคาขาย — หลังหักค่าแพลตฟอร์ม</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ราคาขาย = ต้นทุน ÷ (1 − ค่าธรรมเนียม%) + Margin</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณราคาสินค้าหลังหักค่าแพลตฟอร์ม ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนต้นทุน margin และอัตราค่าธรรมเนียม เพื่อคำนวณราคาขายและกำไรสุทธิ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pricing-form" class="space-y-5">
+        <p id="pricing-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cost" class="mb-1 block text-sm font-medium text-gray-700">ต้นทุนสินค้า (บาท)</label>
+            <input type="text" id="cost" inputmode="numeric" placeholder="เช่น 500"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="margin" class="mb-1 block text-sm font-medium text-gray-700">Margin ต้องการ (%)</label>
+            <input type="text" id="margin" inputmode="decimal" placeholder="เช่น 30"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">กำไรที่ต้องการ 20–50%</p>
+          </div>
+        </div>
+
+        <div>
+          <label for="fee-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราค่าธรรมเนียมแพลตฟอร์ม (%)</label>
+          <input type="text" id="fee-rate" inputmode="decimal" placeholder="เช่น 3.5"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">Shopee/Lazada ทั่วไป 2–5.5%</p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณราคาขาย
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="pricing-results" class="mb-8 hidden rounded-lg border border-green-200 bg-green-50 p-6">
+      <h2 class="mb-4 text-lg font-bold text-gray-900">ผลการคำนวณ</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between border-b border-green-200 pb-2">
+          <span class="text-gray-700">ต้นทุน</span>
+          <span id="result-cost" class="font-semibold text-gray-900">0 บาท</span>
+        </div>
+        <div class="flex justify-between border-b border-green-200 pb-2">
+          <span class="text-gray-700">ค่าธรรมเนียมแพลตฟอร์ม</span>
+          <span id="result-fee" class="font-semibold text-red-600">0 บาท</span>
+        </div>
+        <div class="flex justify-between bg-blue-100 p-2 rounded font-bold">
+          <span class="text-blue-700">ราคาขายที่ต้องตั้ง</span>
+          <span id="result-price" class="text-blue-700">0 บาท</span>
+        </div>
+        <div class="flex justify-between bg-green-100 p-2 rounded font-bold">
+          <span class="text-green-700">กำไรสุทธิต่อชิ้น</span>
+          <span id="result-profit" class="text-green-700">0 บาท</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+      <h2 class="mb-4 text-lg font-bold text-gray-900">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="border-b border-gray-200 pb-4">
+            <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <p class="mt-2 text-sm text-gray-600">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </article>
+
+  <GuardedAdSlot position="after-content" class="my-8" />
+  <RelatedCalculators currentPath="/คำนวณ-ราคาสินค้า-platform-fee/" limit={3} />
+  <RelatedArticles limit={3} />
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('pricing-form') as HTMLFormElement;
+  const resultsDiv = document.getElementById('pricing-results') as HTMLDivElement;
+  const errorDiv = document.getElementById('pricing-error') as HTMLDivElement;
+
+  const costInput = document.getElementById('cost') as HTMLInputElement;
+  const marginInput = document.getElementById('margin') as HTMLInputElement;
+  const feeRateInput = document.getElementById('fee-rate') as HTMLInputElement;
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const cost = parseFloat(costInput.value.replace(/,/g, '').trim());
+      const margin = parseFloat(marginInput.value.trim());
+      const feeRate = parseFloat(feeRateInput.value.trim());
+
+      if (!cost || cost <= 0 || !margin || margin < 0 || !feeRate || feeRate < 0 || feeRate >= 100) {
+        errorDiv.classList.remove('hidden');
+        resultsDiv.classList.add('hidden');
+        return;
+      }
+
+      // Calculate price: Cost ÷ (1 - Fee%) + Margin%
+      const feeDecimal = feeRate / 100;
+      const basePrice = cost / (1 - feeDecimal);
+      const marginAmount = basePrice * (margin / 100);
+      const salePrice = Math.round((basePrice + marginAmount) * 100) / 100;
+      const platformFee = Math.round((salePrice * feeDecimal) * 100) / 100;
+      const netProfit = Math.round((salePrice - platformFee - cost) * 100) / 100;
+
+      document.getElementById('result-cost')!.textContent = cost.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+      document.getElementById('result-fee')!.textContent = platformFee.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+      document.getElementById('result-price')!.textContent = salePrice.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+      document.getElementById('result-profit')!.textContent = netProfit.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' บาท';
+
+      resultsDiv.classList.remove('hidden');
+    });
+  }
+</script>

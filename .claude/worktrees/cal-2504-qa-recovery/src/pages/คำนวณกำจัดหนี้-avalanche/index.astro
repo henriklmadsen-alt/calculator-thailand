@@ -1,0 +1,424 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณปลดหนี้ Avalanche 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณแผนปลดหนี้แบบ Avalanche 2569 ฟรี — ชำระดอกเบี้ยสูงก่อน ประหยัดดอกเบี้ยรวมได้มากที่สุด เปรียบเทียบกับวิธี Snowball';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกำจัดหนี้-avalanche/`;
+
+const faqData = [
+  {
+    question: 'วิธี Avalanche คืออะไร?',
+    answer: 'วิธี Avalanche คือการจ่ายขั้นต่ำในหนี้ทุกก้อน แล้วนำเงินส่วนเกินทั้งหมดโปะหนี้ที่มีอัตราดอกเบี้ยสูงที่สุดก่อน เมื่อปิดหนี้ก้อนนั้นแล้วจึงย้ายไปก้อนถัดไปที่ดอกเบี้ยสูงรองลงมา วิธีนี้ประหยัดดอกเบี้ยรวมได้มากที่สุด',
+  },
+  {
+    question: 'Avalanche ดีกว่า Snowball ไหม?',
+    answer: 'ในเชิงคณิตศาสตร์ Avalanche ประหยัดดอกเบี้ยรวมมากกว่าเสมอ แต่ Snowball ปิดหนี้ก้อนเล็กได้เร็วกว่า ให้กำลังใจมากกว่า ควรเลือกตามนิสัยตัวเองว่าต้องการเห็นผลเร็ว (Snowball) หรือประหยัดสูงสุด (Avalanche)',
+  },
+  {
+    question: 'ใช้กับหนี้บัตรเครดิตได้ไหม?',
+    answer: 'ได้เลย บัตรเครดิตมักมีดอกเบี้ยสูงมาก (18-28% ต่อปี) จึงควรปิดก่อนตามหลัก Avalanche ใส่ดอกเบี้ย 18% สำหรับบัตรทั่วไป หรือตรวจสอบจากใบแจ้งยอดของคุณ',
+  },
+  {
+    question: 'ดอกเบี้ยบัตรเครดิตในไทยอยู่ที่เท่าไร?',
+    answer: 'อัตราดอกเบี้ยบัตรเครดิตในไทยตามที่ธปท. กำหนดอยู่ที่ไม่เกิน 18% ต่อปี สินเชื่อส่วนบุคคลอาจสูงถึง 25-28% ต่อปี ส่วนสินเชื่อบ้านและรถมักอยู่ที่ 5-10% ต่อปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกำจัดหนี้ Avalanche',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำจัดหนี้ Avalanche 🏔️">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      🏔️ คำนวณกำจัดหนี้ — วิธี Avalanche (ดอกเบี้ยสูงก่อน)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ใส่ข้อมูลหนี้แต่ละก้อน + เงินโปะพิเศษต่อเดือน แล้วดูผลทั้งแบบ Avalanche และ Snowball เพื่อเปรียบเทียบ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="avalanche-form" class="space-y-5">
+
+        <!-- Debt Table -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-sm font-semibold text-gray-900">รายการหนี้</h2>
+            <button type="button" id="add-debt-btn" class="text-sm text-primary-600 hover:text-primary-700 font-medium">+ เพิ่มหนี้</button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm" id="debt-table">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="pb-2 pr-2 font-medium min-w-[120px]">ชื่อหนี้</th>
+                  <th class="pb-2 pr-2 font-medium min-w-[120px] text-right">ยอดคงเหลือ (บาท)</th>
+                  <th class="pb-2 pr-2 font-medium min-w-[120px] text-right">ค่างวดขั้นต่ำ (บาท)</th>
+                  <th class="pb-2 pr-2 font-medium min-w-[100px] text-right">ดอกเบี้ย (%/ปี)</th>
+                  <th class="pb-2 w-8"></th>
+                </tr>
+              </thead>
+              <tbody id="debt-rows">
+                <!-- Rows inserted by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Extra Payment -->
+        <div>
+          <label for="extra-payment" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินโปะพิเศษต่อเดือน (บาท)
+          </label>
+          <input
+            type="text"
+            id="extra-payment"
+            inputmode="numeric"
+            placeholder="เช่น 2000"
+            value="0"
+            class="w-full sm:w-48 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="text-xs text-gray-400 mt-1">นอกเหนือจากค่างวดขั้นต่ำ</p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณและเปรียบเทียบ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8 space-y-4">
+
+      <!-- Avalanche result -->
+      <div class="bg-white rounded-lg shadow-sm border border-blue-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-blue-900 mb-1">🏔️ Avalanche — ดอกเบี้ยสูงก่อน</h2>
+        <p class="text-xs text-blue-600 mb-4">ประหยัดดอกเบี้ยสูงสุด</p>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-5">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนเดือนจนหมดหนี้</div>
+            <div id="av-months" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="av-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="av-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <h3 class="font-semibold text-gray-900 mb-3">ลำดับการปลดหนี้</h3>
+        <ol id="av-payoff-order" class="space-y-2"></ol>
+      </div>
+
+      <!-- Snowball comparison -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-1">⛄ เปรียบเทียบ — Snowball (ยอดน้อยก่อน)</h2>
+        <p class="text-xs text-gray-500 mb-4">แรงจูงใจดีกว่า แต่อาจจ่ายดอกเบี้ยมากกว่า</p>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนเดือน</div>
+            <div id="sn-months" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="sn-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="sn-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Savings banner -->
+        <div id="savings-banner" class="hidden bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-sm text-green-800"></div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธี Avalanche — ประหยัดดอกเบี้ยได้มากที่สุด</h2>
+
+      <p>
+        วิธี Avalanche (หิมะถล่ม) เป็นกลยุทธ์ปลดหนี้ที่เน้นประสิทธิภาพทางคณิตศาสตร์สูงสุด
+        โดยจ่ายขั้นต่ำในทุกหนี้ แล้วนำเงินส่วนเกินโปะหนี้ที่มีอัตราดอกเบี้ยสูงที่สุดก่อน
+        เมื่อปิดหนี้นั้นได้ ย้ายก้อนเงินไปยังหนี้ดอกเบี้ยสูงรองลงมา ทำซ้ำจนหมด
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ทำไม Avalanche จึงประหยัดมากกว่า?</h3>
+
+      <p>
+        ดอกเบี้ยสะสมตามยอดคงเหลือ หากปล่อยให้หนี้ดอกเบี้ยสูงค้างนาน ดอกจะทบเพิ่มเร็วมาก
+        การตัดหนี้ดอกเบี้ยสูงก่อนจึงลดฐานการคำนวณดอกเบี้ยในเดือนถัดไปได้เร็วกว่า
+        ส่งผลให้ดอกเบี้ยรวมตลอดระยะเวลาน้อยกว่าวิธีอื่นเสมอ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เปรียบเทียบ Avalanche vs Snowball</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>Avalanche:</strong> ประหยัดดอกเบี้ยสูงสุด เหมาะกับคนที่วินัยดี ไม่ต้องการแรงจูงใจพิเศษ</li>
+        <li><strong>Snowball:</strong> ปิดหนี้ก้อนเล็กได้ไว สร้างแรงจูงใจ เหมาะกับคนที่ต้องการเห็นผลเร็ว</li>
+        <li>ทั้งสองวิธีดีกว่าการจ่ายแค่ขั้นต่ำมาก ควรเลือกวิธีที่คุณทำได้ต่อเนื่อง</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณกำจัดหนี้-avalanche/" />
+    <RelatedCalculators currentHref="/คำนวณกำจัดหนี้-avalanche/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเท่านั้น
+      ตัวเลขจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงิน ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    let debtCount = 3;
+    const MAX_DEBTS = 6;
+
+    function createDebtRow(index: number): HTMLTableRowElement {
+      const tr = document.createElement('tr');
+      tr.className = 'debt-row border-b border-gray-100';
+      tr.dataset.index = String(index);
+      tr.innerHTML = `
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-name-${index}" placeholder="เช่น บัตรเครดิต A"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-balance-${index}" inputmode="numeric" placeholder="50000"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-min-${index}" inputmode="numeric" placeholder="1500"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 pr-2">
+          <input type="text" name="debt-rate-${index}" inputmode="decimal" placeholder="18"
+            class="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </td>
+        <td class="py-2 text-center">
+          <button type="button" class="remove-debt text-red-400 hover:text-red-600 text-lg leading-none" title="ลบ">×</button>
+        </td>
+      `;
+      tr.querySelector('.remove-debt')!.addEventListener('click', () => {
+        tr.remove();
+        updateAddButton();
+      });
+      return tr;
+    }
+
+    function updateAddButton() {
+      const rows = document.querySelectorAll('.debt-row').length;
+      const btn = document.getElementById('add-debt-btn') as HTMLButtonElement;
+      btn.disabled = rows >= MAX_DEBTS;
+      btn.classList.toggle('opacity-40', rows >= MAX_DEBTS);
+    }
+
+    const tbody = document.getElementById('debt-rows') as HTMLTableSectionElement;
+    for (let i = 1; i <= debtCount; i++) {
+      tbody.appendChild(createDebtRow(i));
+    }
+
+    document.getElementById('add-debt-btn')!.addEventListener('click', () => {
+      if (document.querySelectorAll('.debt-row').length >= MAX_DEBTS) return;
+      debtCount++;
+      tbody.appendChild(createDebtRow(debtCount));
+      updateAddButton();
+    });
+
+    interface Debt {
+      name: string;
+      balance: number;
+      minPayment: number;
+      rate: number;
+    }
+
+    function runSimulation(debts: Debt[], extraPayment: number, sortFn: (a: Debt, b: Debt) => number) {
+      const ds = debts.map((d) => ({ ...d, remaining: d.balance, paid: 0 }));
+      ds.sort(sortFn);
+
+      let month = 0;
+      let totalInterest = 0;
+      let totalPaid = 0;
+      const payoffOrder: { name: string; month: number; interestPaid: number }[] = [];
+      const MAX_MONTHS = 600;
+
+      while (ds.some((d) => d.remaining > 0) && month < MAX_MONTHS) {
+        month++;
+        for (const d of ds) {
+          if (d.remaining <= 0) continue;
+          const monthlyRate = d.rate / 100 / 12;
+          const interest = d.remaining * monthlyRate;
+          totalInterest += interest;
+          d.remaining += interest;
+        }
+
+        let extra = extraPayment;
+
+        for (const d of ds) {
+          if (d.remaining <= 0) continue;
+          const pay = Math.min(d.remaining, d.minPayment);
+          d.remaining -= pay;
+          d.paid += pay;
+          totalPaid += pay;
+        }
+
+        if (extra > 0) {
+          for (const d of ds) {
+            if (d.remaining <= 0) continue;
+            const pay = Math.min(d.remaining, extra);
+            d.remaining -= pay;
+            d.paid += pay;
+            totalPaid += pay;
+            extra -= pay;
+            if (extra <= 0) break;
+          }
+        }
+
+        for (const d of ds) {
+          if (d.remaining <= 0.01 && d.remaining >= 0 && !payoffOrder.find((p) => p.name === d.name)) {
+            d.remaining = 0;
+            payoffOrder.push({ name: d.name, month, interestPaid: d.paid - d.balance });
+          }
+        }
+      }
+
+      const totalPrincipal = debts.reduce((s, d) => s + d.balance, 0);
+      return { months: month, totalInterest, totalPaid: totalPaid + totalPrincipal, payoffOrder };
+    }
+
+    function fillResult(prefix: string, result: ReturnType<typeof runSimulation>, color: string) {
+      (document.getElementById(`${prefix}-months`) as HTMLElement).textContent =
+        `${result.months} เดือน (${(result.months / 12).toFixed(1)} ปี)`;
+      (document.getElementById(`${prefix}-interest`) as HTMLElement).textContent =
+        fmt(result.totalInterest) + ' บาท';
+      (document.getElementById(`${prefix}-total`) as HTMLElement).textContent =
+        fmt(result.totalPaid) + ' บาท';
+
+      const ol = document.getElementById(`${prefix}-payoff-order`);
+      if (!ol) return;
+      ol.innerHTML = '';
+      result.payoffOrder.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.className = `flex items-center gap-3 rounded-lg px-4 py-2 text-sm bg-${color}-50`;
+        li.innerHTML = `
+          <span class="flex-shrink-0 w-6 h-6 rounded-full bg-${color}-500 text-white text-xs flex items-center justify-center font-bold">${i + 1}</span>
+          <span class="font-medium text-gray-900">${item.name}</span>
+          <span class="text-gray-500">— เดือนที่ ${item.month}</span>
+          <span class="ml-auto text-red-500 text-xs">ดอกเบี้ย ${fmt(Math.max(0, item.interestPaid))} บาท</span>
+        `;
+        ol.appendChild(li);
+      });
+    }
+
+    const form = document.getElementById('avalanche-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const rows = document.querySelectorAll('.debt-row');
+      const debts: Debt[] = [];
+
+      rows.forEach((row) => {
+        const idx = (row as HTMLElement).dataset.index!;
+        const balance = parseNum((row.querySelector(`[name="debt-balance-${idx}"]`) as HTMLInputElement).value);
+        const minPayment = parseNum((row.querySelector(`[name="debt-min-${idx}"]`) as HTMLInputElement).value);
+        const rate = parseFloat((row.querySelector(`[name="debt-rate-${idx}"]`) as HTMLInputElement).value) || 0;
+        const name = (row.querySelector(`[name="debt-name-${idx}"]`) as HTMLInputElement).value.trim() || `หนี้ ${idx}`;
+        if (balance > 0 && minPayment > 0) {
+          debts.push({ name, balance, minPayment, rate });
+        }
+      });
+
+      if (debts.length === 0) return;
+
+      const extraPayment = parseNum((document.getElementById('extra-payment') as HTMLInputElement).value);
+
+      // Avalanche: sort by rate descending
+      const avResult = runSimulation(debts, extraPayment, (a, b) => b.rate - a.rate);
+      // Snowball: sort by balance ascending
+      const snResult = runSimulation(debts, extraPayment, (a, b) => a.balance - b.balance);
+
+      fillResult('av', avResult, 'blue');
+      fillResult('sn', snResult, 'gray');
+
+      // Savings banner
+      const saved = snResult.totalInterest - avResult.totalInterest;
+      const monthsDiff = snResult.months - avResult.months;
+      const banner = document.getElementById('savings-banner') as HTMLElement;
+      if (saved > 0) {
+        banner.textContent = `Avalanche ประหยัดดอกเบี้ยมากกว่า ${fmt(saved)} บาท และหมดหนี้เร็วกว่า ${monthsDiff} เดือน เมื่อเทียบกับ Snowball`;
+        banner.classList.remove('hidden');
+      } else if (saved < 0) {
+        banner.textContent = `Snowball ประหยัดดอกเบี้ยมากกว่า ${fmt(-saved)} บาท ในกรณีนี้ (ขึ้นอยู่กับลำดับหนี้)`;
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('debt-avalanche');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('debt-avalanche');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

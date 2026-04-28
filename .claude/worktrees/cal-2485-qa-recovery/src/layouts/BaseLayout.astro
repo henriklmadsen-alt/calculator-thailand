@@ -1,0 +1,932 @@
+---
+import '../styles/theme.css';
+import SaveCompareDrawer from '../components/templates/SaveCompareDrawer.astro';
+import RecentCalculations from '../components/templates/RecentCalculations.astro';
+import CategoryNav from '../components/templates/CategoryNav.astro';
+import EmailCapture from '../components/templates/EmailCapture.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  pageName?: string;
+  alternateLocales?: Array<{ hreflang: string; href: string }>;
+  /** Category ID for visual breadcrumb — e.g. "health", "tax", "loan" */
+  categoryId?: string;
+  /** Thai display name for the category — e.g. "สุขภาพ/ชีวิต" */
+  categoryName?: string;
+  /** URL slug for the category page — e.g. "สุขภาพ" */
+  categorySlug?: string;
+  /** Set true on pages that define their own custom HowTo JSON-LD to suppress the generic BaseLayout HowTo */
+  noGenericHowTo?: boolean;
+}
+
+const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false } = Astro.props;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageUrl = canonical || siteUrl + Astro.url.pathname;
+const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
+const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
+const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').trim().toLowerCase();
+const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
+const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
+const localeAlternates = [
+  { hreflang: 'th-TH', href: pageUrl },
+  { hreflang: 'x-default', href: pageUrl },
+  ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
+];
+
+const organizationSchema = {
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: 'Kamnuanlek',
+  alternateName: ['คำนวณเลข', 'คำนวณเลข', 'kamnuanlek.com'],
+  url: siteUrl,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.svg`,
+    width: 1200,
+    height: 630,
+  },
+  description: 'แพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีสำหรับคนไทย — คำนวณภาษี สินเชื่อ เงินเดือน ค่าไฟ และอีก 800+ รายการ อัปเดตอัตราราชการปี 2569',
+  foundingDate: '2024',
+  inLanguage: 'th-TH',
+  areaServed: { '@type': 'Country', name: 'Thailand' },
+  email: 'info@kamnuanlek.com',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@kamnuanlek.com',
+    contactType: 'customer support',
+    availableLanguage: ['Thai', 'English'],
+    url: `${siteUrl}/ติดต่อเรา/`,
+  },
+  knowsAbout: ['Thai tax calculation', 'loan calculators', 'salary calculation', 'Thai financial tools', 'เครื่องคำนวณภาษี', 'คำนวณสินเชื่อ'],
+};
+
+const jsonLdWebPage = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${pageUrl}#webpage`,
+  url: pageUrl,
+  name: title,
+  description,
+  inLanguage: 'th-TH',
+  isPartOf: {
+    '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
+    name: 'Kamnuanlek — คำนวณเลข',
+    url: siteUrl,
+  },
+  sourceOrganization: organizationSchema,
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.ai-quick-answer', 'h2', '.faq-answer-content'],
+  },
+});
+
+const jsonLdOrganization = JSON.stringify({
+  '@context': 'https://schema.org',
+  ...organizationSchema,
+});
+
+const breadcrumbJsonLd = pageName ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "หน้าแรก",
+      "item": siteUrl + "/"
+    },
+    ...(categorySlug && categoryName ? [
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": categoryName,
+        "item": `${siteUrl}/หมวดหมู่/${categorySlug}/`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": pageName,
+        "item": pageUrl
+      }
+    ] : [
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": pageName,
+        "item": pageUrl
+      }
+    ])
+  ]
+}) : null;
+
+const genericHowToJsonLd = !noGenericHowTo ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  'name': title,
+  'description': description,
+  'author': {
+    '@type': 'Organization',
+    'name': 'Kamnuanlek.com',
+    'url': siteUrl,
+  },
+  'totalTime': 'PT2M',
+  'step': [
+    {
+      '@type': 'HowToStep',
+      'position': 1,
+      'name': 'กรอกข้อมูล',
+      'text': 'กรอกตัวเลขหรือข้อมูลที่ต้องการลงในช่องรับข้อมูลบนหน้าเครื่องคำนวณ',
+    },
+    {
+      '@type': 'HowToStep',
+      'position': 2,
+      'name': 'กดคำนวณ',
+      'text': 'กดปุ่มคำนวณ เครื่องคำนวณจะประมวลผลทันทีและแสดงผลลัพธ์',
+    },
+    {
+      '@type': 'HowToStep',
+      'position': 3,
+      'name': 'อ่านผลลัพธ์',
+      'text': 'ดูผลลัพธ์ที่แสดงในการ์ดผลลัพธ์ พร้อมคำอธิบายและคำแนะนำที่เกี่ยวข้อง',
+    },
+  ],
+}) : null;
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={pageUrl} />
+    {localeAlternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
+    <meta name="google-site-verification" content="zaca9jM01wCKV24fXyQM0o0hYouvbVh8yFjLtAhjc5g" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="คำนวณเลข" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="th_TH" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <!-- Favicon (SVG inline as data URI - calculator icon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><rect x='20' y='15' width='60' height='25' rx='5' fill='white'/><rect x='20' y='50' width='17' height='17' rx='3' fill='white'/><rect x='41' y='50' width='17' height='17' rx='3' fill='white'/><rect x='62' y='50' width='17' height='17' rx='3' fill='white'/><rect x='20' y='72' width='17' height='17' rx='3' fill='white'/><rect x='41' y='72' width='17' height='17' rx='3' fill='white'/><rect x='62' y='72' width='38' height='17' rx='3' fill='%2360a5fa'/></svg>" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/></svg>" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="คำนวณเลข" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={jsonLdOrganization} />
+    <script type="application/ld+json" set:html={jsonLdWebPage} />
+    {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
+    {genericHowToJsonLd && <script type="application/ld+json" set:html={genericHowToJsonLd} />}
+
+    <!-- Sentry Error Monitoring (Client-side) -->
+    <script type="module">
+      import('/src/sentry-client.ts');
+    </script>
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-EY67HJ8NDD');
+
+      function decodePathname(pathname) {
+        try {
+          return decodeURIComponent(pathname);
+        } catch {
+          return pathname;
+        }
+      }
+
+      function getPageType() {
+        const decodedPath = decodePathname(window.location.pathname);
+        if (decodedPath.startsWith('/บทความ/')) return 'article';
+        return decodedPath === '/' ? 'home' : 'calculator';
+      }
+
+      function getDefaultCalculatorType() {
+        const decodedPath = decodePathname(window.location.pathname);
+        const calculatorMap = {
+          '/คำนวณค่าไฟฟ้า/': 'electricity_bill',
+          '/คำนวณภาษีเงินได้บุคคลธรรมดา/': 'personal_income_tax',
+          '/คำนวณผ่อนรถ/': 'vehicle',
+          '/คำนวณผ่อนบ้าน/': 'mortgage_refinance',
+          '/คำนวณเงินเดือนสุทธิ/': 'net_salary',
+          '/คำนวณผ่อนกู้/': 'loan',
+          '/คำนวณภาษีมูลค่าเพิ่ม/': 'vat',
+          '/คำนวณดอกเบี้ยเงินฝาก/': 'deposit',
+          '/คำนวณ-bmi/': 'bmi',
+          '/คำนวณอายุ/': 'age',
+          '/คำนวณภาษีที่ดิน/': 'land_building_tax',
+        };
+        return calculatorMap[decodedPath] || '';
+      }
+
+      function getLanguageContext() {
+        return {
+          lang_mode: 'th',
+          content_locale: 'th',
+          ui_language: 'th',
+        };
+      }
+
+      function getReferrerHost() {
+        if (!document.referrer) return '';
+        try {
+          return (new URL(document.referrer).hostname || '').toLowerCase();
+        } catch {
+          return '';
+        }
+      }
+
+      function classifyAiReferrer(referrerHost) {
+        if (!referrerHost || referrerHost === '(direct)') return 'none';
+
+        const aiReferrerRules = [
+          ['chat.openai.com', 'chatgpt'],
+          ['chatgpt.com', 'chatgpt'],
+          ['openai.com', 'chatgpt'],
+          ['perplexity.ai', 'perplexity'],
+          ['claude.ai', 'claude'],
+          ['poe.com', 'poe'],
+          ['gemini.google.com', 'gemini'],
+          ['copilot.microsoft.com', 'copilot'],
+        ];
+
+        for (const [hostFragment, label] of aiReferrerRules) {
+          if (referrerHost.includes(hostFragment)) {
+            return label;
+          }
+        }
+
+        return 'none';
+      }
+
+      function getTrafficAttribution() {
+        const params = new URLSearchParams(window.location.search);
+        const utmSource = params.get('utm_source') || '';
+        const utmMedium = params.get('utm_medium') || '';
+        const utmCampaign = params.get('utm_campaign') || '';
+        const referrerHost = getReferrerHost();
+        const aiReferrerSource = classifyAiReferrer(referrerHost);
+        const trafficChannel = aiReferrerSource !== 'none'
+          ? 'ai_referral'
+          : (utmSource ? 'campaign' : (referrerHost ? 'referral' : 'direct'));
+
+        return {
+          traffic_source: utmSource || referrerHost || '(direct)',
+          traffic_medium: utmMedium || (referrerHost ? 'referral' : '(none)'),
+          traffic_campaign: utmCampaign || '(not set)',
+          referrer_host: referrerHost || '(direct)',
+          ai_referrer_source: aiReferrerSource,
+          traffic_channel: trafficChannel,
+        };
+      }
+
+      function withLanguageContext(payload) {
+        return {
+          ...payload,
+          ...getLanguageContext(),
+        };
+      }
+
+      function emitSessionStartOnce() {
+        if (typeof window.gtag !== 'function') return;
+
+        const storageKey = 'ct.session_start.v1';
+        try {
+          if (window.sessionStorage.getItem(storageKey) === '1') {
+            return;
+          }
+          window.gtag('event', 'session_start', {
+            ...getTrafficAttribution(),
+            landing_path: window.location.pathname,
+            ...getLanguageContext(),
+          });
+          window.sessionStorage.setItem(storageKey, '1');
+        } catch {
+          // Session storage can be unavailable in strict privacy modes.
+          window.gtag('event', 'session_start', {
+            ...getTrafficAttribution(),
+            landing_path: window.location.pathname,
+            ...getLanguageContext(),
+          });
+        }
+      }
+
+      // Shared GA4 custom event helpers
+      function trackCalculatorStart(calculatorType) {
+        if (typeof window.gtag !== 'function') return;
+        window.__ctCalculatorType = calculatorType;
+        window.gtag('event', 'calculator_start', withLanguageContext({
+          calculator_type: calculatorType,
+          ...getTrafficAttribution(),
+        }));
+      }
+      function trackCalculatorComplete(calculatorType, resultValue) {
+        if (typeof window.gtag !== 'function') return;
+        window.__ctCalculatorType = calculatorType;
+        const payload = {
+          calculator_type: calculatorType,
+          ...getTrafficAttribution(),
+        };
+        if (typeof resultValue === 'number' && Number.isFinite(resultValue)) {
+          payload.result_value = resultValue;
+        }
+        window.gtag('event', 'calculator_complete', withLanguageContext(payload));
+      }
+      function trackCalculatorUsed(calculatorType, resultValue) {
+        if (typeof window.gtag !== 'function') return;
+        window.__ctCalculatorType = calculatorType;
+        const payload = { calculator_type: calculatorType };
+        if (typeof resultValue === 'number' && Number.isFinite(resultValue)) {
+          payload.result_value = resultValue;
+        }
+        window.gtag('event', 'calculator_used', withLanguageContext(payload));
+      }
+      function trackResultViewed(calculatorType) {
+        if (typeof window.gtag !== 'function') return;
+        window.__ctCalculatorType = calculatorType;
+        window.gtag('event', 'result_viewed', withLanguageContext({ calculator_type: calculatorType }));
+      }
+      function trackLanguageAwareEvent(eventName, payload = {}) {
+        if (typeof window.gtag !== 'function') return;
+        window.gtag('event', eventName, withLanguageContext(payload));
+      }
+
+      window.trackCalculatorStart = trackCalculatorStart;
+      window.trackCalculatorComplete = trackCalculatorComplete;
+      window.trackCalculatorUsed = trackCalculatorUsed;
+      window.trackResultViewed = trackResultViewed;
+      window.trackLanguageAwareEvent = trackLanguageAwareEvent;
+      window.getLanguageContext = getLanguageContext;
+
+      function preserveAttributionParamsOnLinks() {
+        const source = new URLSearchParams(window.location.search);
+        const passthroughKeys = [
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'utm_content',
+          'utm_term',
+          'utm_id',
+          'gclid',
+          'fbclid',
+          'lang',
+        ];
+
+        const passthrough = new URLSearchParams();
+        passthroughKeys.forEach((key) => {
+          const value = source.get(key);
+          if (value) passthrough.set(key, value);
+        });
+
+        if ([...passthrough.keys()].length === 0) return;
+
+        document.querySelectorAll('a[data-preserve-utm]').forEach((link) => {
+          const href = link.getAttribute('href');
+          if (!href) return;
+
+          let targetUrl;
+          try {
+            targetUrl = new URL(href, window.location.origin);
+          } catch {
+            return;
+          }
+
+          if (targetUrl.origin !== window.location.origin) return;
+
+          passthrough.forEach((value, key) => {
+            if (!targetUrl.searchParams.has(key)) {
+              targetUrl.searchParams.set(key, value);
+            }
+          });
+
+          const nextHref = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+          link.setAttribute('href', nextHref);
+        });
+      }
+
+      function bindEntryClickTracking() {
+        document.querySelectorAll('[data-entry-event]').forEach((element) => {
+          if (element.getAttribute('data-entry-bound') === '1') return;
+          element.setAttribute('data-entry-bound', '1');
+          element.addEventListener('click', () => {
+            const eventName = element.getAttribute('data-entry-event');
+            if (!eventName) return;
+
+            const routeTo = element.getAttribute('data-route-to')
+              || element.getAttribute('href')
+              || '';
+
+            const payload = {
+              route_from: window.location.pathname,
+              route_to: routeTo,
+            };
+
+            const targetCalculator = element.getAttribute('data-target-calculator');
+            const entrySurface = element.getAttribute('data-entry-surface');
+            const placement = element.getAttribute('data-placement');
+
+            if (targetCalculator) payload.target_calculator = targetCalculator;
+            if (entrySurface) payload.entry_surface = entrySurface;
+            if (placement) payload.placement = placement;
+
+            trackLanguageAwareEvent(eventName, payload);
+          });
+        });
+      }
+
+      emitSessionStartOnce();
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          preserveAttributionParamsOnLinks();
+          bindEntryClickTracking();
+        });
+      } else {
+        preserveAttributionParamsOnLinks();
+        bindEntryClickTracking();
+      }
+    </script>
+
+    {
+      shouldLoadAdsenseScript && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          crossorigin="anonymous"
+        ></script>
+      )
+    }
+
+    <script is:inline>
+      (function initializeThemeBeforePaint() {
+        const STORAGE_KEY = 'ct.theme-preference.v1';
+        const allowed = ['light', 'dark', 'system'];
+        const root = document.documentElement;
+
+        function getSavedPreference() {
+          try {
+            const stored = window.localStorage.getItem(STORAGE_KEY);
+            return allowed.includes(stored || '') ? stored : 'system';
+          } catch {
+            return 'system';
+          }
+        }
+
+        const preference = getSavedPreference();
+        const systemPrefersDark = typeof window.matchMedia === 'function'
+          && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const effectiveTheme = preference === 'system'
+          ? (systemPrefersDark ? 'dark' : 'light')
+          : preference;
+
+        root.dataset.themePreference = preference;
+        root.dataset.theme = effectiveTheme;
+        root.style.colorScheme = effectiveTheme;
+      })();
+    </script>
+
+    <style>
+      .calc-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .calc-card:hover {
+        transform: translateY(-2px);
+      }
+
+      /* ── Breadcrumb (Phase 2 Feature 4) ───────────────────── */
+      .ct-breadcrumb {
+        margin-bottom: 0.75rem;
+      }
+      .ct-breadcrumb-list {
+        display: flex; align-items: center; flex-wrap: wrap;
+        gap: 0.15rem; list-style: none; margin: 0; padding: 0;
+        font-size: 0.8rem;
+      }
+      .ct-breadcrumb-link {
+        color: #2563eb; text-decoration: none; font-weight: 500;
+        transition: color 0.15s;
+      }
+      .ct-breadcrumb-link:hover { color: #1d4ed8; text-decoration: underline; }
+      .ct-breadcrumb-sep { color: #9ca3af; padding: 0 0.15rem; }
+      /* ── Category nav 2-column layout ──────────────────── */
+      .ct-layout-wrapper {
+        display: flex; gap: 0; padding-top: 0; padding-bottom: 0;
+        align-items: flex-start;
+      }
+      .ct-layout-main {
+        padding-left: 0;
+      }
+      @media (min-width: 1024px) {
+        .ct-layout-wrapper { gap: 1.5rem; }
+        .ct-layout-main { padding-left: 0; }
+      }
+      /* Extra bottom padding on mobile to clear the sticky bottom tabs */
+      @media (max-width: 1023px) {
+        .ct-layout-main { padding-bottom: 80px; }
+      }
+
+      .ct-breadcrumb-current {
+        color: #6b7280; font-weight: 400;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 200px; display: inline-block; vertical-align: bottom;
+      }
+    </style>
+  </head>
+  <body class="font-thai text-gray-900 flex flex-col">
+    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
+      <nav class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors">คำนวณเลข</span>
+            <span class="hidden sm:block text-xs text-gray-400 -mt-0.5">kamnuanlek.com</span>
+          </div>
+        </a>
+        <div class="flex items-center gap-3 text-sm">
+          <a href="/บทความ/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">บทความ</a>
+          <button
+            type="button"
+            aria-label="สลับโหมดสี"
+            data-theme-toggle
+            class="min-h-11 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0"
+          >
+            <span aria-hidden="true" data-theme-icon>🌗</span>
+            <span class="hidden sm:inline" data-theme-label>อัตโนมัติ</span>
+          </button>
+          <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium">
+            ฟรี 100%
+          </span>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Category nav wrapper: sidebar on desktop, bottom tabs on mobile -->
+    <div class="ct-layout-wrapper max-w-6xl mx-auto px-4 sm:px-6 py-0 w-full flex">
+      <CategoryNav />
+      <main class="ct-layout-main flex-1 min-w-0 py-8">
+      {categoryId && categoryName && (
+        <nav aria-label="Breadcrumb" class="ct-breadcrumb">
+          <ol class="ct-breadcrumb-list">
+            <li><a href="/" class="ct-breadcrumb-link">หน้าแรก</a></li>
+            <li aria-hidden="true" class="ct-breadcrumb-sep">›</li>
+            <li>
+              {categorySlug
+                ? <a href={`/หมวดหมู่/${categorySlug}/`} class="ct-breadcrumb-link">{categoryName}</a>
+                : <span class="ct-breadcrumb-link">{categoryName}</span>
+              }
+            </li>
+            {pageName && <>
+              <li aria-hidden="true" class="ct-breadcrumb-sep">›</li>
+              <li><span class="ct-breadcrumb-current" aria-current="page">{pageName}</span></li>
+            </>}
+          </ol>
+        </nav>
+      )}
+        <slot />
+        <!-- Phase 3 Feature 1: Recent Calculations history auto-save -->
+        <RecentCalculations />
+      </main>
+    </div><!-- /ct-layout-wrapper -->
+
+    <footer class="mt-auto border-t border-gray-100 bg-white/60">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-primary-700 rounded-md flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="text-sm font-semibold text-gray-700">คำนวณเลข</span>
+          </div>
+          <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
+            <a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a>
+            <a href="/บทความ/" class="hover:text-primary-600 transition-colors">บทความ</a>
+            <a href="/คำนวณค่าไฟฟ้า/" class="hover:text-primary-600 transition-colors">ค่าไฟฟ้า</a>
+            <a href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="hover:text-primary-600 transition-colors">คำนวณภาษี</a>
+            <a href="/คำนวณภาษีมูลค่าเพิ่ม/" class="hover:text-primary-600 transition-colors">VAT 7%</a>
+            <a href="/คำนวณผ่อนกู้/" class="hover:text-primary-600 transition-colors">ผ่อนกู้</a>
+            <a href="/คำนวณผ่อนรถ/" class="hover:text-primary-600 transition-colors">ผ่อนรถ</a>
+            <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="hover:text-primary-600 transition-colors">ดอกเบี้ยเงินฝาก</a>
+            <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
+            <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
+            <span class="w-full sm:w-px sm:h-4 border-t sm:border-t-0 sm:border-l border-gray-200"></span>
+            <a href="/เกี่ยวกับ-kamnuanlek/" class="hover:text-primary-600 transition-colors">เกี่ยวกับเรา</a>
+            <a href="/ติดต่อเรา/" class="hover:text-primary-600 transition-colors">ติดต่อเรา</a>
+            <a href="/นโยบายความเป็นส่วนตัว/" class="hover:text-primary-600 transition-colors">นโยบายความเป็นส่วนตัว</a>
+            <a href="/ข้อกำหนดการใช้งาน/" class="hover:text-primary-600 transition-colors">ข้อกำหนด</a>
+            <a href="/affiliate-disclosure/" class="hover:text-primary-600 transition-colors">Affiliate</a>
+          </nav>
+          <p class="text-xs text-gray-400">© 2026 Kamnuanlek (คำนวณเลข) — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+        </div>
+      </div>
+    </footer>
+    <!-- PWA: Service Worker registration + Web Push subscription -->
+    <script is:inline>
+    (function initPWA() {
+      if (!('serviceWorker' in navigator)) return;
+
+      const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
+      const PUSH_ASKED_KEY = 'ct.push-asked.v1';
+      const PUSH_SUBSCRIBED_KEY = 'ct.push-subscribed.v1';
+
+      function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = atob(base64);
+        return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+      }
+
+      async function subscribeToPush(reg) {
+        try {
+          const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+          });
+          await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sub),
+          });
+          try { localStorage.setItem(PUSH_SUBSCRIBED_KEY, '1'); } catch {}
+        } catch {}
+      }
+
+      function showPushPrompt(reg) {
+        try {
+          if (localStorage.getItem(PUSH_ASKED_KEY) === '1') return;
+          if (localStorage.getItem(PUSH_SUBSCRIBED_KEY) === '1') return;
+          localStorage.setItem(PUSH_ASKED_KEY, '1');
+        } catch {}
+
+        // Show after 30s on the page (non-intrusive delay)
+        setTimeout(function() {
+          // Only prompt if user has been interacting (not a bounce)
+          if (document.hidden) return;
+
+          var banner = document.createElement('div');
+          banner.id = 'push-prompt';
+          banner.setAttribute('role', 'dialog');
+          banner.setAttribute('aria-label', 'รับการแจ้งเตือน');
+          banner.style.cssText = [
+            'position:fixed', 'bottom:16px', 'left:50%', 'transform:translateX(-50%)',
+            'background:#1e40af', 'color:white', 'border-radius:12px',
+            'padding:14px 18px', 'display:flex', 'align-items:center', 'gap:12px',
+            'box-shadow:0 8px 32px rgba(0,0,0,0.2)', 'z-index:9999',
+            'max-width:calc(100vw - 32px)', 'font-family:inherit', 'font-size:14px',
+            'animation:slideUp 0.3s ease',
+          ].join(';');
+
+          var style = document.createElement('style');
+          style.textContent = '@keyframes slideUp{from{transform:translateX(-50%) translateY(80px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}';
+          document.head.appendChild(style);
+
+          banner.innerHTML = [
+            '<span style="font-size:20px" aria-hidden="true">🔔</span>',
+            '<div>',
+            '<div style="font-weight:600;margin-bottom:2px">รับแจ้งเตือนวันคำนวณเงินเดือน</div>',
+            '<div style="opacity:0.85;font-size:12px">เตือนทุกวันที่ 25 และช่วงยื่นภาษี ฟรี</div>',
+            '</div>',
+            '<button id="push-allow" style="background:white;color:#1e40af;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap">เปิดรับ</button>',
+            '<button id="push-deny" style="background:transparent;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:18px;padding:4px;line-height:1" aria-label="ปิด">&times;</button>',
+          ].join('');
+
+          document.body.appendChild(banner);
+
+          document.getElementById('push-allow').addEventListener('click', function() {
+            banner.remove();
+            Notification.requestPermission().then(function(perm) {
+              if (perm === 'granted') subscribeToPush(reg);
+            });
+          });
+          document.getElementById('push-deny').addEventListener('click', function() {
+            banner.remove();
+          });
+        }, 30000);
+      }
+
+      navigator.serviceWorker.register('/sw.js').then(function(reg) {
+        // Check if already subscribed
+        reg.pushManager.getSubscription().then(function(sub) {
+          if (sub) {
+            // Re-register existing subscription with server (handles server restarts)
+            fetch('/api/push/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(sub),
+            }).catch(function() {});
+          } else if (Notification.permission === 'default') {
+            showPushPrompt(reg);
+          } else if (Notification.permission === 'granted') {
+            subscribeToPush(reg);
+          }
+        });
+      }).catch(function() {});
+    })();
+    </script>
+
+    <!-- PWA: Add to Home Screen install prompt (shows after 3rd calculator use) -->
+    <script is:inline>
+    (function initA2HS() {
+      var INSTALL_PROMPTED_KEY = 'ct.a2hs-prompted.v1';
+      var CALC_USE_COUNT_KEY = 'ct.calc-use-count.v1';
+      var INSTALL_THRESHOLD = 3;
+
+      // Only on calculator pages
+      var path = decodeURIComponent(window.location.pathname);
+      var isCalcPage = path.startsWith('/คำนวณ') || path.startsWith('/calc');
+      if (!isCalcPage) return;
+
+      // Don't show if already prompted
+      try {
+        if (localStorage.getItem(INSTALL_PROMPTED_KEY) === '1') return;
+      } catch { return; }
+
+      // Increment calculator use counter
+      var count = 0;
+      try {
+        count = parseInt(localStorage.getItem(CALC_USE_COUNT_KEY) || '0', 10) + 1;
+        localStorage.setItem(CALC_USE_COUNT_KEY, String(count));
+      } catch {}
+
+      // Capture install prompt event
+      var deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (count >= INSTALL_THRESHOLD) showInstallBanner();
+      });
+
+      // iOS doesn't fire beforeinstallprompt — use Safari-specific check
+      function isIOS() {
+        return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+      }
+      function isInStandaloneMode() {
+        return ('standalone' in window.navigator) && window.navigator.standalone;
+      }
+
+      function showInstallBanner() {
+        try { localStorage.setItem(INSTALL_PROMPTED_KEY, '1'); } catch {}
+
+        var banner = document.createElement('div');
+        banner.id = 'a2hs-banner';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-label', 'ติดตั้งแอปพลิเคชัน');
+        banner.style.cssText = 'position:fixed;bottom:70px;left:16px;right:16px;background:#1e40af;color:#fff;border-radius:12px;padding:16px;z-index:9998;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;';
+
+        var iosText = isIOS()
+          ? 'แตะ <strong>⎙</strong> แล้วเลือก <strong>"เพิ่มไปที่หน้าจอหลัก"</strong>'
+          : 'ติดตั้งเครื่องคำนวณเลขลงมือถือ ใช้ได้ออฟไลน์';
+
+        banner.innerHTML =
+          '<div style="font-size:28px;flex-shrink:0">📲</div>' +
+          '<div style="flex:1;font-size:14px;line-height:1.4">' +
+            '<strong style="display:block;margin-bottom:2px">เพิ่มไปที่หน้าจอหลัก</strong>' +
+            '<span>' + iosText + '</span>' +
+          '</div>' +
+          (!isIOS() ? '<button id="a2hs-install" style="background:#fff;color:#1e40af;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:13px">ติดตั้ง</button>' : '') +
+          '<button id="a2hs-close" style="background:transparent;border:none;color:#93c5fd;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0" aria-label="ปิด">✕</button>';
+
+        document.body.appendChild(banner);
+
+        var closeBtn = document.getElementById('a2hs-close');
+        if (closeBtn) closeBtn.addEventListener('click', function() { banner.remove(); });
+
+        var installBtn = document.getElementById('a2hs-install');
+        if (installBtn && deferredPrompt) {
+          installBtn.addEventListener('click', function() {
+            banner.remove();
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choice) {
+              if (typeof window.gtag === 'function') {
+                window.gtag('event', 'pwa_install_prompt', { outcome: choice.outcome });
+              }
+            });
+          });
+        }
+      }
+
+      // Check on load: if threshold already met and prompt available
+      if (count >= INSTALL_THRESHOLD && deferredPrompt) showInstallBanner();
+
+      // iOS: show informational banner (no prompt event)
+      if (count >= INSTALL_THRESHOLD && isIOS() && !isInStandaloneMode()) {
+        try { if (localStorage.getItem(INSTALL_PROMPTED_KEY) !== '1') showInstallBanner(); } catch {}
+      }
+    })();
+    </script>
+
+    <script is:inline>
+      (function trackRecentCalc() {
+        var RECENT_KEY = 'ct.recent-calcs.v1';
+        var MAX_RECENT = 5;
+        var path = decodeURIComponent(window.location.pathname);
+        if (path === '/' || path.startsWith('/บทความ/') || path.startsWith('/หมวดหมู่/') || path.startsWith('/en/')) return;
+        // Normalize: ensure trailing slash for consistent matching
+        var href = path.endsWith('/') ? path : path + '/';
+        try {
+          var recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+          if (!Array.isArray(recent)) recent = [];
+          recent = recent.filter(function(h) { return h !== href; });
+          recent.unshift(href);
+          if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
+          localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+        } catch(e) {}
+      })();
+    </script>
+    <script is:inline>
+      (function initThemeToggle() {
+        const STORAGE_KEY = 'ct.theme-preference.v1';
+        const CYCLE = ['system', 'light', 'dark'];
+        const ICONS = { system: '🌗', light: '☀️', dark: '🌙' };
+        const LABELS = { system: 'อัตโนมัติ', light: 'โหมดสว่าง', dark: 'โหมดมืด' };
+
+        function resolveTheme(pref) {
+          if (pref === 'system') {
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return prefersDark ? 'dark' : 'light';
+          }
+          return pref;
+        }
+
+        function applyTheme(pref) {
+          const effective = resolveTheme(pref);
+          const root = document.documentElement;
+          root.dataset.themePreference = pref;
+          root.dataset.theme = effective;
+          root.style.colorScheme = effective;
+          try { window.localStorage.setItem(STORAGE_KEY, pref); } catch {}
+        }
+
+        function syncButtons(pref) {
+          document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+            const label = button.querySelector('[data-theme-label]');
+            const icon = button.querySelector('[data-theme-icon]');
+            if (label) label.textContent = LABELS[pref] || LABELS.system;
+            if (icon) icon.textContent = ICONS[pref] || ICONS.system;
+          });
+        }
+
+        document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+          if (button.getAttribute('data-theme-bound') === '1') return;
+          button.setAttribute('data-theme-bound', '1');
+          button.addEventListener('click', () => {
+            const current = document.documentElement.dataset.themePreference || 'system';
+            const idx = CYCLE.indexOf(current);
+            const next = CYCLE[(idx + 1) % CYCLE.length];
+            applyTheme(next);
+            syncButtons(next);
+          });
+        });
+
+        const currentPref = document.documentElement.dataset.themePreference || 'system';
+        syncButtons(currentPref);
+      })();
+    </script>
+    <!-- Phase 2: Save & Compare Drawer (global) -->
+    <SaveCompareDrawer />
+    <!-- CAL-1070: Email capture opt-in (appears after save confirmation) -->
+    <EmailCapture />
+  </body>
+</html>

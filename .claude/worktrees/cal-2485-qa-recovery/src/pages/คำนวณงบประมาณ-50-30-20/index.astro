@@ -1,0 +1,239 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณ 50/30/20 ปี 2569 แบ่งรายได้ ความต้องการ-ความอยาก-ออม | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณ 50/30/20 แบ่งรายได้เป็น ความต้องการ 50% ความอยากได้ 30% เก็บออม 20% พร้อมตารางสรุปเป็นบาท วางแผนการเงินส่วนบุคคลอย่างง่าย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณ-50-30-20/`;
+
+const faqData = [
+  {
+    question: 'กฎ 50/30/20 คืออะไร?',
+    answer: 'กฎ 50/30/20 เป็นสูตรวางแผนงบประมาณที่ง่ายและนิยมทั่วโลก แบ่งรายได้สุทธิเป็น 3 ส่วน คือ ความต้องการพื้นฐาน (Needs) 50% ความอยากได้ (Wants) 30% และเงินออม/ชำระหนี้ (Savings) 20%',
+  },
+  {
+    question: 'ความต้องการพื้นฐาน (Needs) หมายถึงอะไร?',
+    answer: 'Needs คือค่าใช้จ่ายที่จำเป็นต้องมีในชีวิตประจำวัน เช่น ค่าเช่า ค่าผ่อนบ้าน ค่าอาหาร ค่าสาธารณูปโภค ค่าเดินทางไปทำงาน ค่าประกันสุขภาพ และค่าผ่อนชำระหนี้ขั้นต่ำ',
+  },
+  {
+    question: 'ถ้าค่าใช้จ่ายจำเป็นเกิน 50% ของรายได้ต้องทำอย่างไร?',
+    answer: 'หากค่าใช้จ่ายจำเป็นเกิน 50% ควรพิจารณาลดค่าใช้จ่าย Wants ลงชั่วคราว หรือหาทางเพิ่มรายได้ เช่น งานพาร์ทไทม์ รายได้เสริม เพื่อให้สัดส่วนกลับมาสมดุล',
+  },
+  {
+    question: 'สูตร 50/30/20 เหมาะกับคนรายได้น้อยไหม?',
+    answer: 'สูตร 50/30/20 เป็นแนวทางกว้างๆ สำหรับผู้มีรายได้น้อย อาจต้องปรับเป็น 60/20/20 หรือ 70/10/20 ตามความเป็นจริง สิ่งสำคัญคือต้องมีเงินออมทุกเดือน แม้จะเป็นสัดส่วนน้อยก็ตาม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณ 50/30/20',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณ-50-30-20">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณงบประมาณ 50/30/20 สูตรวางแผนการเงินที่นิยมทั่วโลก</p>
+      <p class="mt-1 text-sm text-slate-700">Needs 50% = ค่าใช้จ่ายจำเป็น | Wants 30% = ความอยากได้ | Savings 20% = ออม/ลงทุน</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">เหมาะสำหรับมนุษย์เงินเดือนและผู้เริ่มต้นวางแผนการเงิน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณ 50/30/20 ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้สุทธิต่อเดือน ระบบจะคำนวณงบประมาณแต่ละหมวดตามสูตร 50/30/20 ทันที
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="budget-5030-form" class="space-y-5">
+        <p id="budget-5030-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="b5030-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้สุทธิต่อเดือน (บาท)</label>
+            <input type="text" id="b5030-income" inputmode="numeric" placeholder="เช่น 35,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="b5030-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">รายได้หลังหักภาษีและประกันสังคม</p>
+          </div>
+          <div class="flex items-end">
+            <div class="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-blue-700 w-full">
+              <p class="font-medium">สูตร 50/30/20</p>
+              <p class="mt-1 text-xs">Needs = รายได้ × 50%</p>
+              <p class="text-xs">Wants = รายได้ × 30%</p>
+              <p class="text-xs">Savings = รายได้ × 20%</p>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณงบประมาณ 50/30/20
+        </button>
+      </form>
+    </div>
+
+    <div id="budget-5030-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-xs font-medium text-blue-600 uppercase">Needs — ความต้องการ (50%)</div>
+            <div id="res-needs" class="text-xl font-bold text-blue-700">-</div>
+            <div class="mt-1 text-xs text-gray-500">ที่อยู่อาศัย อาหาร สาธารณูปโภค</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-xs font-medium text-orange-600 uppercase">Wants — ความอยาก (30%)</div>
+            <div id="res-wants" class="text-xl font-bold text-orange-700">-</div>
+            <div class="mt-1 text-xs text-gray-500">ท่องเที่ยว ช้อปปิ้ง บันเทิง</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-xs font-medium text-green-600 uppercase">Savings — ออม/ลงทุน (20%)</div>
+            <div id="res-savings" class="text-xl font-bold text-green-700">-</div>
+            <div class="mt-1 text-xs text-gray-500">เงินออม กองทุน ชำระหนี้</div>
+          </div>
+        </div>
+
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 text-left">
+              <th class="px-3 py-2 font-medium text-gray-700">หมวด</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">สัดส่วน</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">จำนวนเงิน</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">ต่อวัน</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr>
+              <td class="px-3 py-2 text-gray-700">ความต้องการพื้นฐาน (Needs)</td>
+              <td class="px-3 py-2 text-right text-gray-600">50%</td>
+              <td id="tbl-needs" class="px-3 py-2 text-right font-medium">-</td>
+              <td id="tbl-needs-day" class="px-3 py-2 text-right text-gray-500">-</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-gray-700">ความอยากได้ (Wants)</td>
+              <td class="px-3 py-2 text-right text-gray-600">30%</td>
+              <td id="tbl-wants" class="px-3 py-2 text-right font-medium">-</td>
+              <td id="tbl-wants-day" class="px-3 py-2 text-right text-gray-500">-</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 text-gray-700">ออม/ลงทุน/ชำระหนี้ (Savings)</td>
+              <td class="px-3 py-2 text-right text-gray-600">20%</td>
+              <td id="tbl-savings" class="px-3 py-2 text-right font-medium">-</td>
+              <td id="tbl-savings-day" class="px-3 py-2 text-right text-gray-500">-</td>
+            </tr>
+            <tr class="bg-gray-50 font-semibold">
+              <td class="px-3 py-2 text-gray-900">รายได้รวม</td>
+              <td class="px-3 py-2 text-right text-gray-900">100%</td>
+              <td id="tbl-total" class="px-3 py-2 text-right text-gray-900">-</td>
+              <td id="tbl-total-day" class="px-3 py-2 text-right text-gray-500">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ความต้องการพื้นฐาน (Needs) = รายได้สุทธิ × 50%</li>
+        <li>ความอยากได้ (Wants) = รายได้สุทธิ × 30%</li>
+        <li>เงินออม/ลงทุน (Savings) = รายได้สุทธิ × 20%</li>
+        <li>งบต่อวัน = งบต่อเดือน ÷ 30</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณงบประมาณครัวเรือน/">คำนวณงบประมาณครัวเรือน</a></li>
+        <li><a href="/คำนวณเงินสำรองฉุกเฉิน/">คำนวณเงินสำรองฉุกเฉิน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#budget-5030-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณ-50-30-20/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณ-50-30-20/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นแนวทางการวางแผนงบประมาณทั่วไป สัดส่วนที่เหมาะสมอาจแตกต่างตามสถานการณ์ส่วนบุคคล ควรปรึกษาที่ปรึกษาทางการเงินสำหรับการวางแผนที่ซับซ้อน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('budget-5030-form');
+    const formError = document.getElementById('budget-5030-error');
+    const resultBox = document.getElementById('budget-5030-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('b5030-income-error', '');
+
+      const income = parseNum(document.getElementById('b5030-income').value);
+      let hasError = false;
+      if (!Number.isFinite(income) || income <= 0) {
+        setErr('b5030-income-error', 'กรอกรายได้มากกว่า 0');
+        hasError = true;
+      }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const needs = income * 0.5;
+      const wants = income * 0.3;
+      const savings = income * 0.2;
+
+      setText('res-needs', formatMoney(needs));
+      setText('res-wants', formatMoney(wants));
+      setText('res-savings', formatMoney(savings));
+
+      setText('tbl-needs', formatMoney(needs));
+      setText('tbl-needs-day', formatMoney(needs / 30));
+      setText('tbl-wants', formatMoney(wants));
+      setText('tbl-wants-day', formatMoney(wants / 30));
+      setText('tbl-savings', formatMoney(savings));
+      setText('tbl-savings-day', formatMoney(savings / 30));
+      setText('tbl-total', formatMoney(income));
+      setText('tbl-total-day', formatMoney(income / 30));
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

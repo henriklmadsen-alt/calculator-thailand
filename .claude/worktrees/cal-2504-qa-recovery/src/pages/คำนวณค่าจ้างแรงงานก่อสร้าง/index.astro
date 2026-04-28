@@ -1,0 +1,153 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจ้างแรงงานก่อสร้าง ปี 2569 — Labor Cost for Construction | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างแรงงานก่อสร้าง ตามประเภทงานและสถานที่';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างแรงงานก่อสร้าง/`;
+
+const faqData = [
+  {
+    question: 'สูตรคำนวณคืออะไร?',
+    answer: 'สูตร: ค่าจ้างรวม = ค่าแรงต่อวัน × จำนวนวัน',
+  },
+  {
+    question: 'ผลลัพธ์แตกต่างจากความเป็นจริงได้หรือ?',
+    answer: 'ใช่ ผลลัพธ์นี้เป็นการประมาณการเท่านั้น ค่าจริงอาจแตกต่างขึ้นอยู่กับสภาพการณ์และราคาปัจจุบัน',
+  },
+  {
+    question: 'ควรปรึกษาใครเพื่อเพิ่มเติมข้อมูล?',
+    answer: 'ควรปรึกษาสถาปนิก ผู้รับเหมา หรือผู้เชี่ยวชาญการก่อสร้างเพื่อขอคำปรึกษา',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ คำนวณค่าจ้างแรงงานก่อสร้าง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างแรงงานก่อสร้าง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-orange-100 bg-orange-50 p-4">
+      <p class="text-sm font-semibold text-orange-700">คำนวณค่าจ้างแรงงานก่อสร้าง</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ค่าจ้างรวม = ค่าแรงต่อวัน × จำนวนวัน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจ้างแรงงานก่อสร้าง ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      คำนวณค่าจ้างแรงงานก่อสร้าง ตามประเภทงานและสถานที่
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc_0323" class="space-y-5">
+        <p id="calc_0323-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+                <div>
+            <label for="calc_0323-daily_wage" class="mb-1 block text-sm font-medium text-gray-700">ค่าแรงต่อวัน (บาท)</label>
+            <input type="text" id="calc_0323-daily_wage" inputmode="numeric" placeholder="เช่น 500"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="calc_0323-daily_wage-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        <div>
+            <label for="calc_0323-days" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันทำงาน (วัน)</label>
+            <input type="text" id="calc_0323-days" inputmode="numeric" placeholder="เช่น 90"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="calc_0323-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="calc_0323-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="rounded-lg bg-green-50 p-4">
+          <div class="mb-1 text-sm text-gray-600">ผลลัพธ์</div>
+          <div id="res-calc_0323" class="text-2xl font-bold text-green-700">-</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <p class="text-gray-700">ค่าจ้างรวม = ค่าแรงต่อวัน × จำนวนวัน</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#calc_0323-results" />
+    <RelatedArticles currentHref="/คำนวณค่าจ้างแรงงานก่อสร้าง/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างแรงงานก่อสร้าง/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> คำนวณการประมาณการเท่านั้น ค่าจริงอาจแตกต่างได้
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('calc_0323')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('calc_0323-error').classList.add('hidden');
+
+            const daily_wage = parseNum(document.getElementById("calc_0323-daily_wage").value);
+      const days = parseNum(document.getElementById("calc_0323-days").value);
+      let hasError = false;
+      if (!Number.isFinite(daily_wage) || daily_wage <= 0) { setErr('calc_0323-daily_wage-error', 'กรอกค่ามากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('calc_0323-error').classList.remove('hidden'); document.getElementById('calc_0323-results').classList.add('hidden'); return; }
+
+      const result = daily_wage * days;
+      setText('res-calc_0323', fmt(result));
+
+      document.getElementById('calc_0323-results').classList.remove('hidden');
+      document.getElementById('calc_0323-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

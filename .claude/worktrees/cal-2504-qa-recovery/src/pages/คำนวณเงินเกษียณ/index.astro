@@ -1,0 +1,632 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเงินเกษียณ 2569 | วางแผนเงินพอใช้หลังเกษียณ | Kamnuanlek';
+const pageDescription = 'คำนวณเงินเกษียณปี 2569 ว่าต้องมีเงินก้อนเท่าไร ประเมินเงินสะสม ณ วันเกษียณ และช่องว่างเงินเกษียณจากดอกเบี้ยทบต้นกับเงินเฟ้อ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินเกษียณ/`;
+
+const faqData = [
+  {
+    question: 'ควรเริ่มคำนวณเงินเกษียณตั้งแต่อายุเท่าไร?',
+    answer: 'เริ่มได้ทันทีที่มีรายได้ ยิ่งเริ่มเร็ว ผลของดอกเบี้ยทบต้นยิ่งช่วยลดภาระออมรายเดือนในอนาคต',
+  },
+  {
+    question: 'ถ้าเงินเฟ้อสูงขึ้น ผลคำนวณจะเปลี่ยนอย่างไร?',
+    answer: 'เงินที่ต้องมีตอนเกษียณจะสูงขึ้น เพราะค่าใช้จ่ายในอนาคตแพงขึ้น การตั้งเงินเฟ้อให้สมจริงจึงสำคัญมาก',
+  },
+  {
+    question: 'อัตราผลตอบแทนก่อนเกษียณกับหลังเกษียณควรเท่ากันไหม?',
+    answer: 'ไม่จำเป็น หลังเกษียณมักเน้นความเสี่ยงต่ำลง จึงใช้อัตราผลตอบแทนคาดหวังต่ำกว่าช่วงสะสมเงิน',
+  },
+  {
+    question: 'ถ้าผลออกมาว่าเงินไม่พอ ควรปรับอะไรเป็นอันดับแรก?',
+    answer: 'เริ่มจากเพิ่มเงินออมรายเดือน ขยับอายุเกษียณ หรือทบทวนค่าใช้จ่ายเป้าหมาย โดยทดลองทีละตัวแปรเพื่อเห็นผลชัดเจน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเงินเกษียณ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณเงินเกษียณที่ต้องการ ปี 2569",
+  "description": "ขั้นตอนการคำนวณจำนวนเงินเกษียณที่ต้องมีเมื่อเกษียณอายุ โดยคำนึงถึงอายุปัจจุบัน อายุเกษียณ ค่าใช้จ่ายรายเดือน และอัตราเงินเฟ้อ ตามแนวทางของสำนักงานคณะกรรมการการกำกับหลักทรัพย์และตลาดหลักทรัพย์",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ระบุอายุปัจจุบัน และอายุเกษียณ",
+      "text": "บันทึกอายุปัจจุบัน และอายุที่คุณตั้งใจจะเกษียณ ตัวอย่าง: อายุปัจจุบัน 40 ปี, เกษียณอายุ 60 ปี = เหลือ 20 ปี"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณค่าใช้จ่ายรายเดือน ณ ปัจจุบัน",
+      "text": "บันทึกค่าใช้จ่ายทั้งหมดรายเดือน (ค่าอยู่อาศัย, อาหาร, สุขภาพ, ความบันเทิง) ตัวอย่าง: ค่าใช้จ่ายรายเดือน 30,000 บาท"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "พิจารณาอัตราเงินเฟ้อ",
+      "text": "อัตราเงินเฟ้อในไทยโดยเฉลี่ย 2-3% ต่อปี (ตั้งสมมติฐาน) ใช้ 2.5% เพื่อความเหมาะสม นี้จะส่งผลให้ค่าใช้จ่ายเพิ่มขึ้นในอนาคต ตัวอย่าง: 30,000 บาท × 2.5% การเติบโตต่อปี"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณค่าใช้จ่ายรายเดือน เมื่อเกษียณ (Future Value)",
+      "text": "ใช้สูตร: ค่าใช้จ่ายอนาคต = ค่าใช้จ่ายปัจจุบัน × (1 + อัตราเงินเฟ้อ)^ปีจนเกษียณ ตัวอย่าง: 30,000 × (1.025)^20 = 49,005 บาท/เดือน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณเงินเกษียณรวมทั้งสิ้น",
+      "text": "สมมติอายุยืน 80 ปี (อีก 20 ปีหลังเกษียณ) รายเดือน 49,005 บาท × 12 เดือน × 20 ปี = 11,761,200 บาท (ยังไม่รวมดอกเบี้ย) หลังจากนั้นเพิ่มเงินสำรองเพื่อความเสี่ยง (เช่น 20%) = 14,113,440 บาท"
+    }
+  ]
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเกษียณ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">วางแผนเงินเกษียณด้วยตัวเลขจริงของคุณ</p>
+      <p class="mt-1 text-sm text-slate-700">เครื่องมือจะคำนวณทั้งฝั่ง “เงินที่คาดว่าจะมี” และ “เงินที่ควรมี” เพื่อเห็นช่องว่างทันที</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">รองรับดอกเบี้ยทบต้น + เงินเฟ้อ แบบรายเดือน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเงินเกษียณ 2569: ต้องมีเงินเท่าไรถึงพอใช้หลังเกษียณ
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกอายุ เงินออมปัจจุบัน เงินออมรายเดือน และสมมติฐานผลตอบแทน/เงินเฟ้อ ระบบจะสรุปให้ว่าเมื่อถึงวัยเกษียณคุณมีแนวโน้มเงินพอหรือไม่ พร้อมตัวเลขส่วนต่างที่ต้องเร่งแก้
+    </p>
+
+    <section class="mb-6 rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-sm text-slate-700">
+      <h2 class="text-base font-semibold text-slate-900">แหล่งข้อมูลอ้างอิงที่ใช้กำหนดสมมติฐาน</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <li>ธนาคารแห่งประเทศไทย: แนวทางวางแผนการเงินระยะยาวและผลของเงินเฟ้อต่อกำลังซื้อ</li>
+        <li>ธนาคารแห่งประเทศไทย: กรอบเป้าหมายเงินเฟ้อระยะปานกลาง (ใช้เป็นข้อมูลประกอบการตั้งสมมติฐาน)</li>
+      </ul>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <a
+          href="https://www.bot.or.th/th/satang-story/money-plan/planning-steps.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:border-primary-400 hover:text-primary-700"
+        >
+          BOT: การวางแผนการเงิน
+        </a>
+        <a
+          href="https://www.bot.or.th/th/research-and-publications/reports/annual-report/Report2023/box1.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:border-primary-400 hover:text-primary-700"
+        >
+          BOT: กรอบเงินเฟ้อ 1-3%
+        </a>
+      </div>
+    </section>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="retirement-form" class="space-y-5">
+        <p
+          id="retirement-form-error"
+          class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700"
+        >
+          กรุณาตรวจสอบข้อมูลที่กรอกให้ครบและถูกต้อง
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="current-age" class="mb-1 block text-sm font-medium text-gray-700">อายุปัจจุบัน (ปี)</label>
+            <input
+              id="current-age"
+              type="text"
+              inputmode="numeric"
+              value="35"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div>
+            <label for="retirement-age" class="mb-1 block text-sm font-medium text-gray-700">อายุเกษียณเป้าหมาย (ปี)</label>
+            <input
+              id="retirement-age"
+              type="text"
+              inputmode="numeric"
+              value="60"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div>
+            <label for="retirement-years" class="mb-1 block text-sm font-medium text-gray-700">จำนวนปีที่ต้องใช้เงินหลังเกษียณ</label>
+            <input
+              id="retirement-years"
+              type="text"
+              inputmode="numeric"
+              value="25"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="current-savings" class="mb-1 block text-sm font-medium text-gray-700">เงินออม/เงินลงทุนปัจจุบัน (บาท)</label>
+            <input
+              id="current-savings"
+              type="text"
+              inputmode="numeric"
+              placeholder="เช่น 500,000"
+              value="500000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div>
+            <label for="monthly-saving" class="mb-1 block text-sm font-medium text-gray-700">เงินออมเพิ่มรายเดือน (บาท)</label>
+            <input
+              id="monthly-saving"
+              type="text"
+              inputmode="numeric"
+              placeholder="เช่น 16,000"
+              value="16000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="monthly-expense-today" class="mb-1 block text-sm font-medium text-gray-700">
+            ค่าใช้จ่ายที่ต้องการต่อเดือน (มูลค่าเงินวันนี้, บาท)
+          </label>
+          <input
+            id="monthly-expense-today"
+            type="text"
+            inputmode="numeric"
+            placeholder="เช่น 30,000"
+            value="30000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="pre-return" class="mb-1 block text-sm font-medium text-gray-700">ผลตอบแทนเฉลี่ยก่อนเกษียณ (% ต่อปี)</label>
+            <input
+              id="pre-return"
+              type="text"
+              inputmode="decimal"
+              value="6"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div>
+            <label for="post-return" class="mb-1 block text-sm font-medium text-gray-700">ผลตอบแทนเฉลี่ยหลังเกษียณ (% ต่อปี)</label>
+            <input
+              id="post-return"
+              type="text"
+              inputmode="decimal"
+              value="3.5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div>
+            <label for="inflation" class="mb-1 block text-sm font-medium text-gray-700">เงินเฟ้อเฉลี่ย (% ต่อปี)</label>
+            <input
+              id="inflation"
+              type="text"
+              inputmode="decimal"
+              value="2"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+        </div>
+
+        <button
+          id="retirement-submit-btn"
+          type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณแผนเกษียณ
+        </button>
+      </form>
+    </div>
+
+    <div id="retirement-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณแผนเกษียณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินที่คาดว่าจะมีตอนเกษียณ</div>
+            <div id="res-projected-fund" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินที่ควรมีตอนเกษียณ</div>
+            <div id="res-required-fund" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-slate-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ส่วนต่าง (เกิน/ขาด)</div>
+            <div id="res-gap" class="text-xl font-bold text-slate-700">-</div>
+          </div>
+          <div class="rounded-lg bg-emerald-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าใช้จ่ายที่รองรับได้ (มูลค่าเงินวันนี้)</div>
+            <div id="res-sustainable-today" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+        </div>
+
+        <div class="mb-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ปีจนถึงเกษียณ</span>
+            <span id="res-years-to-retire" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าใช้จ่ายเดือนแรกเมื่อเริ่มเกษียณ (บาท ณ วันเกษียณ)</span>
+            <span id="res-first-expense-retire" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าใช้จ่ายที่รองรับได้เดือนแรก ณ วันเกษียณ</span>
+            <span id="res-sustainable-retire" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ผลตอบแทนหลังเกษียณ (ที่ใช้คำนวณ)</span>
+            <span id="res-post-return" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินเฟ้อเฉลี่ย (ที่ใช้คำนวณ)</span>
+            <span id="res-inflation" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <p id="res-gap-hint" class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+          -
+        </p>
+
+        <details class="mt-4">
+          <summary class="mb-2 cursor-pointer font-semibold text-gray-900 hover:text-primary-600">
+            ตารางประมาณการเงินออมรายปีจนถึงเกษียณ
+          </summary>
+          <div class="mt-2 overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-200 text-left text-gray-500">
+                  <th class="py-2 pr-2">อายุ</th>
+                  <th class="py-2 pr-2 text-right">เงินออมสะสม (บาท)</th>
+                </tr>
+              </thead>
+              <tbody id="projection-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div id="retirement-next-action" class="mb-6 hidden rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: อ่านวิธีอุดช่องว่างเงินเกษียณแบบลงมือทำ</p>
+      <p class="mt-1 text-sm text-primary-700">ไปต่อด้วยบทความเชิงปฏิบัติและเครื่องมือที่ช่วยเช็กเงินออม/ภาษีให้ครบภาพ</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a
+          data-next-action-link
+          href="/บทความ/คำนวณเงินเกษียณ-2569-วางแผนเงินพอใช้/"
+          data-preserve-utm
+          class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
+        >
+          อ่านบทความคำนวณเงินเกษียณ 2569
+        </a>
+        <a
+          data-next-action-link
+          href="/คำนวณดอกเบี้ยเงินฝาก/"
+          data-preserve-utm
+          class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400"
+        >
+          ทำต่อ: คำนวณดอกเบี้ยเงินฝาก
+        </a>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#retirement-results" />
+
+    <section class="prose prose-gray mb-8 max-w-none">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีคำนวณที่เครื่องมือนี้ใช้</h2>
+
+      <p>
+        เครื่องมือนี้ใช้หลัก <strong>มูลค่าเงินตามเวลา (Time Value of Money)</strong> โดยจำลองเป็นรายเดือน 2 ช่วง:
+      </p>
+
+      <ol>
+        <li><strong>ช่วงสะสมเงินก่อนเกษียณ:</strong> เงินออมปัจจุบันและเงินออมรายเดือนเติบโตด้วยผลตอบแทนก่อนเกษียณ</li>
+        <li><strong>ช่วงใช้เงินหลังเกษียณ:</strong> คำนวณเงินก้อนที่ต้องมีจากค่าใช้จ่ายรายเดือนที่ปรับด้วยเงินเฟ้อ แล้วคิดลดกลับมาที่วันเกษียณด้วยผลตอบแทนหลังเกษียณ</li>
+      </ol>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แนวทางตั้งสมมติฐานให้สมจริง</h3>
+
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>อัตราผลตอบแทนก่อนเกษียณควรสะท้อนพอร์ตจริงของคุณ (อย่าตั้งสูงเกินจริง)</li>
+        <li>หลังเกษียณควรใช้อัตราผลตอบแทนต่ำลง หากพอร์ตเน้นความผันผวนต่ำ</li>
+        <li>เงินเฟ้อเป็นตัวแปรสำคัญต่อกำลังซื้อในอนาคต ควรทดลองหลายกรณี</li>
+        <li>ควรทบทวนแผนอย่างน้อยปีละ 1 ครั้งเมื่อรายได้/ค่าใช้จ่ายเปลี่ยน</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่างชุดข้อมูลเดียวกับค่าเริ่มต้นในหน้า</h3>
+
+      <p>
+        อายุ 35 ปี เกษียณ 60 ปี (เหลือ 25 ปี) เงินออมปัจจุบัน 500,000 บาท ออมเพิ่ม 16,000 บาท/เดือน
+        ผลตอบแทนก่อนเกษียณ 6% หลังเกษียณ 3.5% เงินเฟ้อ 2% และต้องการใช้เงิน 30,000 บาท/เดือน (มูลค่าเงินวันนี้)
+        จะเห็นว่าต้องใช้เงินก้อนระดับหลายล้านบาทเมื่อถึงวันเกษียณ และการเพิ่มออมรายเดือนเพียงเล็กน้อยสามารถลดช่องว่างได้มาก
+      </p>
+    </section>
+
+    <RelatedArticles currentHref="/คำนวณเงินเกษียณ/" />
+    <RelatedCalculators currentHref="/คำนวณเงินเกษียณ/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการจากสมมติฐานที่ผู้ใช้กรอก
+      ไม่ใช่คำแนะนำการลงทุนเฉพาะบุคคล ควรทบทวนกับแผนการเงินจริงและเอกสารทางการก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    const parseNumber = (value) => {
+      const normalized = String(value ?? '').replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : NaN;
+    };
+
+    const formatMoney = (value) =>
+      new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+
+    const annualToMonthlyRate = (annualPercent) => Math.pow(1 + annualPercent / 100, 1 / 12) - 1;
+
+    const calculateProjectedFund = (currentSavings, monthlySaving, monthsToRetirement, preReturnPercent) => {
+      const monthlyReturn = annualToMonthlyRate(preReturnPercent);
+      let balance = currentSavings;
+
+      for (let month = 0; month < monthsToRetirement; month += 1) {
+        balance = balance * (1 + monthlyReturn) + monthlySaving;
+      }
+
+      return balance;
+    };
+
+    const calculateRequiredFund = (
+      expenseToday,
+      monthsToRetirement,
+      monthsInRetirement,
+      postReturnPercent,
+      inflationPercent
+    ) => {
+      const monthlyPostReturn = annualToMonthlyRate(postReturnPercent);
+      const monthlyInflation = annualToMonthlyRate(inflationPercent);
+
+      let expenseAtRetirementMonth1 = expenseToday * Math.pow(1 + monthlyInflation, monthsToRetirement);
+      let requiredFund = 0;
+
+      for (let month = 1; month <= monthsInRetirement; month += 1) {
+        requiredFund += expenseAtRetirementMonth1 / Math.pow(1 + monthlyPostReturn, month);
+        expenseAtRetirementMonth1 *= 1 + monthlyInflation;
+      }
+
+      return {
+        requiredFund,
+        firstMonthExpenseAtRetirement: expenseToday * Math.pow(1 + monthlyInflation, monthsToRetirement),
+      };
+    };
+
+    const buildProjectionRows = (currentAge, currentSavings, monthlySaving, monthsToRetirement, preReturnPercent) => {
+      const monthlyReturn = annualToMonthlyRate(preReturnPercent);
+      let balance = currentSavings;
+      const rows = [];
+
+      for (let month = 1; month <= monthsToRetirement; month += 1) {
+        balance = balance * (1 + monthlyReturn) + monthlySaving;
+        if (month % 12 === 0 || month === monthsToRetirement) {
+          const age = currentAge + month / 12;
+          rows.push({
+            age: Math.round(age * 10) / 10,
+            balance,
+          });
+        }
+      }
+
+      return rows;
+    };
+
+    const form = document.getElementById('retirement-form');
+    const formError = document.getElementById('retirement-form-error');
+    const results = document.getElementById('retirement-results');
+    const nextAction = document.getElementById('retirement-next-action');
+    const submitButton = document.getElementById('retirement-submit-btn');
+    let hasTrackedStart = false;
+
+    form?.addEventListener('input', () => {
+      if (hasTrackedStart) return;
+      if (typeof trackCalculatorStart === 'function') {
+        trackCalculatorStart('retirement');
+      }
+      hasTrackedStart = true;
+    });
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      formError?.classList.add('hidden');
+      submitButton.disabled = true;
+      submitButton.textContent = 'กำลังคำนวณ...';
+
+      const currentAge = parseNumber(document.getElementById('current-age')?.value);
+      const retirementAge = parseNumber(document.getElementById('retirement-age')?.value);
+      const retirementYears = parseNumber(document.getElementById('retirement-years')?.value);
+      const currentSavings = parseNumber(document.getElementById('current-savings')?.value);
+      const monthlySaving = parseNumber(document.getElementById('monthly-saving')?.value);
+      const monthlyExpenseToday = parseNumber(document.getElementById('monthly-expense-today')?.value);
+      const preReturn = parseNumber(document.getElementById('pre-return')?.value);
+      const postReturn = parseNumber(document.getElementById('post-return')?.value);
+      const inflation = parseNumber(document.getElementById('inflation')?.value);
+
+      const invalid =
+        !Number.isFinite(currentAge) ||
+        !Number.isFinite(retirementAge) ||
+        !Number.isFinite(retirementYears) ||
+        !Number.isFinite(currentSavings) ||
+        !Number.isFinite(monthlySaving) ||
+        !Number.isFinite(monthlyExpenseToday) ||
+        !Number.isFinite(preReturn) ||
+        !Number.isFinite(postReturn) ||
+        !Number.isFinite(inflation) ||
+        currentAge < 18 ||
+        currentAge > 80 ||
+        retirementAge <= currentAge ||
+        retirementAge > 90 ||
+        retirementYears <= 0 ||
+        retirementYears > 50 ||
+        currentSavings < 0 ||
+        monthlySaving < 0 ||
+        monthlyExpenseToday <= 0 ||
+        preReturn < -5 ||
+        preReturn > 20 ||
+        postReturn < -5 ||
+        postReturn > 20 ||
+        inflation < 0 ||
+        inflation > 15;
+
+      if (invalid) {
+        formError?.classList.remove('hidden');
+        submitButton.disabled = false;
+        submitButton.textContent = 'คำนวณแผนเกษียณ';
+        return;
+      }
+
+      const monthsToRetirement = Math.round((retirementAge - currentAge) * 12);
+      const monthsInRetirement = Math.round(retirementYears * 12);
+
+      const projectedFund = calculateProjectedFund(currentSavings, monthlySaving, monthsToRetirement, preReturn);
+      const { requiredFund, firstMonthExpenseAtRetirement } = calculateRequiredFund(
+        monthlyExpenseToday,
+        monthsToRetirement,
+        monthsInRetirement,
+        postReturn,
+        inflation
+      );
+      const requiredForOneBaht = calculateRequiredFund(
+        1,
+        monthsToRetirement,
+        monthsInRetirement,
+        postReturn,
+        inflation
+      ).requiredFund;
+
+      const gap = projectedFund - requiredFund;
+      const sustainableToday = requiredForOneBaht > 0 ? projectedFund / requiredForOneBaht : 0;
+      const monthlyInflation = annualToMonthlyRate(inflation);
+      const sustainableAtRetirement = sustainableToday * Math.pow(1 + monthlyInflation, monthsToRetirement);
+
+      document.getElementById('res-projected-fund').textContent = `${formatMoney(projectedFund)} บาท`;
+      document.getElementById('res-required-fund').textContent = `${formatMoney(requiredFund)} บาท`;
+      document.getElementById('res-gap').textContent = `${formatMoney(gap)} บาท`;
+      document.getElementById('res-sustainable-today').textContent = `${formatMoney(sustainableToday)} บาท/เดือน`;
+      document.getElementById('res-years-to-retire').textContent = `${((monthsToRetirement / 12).toFixed(1))} ปี`;
+      document.getElementById('res-first-expense-retire').textContent = `${formatMoney(firstMonthExpenseAtRetirement)} บาท/เดือน`;
+      document.getElementById('res-sustainable-retire').textContent = `${formatMoney(sustainableAtRetirement)} บาท/เดือน`;
+      document.getElementById('res-post-return').textContent = `${postReturn.toFixed(2)}% ต่อปี`;
+      document.getElementById('res-inflation').textContent = `${inflation.toFixed(2)}% ต่อปี`;
+
+      const gapEl = document.getElementById('res-gap');
+      const gapHint = document.getElementById('res-gap-hint');
+      if (gap >= 0) {
+        gapEl.classList.remove('text-red-700');
+        gapEl.classList.add('text-emerald-700');
+        gapHint.textContent = 'ผลลัพธ์เบื้องต้น: เงินมีแนวโน้มเพียงพอภายใต้สมมติฐานนี้ ควรทบทวนทุกปีเมื่อผลตอบแทนหรือค่าใช้จ่ายเปลี่ยน';
+      } else {
+        gapEl.classList.remove('text-emerald-700');
+        gapEl.classList.add('text-red-700');
+        gapHint.textContent = 'ผลลัพธ์เบื้องต้น: เงินอาจไม่พอ ควรเพิ่มเงินออมรายเดือน ปรับอายุเกษียณ หรือปรับค่าใช้จ่ายเป้าหมายแล้วคำนวณใหม่';
+      }
+
+      const projectionRows = buildProjectionRows(currentAge, currentSavings, monthlySaving, monthsToRetirement, preReturn);
+      const projectionBody = document.getElementById('projection-body');
+      projectionBody.innerHTML = '';
+      projectionRows.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${row.age.toFixed(1)} ปี</td>
+          <td class="py-2 pr-2 text-right">${formatMoney(row.balance)}</td>
+        `;
+        projectionBody.appendChild(tr);
+      });
+
+      results?.classList.remove('hidden');
+      nextAction?.classList.remove('hidden');
+      results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') {
+        trackCalculatorComplete('retirement', projectedFund);
+      }
+      if (typeof trackCalculatorUsed === 'function') {
+        trackCalculatorUsed('retirement');
+      }
+
+      submitButton.disabled = false;
+      submitButton.textContent = 'คำนวณแผนเกษียณ';
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        const href = link.getAttribute('href') || '';
+        const payload = {
+          calculator_type: 'retirement',
+          route_from: window.location.pathname,
+          route_to: href,
+          placement: 'post_result',
+        };
+        if (typeof window.trackLanguageAwareEvent === 'function') {
+          window.trackLanguageAwareEvent('next_action_click', payload);
+          return;
+        }
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'next_action_click', payload);
+        }
+      });
+    });
+
+    const resultObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && typeof trackResultViewed === 'function') {
+            trackResultViewed('retirement');
+            resultObserver.disconnect();
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (results) {
+      resultObserver.observe(results);
+    }
+  </script>
+</BaseLayout>

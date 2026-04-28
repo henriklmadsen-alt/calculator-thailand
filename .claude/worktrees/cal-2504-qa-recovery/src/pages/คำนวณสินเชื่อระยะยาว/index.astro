@@ -1,0 +1,371 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณสินเชื่อระยะยาว 2569 | Term Loan ลดต้นลดดอก ตารางผ่อนชำระ | Kamnuanlek';
+const pageDescription = 'คำนวณค่างวดสินเชื่อระยะยาว (term loan) แบบลดต้นลดดอก รายเดือน รายไตรมาส รายปี พร้อมตารางผ่อนชำระครบถ้วน สำหรับสินเชื่อธุรกิจและส่วนบุคคล';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณสินเชื่อระยะยาว/`;
+
+const faqData = [
+  {
+    question: 'สินเชื่อระยะยาว (term loan) คืออะไร?',
+    answer: 'สินเชื่อระยะยาวคือสินเชื่อที่มีกำหนดชำระคืนแน่นอน ตั้งแต่ 1 ปีขึ้นไป คำนวณดอกเบี้ยแบบลดต้นลดดอก (reducing balance) ค่างวดเท่ากันทุกงวด ใช้สำหรับซื้อสินทรัพย์ถาวร ขยายกิจการ หรือลงทุนขนาดใหญ่',
+  },
+  {
+    question: 'ชำระแบบรายไตรมาสหรือรายปี ดีกว่ารายเดือนอย่างไร?',
+    answer: 'ชำระรายไตรมาสหรือรายปีเหมาะกับธุรกิจที่มีรายได้ตามฤดูกาล เช่น เกษตรกรรม ท่องเที่ยว สามารถบริหารกระแสเงินสดได้ดีกว่า แต่ดอกเบี้ยรวมมักสูงกว่าการชำระรายเดือน เพราะเงินต้นลดช้ากว่า',
+  },
+  {
+    question: 'การชำระก่อนกำหนด (prepayment) ช่วยประหยัดดอกเบี้ยได้ไหม?',
+    answer: 'ใช่ การชำระเงินต้นก่อนกำหนดช่วยลดยอดหนี้คงเหลือ ทำให้ดอกเบี้ยในงวดถัดไปลดลง ประหยัดดอกเบี้ยรวมได้มาก แต่ควรตรวจสอบว่ามีค่าปรับ prepayment หรือไม่ (มักอยู่ที่ 1-3% ของยอดที่ชำระก่อนกำหนด)',
+  },
+  {
+    question: 'สินเชื่อธุรกิจระยะยาวกู้ได้นานสูงสุดกี่ปี?',
+    answer: 'สินเชื่อธุรกิจระยะยาวทั่วไปสูงสุด 10-15 ปี สำหรับสินทรัพย์ถาวร เช่น เครื่องจักร อาคาร สินเชื่อบ้านสูงสุด 30 ปี สินเชื่อเพื่อการลงทุนใหม่อาจมีระยะเวลาผ่อนผัน (grace period) 1-2 ปีก่อนเริ่มชำระเงินต้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณสินเชื่อระยะยาว',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณสินเชื่อระยะยาว">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      📊 คำนวณสินเชื่อระยะยาว — Term Loan ลดต้นลดดอก พร้อมตารางผ่อนชำระ
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่างวดสินเชื่อระยะยาวแบบลดต้นลดดอก รองรับการชำระรายเดือน รายไตรมาส และรายปี
+      พร้อมตารางผ่อนชำระแบบเต็มรูปแบบ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="term-loan-form" class="space-y-5">
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
+            วงเงินกู้ (บาท)
+          </label>
+          <input
+            type="text"
+            id="principal"
+            inputmode="numeric"
+            placeholder="เช่น 5,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="annual-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ยต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="annual-rate"
+              inputmode="decimal"
+              placeholder="เช่น 6.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="term-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <input
+              type="text"
+              id="term-years"
+              inputmode="numeric"
+              placeholder="เช่น 10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="payment-freq" class="block text-sm font-medium text-gray-700 mb-1">
+            งวดชำระ
+          </label>
+          <select
+            id="payment-freq"
+            class="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+          >
+            <option value="12">รายเดือน (12 ครั้ง/ปี)</option>
+            <option value="4">รายไตรมาส (4 ครั้ง/ปี)</option>
+            <option value="1">รายปี (1 ครั้ง/ปี)</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1" id="label-payment">ค่างวดต่องวด</div>
+            <div id="res-payment" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm mb-6">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินกู้</span>
+            <span id="res-principal" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราดอกเบี้ยต่อปี</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนงวด</span>
+            <span id="res-periods" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <!-- Amortization Schedule -->
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางผ่อนชำระ (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-3">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">งวดที่</th>
+                  <th class="py-2 pr-2 text-right">ค่างวด</th>
+                  <th class="py-2 pr-2 text-right">เงินต้น</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
+                  <th class="py-2 text-right">ยอดคงเหลือ</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สินเชื่อระยะยาวแบบลดต้นลดดอก</h2>
+
+      <p>
+        สินเชื่อระยะยาว (term loan) ใช้การคำนวณดอกเบี้ยแบบลดต้นลดดอก (reducing balance)
+        ค่างวดเท่ากันทุกงวด แต่สัดส่วนเงินต้นและดอกเบี้ยเปลี่ยนแปลงในแต่ละงวด
+        งวดแรกๆ จ่ายดอกเบี้ยมาก งวดหลังๆ จ่ายเงินต้นมาก
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ PMT</h3>
+      <p>
+        ค่างวด = P × [r(1+r)ⁿ] / [(1+r)ⁿ - 1]<br />
+        โดย P = เงินต้น, r = อัตราดอกเบี้ยต่องวด, n = จำนวนงวดทั้งหมด
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ความแตกต่างของความถี่ชำระ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>รายเดือน:</strong> ดอกเบี้ยรวมน้อยที่สุด เพราะเงินต้นลดเร็วที่สุด</li>
+        <li><strong>รายไตรมาส:</strong> เหมาะกับธุรกิจที่มีรายได้รายไตรมาส</li>
+        <li><strong>รายปี:</strong> ดอกเบี้ยรวมสูงสุด เพราะเงินต้นลดช้า เหมาะกับธุรกิจเกษตร</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <p>กู้ 5,000,000 บาท ดอกเบี้ย 6.5% ต่อปี ผ่อน 10 ปี:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>รายเดือน: ค่างวด 56,722 บาท/เดือน ดอกเบี้ยรวม 1,806,640 บาท</li>
+        <li>รายไตรมาส: ค่างวด 172,008 บาท/ไตรมาส ดอกเบี้ยรวมสูงกว่าเล็กน้อย</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณสินเชื่อระยะยาว/" />
+    <RelatedCalculators currentHref="/คำนวณสินเชื่อระยะยาว/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ค่างวดจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงิน วิธีปัดเศษ และค่าธรรมเนียมต่างๆ
+      ไม่ถือเป็นคำแนะนำทางการเงิน โปรดตรวจสอบกับสถาบันการเงินโดยตรง
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('term-loan-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const principal = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const annualRate = parseNum((document.getElementById('annual-rate') as HTMLInputElement).value);
+      const termYears = parseNum((document.getElementById('term-years') as HTMLInputElement).value);
+      const freqPerYear = parseInt((document.getElementById('payment-freq') as HTMLSelectElement).value);
+
+      if (principal <= 0) { (document.getElementById('principal') as HTMLInputElement).focus(); return; }
+      if (annualRate <= 0) { (document.getElementById('annual-rate') as HTMLInputElement).focus(); return; }
+      if (termYears <= 0) { (document.getElementById('term-years') as HTMLInputElement).focus(); return; }
+
+      const ratePerPeriod = annualRate / 100 / freqPerYear;
+      const totalPeriods = Math.round(termYears * freqPerYear);
+
+      let payment: number;
+      if (ratePerPeriod === 0) {
+        payment = principal / totalPeriods;
+      } else {
+        payment = principal * (ratePerPeriod * Math.pow(1 + ratePerPeriod, totalPeriods)) /
+          (Math.pow(1 + ratePerPeriod, totalPeriods) - 1);
+      }
+
+      const totalPaid = payment * totalPeriods;
+      const totalInterest = totalPaid - principal;
+
+      // Build amortization schedule
+      interface PeriodRow {
+        period: number;
+        payment: number;
+        principalPart: number;
+        interestPart: number;
+        remaining: number;
+      }
+      const schedule: PeriodRow[] = [];
+      let balance = principal;
+      for (let p = 0; p < totalPeriods; p++) {
+        const interestPart = balance * ratePerPeriod;
+        const principalPart = payment - interestPart;
+        balance = Math.max(0, balance - principalPart);
+        schedule.push({ period: p + 1, payment, principalPart, interestPart, remaining: balance });
+      }
+
+      // Frequency label
+      const freqLabel = freqPerYear === 12 ? 'เดือน' : freqPerYear === 4 ? 'ไตรมาส' : 'ปี';
+      const freqName = freqPerYear === 12 ? 'รายเดือน' : freqPerYear === 4 ? 'รายไตรมาส' : 'รายปี';
+
+      const labelEl = document.getElementById('label-payment') as HTMLElement;
+      labelEl.textContent = 'ค่างวดต่อ' + freqLabel + ' (' + freqName + ')';
+
+      (document.getElementById('res-payment') as HTMLElement).textContent = fmt(payment) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+      (document.getElementById('res-principal') as HTMLElement).textContent = fmt(principal) + ' บาท';
+      (document.getElementById('res-rate') as HTMLElement).textContent = annualRate.toFixed(2) + '%';
+      (document.getElementById('res-periods') as HTMLElement).textContent =
+        totalPeriods + ' งวด (' + freqName + ' ' + termYears + ' ปี)';
+
+      // Amortization table
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      // Show: first year's periods + annual summaries (every freqPerYear periods) + last period
+      const firstYearPeriods = freqPerYear;
+
+      schedule.forEach((row, i) => {
+        const periodNum = i + 1;
+        // Show first year, then every annual boundary, then last period
+        const isFirstYear = periodNum <= firstYearPeriods;
+        const isAnnualBoundary = periodNum > firstYearPeriods && periodNum % freqPerYear === 0;
+        const isLast = periodNum === totalPeriods;
+        if (!isFirstYear && !isAnnualBoundary && !isLast) return;
+
+        // Add ellipsis separator before annual summaries (after first year)
+        if (isAnnualBoundary && periodNum === firstYearPeriods + freqPerYear) {
+          const sep = document.createElement('tr');
+          sep.innerHTML = '<td colspan="5" class="py-1 text-center text-gray-400 text-xs">⋮ (สรุปรายปี)</td>';
+          tbody.appendChild(sep);
+        }
+
+        const yearNum = Math.ceil(periodNum / freqPerYear);
+        const label = isFirstYear
+          ? (freqPerYear === 12 ? 'เดือน ' + periodNum : freqPerYear === 4 ? 'ไตรมาส ' + periodNum : 'ปี ' + periodNum)
+          : 'สิ้นปีที่ ' + yearNum;
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600 text-xs">${label}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.payment)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.principalPart)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.interestPart)}</td>
+          <td class="py-2 text-right">${fmt(row.remaining)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('term-loan');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('term-loan');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

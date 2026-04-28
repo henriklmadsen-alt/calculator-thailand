@@ -1,0 +1,263 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณทุนประกันชีวิต ปี 2569 ต้องการความคุ้มครองเท่าไหร่ | Kamnuanlek';
+const pageDescription = 'คำนวณทุนประกันชีวิตที่ควรซื้อ โดยพิจารณาจากรายได้ หนี้สิน จำนวนผู้พึ่งพา และค่าใช้จ่ายในอนาคต';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณทุนประกันชีวิต/`;
+
+const faqData = [
+  {
+    question: 'ทุนประกันชีวิตควรเท่าไหร่?',
+    answer: 'หลักการง่ายๆ คือ 5–10 เท่าของรายได้ต่อปี หรือคำนวณจาก DIME: Debt (หนี้สิน) + Income (รายได้ × ปีที่ต้องการ) + Mortgage (บ้านที่ค้างชำระ) + Education (ค่าเล่าเรียนบุตร)',
+  },
+  {
+    question: 'ประกันชีวิตที่ทำงานให้คุ้มพอหรือไม่?',
+    answer: 'โดยทั่วไปประกันชีวิตจากที่ทำงานมักคุ้มครอง 1–3 เท่าของเงินเดือน ซึ่งไม่เพียงพอสำหรับครอบครัวที่ต้องพึ่งพา ควรซื้อประกันเพิ่มเติมส่วนตัว',
+  },
+  {
+    question: 'คนโสดไม่มีผู้พึ่งพาต้องทำประกันชีวิตหรือไม่?',
+    answer: 'คนโสดไม่มีผู้พึ่งพาอาจไม่จำเป็นต้องทำประกันชีวิตมาก แต่ควรมีอย่างน้อยเพื่อชำระหนี้คงค้างและค่าจัดงานศพ ประกันสุขภาพสำคัญกว่าสำหรับคนโสด',
+  },
+  {
+    question: 'ควรทบทวนทุนประกันชีวิตทุกกี่ปี?',
+    answer: 'ควรทบทวนทุก 3–5 ปี หรือเมื่อสถานการณ์เปลี่ยนแปลงสำคัญ เช่น แต่งงาน มีบุตร ซื้อบ้าน รายได้เพิ่มขึ้นมาก หรือบุตรเติบโตและช่วยตัวเองได้แล้ว',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณทุนประกันชีวิต',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณทุนประกันชีวิตที่ต้องการด้วย DIME Method',
+  description: 'ขั้นตอนการคำนวณทุนประกันชีวิตที่เหมาะสมสำหรับตัวคุณและครอบครัว โดยใช้สูตร DIME ที่ได้รับการยอมรับในระดับสากล',
+  step: [
+    { '@type': 'HowToStep', name: 'รวมหนี้สินทั้งหมด (D — Debt)', text: 'บวกหนี้บัตรเครดิต สินเชื่อส่วนบุคคล และหนี้อื่นๆ ทั้งหมดที่ครอบครัวต้องรับผิดชอบหากคุณเสียชีวิต' },
+    { '@type': 'HowToStep', name: 'คำนวณรายได้ทดแทน (I — Income)', text: 'คูณรายได้ต่อปีด้วยจำนวนปีที่ครอบครัวต้องพึ่งพารายได้ของคุณ โดยทั่วไปใช้ 10–20 ปีหรือจนถึงอายุเกษียณ' },
+    { '@type': 'HowToStep', name: 'ระบุหนี้บ้านคงค้าง (M — Mortgage)', text: 'ใส่ยอดสินเชื่อบ้านที่ยังค้างชำระทั้งหมด เพื่อให้ครอบครัวสามารถชำระบ้านได้โดยไม่ต้องขาย' },
+    { '@type': 'HowToStep', name: 'ประมาณค่าเล่าเรียนบุตร (E — Education)', text: 'รวมค่าใช้จ่ายการศึกษาบุตรทุกคนตั้งแต่ปัจจุบันจนถึงระดับอุดมศึกษา รวมค่าหอพักและค่าครองชีพ' },
+    { '@type': 'HowToStep', name: 'หักสินทรัพย์ปัจจุบัน', text: 'หักเงินออม กองทุนสำรองเลี้ยงชีพ กองทุนรวม และทุนประกันชีวิตที่มีอยู่แล้วออกจากผลรวม D+I+M+E' },
+    { '@type': 'HowToStep', name: 'สรุปทุนประกันที่ต้องการ', text: 'ทุนประกัน = D + I + M + E − สินทรัพย์ปัจจุบัน เปรียบเทียบกับเกณฑ์ขั้นต่ำ 5 เท่าของรายได้ต่อปี และเลือกค่าที่สูงกว่าเป็นทุนประกันที่ควรซื้อ' },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณทุนประกันชีวิต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
+      <p class="text-sm font-semibold text-red-700">❤️ คำนวณทุนประกันชีวิตที่ต้องการ (DIME Method)</p>
+      <p class="mt-1 text-sm text-slate-700">DIME = Debt + Income × ปี + Mortgage + Education − สินทรัพย์ปัจจุบัน</p>
+      <p class="mt-1 text-xs font-medium text-red-800">รู้จริงว่าต้องซื้อประกันชีวิตเท่าไหร่จึงจะคุ้มครองครอบครัวได้เพียงพอ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณทุนประกันชีวิต ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกหนี้สิน รายได้ต่อปี จำนวนปีที่ต้องการรายได้ หนี้บ้าน ค่าเล่าเรียนบุตร และสินทรัพย์ที่มีอยู่
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="coverage-form" class="space-y-5">
+        <p id="coverage-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cov-debt" class="mb-1 block text-sm font-medium text-gray-700">หนี้สินรวม (บาท)</label>
+            <input type="text" id="cov-debt" inputmode="numeric" placeholder="เช่น 200,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">บัตรเครดิต สินเชื่อส่วนบุคคล ฯลฯ</p>
+          </div>
+          <div>
+            <label for="cov-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้ต่อปี (บาท)</label>
+            <input type="text" id="cov-income" inputmode="numeric" placeholder="เช่น 600,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cov-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="cov-years" class="mb-1 block text-sm font-medium text-gray-700">ปีที่ต้องทดแทนรายได้</label>
+            <input type="text" id="cov-years" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="cov-mortgage" class="mb-1 block text-sm font-medium text-gray-700">หนี้บ้านคงค้าง (บาท)</label>
+            <input type="text" id="cov-mortgage" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="cov-edu" class="mb-1 block text-sm font-medium text-gray-700">ค่าเล่าเรียนบุตร (บาท)</label>
+            <input type="text" id="cov-edu" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div>
+          <label for="cov-assets" class="mb-1 block text-sm font-medium text-gray-700">สินทรัพย์ที่มีอยู่ (บาท)</label>
+          <input type="text" id="cov-assets" inputmode="numeric" placeholder="เช่น เงินออม กองทุน"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+          <p class="mt-1 text-xs text-gray-500">เงินออม ประกันที่มีอยู่ สินทรัพย์ที่ขายได้</p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณทุนประกันที่ต้องการ
+        </button>
+      </form>
+    </div>
+
+    <div id="coverage-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ DIME</h2>
+        <div class="mb-4 space-y-2" id="coverage-breakdown"></div>
+        <div class="my-3 border-t"></div>
+        <div class="mb-6 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ทุนประกันที่ต้องการ (DIME)</div>
+            <div id="res-cov-need" class="text-2xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ทุนประกันขั้นต่ำ (5× รายได้)</div>
+            <div id="res-cov-min" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="coverage-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตร DIME Method</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>D (Debt) = หนี้สินรวมทั้งหมด</li>
+        <li>I (Income) = รายได้ต่อปี × จำนวนปีที่ต้องทดแทน</li>
+        <li>M (Mortgage) = หนี้บ้านที่ยังค้างชำระ</li>
+        <li>E (Education) = ค่าเล่าเรียนบุตรทั้งหมด</li>
+        <li>ทุนประกัน = D + I + M + E − สินทรัพย์ที่มีอยู่</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#coverage-results" />
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
+      partnerName="EasySunday"
+      ctaText="เปรียบเทียบประกันชีวิต"
+      subtext="เปรียบเทียบแผนประกันชีวิตและออมทรัพย์จาก FWD, SE Life และอื่น ๆ"
+    />
+    <RelatedArticles currentHref="/คำนวณทุนประกันชีวิต/" />
+    <RelatedCalculators currentHref="/คำนวณทุนประกันชีวิต/" />
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/life" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">สำนักงานคณะกรรมการกำกับและส่งเสริมการประกอบธุรกิจประกันภัย (คปภ.)</a> — ข้อมูลประกันชีวิตสำหรับผู้บริโภค</li>
+        <li><a href="https://www.oic.or.th/th/consumer/insurance/life/life-insurance-knowledge" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ความรู้เรื่องประกันชีวิต — คปภ.</a></li>
+      </ul>
+    </div>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ ทุนประกันที่เหมาะสมขึ้นอยู่กับสถานการณ์ส่วนตัว ควรปรึกษาผู้เชี่ยวชาญด้านการวางแผนทางการเงิน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(n))} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('coverage-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('coverage-error').classList.add('hidden');
+      setErr('cov-income-error', '');
+
+      const debt = parseNum(document.getElementById('cov-debt').value);
+      const income = parseNum(document.getElementById('cov-income').value);
+      const years = parseNum(document.getElementById('cov-years').value) || 10;
+      const mortgage = parseNum(document.getElementById('cov-mortgage').value);
+      const edu = parseNum(document.getElementById('cov-edu').value);
+      const assets = parseNum(document.getElementById('cov-assets').value);
+
+      if (!income || income <= 0) { setErr('cov-income-error', 'กรอกรายได้ต่อปี'); document.getElementById('coverage-error').classList.remove('hidden'); return; }
+
+      const D = debt;
+      const I = income * years;
+      const M = mortgage;
+      const E = edu;
+      const dime = Math.max(0, D + I + M + E - assets);
+      const minCoverage = income * 5;
+
+      const items = [
+        { label: `D (หนี้สิน)`, amount: D },
+        { label: `I (รายได้ ${income.toLocaleString('th-TH')} × ${years} ปี)`, amount: I },
+        { label: 'M (หนี้บ้าน)', amount: M },
+        { label: 'E (ค่าเล่าเรียน)', amount: E },
+        { label: 'หัก: สินทรัพย์ที่มีอยู่', amount: -assets },
+      ];
+
+      const container = document.getElementById('coverage-breakdown');
+      container.innerHTML = items.filter(i => i.amount !== 0).map(item => `
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">${item.label}</span>
+          <span class="font-medium ${item.amount < 0 ? 'text-green-700' : 'text-gray-800'}">${item.amount < 0 ? '−' : '+'}${formatMoney(Math.abs(item.amount))}</span>
+        </div>`).join('');
+
+      setText('res-cov-need', formatMoney(dime));
+      setText('res-cov-min', formatMoney(minCoverage));
+
+      const statusEl = document.getElementById('coverage-status');
+      const recommended = Math.max(dime, minCoverage);
+      statusEl.className = 'rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800 border border-red-200';
+      statusEl.textContent = `ควรมีทุนประกันชีวิตอย่างน้อย ${formatMoney(recommended)} เพื่อคุ้มครองครอบครัวของคุณ`;
+
+      document.getElementById('coverage-results').classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      document.getElementById('coverage-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

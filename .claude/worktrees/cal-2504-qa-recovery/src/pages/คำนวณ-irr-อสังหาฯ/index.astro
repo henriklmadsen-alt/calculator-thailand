@@ -1,0 +1,208 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ IRR อสังหาฯ 2569 | Internal Rate of Return | อัตราผลตอบแทนภายใน | Kamnuanlek';
+const pageDescription = 'คำนวณ IRR (Internal Rate of Return) สำหรับการลงทุนอสังหาฯ วิเคราะห์ผลตอบแทนจริงจากเงินลงทุนเบื้องต้น ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-irr-อสังหาฯ/`;
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ IRR อสังหาฯ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const faqData = [
+  { question: 'Cap Rate ที่ดีสำหรับอสังหาริมทรัพย์ไทยคือเท่าไร?', answer: 'Cap Rate ที่ดีในไทยมักอยู่ที่ 5-8% ต่อปี ขึ้นอยู่กับทำเลและประเภทอสังหาฯ ทำเลกรุงเทพฯ ชั้นในมักได้ cap rate ต่ำกว่าต่างจังหวัด' },
+  { question: 'ค่าใช้จ่ายแฝงในการซื้ออสังหาฯ มีอะไรบ้าง?', answer: 'ค่าโอน ค่าจดจำนอง ค่าอากรแสตมป์ ภาษีธุรกิจเฉพาะ ค่านายหน้า ค่าซ่อมแซม รวมกันอาจสูงถึง 3-7% ของราคาซื้อ' },
+  { question: 'ผลตอบแทนการลงทุนอสังหาฯ ที่ดีต้องเป็นเท่าไร?', answer: 'นักลงทุนส่วนใหญ่ต้องการ IRR อย่างน้อย 8-12% ต่อปี หรือ Yield ค่าเช่า 5-7% ขึ้นอยู่กับทำเลและเป้าหมาย' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกราคาซื้อ ค่าเช่า ค่าใช้จ่ายรายเดือน เครื่องจะคำนวณ Yield, Cash Flow และ Cap Rate ให้อัตโนมัติ' }
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' },
+  { question: 'ซื้อบ้านมือสองต้องระวังค่าใช้จ่ายอะไร?', answer: 'ค่าธรรมเนียมโอน ค่าภาษีธุรกิจเฉพาะหรืออากรแสตมป์ ค่าจดจำนอง ค่าตรวจสอบภาระผูกพัน ค่าประเมินราคา ค่าซ่อมแซม และค่าประกันภัย รวมกันอาจสูงถึง 5-10% ของราคาซื้อ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ IRR">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณ IRR อสังหาฯ ปี 2569</h1>
+    <p class="text-gray-600 mb-6">คำนวณ IRR (อัตราผลตอบแทนภายใน) เพื่อวิเคราะห์ความคุ้มค่าของการลงทุนอสังหาฯระยะยาว</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="irr-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="initial-investment" class="block text-sm font-medium text-gray-700 mb-1">เงินลงทุนเบื้องต้น (บาท)</label>
+            <input id="initial-investment" type="text" inputmode="numeric" placeholder="เช่น 2,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="annual-cashflow" class="block text-sm font-medium text-gray-700 mb-1">Cash Flow ประจำปี (บาท)</label>
+            <input id="annual-cashflow" type="text" inputmode="numeric" placeholder="เช่น 150,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="holding-years" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาถือครอง (ปี)</label>
+            <input id="holding-years" type="text" inputmode="numeric" placeholder="เช่น 10" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" value="10" />
+          </div>
+          <div>
+            <label for="exit-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าขายออก (บาท)</label>
+            <input id="exit-value" type="text" inputmode="numeric" placeholder="เช่น 3,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          คำนวณ IRR
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="rounded-lg bg-primary-50 p-4 text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">IRR (อัตราผลตอบแทนภายใน)</div>
+          <div id="res-irr" class="text-2xl font-bold text-primary-700">-</div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">เงินลงทุนเบื้องต้น</span>
+            <span id="res-initial-investment" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">Cash Flow ต่อปี</span>
+            <span id="res-annual-cashflow" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ระยะเวลาถือครอง</span>
+            <span id="res-holding-years" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">มูลค่าขายออก</span>
+            <span id="res-exit-value" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+            <span class="text-gray-700 font-semibold">IRR (ผลตอบแทนรายปี)</span>
+            <span id="res-calc-irr" class="font-bold text-lg text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
+    <RelatedCalculators currentHref="/คำนวณ-irr-อสังหาฯ/" />
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  function findIRR(initialInvestment, annualCashflow, years, exitValue) {
+    // Newton-Raphson method to find IRR
+    let rate = 0.1; // Start with 10%
+    const maxIterations = 100;
+    const tolerance = 0.0001;
+
+    for (let i = 0; i < maxIterations; i++) {
+      // NPV calculation
+      let npv = -initialInvestment;
+      let dnpv = 0;
+
+      for (let year = 1; year <= years; year++) {
+        const pv = annualCashflow / Math.pow(1 + rate, year);
+        const dpv = -year * annualCashflow / Math.pow(1 + rate, year + 1);
+        npv += pv;
+        dnpv += dpv;
+      }
+
+      const finalValue = exitValue / Math.pow(1 + rate, years);
+      const dfinalValue = -years * exitValue / Math.pow(1 + rate, years + 1);
+      npv += finalValue;
+      dnpv += dfinalValue;
+
+      if (Math.abs(npv) < tolerance) {
+        return rate * 100;
+      }
+
+      if (Math.abs(dnpv) < 0.0001) {
+        rate += 0.001;
+      } else {
+        rate = rate - npv / dnpv;
+      }
+
+      if (rate < -0.99) rate = -0.99;
+      if (rate > 5) rate = 5;
+    }
+
+    return rate * 100;
+  }
+
+  const form = document.querySelector('#irr-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const initialInvestment = parseNumber(document.querySelector('#initial-investment')?.value || '');
+    const annualCashflow = parseNumber(document.querySelector('#annual-cashflow')?.value || '');
+    const holdingYears = parseNumber(document.querySelector('#holding-years')?.value || '');
+    const exitValue = parseNumber(document.querySelector('#exit-value')?.value || '');
+
+    if (!(Number.isFinite(initialInvestment) && initialInvestment > 0 && Number.isFinite(annualCashflow) && annualCashflow > 0 && Number.isFinite(holdingYears) && holdingYears > 0 && Number.isFinite(exitValue) && exitValue > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const irr = findIRR(initialInvestment, annualCashflow, holdingYears, exitValue);
+
+    document.querySelector('#res-irr').textContent = irr.toFixed(2) + '%';
+    document.querySelector('#res-initial-investment').textContent = formatCurrency(initialInvestment);
+    document.querySelector('#res-annual-cashflow').textContent = formatCurrency(annualCashflow);
+    document.querySelector('#res-holding-years').textContent = `${holdingYears.toFixed(0)} ปี`;
+    document.querySelector('#res-exit-value').textContent = formatCurrency(exitValue);
+    document.querySelector('#res-calc-irr').textContent = irr.toFixed(2) + '%';
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

@@ -1,0 +1,386 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+
+const pageTitle = 'ตารางผ่อนชำระเงินกู้ ครบทุกงวด 2569 | Kamnuanlek';
+const pageDescription = 'สร้างตารางผ่อนชำระเงินกู้แบบลดต้นลดดอก ครบทุกงวด พร้อมวันที่ เงินต้น ดอกเบี้ย และยอดคงเหลือ พิมพ์ได้ด้วย Ctrl+P รองรับสินเชื่อบ้าน สินเชื่อรถ และสินเชื่อทุกประเภท';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/ตารางผ่อนชำระเงินกู้/`;
+
+const faqData = [
+  {
+    question: 'ตารางผ่อนชำระเงินกู้ (Amortization Schedule) คืออะไร?',
+    answer: 'ตารางผ่อนชำระเงินกู้คือตารางที่แสดงรายละเอียดการชำระเงินทุกงวด ประกอบด้วย วันที่ชำระ ค่างวด เงินต้นที่ตัด ดอกเบี้ยที่จ่าย และยอดเงินต้นคงเหลือ ช่วยให้เห็นภาพรวมของสินเชื่อตลอดอายุสัญญา',
+  },
+  {
+    question: 'ทำไมงวดแรกๆ จ่ายดอกเบี้ยเยอะกว่าเงินต้น?',
+    answer: 'ในสินเชื่อแบบลดต้นลดดอก ดอกเบี้ยคำนวณจากเงินต้นคงเหลือ ดังนั้นงวดแรกที่เงินต้นยังมาก ดอกเบี้ยก็สูง เมื่อผ่อนไปเรื่อยๆ เงินต้นลดลง ดอกเบี้ยก็ลดลงด้วย เงินส่วนที่เกินจากดอกเบี้ยจะตัดเงินต้น',
+  },
+  {
+    question: 'จะพิมพ์ตารางผ่อนชำระได้อย่างไร?',
+    answer: 'กด Ctrl+P (Windows) หรือ Cmd+P (Mac) เพื่อพิมพ์หน้าเว็บ ตารางจะแสดงทุกงวดครบถ้วน แนะนำให้เลือก "Save as PDF" เพื่อบันทึกไว้อ้างอิง',
+  },
+  {
+    question: 'ผ่อนเพิ่มเดือนละ 1,000 บาท ประหยัดดอกเบี้ยได้เท่าไร?',
+    answer: 'การผ่อนเพิ่มแต่ละบาทช่วยลดเงินต้นเร็วขึ้น ทำให้ดอกเบี้ยในงวดต่อๆ ไปลดลง สำหรับสินเชื่อบ้าน 3 ล้านบาท ดอกเบี้ย 6.5% 30 ปี การผ่อนเพิ่ม 1,000 บาท/เดือน อาจประหยัดดอกเบี้ยได้หลายแสนบาทและลดระยะเวลาผ่อนหลายปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องสร้างตารางผ่อนชำระเงินกู้',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+// Month names in Thai
+const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth() + 1;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="ตารางผ่อนชำระเงินกู้">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      📋 ตารางผ่อนชำระเงินกู้ — ครบทุกงวด
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      สร้างตารางผ่อนชำระเงินกู้แบบลดต้นลดดอกครบทุกงวด พร้อมวันที่ เงินต้น ดอกเบี้ย และยอดคงเหลือ
+      พิมพ์หรือบันทึก PDF ได้ด้วย <kbd class="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Ctrl+P</kbd>
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8 print:hidden">
+      <form id="amortize-form" class="space-y-5">
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนเงินกู้ (บาท)
+          </label>
+          <input
+            type="text"
+            id="principal"
+            inputmode="numeric"
+            placeholder="เช่น 3,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ยต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="interest-rate"
+              inputmode="decimal"
+              placeholder="เช่น 6.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="term-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <input
+              type="text"
+              id="term-years"
+              inputmode="numeric"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <!-- Start date selectors -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            วันเริ่มผ่อน (ไม่บังคับ — ใช้แสดงวันที่ในตาราง)
+          </label>
+          <div class="flex gap-3">
+            <select id="start-month" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+              <option value="1">มกราคม</option>
+              <option value="2">กุมภาพันธ์</option>
+              <option value="3">มีนาคม</option>
+              <option value="4">เมษายน</option>
+              <option value="5">พฤษภาคม</option>
+              <option value="6">มิถุนายน</option>
+              <option value="7">กรกฎาคม</option>
+              <option value="8">สิงหาคม</option>
+              <option value="9">กันยายน</option>
+              <option value="10">ตุลาคม</option>
+              <option value="11">พฤศจิกายน</option>
+              <option value="12">ธันวาคม</option>
+            </select>
+            <select id="start-year" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          สร้างตารางผ่อนชำระ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <!-- Summary -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-4">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">สรุปผล</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 print:hidden">
+          💡 พิมพ์ตาราง: กด <kbd class="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded font-mono">Ctrl+P</kbd> หรือ <kbd class="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded font-mono">Cmd+P</kbd> แล้วเลือก "Save as PDF"
+        </p>
+      </div>
+
+      <!-- Full Amortization Table -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ตารางผ่อนชำระรายงวด</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm" id="amortize-table">
+            <thead>
+              <tr class="text-left text-gray-500 border-b-2 border-gray-200 bg-gray-50">
+                <th class="py-2 px-2 font-semibold">งวดที่</th>
+                <th class="py-2 px-2 font-semibold">วันที่</th>
+                <th class="py-2 px-2 text-right font-semibold">ค่างวด</th>
+                <th class="py-2 px-2 text-right font-semibold">เงินต้น</th>
+                <th class="py-2 px-2 text-right font-semibold">ดอกเบี้ย</th>
+                <th class="py-2 px-2 text-right font-semibold">ยอดคงเหลือ</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-body"></tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-xs text-gray-400 print:hidden">แสดงทุกงวด — สามารถเลื่อนดูหรือพิมพ์ด้วย Ctrl+P</p>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <div class="print:hidden">
+      <GuardedAdSlot />
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8 print:hidden">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีอ่านตารางผ่อนชำระเงินกู้</h2>
+
+      <p>
+        ตารางผ่อนชำระเงินกู้ หรือ Amortization Schedule แสดงรายละเอียดการชำระเงินทุกงวดตลอดอายุสัญญา
+        ประกอบด้วย 6 คอลัมน์หลัก:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>งวดที่:</strong> ลำดับงวดตั้งแต่ 1 จนถึงงวดสุดท้าย</li>
+        <li><strong>วันที่:</strong> วันครบกำหนดชำระของแต่ละงวด</li>
+        <li><strong>ค่างวด:</strong> ยอดชำระรวมต่อเดือน (คงที่ตลอดสัญญา)</li>
+        <li><strong>เงินต้น:</strong> ส่วนของค่างวดที่ตัดเงินต้น (เพิ่มขึ้นตามเวลา)</li>
+        <li><strong>ดอกเบี้ย:</strong> ส่วนของค่างวดที่เป็นดอกเบี้ย (ลดลงตามเวลา)</li>
+        <li><strong>ยอดคงเหลือ:</strong> เงินต้นที่ยังค้างชำระหลังจ่ายงวดนั้น</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ประโยชน์ของตารางผ่อนชำระ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>วางแผนการเงินระยะยาวได้แม่นยำ</li>
+        <li>ทราบยอดปิดบัญชีก่อนกำหนด (ยอดคงเหลือ ณ งวดที่ต้องการ)</li>
+        <li>เปรียบเทียบผลของการผ่อนเพิ่มต่อดอกเบี้ยรวม</li>
+        <li>ตรวจสอบความถูกต้องของสเตทเมนท์จากธนาคาร</li>
+        <li>ใช้ยื่นเอกสารกู้ธนาคาร หรือยื่นภาษีดอกเบี้ยบ้าน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ</h3>
+      <p>
+        ใช้สูตร PMT แบบลดต้นลดดอก: ค่างวด = P × [r(1+r)ⁿ] ÷ [(1+r)ⁿ − 1]
+        โดย P = เงินต้น, r = อัตราดอกเบี้ยต่อเดือน, n = จำนวนงวด
+        ดอกเบี้ยแต่ละงวด = ยอดคงเหลือก่อนงวด × r
+        เงินต้นที่ตัด = ค่างวด − ดอกเบี้ยงวดนั้น
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8 print:hidden">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">
+        {faqData.map((faq) => (
+          <details class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:text-primary-600">
+              {faq.question}
+            </summary>
+            <div class="px-4 pb-4 text-sm text-gray-600">
+              {faq.answer}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <div class="print:hidden">
+  
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/ตารางผ่อนชำระเงินกู้/" />
+      <RelatedCalculators currentHref="/ตารางผ่อนชำระเงินกู้/" />
+    </div>
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 print:hidden">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ
+      ค่างวดจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงิน ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const thaiMonthsShort = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+    function formatDate(month: number, year: number): string {
+      // month: 1-12, year: CE
+      const buddhistYear = year + 543;
+      return `${thaiMonthsShort[month - 1]} ${buddhistYear}`;
+    }
+
+    function addMonth(month: number, year: number, add: number): { month: number; year: number } {
+      let m = month - 1 + add;
+      const y = year + Math.floor(m / 12);
+      m = ((m % 12) + 12) % 12;
+      return { month: m + 1, year: y };
+    }
+
+    // Populate year selector
+    const startYearSelect = document.getElementById('start-year') as HTMLSelectElement;
+    const startMonthSelect = document.getElementById('start-month') as HTMLSelectElement;
+    const now = new Date();
+    const currentCEYear = now.getFullYear();
+    const currentMonthNum = now.getMonth() + 1;
+
+    for (let y = currentCEYear - 1; y <= currentCEYear + 5; y++) {
+      const opt = document.createElement('option');
+      opt.value = String(y);
+      opt.textContent = String(y + 543) + ' (' + y + ')';
+      if (y === currentCEYear) opt.selected = true;
+      startYearSelect.appendChild(opt);
+    }
+    startMonthSelect.value = String(currentMonthNum);
+
+    const form = document.getElementById('amortize-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const principal = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const annualRate = parseFloat((document.getElementById('interest-rate') as HTMLInputElement).value.replace(/,/g, '')) || 0;
+      const termYears = parseNum((document.getElementById('term-years') as HTMLInputElement).value);
+      const startMonth = parseInt((document.getElementById('start-month') as HTMLSelectElement).value);
+      const startYear = parseInt((document.getElementById('start-year') as HTMLSelectElement).value);
+
+      if (principal <= 0) { (document.getElementById('principal') as HTMLInputElement).focus(); return; }
+      if (termYears <= 0) { (document.getElementById('term-years') as HTMLInputElement).focus(); return; }
+
+      const n = Math.round(termYears * 12);
+      const r = annualRate / 100 / 12;
+
+      let monthlyPayment: number;
+      if (r === 0) {
+        monthlyPayment = principal / n;
+      } else {
+        const factor = Math.pow(1 + r, n);
+        monthlyPayment = principal * (r * factor) / (factor - 1);
+      }
+
+      const totalPaid = monthlyPayment * n;
+      const totalInterest = totalPaid - principal;
+
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPayment) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+
+      // Build full amortization table
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      let balance = principal;
+
+      for (let i = 0; i < n; i++) {
+        const monthNum = i + 1;
+        const interestPart = balance * r;
+        const principalPart = Math.min(monthlyPayment - interestPart, balance);
+        balance = Math.max(0, balance - principalPart);
+
+        const dateInfo = addMonth(startMonth, startYear, i);
+        const dateStr = formatDate(dateInfo.month, dateInfo.year);
+
+        const tr = document.createElement('tr');
+        tr.className = monthNum % 2 === 0 ? 'bg-gray-50' : 'bg-white';
+        tr.innerHTML = `
+          <td class="py-1.5 px-2 text-gray-600 tabular-nums">${monthNum}</td>
+          <td class="py-1.5 px-2 text-gray-500 text-xs whitespace-nowrap">${dateStr}</td>
+          <td class="py-1.5 px-2 text-right tabular-nums">${fmt(monthlyPayment)}</td>
+          <td class="py-1.5 px-2 text-right tabular-nums text-green-700">${fmt(principalPart)}</td>
+          <td class="py-1.5 px-2 text-right tabular-nums text-red-600">${fmt(interestPart)}</td>
+          <td class="py-1.5 px-2 text-right tabular-nums font-medium">${fmt(balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('amortization-schedule');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('amortization-schedule');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

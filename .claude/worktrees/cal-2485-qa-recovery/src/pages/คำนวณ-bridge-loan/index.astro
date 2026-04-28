@@ -1,0 +1,167 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ Bridge Loan สินเชื่อเชื่อมต่อ 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุน Bridge Loan สินเชื่อระยะสั้นเชื่อมต่อระหว่างขายบ้านเก่ากับซื้อบ้านใหม่ คำนวณดอกเบี้ยรายวัน ค่าธรรมเนียม และต้นทุนรวม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-bridge-loan/`;
+
+const faqData = [
+  {
+    question: 'Bridge Loan คืออะไร?',
+    answer: 'Bridge Loan คือสินเชื่อระยะสั้น (มักไม่เกิน 12 เดือน) ที่ใช้เชื่อมต่อช่วงที่ต้องการเงินสดทันที เช่น ซื้อบ้านใหม่แต่ยังขายบ้านเก่าไม่ได้ หรือรอรับเงินจากธุรกรรมอสังหาฯ ดอกเบี้ยสูงกว่าสินเชื่อปกติ 1-3%',
+  },
+  {
+    question: 'Bridge Loan ในไทยมีที่ไหนบ้าง?',
+    answer: 'ธนาคารพาณิชย์ขนาดใหญ่หลายแห่งในไทยมีผลิตภัณฑ์ที่คล้าย Bridge Loan เช่น สินเชื่อซื้อบ้านใหม่ก่อนขายบ้านเก่า หรือ Top-Up ชั่วคราว ดอกเบี้ยมักอยู่ที่ MRR+1% ถึง MRR+3% และต้องปิดภายใน 12-24 เดือน',
+  },
+  {
+    question: 'ควรใช้ Bridge Loan เมื่อไร?',
+    answer: 'ใช้เมื่อต้องการเงินทุนเชื่อมต่อระยะสั้น มีความมั่นใจว่าจะได้เงินจากการขายทรัพย์สินหรือธุรกรรมภายในเวลาที่กำหนด และต้นทุนดอกเบี้ยที่เพิ่มขึ้นคุ้มค่ากับโอกาสที่ได้มา',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ Bridge Loan',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ Bridge Loan">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณ Bridge Loan — สินเชื่อเชื่อมต่อระยะสั้น
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณต้นทุน Bridge Loan รายวัน รายเดือน และรวม ช่วยตัดสินใจว่าคุ้มค่ากับการใช้</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="bridge-form" class="space-y-5">
+        <div>
+          <label for="principal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วงเงิน Bridge Loan (บาท)</label>
+          <input type="text" id="principal" inputmode="numeric" placeholder="เช่น 2,000,000"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ย (%/ปี)</label>
+            <input type="text" id="rate" inputmode="decimal" placeholder="เช่น 8.5"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+            <p class="text-xs text-gray-500 mt-1">มักสูงกว่าสินเชื่อปกติ 1-3%</p>
+          </div>
+          <div>
+            <label for="duration" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ระยะเวลาใช้งาน (เดือน)</label>
+            <input type="text" id="duration" inputmode="numeric" placeholder="เช่น 6"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div>
+          <label for="setup-fee" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ค่าธรรมเนียมแรกเข้า (บาท)</label>
+          <input type="text" id="setup-fee" inputmode="numeric" placeholder="0"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ย/วัน</div>
+            <div id="res-daily" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ย/เดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-blue-700 dark:text-blue-300">-</div>
+          </div>
+          <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-total-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ต้นทุนรวมทั้งหมด</div>
+            <div id="res-total-cost" class="text-xl font-bold text-orange-700 dark:text-orange-300">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Calculators Card (below result, above ad) -->
+    <RelatedCalculators currentHref="/คำนวณ-bridge-loan/" />
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">ข้อควรระวังในการใช้ Bridge Loan</h2>
+      <p>Bridge Loan มีต้นทุนสูงกว่าสินเชื่อปกติ ควรใช้เฉพาะเมื่อมีแผนชัดเจนว่าจะชำระคืนภายในระยะเวลาที่กำหนด ความเสี่ยงหลักคือหากขายทรัพย์สินไม่ได้ตามกำหนด อาจต้องต่อสัญญาและเสียดอกเบี้ยเพิ่มขึ้น หรือถูกบังคับขายทรัพย์</p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณ-bridge-loan/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ เงื่อนไขจริงขึ้นอยู่กับสถาบันการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('bridge-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const P = parseNum((document.getElementById('principal') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('rate') as HTMLInputElement).value) || 8.5;
+      const months = parseNum((document.getElementById('duration') as HTMLInputElement).value) || 6;
+      const fee = parseNum((document.getElementById('setup-fee') as HTMLInputElement).value);
+      if (!P) return;
+
+      const dailyInterest = P * rate / 100 / 365;
+      const monthlyInterest = P * rate / 100 / 12;
+      const totalInterest = monthlyInterest * months;
+      const totalCost = totalInterest + fee;
+
+      (document.getElementById('res-daily') as HTMLElement).textContent = fmt(dailyInterest) + ' บาท';
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyInterest) + ' บาท';
+      (document.getElementById('res-total-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('bridge-loan');
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,588 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจ้างรายวัน 2569 | แปลงเงินเดือนเป็นรายวัน พร้อมค่าโอที | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างรายวันจากเงินเดือน หรือแปลงค่าจ้างรายวันเป็นรายเดือน พร้อมค่าโอที ค่าทำงานวันหยุด หักประกันสังคม ตามกฎหมายแรงงานไทย ปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างรายวัน/`;
+
+const faqData = [
+  {
+    question: 'คำนวณค่าจ้างรายวันจากเงินเดือนอย่างไร?',
+    answer: 'ค่าจ้างรายวัน = เงินเดือน ÷ จำนวนวันทำงานต่อเดือน เช่น เงินเดือน 15,000 บาท ทำงาน 26 วัน = 576.92 บาท/วัน หรือถ้าเป็นพนักงานรายเดือนหาร 30 วัน = 500 บาท/วัน',
+  },
+  {
+    question: 'พนักงานรายเดือนกับรายวัน หารวันทำงานต่างกันอย่างไร?',
+    answer: 'พนักงานรายเดือนมักใช้ 30 วันเป็นตัวหาร (ตามแนวปฏิบัติทั่วไป) ส่วนพนักงานรายวันนับเฉพาะวันที่ทำงานจริง เช่น 22-26 วัน ขึ้นอยู่กับข้อตกลงการจ้างงาน',
+  },
+  {
+    question: 'ค่าโอที (OT) คิดจากค่าจ้างรายวันอย่างไร?',
+    answer: 'คิดจากค่าจ้างรายชั่วโมง (ค่าจ้างรายวัน ÷ 8) แล้วคูณอัตรา: OT วันธรรมดา 1.5 เท่า, ทำงานวันหยุด 2 เท่า, OT วันหยุด 3 เท่า ตาม พ.ร.บ. คุ้มครองแรงงาน พ.ศ. 2541 มาตรา 61-63',
+  },
+  {
+    question: 'ประกันสังคม มาตรา 33 หักเท่าไร?',
+    answer: 'หัก 5% ของเงินเดือน (ไม่รวม OT) โดยคิดจากฐานเงินเดือนขั้นต่ำ 1,650 บาท สูงสุด 15,000 บาท ดังนั้นหักสูงสุด 750 บาท/เดือน',
+  },
+  {
+    question: 'เงินเดือน 15,000 คิดเป็นค่าจ้างรายวันเท่าไร?',
+    answer: 'ถ้าหาร 30 วัน = 500 บาท/วัน, ถ้าหาร 26 วัน = 576.92 บาท/วัน ค่าจ้างรายชั่วโมงจะเท่ากับ 62.50 หรือ 72.12 บาท ตามลำดับ',
+  },
+  {
+    question: 'ค่าจ้างรายวัน 400 บาท ได้เงินเดือนเท่าไร?',
+    answer: 'ถ้าทำงาน 26 วัน = 10,400 บาท/เดือน, 22 วัน = 8,800 บาท/เดือน ขึ้นอยู่กับจำนวนวันทำงานจริงในเดือนนั้น',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจ้างรายวัน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณค่าจ้างรายวัน ปี 2569",
+  "description": "ขั้นตอนการคำนวณค่าจ้างรายวันตามพระราชกฤษฎีกาจ้างแรงงาน โดยใช้เงินเดือนรายเดือน หรือเทียบอัตราค่าจ้างขั้นต่ำตามประกาศของกระทรวงแรงงาน",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "ตรวจสอบเงินเดือนรายเดือน หรือค่าจ้างขั้นต่ำ",
+      "text": "ดูจากสัญญาจ้าง หรือประกาศค่าจ้างขั้นต่ำของกระทรวงแรงงาน (แตกต่างไปตามจังหวัด) ตัวอย่าง: เงินเดือน 15,000 บาท/เดือน หรือค่าจ้างขั้นต่ำ 336 บาท/วัน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณจำนวนวันทำงาน",
+      "text": "วันทำงานต่อเดือนโดยปกติ: ตั้งแต่ 1 ถึง 31 วัน แต่นั่นนับรวมวันหยุดสัปดาห์ (เสาร์-อาทิตย์) วันหยุดราชการ หนึ่งเดือนมีวันทำงานประมาณ 20-22 วัน ตัวอย่าง: 20 วัน/เดือน"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "คำนวณค่าจ้างรายวัน",
+      "text": "ค่าจ้างรายวัน = เงินเดือนรายเดือน ÷ จำนวนวันทำงาน ตัวอย่าง: 15,000 ÷ 20 วัน = 750 บาท/วัน (ถ้าต่ำกว่าค่าจ้างขั้นต่ำ ให้ใช้ค่าจ้างขั้นต่ำแทน)"
+    }
+  ]
+};
+
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างรายวัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจ้างรายวัน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      แปลงเงินเดือนเป็นค่าจ้างรายวัน หรือแปลงค่าจ้างรายวันเป็นรายเดือน
+      พร้อมคำนวณค่าโอที ค่าทำงานวันหยุด และหักประกันสังคม ตามกฎหมายแรงงานไทย
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="dw-form" class="space-y-5">
+        <p id="dw-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <!-- Mode Selector -->
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700">เลือกรูปแบบการคำนวณ</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex cursor-pointer items-center justify-center rounded-lg border-2 border-primary-500 bg-primary-50 px-4 py-3 text-center text-sm font-medium text-primary-700 transition-colors" id="mode-m2d-label">
+              <input type="radio" name="calc-mode" value="monthly_to_daily" checked class="sr-only" />
+              <span>เงินเดือน → รายวัน</span>
+            </label>
+            <label class="flex cursor-pointer items-center justify-center rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-center text-sm font-medium text-gray-600 transition-colors hover:border-gray-300" id="mode-d2m-label">
+              <input type="radio" name="calc-mode" value="daily_to_monthly" class="sr-only" />
+              <span>รายวัน → เงินเดือน</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="amount-input" id="amount-label" class="mb-1 block text-sm font-medium text-gray-700">
+              เงินเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="amount-input"
+              inputmode="decimal"
+              placeholder="เช่น 15000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="working-days" class="mb-1 block text-sm font-medium text-gray-700">
+              วันทำงานต่อเดือน (วัน)
+            </label>
+            <input
+              type="text"
+              id="working-days"
+              inputmode="decimal"
+              placeholder="เช่น 26"
+              value="26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <p id="working-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <!-- Social Security Toggle -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="deduct-sso" checked class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm font-medium text-gray-700">หักประกันสังคม มาตรา 33 (5% สูงสุด 750 บาท)</span>
+          </label>
+        </div>
+
+        <!-- OT Toggle -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input type="checkbox" id="include-ot" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            <span class="text-sm font-medium text-gray-700">รวมค่าล่วงเวลา (OT) ในการคำนวณ</span>
+          </label>
+
+          <div id="ot-fields" class="mt-4 hidden space-y-4">
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div>
+                <label for="weekday-ot-hours" class="mb-1 block text-sm font-medium text-gray-700">
+                  OT วันธรรมดา (1.5 เท่า)
+                </label>
+                <input
+                  type="text"
+                  id="weekday-ot-hours"
+                  inputmode="decimal"
+                  placeholder="ชั่วโมง/เดือน"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p id="weekday-ot-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+              <div>
+                <label for="holiday-work-hours" class="mb-1 block text-sm font-medium text-gray-700">
+                  ทำงานวันหยุด (2 เท่า)
+                </label>
+                <input
+                  type="text"
+                  id="holiday-work-hours"
+                  inputmode="decimal"
+                  placeholder="ชั่วโมง/เดือน"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p id="holiday-work-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+              <div>
+                <label for="holiday-ot-hours" class="mb-1 block text-sm font-medium text-gray-700">
+                  OT วันหยุด (3 เท่า)
+                </label>
+                <input
+                  type="text"
+                  id="holiday-ot-hours"
+                  inputmode="decimal"
+                  placeholder="ชั่วโมง/เดือน"
+                  value="0"
+                  class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p id="holiday-ot-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="dw-submit-btn"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+        >
+          คำนวณค่าจ้างรายวัน
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="dw-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้สุทธิต่อเดือน</div>
+            <div id="res-net-income" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายวัน</div>
+            <div id="res-daily-wage" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายเดือน</div>
+            <div id="res-monthly-wage" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายชั่วโมง</div>
+            <div id="res-hourly-rate" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+
+        <!-- Deductions Breakdown -->
+        <div id="deductions-breakdown">
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">รายละเอียดรายได้และหักประกันสังคม</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">เงินเดือนพื้นฐาน</span>
+              <span id="res-base-monthly" class="font-medium">-</span>
+            </div>
+            <div id="ot-row-weekday" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">OT วันธรรมดา (1.5 เท่า)</span>
+              <span id="res-weekday-ot" class="font-medium">-</span>
+            </div>
+            <div id="ot-row-holiday-work" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">ทำงานวันหยุด (2 เท่า)</span>
+              <span id="res-holiday-work" class="font-medium">-</span>
+            </div>
+            <div id="ot-row-holiday-ot" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="text-gray-600">OT วันหยุด (3 เท่า)</span>
+              <span id="res-holiday-ot" class="font-medium">-</span>
+            </div>
+            <div id="ot-row-total" class="hidden flex justify-between border-b border-gray-100 py-1">
+              <span class="font-medium text-gray-700">ค่าโอทีรวม</span>
+              <span id="res-total-ot" class="font-bold text-blue-700">-</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 py-1">
+              <span class="font-medium text-gray-700">รายได้รวมก่อนหัก</span>
+              <span id="res-total-income" class="font-bold text-gray-900">-</span>
+            </div>
+            <div id="sso-row" class="flex justify-between border-b border-gray-100 py-1">
+              <span class="text-red-600">หักประกันสังคม ม.33</span>
+              <span id="res-sso" class="font-medium text-red-600">-</span>
+            </div>
+            <div class="flex justify-between border-t-2 border-gray-300 py-2">
+              <span class="font-semibold text-gray-700">รายได้สุทธิต่อเดือน</span>
+              <span id="res-net-income-bottom" class="font-bold text-green-700">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#dw-results" />
+
+    <!-- Quick Reference Table -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-semibold text-gray-900">ตารางแปลงค่าจ้างรายวัน ⇔ รายเดือน</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50">
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">เงินเดือน (บาท)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รายวัน (÷30)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รายวัน (÷26)</th>
+              <th class="px-4 py-3 text-right font-semibold text-gray-700">รายชั่วโมง (÷30)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[10000, 12000, 15000, 18000, 20000, 25000, 30000, 35000, 40000, 50000].map((salary) => (
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="px-4 py-3 text-right font-medium text-gray-900">
+                  {new Intl.NumberFormat('th-TH').format(salary)}
+                </td>
+                <td class="px-4 py-3 text-right text-gray-700">
+                  {new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(salary / 30)}
+                </td>
+                <td class="px-4 py-3 text-right text-gray-700">
+                  {new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(salary / 26)}
+                </td>
+                <td class="px-4 py-3 text-right text-gray-700">
+                  {new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(salary / 30 / 8)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#dw-results" />
+
+    <!-- Formula Section -->
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่เครื่องมือนี้ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าจ้างรายวัน = เงินเดือน ÷ จำนวนวันทำงานต่อเดือน</li>
+        <li>เงินเดือน = ค่าจ้างรายวัน × จำนวนวันทำงานต่อเดือน</li>
+        <li>ค่าจ้างรายชั่วโมง = ค่าจ้างรายวัน ÷ 8 ชั่วโมง</li>
+        <li>OT วันธรรมดา = ค่าจ้างรายชั่วโมง × 1.5 × ชั่วโมง OT</li>
+        <li>ทำงานวันหยุด = ค่าจ้างรายชั่วโมง × 2 × ชั่วโมงทำงานวันหยุด</li>
+        <li>OT วันหยุด = ค่าจ้างรายชั่วโมง × 3 × ชั่วโมง OT วันหยุด</li>
+        <li>ประกันสังคม ม.33 = 5% ของเงินเดือน (ฐาน 1,650-15,000 บาท สูงสุด 750 บาท)</li>
+        <li>รายได้สุทธิ = เงินเดือน + ค่า OT ทั้งหมด − ประกันสังคม</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ตัวอย่าง</h3>
+      <p>
+        พนักงานเงินเดือน 15,000 บาท ทำงาน 26 วัน/เดือน มี OT วันธรรมดา 10 ชั่วโมง
+      </p>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าจ้างรายวัน = 15,000 ÷ 26 = 576.92 บาท</li>
+        <li>ค่าจ้างรายชั่วโมง = 576.92 ÷ 8 = 72.12 บาท</li>
+        <li>OT วันธรรมดา = 72.12 × 1.5 × 10 = 1,081.80 บาท</li>
+        <li>รายได้รวม = 15,000 + 1,081.80 = 16,081.80 บาท</li>
+        <li>ประกันสังคม = 15,000 × 5% = 750 บาท</li>
+        <li>รายได้สุทธิ = 16,081.80 − 750 = 15,331.80 บาท</li>
+      </ul>
+
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.mol.go.th/wp-content/uploads/sites/2/2018/07/183.pdf" target="_blank" rel="noopener noreferrer">พระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541 (มาตรา 61-63 ค่า OT)</a></li>
+        <li><a href="https://www.sso.go.th/wpr/main/privilege/%E0%B8%AA%E0%B8%B4%E0%B8%97%E0%B8%98%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%82%E0%B8%A2%E0%B8%8A%E0%B8%99%E0%B9%8C_sub_category_1_1_1/info/436" target="_blank" rel="noopener noreferrer">สำนักงานประกันสังคม: อัตราเงินสมทบ มาตรา 33</a></li>
+      </ul>
+    </section>
+
+    <!-- Related Calculators -->
+    <RelatedArticles currentHref="/คำนวณค่าจ้างรายวัน/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างรายวัน/" />
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Disclaimer -->
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณเบื้องต้นตามสูตรทั่วไปและ พ.ร.บ. คุ้มครองแรงงาน พ.ศ. 2541
+      จำนวนวันทำงานจริงอาจแตกต่างกันในแต่ละเดือนและแต่ละบริษัท ประกันสังคมเป็นอัตราสำหรับ ม.33 เท่านั้น
+      กรุณาตรวจสอบกับฝ่ายบุคคลหรือสำนักงานประกันสังคมในพื้นที่
+    </div>
+  </article>
+
+  <script type="module">
+    import { calculateDailyWage } from '../../lib/daily-wage-calculator.ts';
+
+    function parseNum(value) {
+      const normalized = String(value).replace(/,/g, '').trim();
+      if (normalized === '') return NaN;
+      const num = Number(normalized);
+      return Number.isFinite(num) ? num : NaN;
+    }
+
+    function formatMoney(num) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num)} บาท`;
+    }
+
+    const form = document.getElementById('dw-form');
+    const formError = document.getElementById('dw-form-error');
+    const resultBox = document.getElementById('dw-results');
+    const includeOtCheckbox = document.getElementById('include-ot');
+    const otFields = document.getElementById('ot-fields');
+    const amountLabel = document.getElementById('amount-label');
+    const amountInput = document.getElementById('amount-input');
+    const modeRadios = document.querySelectorAll('input[name="calc-mode"]');
+    const modeM2dLabel = document.getElementById('mode-m2d-label');
+    const modeD2mLabel = document.getElementById('mode-d2m-label');
+    const submitBtn = document.getElementById('dw-submit-btn');
+
+    let currentMode = 'monthly_to_daily';
+
+    function updateModeUI() {
+      if (currentMode === 'monthly_to_daily') {
+        amountLabel.textContent = 'เงินเดือน (บาท)';
+        amountInput.placeholder = 'เช่น 15000';
+        submitBtn.textContent = 'คำนวณค่าจ้างรายวัน';
+        modeM2dLabel.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        modeM2dLabel.classList.remove('border-gray-200', 'bg-white', 'text-gray-600');
+        modeD2mLabel.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        modeD2mLabel.classList.add('border-gray-200', 'bg-white', 'text-gray-600');
+      } else {
+        amountLabel.textContent = 'ค่าจ้างรายวัน (บาท)';
+        amountInput.placeholder = 'เช่น 500';
+        submitBtn.textContent = 'คำนวณเงินเดือน';
+        modeD2mLabel.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        modeD2mLabel.classList.remove('border-gray-200', 'bg-white', 'text-gray-600');
+        modeM2dLabel.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        modeM2dLabel.classList.add('border-gray-200', 'bg-white', 'text-gray-600');
+      }
+    }
+
+    modeRadios.forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        currentMode = e.target.value;
+        updateModeUI();
+      });
+    });
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.textContent = '';
+    }
+
+    function setFieldError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearErrors() {
+      formError?.classList.add('hidden');
+      clearFieldError('amount-error');
+      clearFieldError('working-days-error');
+      clearFieldError('weekday-ot-hours-error');
+      clearFieldError('holiday-work-hours-error');
+      clearFieldError('holiday-ot-hours-error');
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function showEl(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    }
+
+    function hideEl(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    includeOtCheckbox?.addEventListener('change', () => {
+      if (includeOtCheckbox.checked) {
+        otFields?.classList.remove('hidden');
+      } else {
+        otFields?.classList.add('hidden');
+      }
+    });
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors();
+
+      if (typeof window.trackCalculatorStart === 'function') {
+        window.trackCalculatorStart('daily_wage');
+      }
+
+      const amount = parseNum(amountInput?.value || '');
+      const workingDays = parseNum(document.getElementById('working-days')?.value || '');
+      const includeOt = includeOtCheckbox?.checked || false;
+      const deductSso = document.getElementById('deduct-sso')?.checked || false;
+      const weekdayOtHours = parseNum(document.getElementById('weekday-ot-hours')?.value || '0');
+      const holidayWorkHours = parseNum(document.getElementById('holiday-work-hours')?.value || '0');
+      const holidayOtHours = parseNum(document.getElementById('holiday-ot-hours')?.value || '0');
+
+      let hasError = false;
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        setFieldError('amount-error', currentMode === 'monthly_to_daily' ? 'กรุณากรอกเงินเดือนที่ถูกต้อง' : 'กรุณากรอกค่าจ้างรายวันที่ถูกต้อง');
+        hasError = true;
+      }
+
+      if (!Number.isFinite(workingDays) || workingDays <= 0 || workingDays > 31) {
+        setFieldError('working-days-error', 'กรอกวันทำงานต่อเดือนระหว่าง 1 - 31 วัน');
+        hasError = true;
+      }
+
+      if (includeOt) {
+        if (!Number.isFinite(weekdayOtHours) || weekdayOtHours < 0 || weekdayOtHours > 300) {
+          setFieldError('weekday-ot-hours-error', 'กรอกชั่วโมง OT ระหว่าง 0 - 300');
+          hasError = true;
+        }
+        if (!Number.isFinite(holidayWorkHours) || holidayWorkHours < 0 || holidayWorkHours > 300) {
+          setFieldError('holiday-work-hours-error', 'กรอกชั่วโมงทำงานวันหยุดระหว่าง 0 - 300');
+          hasError = true;
+        }
+        if (!Number.isFinite(holidayOtHours) || holidayOtHours < 0 || holidayOtHours > 300) {
+          setFieldError('holiday-ot-hours-error', 'กรอกชั่วโมง OT วันหยุดระหว่าง 0 - 300');
+          hasError = true;
+        }
+      }
+
+      if (hasError) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const result = calculateDailyWage({
+          mode: currentMode,
+          amount,
+          workingDaysPerMonth: workingDays,
+          includeOt,
+          weekdayOtHours: includeOt ? weekdayOtHours : 0,
+          holidayWorkHours: includeOt ? holidayWorkHours : 0,
+          holidayOtHours: includeOt ? holidayOtHours : 0,
+          deductSocialSecurity: deductSso,
+        });
+
+        setText('res-net-income', formatMoney(result.netMonthlyIncome));
+        setText('res-daily-wage', formatMoney(result.dailyWage));
+        setText('res-monthly-wage', formatMoney(result.monthlyWage));
+        setText('res-hourly-rate', formatMoney(result.hourlyRate));
+
+        setText('res-base-monthly', formatMoney(result.monthlyWage));
+        setText('res-total-income', formatMoney(result.totalMonthlyIncome));
+        setText('res-net-income-bottom', formatMoney(result.netMonthlyIncome));
+
+        if (includeOt) {
+          setText('res-weekday-ot', `+${formatMoney(result.weekdayOtPay)}`);
+          setText('res-holiday-work', `+${formatMoney(result.holidayWorkPay)}`);
+          setText('res-holiday-ot', `+${formatMoney(result.holidayOtPay)}`);
+          setText('res-total-ot', `+${formatMoney(result.totalOtPay)}`);
+          showEl('ot-row-weekday');
+          showEl('ot-row-holiday-work');
+          showEl('ot-row-holiday-ot');
+          showEl('ot-row-total');
+        } else {
+          hideEl('ot-row-weekday');
+          hideEl('ot-row-holiday-work');
+          hideEl('ot-row-holiday-ot');
+          hideEl('ot-row-total');
+        }
+
+        if (deductSso) {
+          setText('res-sso', `-${formatMoney(result.socialSecurityDeduction)}`);
+          showEl('sso-row');
+        } else {
+          hideEl('sso-row');
+        }
+
+        resultBox?.classList.remove('hidden');
+        resultBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (typeof window.trackCalculatorComplete === 'function') {
+          window.trackCalculatorComplete('daily_wage', result.netMonthlyIncome);
+        }
+      } catch (_error) {
+        formError?.classList.remove('hidden');
+        resultBox?.classList.add('hidden');
+      }
+    });
+  </script>
+</BaseLayout>

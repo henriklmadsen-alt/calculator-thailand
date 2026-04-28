@@ -1,0 +1,604 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าแต่งหน้า 2569 | ค่าทำผม เจ้าสาว งานอีเวนต์ แต่งหน้าทั่วไป | Kamnuanlek';
+const pageDescription = 'คำนวณค่าแต่งหน้าออนไลน์ฟรี คิดค่าบริการช่างแต่งหน้า เจ้าสาว งานอีเวนต์ แต่งหน้าทั่วไป เปรียบเทียบจ้างช่างกับแต่งเอง อัปเดตราคาตลาดปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าแต่งหน้า/`;
+
+const faqData = [
+  {
+    question: 'ค่าแต่งหน้าเจ้าสาวอยู่ที่เท่าไร?',
+    answer: 'ค่าแต่งหน้าเจ้าสาวในปี 2569 อยู่ระหว่าง 5,000-30,000 บาท ขึ้นอยู่กับระดับช่างแต่งหน้า จำนวนลุค (หน้างาน) และบริการเสริม เช่น ทำผม ขนตาปลอม ทดลองแต่งหน้าก่อนวันงาน ช่างระดับ Premium หรือช่างที่มีชื่อเสียงอาจเริ่มต้นที่ 15,000-50,000 บาท',
+  },
+  {
+    question: 'แต่งหน้าไปงานอีเวนต์ ราคาเท่าไร?',
+    answer: 'ค่าแต่งหน้าสำหรับงานอีเวนต์ เช่น งานพรอม งานรับปริญญา งานเลี้ยง อยู่ที่ 1,500-5,000 บาท ขึ้นอยู่กับความซับซ้อนของการแต่งหน้า รวมทำผมหรือไม่ และพื้นที่ให้บริการ ช่างแต่งหน้าบางรายคิดค่าเดินทางเพิ่มหากไปนอกพื้นที่',
+  },
+  {
+    question: 'จ้างช่างแต่งหน้ากับแต่งเองแบบไหนคุ้มกว่า?',
+    answer: 'การแต่งหน้าเองจะประหยัดกว่าในระยะยาว โดยลงทุนซื้อเครื่องสำอางชุดเริ่มต้นประมาณ 2,000-5,000 บาท ใช้ได้หลายครั้ง เหมาะสำหรับแต่งหน้าทุกวันหรือออกงานบ่อย แต่หากเป็นงานสำคัญ เช่น แต่งงาน งานพิธีการ แนะนำจ้างช่างมืออาชีพเพื่อความมั่นใจและผลลัพธ์ที่ดีกว่า',
+  },
+  {
+    question: 'ค่าแต่งหน้าขึ้นอยู่กับปัจจัยอะไรบ้าง?',
+    answer: 'ปัจจัยหลัก: 1) ประเภทงาน — งานแต่งงานแพงกว่างานทั่วไป 2) ระดับช่าง — ช่าง Premium ราคาสูงกว่าช่างทั่วไป 3) จำนวนลุค — แต่งหน้าหลายลุคค่าใช้จ่ายเพิ่ม 4) บริการเสริม — ทำผม ขนตาปลอม ทดลองแต่งหน้า 5) สถานที่ — เรียกช่างไปนอกสถานที่มีค่าเดินทาง 6) พื้นที่/จังหวัด — กรุงเทพฯ ราคาสูงกว่าต่างจังหวัด',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าแต่งหน้า',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าแต่งหน้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าแต่งหน้า (Beauty Cost Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าแต่งหน้าและทำผม เลือกประเภทงาน ระดับช่าง บริการเสริม เปรียบเทียบจ้างช่างกับแต่งเอง อัปเดตอัตราตลาดปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+
+      <!-- วิธีการ: จ้างช่าง vs แต่งเอง -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">วิธีการ</label>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" id="btn-professional" class="method-btn px-4 py-3 rounded-lg border-2 border-primary-500 bg-primary-50 text-primary-700 font-medium text-sm transition-colors text-center">
+            💄 จ้างช่างแต่งหน้า
+          </button>
+          <button type="button" id="btn-diy" class="method-btn px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-gray-600 font-medium text-sm hover:border-gray-300 transition-colors text-center">
+            🪞 แต่งเอง (ซื้อเครื่องสำอาง)
+          </button>
+        </div>
+      </div>
+
+      <!-- ประเภทงาน (professional mode) -->
+      <div id="occasion-section" class="mb-5">
+        <label for="occasion" class="block text-sm font-medium text-gray-700 mb-1">ประเภทงาน</label>
+        <select id="occasion" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="bridal">💒 งานแต่งงาน (เจ้าสาว)</option>
+          <option value="event">🎉 งานอีเวนต์/งานเลี้ยง</option>
+          <option value="graduation">🎓 งานรับปริญญา</option>
+          <option value="photoshoot">📸 ถ่ายแบบ/พอร์ตโฟลิโอ</option>
+          <option value="daily">🌸 แต่งหน้าทั่วไป/ออกงาน</option>
+        </select>
+      </div>
+
+      <!-- ระดับช่าง (professional mode) -->
+      <div id="tier-section" class="mb-5">
+        <label for="artist-tier" class="block text-sm font-medium text-gray-700 mb-1">ระดับช่างแต่งหน้า</label>
+        <select id="artist-tier" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="standard">ช่างทั่วไป / ร้านสวย</option>
+          <option value="experienced">ช่างระดับกลาง (มีผลงาน)</option>
+          <option value="premium">ช่าง Premium / มีชื่อเสียง</option>
+        </select>
+      </div>
+
+      <!-- จำนวนลุค (bridal) -->
+      <div id="looks-section" class="mb-5">
+        <label for="num-looks" class="block text-sm font-medium text-gray-700 mb-1">จำนวนลุค (หน้างาน)</label>
+        <select id="num-looks" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="1">1 ลุค</option>
+          <option value="2" selected>2 ลุค (ยอดนิยม)</option>
+          <option value="3">3 ลุค</option>
+        </select>
+      </div>
+
+      <!-- บริการเสริม (professional mode) -->
+      <div id="addons-section" class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">บริการเสริม</label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="addon-hair" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" checked>
+            <span class="text-sm text-gray-700">ทำผม / จัดทรง</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="addon-lashes" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+            <span class="text-sm text-gray-700">ขนตาปลอม (ติดขนตา)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="addon-trial" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+            <span class="text-sm text-gray-700">ทดลองแต่งหน้าก่อนงาน (Pre-wedding trial)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="addon-travel" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+            <span class="text-sm text-gray-700">ค่าเดินทาง (ช่างไปนอกสถานที่)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- DIY: ระดับเครื่องสำอาง -->
+      <div id="diy-level-section" class="mb-5 hidden">
+        <label for="diy-level" class="block text-sm font-medium text-gray-700 mb-1">ระดับเครื่องสำอาง</label>
+        <select id="diy-level" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="budget">ประหยัด (แบรนด์ไทย/ดรัก)</option>
+          <option value="mid">ระดับกลาง (เคาน์เตอร์แบรนด์)</option>
+          <option value="high">ไฮเอนด์ (ลักชูรี่แบรนด์)</option>
+        </select>
+      </div>
+
+      <!-- DIY: จำนวนครั้ง/เดือน -->
+      <div id="diy-freq-section" class="mb-5 hidden">
+        <label for="diy-freq" class="block text-sm font-medium text-gray-700 mb-1">ความถี่ที่แต่งหน้า</label>
+        <select id="diy-freq" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="5">ทุกวันทำงาน (5 วัน/สัปดาห์)</option>
+          <option value="3">3 วัน/สัปดาห์</option>
+          <option value="2">2 วัน/สัปดาห์</option>
+          <option value="1">สัปดาห์ละครั้ง</option>
+        </select>
+      </div>
+
+      <!-- พื้นที่/จังหวัด -->
+      <div class="mb-5">
+        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่</label>
+        <select id="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white">
+          <option value="bkk">กรุงเทพฯ และปริมณฑล</option>
+          <option value="major">หัวเมืองใหญ่ (เชียงใหม่ ภูเก็ต พัทยา)</option>
+          <option value="other">จังหวัดอื่นๆ</option>
+        </select>
+      </div>
+
+      <!-- ปุ่มคำนวณ -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 active:bg-primary-800 transition-colors text-base"
+      >
+        คำนวณค่าแต่งหน้า
+      </button>
+
+      <!-- ผลลัพธ์ -->
+      <div id="result" class="hidden mt-6">
+        <div class="bg-gradient-to-br from-primary-50 to-pink-50 rounded-xl p-5 mb-4">
+          <p class="text-sm text-gray-500 mb-1" id="result-label">ค่าแต่งหน้าโดยประมาณ</p>
+          <div class="flex items-baseline gap-2">
+            <span id="result-cost" class="text-3xl sm:text-4xl font-bold text-primary-700">0</span>
+            <span id="result-unit" class="text-lg text-gray-500">บาท</span>
+          </div>
+          <p id="result-sub" class="text-base font-medium text-gray-700 mt-2"></p>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+          <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+            <h3 class="font-semibold text-gray-900 text-sm">รายละเอียดค่าใช้จ่าย</h3>
+          </div>
+          <div class="divide-y divide-gray-100" id="breakdown-list">
+          </div>
+        </div>
+
+        <!-- Comparison -->
+        <div id="comparison-section" class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+          <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+            <h3 class="font-semibold text-gray-900 text-sm">เปรียบเทียบ: จ้างช่าง vs แต่งเอง</h3>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="text-center p-3 rounded-lg bg-pink-50">
+                <p class="text-xs text-gray-500 mb-1">จ้างช่างแต่งหน้า</p>
+                <p id="comp-professional" class="text-lg font-bold text-pink-700">-</p>
+              </div>
+              <div class="text-center p-3 rounded-lg bg-green-50">
+                <p class="text-xs text-gray-500 mb-1">แต่งเอง (ต่อครั้ง)</p>
+                <p id="comp-diy" class="text-lg font-bold text-green-700">-</p>
+              </div>
+            </div>
+            <p id="comp-verdict" class="text-sm text-center mt-3 font-medium"></p>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <h3 class="font-semibold text-amber-800 text-sm mb-2">💡 เคล็ดลับ</h3>
+          <p id="tips-text" class="text-sm text-amber-700"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2>ค่าแต่งหน้าในไทย 2569 อัตราเท่าไร?</h2>
+      <p>
+        ค่าแต่งหน้าในประเทศไทยปี 2569 แตกต่างกันตามประเภทงานและระดับช่างแต่งหน้า
+        ตั้งแต่แต่งหน้าทั่วไปสำหรับออกงาน ไปจนถึงแต่งหน้าเจ้าสาวแบบครบชุด
+        เครื่องคำนวณนี้ช่วยให้คุณประเมินค่าใช้จ่ายได้อย่างแม่นยำ
+      </p>
+
+      <h3>อัตราค่าแต่งหน้าตามประเภทงาน</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="text-left px-3 py-2 border">ประเภทงาน</th>
+              <th class="text-left px-3 py-2 border">ช่างทั่วไป</th>
+              <th class="text-left px-3 py-2 border">ช่างระดับกลาง</th>
+              <th class="text-left px-3 py-2 border">ช่าง Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="px-3 py-2 border">แต่งหน้าทั่วไป/ออกงาน</td>
+              <td class="px-3 py-2 border">800–1,500 บาท</td>
+              <td class="px-3 py-2 border">1,500–3,000 บาท</td>
+              <td class="px-3 py-2 border">3,000–5,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">งานรับปริญญา</td>
+              <td class="px-3 py-2 border">1,000–2,000 บาท</td>
+              <td class="px-3 py-2 border">2,000–4,000 บาท</td>
+              <td class="px-3 py-2 border">4,000–6,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">งานอีเวนต์/งานเลี้ยง</td>
+              <td class="px-3 py-2 border">1,500–2,500 บาท</td>
+              <td class="px-3 py-2 border">2,500–4,000 บาท</td>
+              <td class="px-3 py-2 border">4,000–7,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">ถ่ายแบบ/พอร์ตโฟลิโอ</td>
+              <td class="px-3 py-2 border">2,000–3,500 บาท</td>
+              <td class="px-3 py-2 border">3,500–6,000 บาท</td>
+              <td class="px-3 py-2 border">6,000–10,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">งานแต่งงาน (เจ้าสาว 2 ลุค)</td>
+              <td class="px-3 py-2 border">5,000–10,000 บาท</td>
+              <td class="px-3 py-2 border">10,000–20,000 บาท</td>
+              <td class="px-3 py-2 border">20,000–50,000 บาท</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>ปัจจัยที่มีผลต่อค่าแต่งหน้า</h3>
+      <ul>
+        <li><strong>ประเภทงาน</strong> — งานแต่งงานต้องใช้เทคนิคและเวลามากกว่า ราคาจึงสูงกว่างานทั่วไป</li>
+        <li><strong>ระดับช่างแต่งหน้า</strong> — ช่างที่มีชื่อเสียง มีผลงาน หรือเคยทำงานกับศิลปิน ราคาสูงกว่า</li>
+        <li><strong>จำนวนลุค</strong> — งานแต่งงานที่ต้องเปลี่ยนลุค 2-3 ครั้ง ค่าใช้จ่ายเพิ่มขึ้นตามจำนวนลุค</li>
+        <li><strong>บริการเสริม</strong> — ทำผม ขนตาปลอม ทดลองแต่งหน้าก่อนงาน มีค่าใช้จ่ายเพิ่ม</li>
+        <li><strong>สถานที่</strong> — หากเรียกช่างไปนอกร้าน มีค่าเดินทางเพิ่มประมาณ 500-2,000 บาท</li>
+        <li><strong>ทำเลที่ตั้ง</strong> — กรุงเทพฯ และเมืองท่องเที่ยวราคาสูงกว่าต่างจังหวัด</li>
+      </ul>
+
+      <h3>เปรียบเทียบ: จ้างช่างแต่งหน้า vs แต่งเอง</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="text-left px-3 py-2 border">รายการ</th>
+              <th class="text-left px-3 py-2 border">จ้างช่าง</th>
+              <th class="text-left px-3 py-2 border">แต่งเอง</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="px-3 py-2 border">ค่าใช้จ่ายต่อครั้ง</td>
+              <td class="px-3 py-2 border">800–50,000 บาท</td>
+              <td class="px-3 py-2 border">50–300 บาท (ค่าเครื่องสำอางเฉลี่ย)</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">ลงทุนเริ่มต้น</td>
+              <td class="px-3 py-2 border">ไม่มี</td>
+              <td class="px-3 py-2 border">2,000–15,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">ความเชี่ยวชาญ</td>
+              <td class="px-3 py-2 border">มืออาชีพ</td>
+              <td class="px-3 py-2 border">ต้องฝึกฝน</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border">เหมาะสำหรับ</td>
+              <td class="px-3 py-2 border">งานสำคัญ งานแต่งงาน</td>
+              <td class="px-3 py-2 border">แต่งหน้าทุกวัน ออกงานบ่อย</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>วิธีคำนวณค่าแต่งหน้า</h3>
+      <div class="bg-gray-50 rounded-lg p-4 not-prose">
+        <p class="font-mono text-sm mb-2"><strong>จ้างช่าง:</strong> ค่าฐานตามประเภทงาน × ตัวคูณระดับช่าง × จำนวนลุค + บริการเสริม</p>
+        <p class="font-mono text-sm mb-2"><strong>แต่งเอง (ลงทุนเริ่มต้น):</strong> ค่าชุดเครื่องสำอาง + แปรง/อุปกรณ์</p>
+        <p class="font-mono text-sm"><strong>ค่าต่อครั้ง (แต่งเอง):</strong> ค่าลงทุน ÷ จำนวนครั้งใช้งาน (ประมาณ 6 เดือน)</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related Content -->
+    <RelatedArticles currentHref="/คำนวณค่าแต่งหน้า/" />
+    <RelatedCalculators currentHref="/คำนวณค่าแต่งหน้า/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ค่าแต่งหน้าที่แสดงเป็นการประมาณการจากอัตราตลาดเฉลี่ยในปี 2569 ราคาจริงอาจแตกต่างตามช่างแต่งหน้า แบรนด์เครื่องสำอาง ทำเล และข้อตกลงพิเศษ กรุณาสอบถามราคาจริงจากช่างแต่งหน้าโดยตรง
+    </div>
+  </article>
+
+  <script>
+    // ── Rate tables (THB, 2569 market rates) ──
+
+    // Base rates by occasion (professional, per look)
+    const occasionBase: Record<string, number> = {
+      bridal: 5000,
+      event: 2000,
+      graduation: 1500,
+      photoshoot: 3000,
+      daily: 1000,
+    };
+
+    // Artist tier multipliers
+    const tierMultiplier: Record<string, number> = {
+      standard: 1.0,
+      experienced: 1.8,
+      premium: 3.5,
+    };
+
+    // Addon costs (professional)
+    const addonCosts: Record<string, number> = {
+      hair: 1000,
+      lashes: 300,
+      trial: 2000,
+      travel: 1000,
+    };
+
+    // Bridal addon multipliers (addons cost more for bridal)
+    const bridalAddonMultiplier = 1.5;
+
+    // Location multiplier
+    const locationMultiplier: Record<string, number> = {
+      bkk: 1.0,
+      major: 0.85,
+      other: 0.7,
+    };
+
+    // DIY cosmetics set cost by level
+    const diySetCost: Record<string, number> = {
+      budget: 2000,
+      mid: 5000,
+      high: 12000,
+    };
+
+    // DIY per-use consumable cost (approximate)
+    const diyPerUseCost: Record<string, number> = {
+      budget: 30,
+      mid: 80,
+      high: 200,
+    };
+
+    // ── State ──
+    let method: 'professional' | 'diy' = 'professional';
+
+    // ── Helpers ──
+    function fmt(n: number): string {
+      return n.toLocaleString('th-TH', { maximumFractionDigits: 0 });
+    }
+
+    // ── Method toggle ──
+    const btnPro = document.getElementById('btn-professional') as HTMLButtonElement;
+    const btnDiy = document.getElementById('btn-diy') as HTMLButtonElement;
+    const proSections = ['occasion-section', 'tier-section', 'looks-section', 'addons-section'];
+    const diySections = ['diy-level-section', 'diy-freq-section'];
+
+    function setMethod(m: 'professional' | 'diy') {
+      method = m;
+      if (m === 'professional') {
+        btnPro.className = 'method-btn px-4 py-3 rounded-lg border-2 border-primary-500 bg-primary-50 text-primary-700 font-medium text-sm transition-colors text-center';
+        btnDiy.className = 'method-btn px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-gray-600 font-medium text-sm hover:border-gray-300 transition-colors text-center';
+        proSections.forEach(id => document.getElementById(id)!.classList.remove('hidden'));
+        diySections.forEach(id => document.getElementById(id)!.classList.add('hidden'));
+        updateLooksVisibility();
+      } else {
+        btnDiy.className = 'method-btn px-4 py-3 rounded-lg border-2 border-primary-500 bg-primary-50 text-primary-700 font-medium text-sm transition-colors text-center';
+        btnPro.className = 'method-btn px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-gray-600 font-medium text-sm hover:border-gray-300 transition-colors text-center';
+        proSections.forEach(id => document.getElementById(id)!.classList.add('hidden'));
+        diySections.forEach(id => document.getElementById(id)!.classList.remove('hidden'));
+      }
+    }
+
+    btnPro.addEventListener('click', () => setMethod('professional'));
+    btnDiy.addEventListener('click', () => setMethod('diy'));
+
+    // Show/hide looks section based on occasion
+    const occasionSelect = document.getElementById('occasion') as HTMLSelectElement;
+    function updateLooksVisibility() {
+      const looksSection = document.getElementById('looks-section')!;
+      if (occasionSelect.value === 'bridal') {
+        looksSection.classList.remove('hidden');
+      } else {
+        looksSection.classList.add('hidden');
+      }
+    }
+    occasionSelect.addEventListener('change', updateLooksVisibility);
+
+    // ── Calculate ──
+    function calculate() {
+      const location = (document.getElementById('location') as HTMLSelectElement).value;
+      const locMult = locationMultiplier[location] || 1.0;
+
+      const breakdownEl = document.getElementById('breakdown-list') as HTMLElement;
+      const rows: string[] = [];
+
+      let proCost = 0;
+      let diyCostPerUse = 0;
+
+      if (method === 'professional') {
+        const occasion = occasionSelect.value;
+        const tier = (document.getElementById('artist-tier') as HTMLSelectElement).value;
+        const numLooks = occasion === 'bridal' ? parseInt((document.getElementById('num-looks') as HTMLSelectElement).value) : 1;
+        const tMult = tierMultiplier[tier] || 1.0;
+
+        // Base cost
+        const base = occasionBase[occasion] || 1000;
+        let baseCost = Math.round(base * tMult * numLooks * locMult);
+
+        rows.push(makeRow('ค่าฐานแต่งหน้า', `${fmt(Math.round(base * tMult * locMult))} บาท/ลุค`));
+        if (numLooks > 1) {
+          rows.push(makeRow('จำนวนลุค', `× ${numLooks}`));
+        }
+        if (locMult !== 1.0) {
+          rows.push(makeRow('ปรับตามพื้นที่', `×${locMult}`));
+        }
+
+        // Addons
+        let totalAddons = 0;
+        const addonMult = occasion === 'bridal' ? bridalAddonMultiplier : 1.0;
+
+        if ((document.getElementById('addon-hair') as HTMLInputElement).checked) {
+          const hairCost = Math.round(addonCosts.hair * addonMult * locMult);
+          totalAddons += hairCost;
+          rows.push(makeRow('ทำผม/จัดทรง', `+${fmt(hairCost)} บาท`));
+        }
+        if ((document.getElementById('addon-lashes') as HTMLInputElement).checked) {
+          const lashCost = Math.round(addonCosts.lashes * addonMult * locMult);
+          totalAddons += lashCost;
+          rows.push(makeRow('ขนตาปลอม', `+${fmt(lashCost)} บาท`));
+        }
+        if ((document.getElementById('addon-trial') as HTMLInputElement).checked) {
+          const trialCost = Math.round(addonCosts.trial * tMult * locMult);
+          totalAddons += trialCost;
+          rows.push(makeRow('ทดลองแต่งหน้าก่อนงาน', `+${fmt(trialCost)} บาท`));
+        }
+        if ((document.getElementById('addon-travel') as HTMLInputElement).checked) {
+          const travelCost = Math.round(addonCosts.travel * locMult);
+          totalAddons += travelCost;
+          rows.push(makeRow('ค่าเดินทาง', `+${fmt(travelCost)} บาท`));
+        }
+
+        proCost = baseCost + totalAddons;
+        rows.push(makeRow('รวมทั้งหมด', `<strong>${fmt(proCost)} บาท</strong>`));
+
+        // Show result
+        (document.getElementById('result-label') as HTMLElement).textContent = 'ค่าแต่งหน้าโดยประมาณ';
+        (document.getElementById('result-cost') as HTMLElement).textContent = fmt(proCost);
+        (document.getElementById('result-unit') as HTMLElement).textContent = 'บาท';
+        const occasionNames: Record<string, string> = {
+          bridal: 'งานแต่งงาน',
+          event: 'งานอีเวนต์',
+          graduation: 'งานรับปริญญา',
+          photoshoot: 'ถ่ายแบบ',
+          daily: 'แต่งหน้าทั่วไป',
+        };
+        (document.getElementById('result-sub') as HTMLElement).textContent =
+          `สำหรับ${occasionNames[occasion] || 'งาน'} ช่าง${tier === 'standard' ? 'ทั่วไป' : tier === 'experienced' ? 'ระดับกลาง' : 'Premium'}${numLooks > 1 ? ` ${numLooks} ลุค` : ''}`;
+
+      } else {
+        // DIY mode
+        const diyLevel = (document.getElementById('diy-level') as HTMLSelectElement).value;
+        const diyFreq = parseInt((document.getElementById('diy-freq') as HTMLSelectElement).value);
+        const setCost = diySetCost[diyLevel] || 2000;
+        const perUse = diyPerUseCost[diyLevel] || 30;
+        const usesIn6Months = diyFreq * 4.33 * 6; // 6-month lifespan
+        const costPerUse = Math.round((setCost / usesIn6Months) + perUse);
+        const monthlyCost = Math.round(costPerUse * diyFreq * 4.33);
+
+        diyCostPerUse = costPerUse;
+
+        rows.push(makeRow('ค่าชุดเครื่องสำอาง (เริ่มต้น)', `${fmt(setCost)} บาท`));
+        rows.push(makeRow('อายุการใช้งาน', '≈ 6 เดือน'));
+        rows.push(makeRow('จำนวนครั้งที่ใช้ (6 เดือน)', `${fmt(Math.round(usesIn6Months))} ครั้ง`));
+        rows.push(makeRow('ค่าเครื่องสำอางเฉลี่ยต่อครั้ง', `${fmt(Math.round(setCost / usesIn6Months))} บาท`));
+        rows.push(makeRow('ค่าสิ้นเปลืองต่อครั้ง', `${fmt(perUse)} บาท`));
+        rows.push(makeRow('ต้นทุนรวมต่อครั้ง', `<strong>${fmt(costPerUse)} บาท</strong>`));
+        rows.push(makeRow('ค่าใช้จ่ายต่อเดือน', `<strong>${fmt(monthlyCost)} บาท</strong>`));
+
+        (document.getElementById('result-label') as HTMLElement).textContent = 'ต้นทุนแต่งเองต่อครั้ง';
+        (document.getElementById('result-cost') as HTMLElement).textContent = fmt(costPerUse);
+        (document.getElementById('result-unit') as HTMLElement).textContent = 'บาท/ครั้ง';
+        (document.getElementById('result-sub') as HTMLElement).textContent =
+          `≈ ${fmt(monthlyCost)} บาท/เดือน (${diyFreq} วัน/สัปดาห์)`;
+
+        // For comparison, use "daily" occasion standard tier
+        proCost = Math.round(occasionBase.daily * tierMultiplier.standard * locMult);
+      }
+
+      breakdownEl.innerHTML = rows.join('');
+
+      // Comparison
+      const diyLevel = (document.getElementById('diy-level') as HTMLSelectElement).value;
+      const diyFreq = parseInt((document.getElementById('diy-freq') as HTMLSelectElement).value);
+      const setCost = diySetCost[diyLevel] || 2000;
+      const perUse = diyPerUseCost[diyLevel] || 30;
+      const usesIn6M = diyFreq * 4.33 * 6;
+      const diyPerUseCalc = Math.round((setCost / usesIn6M) + perUse);
+      const proDaily = Math.round(occasionBase.daily * tierMultiplier.standard * locMult);
+
+      (document.getElementById('comp-professional') as HTMLElement).textContent = `${fmt(proDaily)} บาท/ครั้ง`;
+      (document.getElementById('comp-diy') as HTMLElement).textContent = `${fmt(diyPerUseCalc)} บาท/ครั้ง`;
+
+      const diff = proDaily - diyPerUseCalc;
+      const verdictEl = document.getElementById('comp-verdict') as HTMLElement;
+      if (diff > 0) {
+        verdictEl.textContent = `💰 แต่งเองประหยัดกว่า ${fmt(diff)} บาท/ครั้ง (เหมาะกับแต่งหน้าบ่อย)`;
+        verdictEl.className = 'text-sm text-center mt-3 font-medium text-green-700';
+      } else {
+        verdictEl.textContent = 'จ้างช่างคุ้มกว่าสำหรับงานที่แต่งไม่บ่อย';
+        verdictEl.className = 'text-sm text-center mt-3 font-medium text-pink-700';
+      }
+
+      // Tips
+      const tipsEl = document.getElementById('tips-text') as HTMLElement;
+      if (method === 'professional') {
+        const occasion = occasionSelect.value;
+        if (occasion === 'bridal') {
+          tipsEl.textContent = 'สำหรับงานแต่งงาน แนะนำทดลองแต่งหน้า (Pre-wedding trial) ก่อนวันจริงอย่างน้อย 2-4 สัปดาห์ เพื่อให้ได้ลุคที่พอใจ หลายช่างรวมค่าทดลองในแพ็คเกจเจ้าสาว ควรสอบถามก่อนจอง';
+        } else if (occasion === 'graduation') {
+          tipsEl.textContent = 'ช่วงฤดูรับปริญญา (พ.ย.-มี.ค.) ช่างแต่งหน้ามักเต็มเร็ว แนะนำจองล่วงหน้าอย่างน้อย 2-4 สัปดาห์ บางช่างให้ส่วนลดกรณีจองเป็นกลุ่ม';
+        } else if (occasion === 'photoshoot') {
+          tipsEl.textContent = 'การแต่งหน้าสำหรับถ่ายแบบจำเป็นต้องใช้เทคนิคพิเศษให้เหมาะกับแสงไฟ ช่างควรมีประสบการณ์ถ่ายภาพ ตรวจสอบผลงานในพอร์ตโฟลิโอก่อนจอง';
+        } else {
+          tipsEl.textContent = 'หากแต่งหน้าออกงานบ่อย (มากกว่า 4 ครั้ง/เดือน) การลงทุนซื้อเครื่องสำอางและเรียนรู้แต่งเองจะคุ้มกว่าจ้างช่างทุกครั้ง เริ่มต้นจากชุดเครื่องสำอางพื้นฐาน: รองพื้น แป้ง อายแชโดว์ มาสคาร่า ลิปสติก';
+        }
+      } else {
+        tipsEl.textContent = 'เริ่มต้นจากเครื่องสำอางระดับกลาง ดูรีวิวจาก beauty blogger ไทย ซื้อทีละชิ้นตามที่ใช้จริง ไม่ต้องซื้อครบเซ็ตทีเดียว แปรงแต่งหน้าคุณภาพดีใช้ได้นานหลายปีและให้ผลลัพธ์ที่ดีกว่า';
+      }
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('beauty-cost');
+    }
+
+    function makeRow(label: string, value: string): string {
+      return `<div class="flex justify-between items-center px-4 py-2.5"><span class="text-sm text-gray-600">${label}</span><span class="text-sm text-gray-900">${value}</span></div>`;
+    }
+
+    // ── Bind events ──
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Result visibility observer for analytics
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('beauty-cost');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(document.getElementById('result')!);
+  </script>
+</BaseLayout>

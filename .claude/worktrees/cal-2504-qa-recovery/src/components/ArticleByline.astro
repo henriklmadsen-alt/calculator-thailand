@@ -1,0 +1,156 @@
+---
+// ArticleByline component - shows article metadata below title
+// Styling: consistent with MetadataHeader (same light background, 13px text)
+// WCAG 2.1 compliance: 44×44px minimum tap target if author/date are links
+
+interface Props {
+  author?: string; // Article author name (default: "Kamnuanlek Team")
+  publishDate?: string; // Publication date (ISO or human-readable)
+  authorHref?: string; // Optional link to author profile
+  dateHref?: string; // Optional link to date (archive page)
+}
+
+const {
+  author = "Kamnuanlek Team",
+  publishDate,
+  authorHref,
+  dateHref,
+} = Astro.props;
+
+// Format date for display
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return "";
+  // If it's already human-readable, return as-is
+  if (dateStr.includes("เ") || dateStr.includes(" ")) return dateStr;
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("th-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+const formattedDate = formatDate(publishDate);
+---
+
+<div class="article-byline">
+  <div class="byline-items">
+    {author && (
+      <div class="byline-item">
+        <span class="icon" aria-hidden="true">✍️</span>
+        {authorHref ? (
+          <a href={authorHref} class="text link">
+            By {author}
+          </a>
+        ) : (
+          <span class="text">By {author}</span>
+        )}
+      </div>
+    )}
+    {formattedDate && (
+      <div class="byline-item">
+        <span class="icon" aria-hidden="true">📅</span>
+        {dateHref ? (
+          <a href={dateHref} class="text link">
+            Published {formattedDate}
+          </a>
+        ) : (
+          <span class="text">Published {formattedDate}</span>
+        )}
+      </div>
+    )}
+  </div>
+</div>
+
+<style define:vars={{ author, publishDate }}>
+  .article-byline {
+    background-color: #f0f9ff;
+    border-top: 1px solid #d1d5db;
+    border-bottom: 1px solid #d1d5db;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .byline-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .byline-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    min-height: 44px;
+    line-height: 1.4;
+  }
+
+  .icon {
+    flex-shrink: 0;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+  }
+
+  .text {
+    flex-grow: 1;
+    word-break: break-word;
+  }
+
+  .link {
+    color: #2563eb;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+
+  .link:hover {
+    color: #1d4ed8;
+  }
+
+  .link:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Desktop: inline layout with separator */
+  @media (min-width: 768px) {
+    .byline-items {
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .byline-item {
+      padding: 8px 0;
+      min-height: 44px;
+      white-space: nowrap;
+    }
+
+    .byline-item:not(:last-child)::after {
+      content: "|";
+      margin-left: 12px;
+      color: #d1d5db;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .article-byline {
+      background-color: #111827;
+      border-color: #374151;
+      color: #d1d5db;
+    }
+
+    .link {
+      color: #60a5fa;
+    }
+
+    .link:hover {
+      color: #93c5fd;
+    }
+  }
+</style>

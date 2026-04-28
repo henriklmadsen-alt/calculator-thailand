@@ -1,0 +1,163 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าปรับล่าช้าชำระหนี้ 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าปรับชำระหนี้ล่าช้า ดอกเบี้ยผิดนัด ค่าธรรมเนียมการติดตามหนี้ สำหรับสินเชื่อบ้าน รถ บัตรเครดิต และสินเชื่อส่วนบุคคล ตามกฎหมายไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าปรับล่าช้าชำระหนี้/`;
+
+const faqData = [
+  {
+    question: 'ค่าปรับผิดนัดชำระหนี้ไทยกำหนดไว้เท่าไร?',
+    answer: 'ตาม พ.ร.บ. คุ้มครองผู้บริโภคและประมวลกฎหมายแพ่งพาณิชย์ ดอกเบี้ยผิดนัดสูงสุดไม่เกินอัตราตามกฎหมาย สินเชื่อบ้านมักคิดเพิ่ม 1-3% จากอัตราปกติ บัตรเครดิตสูงสุด 1.5% ต่อเดือนหรือ 18% ต่อปี',
+  },
+  {
+    question: 'ถ้าจ่ายช้า 1 วันมีค่าปรับหรือไม่?',
+    answer: 'ขึ้นอยู่กับเงื่อนไขสัญญา บางแห่งมีช่วง grace period 3-5 วัน บางแห่งคิดค่าปรับทันที สินเชื่อบ้านส่วนใหญ่คิดดอกเบี้ยผิดนัดตั้งแต่วันที่ครบกำหนด บัตรเครดิตมักมีค่าธรรมเนียมจ่ายช้า 100-300 บาทต่อรอบ',
+  },
+  {
+    question: 'ค่าปรับสะสมหลายเดือนจะกระทบเครดิตสกอร์อย่างไร?',
+    answer: 'การค้างชำระเกิน 90 วันจะถูกรายงานเป็น NPL (Non-Performing Loan) ทำให้เครดิตสกอร์ลดลงอย่างมาก อาจกระทบการขอสินเชื่อใหม่นาน 3-5 ปี ควรติดต่อสถาบันการเงินเพื่อขอปรับโครงสร้างหนี้ก่อนถึงขั้นนั้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าปรับล่าช้าชำระหนี้',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าปรับล่าช้าชำระหนี้">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      คำนวณค่าปรับล่าช้าชำระหนี้ — ดอกเบี้ยผิดนัดและค่าธรรมเนียม
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">คำนวณดอกเบี้ยผิดนัดและค่าปรับที่จะเกิดขึ้นหากชำระหนี้ล่าช้า</p>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-8">
+      <form id="late-form" class="space-y-5">
+        <div>
+          <label for="overdue-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ยอดค้างชำระ (บาท)</label>
+          <input type="text" id="overdue-amount" inputmode="numeric" placeholder="เช่น 50,000"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="penalty-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ดอกเบี้ยผิดนัด (%/ปี)</label>
+            <input type="text" id="penalty-rate" inputmode="decimal" placeholder="เช่น 18"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+            <p class="text-xs text-gray-500 mt-1">บ้าน: 7-10%, รถ: 15%, บัตรเครดิต: 18%</p>
+          </div>
+          <div>
+            <label for="late-days" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">จำนวนวันที่ค้างชำระ</label>
+            <input type="text" id="late-days" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+          </div>
+        </div>
+        <div>
+          <label for="fixed-fee" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ค่าธรรมเนียมจ่ายช้า (บาท/ครั้ง)</label>
+          <input type="text" id="fixed-fee" inputmode="numeric" placeholder="เช่น 200"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-base" />
+        </div>
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ดอกเบี้ยผิดนัด</div>
+            <div id="res-penalty-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">ค่าธรรมเนียม</div>
+            <div id="res-fee" class="text-xl font-bold text-orange-700 dark:text-orange-300">-</div>
+          </div>
+          <div class="bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">รวมต้องจ่ายทั้งหมด</div>
+            <div id="res-total" class="text-xl font-bold text-primary-700 dark:text-primary-300">-</div>
+          </div>
+        </div>
+        <div id="status-msg" class="p-3 rounded-lg text-sm"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot />
+
+    <section class="prose prose-gray dark:prose-invert max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">กฎหมายว่าด้วยดอกเบี้ยผิดนัดในไทย</h2>
+      <p>ตาม พ.ร.บ. แก้ไขเพิ่มเติมประมวลกฎหมายแพ่งและพาณิชย์ (ฉบับที่ 20) พ.ศ. 2557 อัตราดอกเบี้ยผิดนัดกำหนดสูงสุดที่ 7.5% ต่อปี แต่สัญญาเอกชนอาจตกลงสูงกว่าได้ตามที่กฎหมายเฉพาะอนุญาต ผู้บริโภคมีสิทธิ์ต่อรองและขอปรับโครงสร้างหนี้</p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าปรับล่าช้าชำระหนี้/" />
+    <RelatedCalculators currentHref="/คำนวณค่าปรับล่าช้าชำระหนี้/" />
+
+    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-800 dark:text-yellow-300">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการ ค่าปรับจริงขึ้นอยู่กับเงื่อนไขสัญญาของแต่ละสถาบัน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+
+    document.getElementById('late-form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const overdue = parseNum((document.getElementById('overdue-amount') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('penalty-rate') as HTMLInputElement).value) || 18;
+      const days = parseNum((document.getElementById('late-days') as HTMLInputElement).value) || 30;
+      const fixedFee = parseNum((document.getElementById('fixed-fee') as HTMLInputElement).value);
+      if (!overdue) return;
+
+      const penaltyInterest = overdue * (rate / 100) * (days / 365);
+      const total = overdue + penaltyInterest + fixedFee;
+
+      (document.getElementById('res-penalty-interest') as HTMLElement).textContent = fmt(penaltyInterest) + ' บาท';
+      (document.getElementById('res-fee') as HTMLElement).textContent = fmt(fixedFee) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total) + ' บาท';
+
+      const msg = document.getElementById('status-msg') as HTMLElement;
+      if (days >= 90) {
+        msg.className = 'p-3 rounded-lg text-sm bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300';
+        msg.textContent = `⚠️ ค้างชำระ ${days} วัน เกินเกณฑ์ NPL 90 วันแล้ว อาจส่งผลต่อเครดิตสกอร์อย่างรุนแรง ควรติดต่อสถาบันการเงินด่วน`;
+      } else if (days >= 30) {
+        msg.className = 'p-3 rounded-lg text-sm bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-300';
+        msg.textContent = `ค้างชำระ ${days} วัน ควรรีบชำระเพื่อหลีกเลี่ยงผลกระทบต่อเครดิตสกอร์`;
+      } else {
+        msg.className = 'p-3 rounded-lg text-sm bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300';
+        msg.textContent = `ค้างชำระ ${days} วัน ควรชำระโดยเร็วที่สุดเพื่อหลีกเลี่ยงค่าปรับเพิ่มเติม`;
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('late-payment');
+    });
+  </script>
+</BaseLayout>

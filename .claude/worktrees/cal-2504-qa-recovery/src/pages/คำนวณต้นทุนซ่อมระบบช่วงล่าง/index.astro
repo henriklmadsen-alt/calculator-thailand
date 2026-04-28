@@ -1,0 +1,352 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนซ่อมระบบช่วงล่างรถยนต์ ปี 2569 | Suspension Repair | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนซ่อมระบบช่วงล่างรถยนต์ รวมค่าอะไหล่ ค่าแรง และประมาณค่าใช้จ่าย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนซ่อมระบบช่วงล่าง/`;
+
+const faqData = [
+  {
+    question: 'ระบบช่วงล่างรถยนต์ประกอบด้วยอะไรบ้าง?',
+    answer: 'ระบบช่วงล่างรถยนต์ประกอบด้วยโช้คอัพ (หน้า/หลัง) แหนบ ลูกหมากบน/ล่าง ยางกันโยก ขาช่วงล่าง และระบบบังคับเลี้ยว ชิ้นส่วนเหล่านี้ทำงานร่วมกันเพื่อรองรับการสั่นสะเทือนและควบคุมการทรงตัวของรถ',
+  },
+  {
+    question: 'ควรเปลี่ยนโช้คอัพเมื่อไร?',
+    answer: 'ควรตรวจสอบโช้คอัพทุก 40,000-50,000 กม. และเปลี่ยนเมื่ออายุการใช้งานครบ 80,000-100,000 กม. สัญญาณที่ควรระวัง ได้แก่ รถโคลงมากเกินไป ระยะเบรกยาวขึ้น ยางสึกหรอไม่สม่ำเสมอ หรือรู้สึกสั่นเวลาขับที่ความเร็วสูง',
+  },
+  {
+    question: 'ค่าซ่อมช่วงล่างรถยนต์ในไทยเฉลี่ยเท่าไร?',
+    answer: 'ค่าซ่อมช่วงล่างขึ้นอยู่กับชิ้นส่วนที่เปลี่ยน โช้คอัพหน้า 2,500-6,000 บาท/ข้าง ลูกหมาก 600-1,500 บาท/ตัว ยางกันโยก 300-800 บาท/ชิ้น และขาช่วงล่าง 3,500-8,000 บาท/ข้าง ราคารวมค่าแรงช่างที่ 350 บาท/ชั่วโมง',
+  },
+  {
+    question: 'หลังซ่อมช่วงล่างต้องทำอะไรบ้าง?',
+    answer: 'หลังเปลี่ยนชิ้นส่วนช่วงล่างควรตั้งศูนย์ล้อทุกครั้ง โดยเฉพาะหลังเปลี่ยนลูกหมากหรือขาช่วงล่าง เพื่อให้ยางสึกหรอสม่ำเสมอ และควรตรวจสอบน็อตยึดชิ้นส่วนอีกครั้งหลังขับไปประมาณ 500 กม.',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนซ่อมระบบช่วงล่างรถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนซ่อมระบบช่วงล่าง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณต้นทุนซ่อมระบบช่วงล่างรถยนต์
+    </h1>
+    <p class="text-gray-600 mb-6">
+      ประมาณค่าใช้จ่ายซ่อมระบบช่วงล่างรถยนต์ แยกค่าอะไหล่และค่าแรงช่าง พร้อมประเมินเวลาซ่อม อัตราตลาดไทยปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">เลือกชิ้นส่วนที่ต้องการซ่อม/เปลี่ยน</label>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="front-shock" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">โช้คอัพหน้า</div>
+              <div class="text-gray-500">2,500 บาท/ข้าง</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="rear-shock" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">โช้คอัพหลัง</div>
+              <div class="text-gray-500">2,000 บาท/ข้าง</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="front-spring" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">แหนบหน้า</div>
+              <div class="text-gray-500">1,500 บาท/ข้าง</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="rear-spring" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">แหนบหลัง</div>
+              <div class="text-gray-500">1,200 บาท/ข้าง</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="upper-ball" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">ลูกหมากบน</div>
+              <div class="text-gray-500">800 บาท/ตัว</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="lower-ball" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">ลูกหมากล่าง</div>
+              <div class="text-gray-500">600 บาท/ตัว</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="bush" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">ยางกันโยก</div>
+              <div class="text-gray-500">300 บาท/ชิ้น</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="checkbox" name="component" value="control-arm" class="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded" />
+            <div class="text-sm">
+              <div class="font-medium text-gray-900">ขาช่วงล่าง</div>
+              <div class="text-gray-500">3,500 บาท/ข้าง</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Quantity & sides -->
+      <div class="grid gap-4 sm:grid-cols-2 mb-5">
+        <div>
+          <label for="sides" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนด้านที่เปลี่ยน (สำหรับชิ้นส่วนแบบซ้าย-ขวา)
+          </label>
+          <select
+            id="sides"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+          >
+            <option value="1">1 ด้าน (ซ้ายหรือขวา)</option>
+            <option value="2" selected>2 ด้าน (ทั้งคู่) — แนะนำ</option>
+          </select>
+        </div>
+        <div>
+          <label for="labor-rate" class="block text-sm font-medium text-gray-700 mb-1">
+            อัตราค่าแรงช่าง (บาท/ชั่วโมง)
+          </label>
+          <input
+            type="text"
+            id="labor-rate"
+            inputmode="decimal"
+            value="350"
+            placeholder="เช่น 350"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณต้นทุนซ่อมช่วงล่าง
+      </button>
+
+      <!-- Results -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-blue-700 font-medium mb-1">ค่าอะไหล่รวม</div>
+            <div id="res-parts" class="text-2xl font-bold text-blue-800">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-green-700 font-medium mb-1">ค่าแรงช่างรวม</div>
+            <div id="res-labor" class="text-2xl font-bold text-green-800">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 sm:col-span-2">
+            <div class="text-sm text-primary-700 font-medium mb-1">ค่าใช้จ่ายรวมทั้งหมด</div>
+            <div id="res-total" class="text-3xl font-bold text-primary-800">-</div>
+          </div>
+        </div>
+        <div class="bg-amber-50 rounded-lg p-4 border border-amber-200">
+          <div class="text-sm text-amber-700 font-medium mb-1">เวลาซ่อมโดยประมาณ</div>
+          <div id="res-time" class="text-lg font-bold text-amber-800">-</div>
+          <div id="res-breakdown" class="text-xs text-amber-600 mt-2 space-y-1"></div>
+        </div>
+        <div class="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+          <p class="text-xs text-yellow-700">
+            <strong>หมายเหตุ:</strong> ราคาเป็นการประมาณการสำหรับรถเก๋งทั่วไป ราคาจริงอาจแตกต่างตามรุ่นรถและสถานที่ซ่อม แนะนำตั้งศูนย์ล้อหลังซ่อมช่วงล่าง (+400-800 บาท)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ระบบช่วงล่างรถยนต์และต้นทุนการซ่อม</h2>
+      <p>
+        ระบบช่วงล่าง (Suspension System) เป็นชุดชิ้นส่วนที่ทำหน้าที่เชื่อมต่อตัวรถกับล้อ
+        รองรับแรงกระแทกจากพื้นถนน และควบคุมการทรงตัวของรถ การซ่อมบำรุงระบบช่วงล่างที่ดีช่วยให้ขับขี่ปลอดภัยและยืดอายุยาง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ราคาอะไหล่ช่วงล่างในตลาดไทย 2569</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">ชิ้นส่วน</th>
+              <th class="py-2 pr-4">ราคาอะไหล่ (บาท)</th>
+              <th class="py-2">ค่าแรงโดยประมาณ (บาท)</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">โช้คอัพหน้า (ต่อข้าง)</td>
+              <td class="py-2 pr-4">2,500 - 5,000</td>
+              <td class="py-2">1,050 - 1,750</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">โช้คอัพหลัง (ต่อข้าง)</td>
+              <td class="py-2 pr-4">2,000 - 4,000</td>
+              <td class="py-2">700 - 1,400</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">แหนบหน้า (ต่อข้าง)</td>
+              <td class="py-2 pr-4">1,500 - 3,000</td>
+              <td class="py-2">700 - 1,400</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ลูกหมากบน/ล่าง</td>
+              <td class="py-2 pr-4">600 - 1,500</td>
+              <td class="py-2">350 - 700</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ยางกันโยก</td>
+              <td class="py-2 pr-4">300 - 800</td>
+              <td class="py-2">350 - 700</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">ขาช่วงล่าง (ต่อข้าง)</td>
+              <td class="py-2 pr-4">3,500 - 8,000</td>
+              <td class="py-2">1,400 - 2,450</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สัญญาณที่บ่งบอกว่าช่วงล่างมีปัญหา</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>เสียงดัง:</strong> ได้ยินเสียงกระเทาะหรือเสียงโครมครามเมื่อขับผ่านหลุมบ่อ</li>
+        <li><strong>รถโคลง:</strong> รถโยกตัวมากเมื่อเลี้ยวหรือเบรก</li>
+        <li><strong>ยางสึกไม่สม่ำเสมอ:</strong> ยางสึกด้านในหรือด้านนอกมากกว่าปกติ</li>
+        <li><strong>พวงมาลัยสั่น:</strong> พวงมาลัยสั่นที่ความเร็วหนึ่งๆ</li>
+        <li><strong>รถดิ่งข้างใดข้างหนึ่ง:</strong> รถวิ่งไม่ตรง ต้องบังคับพวงมาลัยตลอด</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณต้นทุนซ่อมช่วงล่าง</h3>
+      <p>ตัวอย่าง: เปลี่ยนโช้คอัพหน้าทั้งคู่ + ลูกหมากล่างทั้งคู่ + ตั้งศูนย์ล้อ:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>โช้คอัพหน้า 2 ข้าง × 2,500 = 5,000 บาท</li>
+        <li>ลูกหมากล่าง 2 ตัว × 600 = 1,200 บาท</li>
+        <li>ค่าแรงช่างรวม (5 ชม. × 350) = 1,750 บาท</li>
+        <li>ตั้งศูนย์ล้อ = 600 บาท</li>
+        <li><strong>รวมทั้งสิ้น ≈ 8,550 บาท</strong></li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณต้นทุนซ่อมระบบช่วงล่าง/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนซ่อมระบบช่วงล่าง/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเบื้องต้น
+      ราคาจริงขึ้นอยู่กับยี่ห้อรถ รุ่นรถ คุณภาพอะไหล่ และอัตราค่าแรงของแต่ละอู่
+      กรุณาสอบถามราคาจากช่างหรืออู่ที่ไว้วางใจก่อนตัดสินใจซ่อม
+    </div>
+  </article>
+
+  <script>
+    interface ComponentData {
+      label: string;
+      unitPrice: number;
+      laborHours: number;
+      unit: string;
+      hasSides: boolean;
+    }
+
+    const components: Record<string, ComponentData> = {
+      'front-shock':   { label: 'โช้คอัพหน้า',  unitPrice: 2500, laborHours: 3, unit: 'ข้าง', hasSides: true },
+      'rear-shock':    { label: 'โช้คอัพหลัง',  unitPrice: 2000, laborHours: 2, unit: 'ข้าง', hasSides: true },
+      'front-spring':  { label: 'แหนบหน้า',     unitPrice: 1500, laborHours: 2, unit: 'ข้าง', hasSides: true },
+      'rear-spring':   { label: 'แหนบหลัง',     unitPrice: 1200, laborHours: 2, unit: 'ข้าง', hasSides: true },
+      'upper-ball':    { label: 'ลูกหมากบน',    unitPrice: 800,  laborHours: 1, unit: 'ตัว', hasSides: true },
+      'lower-ball':    { label: 'ลูกหมากล่าง',  unitPrice: 600,  laborHours: 1, unit: 'ตัว', hasSides: true },
+      'bush':          { label: 'ยางกันโยก',    unitPrice: 300,  laborHours: 1, unit: 'ชิ้น', hasSides: false },
+      'control-arm':   { label: 'ขาช่วงล่าง',   unitPrice: 3500, laborHours: 4, unit: 'ข้าง', hasSides: true },
+    };
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const checked = Array.from(document.querySelectorAll('input[name="component"]:checked')) as HTMLInputElement[];
+      if (checked.length === 0) {
+        alert('กรุณาเลือกชิ้นส่วนที่ต้องการซ่อม/เปลี่ยนอย่างน้อย 1 รายการ');
+        return;
+      }
+
+      const sides = parseInt((document.getElementById('sides') as HTMLSelectElement).value, 10);
+      const laborRate = parseNum((document.getElementById('labor-rate') as HTMLInputElement).value) || 350;
+
+      let totalParts = 0;
+      let totalHours = 0;
+      const breakdownLines: string[] = [];
+
+      for (const input of checked) {
+        const comp = components[input.value];
+        if (!comp) continue;
+        const qty = comp.hasSides ? sides : 1;
+        const partsCost = comp.unitPrice * qty;
+        const hours = comp.laborHours * (comp.hasSides ? sides : 1);
+        totalParts += partsCost;
+        totalHours += hours;
+        breakdownLines.push(`${comp.label} ${qty > 1 ? `×${qty}` : ''}: อะไหล่ ฿${fmt(partsCost)} + แรง ${hours} ชม.`);
+      }
+
+      const totalLabor = Math.round(totalHours * laborRate);
+      const grandTotal = totalParts + totalLabor;
+
+      (document.getElementById('res-parts') as HTMLElement).textContent = `฿${fmt(totalParts)}`;
+      (document.getElementById('res-labor') as HTMLElement).textContent = `฿${fmt(totalLabor)}`;
+      (document.getElementById('res-total') as HTMLElement).textContent = `฿${fmt(grandTotal)}`;
+      (document.getElementById('res-time') as HTMLElement).textContent = `${totalHours} ชั่วโมง (ประมาณ ${totalHours >= 8 ? Math.ceil(totalHours / 8) + ' วัน' : 'ภายใน 1 วัน'})`;
+
+      const breakEl = document.getElementById('res-breakdown') as HTMLElement;
+      breakEl.innerHTML = breakdownLines.map(l => `<div>• ${l}</div>`).join('');
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>

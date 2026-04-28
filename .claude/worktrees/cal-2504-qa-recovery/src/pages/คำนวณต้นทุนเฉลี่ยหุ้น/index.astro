@@ -1,0 +1,315 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนเฉลี่ยหุ้น 2569 | Weighted Average Cost Basis | Kamnuanlek';
+const pageDescription = 'คำนวณราคาต้นทุนเฉลี่ยต่อหุ้น (average cost basis) จากการซื้อหลายครั้งในราคาต่างกัน เปรียบเทียบกำไรขาดทุน ณ ราคาตลาดปัจจุบัน อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนเฉลี่ยหุ้น/`;
+
+const faqData = [
+  {
+    question: 'ต้นทุนเฉลี่ยหุ้นคำนวณอย่างไร?',
+    answer: 'ต้นทุนเฉลี่ยหุ้น (Weighted Average Cost) คำนวณโดย นำผลรวมของ (ราคาซื้อ × จำนวนหุ้น) ทุกครั้ง หารด้วยจำนวนหุ้นรวมทั้งหมด เช่น ซื้อ 100 หุ้นที่ 50 บาท และ 200 หุ้นที่ 40 บาท ต้นทุนเฉลี่ย = (5,000+8,000)/(100+200) = 43.33 บาท/หุ้น',
+  },
+  {
+    question: 'ทำไมต้องคำนวณต้นทุนเฉลี่ยหุ้น?',
+    answer: 'การรู้ต้นทุนเฉลี่ยที่แท้จริงช่วยประเมินกำไร/ขาดทุนที่ถูกต้อง ตัดสินใจขายหุ้นได้เหมาะสม และใช้สำหรับคำนวณภาษีกำไรจากการลงทุน (capital gains tax) ซึ่งสำคัญมากในการจัดการพอร์ตหุ้น',
+  },
+  {
+    question: 'Dollar Cost Averaging (DCA) คืออะไร?',
+    answer: 'DCA คือกลยุทธ์การซื้อหุ้นหรือกองทุนในจำนวนเงินคงที่ทุกงวด โดยไม่คำนึงถึงราคา เมื่อราคาสูงจะได้หุ้นน้อยลง เมื่อราคาต่ำจะได้หุ้นมากขึ้น ทำให้ต้นทุนเฉลี่ยต่ำกว่าการซื้อครั้งเดียวในราคาสูง',
+  },
+  {
+    question: 'ควรซื้อหุ้นเพิ่มเมื่อราคาลงหรือไม่?',
+    answer: 'การซื้อหุ้นเพิ่มเมื่อราคาลง (averaging down) ช่วยลดต้นทุนเฉลี่ยได้ แต่มีความเสี่ยงหากบริษัทมีพื้นฐานที่แย่ลง ควรพิจารณาว่าราคาลงเพราะตลาดโดยรวมหรือเพราะปัจจัยเฉพาะบริษัท ไม่ควรซื้อเพิ่มเพียงเพื่อลดต้นทุนเฉลี่ยเท่านั้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนเฉลี่ยหุ้น',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนเฉลี่ยหุ้น">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณต้นทุนเฉลี่ยหุ้น 2569 — Weighted Average Cost Basis จากการซื้อหลายครั้ง
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณราคาต้นทุนเฉลี่ยต่อหุ้นจากการซื้อหลายครั้งในราคาต่างกัน และเปรียบเทียบกำไร/ขาดทุน ณ ราคาตลาดปัจจุบัน
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="avgcost-form" class="space-y-5">
+        <p id="avgcost-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-medium text-gray-700">รายการซื้อหุ้น</label>
+            <button type="button" id="add-purchase-btn" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+              + เพิ่มการซื้อ
+            </button>
+          </div>
+
+          <div class="space-y-2" id="purchase-rows">
+            <div class="grid grid-cols-2 gap-2 text-xs text-gray-500 px-1">
+              <span>ราคาซื้อ (บาท/หุ้น)</span>
+              <span>จำนวนหุ้น</span>
+            </div>
+            <!-- Row 1 -->
+            <div class="purchase-row flex gap-2">
+              <input type="text" inputmode="decimal" placeholder="ราคา เช่น 50.00" class="purchase-price flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <input type="text" inputmode="numeric" placeholder="จำนวน เช่น 100" class="purchase-qty flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <button type="button" class="remove-row-btn text-gray-400 hover:text-red-500 px-2 text-lg leading-none hidden">×</button>
+            </div>
+            <!-- Row 2 -->
+            <div class="purchase-row flex gap-2">
+              <input type="text" inputmode="decimal" placeholder="ราคา เช่น 45.00" class="purchase-price flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <input type="text" inputmode="numeric" placeholder="จำนวน เช่น 200" class="purchase-qty flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <button type="button" class="remove-row-btn text-gray-400 hover:text-red-500 px-2 text-lg leading-none">×</button>
+            </div>
+            <!-- Row 3 -->
+            <div class="purchase-row flex gap-2">
+              <input type="text" inputmode="decimal" placeholder="ราคา เช่น 42.00" class="purchase-price flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <input type="text" inputmode="numeric" placeholder="จำนวน เช่น 150" class="purchase-qty flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+              <button type="button" class="remove-row-btn text-gray-400 hover:text-red-500 px-2 text-lg leading-none">×</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="market-price" class="block text-sm font-medium text-gray-700 mb-1">
+            ราคาตลาดปัจจุบัน (บาท/หุ้น)
+          </label>
+          <input
+            type="text"
+            id="market-price"
+            inputmode="decimal"
+            placeholder="เช่น 55.00"
+            class="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ราคาต้นทุนเฉลี่ย</div>
+            <div id="avg-res-avgprice" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนหุ้นทั้งหมด</div>
+            <div id="avg-res-totalqty" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ต้นทุนรวม</div>
+            <div id="avg-res-totalcost" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าตลาด</div>
+            <div id="avg-res-marketval" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div id="avg-res-plcard" class="rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไร/ขาดทุน</div>
+            <div id="avg-res-pl" class="text-xl font-bold">-</div>
+          </div>
+          <div id="avg-res-plpctcard" class="rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">% กำไร/ขาดทุน</div>
+            <div id="avg-res-plpct" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณต้นทุนเฉลี่ยหุ้น</h2>
+      <p>
+        เมื่อซื้อหุ้นหลายครั้งในราคาต่างกัน การรู้ต้นทุนเฉลี่ยที่แท้จริงช่วยให้ประเมินกำไร/ขาดทุนได้ถูกต้อง และตัดสินใจซื้อเพิ่มหรือขายได้อย่างมีข้อมูล
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณ Weighted Average Cost</h3>
+      <p>
+        ต้นทุนเฉลี่ย = Σ(ราคาซื้อ × จำนวนหุ้น) ÷ จำนวนหุ้นรวม<br />
+        กำไร/ขาดทุน = (ราคาตลาด − ต้นทุนเฉลี่ย) × จำนวนหุ้นรวม
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ซื้อ 100 หุ้นที่ 50 บาท = 5,000 บาท</li>
+        <li>ซื้อ 200 หุ้นที่ 40 บาท = 8,000 บาท</li>
+        <li>ต้นทุนเฉลี่ย = (5,000 + 8,000) ÷ (100 + 200) = <strong>43.33 บาท/หุ้น</strong></li>
+        <li>หากราคาตลาด 55 บาท: กำไร = (55 − 43.33) × 300 = <strong>3,501 บาท</strong></li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณต้นทุนเฉลี่ยหุ้น/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่รวมค่าคอมมิชชั่นและค่าธรรมเนียมซื้อขาย ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    // Add/remove rows
+    const purchaseRows = document.getElementById('purchase-rows') as HTMLElement;
+    const addBtn = document.getElementById('add-purchase-btn') as HTMLButtonElement;
+
+    addBtn.addEventListener('click', () => {
+      const row = document.createElement('div');
+      row.className = 'purchase-row flex gap-2';
+      row.innerHTML = `
+        <input type="text" inputmode="decimal" placeholder="ราคา" class="purchase-price flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        <input type="text" inputmode="numeric" placeholder="จำนวน" class="purchase-qty flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        <button type="button" class="remove-row-btn text-gray-400 hover:text-red-500 px-2 text-lg leading-none">×</button>
+      `;
+      purchaseRows.appendChild(row);
+      updateRemoveBtns();
+    });
+
+    function updateRemoveBtns() {
+      const rows = purchaseRows.querySelectorAll('.purchase-row');
+      rows.forEach((row, i) => {
+        const btn = row.querySelector('.remove-row-btn') as HTMLButtonElement;
+        if (btn) btn.classList.toggle('hidden', rows.length === 1 && i === 0);
+      });
+    }
+
+    purchaseRows.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.remove-row-btn');
+      if (!btn) return;
+      const row = btn.closest('.purchase-row');
+      if (row && purchaseRows.querySelectorAll('.purchase-row').length > 1) {
+        row.remove();
+        updateRemoveBtns();
+      }
+    });
+
+    updateRemoveBtns();
+
+    const form = document.getElementById('avgcost-form') as HTMLFormElement;
+    const formError = document.getElementById('avgcost-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const priceInputs = purchaseRows.querySelectorAll('.purchase-price') as NodeListOf<HTMLInputElement>;
+      const qtyInputs = purchaseRows.querySelectorAll('.purchase-qty') as NodeListOf<HTMLInputElement>;
+      const marketPrice = parseNum((document.getElementById('market-price') as HTMLInputElement).value);
+
+      let totalCost = 0;
+      let totalQty = 0;
+      let hasData = false;
+
+      priceInputs.forEach((pi, i) => {
+        const price = parseNum(pi.value);
+        const qty = parseNum(qtyInputs[i].value);
+        if (price > 0 && qty > 0) {
+          totalCost += price * qty;
+          totalQty += qty;
+          hasData = true;
+        }
+      });
+
+      if (!hasData || marketPrice <= 0) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorStart('avg-cost');
+
+      const avgPrice = totalCost / totalQty;
+      const marketValue = marketPrice * totalQty;
+      const pl = marketValue - totalCost;
+      const plPct = (pl / totalCost) * 100;
+
+      (document.getElementById('avg-res-avgprice') as HTMLElement).textContent = fmt(avgPrice) + ' บาท';
+      (document.getElementById('avg-res-totalqty') as HTMLElement).textContent = new Intl.NumberFormat('th-TH').format(totalQty) + ' หุ้น';
+      (document.getElementById('avg-res-totalcost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+      (document.getElementById('avg-res-marketval') as HTMLElement).textContent = fmt(marketValue) + ' บาท';
+
+      const plEl = document.getElementById('avg-res-pl') as HTMLElement;
+      const plCard = document.getElementById('avg-res-plcard') as HTMLElement;
+      const plPctEl = document.getElementById('avg-res-plpct') as HTMLElement;
+      const plPctCard = document.getElementById('avg-res-plpctcard') as HTMLElement;
+
+      if (pl >= 0) {
+        plEl.textContent = '+' + fmt(pl) + ' บาท';
+        plEl.className = 'text-xl font-bold text-green-700';
+        plCard.className = 'bg-green-50 rounded-lg p-4 text-center';
+        plPctEl.textContent = '+' + plPct.toFixed(2) + '%';
+        plPctEl.className = 'text-xl font-bold text-green-700';
+        plPctCard.className = 'bg-green-50 rounded-lg p-4 text-center';
+      } else {
+        plEl.textContent = fmt(pl) + ' บาท';
+        plEl.className = 'text-xl font-bold text-red-600';
+        plCard.className = 'bg-red-50 rounded-lg p-4 text-center';
+        plPctEl.textContent = plPct.toFixed(2) + '%';
+        plPctEl.className = 'text-xl font-bold text-red-600';
+        plPctCard.className = 'bg-red-50 rounded-lg p-4 text-center';
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('avg-cost');
+      trackCalculatorUsed('avg-cost');
+    });
+  </script>
+</BaseLayout>

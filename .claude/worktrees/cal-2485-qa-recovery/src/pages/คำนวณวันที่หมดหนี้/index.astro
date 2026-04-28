@@ -1,0 +1,351 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณวันที่หมดหนี้ 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณวันที่จะหมดหนี้จากยอดหนี้ ดอกเบี้ย และค่างวดปัจจุบัน พร้อมคำนวณว่าต้องผ่อนเพิ่มเท่าไรถ้าต้องการหมดหนี้ตามเป้าหมาย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณวันที่หมดหนี้/`;
+
+const faqData = [
+  {
+    question: 'สูตรคำนวณเดือนที่จะหมดหนี้คืออะไร?',
+    answer: 'ใช้สูตร n = -log(1 - P×r/PMT) / log(1+r) โดย P = ยอดหนี้คงเหลือ, r = อัตราดอกเบี้ยต่อเดือน, PMT = ค่างวดต่อเดือน สูตรนี้ใช้กับดอกเบี้ยแบบลดต้นลดดอก ซึ่งเป็นวิธีที่สถาบันการเงินส่วนใหญ่ใช้',
+  },
+  {
+    question: 'ทำไมการโปะหนี้เพิ่มแม้แค่เดือนละ 500 บาทถึงช่วยได้มาก?',
+    answer: 'เพราะดอกเบี้ยคิดจากยอดคงเหลือ การลดยอดคงเหลือเร็วขึ้นทำให้ดอกเบี้ยสะสมน้อยลงในทุกเดือนถัดไป เหมือนก้อนหิมะกลิ้งลงเขา การโปะเพิ่มเล็กน้อยแต่สม่ำเสมอส่งผลทบต้นในทางบวก',
+  },
+  {
+    question: 'ถ้าค่างวดน้อยกว่าดอกเบี้ยต่อเดือนจะเกิดอะไรขึ้น?',
+    answer: 'หนี้จะไม่มีวันหมด เพราะแต่ละเดือนยอดหนี้จะเพิ่มขึ้นแทนที่จะลดลง นี่คือสถานการณ์อันตราย ต้องเพิ่มค่างวดให้มากกว่าดอกเบี้ยต่อเดือนอย่างน้อย เพื่อให้ยอดต้นลดลงได้',
+  },
+  {
+    question: 'ควรตั้งเป้าหมายหมดหนี้กี่ปี?',
+    answer: 'ขึ้นอยู่กับประเภทหนี้ หนี้บัตรเครดิตและสินเชื่อส่วนบุคคลควรพยายามปิดให้ได้ภายใน 2-5 ปี เพราะดอกเบี้ยสูง สินเชื่อบ้านอาจยาวกว่า แต่ถ้าสามารถโปะเพิ่มได้ควรทำเพื่อลดดอกเบี้ยรวม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณวันที่หมดหนี้',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณวันที่หมดหนี้ 🎯">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      🎯 คำนวณวันที่หมดหนี้
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ใส่ยอดหนี้ ดอกเบี้ย และค่างวดปัจจุบัน แล้วดูว่าจะหมดหนี้เมื่อไร
+      หรือต้องผ่อนเพิ่มเท่าไรถ้าต้องการหมดหนี้ตามเป้าหมายที่ตั้งไว้
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="debtfree-form" class="space-y-5">
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="balance" class="block text-sm font-medium text-gray-700 mb-1">
+              ยอดหนี้คงเหลือ (บาท)
+            </label>
+            <input
+              type="text"
+              id="balance"
+              inputmode="numeric"
+              placeholder="เช่น 150000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="annual-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ยต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="annual-rate"
+              inputmode="decimal"
+              placeholder="เช่น 18"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="monthly-payment" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่างวดต่อเดือนปัจจุบัน (บาท)
+          </label>
+          <input
+            type="text"
+            id="monthly-payment"
+            inputmode="numeric"
+            placeholder="เช่น 5000"
+            class="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <hr class="border-gray-200" />
+
+        <div>
+          <label for="target-years" class="block text-sm font-medium text-gray-700 mb-1">
+            ต้องการหมดหนี้ภายใน (ปี) — ไม่บังคับ
+          </label>
+          <input
+            type="text"
+            id="target-years"
+            inputmode="decimal"
+            placeholder="เช่น 3"
+            class="w-full sm:w-48 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="text-xs text-gray-400 mt-1">กรอกเพื่อดูว่าต้องผ่อนเพิ่มเดือนละเท่าไร</p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8 space-y-4">
+
+      <!-- Current plan -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">แผนปัจจุบัน</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">วันที่หมดหนี้</div>
+            <div id="res-date" class="text-lg font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนเดือน</div>
+            <div id="res-months" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ยอดชำระรวม</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Target plan (conditional) -->
+      <div id="target-section" class="hidden bg-white rounded-lg shadow-sm border border-green-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-green-900 mb-4">หมดหนี้ตามเป้าหมาย</h2>
+
+        <div class="grid gap-3 sm:grid-cols-3">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ต้องผ่อนต่อเดือน</div>
+            <div id="target-payment" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผ่อนเพิ่มจากปัจจุบัน</div>
+            <div id="target-extra" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม (แผนนี้)</div>
+            <div id="target-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+        </div>
+
+        <div id="target-savings" class="mt-3 text-sm text-green-700 font-medium"></div>
+      </div>
+
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณวันหมดหนี้</h2>
+
+      <p>
+        เครื่องคำนวณนี้ใช้สูตรผ่อนชำระแบบลดต้นลดดอก (reducing balance) ซึ่งเป็นวิธีที่สถาบันการเงินในไทยส่วนใหญ่ใช้
+        โดยคำนวณจำนวนงวดที่เหลือจากยอดหนี้คงเหลือ อัตราดอกเบี้ย และค่างวดต่อเดือน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรที่ใช้</h3>
+      <p>
+        n = -log(1 - P×r/PMT) / log(1+r)
+      </p>
+      <p>
+        โดย P = ยอดหนี้คงเหลือ, r = อัตราดอกเบี้ยต่อเดือน (ดอกเบี้ยต่อปี ÷ 12), PMT = ค่างวดต่อเดือน, n = จำนวนงวดที่เหลือ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับลดระยะเวลาหนี้</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>โปะหนี้เพิ่มทุกครั้งที่มีเงินก้อน เช่น โบนัส หรือเงินพิเศษ</li>
+        <li>เพิ่มค่างวดแม้แค่ 500-1,000 บาทต่อเดือน ผลสะสมยิ่งใหญ่กว่าที่คิด</li>
+        <li>หลีกเลี่ยงการก่อหนี้ใหม่ระหว่างที่กำลังปลดหนี้เดิม</li>
+        <li>รีไฟแนนซ์หากได้ดอกเบี้ยต่ำกว่าและค่าใช้จ่ายคุ้มค่า</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <p>
+        หนี้ 150,000 บาท ดอกเบี้ย 18%/ปี ผ่อน 5,000 บาท/เดือน
+        จะหมดหนี้ใน 37 เดือน (ประมาณ 3 ปีกว่า) จ่ายดอกเบี้ยรวมประมาณ 33,000 บาท
+        แต่ถ้าเพิ่มค่างวดเป็น 7,000 บาท/เดือน จะหมดใน 24 เดือน ประหยัดดอกเบี้ยได้กว่า 10,000 บาท
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณวันที่หมดหนี้/" />
+    <RelatedCalculators currentHref="/คำนวณวันที่หมดหนี้/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเท่านั้น
+      ตัวเลขจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงิน ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function addMonths(date: Date, months: number): Date {
+      const d = new Date(date);
+      d.setMonth(d.getMonth() + months);
+      return d;
+    }
+
+    function formatThaiDate(date: Date): string {
+      return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'long' });
+    }
+
+    const form = document.getElementById('debtfree-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const balance = parseNum((document.getElementById('balance') as HTMLInputElement).value);
+      const annualRate = parseFloat((document.getElementById('annual-rate') as HTMLInputElement).value.replace(/,/g, '')) || 0;
+      const monthlyPayment = parseNum((document.getElementById('monthly-payment') as HTMLInputElement).value);
+      const targetYearsRaw = (document.getElementById('target-years') as HTMLInputElement).value.trim();
+      const targetYears = targetYearsRaw ? parseFloat(targetYearsRaw) : 0;
+
+      if (balance <= 0 || monthlyPayment <= 0) return;
+
+      const monthlyRate = annualRate / 100 / 12;
+
+      // Check if payment covers interest
+      const minPayment = balance * monthlyRate;
+      if (monthlyRate > 0 && monthlyPayment <= minPayment) {
+        (document.getElementById('res-date') as HTMLElement).textContent = 'ไม่มีวันหมด';
+        (document.getElementById('res-months') as HTMLElement).textContent = 'ค่างวดน้อยกว่าดอกเบี้ย';
+        (document.getElementById('res-interest') as HTMLElement).textContent = '-';
+        (document.getElementById('res-total') as HTMLElement).textContent = '-';
+        resultsDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Calculate months
+      let months: number;
+      if (monthlyRate <= 0) {
+        months = Math.ceil(balance / monthlyPayment);
+      } else {
+        months = Math.ceil(-Math.log(1 - balance * monthlyRate / monthlyPayment) / Math.log(1 + monthlyRate));
+      }
+
+      const totalPaid = monthlyPayment * months;
+      const totalInterest = totalPaid - balance;
+      const debtFreeDate = addMonths(new Date(), months);
+
+      (document.getElementById('res-date') as HTMLElement).textContent = formatThaiDate(debtFreeDate);
+      (document.getElementById('res-months') as HTMLElement).textContent = `${months} เดือน (${(months / 12).toFixed(1)} ปี)`;
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+
+      // Target calculation
+      const targetSection = document.getElementById('target-section') as HTMLElement;
+      if (targetYears > 0) {
+        const targetMonths = Math.round(targetYears * 12);
+        let targetPayment: number;
+
+        if (monthlyRate <= 0) {
+          targetPayment = balance / targetMonths;
+        } else {
+          targetPayment = balance * (monthlyRate * Math.pow(1 + monthlyRate, targetMonths)) /
+            (Math.pow(1 + monthlyRate, targetMonths) - 1);
+        }
+
+        const targetTotalPaid = targetPayment * targetMonths;
+        const targetTotalInterest = targetTotalPaid - balance;
+        const extraNeeded = targetPayment - monthlyPayment;
+        const interestSaved = totalInterest - targetTotalInterest;
+
+        (document.getElementById('target-payment') as HTMLElement).textContent = fmt(targetPayment) + ' บาท/เดือน';
+        (document.getElementById('target-extra') as HTMLElement).textContent =
+          extraNeeded > 0
+            ? `+${fmt(extraNeeded)} บาท/เดือน`
+            : 'ค่างวดปัจจุบันเพียงพอ';
+        (document.getElementById('target-interest') as HTMLElement).textContent = fmt(targetTotalInterest) + ' บาท';
+
+        const savingsEl = document.getElementById('target-savings') as HTMLElement;
+        if (interestSaved > 0) {
+          savingsEl.textContent = `เมื่อเทียบกับแผนปัจจุบัน ประหยัดดอกเบี้ยได้ ${fmt(interestSaved)} บาท`;
+        } else {
+          savingsEl.textContent = '';
+        }
+
+        targetSection.classList.remove('hidden');
+      } else {
+        targetSection.classList.add('hidden');
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorUsed('debt-free-date');
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('debt-free-date');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

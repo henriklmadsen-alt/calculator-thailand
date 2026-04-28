@@ -1,0 +1,336 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าโอนที่ดิน 2569 | ค่าธรรมเนียม ภาษีธุรกิจเฉพาะ อากรแสตมป์ | Kamnuanlek';
+const pageDescription = 'คำนวณค่าโอนที่ดินและอสังหาริมทรัพย์ 2569 ฟรี ค่าธรรมเนียมโอน 2% ภาษีธุรกิจเฉพาะ 3.3% หรืออากรแสตมป์ 0.5% ค่าจดจำนอง 1% ดูยอดรวมทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าโอนที่ดิน/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียมโอนที่ดินมีอะไรบ้าง?',
+    answer: 'ค่าธรรมเนียมโอนที่ดินประกอบด้วย: (1) ค่าจดทะเบียนโอน 2% ของราคาประเมิน (2) ภาษีธุรกิจเฉพาะ 3.3% หรืออากรแสตมป์ 0.5% (เลือกอย่างใดอย่างหนึ่ง) (3) ค่าจดจำนอง 1% ของวงเงินจำนอง (ถ้ามี)',
+  },
+  {
+    question: 'ภาษีธุรกิจเฉพาะ (SBT) 3.3% กับอากรแสตมป์ 0.5% ต่างกันอย่างไร?',
+    answer: 'ภาษีธุรกิจเฉพาะ 3.3% ใช้เมื่อผู้ขายถือครองทรัพย์น้อยกว่า 5 ปี หรือมีชื่อในทะเบียนบ้านน้อยกว่า 1 ปี อากรแสตมป์ 0.5% ใช้เมื่อถือครองเกิน 5 ปี และมีชื่อในทะเบียนบ้านเกิน 1 ปี ทั้งสองอย่างนี้จ่ายอย่างใดอย่างหนึ่งเท่านั้น',
+  },
+  {
+    question: 'ใครเป็นผู้จ่ายค่าธรรมเนียมโอน?',
+    answer: 'โดยทั่วไปผู้ซื้อจ่ายค่าธรรมเนียมโอน 2% และค่าจดจำนอง ส่วนผู้ขายจ่ายภาษีธุรกิจเฉพาะหรืออากรแสตมป์ แต่ในทางปฏิบัติสามารถตกลงกันเองได้ว่าใครจ่ายส่วนใด',
+  },
+  {
+    question: 'ราคาประเมินกับราคาซื้อขายต่างกันอย่างไร?',
+    answer: 'ราคาประเมินคือราคาที่กรมธนารักษ์กำหนด ค่าธรรมเนียมโอนคิดจากราคาประเมิน ส่วนภาษีธุรกิจเฉพาะคิดจากราคาที่สูงกว่าระหว่างราคาประเมินกับราคาซื้อขาย',
+  },
+  {
+    question: 'ค่าจดจำนองคือค่าอะไร?',
+    answer: 'ค่าจดจำนองคือค่าธรรมเนียมการจดจำนองที่ดิน/บ้านเป็นหลักประกันเงินกู้ อัตรา 1% ของวงเงินกู้ สูงสุด 200,000 บาท กรณีไม่กู้สินเชื่อไม่ต้องชำระส่วนนี้',
+  },
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าโอนที่ดิน 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโอนที่ดิน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัตราค่าธรรมเนียมปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าโอนที่ดินและอสังหาริมทรัพย์ ปี 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าธรรมเนียมโอนที่ดิน อาคาร และอสังหาริมทรัพย์ตามอัตราจริงของกรมที่ดิน
+      ครอบคลุมค่าธรรมเนียมโอน ภาษีธุรกิจเฉพาะ อากรแสตมป์ และค่าจดจำนอง
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลการโอนกรรมสิทธิ์</h2>
+
+      <form id="land-transfer-form" class="space-y-6">
+        <p id="transfer-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกราคาประเมินก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="appraisal-value" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาประเมิน (บาท)
+            </label>
+            <input
+              type="text"
+              id="appraisal-value"
+              inputmode="numeric"
+              placeholder="เช่น 3,500,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ราคาประเมินกรมธนารักษ์ ดูจากสำนักงานที่ดิน</p>
+          </div>
+          <div>
+            <label for="sale-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาซื้อขาย (บาท) <span class="text-gray-400 font-normal">— ถ้าทราบ</span>
+            </label>
+            <input
+              type="text"
+              id="sale-price"
+              inputmode="numeric"
+              placeholder="เช่น 4,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ใช้คำนวณ SBT (คิดจากราคาสูงกว่า)</p>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-2">ประเภทภาษีที่ผู้ขายต้องชำระ</legend>
+          <div class="space-y-2">
+            <label class="flex items-start gap-3">
+              <input type="radio" name="tax-type" id="tax-sbt" value="sbt" checked class="w-4 h-4 mt-0.5 text-primary-600" />
+              <span class="text-sm text-gray-700">
+                <strong>ภาษีธุรกิจเฉพาะ (SBT) 3.3%</strong>
+                — ถือครองน้อยกว่า 5 ปี หรือมีชื่อในทะเบียนบ้านน้อยกว่า 1 ปี
+              </span>
+            </label>
+            <label class="flex items-start gap-3">
+              <input type="radio" name="tax-type" id="tax-stamp" value="stamp" class="w-4 h-4 mt-0.5 text-primary-600" />
+              <span class="text-sm text-gray-700">
+                <strong>อากรแสตมป์ 0.5%</strong>
+                — ถือครองเกิน 5 ปี และมีชื่อในทะเบียนบ้านเกิน 1 ปี
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="mortgage-amount" class="block text-sm font-medium text-gray-700 mb-1">
+            วงเงินกู้ / จดจำนอง (บาท) <span class="text-gray-400 font-normal">— ถ้ากู้สินเชื่อ</span>
+          </label>
+          <input
+            type="text"
+            id="mortgage-amount"
+            inputmode="numeric"
+            placeholder="เช่น 3,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณค่าโอนที่ดิน</h2>
+
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าธรรมเนียมโอน (2%)</div>
+            <div id="result-transfer-fee" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1" id="seller-tax-label">ภาษีธุรกิจเฉพาะ (3.3%)</div>
+            <div id="result-seller-tax" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าจดจำนอง (1%)</div>
+            <div id="result-mortgage-fee" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รวมทั้งสิ้น</div>
+            <div id="result-grand-total" class="text-xl font-bold text-red-700">-</div>
+          </div>
+        </div>
+
+        <!-- Breakdown by party -->
+        <div class="grid gap-4 sm:grid-cols-2 mb-4">
+          <div class="rounded-lg border border-blue-100 p-4">
+            <h3 class="text-sm font-semibold text-blue-800 mb-2">ผู้ซื้อชำระ</h3>
+            <div class="space-y-1 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">ค่าธรรมเนียมโอน (2%)</span>
+                <span id="buyer-transfer" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ค่าจดจำนอง (1%)</span>
+                <span id="buyer-mortgage" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between font-semibold border-t border-blue-100 pt-1 mt-1">
+                <span>รวมผู้ซื้อ</span>
+                <span id="buyer-total" class="text-blue-700">-</span>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-lg border border-orange-100 p-4">
+            <h3 class="text-sm font-semibold text-orange-800 mb-2">ผู้ขายชำระ</h3>
+            <div class="space-y-1 text-sm">
+              <div class="flex justify-between">
+                <span id="seller-tax-row-label" class="text-gray-600">ภาษีธุรกิจเฉพาะ</span>
+                <span id="seller-tax-amount" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between font-semibold border-t border-orange-100 pt-1 mt-1">
+                <span>รวมผู้ขาย</span>
+                <span id="seller-total" class="text-orange-700">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-500">*สมมติว่าแบ่งค่าใช้จ่ายตามสัดส่วนปกติ ผู้ซื้อจ่ายค่าธรรมเนียมโอนและจดจำนอง ผู้ขายจ่ายภาษี สามารถตกลงกันเองได้</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าธรรมเนียมโอนที่ดิน 2569 มีอะไรบ้าง?</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left border-b">รายการ</th>
+              <th class="px-3 py-2 text-right border-b">อัตรา</th>
+              <th class="px-3 py-2 text-left border-b">คิดจาก</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="px-3 py-2 border-b">ค่าจดทะเบียนโอน</td><td class="px-3 py-2 text-right border-b">2%</td><td class="px-3 py-2 border-b">ราคาประเมิน</td></tr>
+            <tr><td class="px-3 py-2 border-b">ภาษีธุรกิจเฉพาะ (SBT)</td><td class="px-3 py-2 text-right border-b">3.3%</td><td class="px-3 py-2 border-b">ราคาสูงกว่า (ประเมิน vs ขาย)</td></tr>
+            <tr><td class="px-3 py-2 border-b">อากรแสตมป์</td><td class="px-3 py-2 text-right border-b">0.5%</td><td class="px-3 py-2 border-b">ราคาสูงกว่า (กรณีไม่เสีย SBT)</td></tr>
+            <tr><td class="px-3 py-2">ค่าจดจำนอง</td><td class="px-3 py-2 text-right">1%</td><td class="px-3 py-2">วงเงินกู้ (สูงสุด 200,000 บาท)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณค่าโอนที่ดิน/" />
+    <RelatedCalculators currentHref="/คำนวณค่าโอนที่ดิน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการตามอัตราปกติ
+      ค่าธรรมเนียมจริงอาจแตกต่างตามนโยบายภาครัฐและเงื่อนไขเฉพาะ กรุณาตรวจสอบกับสำนักงานที่ดินในพื้นที่
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(val: string): number {
+      return Math.max(0, parseFloat(val.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+    }
+
+    const form = document.getElementById('land-transfer-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+    const errorDiv = document.getElementById('transfer-error') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const appraisal = parseNumber((document.getElementById('appraisal-value') as HTMLInputElement).value);
+      const salePrice = parseNumber((document.getElementById('sale-price') as HTMLInputElement).value);
+      const mortgage = parseNumber((document.getElementById('mortgage-amount') as HTMLInputElement).value);
+      const taxType = (document.querySelector('input[name="tax-type"]:checked') as HTMLInputElement)?.value || 'sbt';
+
+      if (appraisal <= 0) {
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Transfer fee: 2% of appraisal value
+      const transferFee = appraisal * 0.02;
+
+      // SBT or stamp duty: based on higher of appraisal or sale price
+      const taxBase = Math.max(appraisal, salePrice || appraisal);
+      let sellerTax: number;
+      let taxLabel: string;
+      if (taxType === 'sbt') {
+        sellerTax = taxBase * 0.033;
+        taxLabel = 'ภาษีธุรกิจเฉพาะ (3.3%)';
+      } else {
+        sellerTax = taxBase * 0.005;
+        taxLabel = 'อากรแสตมป์ (0.5%)';
+      }
+
+      // Mortgage fee: 1% of mortgage, capped at 200,000
+      const mortgageFee = Math.min(mortgage * 0.01, 200_000);
+
+      const grandTotal = transferFee + sellerTax + mortgageFee;
+      const buyerTotal = transferFee + mortgageFee;
+      const sellerTotal = sellerTax;
+
+      (document.getElementById('result-transfer-fee') as HTMLElement).textContent = `${formatThai(transferFee)} บาท`;
+      (document.getElementById('result-seller-tax') as HTMLElement).textContent = `${formatThai(sellerTax)} บาท`;
+      (document.getElementById('result-mortgage-fee') as HTMLElement).textContent = `${formatThai(mortgageFee)} บาท`;
+      (document.getElementById('result-grand-total') as HTMLElement).textContent = `${formatThai(grandTotal)} บาท`;
+
+      (document.getElementById('seller-tax-label') as HTMLElement).textContent = taxLabel;
+      (document.getElementById('seller-tax-row-label') as HTMLElement).textContent = taxLabel;
+      (document.getElementById('buyer-transfer') as HTMLElement).textContent = `${formatThai(transferFee)} บาท`;
+      (document.getElementById('buyer-mortgage') as HTMLElement).textContent = `${formatThai(mortgageFee)} บาท`;
+      (document.getElementById('buyer-total') as HTMLElement).textContent = `${formatThai(buyerTotal)} บาท`;
+      (document.getElementById('seller-tax-amount') as HTMLElement).textContent = `${formatThai(sellerTax)} บาท`;
+      (document.getElementById('seller-total') as HTMLElement).textContent = `${formatThai(sellerTotal)} บาท`;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('land_transfer_fee');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('land_transfer_fee');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('land_transfer_fee');
+    }, { once: true });
+  </script>
+</BaseLayout>

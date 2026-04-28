@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณเงินเดือนครูทั่วไป | Kamnuanlek';
+const pageDescription = 'คำนวณ คำนวณเงินเดือนครูทั่วไป - เครื่องคำนวณการศึกษาฟรีออนไลน์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0442-เงินเดือนครู/`;
+
+const faqData = [
+  { question: 'ค่ารักษาพยาบาลในไทยแตกต่างกันอย่างไรระหว่างโรงพยาบาลรัฐและเอกชน?', answer: 'โรงพยาบาลรัฐมีค่าใช้จ่ายต่ำกว่ามาก แต่ใช้เวลารอนาน โรงพยาบาลเอกชนสะดวกกว่าแต่ราคาสูงกว่า 3-10 เท่า ขึ้นอยู่กับประเภทการรักษา' },
+  { question: 'สิทธิ์ประกันสังคมครอบคลุมค่ารักษาอะไรบ้าง?', answer: 'ผู้ประกันตนมาตรา 33 ได้รับการรักษาฟรีที่โรงพยาบาลตามบัตรรับรองสิทธิ์ ครอบคลุมการรักษาทั่วไป ผ่าตัด คลอดบุตร และยาตามบัญชียา' },
+  { question: 'ควรทำประกันสุขภาพหรือสำรองเงินเอง?', answer: 'ประกันสุขภาพช่วยลดความเสี่ยงจากค่าใช้จ่ายสูงที่คาดไม่ถึง เหมาะกับคนที่ไม่มีเงินสำรองมาก ส่วนคนที่มีเงินออมสูงอาจสำรองเองได้' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกค่าห้อง ค่ายา ค่าหัตถการ และค่าตรวจวินิจฉัย กดคำนวณเพื่อดูค่าใช้จ่ายรวมทั้งหมด' }
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือนครูทั่วไป">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเงินเดือนครูทั่วไป</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">เครื่องคำนวณ คำนวณเงินเดือนครูทั่วไป ฟรีออนไลน์</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="val1" class="block text-sm font-medium text-gray-700 mb-1">ป้อนค่า</label><input type="text" id="val1" inputmode="decimal" placeholder="ป้อนจำนวนเงิน" value="100000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-600 mb-2">ผลลัพธ์</p>
+            <p id="result" class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900">-</p>
+          </div>
+          <details class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <summary class="font-semibold text-yellow-900 cursor-pointer select-none hover:text-yellow-800 transition-colors">
+              ⚠️ สำคัญ: หมายเหตุเกี่ยวกับการคำนวณ
+            </summary>
+            <div class="mt-3 text-sm text-yellow-800 space-y-2">
+              <p>• ผลการคำนวณนี้เป็นเพียงการประมาณการเท่านั้น ไม่ใช่คำปกษณ์อย่างเป็นทางการ</p>
+              <p>• อัตราการปรับเงินเดือนอาจแตกต่างกันตามสถาบัน และปีงบประมาณ</p>
+              <p>• ควรตรวจสอบกับหน่วยงานที่เกี่ยวข้องสำหรับข้อมูลล่าสุด</p>
+              <p>• ผลที่ได้อาจไม่รวมเบี้ยประกอบรายได้และค่าสวัสดิการอื่นๆ</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const val1 = parseFloat((document.getElementById('val1') as HTMLInputElement).value) || 0;
+      const result = val1 * 1.2;
+      const fmt = (n: number) => new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(n);
+      (document.getElementById('result') as HTMLElement).textContent = fmt(result);
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('คำนวณ-klc0442-เงินเดือนครู');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

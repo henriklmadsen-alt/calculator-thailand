@@ -1,0 +1,266 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ 2569 | PVD สูงสุด 500,000 บาท | Kamnuanlek';
+const pageDescription = 'คำนวณค่าลดหย่อนกองทุนสำรองเลี้ยงชีพ (PVD) 2569 ฟรี เงินสมทบ 2-15% ของเงินเดือน ลดหย่อนได้สูงสุด 500,000 บาท (รวม RMF/SSF) ดูผลทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ/`;
+
+const faqData = [
+  {
+    question: 'กองทุนสำรองเลี้ยงชีพลดหย่อนได้สูงสุดเท่าไร?',
+    answer: 'ลดหย่อนได้ตามจำนวนเงินสมทบจริง แต่รวมกับ RMF, SSF, กองทุนบำเหน็จบำนาญข้าราชการ (กบข.) และกองทุนออมแห่งชาติ ต้องไม่เกิน 500,000 บาทต่อปี',
+  },
+  {
+    question: 'เงินสมทบกองทุนสำรองเลี้ยงชีพคิดอัตราเท่าไร?',
+    answer: 'ลูกจ้างสมทบได้ 2-15% ของเงินเดือน และนายจ้างจะสมทบในสัดส่วนที่กำหนดในข้อบังคับกองทุน ส่วนที่ลดหย่อนได้คือส่วนของลูกจ้างเท่านั้น',
+  },
+  {
+    question: 'หากลงทุน RMF ด้วย ต้องรวมกับกองทุนสำรองเลี้ยงชีพไหม?',
+    answer: 'ใช่ เงินลงทุน RMF, SSF, และเงินสมทบกองทุนสำรองเลี้ยงชีพ รวมกันต้องไม่เกิน 500,000 บาทต่อปีสำหรับการลดหย่อน',
+  },
+  {
+    question: 'ถอนเงินออกก่อนกำหนดได้ไหม?',
+    answer: 'ถอนได้เมื่อออกจากงาน แต่อาจต้องเสียภาษีหากถอนก่อนครบเงื่อนไข (อายุ 55 ปีและสมาชิกครบ 5 ปี) ส่วนที่เคยลดหย่อนไปแล้วจะถูกนำมารวมคำนวณภาษีในปีที่ถอน',
+  },
+  {
+    question: 'กองทุนสำรองเลี้ยงชีพดีกว่า RMF อย่างไร?',
+    answer: 'กองทุนสำรองเลี้ยงชีพมีข้อดีที่นายจ้างสมทบด้วย ทำให้ผลตอบแทนรวมสูงกว่า และไม่มีข้อกำหนดขั้นต่ำในการลงทุนต่อเนื่อง ต่างจาก RMF ที่ต้องลงทุนต่อเนื่องทุกปี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ (PVD) ปี 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเงินสมทบกองทุนสำรองเลี้ยงชีพที่นำมาลดหย่อนภาษีได้
+      พร้อมเช็กเพดานรวมกับ RMF/SSF สูงสุด 500,000 บาทต่อปี
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลเงินเดือนและอัตราสมทบ</h2>
+
+      <form id="pvd-form" class="space-y-6">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="monthly-salary" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินเดือนรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="monthly-salary"
+              inputmode="numeric"
+              placeholder="เช่น 35,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="contribution-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราสมทบของลูกจ้าง (%)
+            </label>
+            <select
+              id="contribution-rate"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+            >
+              <option value="2">2%</option>
+              <option value="3">3%</option>
+              <option value="4">4%</option>
+              <option value="5" selected>5%</option>
+              <option value="6">6%</option>
+              <option value="7">7%</option>
+              <option value="8">8%</option>
+              <option value="9">9%</option>
+              <option value="10">10%</option>
+              <option value="11">11%</option>
+              <option value="12">12%</option>
+              <option value="13">13%</option>
+              <option value="14">14%</option>
+              <option value="15">15%</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="rmf-ssf" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินลงทุน RMF + SSF รวม (บาท/ปี) <span class="text-gray-400 font-normal">— ถ้ามี</span>
+          </label>
+          <input
+            type="text"
+            id="rmf-ssf"
+            inputmode="numeric"
+            placeholder="เช่น 50,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p class="mt-1 text-xs text-gray-500">รวมกับ PVD แล้วต้องไม่เกิน 500,000 บาท</p>
+        </div>
+
+        <div>
+          <label for="marginal-rate" class="block text-sm font-medium text-gray-700 mb-1">
+            ฐานภาษีของคุณ (%)
+          </label>
+          <select
+            id="marginal-rate"
+            class="w-48 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+          >
+            <option value="0.05">5%</option>
+            <option value="0.10">10%</option>
+            <option value="0.15">15%</option>
+            <option value="0.20" selected>20%</option>
+            <option value="0.25">25%</option>
+            <option value="0.30">30%</option>
+            <option value="0.35">35%</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณกองทุนสำรองเลี้ยงชีพ</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินสมทบ/ปี</div>
+            <div id="result-annual-pvd" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อน PVD ได้จริง</div>
+            <div id="result-deductible" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เหลือ Quota RMF/SSF</div>
+            <div id="result-quota-left" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ประหยัดภาษีโดยประมาณ</div>
+            <div id="result-tax-saved" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div id="result-warning" class="hidden rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm text-orange-700 mt-3"></div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">กองทุนสำรองเลี้ยงชีพกับการลดหย่อนภาษี</h2>
+      <p>
+        กองทุนสำรองเลี้ยงชีพ (Provident Fund: PVD) เป็นกองทุนที่นายจ้างและลูกจ้างร่วมกันสมทบเงินเพื่อออมระยะยาว
+        ลูกจ้างสามารถนำเงินสมทบส่วนของตนมาลดหย่อนภาษีได้ตามจริง โดยอยู่ในเพดาน 500,000 บาทรวมกับ RMF และ SSF
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เพดานลดหย่อนรวม 500,000 บาท</h3>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>กองทุนสำรองเลี้ยงชีพ (PVD) — ส่วนของลูกจ้าง</li>
+        <li>กองทุน RMF (กองทุนรวมเพื่อการเลี้ยงชีพ)</li>
+        <li>กองทุน SSF (กองทุนรวมเพื่อการออม)</li>
+        <li>กองทุนบำเหน็จบำนาญข้าราชการ (กบข.)</li>
+        <li>กองทุนออมแห่งชาติ (กอช.)</li>
+      </ul>
+      <p class="mt-4">ทั้งหมดนี้รวมกันต้องไม่เกิน 500,000 บาทต่อปี</p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ/" />
+    <RelatedCalculators currentHref="/คำนวณลดหย่อนกองทุนสำรองเลี้ยงชีพ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(value: string): number {
+      return Math.max(0, parseFloat(value.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+    }
+
+    const form = document.getElementById('pvd-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+    const MAX_COMBINED = 500_000;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const salary = parseNumber((document.getElementById('monthly-salary') as HTMLInputElement).value);
+      const rate = parseInt((document.getElementById('contribution-rate') as HTMLSelectElement).value) / 100;
+      const rmfSsf = parseNumber((document.getElementById('rmf-ssf') as HTMLInputElement).value);
+      const taxRate = parseFloat((document.getElementById('marginal-rate') as HTMLSelectElement).value);
+
+      const annualPvd = salary * 12 * rate;
+      const availableQuota = Math.max(0, MAX_COMBINED - rmfSsf);
+      const deductible = Math.min(annualPvd, availableQuota);
+      const quotaLeft = Math.max(0, MAX_COMBINED - rmfSsf - deductible);
+      const taxSaved = deductible * taxRate;
+
+      (document.getElementById('result-annual-pvd') as HTMLElement).textContent = `${formatThai(annualPvd)} บาท`;
+      (document.getElementById('result-deductible') as HTMLElement).textContent = `${formatThai(deductible)} บาท`;
+      (document.getElementById('result-quota-left') as HTMLElement).textContent = `${formatThai(quotaLeft)} บาท`;
+      (document.getElementById('result-tax-saved') as HTMLElement).textContent = `~${formatThai(taxSaved)} บาท`;
+
+      const warning = document.getElementById('result-warning') as HTMLElement;
+      if (annualPvd > availableQuota) {
+        warning.textContent = `เงินสมทบ PVD ${formatThai(annualPvd)} บาท เกินเพดานที่เหลือ ${formatThai(availableQuota)} บาท (รวม RMF/SSF ${formatThai(rmfSsf)} บาทแล้ว) จึงลดหย่อนได้เพียง ${formatThai(deductible)} บาท`;
+        warning.classList.remove('hidden');
+      } else {
+        warning.classList.add('hidden');
+      }
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('pvd_deduction');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('pvd_deduction');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('pvd_deduction');
+    }, { once: true });
+  </script>
+</BaseLayout>

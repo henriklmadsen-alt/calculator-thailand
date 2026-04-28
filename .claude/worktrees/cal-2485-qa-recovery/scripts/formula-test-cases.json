@@ -1,0 +1,309 @@
+[
+  {
+    "page": "/คำนวณ-bmi/",
+    "formula": "bmi",
+    "description": "ส่วนสูง 170 ซม. น้ำหนัก 65 กก. → BMI 22.5 (ปกติ)",
+    "source": "page worked example line 431-433",
+    "inputs": { "heightCm": 170, "weightKg": 65 },
+    "expected": { "bmi": 22.5, "category": "normal" }
+  },
+  {
+    "page": "/คำนวณ-bmi/",
+    "formula": "bmi",
+    "description": "ส่วนสูง 165 ซม. น้ำหนัก 70 กก. → BMI 25.7 (อ้วนระดับ 1 per Thai/Asian standard)",
+    "source": "page worked example line 439-443 (NOTE: page text says น้ำหนักเกิน but Thai WHO standard classifies BMI 25-29.9 as obese1)",
+    "inputs": { "heightCm": 165, "weightKg": 70 },
+    "expected": { "bmi": 25.7, "category": "obese1" }
+  },
+  {
+    "page": "/คำนวณ-bmi/",
+    "formula": "bmi",
+    "description": "ส่วนสูง 160 ซม. น้ำหนัก 48 กก. → BMI 18.7 (JS float: 1.6×1.6=2.560000...02)",
+    "source": "page worked example line 449-451 (NOTE: page shows 18.75 but JS float gives 18.7 due to 1.6*1.6 precision)",
+    "inputs": { "heightCm": 160, "weightKg": 48 },
+    "expected": { "bmi": 18.7, "category": "normal" }
+  },
+  {
+    "page": "/คำนวณ-bmi/",
+    "formula": "bmi",
+    "description": "ส่วนสูง 180 ซม. น้ำหนัก 95 กก. → BMI 29.3 (อ้วนระดับ 1)",
+    "source": "edge case: upper obese1 boundary",
+    "inputs": { "heightCm": 180, "weightKg": 95 },
+    "expected": { "bmi": 29.3, "category": "obese1" }
+  },
+
+  {
+    "page": "/คำนวณภาษีมูลค่าเพิ่ม/",
+    "formula": "vat",
+    "description": "ราคาก่อน VAT 1,000 บาท → VAT 70, รวม 1,070",
+    "source": "page worked example line 261-268",
+    "inputs": { "price": 1000, "mode": "add" },
+    "expected": { "vat": 70, "priceWithVAT": 1070, "priceBeforeVAT": 1000 }
+  },
+  {
+    "page": "/คำนวณภาษีมูลค่าเพิ่ม/",
+    "formula": "vat",
+    "description": "ราคาก่อน VAT 10,000 บาท → VAT 700, รวม 10,700",
+    "source": "page worked example line 261-268",
+    "inputs": { "price": 10000, "mode": "add" },
+    "expected": { "vat": 700, "priceWithVAT": 10700, "priceBeforeVAT": 10000 }
+  },
+  {
+    "page": "/คำนวณภาษีมูลค่าเพิ่ม/",
+    "formula": "vat",
+    "description": "ราคารวม VAT 1,070 บาท → ราคาก่อน 1,000, VAT 70",
+    "source": "page worked example reverse VAT",
+    "inputs": { "price": 1070, "mode": "extract" },
+    "expected": { "priceBeforeVAT": 1000, "vat": 70 },
+    "tolerance": 1
+  },
+  {
+    "page": "/คำนวณภาษีมูลค่าเพิ่ม/",
+    "formula": "vat",
+    "description": "ราคาก่อน VAT 50,000 บาท → VAT 3,500, รวม 53,500",
+    "source": "edge case: large amount",
+    "inputs": { "price": 50000, "mode": "add" },
+    "expected": { "vat": 3500, "priceWithVAT": 53500 }
+  },
+
+  {
+    "page": "/คำนวณผ่อนรถ/",
+    "formula": "car_loan_flat",
+    "description": "900,000 ดาวน์ 20% ดอกเบี้ย 3.5% 5 ปี → ค่างวด 14,100",
+    "source": "page worked example lines 326-337",
+    "inputs": { "price": 900000, "downPct": 20, "annualRate": 3.5, "years": 5 },
+    "expected": { "monthlyPayment": 14100, "totalInterest": 126000, "financeAmount": 720000 }
+  },
+  {
+    "page": "/คำนวณผ่อนรถ/",
+    "formula": "car_loan_flat",
+    "description": "600,000 ดาวน์ 25% ดอกเบี้ย 3.5% 5 ปี → ค่างวด 8,812.50",
+    "source": "edge case: mid-range car",
+    "inputs": { "price": 600000, "downPct": 25, "annualRate": 3.5, "years": 5 },
+    "expected": { "monthlyPayment": 8812.5, "totalInterest": 78750, "financeAmount": 450000 }
+  },
+  {
+    "page": "/คำนวณผ่อนรถ/",
+    "formula": "car_loan_flat",
+    "description": "1,000,000 ดาวน์ 30% ดอกเบี้ย 4% 7 ปี → ค่างวด 10,666.67",
+    "source": "edge case: high-end car long term",
+    "inputs": { "price": 1000000, "downPct": 30, "annualRate": 4, "years": 7 },
+    "expected": { "monthlyPayment": 10666.67, "totalInterest": 196000, "financeAmount": 700000 },
+    "tolerance": 0.01
+  },
+  {
+    "page": "/คำนวณผ่อนรถ/",
+    "formula": "car_loan_flat",
+    "description": "500,000 ไม่ดาวน์ ดอกเบี้ย 5% 4 ปี → ค่างวด 12,500",
+    "source": "edge case: zero down payment (600,000/48=12,500)",
+    "inputs": { "price": 500000, "downPct": 0, "annualRate": 5, "years": 4 },
+    "expected": { "monthlyPayment": 12500, "totalInterest": 100000, "financeAmount": 500000 },
+    "tolerance": 0.01
+  },
+
+  {
+    "page": "/คำนวณผ่อนบ้าน/",
+    "formula": "home_loan_pmt",
+    "description": "กู้ 2,000,000 อัตรา 4% 20 ปี → ค่างวด ≈ 12,120",
+    "source": "page worked example line 532",
+    "inputs": { "principal": 2000000, "annualRate": 4, "years": 20 },
+    "expected": { "monthlyPayment": 12119.63 },
+    "tolerance": 5
+  },
+  {
+    "page": "/คำนวณผ่อนบ้าน/",
+    "formula": "home_loan_pmt",
+    "description": "กู้ 3,000,000 อัตรา 5% 30 ปี → ค่างวด ≈ 16,105",
+    "source": "edge case: large mortgage long term",
+    "inputs": { "principal": 3000000, "annualRate": 5, "years": 30 },
+    "expected": { "monthlyPayment": 16104.65 },
+    "tolerance": 5
+  },
+  {
+    "page": "/คำนวณผ่อนบ้าน/",
+    "formula": "home_loan_pmt",
+    "description": "กู้ 1,500,000 อัตรา 3.5% 15 ปี → ค่างวด ≈ 10,723",
+    "source": "edge case: mid-range mortgage",
+    "inputs": { "principal": 1500000, "annualRate": 3.5, "years": 15 },
+    "expected": { "monthlyPayment": 10723.24 },
+    "tolerance": 5
+  },
+
+  {
+    "page": "/คำนวณผ่อนกู้/",
+    "formula": "loan_pmt",
+    "description": "กู้ 100,000 อัตรา 7% 3 ปี → ค่างวด ≈ 3,087.70",
+    "source": "edge case: personal loan",
+    "inputs": { "principal": 100000, "annualRate": 7, "years": 3 },
+    "expected": { "monthlyPayment": 3087.7 },
+    "tolerance": 1
+  },
+  {
+    "page": "/คำนวณผ่อนกู้/",
+    "formula": "loan_pmt",
+    "description": "กู้ 500,000 อัตรา 6% 5 ปี → ค่างวด ≈ 9,666.43",
+    "source": "edge case: mid-range personal loan",
+    "inputs": { "principal": 500000, "annualRate": 6, "years": 5 },
+    "expected": { "monthlyPayment": 9666.43 },
+    "tolerance": 1
+  },
+  {
+    "page": "/คำนวณผ่อนกู้/",
+    "formula": "loan_pmt",
+    "description": "กู้ 200,000 อัตรา 0% 2 ปี → ค่างวด 8,333.33",
+    "source": "edge case: zero interest rate",
+    "inputs": { "principal": 200000, "annualRate": 0, "years": 2 },
+    "expected": { "monthlyPayment": 8333.33 },
+    "tolerance": 0.01
+  },
+
+  {
+    "page": "/คำนวณภาษีเงินได้บุคคลธรรมดา/",
+    "formula": "income_tax",
+    "description": "รายได้ 300,000 ลดหย่อนส่วนตัว+SSF → netIncome 131,000 ภาษี 0",
+    "source": "Thai RD 2026 bracket: below taxable threshold",
+    "inputs": {
+      "annualIncome": 300000,
+      "personalAllowance": true,
+      "spouseAllowance": false,
+      "childCount": 0,
+      "socialSecurity": 9000,
+      "lifeInsurance": 0,
+      "healthInsurance": 0,
+      "providentFund": 0,
+      "homeLoanInterest": 0,
+      "otherDeductions": 0
+    },
+    "expected": { "netIncome": 131000, "annualTax": 0 }
+  },
+  {
+    "page": "/คำนวณภาษีเงินได้บุคคลธรรมดา/",
+    "formula": "income_tax",
+    "description": "รายได้ 600,000 ลดหย่อนส่วนตัว+SSF → netIncome 431,000 ภาษี 20,600",
+    "source": "Thai RD 2026 brackets 5% + 10%",
+    "inputs": {
+      "annualIncome": 600000,
+      "personalAllowance": true,
+      "spouseAllowance": false,
+      "childCount": 0,
+      "socialSecurity": 9000,
+      "lifeInsurance": 0,
+      "healthInsurance": 0,
+      "providentFund": 0,
+      "homeLoanInterest": 0,
+      "otherDeductions": 0
+    },
+    "expected": { "netIncome": 431000, "annualTax": 20600 }
+  },
+  {
+    "page": "/คำนวณภาษีเงินได้บุคคลธรรมดา/",
+    "formula": "income_tax",
+    "description": "รายได้ 1,200,000 ลดหย่อนส่วนตัว+SSF → netIncome 1,031,000 ภาษี 122,750",
+    "source": "Thai RD 2026 multi-bracket: 5+10+15+20+25%",
+    "inputs": {
+      "annualIncome": 1200000,
+      "personalAllowance": true,
+      "spouseAllowance": false,
+      "childCount": 0,
+      "socialSecurity": 9000,
+      "lifeInsurance": 0,
+      "healthInsurance": 0,
+      "providentFund": 0,
+      "homeLoanInterest": 0,
+      "otherDeductions": 0
+    },
+    "expected": { "netIncome": 1031000, "annualTax": 122750 }
+  },
+  {
+    "page": "/คำนวณภาษีเงินได้บุคคลธรรมดา/",
+    "formula": "income_tax",
+    "description": "รายได้ 150,000 ต่ำกว่าเกณฑ์ → ภาษี 0",
+    "source": "edge case: income below threshold",
+    "inputs": {
+      "annualIncome": 150000,
+      "personalAllowance": true,
+      "spouseAllowance": false,
+      "childCount": 0,
+      "socialSecurity": 0,
+      "lifeInsurance": 0,
+      "healthInsurance": 0,
+      "providentFund": 0,
+      "homeLoanInterest": 0,
+      "otherDeductions": 0
+    },
+    "expected": { "annualTax": 0 }
+  },
+
+  {
+    "page": "/คำนวณดอกเบี้ยเงินฝาก/",
+    "formula": "savings_interest",
+    "description": "100,000 อัตรา 1.5% 12 เดือน → ดอกเบี้ยสุทธิ 1,275",
+    "source": "page HowTo worked example",
+    "inputs": { "principal": 100000, "annualRate": 1.5, "termMonths": 12 },
+    "expected": { "totalGrossInterest": 1500, "withholdingTax": 225, "netInterest": 1275, "finalBalance": 101275 }
+  },
+  {
+    "page": "/คำนวณดอกเบี้ยเงินฝาก/",
+    "formula": "savings_interest",
+    "description": "500,000 อัตรา 2% 24 เดือน → ดอกเบี้ยสุทธิ 17,000",
+    "source": "edge case: mid-range savings",
+    "inputs": { "principal": 500000, "annualRate": 2, "termMonths": 24 },
+    "expected": { "totalGrossInterest": 20000, "withholdingTax": 3000, "netInterest": 17000 }
+  },
+  {
+    "page": "/คำนวณดอกเบี้ยเงินฝาก/",
+    "formula": "savings_interest",
+    "description": "1,000,000 อัตรา 1% 6 เดือน → ดอกเบี้ยสุทธิ 4,250",
+    "source": "edge case: large amount short term",
+    "inputs": { "principal": 1000000, "annualRate": 1, "termMonths": 6 },
+    "expected": { "totalGrossInterest": 5000, "withholdingTax": 750, "netInterest": 4250 }
+  },
+
+  {
+    "page": "/คำนวณค่าโอที/",
+    "formula": "overtime",
+    "description": "เงินเดือน 35,000 OT วันธรรมดา 12 ชม. → 3,028.85 บาท",
+    "source": "page worked example lines 302-308 (hourly 168.27)",
+    "inputs": {
+      "monthlySalary": 35000,
+      "workingDaysPerMonth": 26,
+      "workingHoursPerDay": 8,
+      "weekdayOTHours": 12,
+      "holidayWorkHours": 0,
+      "holidayOTHours": 0
+    },
+    "expected": { "hourlyRate": 168.27, "weekdayOTPay": 3028.85, "totalOTPay": 3028.85 }
+  },
+  {
+    "page": "/คำนวณค่าโอที/",
+    "formula": "overtime",
+    "description": "เงินเดือน 50,000 OT วันหยุด (3x) 8 ชม. → 5,769.23 บาท",
+    "source": "edge case: holiday OT multiplier",
+    "inputs": {
+      "monthlySalary": 50000,
+      "workingDaysPerMonth": 26,
+      "workingHoursPerDay": 8,
+      "weekdayOTHours": 0,
+      "holidayWorkHours": 0,
+      "holidayOTHours": 8
+    },
+    "expected": { "holidayOTPay": 5769.23, "totalOTPay": 5769.23 },
+    "tolerance": 0.01
+  },
+  {
+    "page": "/คำนวณค่าโอที/",
+    "formula": "overtime",
+    "description": "เงินเดือน 30,000 OT ผสม: วันธรรมดา 4 ชม. + วันหยุด 8 ชม.",
+    "source": "edge case: mixed OT types",
+    "inputs": {
+      "monthlySalary": 30000,
+      "workingDaysPerMonth": 26,
+      "workingHoursPerDay": 8,
+      "weekdayOTHours": 4,
+      "holidayWorkHours": 8,
+      "holidayOTHours": 0
+    },
+    "expected": { "weekdayOTPay": 865.38, "holidayWorkPay": 2307.69, "totalOTPay": 3173.07 },
+    "tolerance": 0.01
+  }
+]

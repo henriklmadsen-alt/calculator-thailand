@@ -1,0 +1,129 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณ Burn Rate Startup รายเดือน 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณ Burn Rate 2569 ฟรี — ใส่รายจ่ายและเงินสำรอง รู้ว่าเงินจะหมดในกี่เดือน วางแผน Runway ก่อนระดมทุนรอบถัดไป';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-burn-rate-รายเดือน/`;
+
+const faqData = [
+  {
+    question: 'Burn Rate คืออะไร?',
+    answer: 'Burn Rate คืออัตราที่คุณใช้เงินออกไปต่อเดือน โดยไม่มีรายได้เข้ามา ใช้บอกว่าเงินสำรองที่มีอยู่จะอยู่ได้นานกี่เดือน มักใช้ในบริบทสตาร์ทอัพ แต่ก็ใช้กับการเงินส่วนตัวได้เช่นกัน',
+  },
+  {
+    question: 'ควรมีเงินสำรองกี่เดือนของ burn rate?',
+    answer: 'ผู้เชี่ยวชาญการเงินแนะนำให้มีเงินสำรองฉุกเฉินอย่างน้อย 3-6 เดือนของรายจ่าย หากมีน้อยกว่า 3 เดือนถือว่ามีความเสี่ยงสูง ควรเร่งสะสมเงินสำรองให้ถึงระดับ 6 เดือนโดยเร็ว',
+  },
+  {
+    question: 'วิธีลด Burn Rate ทำได้อย่างไร?',
+    answer: 'วิธีลด burn rate ได้แก่ ลดค่าใช้จ่ายที่ไม่จำเป็น เช่น ค่าสมาชิก ค่าอาหารนอกบ้าน เจรจาค่าเช่าหรือค่าบริการ และหาทางเพิ่มรายได้เสริม เพื่อให้เงินสำรองอยู่ได้นานขึ้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณ Burn Rate รายเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-burn-rate-รายเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณ Burn Rate รายเดือน 2569</h1>
+    <p class="mb-6 text-gray-600">กรอกรายจ่ายรายเดือนและเงินสำรองที่มีอยู่ เพื่อดูว่าเงินจะหมดในกี่เดือน สามารถดูภาพรวมการออมได้ที่ <a href="/คำนวณอัตราออม/" class="text-primary-600 underline hover:text-primary-800">คำนวณอัตราการออม</a> หรือ <a href="/คำนวณเป้าลดค่าใช้จ่าย/" class="text-primary-600 underline hover:text-primary-800">คำนวณเป้าลดค่าใช้จ่าย</a></p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="burn-form" class="space-y-4">
+        <div>
+          <label for="burn-rate" class="mb-1 block text-sm font-medium text-gray-700">รายจ่ายรวมต่อเดือน (บาท)</label>
+          <input id="burn-rate" type="text" inputmode="numeric" placeholder="เช่น 25000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="reserve" class="mb-1 block text-sm font-medium text-gray-700">เงินสำรองปัจจุบัน (บาท)</label>
+          <input id="reserve" type="text" inputmode="numeric" placeholder="เช่น 100000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">Burn Rate/เดือน</div>
+            <div id="res-burn" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินสำรองอยู่ได้อีก</div>
+            <div id="res-months" class="text-3xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <div id="res-msg" class="rounded-lg p-3 text-sm font-medium"></div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณ-burn-rate-รายเดือน/" categoryId="budget" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('burn-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const burn = parseNum((document.getElementById('burn-rate') as HTMLInputElement).value);
+    const reserve = parseNum((document.getElementById('reserve') as HTMLInputElement).value);
+
+    if (burn <= 0) return;
+
+    const months = reserve / burn;
+
+    document.getElementById('res-burn')!.textContent = fmt(burn) + '/เดือน';
+    document.getElementById('res-months')!.textContent = months.toFixed(1) + ' เดือน';
+
+    const msgEl = document.getElementById('res-msg')!;
+    if (months < 3) {
+      msgEl.textContent = '🔴 อันตราย! เงินสำรองน้อยกว่า 3 เดือน ควรเร่งออมเงินฉุกเฉินโดยด่วน';
+      msgEl.className = 'rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800';
+    } else if (months < 6) {
+      msgEl.textContent = '🟡 ปลอดภัยพอ แต่ควรเพิ่มเงินสำรองให้ถึง 6 เดือน เพื่อความมั่นคงมากขึ้น';
+      msgEl.className = 'rounded-lg bg-yellow-50 p-3 text-sm font-medium text-yellow-800';
+    } else {
+      msgEl.textContent = '🟢 ดีมาก! คุณมีเงินสำรองเกิน 6 เดือน ถือว่ามีความมั่นคงทางการเงินในระดับดี';
+      msgEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800';
+    }
+
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

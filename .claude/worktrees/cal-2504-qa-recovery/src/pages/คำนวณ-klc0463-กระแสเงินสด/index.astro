@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณกระแสเงินสด | Kamnuanlek';
+const pageDescription = 'คำนวณกระแสเงินสด Cash Flow ธุรกิจ รายรับ รายจ่าย เงินสดสุทธิต่อเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0463-กระแสเงินสด/`;
+const faqData = [
+  { question: 'กระแสเงินสดสำคัญกว่ากำไรหรือไม่?', answer: 'กระแสเงินสดสำคัญมากกว่ากำไรในระยะสั้น ธุรกิจที่มีกำไรแต่ขาดเงินสดอาจล้มละลายได้ ต้องบริหาร Cash Flow ให้เป็นบวกตลอดเวลา' },
+  { question: 'กระแสเงินสดติดลบแสดงว่าอะไร?', answer: 'Cash Flow ติดลบไม่ได้หมายความว่าธุรกิจขาดทุน อาจเกิดจากการขยายกิจการ ซื้อสินทรัพย์ หรือรอบัญชีลูกหนี้ แต่ต้องมีเงินสำรองพอ' },
+  { question: 'วิธีปรับปรุงกระแสเงินสดทำอย่างไร?', answer: 'ปรับปรุง Cash Flow โดย เร่งเก็บเงินลูกหนี้ ยืดเวลาจ่ายเจ้าหนี้ ลดสินค้าคงเหลือ เพิ่มยอดขายเงินสด และวางแผนงบประมาณล่วงหน้า' },
+  { question: 'ควรมีเงินสำรองเงินสดเท่าไหร่?', answer: 'ควรมีเงินสำรอง 3-6 เดือนของค่าใช้จ่ายดำเนินงาน สำหรับธุรกิจที่มีรายได้ไม่สม่ำเสมออาจต้องมากกว่านี้' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกระแสเงินสด">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณกระแสเงินสดธุรกิจ</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณกระแสเงินสดสุทธิต่อเดือน รายรับ ลบ รายจ่าย</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="cash_inflow" class="block text-sm font-medium text-gray-700 mb-1">รายรับเงินสดต่อเดือน (บาท)</label><input type="text" id="cash_inflow" inputmode="decimal" placeholder="เช่น 500000" value="500000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="operating_exp" class="block text-sm font-medium text-gray-700 mb-1">ค่าใช้จ่ายดำเนินงาน (บาท)</label><input type="text" id="operating_exp" inputmode="decimal" placeholder="เช่น 300000" value="300000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="loan_payment" class="block text-sm font-medium text-gray-700 mb-1">ผ่อนสินเชื่อ/ดอกเบี้ย (บาท)</label><input type="text" id="loan_payment" inputmode="decimal" placeholder="เช่น 30000" value="30000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="tax_payment" class="block text-sm font-medium text-gray-700 mb-1">ภาษีและค่าธรรมเนียม (บาท)</label><input type="text" id="tax_payment" inputmode="decimal" placeholder="เช่น 20000" value="20000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">รายจ่ายรวม</p><p id="total_outflow" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3"><p class="text-sm text-gray-600">กระแสเงินสดสุทธิ</p><p id="net_cashflow" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const inflow = parseFloat((document.getElementById('cash_inflow') as HTMLInputElement).value) || 0;
+      const opExp = parseFloat((document.getElementById('operating_exp') as HTMLInputElement).value) || 0;
+      const loanPayment = parseFloat((document.getElementById('loan_payment') as HTMLInputElement).value) || 0;
+      const taxPayment = parseFloat((document.getElementById('tax_payment') as HTMLInputElement).value) || 0;
+      const totalOutflow = opExp + loanPayment + taxPayment;
+      const netCashflow = inflow - totalOutflow;
+      (document.getElementById('total_outflow') as HTMLElement).textContent = totalOutflow.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('net_cashflow') as HTMLElement).textContent = (netCashflow >= 0 ? '+' : '') + netCashflow.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('cash-flow');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

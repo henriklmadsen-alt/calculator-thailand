@@ -1,0 +1,217 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลดหย่อนดอกเบี้ยบ้าน 2569 | สูงสุด 100,000 บาท | Kamnuanlek';
+const pageDescription = 'คำนวณค่าลดหย่อนดอกเบี้ยเงินกู้ซื้อบ้าน ผ่อนบ้าน สูงสุด 100,000 บาทต่อปี ตามกฎหมายภาษีไทยปี 2569 พร้อมกรณีกู้ร่วม ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลดหย่อนดอกเบี้ยบ้าน/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ยบ้านลดหย่อนภาษีได้สูงสุดเท่าไร?',
+    answer: 'ดอกเบี้ยเงินกู้ยืมเพื่อซื้อ เช่าซื้อ หรือสร้างอาคารที่อยู่อาศัย ลดหย่อนภาษีได้ตามจริงสูงสุด 100,000 บาทต่อปี ตามมาตรา 47(1)(ซ) แห่งประมวลรัษฎากร',
+  },
+  {
+    question: 'กู้ร่วมหลายคนลดหย่อนได้คนละเท่าไร?',
+    answer: 'หากกู้ร่วมกันหลายคน แต่ละคนสามารถลดหย่อนได้ตามสัดส่วนที่ผ่อนจริง โดยรวมกันทุกคนต้องไม่เกิน 100,000 บาท เช่น กู้ร่วม 2 คนเท่าๆ กัน แต่ละคนลดหย่อนได้สูงสุด 50,000 บาท',
+  },
+  {
+    question: 'ดอกเบี้ยรีไฟแนนซ์ลดหย่อนได้ไหม?',
+    answer: 'ใช่ ดอกเบี้ยจากการรีไฟแนนซ์สินเชื่อบ้านสามารถนำมาลดหย่อนได้ตามเงื่อนไขเดิม ตราบที่ยังคงเป็นเงินกู้เพื่อที่อยู่อาศัยหลัง เดิมของตนเอง',
+  },
+  {
+    question: 'ต้องมีเอกสารอะไรสำหรับลดหย่อนดอกเบี้ยบ้าน?',
+    answer: 'ต้องมีหนังสือรับรองดอกเบี้ยจากธนาคารหรือสถาบันการเงิน ที่ระบุจำนวนดอกเบี้ยที่จ่ายในปีภาษีนั้น และสำเนาสัญญาเงินกู้ที่ระบุวัตถุประสงค์เพื่อซื้อหรือสร้างที่อยู่อาศัย',
+  },
+,
+  { question: 'ดอกเบี้ยทบต้น (Compound Interest) คืออะไร?', answer: 'ดอกเบี้ยที่คำนวณจากเงินต้นบวกดอกเบี้ยสะสม ทำให้เงินงอกเร็วกว่าดอกเบี้ยธรรมดา สูตร: A = P(1+r/n)^(nt) โดย P=เงินต้น, r=อัตราดอกเบี้ย, n=ครั้งที่ทบต่อปี, t=จำนวนปี' },
+  { question: 'กฎ 72 ใช้คำนวณอะไร?', answer: 'ใช้ประมาณจำนวนปีที่เงินจะเพิ่มเป็น 2 เท่า: จำนวนปี = 72 ÷ อัตราดอกเบี้ย เช่น ดอกเบี้ย 6% ต่อปี เงินจะเป็น 2 เท่าใน 72÷6 = 12 ปี เป็นกฎง่ายสำหรับการวางแผนการเงิน' },
+  { question: 'อัตราดอกเบี้ยเงินฝากออมทรัพย์ในไทยปัจจุบันอยู่ที่เท่าไร?', answer: 'ออมทรัพย์ทั่วไปอยู่ที่ 0.5-1.0% ต่อปี ฝากประจำ 12 เดือนอยู่ที่ 1.5-2.5% ต่อปี บัญชีออมทรัพย์พิเศษบางแห่งให้สูงถึง 1.5-3% ตรวจสอบอัตราปัจจุบันจากธนาคารแห่งประเทศไทย bot.or.th' },
+  { question: 'ดอกเบี้ยเงินฝากเสียภาษีไหม?', answer: 'ใช่ ดอกเบี้ยเงินฝากธนาคารถูกหักภาษี ณ ที่จ่าย 15% โดยธนาคาร ยกเว้นดอกเบี้ยเงินฝากออมทรัพย์ที่ไม่เกิน 20,000 บาทต่อปีรวมทุกบัญชี สามารถขอคืนหรือเครดิตกับภาษีสิ้นปีได้' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลดหย่อนดอกเบี้ยบ้าน 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณลดหย่อนดอกเบี้ยบ้าน (Mortgage Interest Deduction) ปี 2569",
+  "description": "ขั้นตอนการคำนวณลดหย่อนดอกเบี้ยบ้านสำหรับผู้มีเงินได้ที่ผ่อนบ้านกับธนาคาร ลดหย่อนได้สูงสุด 100,000 บาท/ปี ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "step": [
+    {"@type": "HowToStep", "name": "ตรวจสอบเงื่อนไขการลดหย่อน", "text": "เงื่อนไข: (1) ต้องมีอาคารที่อยู่อาศัยในประเทศไทย, (2) บ้านใช้สำหรับอยู่อาศัยของตัวเองหรือครอบครัว, (3) เงินกู้ยืมจากธนาคารในไทย"},
+    {"@type": "HowToStep", "name": "จัดเก็บเอกสารเงินกู้", "text": "เก็บสำเนา: (1) สัญญาเงินกู้ยืม, (2) ใบรับดอกเบี้ยประจำปี (Annual Interest Statement) จากธนาคาร"},
+    {"@type": "HowToStep", "name": "บันทึกเงินดอกเบี้ยที่จ่ายจริงในปี 2569", "text": "ตัวอย่าง: ยอดเงินกู้ 2,000,000 บาท, ดอกเบี้ย 3% ต่อปี = 60,000 บาท/ปี"},
+    {"@type": "HowToStep", "name": "ตรวจสอบเพดานสูงสุดของลดหย่อน", "text": "ลดหย่อนดอกเบี้ยบ้าน สูงสุด 100,000 บาท/ปี ถ้าจ่ายดอกเบี้ย 60,000 บาท < 100,000 ลดหย่อนได้ทั้ง 60,000 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณผลประหยัดภาษี", "text": "ผลประหยัดภาษี = ยอดลดหย่อน × อัตราภาษีขั้นบันได ตัวอย่าง: ลดหย่อน 60,000 บาท × อัตราภาษี 15% = ประหยัดภาษี 9,000 บาท"}
+  ]
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนดอกเบี้ยบ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ลดหย่อนดอกเบี้ยบ้านสูงสุด 100,000 บาทต่อปี</p>
+      <p class="mt-1 text-sm text-slate-700">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณลดหย่อนดอกเบี้ยบ้าน 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าลดหย่อนดอกเบี้ยเงินกู้บ้าน รองรับกรณีกู้คนเดียวและกู้ร่วม
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <div class="space-y-4">
+        <div>
+          <label for="hi-interest" class="block text-sm font-medium text-gray-700 mb-1">
+            ดอกเบี้ยบ้านที่จ่ายจริงทั้งปี (บาท)
+          </label>
+          <input type="text" id="hi-interest" inputmode="numeric" placeholder="เช่น 80,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-400">ดูจากหนังสือรับรองดอกเบี้ยจากธนาคาร</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทการกู้</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="hi-type" value="solo" checked class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">กู้คนเดียว</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="hi-type" value="joint" class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">กู้ร่วม</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="hi-joint-section" class="hidden">
+          <label for="hi-borrowers" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนผู้กู้ร่วมทั้งหมด
+          </label>
+          <input type="number" id="hi-borrowers" min="2" max="6" value="2"
+            class="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <button type="button" id="btn-hi-calc"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </div>
+
+      <div id="hi-result" class="hidden mt-6">
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยที่จ่ายจริง</div>
+            <div id="hr-actual" class="text-xl font-bold text-gray-900">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ส่วนที่คุณรับผิดชอบ</div>
+            <div id="hr-share" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนที่ใช้ได้จริง</div>
+            <div id="hr-deduction" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <p id="hr-note" class="text-sm text-gray-500"></p>
+        <p id="hr-warning" class="hidden mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-2"></p>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ลดหย่อนดอกเบี้ยบ้านคืออะไร?</h2>
+      <p>กรมสรรพากรอนุญาตให้นำดอกเบี้ยเงินกู้ยืมสำหรับซื้อ เช่าซื้อ หรือสร้างอาคารที่อยู่อาศัยมาลดหย่อนภาษีได้ ตามมาตรา 47(1)(ซ) แห่งประมวลรัษฎากร สูงสุด 100,000 บาทต่อปีต่อคน</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เงื่อนไขสำคัญ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ต้องเป็นเงินกู้เพื่อซื้อ เช่าซื้อ หรือสร้างที่อยู่อาศัย (ไม่ใช่รีโนเวท)</li>
+        <li>กู้จากสถาบันการเงินที่ได้รับอนุญาต เช่น ธนาคาร บริษัทเงินทุน</li>
+        <li>กู้ร่วมหลายคน: แต่ละคนลดหย่อนตามสัดส่วน รวมทั้งหมดไม่เกิน 100,000 บาท</li>
+        <li>ใช้ได้กับที่อยู่อาศัยทุกประเภท: บ้านเดี่ยว ทาวน์เฮาส์ คอนโด</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณลดหย่อนดอกเบี้ยบ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณลดหย่อนดอกเบี้ยบ้าน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+
+    const radios = document.querySelectorAll('input[name="hi-type"]') as NodeListOf<HTMLInputElement>;
+    const jointSection = document.getElementById('hi-joint-section') as HTMLDivElement;
+    radios.forEach(r => r.addEventListener('change', () => {
+      jointSection.classList.toggle('hidden', r.value === 'solo' && r.checked);
+    }));
+
+    document.getElementById('btn-hi-calc')!.addEventListener('click', () => {
+      const interest = parseNum((document.getElementById('hi-interest') as HTMLInputElement).value);
+      const isJoint = (document.querySelector('input[name="hi-type"]:checked') as HTMLInputElement)?.value === 'joint';
+      const borrowers = isJoint ? (parseInt((document.getElementById('hi-borrowers') as HTMLInputElement).value) || 2) : 1;
+      if (interest <= 0) return;
+
+      const share = interest / borrowers;
+      const deduction = Math.min(share, 100000);
+
+      (document.getElementById('hr-actual') as HTMLElement).textContent = fmt(interest);
+      (document.getElementById('hr-share') as HTMLElement).textContent = fmt(share);
+      (document.getElementById('hr-deduction') as HTMLElement).textContent = fmt(deduction);
+      (document.getElementById('hr-note') as HTMLElement).textContent = isJoint
+        ? `กู้ร่วม ${borrowers} คน: แต่ละคนรับผิดชอบ ${new Intl.NumberFormat('th-TH').format(Math.round(share))} บาท`
+        : 'กู้คนเดียว: ลดหย่อนได้ตามจริงสูงสุด 100,000 บาท';
+
+      const warn = document.getElementById('hr-warning') as HTMLElement;
+      if (share > 100000) {
+        warn.textContent = `⚠️ ส่วนดอกเบี้ยของคุณ ${new Intl.NumberFormat('th-TH').format(Math.round(share))} บาท เกินเพดาน 100,000 บาท จึงลดหย่อนได้เพียง 100,000 บาท`;
+        warn.classList.remove('hidden');
+      } else {
+        warn.classList.add('hidden');
+      }
+
+      (document.getElementById('hi-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('mortgage-interest-deduction');
+    });
+  </script>
+</BaseLayout>

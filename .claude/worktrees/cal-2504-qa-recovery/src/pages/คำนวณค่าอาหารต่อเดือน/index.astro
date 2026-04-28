@@ -1,0 +1,495 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าอาหารต่อเดือน 2569 | วางแผนงบอาหาร ทำเอง vs ซื้อ | Kamnuanlek';
+const pageDescription = 'คำนวณค่าอาหารต่อเดือนออนไลน์ฟรี เปรียบเทียบทำอาหารเอง vs กินข้าวนอกบ้าน ตามจำนวนคนในครอบครัว ประเภทอาหาร ช่วยวางแผนงบประมาณค่าอาหารรายเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าอาหารต่อเดือน/`;
+
+const faqData = [
+  {
+    question: 'ค่าอาหารต่อเดือนของคนไทยเฉลี่ยเท่าไร?',
+    answer: 'จากข้อมูลสำนักงานสถิติแห่งชาติ ค่าอาหารเฉลี่ยของครัวเรือนไทยอยู่ที่ประมาณ 35-40% ของรายจ่ายทั้งหมด สำหรับคนทำงานในกรุงเทพฯ ค่าอาหาร 1 คนอยู่ที่ประมาณ 3,000-6,000 บาท/เดือน ขึ้นอยู่กับว่าทำอาหารเองหรือซื้อข้าวนอกบ้าน',
+  },
+  {
+    question: 'ทำอาหารเองประหยัดกว่ากินนอกบ้านเท่าไร?',
+    answer: 'โดยเฉลี่ยการทำอาหารเองประหยัดได้ 30-50% เมื่อเทียบกับการซื้ออาหารนอกบ้าน เช่น ข้าวราดแกง 1 จาน ซื้อนอกบ้านราคา 50-70 บาท แต่ทำเองอาจใช้วัตถุดิบเพียง 25-40 บาท (รวมค่าแก๊ส) โดยเฉพาะเมื่อทำให้หลายคนจะยิ่งประหยัดต่อหัว',
+  },
+  {
+    question: 'วิธีลดค่าอาหารต่อเดือนทำอย่างไร?',
+    answer: 'วิธีลดค่าอาหาร: 1) วางแผนเมนูล่วงหน้ารายสัปดาห์ 2) ซื้อวัตถุดิบจากตลาดสดแทนซูเปอร์มาร์เก็ต 3) ทำอาหารเองอย่างน้อย 3-4 วัน/สัปดาห์ 4) เตรียมข้าวกล่องไปทำงาน 5) ซื้อของเป็นจำนวนมากเมื่อมีโปรโมชัน 6) ลดการสั่งอาหารผ่านแอปเดลิเวอรี่ซึ่งมีค่าส่งเพิ่ม',
+  },
+  {
+    question: 'งบค่าอาหารต่อเดือนควรเป็นกี่เปอร์เซ็นต์ของเงินเดือน?',
+    answer: 'ตามหลักการเงินส่วนบุคคล ค่าอาหารไม่ควรเกิน 30-35% ของรายได้ เช่น เงินเดือน 15,000 บาท ค่าอาหารไม่ควรเกิน 4,500-5,250 บาท เงินเดือน 25,000 บาท ไม่ควรเกิน 7,500-8,750 บาท แต่ในทางปฏิบัติอาจปรับได้ตามค่าครองชีพในแต่ละพื้นที่',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าอาหารต่อเดือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าอาหารต่อเดือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าอาหารต่อเดือน (Monthly Food Budget)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าใช้จ่ายอาหารรายเดือน เปรียบเทียบทำอาหารเอง vs ซื้อนอกบ้าน ตามจำนวนคนและประเภทอาหาร ช่วยวางแผนงบประมาณครัวเรือน
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- จำนวนคนในครอบครัว -->
+      <div class="mb-5">
+        <label for="num-people" class="block text-sm font-medium text-gray-700 mb-1">
+          จำนวนคนในครอบครัว
+        </label>
+        <div class="flex items-center gap-3">
+          <button type="button" id="btn-minus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">&minus;</button>
+          <input
+            type="text"
+            id="num-people"
+            inputmode="numeric"
+            value="2"
+            class="w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-center"
+          />
+          <button type="button" id="btn-plus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">+</button>
+        </div>
+      </div>
+
+      <!-- รูปแบบการกิน -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          รูปแบบการกิน
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="eating-style">
+          <button type="button" data-style="cook" class="style-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-left">
+            <div class="font-semibold">ทำอาหารเอง</div>
+            <div class="text-xs text-gray-500 mt-1">ซื้อวัตถุดิบทำเอง 5-7 วัน/สัปดาห์</div>
+          </button>
+          <button type="button" data-style="mix" class="style-btn px-4 py-3 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors text-left">
+            <div class="font-semibold">ผสม</div>
+            <div class="text-xs text-gray-500 mt-1">ทำเองบ้าง ซื้อบ้าง</div>
+          </button>
+          <button type="button" data-style="eatout" class="style-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-left">
+            <div class="font-semibold">ซื้อ/กินนอกบ้าน</div>
+            <div class="text-xs text-gray-500 mt-1">ซื้อข้าวนอกบ้าน สั่งเดลิเวอรี่</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ประเภทอาหาร -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          ระดับราคาอาหาร
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="food-tier">
+          <button type="button" data-tier="budget" class="tier-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-left">
+            <div class="font-semibold">ประหยัด</div>
+            <div class="text-xs text-gray-500 mt-1">ข้าวราดแกง ตลาดสด อาหารตามสั่ง</div>
+          </button>
+          <button type="button" data-tier="mid" class="tier-btn px-4 py-3 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors text-left">
+            <div class="font-semibold">ปานกลาง</div>
+            <div class="text-xs text-gray-500 mt-1">ร้านอาหารทั่วไป ซูเปอร์มาร์เก็ต</div>
+          </button>
+          <button type="button" data-tier="premium" class="tier-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-left">
+            <div class="font-semibold">พรีเมียม</div>
+            <div class="text-xs text-gray-500 mt-1">ร้านอาหารดี ออร์แกนิค นำเข้า</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- มื้อต่อวัน -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          จำนวนมื้อต่อวัน
+        </label>
+        <div class="flex flex-wrap gap-2" id="meals-per-day">
+          <button type="button" data-meals="2" class="meal-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors">2 มื้อ</button>
+          <button type="button" data-meals="3" class="meal-btn px-4 py-2 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors">3 มื้อ</button>
+          <button type="button" data-meals="4" class="meal-btn px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors">4 มื้อ (รวมอาหารว่าง)</button>
+        </div>
+      </div>
+
+      <!-- รวมเครื่องดื่ม/ของว่าง -->
+      <div class="mb-5">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" id="include-drinks" checked class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+          <span class="text-sm font-medium text-gray-700">รวมค่าเครื่องดื่ม/กาแฟ (ประมาณ 40-80 บาท/วัน)</span>
+        </label>
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าอาหาร
+      </button>
+
+      <!-- Results -->
+      <div id="food-result" class="hidden mt-6">
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าอาหารต่อเดือน (ทั้งครอบครัว)</div>
+            <div id="res-total" class="text-2xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าอาหารต่อคนต่อเดือน</div>
+            <div id="res-per-person" class="text-2xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-3 mt-3">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ต่อคนต่อวัน</div>
+            <div id="res-per-day" class="text-lg font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ต่อคนต่อมื้อ</div>
+            <div id="res-per-meal" class="text-lg font-bold text-amber-700">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าเครื่องดื่ม/เดือน</div>
+            <div id="res-drinks" class="text-lg font-bold text-purple-700">-</div>
+          </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="mt-4" id="comparison-section">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">เปรียบเทียบรูปแบบการกิน</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-4">รูปแบบ</th>
+                  <th class="py-2 pr-4 text-right">ต่อคน/เดือน</th>
+                  <th class="py-2 text-right">ทั้งครอบครัว/เดือน</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-700">
+                <tr class="border-b border-gray-100" id="row-cook">
+                  <td class="py-2 pr-4">ทำอาหารเอง</td>
+                  <td class="py-2 pr-4 text-right" id="cmp-cook-person">-</td>
+                  <td class="py-2 text-right" id="cmp-cook-total">-</td>
+                </tr>
+                <tr class="border-b border-gray-100" id="row-mix">
+                  <td class="py-2 pr-4">ผสม (ทำเอง+ซื้อ)</td>
+                  <td class="py-2 pr-4 text-right" id="cmp-mix-person">-</td>
+                  <td class="py-2 text-right" id="cmp-mix-total">-</td>
+                </tr>
+                <tr id="row-eatout">
+                  <td class="py-2 pr-4">ซื้อ/กินนอกบ้าน</td>
+                  <td class="py-2 pr-4 text-right" id="cmp-eatout-person">-</td>
+                  <td class="py-2 text-right" id="cmp-eatout-total">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Savings Tip -->
+        <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800" id="savings-tip">
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-3 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div id="res-summary"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีวางแผนค่าอาหารต่อเดือน</h2>
+
+      <p>
+        ค่าอาหารเป็นค่าใช้จ่ายที่ใหญ่ที่สุดรายการหนึ่งของทุกครอบครัวไทย จากข้อมูลสำนักงานสถิติแห่งชาติ
+        ครัวเรือนไทยใช้จ่ายค่าอาหารเฉลี่ย 35-40% ของรายจ่ายทั้งหมด การวางแผนงบอาหารล่วงหน้า
+        จะช่วยให้คุณควบคุมค่าใช้จ่ายและประหยัดเงินได้มากขึ้น
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่าอาหารต่อเดือน</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าอาหาร/เดือน = ค่าอาหารต่อมื้อ × จำนวนมื้อ/วัน × 30 วัน × จำนวนคน</li>
+        <li>ค่าอาหารต่อมื้อขึ้นอยู่กับรูปแบบการกิน (ทำเอง / ผสม / ซื้อนอกบ้าน)</li>
+        <li>ค่าเครื่องดื่มและอาหารว่างคิดแยกเพิ่มตามความต้องการ</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าอาหารเฉลี่ยในประเทศไทย 2569</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">รูปแบบ</th>
+              <th class="py-2 pr-4">ระดับประหยัด</th>
+              <th class="py-2 pr-4">ระดับปานกลาง</th>
+              <th class="py-2">ระดับพรีเมียม</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 font-medium">ทำอาหารเอง</td>
+              <td class="py-2 pr-4">25-35 บาท/มื้อ</td>
+              <td class="py-2 pr-4">40-60 บาท/มื้อ</td>
+              <td class="py-2">70-120 บาท/มื้อ</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4 font-medium">ผสม</td>
+              <td class="py-2 pr-4">35-50 บาท/มื้อ</td>
+              <td class="py-2 pr-4">55-80 บาท/มื้อ</td>
+              <td class="py-2">90-150 บาท/มื้อ</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4 font-medium">ซื้อนอกบ้าน</td>
+              <td class="py-2 pr-4">45-65 บาท/มื้อ</td>
+              <td class="py-2 pr-4">70-110 บาท/มื้อ</td>
+              <td class="py-2">120-250 บาท/มื้อ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">
+        * ข้อมูลประมาณการจากราคาตลาดและร้านอาหารทั่วไปในกรุงเทพฯ และปริมณฑล ปี 2569
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        ครอบครัว 3 คน ทำอาหารเองผสมซื้อนอกบ้าน ระดับปานกลาง กินวันละ 3 มื้อ:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าอาหารต่อมื้อ (ผสม ปานกลาง) ≈ 68 บาท/คน/มื้อ</li>
+        <li>ค่าอาหารต่อวัน = 68 × 3 มื้อ = 204 บาท/คน/วัน</li>
+        <li>ค่าเครื่องดื่ม ≈ 55 บาท/คน/วัน</li>
+        <li>รวมต่อคนต่อวัน = 259 บาท</li>
+        <li>ต่อคนต่อเดือน = 259 × 30 = 7,770 บาท</li>
+        <li>ทั้งครอบครัว (3 คน) = 23,310 บาท/เดือน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับประหยัดค่าอาหาร</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>วางแผนเมนูรายสัปดาห์</strong> — ลดการซื้อวัตถุดิบเกินความจำเป็น ลดอาหารเหลือทิ้ง</li>
+        <li><strong>ซื้อวัตถุดิบจากตลาดสด</strong> — ราคาถูกกว่าซูเปอร์มาร์เก็ต 20-40%</li>
+        <li><strong>เตรียมข้าวกล่อง</strong> — ประหยัดค่ากลางวัน 1,500-3,000 บาท/เดือน</li>
+        <li><strong>ลดการสั่งเดลิเวอรี่</strong> — ค่าส่ง+ค่าบริการเพิ่ม 30-50 บาท/ครั้ง</li>
+        <li><strong>ทำอาหารครั้งละมากๆ</strong> — แบ่งแช่แข็ง อุ่นกินได้หลายวัน</li>
+      </ul>
+
+      <p class="mt-4">
+        ใช้เครื่องคำนวณค่าอาหารต่อเดือนนี้เพื่อวางแผนงบประมาณอาหารของครอบครัว
+        เปรียบเทียบต้นทุนระหว่างทำอาหารเอง ซื้อนอกบ้าน หรือแบบผสม
+        เพื่อหาสมดุลที่เหมาะกับรายได้และไลฟ์สไตล์ของคุณ
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าอาหารต่อเดือน/" />
+    <RelatedCalculators currentHref="/คำนวณค่าอาหารต่อเดือน/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>หมายเหตุ:</strong> ผลการคำนวณเป็นการประมาณการจากราคาตลาดเฉลี่ย
+      ค่าอาหารจริงอาจแตกต่างตามพื้นที่ ฤดูกาล และร้านค้าที่เลือกซื้อ
+    </div>
+  </article>
+
+  <script>
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+
+    const numPeopleInput = document.getElementById('num-people') as HTMLInputElement;
+    const styleBtns = document.querySelectorAll<HTMLButtonElement>('.style-btn');
+    const tierBtns = document.querySelectorAll<HTMLButtonElement>('.tier-btn');
+    const mealBtns = document.querySelectorAll<HTMLButtonElement>('.meal-btn');
+    const includeDrinks = document.getElementById('include-drinks') as HTMLInputElement;
+
+    let selectedStyle = 'mix';
+    let selectedTier = 'mid';
+    let selectedMeals = 3;
+
+    // Price per meal per person (THB) — [style][tier]
+    // Based on typical Thai food prices 2569
+    const mealCost: Record<string, Record<string, number>> = {
+      cook:   { budget: 30, mid: 50, premium: 95 },
+      mix:    { budget: 43, mid: 68, premium: 120 },
+      eatout: { budget: 55, mid: 90, premium: 185 },
+    };
+
+    // Drink cost per person per day
+    const drinkCost: Record<string, number> = {
+      budget: 35,
+      mid: 55,
+      premium: 80,
+    };
+
+    function updateBtnGroup(btns: NodeListOf<HTMLButtonElement>, activeAttr: string, activeVal: string) {
+      btns.forEach((btn) => {
+        const val = btn.dataset[activeAttr];
+        if (val === activeVal) {
+          btn.className = btn.className
+            .replace(/border border-gray-300/g, 'border-2 border-primary-500')
+            .replace(/text-gray-700/g, 'text-primary-700')
+            .replace(/hover:border-primary-500 hover:text-primary-700/g, '')
+            + ' bg-primary-50';
+        } else {
+          btn.className = btn.className
+            .replace(/border-2 border-primary-500/g, 'border border-gray-300')
+            .replace(/text-primary-700/g, 'text-gray-700')
+            .replace(/bg-primary-50/g, '')
+            + (btn.className.includes('hover:border-primary-500') ? '' : ' hover:border-primary-500 hover:text-primary-700');
+        }
+      });
+    }
+
+    // Style buttons
+    styleBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedStyle = btn.dataset.style || 'mix';
+        updateBtnGroup(styleBtns, 'style', selectedStyle);
+      });
+    });
+
+    // Tier buttons
+    tierBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedTier = btn.dataset.tier || 'mid';
+        updateBtnGroup(tierBtns, 'tier', selectedTier);
+      });
+    });
+
+    // Meal buttons
+    mealBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedMeals = parseInt(btn.dataset.meals || '3');
+        updateBtnGroup(mealBtns, 'meals', String(selectedMeals));
+      });
+    });
+
+    // People +/- buttons
+    document.getElementById('btn-minus')!.addEventListener('click', () => {
+      const current = Math.max(1, parseInt(numPeopleInput.value) || 1);
+      if (current > 1) numPeopleInput.value = String(current - 1);
+    });
+
+    document.getElementById('btn-plus')!.addEventListener('click', () => {
+      const current = Math.max(1, parseInt(numPeopleInput.value) || 1);
+      if (current < 20) numPeopleInput.value = String(current + 1);
+    });
+
+    function calcMonthly(style: string, tier: string, meals: number, people: number, drinks: boolean): number {
+      const foodPerDay = mealCost[style][tier] * meals;
+      const drinkPerDay = drinks ? drinkCost[tier] : 0;
+      return (foodPerDay + drinkPerDay) * 30 * people;
+    }
+
+    function calculate() {
+      const people = Math.max(1, parseInt(numPeopleInput.value) || 1);
+      const drinks = includeDrinks.checked;
+
+      const foodPerMeal = mealCost[selectedStyle][selectedTier];
+      const foodPerDay = foodPerMeal * selectedMeals;
+      const drinkPerDay = drinks ? drinkCost[selectedTier] : 0;
+      const totalPerPersonPerDay = foodPerDay + drinkPerDay;
+      const totalPerPersonPerMonth = totalPerPersonPerDay * 30;
+      const totalFamily = totalPerPersonPerMonth * people;
+      const drinksMonthly = drinks ? drinkCost[selectedTier] * 30 * people : 0;
+
+      // Update main results
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalFamily) + ' บาท';
+      (document.getElementById('res-per-person') as HTMLElement).textContent = fmt(totalPerPersonPerMonth) + ' บาท';
+      (document.getElementById('res-per-day') as HTMLElement).textContent = fmt(totalPerPersonPerDay) + ' บาท';
+      (document.getElementById('res-per-meal') as HTMLElement).textContent = fmt(foodPerMeal) + ' บาท';
+      (document.getElementById('res-drinks') as HTMLElement).textContent = drinks ? fmt(drinksMonthly) + ' บาท' : '-';
+
+      // Comparison table
+      const styles: Array<{key: string; label: string}> = [
+        { key: 'cook', label: 'ทำเอง' },
+        { key: 'mix', label: 'ผสม' },
+        { key: 'eatout', label: 'ซื้อนอกบ้าน' },
+      ];
+
+      styles.forEach(({ key }) => {
+        const perPerson = calcMonthly(key, selectedTier, selectedMeals, 1, drinks);
+        const total = perPerson * people;
+        (document.getElementById(`cmp-${key}-person`) as HTMLElement).textContent = fmt(perPerson) + ' บาท';
+        (document.getElementById(`cmp-${key}-total`) as HTMLElement).textContent = fmt(total) + ' บาท';
+
+        // Highlight selected row
+        const row = document.getElementById(`row-${key}`) as HTMLTableRowElement;
+        if (key === selectedStyle) {
+          row.className = 'border-b border-gray-100 bg-primary-50 font-semibold';
+        } else {
+          row.className = 'border-b border-gray-100';
+        }
+      });
+
+      // Savings tip
+      const cookCost = calcMonthly('cook', selectedTier, selectedMeals, people, drinks);
+      const eatoutCost = calcMonthly('eatout', selectedTier, selectedMeals, people, drinks);
+      const savings = eatoutCost - cookCost;
+      const savingsPct = Math.round((savings / eatoutCost) * 100);
+      const tipEl = document.getElementById('savings-tip') as HTMLElement;
+      tipEl.innerHTML = `<strong>ประหยัดได้!</strong> หากเปลี่ยนจากซื้อนอกบ้านเป็นทำอาหารเอง จะประหยัดได้ประมาณ <strong>${fmt(savings)} บาท/เดือน</strong> (${savingsPct}%)`;
+
+      // Summary
+      const styleLabels: Record<string, string> = { cook: 'ทำอาหารเอง', mix: 'ผสม', eatout: 'ซื้อนอกบ้าน' };
+      const tierLabels: Record<string, string> = { budget: 'ประหยัด', mid: 'ปานกลาง', premium: 'พรีเมียม' };
+      const summary = `${people} คน | ${styleLabels[selectedStyle]} | ระดับ${tierLabels[selectedTier]} | ${selectedMeals} มื้อ/วัน${drinks ? ' + เครื่องดื่ม' : ''} = ${fmt(totalFamily)} บาท/เดือน (${fmt(totalPerPersonPerMonth)} บาท/คน)`;
+      (document.getElementById('res-summary') as HTMLElement).textContent = summary;
+
+      (document.getElementById('food-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('food-budget');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Track result visibility
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('food-budget');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(document.getElementById('food-result')!);
+  </script>
+</BaseLayout>

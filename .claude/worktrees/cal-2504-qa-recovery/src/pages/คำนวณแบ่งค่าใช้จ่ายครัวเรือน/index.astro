@@ -1,0 +1,144 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณแบ่งค่าใช้จ่ายครัวเรือนร่วม 2569 | แฟร์แชร์ค่าบ้าน | Kamnuanlek';
+const pageDescription = 'คำนวณแบ่งค่าใช้จ่ายบ้านร่วมอย่างยุติธรรม ค่าเช่า ค่าไฟ ค่าน้ำ ค่าอาหาร ตามจำนวนผู้พักอาศัย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณแบ่งค่าใช้จ่ายครัวเรือน/`;
+
+const faqData = [
+  {
+    question: 'วิธีแบ่งค่าใช้จ่ายครัวเรือนที่ยุติธรรมที่สุดคืออะไร?',
+    answer: 'มีสองวิธีหลัก คือแบ่งเท่ากันทุกคน ซึ่งง่ายและโปร่งใส หรือแบ่งตามสัดส่วนรายได้ ซึ่งยุติธรรมกว่าเมื่อรายได้ต่างกันมาก ทั้งสองวิธีควรสื่อสารและตกลงกันให้ชัดเจนก่อน',
+  },
+  {
+    question: 'ค่าใช้จ่ายอะไรบ้างที่ควรแชร์กันในบ้าน?',
+    answer: 'ค่าใช้จ่ายที่ควรแชร์ได้แก่ ค่าเช่า ค่าไฟ ค่าน้ำ ค่าอินเทอร์เน็ต และค่าของกินส่วนกลาง ส่วนค่าใช้จ่ายส่วนตัวอย่างค่าโทรศัพท์ ค่าสมาชิกส่วนตัว ควรแยกชำระเอง',
+  },
+  {
+    question: 'ควรทำบัญชีค่าใช้จ่ายครัวเรือนร่วมกันอย่างไร?',
+    answer: 'แนะนำให้ใช้แอปหารค่าใช้จ่ายหรือสเปรดชีตร่วมกัน กำหนดวันจ่ายเงินที่แน่นอนทุกเดือน และรีวิวค่าใช้จ่ายร่วมกันทุก 3 เดือนเพื่อปรับตัวเลขให้สอดคล้องกับการใช้งานจริง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณแบ่งค่าใช้จ่ายครัวเรือน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแบ่งค่าใช้จ่ายครัวเรือน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณแบ่งค่าใช้จ่ายครัวเรือนร่วม 2569</h1>
+    <p class="mb-6 text-gray-600">กรอกรายการค่าใช้จ่ายและจำนวนผู้พักอาศัย เพื่อคำนวณส่วนแบ่งที่แต่ละคนต้องจ่ายอย่างเท่าเทียม หากอยู่กับแฟนดูได้ที่ <a href="/คำนวณแบ่งค่าใช้จ่ายคู่รัก/" class="text-primary-600 underline hover:text-primary-800">คำนวณแบ่งค่าใช้จ่ายคู่รัก</a> หรือ <a href="/คำนวณแบ่งบิลรูมเมท/" class="text-primary-600 underline hover:text-primary-800">คำนวณแบ่งบิลรูมเมท</a></p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="household-form" class="space-y-4">
+        <div>
+          <label for="num-people" class="mb-1 block text-sm font-medium text-gray-700">จำนวนคนที่พักอาศัย</label>
+          <select id="num-people"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48">
+            {[2,3,4,5,6].map(n => <option value={n}>{n} คน</option>)}
+          </select>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            { id: 'rent', label: 'ค่าเช่า (บาท/เดือน)' },
+            { id: 'electric', label: 'ค่าไฟฟ้า (บาท/เดือน)' },
+            { id: 'water', label: 'ค่าน้ำประปา (บาท/เดือน)' },
+            { id: 'internet', label: 'ค่าอินเทอร์เน็ต (บาท/เดือน)' },
+            { id: 'food', label: 'ค่าของกินร่วม (บาท/เดือน)' },
+          ].map(f => (
+            <div>
+              <label for={f.id} class="mb-1 block text-sm font-medium text-gray-700">{f.label}</label>
+              <input id={f.id} type="text" inputmode="numeric" placeholder="0"
+                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+          ))}
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรวมทั้งหมด/เดือน</div>
+            <div id="res-total" class="text-3xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">แต่ละคนจ่าย/เดือน</div>
+            <div id="res-per-person" class="text-3xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div id="breakdown" class="space-y-1 text-sm text-gray-700"></div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณแบ่งค่าใช้จ่ายครัวเรือน/" categoryId="budget" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('household-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const people = parseInt((document.getElementById('num-people') as HTMLSelectElement).value);
+    const items = [
+      { id: 'rent', label: 'ค่าเช่า' },
+      { id: 'electric', label: 'ค่าไฟฟ้า' },
+      { id: 'water', label: 'ค่าน้ำ' },
+      { id: 'internet', label: 'ค่าอินเทอร์เน็ต' },
+      { id: 'food', label: 'ค่าของกินร่วม' },
+    ];
+
+    let total = 0;
+    const lines: string[] = [];
+
+    items.forEach(item => {
+      const val = parseNum((document.getElementById(item.id) as HTMLInputElement).value);
+      if (val > 0) {
+        total += val;
+        lines.push(`• ${item.label}: ${fmt(val)} (แต่ละคน ${fmt(val / people)})`);
+      }
+    });
+
+    const perPerson = total / people;
+
+    document.getElementById('res-total')!.textContent = fmt(total);
+    document.getElementById('res-per-person')!.textContent = fmt(perPerson);
+    document.getElementById('breakdown')!.innerHTML = lines.length > 0 ? lines.join('<br/>') : 'ยังไม่ได้กรอกค่าใช้จ่าย';
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

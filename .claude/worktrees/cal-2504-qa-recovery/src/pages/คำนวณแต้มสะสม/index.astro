@@ -1,0 +1,201 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณมูลค่าแต้มสะสม ปี 2569 — Reward Points บัตรเครดิต | Kamnuanlek';
+const pageDescription = 'คำนวณมูลค่าแต้มสะสมจากบัตรเครดิต ป้อนจำนวนแต้มและอัตราแลก ทราบมูลค่าเป็นบาท เปรียบเทียบการใช้แต้มแต่ละแบบ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณแต้มสะสม/`;
+
+const faqData = [
+  {
+    question: 'แต้มสะสมบัตรเครดิตมูลค่าเท่าไหร่?',
+    answer: 'โดยทั่วไป 1 แต้ม = 0.10–1.00 บาท ขึ้นอยู่กับบัตรและวิธีใช้แต้ม เช่น แลกเป็น Cashback, ของรางวัล หรือแลกไมล์บิน',
+  },
+  {
+    question: 'ได้แต้มอัตราเท่าไหร่?',
+    answer: 'บัตรทั่วไปให้แต้ม 1 แต้ม/ทุก 25 บาท หรือ 4 แต้ม/100 บาท บัตรพรีเมียมอาจให้ 1 แต้ม/10 บาท หรือสูงกว่านั้นในหมวดพิเศษ',
+  },
+  {
+    question: 'ควรเลือก Cashback หรือแต้มสะสม?',
+    answer: 'Cashback ง่ายกว่า ไม่มีเงื่อนไข ส่วนแต้มสะสมอาจให้มูลค่ามากกว่าถ้าใช้แลกไมล์บินหรือของรางวัลที่เหมาะสม ขึ้นอยู่กับพฤติกรรมใช้จ่าย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณมูลค่าแต้มสะสม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแต้มสะสม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4">
+      <p class="text-sm font-semibold text-amber-700">คำนวณมูลค่าแต้มสะสม — Reward Points บัตรเครดิต</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: มูลค่า = จำนวนแต้ม × มูลค่าต่อแต้ม (บาท)</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณมูลค่าแต้มสะสม ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนจำนวนแต้มสะสม อัตราการสะสม และมูลค่าต่อแต้ม เพื่อดูมูลค่ารวมเป็นบาท
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="rp-form" class="space-y-5">
+        <p id="rp-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rp-points" class="mb-1 block text-sm font-medium text-gray-700">จำนวนแต้มสะสม (แต้ม)</label>
+            <input type="text" id="rp-points" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="rp-points-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="rp-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าต่อ 1 แต้ม (บาท)</label>
+            <input type="text" id="rp-value" inputmode="decimal" placeholder="เช่น 0.25"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="rp-value-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 0.10–1.00 บาท/แต้ม</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="rp-spend" class="mb-1 block text-sm font-medium text-gray-700">ยอดใช้จ่าย/เดือน (บาท) — ไม่บังคับ</label>
+            <input type="text" id="rp-spend" inputmode="numeric" placeholder="เช่น 20,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="rp-earn" class="mb-1 block text-sm font-medium text-gray-700">อัตราสะสม (แต้ม/บาท) — ไม่บังคับ</label>
+            <input type="text" id="rp-earn" inputmode="decimal" placeholder="เช่น 0.04"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">เช่น 1 แต้ม/25 บาท = 0.04</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณมูลค่าแต้ม
+        </button>
+      </form>
+    </div>
+
+    <div id="rp-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าแต้มปัจจุบัน</div>
+            <div id="res-rp-value" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div id="rp-earn-box" class="hidden rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">แต้มสะสม/เดือน</div>
+            <div id="res-rp-earn-pts" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div id="rp-monthly-box" class="hidden rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าสะสม/เดือน</div>
+            <div id="res-rp-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>มูลค่าแต้ม = จำนวนแต้ม × มูลค่าต่อแต้ม (บาท)</li>
+        <li>แต้มสะสม/เดือน = ยอดใช้จ่าย × อัตราสะสม</li>
+        <li>มูลค่าสะสม/เดือน = แต้มสะสม/เดือน × มูลค่าต่อแต้ม</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-cashback/">คำนวณมูลค่า Cashback</a></li>
+        <li><a href="/คำนวณไมล์สะสม/">คำนวณมูลค่าไมล์สะสม</a></li>
+        <li><a href="/คำนวณเปรียบเทียบจ่ายสดกับบัตร/">เปรียบเทียบจ่ายสดกับบัตร</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#rp-results" />
+    <RelatedArticles currentHref="/คำนวณแต้มสะสม/" />
+    <RelatedCalculators currentHref="/คำนวณแต้มสะสม/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> มูลค่าแต้มขึ้นอยู่กับบัตรและวิธีแลก ควรตรวจสอบเงื่อนไขจริงกับธนาคารก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('rp-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('rp-error').classList.add('hidden');
+      ['rp-points-error','rp-value-error'].forEach(id => setErr(id, ''));
+
+      const points = parseNum(document.getElementById('rp-points').value);
+      const value = parseNum(document.getElementById('rp-value').value);
+      const spend = parseNum(document.getElementById('rp-spend').value);
+      const earn = parseNum(document.getElementById('rp-earn').value);
+
+      let hasError = false;
+      if (!Number.isFinite(points) || points < 0) { setErr('rp-points-error', 'กรอกจำนวนแต้ม 0 ขึ้นไป'); hasError = true; }
+      if (!Number.isFinite(value) || value <= 0) { setErr('rp-value-error', 'กรอกมูลค่าต่อแต้มมากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('rp-error').classList.remove('hidden'); document.getElementById('rp-results').classList.add('hidden'); return; }
+
+      setText('res-rp-value', fmt(points * value));
+
+      const earnBox = document.getElementById('rp-earn-box');
+      const monthlyBox = document.getElementById('rp-monthly-box');
+      if (Number.isFinite(spend) && spend > 0 && Number.isFinite(earn) && earn > 0) {
+        const earnedPts = spend * earn;
+        setText('res-rp-earn-pts', `${new Intl.NumberFormat('th-TH').format(Math.round(earnedPts))} แต้ม`);
+        setText('res-rp-monthly', fmt(earnedPts * value));
+        earnBox.classList.remove('hidden');
+        monthlyBox.classList.remove('hidden');
+      } else {
+        earnBox.classList.add('hidden');
+        monthlyBox.classList.add('hidden');
+      }
+
+      document.getElementById('rp-results').classList.remove('hidden');
+      document.getElementById('rp-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

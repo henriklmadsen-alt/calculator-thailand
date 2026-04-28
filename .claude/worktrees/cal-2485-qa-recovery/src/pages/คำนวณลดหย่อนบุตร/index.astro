@@ -1,0 +1,217 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลดหย่อนบุตร 2569 | 60,000 บาท/คน ลูกคนที่ 2+ เกิดปี 2561 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าลดหย่อนบุตร 60,000 บาทต่อคน บุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 ได้รับ 60,000 บาทเพิ่มเติม ตามกฎหมายภาษีไทยปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลดหย่อนบุตร/`;
+
+const faqData = [
+  {
+    question: 'ค่าลดหย่อนบุตรปี 2569 เป็นเท่าไร?',
+    answer: 'ค่าลดหย่อนบุตรปี 2569 อยู่ที่ 60,000 บาทต่อคน สำหรับบุตรที่ยังมีชีวิตอยู่ อายุไม่เกิน 20 ปี หรืออายุไม่เกิน 25 ปีถ้ากำลังศึกษาในระดับอุดมศึกษา หรือผู้ทุพพลภาพ นอกจากนี้บุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 ได้รับค่าลดหย่อนเพิ่มอีก 60,000 บาท',
+  },
+  {
+    question: 'บุตรบุญธรรมลดหย่อนได้ไหม?',
+    answer: 'ใช่ บุตรบุญธรรมที่จดทะเบียนรับเป็นบุตรบุญธรรมถูกต้องตามกฎหมาย สามารถนำมาลดหย่อนได้ในฐานะบุตร แต่รวมบุตรแท้และบุตรบุญธรรมแล้วต้องไม่เกิน 3 คน',
+  },
+  {
+    question: 'บุตรที่กำลังเรียนปริญญาตรีต่างประเทศลดหย่อนได้ไหม?',
+    answer: 'ได้ บุตรที่ศึกษาอยู่ในต่างประเทศในระดับอุดมศึกษาสามารถลดหย่อนได้ถ้าอายุไม่เกิน 25 ปีและยังไม่มีรายได้ของตนเอง โดยต้องมีหลักฐานการศึกษา',
+  },
+  {
+    question: 'ถ้าหย่า ใครลดหย่อนบุตรได้?',
+    answer: 'กรณีหย่า ฝ่ายที่ได้รับสิทธิ์ดูแลบุตรตามคำสั่งศาล หรือฝ่ายที่เป็นผู้อุปการะบุตรตามความเป็นจริง สามารถนำมาลดหย่อนได้ หากทั้งสองฝ่ายต้องการลดหย่อน ให้แต่ละฝ่ายลดหย่อนได้คนละ 30,000 บาทต่อบุตรหนึ่งคน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลดหย่อนบุตร 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนบุตร">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">บุตรคนที่ 2+ เกิดปี 2561 ได้รับลดหย่อนเพิ่มอีก 60,000 บาท</p>
+      <p class="mt-1 text-sm text-slate-700">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณลดหย่อนบุตร 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าลดหย่อนบุตรตามจำนวนและปีเกิด รองรับบุตรที่เกิดตั้งแต่ปี 2561 ซึ่งได้รับสิทธิ์พิเศษ
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลบุตร</h2>
+
+      <div id="children-list" class="space-y-3 mb-4">
+        <!-- Children rows added dynamically -->
+      </div>
+
+      <div class="flex gap-3 mb-4">
+        <button type="button" id="btn-add-child"
+          class="px-4 py-2 border border-primary-300 text-primary-700 rounded-md hover:bg-primary-50 text-sm font-medium">
+          + เพิ่มบุตร
+        </button>
+        <button type="button" id="btn-remove-child"
+          class="px-4 py-2 border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium">
+          − ลบบุตรล่าสุด
+        </button>
+      </div>
+
+      <button type="button" id="btn-child-calc"
+        class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+        คำนวณทันที
+      </button>
+
+      <div id="child-result" class="hidden mt-6">
+        <div class="grid gap-3 sm:grid-cols-3 mb-4">
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จำนวนบุตร</div>
+            <div id="cr-count" class="text-xl font-bold text-gray-900">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนพื้นฐาน</div>
+            <div id="cr-base" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนรวมทั้งหมด</div>
+            <div id="cr-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div id="cr-breakdown" class="space-y-1 text-sm bg-gray-50 rounded-lg p-3"></div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าลดหย่อนบุตร 2569</h2>
+      <p>กรมสรรพากรกำหนดค่าลดหย่อนบุตรดังนี้:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>บุตรทุกคน:</strong> 60,000 บาทต่อคน</li>
+        <li><strong>บุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561:</strong> ได้รับเพิ่มอีก 60,000 บาท (รวมเป็น 120,000 บาทต่อคน)</li>
+      </ul>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เงื่อนไขของบุตรที่นำมาลดหย่อนได้</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>บุตรโดยกำเนิดหรือบุตรบุญธรรมที่จดทะเบียนถูกต้อง</li>
+        <li>อายุไม่เกิน 20 ปี หรืออายุไม่เกิน 25 ปีถ้าศึกษาอยู่ในระดับอุดมศึกษา</li>
+        <li>ไม่มีเงินได้พึงประเมินในปีภาษีนั้น หรือมีรายได้แต่ไม่เกินเกณฑ์ที่กำหนด</li>
+        <li>ไม่มีข้อจำกัดจำนวน (ไม่มีเพดานจำนวนบุตร)</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณลดหย่อนบุตร/" />
+    <RelatedCalculators currentHref="/คำนวณลดหย่อนบุตร/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n) + ' บาท';
+    }
+
+    let childCount = 0;
+    const childrenList = document.getElementById('children-list') as HTMLDivElement;
+
+    function addChild() {
+      childCount++;
+      const div = document.createElement('div');
+      div.id = `child-row-${childCount}`;
+      div.className = 'flex items-center gap-3 bg-gray-50 rounded-lg p-3';
+      div.innerHTML = `
+        <span class="text-sm font-medium text-gray-700 w-24 shrink-0">บุตรคนที่ ${childCount}</span>
+        <div class="flex items-center gap-2 flex-1">
+          <label class="text-sm text-gray-600">เกิดปี พ.ศ.</label>
+          <input type="number" id="child-year-${childCount}" min="2500" max="2569" placeholder="เช่น 2562"
+            class="w-28 px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </div>
+      `;
+      childrenList.appendChild(div);
+    }
+
+    document.getElementById('btn-add-child')!.addEventListener('click', () => {
+      if (childCount < 10) addChild();
+    });
+
+    document.getElementById('btn-remove-child')!.addEventListener('click', () => {
+      if (childCount > 0) {
+        const row = document.getElementById(`child-row-${childCount}`);
+        if (row) row.remove();
+        childCount--;
+      }
+    });
+
+    // Start with 1 child
+    addChild();
+
+    document.getElementById('btn-child-calc')!.addEventListener('click', () => {
+      if (childCount === 0) return;
+
+      let totalBase = 0;
+      let totalBonus = 0;
+      const breakdown: string[] = [];
+
+      for (let i = 1; i <= childCount; i++) {
+        const yearInput = document.getElementById(`child-year-${i}`) as HTMLInputElement;
+        const yearBE = parseInt(yearInput.value) || 0;
+        // 2561 BE = 2018 CE
+        const isSecondOrLater = i >= 2;
+        const bornAfter2561 = yearBE >= 2561;
+        const base = 60000;
+        const bonus = (isSecondOrLater && bornAfter2561) ? 60000 : 0;
+        totalBase += base;
+        totalBonus += bonus;
+        const childTotal = base + bonus;
+        let note = `ลดหย่อน 60,000`;
+        if (bonus > 0) note += ` + โบนัส 60,000 = 120,000 บาท`;
+        else if (isSecondOrLater && !bornAfter2561) note += ` บาท (เกิดก่อนปี 2561 ไม่ได้รับโบนัส)`;
+        else note += ` บาท`;
+        breakdown.push(`บุตรคนที่ ${i}: ${note}`);
+      }
+
+      const total = totalBase + totalBonus;
+      (document.getElementById('cr-count') as HTMLElement).textContent = `${childCount} คน`;
+      (document.getElementById('cr-base') as HTMLElement).textContent = fmt(totalBase);
+      (document.getElementById('cr-total') as HTMLElement).textContent = fmt(total);
+      const bd = document.getElementById('cr-breakdown') as HTMLDivElement;
+      bd.innerHTML = breakdown.map(b => `<div class="flex justify-between py-0.5 border-b border-gray-100 last:border-0"><span class="text-gray-600">${b}</span></div>`).join('');
+      if (totalBonus > 0) {
+        bd.innerHTML += `<div class="flex justify-between pt-1 font-semibold"><span>โบนัสรวม</span><span class="text-green-700">+${fmt(totalBonus)}</span></div>`;
+      }
+      (document.getElementById('child-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('child-allowance');
+    });
+  </script>
+</BaseLayout>

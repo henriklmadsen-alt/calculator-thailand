@@ -1,0 +1,138 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าปรับเงินคงเหลือขั้นต่ำ 2569 | หลีกเลี่ยงค่าปรับบัญชีธนาคาร | Kamnuanlek';
+const pageDescription = 'คำนวณค่าปรับเมื่อเงินในบัญชีต่ำกว่าขั้นต่ำ และต้นทุนรวมต่อปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าปรับเงินขั้นต่ำ/`;
+
+const faqData = [
+  {
+    question: 'ธนาคารไทยกำหนดเงินขั้นต่ำในบัญชีเท่าไร?',
+    answer: 'ยอดเงินขั้นต่ำแตกต่างกันตามธนาคารและประเภทบัญชี บัญชีออมทรัพย์ทั่วไปมักกำหนดที่ 500-2,000 บาท บัญชีกระแสรายวัน 5,000-10,000 บาท หากต่ำกว่าขั้นต่ำอาจถูกเรียกเก็บค่าธรรมเนียมรักษาบัญชี 50-100 บาทต่อเดือน',
+  },
+  {
+    question: 'จะหลีกเลี่ยงค่าปรับเงินขั้นต่ำได้อย่างไร?',
+    answer: 'รักษายอดเงินในบัญชีให้สูงกว่าขั้นต่ำเสมอ หรือเลือกธนาคารที่ไม่มีข้อกำหนดเงินขั้นต่ำ เช่น บัญชีออมทรัพย์ดิจิทัลของบางธนาคาร รวมถึงตรวจสอบยอดเงินเป็นประจำผ่านแอปธนาคาร',
+  },
+  {
+    question: 'ธนาคารไหนที่ไม่มีค่าปรับเงินขั้นต่ำ?',
+    answer: 'ธนาคารบางแห่งมีบัญชีออมทรัพย์ดิจิทัลที่ไม่กำหนดยอดขั้นต่ำ เช่น บัญชีออนไลน์ของบางธนาคาร ควรตรวจสอบเงื่อนไขล่าสุดกับธนาคารโดยตรง เนื่องจากนโยบายอาจเปลี่ยนแปลง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าปรับเงินคงเหลือขั้นต่ำ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าปรับเงินขั้นต่ำ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าปรับเงินคงเหลือขั้นต่ำ 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณว่าบัญชีของคุณต่ำกว่าขั้นต่ำหรือไม่ และค่าปรับที่อาจเกิดขึ้น</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="calc-form" class="space-y-4">
+        <div>
+          <label for="current-balance" class="mb-1 block text-sm font-medium text-gray-700">ยอดเงินปัจจุบัน (บาท)</label>
+          <input id="current-balance" type="text" inputmode="numeric" placeholder="เช่น 800"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="min-balance" class="mb-1 block text-sm font-medium text-gray-700">ยอดเงินขั้นต่ำที่ธนาคารกำหนด (บาท)</label>
+          <input id="min-balance" type="text" inputmode="numeric" value="2000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+        </div>
+        <div>
+          <label for="penalty" class="mb-1 block text-sm font-medium text-gray-700">ค่าปรับต่อเดือน (บาท)</label>
+          <input id="penalty" type="text" inputmode="numeric" value="50"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div id="res-status" class="mb-4 rounded-lg p-4 text-center text-lg font-semibold"></div>
+        <div id="penalty-section" class="hidden">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-lg bg-red-50 p-4 text-center">
+              <div class="mb-1 text-sm text-gray-600">ค่าปรับต่อเดือน</div>
+              <div id="res-monthly" class="text-3xl font-bold text-red-700">-</div>
+            </div>
+            <div class="rounded-lg bg-orange-50 p-4 text-center">
+              <div class="mb-1 text-sm text-gray-600">ค่าปรับต่อปี</div>
+              <div id="res-yearly" class="text-3xl font-bold text-orange-700">-</div>
+            </div>
+          </div>
+          <div class="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+            💡 วิธีหลีกเลี่ยง: เติมเงินในบัญชีให้ถึง <span id="res-need"></span> หรือย้ายไปบัญชีที่ไม่มีข้อกำหนดขั้นต่ำ
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณค่าปรับเงินขั้นต่ำ/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  document.getElementById('calc-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const current = parseNum((document.getElementById('current-balance') as HTMLInputElement).value);
+    const minimum = parseNum((document.getElementById('min-balance') as HTMLInputElement).value);
+    const penalty = parseNum((document.getElementById('penalty') as HTMLInputElement).value);
+
+    const statusEl = document.getElementById('res-status')!;
+    const penaltySection = document.getElementById('penalty-section')!;
+
+    if (current >= minimum) {
+      statusEl.textContent = `✓ เงินเกินขั้นต่ำ ${fmt(current - minimum)} — ไม่มีค่าปรับ`;
+      statusEl.className = 'mb-4 rounded-lg bg-green-50 p-4 text-center text-lg font-semibold text-green-800';
+      penaltySection.classList.add('hidden');
+    } else {
+      const shortfall = minimum - current;
+      statusEl.textContent = `⚠️ ขาดเงิน ${fmt(shortfall)} — จะถูกเรียกเก็บค่าปรับ`;
+      statusEl.className = 'mb-4 rounded-lg bg-red-50 p-4 text-center text-lg font-semibold text-red-800';
+      document.getElementById('res-monthly')!.textContent = fmt(penalty);
+      document.getElementById('res-yearly')!.textContent = fmt(penalty * 12);
+      document.getElementById('res-need')!.textContent = fmt(minimum);
+      penaltySection.classList.remove('hidden');
+    }
+
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

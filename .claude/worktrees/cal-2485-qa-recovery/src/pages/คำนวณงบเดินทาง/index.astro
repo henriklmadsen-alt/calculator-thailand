@@ -1,0 +1,157 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบเดินทาง 2569 | ค่าเดินทางรายเดือน รถสาธารณะ รถยนต์ | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเดินทางรายเดือน ทั้งรถสาธารณะ รถยนต์ส่วนตัว และมอเตอร์ไซค์ รวมค่าน้ำมัน ค่าทางด่วน เพื่อวางแผนงบเดินทางที่เหมาะสม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบเดินทาง/`;
+
+const faqData = [
+  {
+    question: 'ค่าเดินทางด้วยรถสาธารณะในกรุงเทพฯ ต่อเดือนเฉลี่ยเท่าไร?',
+    answer: 'สำหรับผู้ที่ใช้รถสาธารณะเดินทางไปทำงานทุกวัน ค่าใช้จ่ายเฉลี่ยอยู่ที่ 1,500-3,000 บาทต่อเดือน ขึ้นอยู่กับระยะทางและประเภทรถที่ใช้ (BTS, MRT, รถเมล์, รถตู้)',
+  },
+  {
+    question: 'ขับรถยนต์ไปทำงานเสียค่าใช้จ่ายเท่าไรต่อเดือน?',
+    answer: 'ค่าน้ำมันสำหรับรถยนต์ที่ขับ 30 กม./วัน ประมาณ 1,800-2,500 บาทต่อเดือน ยังไม่รวมค่าทางด่วน ค่าจอดรถ ค่าซ่อมบำรุง และค่าประกันภัย ซึ่งอาจรวมแล้วสูงถึง 5,000-8,000 บาทต่อเดือน',
+  },
+  {
+    question: 'วิธีประหยัดค่าเดินทางทำอย่างไร?',
+    answer: 'ใช้รถสาธารณะแทนรถส่วนตัว ซื้อบัตรรายเดือน carpool กับเพื่อนร่วมงาน ทำงานที่บ้านบางวัน หรือเลือกที่พักใกล้ที่ทำงานมากขึ้นเพื่อลดระยะทาง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบเดินทาง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบเดินทาง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบเดินทาง 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณค่าเดินทางรายเดือน รถสาธารณะ รถยนต์ และมอเตอร์ไซค์ รวมค่าน้ำมัน</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="travel-form" class="space-y-4">
+        <div>
+          <label for="distance" class="mb-1 block text-sm font-medium text-gray-700">ระยะทางทำงานไป-กลับต่อวัน (กม.)</label>
+          <input id="distance" type="text" inputmode="numeric" placeholder="เช่น 30"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <div>
+          <label for="workdays" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานต่อเดือน</label>
+          <input id="workdays" type="text" inputmode="numeric" placeholder="เช่น 22"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">รูปแบบการเดินทาง</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="mode-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="mode" value="public" class="sr-only" checked /> 🚌 รถสาธารณะ
+            </label>
+            <label class="mode-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="mode" value="car" class="sr-only" /> 🚗 รถยนต์
+            </label>
+            <label class="mode-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="mode" value="moto" class="sr-only" /> 🏍️ มอเตอร์ไซค์
+            </label>
+          </div>
+        </fieldset>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">ค่าเดินทางต่อเดือน</div>
+          <div id="res-monthly" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">ค่าเดินทางต่อวัน</span>
+            <span id="res-daily" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-gray-700">ค่าเดินทางต่อปี</span>
+            <span id="res-yearly" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+        </div>
+        <div id="mode-note" class="mt-4 rounded-lg bg-gray-50 p-3 text-sm text-gray-600"></div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณงบเดินทาง/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  // cost per km
+  const COST_PER_KM: Record<string, number> = { public: 2.5, car: 4.5, moto: 2.0 };
+  const MODE_NOTE: Record<string, string> = {
+    public: 'หมายเหตุ: ราคาคำนวณจากค่าเฉลี่ยรถสาธารณะ (BTS/MRT/รถเมล์) ราคาจริงอาจแตกต่างตามเส้นทาง',
+    car: 'หมายเหตุ: คำนวณจากค่าน้ำมันเฉลี่ย 40 บาท/ลิตร อัตราสิ้นเปลืองน้ำมัน 10-12 กม./ลิตร ไม่รวมค่าทางด่วนและค่าจอดรถ',
+    moto: 'หมายเหตุ: คำนวณจากค่าน้ำมันและค่าซ่อมบำรุงเฉลี่ย อัตราสิ้นเปลืองน้ำมัน 40-50 กม./ลิตร',
+  };
+
+  document.querySelectorAll<HTMLLabelElement>('.mode-pill').forEach((pill) => {
+    pill.querySelector('input')?.addEventListener('change', () => {
+      document.querySelectorAll<HTMLLabelElement>('.mode-pill').forEach((p) => {
+        p.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        p.classList.add('border-gray-200', 'text-gray-700');
+      });
+      pill.classList.remove('border-gray-200', 'text-gray-700');
+      pill.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+    });
+  });
+
+  document.getElementById('travel-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const distance = parseNum((document.getElementById('distance') as HTMLInputElement).value) || 0;
+    const workdays = parseNum((document.getElementById('workdays') as HTMLInputElement).value) || 22;
+    const mode = (document.querySelector('input[name="mode"]:checked') as HTMLInputElement)?.value ?? 'public';
+
+    const daily = distance * COST_PER_KM[mode];
+    const monthly = daily * workdays;
+    const yearly = monthly * 12;
+
+    document.getElementById('res-daily')!.textContent = fmt(daily);
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-yearly')!.textContent = fmt(yearly);
+    document.getElementById('mode-note')!.textContent = MODE_NOTE[mode];
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

@@ -1,0 +1,234 @@
+---
+import type { AstroComponentFactory } from 'astro';
+
+interface Props {
+  faqData?: Array<{ question: string; answer: string }>;
+  title?: string;
+}
+
+const { faqData = [], title = 'คำถามที่พบบ่อย' } = Astro.props;
+
+// Generate FAQPage schema
+const jsonLdFaq = faqData.length > 0
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqData.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    }
+  : null;
+---
+
+{
+  faqData.length > 0 && (
+    <>
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+      <section class="faq-accordion-section">
+        <div class="faq-accordion-container">
+          <h2 class="faq-accordion-title">{title}</h2>
+          <div class="faq-accordion" role="region" aria-label={title}>
+            {faqData.map((faq, index) => (
+              <details class="faq-item" data-faq-index={index}>
+                <summary class="faq-question">
+                  <span class="faq-question-text">{faq.question}</span>
+                  <span class="faq-icon" aria-hidden="true">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="faq-icon-svg"
+                    >
+                      <path
+                        d="M7 8.5L10 11.5L13 8.5"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </summary>
+                <div class="faq-answer">
+                  <div class="faq-answer-content">
+                    {faq.answer}
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+<style>
+  .faq-accordion-section {
+    margin: 2rem 0;
+  }
+
+  .faq-accordion-container {
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+  }
+
+  .faq-accordion-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem 0;
+    color: #1f2937;
+  }
+
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.2s ease;
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item[open] {
+    background-color: #f9fafb;
+  }
+
+  .faq-item[open] .faq-icon-svg {
+    transform: rotate(180deg);
+  }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    user-select: none;
+    background: white;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    transition: background-color 0.2s ease;
+  }
+
+  .faq-question:hover {
+    background-color: #f3f4f6;
+  }
+
+  .faq-question:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+
+  .faq-question-text {
+    flex: 1;
+    word-break: break-word;
+  }
+
+  .faq-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #6b7280;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .faq-item[open] .faq-icon {
+    color: #2563eb;
+  }
+
+  .faq-icon-svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .faq-answer {
+    display: block;
+    overflow: hidden;
+    background-color: #f9fafb;
+  }
+
+  .faq-answer-content {
+    padding: 1rem;
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  /* Mobile styles */
+  @media (max-width: 640px) {
+    .faq-accordion-section {
+      margin: 1.5rem 0;
+    }
+
+    .faq-accordion-title {
+      font-size: 1.25rem;
+    }
+
+    .faq-question {
+      padding: 0.875rem;
+      font-size: 0.95rem;
+      gap: 0.75rem;
+    }
+
+    .faq-answer-content {
+      padding: 0.875rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item,
+    .faq-question,
+    .faq-icon,
+    .faq-answer {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: smooth transitions and proper ARIA
+  document.addEventListener('DOMContentLoaded', () => {
+    const accordions = document.querySelectorAll('.faq-item');
+
+    accordions.forEach((item) => {
+      const summary = item.querySelector('summary');
+      const answer = item.querySelector('.faq-answer');
+
+      if (summary && answer) {
+        // Update aria-expanded based on open state
+        const updateAriaExpanded = () => {
+          const isOpen = item.hasAttribute('open');
+          summary.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+
+        // Set initial state
+        updateAriaExpanded();
+
+        // Update on toggle
+        item.addEventListener('toggle', updateAriaExpanded);
+      }
+    });
+  });
+</script>

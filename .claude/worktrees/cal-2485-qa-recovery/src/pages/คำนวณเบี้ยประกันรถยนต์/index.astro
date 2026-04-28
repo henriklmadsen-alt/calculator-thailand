@@ -1,0 +1,310 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเบี้ยประกันรถยนต์ ปี 2569 ประมาณค่าเบี้ยชั้น 1-3 ตามรถและอายุ | Kamnuanlek';
+const pageDescription = 'ประมาณเบี้ยประกันรถยนต์ชั้น 1, 2+, 2, 3+ และชั้น 3 ตามประเภทรถ มูลค่ารถ อายุผู้ขับ และประวัติการเคลม';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยประกันรถยนต์/`;
+
+const faqData = [
+  {
+    question: 'ประกันรถยนต์ชั้น 1 ต่างจากชั้น 2+ อย่างไร?',
+    answer: 'ประกันชั้น 1 คุ้มครองทั้งความเสียหายของรถเรา ไฟไหม้ โจรกรรม และบุคคลภายนอก ชั้น 2+ คุ้มครองเฉพาะบุคคลภายนอกและไฟไหม้/โจรกรรม แต่ไม่คุ้มครองความเสียหายของรถเราถ้าชนแล้วหนี',
+  },
+  {
+    question: 'ปัจจัยอะไรที่ส่งผลต่อเบี้ยประกันรถยนต์?',
+    answer: 'มูลค่ารถ ยี่ห้อและรุ่น อายุรถ อายุผู้ขับ (คนอายุต่ำกว่า 25 ปีเบี้ยสูงกว่า) ประวัติการเคลม พื้นที่จอดรถ และบริษัทประกัน ล้วนส่งผลต่อเบี้ยประกัน',
+  },
+  {
+    question: 'เบี้ยประกันรถยนต์ชั้น 1 เฉลี่ยเท่าไหร่?',
+    answer: 'เบี้ยประกันรถยนต์ชั้น 1 สำหรับรถกลางๆ มูลค่า 500,000–1,000,000 บาท อยู่ที่ประมาณ 15,000–35,000 บาท/ปี ขึ้นอยู่กับบริษัทและความคุ้มครองเพิ่มเติม',
+  },
+  {
+    question: 'ควรเลือกประกันรถยนต์แบบไหน?',
+    answer: 'รถใหม่หรือผ่อนอยู่แนะนำชั้น 1 รถเก่ามูลค่าต่ำอาจเลือกชั้น 2+ หรือชั้น 3 เพื่อประหยัดเบี้ย แต่ยังได้ความคุ้มครองบุคคลภายนอก ควรเปรียบเทียบเบี้ยจากหลายบริษัท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันรถยนต์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันรถยนต์',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันรถยนต์ ชั้น 1, 2+, 2, 3+, 3 ตามประเภทรถ มูลค่า อายุ และผู้ขับขี่',
+  step: [
+    { '@type': 'HowToStep', name: 'เลือกประเภทประกัน', text: 'เลือกชั้นประกันที่ต้องการ: ชั้น 1 / 2+ / 2 / 3+ / 3 หรือเลือก "แสดงทุกชั้น" เพื่อเปรียบเทียบเบี้ยทุกชั้นพร้อมกัน' },
+    { '@type': 'HowToStep', name: 'กรอกมูลค่ารถยนต์ปัจจุบัน (บาท)', text: 'ระบุมูลค่าตลาดปัจจุบันของรถ ไม่ใช่ราคาซื้อใหม่ เพื่อให้เบี้ยประมาณการแม่นยำยิ่งขึ้น' },
+    { '@type': 'HowToStep', name: 'ระบุอายุรถ (ปี)', text: 'เลือกช่วงอายุรถ: 0–2 ปี (ใหม่), 3–5 ปี, 6–10 ปี หรือมากกว่า 10 ปี รถเก่าทุนประกันลดลงตามค่าเสื่อม' },
+    { '@type': 'HowToStep', name: 'ระบุอายุผู้ขับขี่หลัก', text: 'เลือกช่วงอายุผู้ขับหลัก: 18–24 ปี (เบี้ยสูงกว่า), 25–55 ปี (มาตรฐาน) หรือ 56 ปีขึ้นไป' },
+    { '@type': 'HowToStep', name: 'กดคำนวณ — ดูเบี้ยประมาณการและเปรียบเทียบแต่ละชั้น', text: 'กดปุ่ม "ประมาณเบี้ยประกันรถ" เพื่อดูช่วงเบี้ยประมาณการรายปีของแต่ละชั้นประกัน เปรียบเทียบก่อนติดต่อบริษัทประกัน' },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันรถยนต์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
+      <p class="text-sm font-semibold text-red-700">🚗 ประมาณเบี้ยประกันรถยนต์ ชั้น 1-3</p>
+      <p class="mt-1 text-sm text-slate-700">ประมาณการตามมูลค่ารถ ชั้นประกัน อายุผู้ขับ และประวัติการเคลม</p>
+      <p class="mt-1 text-xs font-medium text-red-800">ผลลัพธ์เป็นการประมาณการเท่านั้น ติดต่อบริษัทประกันเพื่อราคาจริง</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเบี้ยประกันรถยนต์ ชั้น 1, 2+, 2, 3+, 3 ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกข้อมูลรถและผู้ขับเพื่อประมาณเบี้ยประกันรถยนต์แต่ละชั้น สำหรับเปรียบเทียบก่อนซื้อประกัน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="car-form" class="space-y-5">
+        <p id="car-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="car-value" class="mb-1 block text-sm font-medium text-gray-700">มูลค่ารถปัจจุบัน (บาท)</label>
+            <input type="text" id="car-value" inputmode="numeric" placeholder="เช่น 800,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="car-value-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="car-type" class="mb-1 block text-sm font-medium text-gray-700">ประเภทรถ</label>
+            <select id="car-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="sedan">เก๋ง/SUV ทั่วไป</option>
+              <option value="pickup">กระบะ</option>
+              <option value="luxury">รถหรู/Sport</option>
+              <option value="ev">รถไฟฟ้า EV</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="car-age" class="mb-1 block text-sm font-medium text-gray-700">อายุรถ (ปี)</label>
+            <select id="car-age" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="new">0–2 ปี (ใหม่)</option>
+              <option value="mid" selected>3–5 ปี</option>
+              <option value="old">6–10 ปี</option>
+              <option value="vold">มากกว่า 10 ปี</option>
+            </select>
+          </div>
+          <div>
+            <label for="driver-age" class="mb-1 block text-sm font-medium text-gray-700">อายุผู้ขับหลัก (ปี)</label>
+            <select id="driver-age" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="young">18–24 ปี</option>
+              <option value="normal" selected>25–55 ปี</option>
+              <option value="senior">56 ปีขึ้นไป</option>
+            </select>
+          </div>
+          <div>
+            <label for="car-claim" class="mb-1 block text-sm font-medium text-gray-700">ประวัติการเคลม</label>
+            <select id="car-claim" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="none" selected>ไม่มีประวัติเคลม</option>
+              <option value="one">เคลม 1 ครั้ง/ปี</option>
+              <option value="two">เคลม 2+ ครั้ง/ปี</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="car-class" class="mb-1 block text-sm font-medium text-gray-700">ชั้นประกันที่สนใจ</label>
+          <select id="car-class" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64">
+            <option value="all">แสดงทุกชั้น</option>
+            <option value="1">ชั้น 1</option>
+            <option value="2plus">ชั้น 2+</option>
+            <option value="2">ชั้น 2</option>
+            <option value="3plus">ชั้น 3+</option>
+            <option value="3">ชั้น 3</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          ประมาณเบี้ยประกันรถ
+        </button>
+      </form>
+    </div>
+
+    <div id="car-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ประมาณการเบี้ยประกัน</h2>
+        <div class="mb-4 space-y-3" id="car-result-rows"></div>
+        <p class="text-xs text-gray-500">* ราคาประมาณการ ราคาจริงขึ้นอยู่กับบริษัทประกันและเงื่อนไขเพิ่มเติม</p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">เปรียบเทียบชั้นประกันรถยนต์ 2569</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[540px] border-collapse text-sm">
+          <thead>
+            <tr class="border-b bg-gray-50">
+              <th class="px-3 py-2 text-left">ชั้นประกัน</th>
+              <th class="px-3 py-2 text-left">ครอบคลุม</th>
+              <th class="px-3 py-2 text-left">เบี้ยประมาณ (รถ 600k)</th>
+              <th class="px-3 py-2 text-left">เหมาะสำหรับ</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-600">
+            <tr class="border-b"><td class="px-3 py-2 font-medium text-gray-800">ชั้น 1</td><td class="px-3 py-2">ครบทุกกรณี รวมโจรกรรม</td><td class="px-3 py-2">15,000–25,000/ปี</td><td class="px-3 py-2">รถใหม่, ยังผ่อน</td></tr>
+            <tr class="border-b bg-gray-50"><td class="px-3 py-2 font-medium text-gray-800">ชั้น 2+</td><td class="px-3 py-2">ชนแล้วหนี, ไฟไหม้, โจรกรรม</td><td class="px-3 py-2">7,000–12,000/ปี</td><td class="px-3 py-2">รถอายุ 1–5 ปี</td></tr>
+            <tr class="border-b"><td class="px-3 py-2 font-medium text-gray-800">ชั้น 3+</td><td class="px-3 py-2">ชนแล้วหนี</td><td class="px-3 py-2">4,000–7,000/ปี</td><td class="px-3 py-2">รถอายุ 5–10 ปี</td></tr>
+            <tr class="border-b bg-gray-50"><td class="px-3 py-2 font-medium text-gray-800">ชั้น 3</td><td class="px-3 py-2">คู่กรณีเท่านั้น</td><td class="px-3 py-2">2,500–5,000/ปี</td><td class="px-3 py-2">รถเก่า ทุนน้อย</td></tr>
+            <tr><td class="px-3 py-2 font-medium text-gray-800">พรบ.</td><td class="px-3 py-2">บาดเจ็บ/เสียชีวิตเท่านั้น</td><td class="px-3 py-2">600–1,200/ปี</td><td class="px-3 py-2">บังคับตามกฎหมาย</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-gray-500">* เบี้ยประมาณการเท่านั้น ขึ้นอยู่กับบริษัทประกัน อายุรถ และผู้ขับ</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#car-results" />
+
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="/go/tipinsure/?sub_id=คำนวณเบี้ยประกันรถยนต์"
+      partnerName="TIPINSURE"
+      ctaText="เปรียบเทียบประกันรถผ่าน TIPINSURE"
+      subtext="เปรียบเทียบแผนประกันรถจากหลายบริษัท"
+    />
+
+
+    <section class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
+      <h3 class="mb-3 text-base font-semibold text-gray-900">เครื่องมือเกี่ยวกับรถยนต์ที่น่าสนใจ</h3>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li><a href="/คำนวณผ่อนรถ/" class="text-primary-600 hover:underline">คำนวณผ่อนรถ ค่างวดสินเชื่อรถยนต์</a> — วางแผนซื้อรถ คำนวณค่างวดก่อนตัดสินใจ</li>
+        <li><a href="/คำนวณค่าภาษีรถยนต์/" class="text-primary-600 hover:underline">คำนวณภาษีรถยนต์ประจำปี</a> — ภาษีรถประจำปีต้องจ่ายเท่าไหร่</li>
+        <li><a href="/คำนวณค่าต่อทะเบียนรถ/" class="text-primary-600 hover:underline">คำนวณค่าต่อทะเบียนรถ</a> — ค่าต่อทะเบียนรถและต่อประกัน</li>
+        <li><a href="/คำนวณ-deductible-ประกันรถ/" class="text-primary-600 hover:underline">คำนวณ Deductible ประกันรถ</a> — วางแผนค่าเสียหายส่วนแรก</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
+      <h3 class="mb-3 text-base font-semibold text-gray-900">เครื่องมือเกี่ยวกับรถยนต์ที่น่าสนใจ</h3>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li><a href="/คำนวณผ่อนรถ/" class="text-primary-600 hover:underline">คำนวณผ่อนรถ ค่างวดสินเชื่อรถยนต์</a> — วางแผนซื้อรถ คำนวณค่างวดก่อนตัดสินใจ</li>
+        <li><a href="/คำนวณค่าภาษีรถยนต์/" class="text-primary-600 hover:underline">คำนวณภาษีรถยนต์ประจำปี</a> — ภาษีรถประจำปีต้องจ่ายเท่าไหร่</li>
+        <li><a href="/คำนวณค่าต่อทะเบียนรถ/" class="text-primary-600 hover:underline">คำนวณค่าต่อทะเบียนรถ</a> — ค่าต่อทะเบียนรถและต่อประกัน</li>
+        <li><a href="/คำนวณ-deductible-ประกันรถ/" class="text-primary-600 hover:underline">คำนวณ Deductible ประกันรถ</a> — วางแผนค่าเสียหายส่วนแรก</li>
+      </ul>
+    </section>
+    <RelatedArticles currentHref="/คำนวณเบี้ยประกันรถยนต์/" />
+    <RelatedCalculators currentHref="/คำนวณเบี้ยประกันรถยนต์/" />
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm">
+      <p class="mb-2 font-semibold text-gray-700">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.oic.or.th/th/consumer/knowledge/car_insurance" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:underline">ข้อมูลประกันรถยนต์จากสำนักงาน คปภ.</a> — ประเภทความคุ้มครองและชั้นประกันรถยนต์</li>
+        <li><a href="https://www.oic.or.th/th/consumer/knowledge/vehicle_act" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">พรบ. รถยนต์ภาคบังคับ — ข้อมูลจาก คปภ.</a> — ข้อมูล พ.ร.บ. ประกันภัยรถยนต์ภาคบังคับ</li>
+      </ul>
+    </div>
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการโดยอิงจากช่วงราคาตลาด ราคาจริงอาจแตกต่างตามบริษัทประกัน เงื่อนไข และรายละเอียดรถ ควรติดต่อบริษัทประกันโดยตรงเพื่อใบเสนอราคา
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+    }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    // Rate tables (% of car value per year, approximate market ranges)
+    const baseRates = {
+      '1':     { sedan: [0.028, 0.034], pickup: [0.026, 0.032], luxury: [0.035, 0.045], ev: [0.032, 0.042] },
+      '2plus': { sedan: [0.012, 0.018], pickup: [0.011, 0.016], luxury: [0.016, 0.022], ev: [0.014, 0.020] },
+      '2':     { sedan: [0.008, 0.013], pickup: [0.007, 0.012], luxury: [0.011, 0.016], ev: [0.010, 0.015] },
+      '3plus': { sedan: [0.004, 0.007], pickup: [0.004, 0.006], luxury: [0.005, 0.009], ev: [0.005, 0.008] },
+      '3':     { sedan: [0.002, 0.004], pickup: [0.002, 0.003], luxury: [0.003, 0.005], ev: [0.003, 0.005] },
+    };
+    const ageMultiplier = { new: 1.0, mid: 0.85, old: 0.70, vold: 0.55 };
+    const driverMultiplier = { young: 1.25, normal: 1.0, senior: 1.10 };
+    const claimMultiplier = { none: 0.95, one: 1.15, two: 1.35 };
+    const classNames = { '1': 'ชั้น 1', '2plus': 'ชั้น 2+', '2': 'ชั้น 2', '3plus': 'ชั้น 3+', '3': 'ชั้น 3' };
+
+    document.getElementById('car-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('car-error').classList.add('hidden');
+      setErr('car-value-error', '');
+
+      const value = parseNum(document.getElementById('car-value').value);
+      if (!value) { setErr('car-value-error', 'กรอกมูลค่ารถ'); document.getElementById('car-error').classList.remove('hidden'); return; }
+
+      const carType = document.getElementById('car-type').value;
+      const carAge = document.getElementById('car-age').value;
+      const driverAge = document.getElementById('driver-age').value;
+      const claim = document.getElementById('car-claim').value;
+      const selectedClass = document.getElementById('car-class').value;
+
+      const mult = ageMultiplier[carAge] * driverMultiplier[driverAge] * claimMultiplier[claim];
+      const classes = selectedClass === 'all' ? ['1', '2plus', '2', '3plus', '3'] : [selectedClass];
+
+      const container = document.getElementById('car-result-rows');
+      container.innerHTML = '';
+
+      classes.forEach(cls => {
+        const [low, high] = baseRates[cls][carType];
+        const minPremium = Math.round(value * low * mult / 100) * 100;
+        const maxPremium = Math.round(value * high * mult / 100) * 100;
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3';
+        row.innerHTML = `
+          <div>
+            <span class="font-semibold text-gray-800">${classNames[cls]}</span>
+            <span class="ml-2 text-xs text-gray-500">${cls === '1' ? 'คุ้มครองครบถ้วน' : cls === '3' ? 'คุ้มครองขั้นต่ำ' : 'คุ้มครองบางส่วน'}</span>
+          </div>
+          <div class="text-right">
+            <span class="font-bold text-primary-700">${formatMoney(minPremium)}–${formatMoney(maxPremium)} บาท</span>
+            <span class="ml-1 text-xs text-gray-500">/ปี</span>
+          </div>`;
+        container.appendChild(row);
+      });
+
+      document.getElementById('car-results').classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      document.getElementById('car-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

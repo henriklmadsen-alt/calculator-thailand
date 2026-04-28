@@ -1,0 +1,216 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนการสร้างบ้าน ปี 2569 — บ้านสำนักที่พอใจ | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนรวมการสร้างบ้านใหม่ ตั้งแต่เตียง ก่อเสบียง ตกแต่ง ระบบไฟฟ้า ประปา คำนวณง่ายตามวัตถุมาตรฐานปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนการสร้างบ้าน/`;
+
+const faqData = [
+  {
+    question: 'ค่าสร้างเฉลี่ยต่อตารางเมตรเท่าไหร่?',
+    answer: 'ค่าสร้างเฉลี่ยในปี 2569 อยู่ที่ 7,000–15,000 บาท/ตร.ม. ขึ้นอยู่กับคุณภาพ ตำแหน่ง และวัสดุ สามารถปรึกษาช่างหรือสถาปนิกเพื่อขอใบเสนอราคาแน่นอน',
+  },
+  {
+    question: 'ต้นทุนใดบ้างที่รวมในการสร้างบ้าน?',
+    answer: 'ประกอบด้วย วัสดุก่อสร้าง ค่าแรง ระบบไฟฟ้า ระบบประปา ระบบท่อระบายน้ำ ประตูหน้าต่าง ตกแต่งภายใน และค่าออกแบบเบื้องต้น',
+  },
+  {
+    question: 'ควรตั้งจ่ายอื่นเพิ่มเติมกี่เปอร์เซ็นต์?',
+    answer: 'แนะนำตั้งจ่ายผืนเผื่อ 10–20% สำหรับค่าใช้จ่ายที่ไม่คาดคิด เช่น การเปลี่ยนแปลงใจกลางโครงการหรือวัสดุสูงขึ้นราคา',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนการสร้างบ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนการสร้างบ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-orange-100 bg-orange-50 p-4">
+      <p class="text-sm font-semibold text-orange-700">คำนวณต้นทุนการสร้างบ้าน — ประมาณการทั้งหมด</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ต้นทุนรวม = (เนื้อที่ × ค่าต่อตร.ม.) + ค่าเพิ่มเติม</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณต้นทุนการสร้างบ้าน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนเนื้อที่พื้นอาคารและค่าต่อตารางเมตร เพื่อประมาณต้นทุนรวมการสร้างบ้านใหม่
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="construction-form" class="space-y-5">
+        <p id="construction-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="area" class="mb-1 block text-sm font-medium text-gray-700">เนื้อที่อาคาร (ตร.ม.)</label>
+            <input type="text" id="area" inputmode="numeric" placeholder="เช่น 200"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="area-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="cost-per-sqm" class="mb-1 block text-sm font-medium text-gray-700">ค่าต่อตร.ม. (บาท)</label>
+            <input type="text" id="cost-per-sqm" inputmode="numeric" placeholder="เช่น 10000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="cost-per-sqm-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 7,000–15,000 บาท</p>
+          </div>
+        </div>
+
+        <div>
+          <label for="extras" class="mb-1 block text-sm font-medium text-gray-700">ค่าเพิ่มเติม (บาท) — ไม่บังคับ</label>
+          <input type="text" id="extras" inputmode="numeric" placeholder="เช่น 200000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">เช่น ค่าออกแบบ ค่าครัว ระบบแอร์ เป็นต้น</p>
+        </div>
+
+        <div>
+          <label for="contingency-percent" class="mb-1 block text-sm font-medium text-gray-700">เผื่อค่าใช้จ่ายเพิ่ม (%) — ไม่บังคับ</label>
+          <input type="text" id="contingency-percent" inputmode="numeric" placeholder="เช่น 10"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <p class="mt-1 text-xs text-gray-500">แนะนำ 10–20% สำหรับค่าใช้จ่ายที่ไม่คาดคิด</p>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณต้นทุนรวม
+        </button>
+      </form>
+    </div>
+
+    <div id="construction-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg bg-blue-50 p-4">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนวัสดุและแรง</div>
+            <div id="res-main-cost" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4">
+            <div class="mb-1 text-sm text-gray-600">ค่าเพิ่มเติม</div>
+            <div id="res-extras" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div id="contingency-section" class="hidden mb-4 rounded-lg bg-yellow-50 p-4">
+          <div class="mb-1 text-sm text-gray-600">เผื่อค่าใช้จ่ายเพิ่มเติม</div>
+          <div id="res-contingency" class="text-xl font-bold text-yellow-700">-</div>
+        </div>
+        <div class="rounded-lg bg-red-50 p-4">
+          <div class="mb-1 text-sm text-gray-600">ต้นทุนรวมทั้งสิ้น</div>
+          <div id="res-total" class="text-2xl font-bold text-red-700">-</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ต้นทุนวัสดุและแรง = เนื้อที่ × ค่าต่อตร.ม.</li>
+        <li>ต้นทุนรวมเบื้องต้น = ต้นทุนวัสดุและแรง + ค่าเพิ่มเติม</li>
+        <li>เผื่อค่าใช้จ่ายเพิ่มเติม = ต้นทุนรวมเบื้องต้น × (% ÷ 100)</li>
+        <li>ต้นทุนรวมทั้งสิ้น = ต้นทุนรวมเบื้องต้น + เผื่อค่าใช้จ่ายเพิ่มเติม</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณต้นทุนวัสดุก่อสร้าง/">คำนวณต้นทุนวัสดุก่อสร้าง</a></li>
+        <li><a href="/คำนวณค่าจ้างแรงงานก่อสร้าง/">คำนวณค่าจ้างแรงงานก่อสร้าง</a></li>
+        <li><a href="/คำนวณต้นทุนต่อตารางเมตร/">คำนวณต้นทุนต่อตารางเมตร</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#construction-results" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณต้นทุนการสร้างบ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนการสร้างบ้าน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ค่าต่อตร.ม. เปลี่ยนแปลงตามราคาวัสดุปัจจุบัน ตำแหน่ง และคุณภาพงาน ควรปรึกษาสถาปนิก/ผู้รับเหมาเพื่อขอใบเสนอราคาที่เจาะจง
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('construction-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('construction-error').classList.add('hidden');
+      ['area-error','cost-per-sqm-error'].forEach(id => setErr(id, ''));
+
+      const area = parseNum(document.getElementById('area').value);
+      const costPerSqm = parseNum(document.getElementById('cost-per-sqm').value);
+      const extras = parseNum(document.getElementById('extras').value) || 0;
+      const contingencyPercent = parseNum(document.getElementById('contingency-percent').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(area) || area <= 0) { setErr('area-error', 'กรอกเนื้อที่มากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(costPerSqm) || costPerSqm <= 0) { setErr('cost-per-sqm-error', 'กรอกค่าต่อตร.ม. มากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('construction-error').classList.remove('hidden'); document.getElementById('construction-results').classList.add('hidden'); return; }
+
+      const mainCost = area * costPerSqm;
+      const subtotal = mainCost + extras;
+      const contingency = contingencyPercent > 0 ? subtotal * contingencyPercent / 100 : 0;
+      const total = subtotal + contingency;
+
+      setText('res-main-cost', fmt(mainCost));
+      setText('res-extras', fmt(extras));
+
+      const contingencySection = document.getElementById('contingency-section');
+      if (contingency > 0) {
+        setText('res-contingency', fmt(contingency));
+        contingencySection.classList.remove('hidden');
+      } else {
+        contingencySection.classList.add('hidden');
+      }
+
+      setText('res-total', fmt(total));
+      document.getElementById('construction-results').classList.remove('hidden');
+      document.getElementById('construction-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

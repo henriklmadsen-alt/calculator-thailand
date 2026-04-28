@@ -1,0 +1,341 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์ 2569 | ผลกระทบทางภาษี | ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์ ประมาณการเงินที่ประหยัดได้จากการเสียภาษี ตามกฎหมายไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์/`;
+
+const faqData = [
+  {
+    question: 'ค่าใช้จ่ายทางการแพทย์ที่สามารถลดหย่อนได้มีอะไรบ้าง?',
+    answer: 'ค่ารักษาพยาบาล ค่าเวชกรรม ค่าทันต์ ค่ายา ค่าแว่นตา ค่าการฝึกบำบัด ตราจริงเท่านั้นและต้องมีใบเสร็จอย่างถูกต้อง ต้องมาจากแพทย์หรือสถานพยาบาลรับอนุญาต',
+  },
+  {
+    question: 'ค่าใช้จ่ายที่ไม่สามารถลดหย่อนได้คืออะไร?',
+    answer: 'ค่าความงาม (ศัลยกรรมชำระแก้ง) ค่าลดน้ำหนัก ค่าอาหารเสริม ค่าวิตามิน ค่าซื้อเครื่องมือแพทย์ส่วนตัว ไม่สามารถหักได้',
+  },
+  {
+    question: 'ไม่มีจำนวนสูงสุดในการลดหย่อนค่าใช้จ่ายทางการแพทย์หรือ?',
+    answer: 'ถูกต้อง ไม่มีจำนวนเงินสูงสุด แต่ต้องมีใบเสร็จและห้องเรียนของแพทย์ที่ได้รับอนุญาต อาจต้องคำนวณลดหย่อนเทพประมาณ',
+  },
+  {
+    question: 'ฉันต้องยื่นห้องเรียนอะไร?',
+    answer: 'ใบเสร็จจากสถานพยาบาล สำเนาบัตรประชาชน บัตรเครดิต สูตรสินค้า และแบบฟอร์ม PND 91 (ถ้าคำนวณ) แนบไปกับการยื่นภาษี',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2">
+      <p class="text-xs font-semibold text-green-800">[ตามกฎหมายภาษีอากร พ.ศ. 2481 มาตรา 17]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      ประมาณการจำนวนเงินที่ประหยัดได้จากการลดหย่อนค่าใช้จ่ายทางการแพทย์ ตามกฎหมายไทย
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <!-- Hospital Fees -->
+        <div>
+          <label for="hospital-fees" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่ารักษาพยาบาล (บาท)
+          </label>
+          <input type="number" id="hospital-fees" min="0" value="0" placeholder="เช่น 10000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <!-- Medication -->
+        <div>
+          <label for="medication" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่ายา (บาท)
+          </label>
+          <input type="number" id="medication" min="0" value="0" placeholder="เช่น 3000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <!-- Dental -->
+        <div>
+          <label for="dental" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าทันต์ (บาท)
+          </label>
+          <input type="number" id="dental" min="0" value="0" placeholder="เช่น 5000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <!-- Eye Care -->
+        <div>
+          <label for="eye-care" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าเลนส์/แว่นตา (บาท)
+          </label>
+          <input type="number" id="eye-care" min="0" value="0" placeholder="เช่น 2000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <!-- Other Medical -->
+        <div>
+          <label for="other-medical" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าใช้จ่ายอื่นทางการแพทย์ (บาท)
+          </label>
+          <input type="number" id="other-medical" min="0" value="0" placeholder="เช่น 1000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <!-- Annual Income -->
+        <div>
+          <label for="annual-income" class="block text-sm font-medium text-gray-700 mb-1">
+            รายได้ต่อปี (บาท)
+          </label>
+          <input type="number" id="annual-income" min="0" value="600000" placeholder="เช่น 600000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+        คำนวณการลดหย่อน
+      </button>
+
+      <!-- Results -->
+      <div id="result" class="hidden mt-8">
+        <!-- Total Deduction -->
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <h3 class="font-semibold text-green-900 mb-2">รวมค่าใช้จ่ายที่สามารถลดหย่อน</h3>
+          <div class="text-3xl font-bold text-green-700 mb-2" id="total-deductible">-</div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+
+        <!-- Tax Information -->
+        <div class="grid gap-4 sm:grid-cols-2 mb-6">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="text-xs text-blue-600 font-semibold mb-1">อัตราภาษีของคุณ</div>
+            <div id="tax-rate" class="text-2xl font-bold text-blue-700">-</div>
+            <div class="text-xs text-gray-600">ร้อยละ</div>
+          </div>
+
+          <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <div class="text-xs text-orange-600 font-semibold mb-1">เงินที่ประหยัดได้ (คาดว่า)</div>
+            <div id="tax-savings" class="text-2xl font-bold text-orange-700">-</div>
+            <div class="text-xs text-gray-600">บาท ต่อปี</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <h3 class="font-semibold text-gray-900 mb-3 text-sm">รายละเอียดค่าใช้จ่าย</h3>
+          <div class="space-y-2 text-sm">
+            <div id="hospital-row" class="hidden flex justify-between">
+              <span class="text-gray-600">ค่ารักษาพยาบาล:</span>
+              <span id="hospital-display" class="font-semibold">-</span>
+            </div>
+            <div id="medication-row" class="hidden flex justify-between">
+              <span class="text-gray-600">ค่ายา:</span>
+              <span id="medication-display" class="font-semibold">-</span>
+            </div>
+            <div id="dental-row" class="hidden flex justify-between">
+              <span class="text-gray-600">ค่าทันต์:</span>
+              <span id="dental-display" class="font-semibold">-</span>
+            </div>
+            <div id="eye-care-row" class="hidden flex justify-between">
+              <span class="text-gray-600">ค่าแว่นตา/เลนส์:</span>
+              <span id="eye-care-display" class="font-semibold">-</span>
+            </div>
+            <div id="other-row" class="hidden flex justify-between">
+              <span class="text-gray-600">ค่าอื่นทางการแพทย์:</span>
+              <span id="other-display" class="font-semibold">-</span>
+            </div>
+            <div class="border-t border-gray-200 pt-2 flex justify-between font-semibold">
+              <span>รวมทั้งสิ้น</span>
+              <span id="total-display">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-2">คำแนะนำ</h3>
+          <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
+            <li>เก็บใบเสร็จทุกใบและอย่างถูกต้อง</li>
+            <li>ใบเสร็จต้องมาจากสถานพยาบาลอนุญาติเท่านั้น</li>
+            <li>สามารถลดหย่อนสำหรับตัวเอง คู่สมรส ลูก และพ่อแม่</li>
+            <li>ยื่นแบบ PND 91 หรือ PND 92 ประกอบกับรายงานเงิน</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ลดหย่อนค่าใช้จ่ายทางการแพทย์ คืออะไร</h2>
+
+      <p>
+        ลดหย่อนค่าใช้จ่ายทางการแพทย์เป็นสิทธิของคนไทยตามกฎหมายภาษีอากร
+        หากคุณมีค่าใช้จ่ายทางการแพทย์ (ค่ารักษา ค่ายา ค่าทันต์ ฯลฯ) ก็สามารถหักเงินนั้นออกจากรายได้ที่คิดภาษี
+        ซึ่งทำให้ภาษีที่ต้องจ่ายลดลง
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าใช้จ่ายที่สามารถลดหย่อนได้</h3>
+
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>ค่ารักษาพยาบาล:</strong> ค่าห้อง ค่าทำการผ่าตัด ค่าแพทย์</li>
+        <li><strong>ค่ายา:</strong> ยาที่แพทย์สั่ง เวชสินค้า</li>
+        <li><strong>ค่าทันต์:</strong> ทีมันตา ขูดหินปูน ครอบฟัน</li>
+        <li><strong>ค่าอื่น:</strong> แว่นตา ลำโพงหู หนูเสริม (ถ้าแพทย์สั่ง)</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ค่าใช้จ่ายที่ไม่สามารถลดหย่อนได้</h3>
+
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>ค่าวิตามินและอาหารเสริมที่ไม่ใช่ยา</li>
+        <li>ค่าศัลยกรรมความงามและเสริมสวย</li>
+        <li>ค่าลดน้ำหนักเพื่อความสวย</li>
+        <li>ค่าบริการที่ไม่ใช่การรักษา (เช่น ค่าสอบจูบ)</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง: ค่าใช้จ่ายทางการแพทย์ 21,000 บาท</h3>
+
+      <p>
+        สมมติว่าคุณมีค่าใช้จ่ายทางการแพทย์ดังนี้:
+      </p>
+
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ค่ารักษาพยาบาล: 10,000 บาท</li>
+          <li>ค่ายา: 3,000 บาท</li>
+          <li>ค่าทันต์: 5,000 บาท</li>
+          <li>ค่าแว่นตา: 2,000 บาท</li>
+          <li>ค่าอื่น: 1,000 บาท</li>
+          <li><strong>รวม: 21,000 บาท</strong></li>
+        </ul>
+      </div>
+
+      <p>
+        หากคุณมีรายได้ต่อปี 600,000 บาท อัตราภาษีเป็น 20%
+        คุณสามารถลดหย่อนได้ 21,000 บาท
+        ซึ่งทำให้ภาษีลดลง: 21,000 × 20% = 4,200 บาท
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์/" />
+    <RelatedCalculators currentHref="/คำนวณลดหย่อนค่าใช้จ่ายทางการแพทย์/" />
+
+    <!-- Official References -->
+    <section class="mb-8">
+      <h3 class="mb-3 text-lg font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.rd.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 font-medium">กรมสรรพากร — ข้อมูลการลดหย่อนภาษี</a></li>
+        <li><a href="https://www.moph.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 font-medium">กระทรวงสาธารณสุข — ข้อมูลสถานพยาบาลอนุญาต</a></li>
+      </ul>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการประมาณการเป็นการประมาณเท่านั้น
+      ขึ้นอยู่กับว่าค่าใช้จ่ายเหล่านั้นตรงตามเงื่อนไขในกฎหมายหรือไม่ และเอกสารหลักฐานครบถ้วน
+      ปรึกษากรมสรรพากรหรือบัญชีเพื่อได้คำตอบที่แม่นยำ
+    </div>
+  </article>
+
+  <script define:vars={{ siteUrl }}>
+    import { calculateMedicalDeduction } from '../../lib/medical-expense-tax-deduction-calculator';
+
+    function formatThaiNumber(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+    }
+
+    const inputs = {
+      hospital: document.getElementById('hospital-fees') as HTMLInputElement,
+      medication: document.getElementById('medication') as HTMLInputElement,
+      dental: document.getElementById('dental') as HTMLInputElement,
+      eyeCare: document.getElementById('eye-care') as HTMLInputElement,
+      otherMedical: document.getElementById('other-medical') as HTMLInputElement,
+      income: document.getElementById('annual-income') as HTMLInputElement,
+    };
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const result = calculateMedicalDeduction({
+        hospitalFees: parseInt(inputs.hospital.value) || 0,
+        medicationCosts: parseInt(inputs.medication.value) || 0,
+        dentalCosts: parseInt(inputs.dental.value) || 0,
+        eyeCareCosts: parseInt(inputs.eyeCare.value) || 0,
+        otherMedicalCosts: parseInt(inputs.otherMedical.value) || 0,
+        annualIncome: parseInt(inputs.income.value) || 0,
+      });
+
+      // Update results
+      (document.getElementById('total-deductible') as HTMLElement).textContent =
+        formatThaiNumber(result.totalDeductibleExpenses) + ' บาท';
+
+      (document.getElementById('tax-rate') as HTMLElement).textContent = result.taxRate + '%';
+      (document.getElementById('tax-savings') as HTMLElement).textContent =
+        formatThaiNumber(result.estimatedTaxSavings) + ' บาท';
+
+      // Update breakdown
+      const updateBreakdown = (id: string, amount: number) => {
+        const row = document.getElementById(id + '-row') as HTMLElement;
+        const display = document.getElementById(id + '-display') as HTMLElement;
+        if (amount > 0) {
+          row.classList.remove('hidden');
+          display.textContent = formatThaiNumber(amount) + ' บาท';
+        } else {
+          row.classList.add('hidden');
+        }
+      };
+
+      updateBreakdown('hospital', result.breakdown.hospitalFees);
+      updateBreakdown('medication', result.breakdown.medicationCosts);
+      updateBreakdown('dental', result.breakdown.dentalCosts);
+      updateBreakdown('eye-care', result.breakdown.eyeCareCosts);
+      updateBreakdown('other', result.breakdown.otherMedicalCosts);
+
+      (document.getElementById('total-display') as HTMLElement).textContent =
+        formatThaiNumber(result.totalDeductibleExpenses) + ' บาท';
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('medical-expense-tax-deduction');
+    });
+
+    // Allow Enter key
+    Object.values(inputs).forEach((input) => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

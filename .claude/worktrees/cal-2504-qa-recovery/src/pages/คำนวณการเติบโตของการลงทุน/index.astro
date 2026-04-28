@@ -1,0 +1,350 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณการเติบโตของการลงทุน 2569 | ฉายภาพมูลค่าพอร์ตอนาคต | Kamnuanlek';
+const pageDescription = 'คำนวณมูลค่าการลงทุนในอนาคตจากผลตอบแทนเฉลี่ยและระยะเวลา รวมเงินลงทุนรายเดือนและเงินต้นเริ่มต้น เหมาะสำหรับวางแผนลงทุนระยะยาว อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณการเติบโตของการลงทุน/`;
+
+const faqData = [
+  {
+    question: 'ผลตอบแทนเฉลี่ยการลงทุนในหุ้นไทยปี 2569 เท่าไร?',
+    answer: 'ผลตอบแทนเฉลี่ยระยะยาวของตลาดหุ้นไทย (SET) ประมาณ 8-12% ต่อปีรวมเงินปันผล ขึ้นอยู่กับช่วงเวลาที่วัด กองทุนรวมตราสารหนี้ประมาณ 2-4% กองทุนผสมประมาณ 5-8% และกองทุนหุ้น 7-12% ต่อปีระยะยาว',
+  },
+  {
+    question: 'ลงทุนรายเดือนดีกว่าลงทุนก้อนเดียวอย่างไร?',
+    answer: 'การลงทุนรายเดือน (DCA) ช่วยลดความเสี่ยงจากการเลือกจังหวะตลาดที่ผิดพลาด เพราะซื้อทั้งในราคาสูงและต่ำ ทำให้ต้นทุนเฉลี่ยต่ำลง การลงทุนก้อนเดียวในราคาต่ำได้ผลดีกว่าในระยะยาว แต่ต้องมีทักษะประเมินตลาด',
+  },
+  {
+    question: 'ควรลงทุนในกองทุนอะไรสำหรับระยะ 10-20 ปี?',
+    answer: 'สำหรับระยะยาว 10-20 ปี กองทุนหุ้นเป็นทางเลือกที่ดีเพราะมีโอกาสให้ผลตอบแทนสูง กองทุน SSF/RMF มีสิทธิ์ลดหย่อนภาษีเพิ่มเติม กองทุนดัชนี (Index Fund) มีค่าธรรมเนียมต่ำและผลตอบแทนใกล้เคียงตลาด',
+  },
+  {
+    question: 'อัตราเงินเฟ้อส่งผลต่อผลตอบแทนการลงทุนอย่างไร?',
+    answer: 'ต้องหักอัตราเงินเฟ้อออกจากผลตอบแทนเพื่อดูอำนาจซื้อที่แท้จริง เช่น ผลตอบแทน 8% หักเงินเฟ้อ 3% ผลตอบแทนที่แท้จริงคือ 5% ควรลงทุนในสินทรัพย์ที่ให้ผลตอบแทนสูงกว่าเงินเฟ้อเสมอ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณการเติบโตของการลงทุน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณการเติบโตของการลงทุน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณการเติบโตของการลงทุน 2569 — ฉายภาพมูลค่าพอร์ตอนาคต
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณมูลค่าพอร์ตการลงทุนในอนาคต จากเงินต้น เงินลงทุนรายเดือน และผลตอบแทนเฉลี่ยต่อปี
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="invest-growth-form" class="space-y-5">
+        <p id="invest-growth-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ig-principal" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินต้นเริ่มต้น (บาท)
+            </label>
+            <input
+              type="text"
+              id="ig-principal"
+              inputmode="numeric"
+              placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="ig-principal-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ig-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินลงทุนรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="ig-monthly"
+              inputmode="numeric"
+              placeholder="เช่น 5,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="ig-monthly-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ig-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ผลตอบแทนเฉลี่ยต่อปี (%)
+            </label>
+            <input
+              type="text"
+              id="ig-rate"
+              inputmode="decimal"
+              placeholder="เช่น 8.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">หุ้น/กองทุนหุ้นระยะยาวประมาณ 7-10%</p>
+            <p id="ig-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ig-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลา (ปี)
+            </label>
+            <input
+              type="text"
+              id="ig-years"
+              inputmode="numeric"
+              placeholder="เช่น 20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="ig-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="invest-growth-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">มูลค่าพอร์ตสุดท้าย</div>
+            <div id="res-portfolio" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">กำไรจากการลงทุน</div>
+            <div id="res-profit" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินลงทุนรวม</div>
+            <div id="res-invested" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนรวม</div>
+            <div id="res-return-pct" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            เป้าหมายรายปี (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">ปีที่</th>
+                  <th class="py-2 pr-2 text-right">เงินลงทุนสะสม</th>
+                  <th class="py-2 pr-2 text-right">กำไรสะสม</th>
+                  <th class="py-2 text-right">มูลค่าพอร์ต</th>
+                </tr>
+              </thead>
+              <tbody id="ig-yearly-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">การวางแผนลงทุนระยะยาว</h2>
+
+      <p>
+        การลงทุนระยะยาวด้วยความสม่ำเสมอเป็นกุญแจสำคัญสู่อิสรภาพทางการเงิน
+        เครื่องคำนวณนี้ช่วยให้คุณเห็นภาพอนาคตของพอร์ตการลงทุนได้ชัดเจน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการวางแผน</h3>
+      <p>เงินต้น 200,000 บาท ลงทุนเดือนละ 10,000 บาท ผลตอบแทนเฉลี่ย 8% ต่อปี เป็นเวลา 20 ปี:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เงินลงทุนรวม: 200,000 + (10,000 × 240) = <strong>2,600,000 บาท</strong></li>
+        <li>มูลค่าพอร์ตสุดท้าย: ประมาณ <strong>6,500,000 บาท</strong></li>
+        <li>กำไรจากการลงทุน: ประมาณ <strong>3,900,000 บาท</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ทำไมต้องเริ่มลงทุนเร็ว?</h3>
+      <p>
+        พลังของดอกเบี้ยทบต้นทวีคูณตามเวลา การเริ่มลงทุนเร็วกว่า 10 ปี
+        สามารถสร้างความแตกต่างในมูลค่าพอร์ตได้ถึง 2-3 เท่า
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณการเติบโตของการลงทุน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ผลตอบแทนจริงขึ้นอยู่กับสภาวะตลาดและไม่มีการรับประกัน ไม่ถือเป็นคำแนะนำทางการลงทุน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('invest-growth-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('invest-growth-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('invest-growth-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    const principalInput = document.getElementById('ig-principal') as HTMLInputElement;
+    const monthlyInput = document.getElementById('ig-monthly') as HTMLInputElement;
+    const rateInput = document.getElementById('ig-rate') as HTMLInputElement;
+    const yearsInput = document.getElementById('ig-years') as HTMLInputElement;
+
+    function setFieldError(id: string, msg: string) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(id: string) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      ['ig-principal-error', 'ig-monthly-error', 'ig-rate-error', 'ig-years-error'].forEach(clearFieldError);
+    }
+
+    [principalInput, monthlyInput, rateInput, yearsInput].forEach(input => {
+      input.addEventListener('input', clearValidation);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearValidation();
+
+      const principal = parseNum(principalInput.value);
+      const monthly = parseNum(monthlyInput.value);
+      const annualRate = parseFloat(rateInput.value.replace(/,/g, '')) || 0;
+      const years = parseInt(yearsInput.value.replace(/,/g, '')) || 0;
+
+      let hasError = false;
+      if (principal <= 0 && monthly <= 0) { setFieldError('ig-principal-error', 'กรุณากรอกเงินต้นหรือเงินลงทุนรายเดือน'); hasError = true; }
+      if (annualRate <= 0) { setFieldError('ig-rate-error', 'กรุณากรอกผลตอบแทนเฉลี่ยที่ถูกต้อง'); hasError = true; }
+      if (years <= 0 || years > 50) { setFieldError('ig-years-error', 'กรุณากรอกระยะเวลา 1-50 ปี'); hasError = true; }
+
+      if (hasError) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('invest-growth');
+
+      const r = annualRate / 100 / 12;
+      const n = years * 12;
+      let balance = principal;
+      let totalInvested = principal;
+
+      interface YearRow { year: number; invested: number; profit: number; portfolio: number; }
+      const yearlyRows: YearRow[] = [];
+
+      for (let month = 1; month <= n; month++) {
+        balance = balance * (1 + r);
+        if (month > 1 && monthly > 0) {
+          balance += monthly;
+          totalInvested += monthly;
+        }
+        if (month % 12 === 0) {
+          yearlyRows.push({ year: month / 12, invested: totalInvested, profit: balance - totalInvested, portfolio: balance });
+        }
+      }
+
+      const profit = balance - totalInvested;
+      const returnPct = totalInvested > 0 ? (profit / totalInvested) * 100 : 0;
+
+      (document.getElementById('res-portfolio') as HTMLElement).textContent = fmt(balance) + ' บาท';
+      (document.getElementById('res-profit') as HTMLElement).textContent = fmt(profit) + ' บาท';
+      (document.getElementById('res-invested') as HTMLElement).textContent = fmt(totalInvested) + ' บาท';
+      (document.getElementById('res-return-pct') as HTMLElement).textContent = returnPct.toFixed(2) + '%';
+
+      const milestoneYears = new Set([1, 3, 5, 10, 15, 20, 25, 30].filter(y => y <= years));
+      yearlyRows.forEach(y => milestoneYears.add(y.year));
+      const filteredRows = yearlyRows.filter(r => milestoneYears.has(r.year));
+
+      const tbody = document.getElementById('ig-yearly-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      filteredRows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${row.year}</td>
+          <td class="py-2 pr-2 text-right">${fmt(row.invested)}</td>
+          <td class="py-2 pr-2 text-right text-green-700">${fmt(row.profit)}</td>
+          <td class="py-2 text-right font-medium">${fmt(row.portfolio)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('invest-growth');
+      trackCalculatorUsed('invest-growth');
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,391 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณคุณสมบัติกู้บ้าน 2569 | เช็กสิทธิ์ก่อนยื่นกู้ | Kamnuanlek';
+const pageDescription = 'ประเมินคุณสมบัติกู้บ้านปี 2569 ฟรี เช็ก DTI อายุ รายได้ ว่าผ่านเกณฑ์ธนาคารไหม ดูวงเงินกู้สูงสุดที่น่าจะได้รับ พร้อมคำแนะนำเพิ่มโอกาสอนุมัติ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณคุณสมบัติกู้บ้าน/`;
+
+const faqData = [
+  {
+    question: 'DTI คืออะไร และธนาคารใช้เกณฑ์เท่าไร?',
+    answer: 'DTI (Debt-to-Income Ratio) คือสัดส่วนภาระหนี้รวมต่อรายได้ต่อเดือน ธนาคารส่วนใหญ่ในไทยกำหนดไว้ไม่เกิน 40–45% เช่น รายได้ 50,000 บาท ภาระหนี้รวมต้องไม่เกิน 20,000–22,500 บาท/เดือน',
+  },
+  {
+    question: 'อายุมีผลต่อการกู้บ้านอย่างไร?',
+    answer: 'ธนาคารกำหนดว่า อายุ ณ วันปิดหนี้ต้องไม่เกิน 65 ปีสำหรับพนักงานประจำ หรือ 70 ปีสำหรับธุรกิจส่วนตัว เช่น อายุ 45 ปี ผ่อนได้สูงสุด 20 ปี (พนักงาน) หรือ 25 ปี (ธุรกิจส่วนตัว)',
+  },
+  {
+    question: 'ถ้าคุณสมบัติยังไม่ผ่าน ควรทำอะไรก่อน?',
+    answer: 'แนะนำให้ ปิดหนี้อื่นๆ ก่อน (บัตรเครดิต สินเชื่อส่วนบุคคล) เพื่อลด DTI เพิ่มรายได้ที่พิสูจน์ได้ (overtime โบนัส รายได้เสริม) หรือหาผู้กู้ร่วม เช่น คู่สมรส',
+  },
+  {
+    question: 'รายได้ประเภทใดธนาคารนับรวมได้บ้าง?',
+    answer: 'รายได้ประจำ: เงินเดือน โอที โบนัส (เฉลี่ย 12 เดือน) รายได้ธุรกิจ: ต้องมีหลักฐาน เช่น บัญชีย้อนหลัง 6–12 เดือน หรืองบการเงิน รายได้ค่าเช่า: อาจนับได้ 70–80% หากมีหลักฐาน',
+  },
+,
+  { question: 'กู้บ้านได้สูงสุดกี่เท่าของรายได้?', answer: 'ธนาคารส่วนใหญ่อนุมัติให้ผ่อนได้ไม่เกิน 40% ของรายได้สุทธิต่อเดือน เช่น รายได้ 50,000 บาท ผ่อนได้สูงสุด 20,000 บาท/เดือน วงเงินกู้สูงสุดขึ้นกับอัตราดอกเบี้ยและระยะเวลา' },
+  { question: 'อัตราดอกเบี้ยสินเชื่อบ้านปัจจุบันอยู่ที่เท่าไร?', answer: 'MRR ของธนาคารพาณิชย์ส่วนใหญ่อยู่ที่ 6.25-7.00% ต่อปี สินเชื่อบ้านทั่วไปได้รับส่วนลด เช่น MRR-1% ถึง MRR-2% ตรวจสอบอัตราปัจจุบันได้จากเว็บไซต์ธนาคารหรือ bot.or.th' },
+  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' },
+  { question: 'รีไฟแนนซ์บ้านคุ้มค่าเมื่อไร?', answer: 'คุ้มค่าเมื่อดอกเบี้ยใหม่ต่ำกว่าเดิมอย่างน้อย 0.5-1% และยังมีระยะเวลาผ่อนเหลืออีกนาน คำนวณจุดคืนทุน: ค่าใช้จ่ายรีไฟแนนซ์ ÷ เงินที่ประหยัดได้/เดือน = จำนวนเดือนที่คุ้มทุน' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณคุณสมบัติกู้บ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณคุณสมบัติกู้บ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">✅ รู้ผลทันที — ไม่บันทึกข้อมูล</p>
+      <p class="mt-1 text-sm text-slate-700">ประเมินเบื้องต้นก่อนยื่นกู้จริง เพื่อเตรียมพร้อมและเพิ่มโอกาสอนุมัติ</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณคุณสมบัติกู้บ้าน 2569 — เช็กก่อนยื่นกู้
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      กรอกข้อมูลรายได้ อายุ ประเภทรายได้ ภาระหนี้เดิม และวงเงินที่ต้องการ
+      เครื่องมือจะประเมินว่าคุณสมบัติผ่านเกณฑ์ธนาคารหรือไม่ พร้อมคำแนะนำเพิ่มโอกาสได้รับอนุมัติ
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="elig-form" class="space-y-5">
+        <p id="elig-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="elig-income" class="block text-sm font-medium text-gray-700 mb-1">
+              รายได้ต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="elig-income"
+              inputmode="numeric"
+              value="50000"
+              placeholder="เช่น 50,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="elig-age" class="block text-sm font-medium text-gray-700 mb-1">
+              อายุ (ปี)
+            </label>
+            <input
+              type="text"
+              id="elig-age"
+              inputmode="numeric"
+              value="35"
+              placeholder="เช่น 35"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทรายได้</label>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="elig-income-type" value="salaried" checked class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">พนักงานประจำ (เกษียณ 65 ปี)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="elig-income-type" value="self-employed" class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">ธุรกิจส่วนตัว / ฟรีแลนซ์ (เกษียณ 70 ปี)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="elig-existing-debt" class="block text-sm font-medium text-gray-700 mb-1">
+              ภาระหนี้เดิมต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="elig-existing-debt"
+              inputmode="numeric"
+              value="0"
+              placeholder="เช่น 5,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="elig-loan-amount" class="block text-sm font-medium text-gray-700 mb-1">
+              วงเงินที่ต้องการกู้ (บาท)
+            </label>
+            <input
+              type="text"
+              id="elig-loan-amount"
+              inputmode="numeric"
+              value="2000000"
+              placeholder="เช่น 2,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="elig-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="elig-rate"
+              inputmode="decimal"
+              value="5.5"
+              placeholder="เช่น 5.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="elig-term-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลากู้ (ปี)
+            </label>
+            <input
+              type="text"
+              id="elig-term-years"
+              inputmode="numeric"
+              value="30"
+              placeholder="เช่น 30"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          ประเมินทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="elig-results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการประเมินคุณสมบัติ</h2>
+
+        <div id="res-elig-badge" class="mb-6 rounded-xl p-4 text-center">
+          <div id="res-elig-verdict" class="text-2xl font-bold mb-1">-</div>
+          <div id="res-elig-verdict-sub" class="text-sm">-</div>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">วงเงินกู้สูงสุดที่น่าได้รับ</div>
+            <div id="res-elig-max-loan" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">สัดส่วน DTI</div>
+            <div id="res-elig-dti" class="text-xl font-bold text-gray-800">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ระยะเวลากู้สูงสุด (อายุ)</div>
+            <div id="res-elig-max-term" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <div id="res-elig-advice" class="space-y-2">
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#elig-results"
+    />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">เกณฑ์ประเมินคุณสมบัติกู้บ้าน</h2>
+      <p class="text-gray-700">เครื่องมือตรวจสอบ 3 เกณฑ์หลักที่ธนาคารส่วนใหญ่ใช้:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>DTI Check:</strong> (ค่างวดใหม่ + หนี้เดิม) / รายได้ ≤ 40%</li>
+        <li><strong>Age Check:</strong> อายุ + ระยะเวลากู้ ≤ 65 ปี (พนักงาน) หรือ 70 ปี (ธุรกิจส่วนตัว)</li>
+        <li><strong>Income Ratio:</strong> รายได้ควรมากกว่าค่างวดอย่างน้อย 2.5–3 เท่า</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีเพิ่มโอกาสได้รับอนุมัติ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ปิดสินเชื่อที่ไม่จำเป็น เช่น บัตรเครดิต สินเชื่อส่วนบุคคล</li>
+        <li>หาผู้กู้ร่วม (คู่สมรส พ่อแม่) เพื่อรวมรายได้</li>
+        <li>เตรียมสลิปเงินเดือน/หลักฐานรายได้ ย้อนหลัง 3–6 เดือน</li>
+        <li>หากอายุมาก ลองลดระยะเวลากู้หรือเพิ่มเงินดาวน์</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณคุณสมบัติกู้บ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณคุณสมบัติกู้บ้าน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการประเมินเป็นการประมาณการเบื้องต้นเท่านั้น ไม่ใช่การรับรองการอนุมัติสินเชื่อ
+      การพิจารณาจริงขึ้นอยู่กับนโยบายของแต่ละธนาคาร ประวัติเครดิต และเอกสารที่ยื่น
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function fmtPct(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n) + '%';
+    }
+
+    function calcPMT(principal: number, annualRate: number, months: number): number {
+      if (months <= 0 || principal <= 0) return 0;
+      const r = annualRate / 100 / 12;
+      if (r === 0) return principal / months;
+      const factor = Math.pow(1 + r, months);
+      return principal * (r * factor) / (factor - 1);
+    }
+
+    function inversePMT(payment: number, annualRate: number, months: number): number {
+      if (months <= 0 || payment <= 0) return 0;
+      const r = annualRate / 100 / 12;
+      if (r === 0) return payment * months;
+      const factor = Math.pow(1 + r, months);
+      return payment * (factor - 1) / (r * factor);
+    }
+
+    const form = document.getElementById('elig-form') as HTMLFormElement;
+    const formError = document.getElementById('elig-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('elig-results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const income = parseNum((document.getElementById('elig-income') as HTMLInputElement).value);
+      const age = parseNum((document.getElementById('elig-age') as HTMLInputElement).value);
+      const incomeType = (document.querySelector('input[name="elig-income-type"]:checked') as HTMLInputElement)?.value || 'salaried';
+      const existingDebt = parseNum((document.getElementById('elig-existing-debt') as HTMLInputElement).value);
+      const loanAmount = parseNum((document.getElementById('elig-loan-amount') as HTMLInputElement).value);
+      const rate = parseNum((document.getElementById('elig-rate') as HTMLInputElement).value);
+      const termYears = parseNum((document.getElementById('elig-term-years') as HTMLInputElement).value);
+
+      if (income <= 0 || age <= 0 || loanAmount <= 0 || termYears <= 0) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      trackCalculatorUsed('mortgage-eligibility');
+
+      const retirementAge = incomeType === 'self-employed' ? 70 : 65;
+      const maxTermByAge = Math.max(0, retirementAge - age);
+      const effectiveTerm = Math.min(termYears, maxTermByAge);
+      const effectiveMonths = Math.round(effectiveTerm * 12);
+
+      const newPayment = effectiveMonths > 0 ? calcPMT(loanAmount, rate, effectiveMonths) : 0;
+      const totalDebt = newPayment + existingDebt;
+      const dti = income > 0 ? (totalDebt / income) * 100 : 100;
+
+      // Max loan based on DTI
+      const maxPayment = Math.max(0, income * 0.40 - existingDebt);
+      const maxLoan = effectiveMonths > 0 ? inversePMT(maxPayment, rate, effectiveMonths) : 0;
+
+      // Check each criterion
+      const dtiPass = dti <= 40;
+      const agePass = effectiveTerm >= termYears; // age allows full term
+      const incomeRatioPass = income >= newPayment * 2.5;
+      const overallPass = dtiPass && agePass && incomeRatioPass;
+
+      const badge = document.getElementById('res-elig-badge') as HTMLElement;
+      const verdict = document.getElementById('res-elig-verdict') as HTMLElement;
+      const verdictSub = document.getElementById('res-elig-verdict-sub') as HTMLElement;
+
+      if (overallPass) {
+        badge.className = 'mb-6 rounded-xl p-4 text-center bg-green-50 border border-green-200';
+        verdict.className = 'text-2xl font-bold mb-1 text-green-700';
+        verdict.textContent = '✅ ผ่านเกณฑ์เบื้องต้น';
+        verdictSub.className = 'text-sm text-green-700';
+        verdictSub.textContent = 'คุณสมบัติเบื้องต้นผ่านเกณฑ์ที่ธนาคารส่วนใหญ่กำหนด';
+      } else {
+        badge.className = 'mb-6 rounded-xl p-4 text-center bg-red-50 border border-red-200';
+        verdict.className = 'text-2xl font-bold mb-1 text-red-700';
+        verdict.textContent = '⚠️ ยังไม่ผ่านเกณฑ์บางข้อ';
+        verdictSub.className = 'text-sm text-red-700';
+        verdictSub.textContent = 'ตรวจสอบคำแนะนำด้านล่างเพื่อเพิ่มโอกาสได้รับอนุมัติ';
+      }
+
+      (document.getElementById('res-elig-max-loan') as HTMLElement).textContent = fmt(maxLoan) + ' บาท';
+      (document.getElementById('res-elig-dti') as HTMLElement).textContent = fmtPct(dti);
+      (document.getElementById('res-elig-max-term') as HTMLElement).textContent =
+        maxTermByAge > 0 ? `${maxTermByAge} ปี` : 'เกินเกณฑ์อายุ';
+
+      const dtiEl = document.getElementById('res-elig-dti') as HTMLElement;
+      dtiEl.className = dtiPass
+        ? 'text-xl font-bold text-green-700'
+        : 'text-xl font-bold text-red-700';
+
+      // Build advice list
+      const adviceEl = document.getElementById('res-elig-advice') as HTMLElement;
+      const advices: { pass: boolean; text: string }[] = [
+        {
+          pass: dtiPass,
+          text: dtiPass
+            ? `DTI ${fmtPct(dti)} ✅ ผ่านเกณฑ์ไม่เกิน 40%`
+            : `DTI ${fmtPct(dti)} ❌ เกิน 40% — ลดหนี้เดิมหรือขอวงเงินน้อยลง วงเงินสูงสุดที่น่าจะได้รับ ${fmt(maxLoan)} บาท`,
+        },
+        {
+          pass: agePass,
+          text: agePass
+            ? `อายุ ${age} ปี กู้ได้ ${effectiveTerm} ปี ✅ ผ่านเกณฑ์อายุ`
+            : `อายุ ${age} ปี กู้ได้สูงสุด ${maxTermByAge} ปี ❌ ระยะเวลาที่ขอ (${termYears} ปี) เกินเกณฑ์ — ปรับลดระยะเวลากู้`,
+        },
+        {
+          pass: incomeRatioPass,
+          text: incomeRatioPass
+            ? `รายได้ ${fmt(income)} บาท / ค่างวด ${fmt(newPayment)} บาท ✅ สัดส่วนเหมาะสม`
+            : `รายได้ ${fmt(income)} บาท / ค่างวด ${fmt(newPayment)} บาท ❌ รายได้ควรมากกว่าค่างวด 2.5 เท่า — ลองขอวงเงินน้อยลงหรือหาผู้กู้ร่วม`,
+        },
+      ];
+
+      adviceEl.innerHTML = advices
+        .map(
+          (a) =>
+            `<div class="flex gap-3 p-3 rounded-lg text-sm ${a.pass ? 'bg-green-50 border border-green-100 text-green-900' : 'bg-red-50 border border-red-100 text-red-900'}">${a.text}</div>`
+        )
+        .join('');
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackResultViewed('mortgage-eligibility');
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,375 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณรายได้เงินปันผล 2569 | รายปีและรายเดือนจากหุ้นปันผล | Kamnuanlek';
+const pageDescription = 'คำนวณรายได้จากเงินปันผลหุ้นหรือกองทุน REITs รายปีและรายเดือน จากมูลค่าพอร์ตและ dividend yield หักภาษี 10% ตามกฎหมายไทย อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณรายได้เงินปันผล/`;
+
+const faqData = [
+  {
+    question: 'ภาษีเงินปันผลในไทยเป็นเท่าไร?',
+    answer: 'เงินปันผลจากหุ้นหรือกองทุนรวมในไทยถูกหักภาษี ณ ที่จ่าย 10% ทันที ผู้ลงทุนสามารถเลือกไม่นำไปรวมคำนวณภาษีเงินได้ประจำปีได้ หรือจะนำไปรวมก็ได้หากทำให้เสียภาษีน้อยกว่า ทั้งนี้เงินปันผลจาก LTF/SSF อาจมีเงื่อนไขต่างออกไป',
+  },
+  {
+    question: 'Dividend Yield คืออะไรและหาได้อย่างไร?',
+    answer: 'Dividend Yield คืออัตราเงินปันผลต่อปีเทียบกับราคาหุ้นหรือมูลค่าพอร์ต คำนวณจาก: Yield = (เงินปันผลต่อหุ้นต่อปี / ราคาหุ้น) × 100 เช่น หุ้นราคา 100 บาท จ่ายปันผล 5 บาทต่อปี Yield = 5% หาข้อมูลได้จากเว็บ SET.or.th หรือแอปโบรกเกอร์',
+  },
+  {
+    question: 'REITs กับหุ้นปันผลทั่วไปต่างกันอย่างไร?',
+    answer: 'REITs (กองทรัสต์เพื่อการลงทุนในอสังหาริมทรัพย์) บังคับจ่ายปันผลไม่น้อยกว่า 90% ของกำไรสุทธิ ทำให้มักมี Yield สูง 4-8% ต่อปี หุ้นปันผลทั่วไปมี Yield หลากหลาย 2-8% ขึ้นอยู่กับนโยบายของบริษัท',
+  },
+  {
+    question: 'ต้องมีพอร์ตเท่าไรจึงจะมีรายได้ปันผลเดือนละ 10,000 บาท?',
+    answer: 'ขึ้นอยู่กับ Dividend Yield ของพอร์ต ถ้า Yield = 5% ต่อปี ต้องการรายได้ปันผลสุทธิ 120,000 บาทต่อปี (หลังหักภาษี 10%) ต้องมีรายได้ปันผลก่อนภาษี 133,333 บาท ต้องการพอร์ตขนาด 133,333 ÷ 5% = 2,666,667 บาท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณรายได้เงินปันผล',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณรายได้เงินปันผล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณรายได้เงินปันผล 2569 — รายปีและรายเดือนจากหุ้นปันผล
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณรายได้จากเงินปันผล หักภาษี 10% ตามกฎหมายไทย พร้อมตารางแจกแจงตามความถี่จ่าย
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="dividend-form" class="space-y-5">
+        <p id="dividend-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="div-portfolio" class="block text-sm font-medium text-gray-700 mb-1">
+              มูลค่าพอร์ตลงทุน (บาท)
+            </label>
+            <input
+              type="text"
+              id="div-portfolio"
+              inputmode="numeric"
+              placeholder="เช่น 1,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="div-portfolio-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="div-yield" class="block text-sm font-medium text-gray-700 mb-1">
+              Dividend Yield (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="div-yield"
+              inputmode="decimal"
+              placeholder="เช่น 5.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">หุ้นปันผลสูงประมาณ 4-8%, REITs ประมาณ 5-8%</p>
+            <p id="div-yield-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="div-frequency" class="block text-sm font-medium text-gray-700 mb-1">
+              ความถี่จ่ายปันผล
+            </label>
+            <select
+              id="div-frequency"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="1">รายปี (1 ครั้ง/ปี)</option>
+              <option value="2">รายครึ่งปี (2 ครั้ง/ปี)</option>
+              <option value="4" selected>รายไตรมาส (4 ครั้ง/ปี)</option>
+              <option value="12">รายเดือน (12 ครั้ง/ปี)</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                id="div-tax"
+                checked
+                class="w-5 h-5 rounded text-primary-600 focus:ring-primary-500"
+              />
+              <span class="text-sm font-medium text-gray-700">หักภาษีปันผล 10%</span>
+            </label>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="dividend-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รายได้ปันผลต่อปี</div>
+            <div id="res-annual-gross" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาษีหัก ณ ที่จ่าย (10%)</div>
+            <div id="res-tax" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รายได้สุทธิต่อปี</div>
+            <div id="res-annual-net" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">รายได้สุทธิต่อเดือน</div>
+            <div id="res-monthly-net" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Per-payment breakdown -->
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">รายได้แต่ละงวด</h3>
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-gray-500 border-b border-gray-200">
+                <th class="py-2 pr-2">งวดที่</th>
+                <th class="py-2 pr-2 text-right">ปันผลก่อนภาษี</th>
+                <th class="py-2 pr-2 text-right">ภาษี (10%)</th>
+                <th class="py-2 text-right">ปันผลสุทธิ</th>
+              </tr>
+            </thead>
+            <tbody id="div-period-body"></tbody>
+          </table>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">มูลค่าพอร์ต</span>
+            <span id="res-portfolio-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">Dividend Yield</span>
+            <span id="res-yield-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ความถี่จ่ายปันผล</span>
+            <span id="res-freq-display" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">การลงทุนเพื่อรายได้จากเงินปันผล</h2>
+
+      <p>
+        การสร้างรายได้ Passive Income จากเงินปันผลเป็นเป้าหมายของนักลงทุนจำนวนมาก
+        โดยต้องสร้างพอร์ตหุ้นปันผลหรือ REITs ที่มีขนาดและ Yield เพียงพอ
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณรายได้ปันผล</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>รายได้ปันผลต่อปี = มูลค่าพอร์ต × Dividend Yield / 100</li>
+        <li>ภาษีหัก ณ ที่จ่าย = รายได้ต่อปี × 10%</li>
+        <li>รายได้สุทธิต่อปี = รายได้ต่อปี − ภาษี</li>
+        <li>รายได้สุทธิต่อเดือน = รายได้สุทธิต่อปี ÷ 12</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <p>พอร์ต REITs 2,000,000 บาท Yield 6% ต่อปี จ่ายรายไตรมาส:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>รายได้ปันผลต่อปี: 2,000,000 × 6% = <strong>120,000 บาท</strong></li>
+        <li>ภาษี 10%: <strong>12,000 บาท</strong></li>
+        <li>รายได้สุทธิต่อปี: <strong>108,000 บาท</strong></li>
+        <li>รายได้สุทธิต่อเดือน: <strong>9,000 บาท</strong></li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณรายได้เงินปันผล/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      Dividend Yield จริงอาจเปลี่ยนแปลงได้ตามผลประกอบการ ไม่ถือเป็นคำแนะนำทางการลงทุน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const DIVIDEND_TAX = 0.10;
+
+    const form = document.getElementById('dividend-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('dividend-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('dividend-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    const portfolioInput = document.getElementById('div-portfolio') as HTMLInputElement;
+    const yieldInput = document.getElementById('div-yield') as HTMLInputElement;
+
+    function setFieldError(id: string, msg: string) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(id: string) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      ['div-portfolio-error', 'div-yield-error'].forEach(clearFieldError);
+    }
+
+    [portfolioInput, yieldInput].forEach(input => {
+      input.addEventListener('input', clearValidation);
+    });
+
+    const freqLabels: Record<string, string> = {
+      '1': 'รายปี',
+      '2': 'รายครึ่งปี',
+      '4': 'รายไตรมาส',
+      '12': 'รายเดือน',
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearValidation();
+
+      const portfolio = parseNum(portfolioInput.value);
+      const dividendYield = parseFloat(yieldInput.value.replace(/,/g, '')) || 0;
+      const frequency = parseInt((document.getElementById('div-frequency') as HTMLSelectElement).value) || 4;
+      const applyTax = (document.getElementById('div-tax') as HTMLInputElement).checked;
+
+      let hasError = false;
+      if (portfolio <= 0) { setFieldError('div-portfolio-error', 'กรุณากรอกมูลค่าพอร์ตที่ถูกต้อง'); hasError = true; }
+      if (dividendYield <= 0) { setFieldError('div-yield-error', 'กรุณากรอก Dividend Yield ที่ถูกต้อง'); hasError = true; }
+
+      if (hasError) {
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('dividend');
+
+      const annualGross = portfolio * dividendYield / 100;
+      const annualTax = applyTax ? annualGross * DIVIDEND_TAX : 0;
+      const annualNet = annualGross - annualTax;
+      const monthlyNet = annualNet / 12;
+
+      const perPaymentGross = annualGross / frequency;
+      const perPaymentTax = applyTax ? perPaymentGross * DIVIDEND_TAX : 0;
+      const perPaymentNet = perPaymentGross - perPaymentTax;
+
+      (document.getElementById('res-annual-gross') as HTMLElement).textContent = fmt(annualGross) + ' บาท';
+      (document.getElementById('res-tax') as HTMLElement).textContent = fmt(annualTax) + ' บาท';
+      (document.getElementById('res-annual-net') as HTMLElement).textContent = fmt(annualNet) + ' บาท';
+      (document.getElementById('res-monthly-net') as HTMLElement).textContent = fmt(monthlyNet) + ' บาท';
+      (document.getElementById('res-portfolio-display') as HTMLElement).textContent = fmt(portfolio) + ' บาท';
+      (document.getElementById('res-yield-display') as HTMLElement).textContent = dividendYield.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-freq-display') as HTMLElement).textContent = freqLabels[frequency.toString()] || `${frequency} ครั้ง/ปี`;
+
+      const tbody = document.getElementById('div-period-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      const periodNames: Record<string, string[]> = {
+        '1': ['ปันผลประจำปี'],
+        '2': ['ครึ่งปีแรก (ม.ค.-มิ.ย.)', 'ครึ่งปีหลัง (ก.ค.-ธ.ค.)'],
+        '4': ['ไตรมาส 1 (ม.ค.-มี.ค.)', 'ไตรมาส 2 (เม.ย.-มิ.ย.)', 'ไตรมาส 3 (ก.ค.-ก.ย.)', 'ไตรมาส 4 (ต.ค.-ธ.ค.)'],
+        '12': ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+      };
+      const names = periodNames[frequency.toString()] || Array.from({ length: frequency }, (_, i) => `งวดที่ ${i + 1}`);
+
+      names.forEach((name, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${name}</td>
+          <td class="py-2 pr-2 text-right">${fmt(perPaymentGross)}</td>
+          <td class="py-2 pr-2 text-right text-red-600">${applyTax ? fmt(perPaymentTax) : '-'}</td>
+          <td class="py-2 text-right font-medium text-green-700">${fmt(perPaymentNet)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Add total row
+      const totalTr = document.createElement('tr');
+      totalTr.className = 'border-t-2 border-gray-300 font-semibold';
+      totalTr.innerHTML = `
+        <td class="py-2 pr-2 text-gray-800">รวมทั้งปี</td>
+        <td class="py-2 pr-2 text-right">${fmt(annualGross)}</td>
+        <td class="py-2 pr-2 text-right text-red-600">${applyTax ? fmt(annualTax) : '-'}</td>
+        <td class="py-2 text-right text-green-700">${fmt(annualNet)}</td>
+      `;
+      tbody.appendChild(totalTr);
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('dividend');
+      trackCalculatorUsed('dividend');
+    });
+  </script>
+</BaseLayout>

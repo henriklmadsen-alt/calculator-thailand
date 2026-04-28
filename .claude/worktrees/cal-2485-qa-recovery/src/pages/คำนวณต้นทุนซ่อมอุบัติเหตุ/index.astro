@@ -1,0 +1,282 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนซ่อมรถหลังอุบัติเหตุ ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณและประมาณต้นทุนซ่อมรถหลังอุบัติเหตุ รวมค่าอะไหล่ ค่าแรง ค่าเช่ารถ และต้นทุนเสียเวลา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนซ่อมอุบัติเหตุ/`;
+
+const faqData = [
+  {
+    question: 'ค่าซ่อมรถหลังอุบัติเหตุในไทยเฉลี่ยเท่าไร?',
+    answer: 'ค่าซ่อมรถหลังอุบัติเหตุในไทยขึ้นอยู่กับระดับความเสียหาย โดยความเสียหายเล็กน้อย (รอยขีดข่วน บุบเล็กน้อย) อยู่ที่ 2,000–15,000 บาท ความเสียหายปานกลาง 15,000–80,000 บาท และความเสียหายรุนแรง 80,000 บาทขึ้นไป ทั้งนี้ขึ้นอยู่กับรุ่นรถและอู่ซ่อม',
+  },
+  {
+    question: 'ควรซ่อมที่ศูนย์บริการหรืออู่ทั่วไป?',
+    answer: 'ศูนย์บริการของแบรนด์มีค่าแรงและค่าอะไหล่สูงกว่าอู่ทั่วไป 20–50% แต่รับประกันคุณภาพและใช้อะไหล่แท้ หากรถอยู่ในประกันชั้น 1 บริษัทประกันมักให้ซ่อมที่ศูนย์บริการได้ สำหรับรถเก่าหรือความเสียหายเล็กน้อย อู่ทั่วไปที่เชื่อถือได้อาจคุ้มค่ากว่า',
+  },
+  {
+    question: 'ประกันรถชั้น 1 ครอบคลุมค่าซ่อมทั้งหมดหรือไม่?',
+    answer: 'ประกันภัยรถยนต์ชั้น 1 ครอบคลุมค่าซ่อมความเสียหายจากอุบัติเหตุทั้งฝ่ายตนเองและคู่กรณี แต่มักมีเงื่อนไข เช่น ค่าเสียหายส่วนแรก (Deductible) ที่ผู้เอาประกันต้องรับผิดชอบเอง โดยทั่วไปอยู่ที่ 2,000–5,000 บาทต่อครั้ง',
+  },
+  {
+    question: 'ค่าเช่ารถระหว่างซ่อมสามารถเบิกประกันได้ไหม?',
+    answer: 'ประกันรถยนต์บางแผนครอบคลุมค่าเช่ารถระหว่างรถอยู่ในการซ่อม โดยทั่วไปจะครอบคลุม 500–1,500 บาทต่อวัน และมีระยะเวลาสูงสุด 10–30 วัน ควรตรวจสอบเงื่อนไขกรมธรรม์ของแต่ละบริษัทก่อนทำประกัน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนซ่อมรถหลังอุบัติเหตุ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนซ่อมรถหลังอุบัติเหตุ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณต้นทุนซ่อมรถหลังอุบัติเหตุ
+    </h1>
+    <p class="text-gray-600 mb-6">
+      ประมาณค่าใช้จ่ายซ่อมรถหลังเกิดอุบัติเหตุ รวมค่าอะไหล่ ค่าแรงช่าง ค่าเช่ารถระหว่างซ่อม
+      และวงเงินที่ควรเบิกประกัน
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label for="damage-severity" class="block text-sm font-medium text-gray-700 mb-1">
+              ระดับความเสียหาย
+            </label>
+            <select
+              id="damage-severity"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="minor">เล็กน้อย (รอยขีดข่วน บุบเล็กน้อย)</option>
+              <option value="moderate" selected>ปานกลาง (ชิ้นส่วนเสียหาย ต้องเปลี่ยนอะไหล่)</option>
+              <option value="severe">รุนแรง (โครงรถเสียหาย ต้องซ่อมใหญ่)</option>
+            </select>
+          </div>
+          <div>
+            <label for="parts-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าอะไหล่ (บาท)
+            </label>
+            <input
+              type="text"
+              id="parts-cost"
+              inputmode="decimal"
+              placeholder="เช่น 15000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="labor-hours" class="block text-sm font-medium text-gray-700 mb-1">
+              ชั่วโมงค่าแรงช่าง (ชั่วโมง)
+            </label>
+            <input
+              type="text"
+              id="labor-hours"
+              inputmode="decimal"
+              placeholder="เช่น 8"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="labor-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราค่าแรง (บาท/ชั่วโมง)
+            </label>
+            <input
+              type="text"
+              id="labor-rate"
+              inputmode="decimal"
+              placeholder="เช่น 500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="rental-days" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนวันเช่ารถ (วัน)
+            </label>
+            <input
+              type="text"
+              id="rental-days"
+              inputmode="decimal"
+              placeholder="เช่น 5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="rental-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าเช่ารถต่อวัน (บาท)
+            </label>
+            <input
+              type="text"
+              id="rental-rate"
+              inputmode="decimal"
+              placeholder="เช่น 800"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณ
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-blue-700 font-medium mb-1">ค่าอะไหล่</div>
+            <div id="res-parts" class="text-xl font-bold text-blue-800">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="text-sm text-blue-700 font-medium mb-1">ค่าแรงช่าง</div>
+            <div id="res-labor" class="text-xl font-bold text-blue-800">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <div class="text-sm text-orange-700 font-medium mb-1">ค่าเช่ารถระหว่างซ่อม</div>
+            <div id="res-rental" class="text-xl font-bold text-orange-800">-</div>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <div class="text-sm text-orange-700 font-medium mb-1">ค่าใช้จ่ายรวม</div>
+            <div id="res-total" class="text-xl font-bold text-orange-800">-</div>
+          </div>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+          <div class="text-sm text-green-700 font-medium mb-1">วงเงินที่ควรเบิกประกัน (ประมาณการ)</div>
+          <div id="res-insurance-claim" class="text-2xl font-bold text-green-800">-</div>
+          <div id="res-claim-note" class="text-xs text-green-600 mt-1">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ต้นทุนการซ่อมรถหลังอุบัติเหตุในไทย</h2>
+      <p>
+        เมื่อเกิดอุบัติเหตุทางรถยนต์ ต้นทุนที่ต้องแบกรับไม่ได้มีเพียงค่าซ่อมรถเท่านั้น
+        ยังรวมถึงค่าเช่ารถระหว่างรอรับรถ เวลาที่ต้องเสียไปในการติดต่อประกัน
+        และค่าเบี้ยประกันที่อาจปรับขึ้นในปีถัดไป การเข้าใจต้นทุนทั้งหมดช่วยให้วางแผนการเงินได้ดีขึ้น
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณต้นทุนซ่อมรถ</h3>
+      <div class="bg-gray-50 rounded-lg p-4 my-4 space-y-2">
+        <p class="font-medium">ค่าแรงช่าง = ชั่วโมงทำงาน × อัตราค่าแรงต่อชั่วโมง</p>
+        <p class="font-medium">ค่าเช่ารถ = จำนวนวัน × อัตราเช่าต่อวัน</p>
+        <p class="font-semibold text-primary-700">ต้นทุนรวม = ค่าอะไหล่ + ค่าแรง + ค่าเช่ารถ</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เกณฑ์การเลือกใช้ประกันรถ</h3>
+      <p>
+        โดยทั่วไปควรพิจารณาเบิกประกันเมื่อค่าซ่อมสูงกว่าค่าเสียหายส่วนแรก (Deductible) บวกกับค่าเบี้ยที่อาจเพิ่มขึ้นในปีหน้า
+        หากค่าซ่อมต่ำกว่า 10,000–15,000 บาท การจ่ายเองอาจคุ้มค่ากว่าในระยะยาว
+        เนื่องจากการไม่เคลมประกันมักได้รับส่วนลดเบี้ย (No Claim Bonus) ปีถัดไป
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณต้นทุนซ่อมอุบัติเหตุ/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนซ่อมอุบัติเหตุ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเบื้องต้น
+      ค่าซ่อมจริงอาจแตกต่างตามยี่ห้อรถ อู่ซ่อม และระดับความเสียหาย
+      กรุณาขอใบเสนอราคาจากอู่ซ่อมที่เชื่อถือได้และติดต่อบริษัทประกันเพื่อข้อมูลที่แม่นยำ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const claimFactors: Record<string, number> = {
+      minor: 0.6,
+      moderate: 0.8,
+      severe: 0.9,
+    };
+
+    const claimNotes: Record<string, string> = {
+      minor: 'ความเสียหายเล็กน้อย — พิจารณาจ่ายเองเพื่อรักษาสิทธิ์ No Claim Bonus',
+      moderate: 'ความเสียหายปานกลาง — ควรแจ้งบริษัทประกันและเปรียบเทียบกับค่า Deductible',
+      severe: 'ความเสียหายรุนแรง — แนะนำเบิกประกันทันทีและบันทึกหลักฐานให้ครบถ้วน',
+    };
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const parts = parseNum((document.getElementById('parts-cost') as HTMLInputElement).value);
+      const laborHours = parseNum((document.getElementById('labor-hours') as HTMLInputElement).value);
+      const laborRate = parseNum((document.getElementById('labor-rate') as HTMLInputElement).value);
+      const rentalDays = parseNum((document.getElementById('rental-days') as HTMLInputElement).value);
+      const rentalRate = parseNum((document.getElementById('rental-rate') as HTMLInputElement).value);
+      const severity = (document.getElementById('damage-severity') as HTMLSelectElement).value;
+
+      if (parts <= 0 && laborHours <= 0) {
+        (document.getElementById('parts-cost') as HTMLInputElement).focus();
+        return;
+      }
+
+      const laborCost = laborHours * laborRate;
+      const rentalCost = rentalDays * rentalRate;
+      const totalCost = parts + laborCost + rentalCost;
+      const repairOnlyTotal = parts + laborCost;
+      const insuranceClaim = repairOnlyTotal * (claimFactors[severity] || 0.8);
+
+      (document.getElementById('res-parts') as HTMLElement).textContent = `฿${fmt(parts)}`;
+      (document.getElementById('res-labor') as HTMLElement).textContent = `฿${fmt(laborCost)}`;
+      (document.getElementById('res-rental') as HTMLElement).textContent = `฿${fmt(rentalCost)}`;
+      (document.getElementById('res-total') as HTMLElement).textContent = `฿${fmt(totalCost)}`;
+      (document.getElementById('res-insurance-claim') as HTMLElement).textContent = `฿${fmt(insuranceClaim)}`;
+      (document.getElementById('res-claim-note') as HTMLElement).textContent = claimNotes[severity] || '';
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+    });
+
+    document.querySelectorAll('#calculator-form input').forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

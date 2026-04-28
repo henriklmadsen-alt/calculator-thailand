@@ -1,0 +1,523 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าเรียนพิเศษ 2569 | ค่าติว เรียนกลุ่ม เรียนตัวต่อตัว | Kamnuanlek';
+const pageDescription = 'คำนวณค่าเรียนพิเศษออนไลน์ฟรี เลือกวิชา ระดับชั้น เรียนกลุ่มหรือตัวต่อตัว คำนวณค่าใช้จ่ายรายเดือน ราคาตลาดไทยปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าเรียนพิเศษ/`;
+
+const faqData = [
+  {
+    question: 'ค่าเรียนพิเศษในไทยราคาเท่าไร?',
+    answer: 'ค่าเรียนพิเศษขึ้นอยู่กับวิชา ระดับชั้น และรูปแบบการสอน เรียนตัวต่อตัวระดับประถมเริ่มต้น 200-400 บาท/ชม. ระดับมัธยมต้น 300-500 บาท/ชม. ระดับมัธยมปลาย 400-800 บาท/ชม. ติวสอบเข้ามหาวิทยาลัย 500-1,200 บาท/ชม. เรียนกลุ่มจะถูกกว่าประมาณ 40-60%',
+  },
+  {
+    question: 'เรียนกลุ่มกับเรียนตัวต่อตัวต่างกันอย่างไร?',
+    answer: 'เรียนตัวต่อตัว: ครูสอนเฉพาะนักเรียนคนเดียว ปรับเนื้อหาตามจุดอ่อนได้ แต่ราคาสูง / เรียนกลุ่ม (3-8 คน): ราคาถูกกว่า 40-60% แต่ได้รับความสนใจจากครูน้อยกว่า เหมาะกับวิชาที่ต้องการทบทวนพื้นฐาน / สถาบันกวดวิชา: ราคาเป็นแพ็กเกจรายเดือน มีสื่อการสอนพร้อม แต่ห้องเรียนใหญ่',
+  },
+  {
+    question: 'ควรเรียนพิเศษกี่ชั่วโมงต่อสัปดาห์?',
+    answer: 'สำหรับนักเรียนประถม แนะนำ 1-2 ชม./สัปดาห์ต่อวิชา มัธยมต้น 2-3 ชม./สัปดาห์ มัธยมปลายหรือเตรียมสอบ 3-4 ชม./สัปดาห์ ไม่ควรเรียนเกินวันละ 3 ชม. เพื่อให้มีเวลาทบทวนเอง',
+  },
+  {
+    question: 'ค่าเรียนพิเศษรวมค่าอะไรบ้าง?',
+    answer: 'นอกจากค่าสอนแล้ว อาจมีค่าเอกสาร/ชีทสรุป 100-500 บาท/เดือน ค่าเดินทาง (ถ้าครูมาสอนที่บ้าน) 0-500 บาท/ครั้ง และค่าแบบทดสอบออนไลน์สำหรับบางสถาบัน เครื่องคำนวณนี้รวมค่าใช้จ่ายเหล่านี้ให้ด้วย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าเรียนพิเศษ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าเรียนพิเศษ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าเรียนพิเศษ (Tutoring Cost Calculator)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าเรียนพิเศษรายเดือน เลือกวิชา ระดับชั้น รูปแบบการเรียน และจำนวนชั่วโมง
+      พร้อมค่าใช้จ่ายเพิ่มเติม ตามราคาตลาดไทยปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Subject -->
+      <div class="mb-5">
+        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
+          วิชาที่เรียน
+        </label>
+        <select
+          id="subject"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        >
+          <option value="math">คณิตศาสตร์</option>
+          <option value="science">วิทยาศาสตร์</option>
+          <option value="english">ภาษาอังกฤษ</option>
+          <option value="thai">ภาษาไทย</option>
+          <option value="social">สังคมศึกษา</option>
+          <option value="physics">ฟิสิกส์</option>
+          <option value="chemistry">เคมี</option>
+          <option value="biology">ชีววิทยา</option>
+          <option value="entrance">ติวสอบเข้ามหาวิทยาลัย</option>
+          <option value="music">ดนตรี</option>
+          <option value="art">ศิลปะ/วาดรูป</option>
+          <option value="computer">คอมพิวเตอร์/โปรแกรมมิ่ง</option>
+        </select>
+      </div>
+
+      <!-- Level -->
+      <div class="mb-5">
+        <label for="level" class="block text-sm font-medium text-gray-700 mb-1">
+          ระดับชั้น
+        </label>
+        <select
+          id="level"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+        >
+          <option value="primary">ประถมศึกษา (ป.1-6)</option>
+          <option value="middle">มัธยมต้น (ม.1-3)</option>
+          <option value="high" selected>มัธยมปลาย (ม.4-6)</option>
+          <option value="entrance">เตรียมสอบเข้ามหาวิทยาลัย</option>
+        </select>
+      </div>
+
+      <!-- Tutoring Type -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          รูปแบบการเรียน
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="tutor-type-group">
+          <button type="button" data-type="private" class="tutor-type-btn px-4 py-3 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors text-center">
+            <div class="font-semibold">ตัวต่อตัว</div>
+            <div class="text-xs mt-0.5 opacity-75">1 คน : 1 ครู</div>
+          </button>
+          <button type="button" data-type="group" class="tutor-type-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-center">
+            <div class="font-semibold">เรียนกลุ่ม</div>
+            <div class="text-xs mt-0.5 opacity-75">3-8 คน</div>
+          </button>
+          <button type="button" data-type="institute" class="tutor-type-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-center">
+            <div class="font-semibold">สถาบันกวดวิชา</div>
+            <div class="text-xs mt-0.5 opacity-75">แพ็กเกจรายเดือน</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Hours per Week -->
+      <div class="mb-5">
+        <label for="hours-per-week" class="block text-sm font-medium text-gray-700 mb-1">
+          จำนวนชั่วโมงต่อสัปดาห์
+        </label>
+        <div class="flex items-center gap-3">
+          <button type="button" id="btn-hr-minus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">&minus;</button>
+          <input
+            type="text"
+            id="hours-per-week"
+            inputmode="numeric"
+            value="2"
+            class="w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-center"
+          />
+          <button type="button" id="btn-hr-plus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">+</button>
+          <span class="text-sm text-gray-500">ชม./สัปดาห์</span>
+        </div>
+      </div>
+
+      <!-- Number of Subjects -->
+      <div class="mb-5">
+        <label for="num-subjects" class="block text-sm font-medium text-gray-700 mb-1">
+          จำนวนวิชาที่เรียน
+        </label>
+        <div class="flex items-center gap-3">
+          <button type="button" id="btn-subj-minus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">&minus;</button>
+          <input
+            type="text"
+            id="num-subjects"
+            inputmode="numeric"
+            value="1"
+            class="w-16 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-center"
+          />
+          <button type="button" id="btn-subj-plus" class="w-10 h-10 rounded-md border border-gray-300 text-gray-700 text-xl font-bold hover:bg-gray-100 transition-colors flex items-center justify-center">+</button>
+          <span class="text-sm text-gray-500">วิชา</span>
+        </div>
+      </div>
+
+      <!-- Extra Costs -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          ค่าใช้จ่ายเพิ่มเติม
+        </label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" id="cost-materials" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" checked />
+            ค่าเอกสาร/ชีทสรุป
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" id="cost-transport" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+            ค่าเดินทาง (ครูมาสอนที่บ้าน)
+          </label>
+        </div>
+      </div>
+
+      <!-- Calculate Button -->
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณค่าเรียนพิเศษ
+      </button>
+
+      <!-- Results -->
+      <div id="tutor-result" class="hidden mt-6">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าเรียนต่อชั่วโมง</div>
+            <div id="res-hourly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าเรียนต่อเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 mt-3">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าเรียนต่อเทอม (5 เดือน)</div>
+            <div id="res-semester" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-amber-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าเรียนต่อปี</div>
+            <div id="res-yearly" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div class="mt-4 bg-gray-50 rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-gray-700 mb-2">รายละเอียดค่าใช้จ่ายต่อเดือน</h3>
+          <div id="res-breakdown" class="space-y-1 text-sm text-gray-600"></div>
+        </div>
+
+        <!-- Rate Range Info -->
+        <div class="mt-3 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div id="res-summary"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าเรียนพิเศษในประเทศไทย 2569</h2>
+
+      <p>
+        การเรียนพิเศษหรือกวดวิชาเป็นส่วนสำคัญของระบบการศึกษาไทย
+        ผู้ปกครองส่วนใหญ่ลงทุนด้านการเรียนพิเศษให้บุตรหลาน
+        โดยเฉพาะในวิชาหลักอย่างคณิตศาสตร์ วิทยาศาสตร์ และภาษาอังกฤษ
+        ราคาขึ้นอยู่กับหลายปัจจัย ตั้งแต่ระดับชั้น วิชาที่เรียน ไปจนถึงรูปแบบการสอน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่าเรียนพิเศษ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าเรียนต่อเดือน = อัตราค่าสอนต่อชั่วโมง &times; ชั่วโมง/สัปดาห์ &times; 4.33 สัปดาห์ &times; จำนวนวิชา</li>
+        <li>ค่าเรียนต่อเทอม = ค่าเรียนต่อเดือน &times; 5 เดือน</li>
+        <li>ค่าเรียนต่อปี = ค่าเรียนต่อเดือน &times; 12 เดือน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        เรียนคณิตศาสตร์ตัวต่อตัว ระดับ ม.ปลาย สัปดาห์ละ 2 ชม. จำนวน 1 วิชา:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าสอน = 600 บาท/ชม. &times; 2 ชม. &times; 4.33 = 5,196 บาท/เดือน</li>
+        <li>ค่าเอกสาร = 300 บาท/เดือน</li>
+        <li>รวม = 5,496 บาท/เดือน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราค่าเรียนพิเศษตามรูปแบบ</h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b border-gray-200">
+              <th class="py-2 pr-4">ระดับชั้น</th>
+              <th class="py-2 pr-4">ตัวต่อตัว</th>
+              <th class="py-2 pr-4">เรียนกลุ่ม</th>
+              <th class="py-2">สถาบัน (รายเดือน)</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ประถม (ป.1-6)</td>
+              <td class="py-2 pr-4">200-400 บาท/ชม.</td>
+              <td class="py-2 pr-4">100-200 บาท/ชม.</td>
+              <td class="py-2">1,500-3,000 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">มัธยมต้น (ม.1-3)</td>
+              <td class="py-2 pr-4">300-500 บาท/ชม.</td>
+              <td class="py-2 pr-4">150-300 บาท/ชม.</td>
+              <td class="py-2">2,000-4,000 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">มัธยมปลาย (ม.4-6)</td>
+              <td class="py-2 pr-4">400-800 บาท/ชม.</td>
+              <td class="py-2 pr-4">200-400 บาท/ชม.</td>
+              <td class="py-2">2,500-5,000 บาท</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">ติวสอบเข้ามหาวิทยาลัย</td>
+              <td class="py-2 pr-4">500-1,200 บาท/ชม.</td>
+              <td class="py-2 pr-4">250-600 บาท/ชม.</td>
+              <td class="py-2">3,000-8,000 บาท</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิชาที่มีค่าเรียนสูงกว่าปกติ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ฟิสิกส์ เคมี ชีววิทยา — ต้องการครูเฉพาะทาง บวกเพิ่ม 10-20%</li>
+        <li>ติวสอบเข้ามหาวิทยาลัย — เน้นข้อสอบจริง บวกเพิ่ม 20-50%</li>
+        <li>ดนตรี — อุปกรณ์และครูเฉพาะทาง บวกเพิ่ม 30-50%</li>
+        <li>คอมพิวเตอร์/โปรแกรมมิ่ง — ทักษะเฉพาะด้าน บวกเพิ่ม 20-30%</li>
+      </ul>
+
+      <p class="mt-4">
+        เครื่องคำนวณค่าเรียนพิเศษนี้ใช้ราคาตลาดเฉลี่ยในประเทศไทยปี 2569
+        เหมาะสำหรับผู้ปกครองที่ต้องการวางแผนงบประมาณการศึกษาของบุตรหลาน
+        ราคาจริงอาจแตกต่างตามพื้นที่ คุณสมบัติของครูผู้สอน และสถาบัน
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าเรียนพิเศษ/" />
+    <RelatedCalculators currentHref="/คำนวณค่าเรียนพิเศษ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>หมายเหตุ:</strong> อัตราค่าเรียนพิเศษที่แสดงเป็นราคาตลาดเฉลี่ยปี 2569
+      ราคาจริงอาจแตกต่างตามพื้นที่ คุณสมบัติของครูผู้สอน สถาบัน และเงื่อนไขอื่นๆ
+      ควรสอบถามราคาจริงจากผู้ให้บริการโดยตรง
+    </div>
+  </article>
+
+  <script>
+    // ── Rate tables (THB/hour) ── Thai market average 2569 ──
+    // Rates: { level: { private: mid-rate, group: mid-rate, institute: monthly-package } }
+    // Subject multiplier adjusts from the base rate
+    const BASE_RATES: Record<string, { private: number; group: number; institute: number }> = {
+      primary:  { private: 300,  group: 150,  institute: 2000 },
+      middle:   { private: 400,  group: 220,  institute: 3000 },
+      high:     { private: 600,  group: 300,  institute: 3500 },
+      entrance: { private: 800,  group: 400,  institute: 5000 },
+    };
+
+    const SUBJECT_MULTIPLIER: Record<string, number> = {
+      math: 1.0,
+      science: 1.0,
+      english: 1.05,
+      thai: 0.95,
+      social: 0.90,
+      physics: 1.15,
+      chemistry: 1.15,
+      biology: 1.10,
+      entrance: 1.30,
+      music: 1.40,
+      art: 1.10,
+      computer: 1.20,
+    };
+
+    const SUBJECT_NAMES: Record<string, string> = {
+      math: 'คณิตศาสตร์',
+      science: 'วิทยาศาสตร์',
+      english: 'ภาษาอังกฤษ',
+      thai: 'ภาษาไทย',
+      social: 'สังคมศึกษา',
+      physics: 'ฟิสิกส์',
+      chemistry: 'เคมี',
+      biology: 'ชีววิทยา',
+      entrance: 'ติวสอบเข้ามหาวิทยาลัย',
+      music: 'ดนตรี',
+      art: 'ศิลปะ/วาดรูป',
+      computer: 'คอมพิวเตอร์/โปรแกรมมิ่ง',
+    };
+
+    const LEVEL_NAMES: Record<string, string> = {
+      primary: 'ประถมศึกษา',
+      middle: 'มัธยมต้น',
+      high: 'มัธยมปลาย',
+      entrance: 'เตรียมสอบเข้ามหาวิทยาลัย',
+    };
+
+    const MATERIAL_COST = 300;   // THB/month for documents/sheets
+    const TRANSPORT_COST = 1500; // THB/month (approx 4 trips × ~375/trip)
+
+    const WEEKS_PER_MONTH = 4.33;
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(n));
+    }
+
+    // State
+    let selectedType: 'private' | 'group' | 'institute' = 'private';
+
+    // Elements
+    const subjectSel = document.getElementById('subject') as HTMLSelectElement;
+    const levelSel = document.getElementById('level') as HTMLSelectElement;
+    const hoursInput = document.getElementById('hours-per-week') as HTMLInputElement;
+    const numSubjInput = document.getElementById('num-subjects') as HTMLInputElement;
+    const typeBtns = document.querySelectorAll<HTMLButtonElement>('.tutor-type-btn');
+    const costMaterials = document.getElementById('cost-materials') as HTMLInputElement;
+    const costTransport = document.getElementById('cost-transport') as HTMLInputElement;
+
+    // Tutor type selection
+    typeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedType = btn.dataset.type as typeof selectedType;
+        updateTypeBtnStyles();
+      });
+    });
+
+    function updateTypeBtnStyles() {
+      typeBtns.forEach((btn) => {
+        if (btn.dataset.type === selectedType) {
+          btn.className = 'tutor-type-btn px-4 py-3 rounded-md text-sm font-medium border-2 border-primary-500 bg-primary-50 text-primary-700 transition-colors text-center';
+        } else {
+          btn.className = 'tutor-type-btn px-4 py-3 rounded-md text-sm font-medium border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-700 transition-colors text-center';
+        }
+      });
+    }
+
+    // +/- buttons for hours
+    document.getElementById('btn-hr-minus')!.addEventListener('click', () => {
+      const v = Math.max(1, parseInt(hoursInput.value) || 1);
+      if (v > 1) hoursInput.value = String(v - 1);
+    });
+    document.getElementById('btn-hr-plus')!.addEventListener('click', () => {
+      const v = Math.max(1, parseInt(hoursInput.value) || 1);
+      if (v < 20) hoursInput.value = String(v + 1);
+    });
+
+    // +/- buttons for subjects
+    document.getElementById('btn-subj-minus')!.addEventListener('click', () => {
+      const v = Math.max(1, parseInt(numSubjInput.value) || 1);
+      if (v > 1) numSubjInput.value = String(v - 1);
+    });
+    document.getElementById('btn-subj-plus')!.addEventListener('click', () => {
+      const v = Math.max(1, parseInt(numSubjInput.value) || 1);
+      if (v < 10) numSubjInput.value = String(v + 1);
+    });
+
+    // Calculate
+    function calculate() {
+      const subject = subjectSel.value;
+      const level = levelSel.value;
+      const hoursPerWeek = Math.max(1, parseInt(hoursInput.value) || 1);
+      const numSubjects = Math.max(1, parseInt(numSubjInput.value) || 1);
+
+      const base = BASE_RATES[level] || BASE_RATES.high;
+      const multiplier = SUBJECT_MULTIPLIER[subject] || 1.0;
+
+      let hourlyRate: number;
+      let monthlyTuition: number;
+
+      if (selectedType === 'institute') {
+        // Institute: flat monthly package, not per-hour
+        monthlyTuition = Math.round(base.institute * multiplier) * numSubjects;
+        hourlyRate = Math.round(monthlyTuition / (hoursPerWeek * WEEKS_PER_MONTH * numSubjects));
+      } else {
+        hourlyRate = Math.round(base[selectedType] * multiplier);
+        monthlyTuition = Math.round(hourlyRate * hoursPerWeek * WEEKS_PER_MONTH * numSubjects);
+      }
+
+      // Extra costs
+      let materialsCost = 0;
+      let transportCost = 0;
+      if (costMaterials.checked) materialsCost = MATERIAL_COST * numSubjects;
+      if (costTransport.checked) transportCost = TRANSPORT_COST;
+
+      const monthlyTotal = monthlyTuition + materialsCost + transportCost;
+      const semesterTotal = monthlyTotal * 5;
+      const yearlyTotal = monthlyTotal * 12;
+
+      // Display results
+      (document.getElementById('res-hourly') as HTMLElement).textContent = fmt(hourlyRate) + ' บาท/ชม.';
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyTotal) + ' บาท';
+      (document.getElementById('res-semester') as HTMLElement).textContent = fmt(semesterTotal) + ' บาท';
+      (document.getElementById('res-yearly') as HTMLElement).textContent = fmt(yearlyTotal) + ' บาท';
+
+      // Breakdown
+      const typeLabel = selectedType === 'private' ? 'ตัวต่อตัว' : selectedType === 'group' ? 'เรียนกลุ่ม' : 'สถาบันกวดวิชา';
+      const breakdownLines: string[] = [];
+
+      if (selectedType === 'institute') {
+        breakdownLines.push(`ค่าเรียน (${typeLabel}): ${fmt(monthlyTuition)} บาท (${numSubjects} วิชา × ${fmt(Math.round(base.institute * multiplier))} บาท/วิชา/เดือน)`);
+      } else {
+        breakdownLines.push(`ค่าสอน (${typeLabel}): ${fmt(monthlyTuition)} บาท (${fmt(hourlyRate)} บาท/ชม. × ${hoursPerWeek} ชม./สัปดาห์ × 4.33 สัปดาห์ × ${numSubjects} วิชา)`);
+      }
+      if (materialsCost > 0) {
+        breakdownLines.push(`ค่าเอกสาร/ชีทสรุป: ${fmt(materialsCost)} บาท (${fmt(MATERIAL_COST)} × ${numSubjects} วิชา)`);
+      }
+      if (transportCost > 0) {
+        breakdownLines.push(`ค่าเดินทาง (ครูมาสอนที่บ้าน): ${fmt(transportCost)} บาท`);
+      }
+      breakdownLines.push(`<strong>รวมต่อเดือน: ${fmt(monthlyTotal)} บาท</strong>`);
+
+      (document.getElementById('res-breakdown') as HTMLElement).innerHTML = breakdownLines
+        .map((l) => `<div class="flex justify-between items-start gap-2"><span>${l}</span></div>`)
+        .join('');
+
+      // Summary
+      const summary = `${SUBJECT_NAMES[subject]} ระดับ${LEVEL_NAMES[level]} แบบ${typeLabel} ${hoursPerWeek} ชม./สัปดาห์ ${numSubjects} วิชา = ${fmt(monthlyTotal)} บาท/เดือน (${fmt(yearlyTotal)} บาท/ปี)`;
+      (document.getElementById('res-summary') as HTMLElement).textContent = summary;
+
+      (document.getElementById('tutor-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('tutoring-cost');
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', calculate);
+
+    // Track when result section enters viewport
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('tutoring-cost');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(document.getElementById('tutor-result')!);
+  </script>
+</BaseLayout>

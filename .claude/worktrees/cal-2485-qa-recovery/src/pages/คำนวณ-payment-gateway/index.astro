@@ -1,0 +1,213 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียม Payment Gateway ปี 2569 — Omise, 2C2P, Stripe | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียม Payment Gateway สำหรับร้านค้าออนไลน์ ป้อนยอดขาย อัตราธรรมเนียมและค่าคงที่ต่อรายการ ทราบยอดรับจริงทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-payment-gateway/`;
+
+const faqData = [
+  {
+    question: 'Payment Gateway คิดค่าธรรมเนียมอย่างไร?',
+    answer: 'ส่วนใหญ่คิดแบบ "% + ค่าคงที่" เช่น 2.9% + 10 บาท/รายการ หมายความว่าทุกธุรกรรมมีทั้งส่วน % และส่วนคงที่รวมกัน',
+  },
+  {
+    question: 'Omise กับ Stripe ต่างกันอย่างไร?',
+    answer: 'Omise รองรับชำระเงินไทยได้ดีกว่า (PromptPay, บัตรไทย) อัตรา ~2.35–3.65% ส่วน Stripe รองรับบัตรสากลดีกว่า อัตรา ~2.9% + ค่าคงที่',
+  },
+  {
+    question: 'ค่าธรรมเนียม Payment Gateway เสียภาษีมูลค่าเพิ่มไหม?',
+    answer: 'ค่าธรรมเนียม Payment Gateway เป็นบริการอิเล็กทรอนิกส์ อาจมี VAT 7% เพิ่มเติม ขึ้นอยู่กับผู้ให้บริการ ควรตรวจสอบใบแจ้งหนี้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียม Payment Gateway',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-payment-gateway">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-purple-100 bg-purple-50 p-4">
+      <p class="text-sm font-semibold text-purple-700">คำนวณค่าธรรมเนียม Payment Gateway</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ค่าธรรมเนียม = (ยอด × %) + ค่าคงที่ต่อรายการ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าธรรมเนียม Payment Gateway ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      ป้อนยอดขาย อัตราค่าธรรมเนียม (%) และค่าคงที่ต่อรายการ เพื่อดูค่าธรรมเนียมและยอดรับจริง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pg-form" class="space-y-5">
+        <p id="pg-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pg-amount" class="mb-1 block text-sm font-medium text-gray-700">ยอดขาย (บาท)</label>
+            <input type="text" id="pg-amount" inputmode="numeric" placeholder="เช่น 2,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pg-amount-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pg-pct" class="mb-1 block text-sm font-medium text-gray-700">อัตราค่าธรรมเนียม (%)</label>
+            <input type="text" id="pg-pct" inputmode="decimal" placeholder="เช่น 2.9"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pg-pct-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pg-fixed" class="mb-1 block text-sm font-medium text-gray-700">ค่าคงที่ต่อรายการ (บาท)</label>
+            <input type="text" id="pg-fixed" inputmode="decimal" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ถ้าไม่มีใส่ 0</p>
+          </div>
+          <div>
+            <label for="pg-txns" class="mb-1 block text-sm font-medium text-gray-700">จำนวนธุรกรรม/เดือน — ไม่บังคับ</label>
+            <input type="text" id="pg-txns" inputmode="numeric" placeholder="เช่น 50"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าธรรมเนียม
+        </button>
+      </form>
+    </div>
+
+    <div id="pg-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าธรรมเนียม/ครั้ง</div>
+            <div id="res-pg-fee" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ยอดรับจริง/ครั้ง</div>
+            <div id="res-pg-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราจริง</div>
+            <div id="res-pg-eff" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <div id="pg-monthly-section" class="hidden space-y-2 text-sm">
+          <h3 class="font-medium text-gray-800">สรุปรายเดือน</h3>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าธรรมเนียมรวม/เดือน</span>
+            <span id="res-pg-m-fee" class="font-medium text-red-600">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ยอดรับจริงรวม/เดือน</span>
+            <span id="res-pg-m-net" class="font-medium text-green-600">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าธรรมเนียม = (ยอดขาย × อัตรา%) + ค่าคงที่</li>
+        <li>ยอดรับจริง = ยอดขาย − ค่าธรรมเนียม</li>
+        <li>อัตราจริง (%) = ค่าธรรมเนียม ÷ ยอดขาย × 100</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/">คำนวณ MDR ค่าธรรมเนียมร้านค้า</a></li>
+        <li><a href="/คำนวณ-POS-fee/">คำนวณค่าธรรมเนียม POS</a></li>
+        <li><a href="/คำนวณ-e-wallet/">คำนวณค่าธรรมเนียม E-Wallet</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#pg-results" />
+    <RelatedArticles currentHref="/คำนวณ-payment-gateway/" />
+    <RelatedCalculators currentHref="/คำนวณ-payment-gateway/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราค่าธรรมเนียมอาจแตกต่างตามผู้ให้บริการและแผนบริการ ควรยืนยันกับ Payment Gateway ก่อนใช้งาน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('pg-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('pg-error').classList.add('hidden');
+      ['pg-amount-error','pg-pct-error'].forEach(id => setErr(id, ''));
+
+      const amount = parseNum(document.getElementById('pg-amount').value);
+      const pct = parseNum(document.getElementById('pg-pct').value);
+      const fixed = parseNum(document.getElementById('pg-fixed').value) || 0;
+      const txns = parseNum(document.getElementById('pg-txns').value);
+
+      let hasError = false;
+      if (!Number.isFinite(amount) || amount <= 0) { setErr('pg-amount-error', 'กรอกยอดขายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(pct) || pct < 0 || pct >= 100) { setErr('pg-pct-error', 'กรอกอัตรา 0–99.99%'); hasError = true; }
+      if (hasError) { document.getElementById('pg-error').classList.remove('hidden'); document.getElementById('pg-results').classList.add('hidden'); return; }
+
+      const fee = (amount * pct / 100) + fixed;
+      const net = amount - fee;
+      const eff = (fee / amount) * 100;
+
+      setText('res-pg-fee', fmt(fee));
+      setText('res-pg-net', fmt(net));
+      setText('res-pg-eff', `${eff.toFixed(2)}%`);
+
+      const monthlySection = document.getElementById('pg-monthly-section');
+      if (Number.isFinite(txns) && txns > 0) {
+        setText('res-pg-m-fee', fmt(fee * txns));
+        setText('res-pg-m-net', fmt(net * txns));
+        monthlySection.classList.remove('hidden');
+      } else {
+        monthlySection.classList.add('hidden');
+      }
+
+      document.getElementById('pg-results').classList.remove('hidden');
+      document.getElementById('pg-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

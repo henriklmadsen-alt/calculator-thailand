@@ -1,0 +1,354 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณกำไรทุน ภาษีหุ้น อสังหาฯ 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณกำไรจากการขายหุ้นและอสังหาริมทรัพย์ 2569 ฟรี — รู้กำไรสุทธิหลังหักภาษีและค่าธรรมเนียม ก่อนตัดสินใจขาย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณกำไรทุน/`;
+
+const faqData = [
+  {
+    question: 'กำไรจากการขายหุ้นในตลาดหลักทรัพย์ต้องเสียภาษีไหม?',
+    answer: 'กำไรจากการขายหุ้นในตลาดหลักทรัพย์แห่งประเทศไทย (SET/mai) สำหรับบุคคลธรรมดาได้รับยกเว้นภาษีเงินได้บุคคลธรรมดา ตาม พ.ร.ฎ. ฉบับที่ 263 แต่หากเป็นหุ้นนอกตลาดหรือ warrants กำไรต้องนำมารวมคำนวณภาษีเงินได้',
+  },
+  {
+    question: 'กำไรจากการขายที่ดินหรือบ้านคำนวณภาษีอย่างไร?',
+    answer: 'กำไรจากการขายอสังหาริมทรัพย์คำนวณจาก ราคาขาย หักด้วยราคาทุน (ราคาซื้อมา + ค่าใช้จ่ายที่เกี่ยวข้อง) แล้วนำกำไรที่ได้มารวมเป็นเงินได้พึงประเมิน คำนวณภาษีตามอัตราก้าวหน้า 0-35% นอกจากนี้ยังมีภาษีธุรกิจเฉพาะ 3.3% หรือค่าอากรแสตมป์ 0.5% ขึ้นอยู่กับระยะเวลาถือครอง',
+  },
+  {
+    question: 'ถือครองอสังหาฯ กี่ปีจึงได้รับยกเว้นภาษีธุรกิจเฉพาะ?',
+    answer: 'หากถือครองอสังหาริมทรัพย์ตั้งแต่ 5 ปีขึ้นไป จะได้รับยกเว้นภาษีธุรกิจเฉพาะ 3.3% และใช้อากรแสตมป์ 0.5% แทน นอกจากนี้หากเป็นบ้านหลังหลักที่อยู่อาศัยมาไม่น้อยกว่า 1 ปี ก็ได้รับยกเว้นภาษีธุรกิจเฉพาะด้วย',
+  },
+  {
+    question: 'ค่าใช้จ่ายอะไรบ้างที่หักได้เมื่อคำนวณกำไรจากการขายอสังหาฯ?',
+    answer: 'ค่าใช้จ่ายที่หักได้ ได้แก่ ราคาซื้อเดิม ค่าก่อสร้างหรือปรับปรุง ค่าธรรมเนียมซื้อขาย ค่าอากรแสตมป์หรือภาษีธุรกิจเฉพาะที่จ่ายตอนซื้อ และค่านายหน้า โดยต้องมีหลักฐานเอกสารประกอบ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณกำไรทุน (Capital Gains) 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณกำไรทุน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประมาณภาระภาษีเบื้องต้น</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณกำไรทุน (Capital Gains) อัปเดต 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประมาณกำไรและภาระภาษีจากการขายหุ้นหรืออสังหาริมทรัพย์ ตามกฎหมายภาษีไทยปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <!-- Asset Type -->
+      <div class="flex rounded-lg bg-gray-100 p-1 mb-6">
+        <button type="button" id="type-stock"
+          class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700">
+          หุ้น / กองทุน
+        </button>
+        <button type="button" id="type-property"
+          class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600">
+          อสังหาริมทรัพย์
+        </button>
+      </div>
+
+      <!-- Stock Section -->
+      <div id="stock-section">
+        <div class="mb-4 rounded-lg bg-green-50 border border-green-200 p-3 text-sm text-green-800">
+          <strong>หุ้นในตลาด SET/mai:</strong> กำไรจากการขายหุ้นในตลาดหลักทรัพย์ไทยสำหรับบุคคลธรรมดา
+          <strong>ได้รับยกเว้นภาษีเงินได้บุคคลธรรมดา</strong> ตาม พ.ร.ฎ. ฉบับที่ 263
+        </div>
+        <div class="space-y-4">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="stock-sell-price" class="block text-sm font-medium text-gray-700 mb-1">
+                ราคาขาย (บาท)
+              </label>
+              <input type="text" id="stock-sell-price" inputmode="numeric" placeholder="เช่น 500,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="stock-cost" class="block text-sm font-medium text-gray-700 mb-1">
+                ราคาต้นทุน (บาท)
+              </label>
+              <input type="text" id="stock-cost" inputmode="numeric" placeholder="เช่น 350,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="stock-listed" checked class="w-4 h-4 text-primary-600 rounded" />
+            <label for="stock-listed" class="text-sm text-gray-700">หุ้นจดทะเบียนในตลาด SET/mai (ได้รับยกเว้นภาษี)</label>
+          </div>
+          <button type="button" id="btn-stock-calc"
+            class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+            คำนวณทันที
+          </button>
+        </div>
+        <div id="stock-result" class="hidden mt-6">
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">กำไร/ขาดทุน</div>
+              <div id="s-gain" class="text-xl font-bold text-gray-900">-</div>
+            </div>
+            <div class="bg-primary-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ภาษีเงินได้</div>
+              <div id="s-tax" class="text-xl font-bold text-primary-700">-</div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">กำไรสุทธิหลังภาษี</div>
+              <div id="s-net" class="text-xl font-bold text-green-700">-</div>
+            </div>
+          </div>
+          <p id="s-note" class="mt-3 text-sm text-gray-500"></p>
+        </div>
+      </div>
+
+      <!-- Property Section -->
+      <div id="property-section" class="hidden">
+        <div class="space-y-4">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="prop-sell" class="block text-sm font-medium text-gray-700 mb-1">ราคาขาย (บาท)</label>
+              <input type="text" id="prop-sell" inputmode="numeric" placeholder="เช่น 3,500,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="prop-cost" class="block text-sm font-medium text-gray-700 mb-1">ราคาทุนรวม (บาท)</label>
+              <input type="text" id="prop-cost" inputmode="numeric" placeholder="เช่น 2,000,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="prop-years" class="block text-sm font-medium text-gray-700 mb-1">ปีที่ถือครอง</label>
+              <input type="number" id="prop-years" min="1" max="50" value="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+            <div>
+              <label for="prop-other-income" class="block text-sm font-medium text-gray-700 mb-1">รายได้อื่นต่อปี (บาท)</label>
+              <input type="text" id="prop-other-income" inputmode="numeric" placeholder="เช่น 480,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            </div>
+          </div>
+          <button type="button" id="btn-prop-calc"
+            class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+            คำนวณทันที
+          </button>
+        </div>
+        <div id="prop-result" class="hidden mt-6">
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">กำไรขั้นต้น</div>
+              <div id="p-gain" class="text-lg font-bold text-gray-900">-</div>
+            </div>
+            <div class="bg-amber-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ภาษีธุรกิจเฉพาะ/อากร</div>
+              <div id="p-sbt" class="text-lg font-bold text-amber-700">-</div>
+            </div>
+            <div class="bg-primary-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ภาษีเงินได้ (ประมาณ)</div>
+              <div id="p-pit" class="text-lg font-bold text-primary-700">-</div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">กำไรสุทธิ (หลังภาษี)</div>
+              <div id="p-net" class="text-lg font-bold text-green-700">-</div>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400">* การคำนวณเป็นการประมาณการ กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีก่อนยื่นแบบ</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">กำไรทุน (Capital Gains) ในประเทศไทย</h2>
+      <p>กำไรทุนคือกำไรที่เกิดจากการขายสินทรัพย์ในราคาสูงกว่าราคาที่ซื้อมา สำหรับประเทศไทย การเสียภาษีกำไรทุนขึ้นอยู่กับประเภทสินทรัพย์</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">หุ้นในตลาดหลักทรัพย์</h3>
+      <p>กำไรจากการขายหุ้นที่จดทะเบียนในตลาดหลักทรัพย์แห่งประเทศไทย (SET และ mai) สำหรับบุคคลธรรมดาได้รับยกเว้นภาษีเงินได้บุคคลธรรมดา ตามพระราชกฤษฎีกา (พ.ร.ฎ.) ฉบับที่ 263 อย่างไรก็ตามหุ้นที่ไม่ได้จดทะเบียนในตลาด (unlisted shares) กำไรที่ได้จะต้องนำมารวมคำนวณภาษีเงินได้บุคคลธรรมดาตามปกติ</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อสังหาริมทรัพย์</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ภาษีธุรกิจเฉพาะ:</strong> 3.3% ของราคาขายหรือราคาประเมิน (แล้วแต่อย่างใดสูงกว่า) หากถือครองน้อยกว่า 5 ปี</li>
+        <li><strong>อากรแสตมป์:</strong> 0.5% แทนภาษีธุรกิจเฉพาะ หากถือครอง 5 ปีขึ้นไป หรือเป็นบ้านหลักที่อยู่อาศัย</li>
+        <li><strong>ภาษีเงินได้:</strong> กำไรรวมกับเงินได้อื่นในปีนั้น คำนวณตามอัตราก้าวหน้า 0–35%</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <p><strong>กำไรทุน = ราคาขาย − ราคาซื้อ − ค่าใช้จ่ายในการขาย</strong></p>
+      <p><strong>ภาษีกำไรทุน = กำไรทุน × 10%</strong> (อัตราคงที่ 10% หากโดยปกติไม่มีข้อยกเว้น)</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณ</h3>
+      <p><strong>ตัวอย่างที่ 1: ซื้อที่ดิน 2,000,000 บาท ขายไป 2,500,000 บาท</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ราคาซื้อ</strong> = 2,000,000 บาท</li>
+        <li><strong>ราคาขาย</strong> = 2,500,000 บาท</li>
+        <li><strong>กำไรทุน</strong> = 2,500,000 − 2,000,000 = 500,000 บาท</li>
+        <li><strong>ภาษีกำไรทุน</strong> = 500,000 × 10% = <strong>50,000 บาท</strong></li>
+      </ul>
+
+      <p class="mt-4"><strong>ตัวอย่างที่ 2: ซื้อหุ้น 100,000 บาท ขายไป 130,000 บาท ค่าธรรมเนียม 1,000 บาท</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ราคาซื้อ</strong> = 100,000 บาท</li>
+        <li><strong>ราคาขาย</strong> = 130,000 บาท</li>
+        <li><strong>ค่าใช้จ่าย</strong> = 1,000 บาท</li>
+        <li><strong>กำไรทุน</strong> = 130,000 − 100,000 − 1,000 = 29,000 บาท</li>
+        <li><strong>ภาษีกำไรทุน</strong> = 29,000 × 10% = <strong>2,900 บาท</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สรุป</h3>
+      <p>การขายที่ดินหรือสินทรัพย์ที่ทำให้เกิดกำไรต้องเสียภาษีกำไรทุน 10% ตามกฎหมาย หากขายโดยขาดทุน จะไม่ต้องเสียภาษี</p>
+      <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ภาษีกำไรทุน</a> [อัปเดต 2569]</p>
+    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณกำไรทุน/" />
+    <RelatedCalculators currentHref="/คำนวณกำไรทุน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+
+    // Thai PIT brackets 2024
+    function calcPIT(taxableIncome: number): number {
+      const brackets = [
+        { max: 150000, rate: 0 },
+        { max: 300000, rate: 0.05 },
+        { max: 500000, rate: 0.10 },
+        { max: 750000, rate: 0.15 },
+        { max: 1000000, rate: 0.20 },
+        { max: 2000000, rate: 0.25 },
+        { max: 5000000, rate: 0.30 },
+        { max: Infinity, rate: 0.35 },
+      ];
+      let tax = 0;
+      let prev = 0;
+      for (const b of brackets) {
+        if (taxableIncome <= prev) break;
+        const slice = Math.min(taxableIncome, b.max) - prev;
+        tax += slice * b.rate;
+        prev = b.max;
+      }
+      return tax;
+    }
+
+    // Mode toggle
+    const btnStock = document.getElementById('type-stock') as HTMLButtonElement;
+    const btnProp = document.getElementById('type-property') as HTMLButtonElement;
+    const stockSec = document.getElementById('stock-section') as HTMLDivElement;
+    const propSec = document.getElementById('property-section') as HTMLDivElement;
+
+    function setType(t: 'stock' | 'property') {
+      if (t === 'stock') {
+        btnStock.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700';
+        btnProp.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600';
+        stockSec.classList.remove('hidden');
+        propSec.classList.add('hidden');
+      } else {
+        btnProp.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white shadow-sm text-primary-700';
+        btnStock.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600';
+        propSec.classList.remove('hidden');
+        stockSec.classList.add('hidden');
+      }
+    }
+    btnStock.addEventListener('click', () => setType('stock'));
+    btnProp.addEventListener('click', () => setType('property'));
+
+    // Stock calc
+    document.getElementById('btn-stock-calc')!.addEventListener('click', () => {
+      const sell = parseNum((document.getElementById('stock-sell-price') as HTMLInputElement).value);
+      const cost = parseNum((document.getElementById('stock-cost') as HTMLInputElement).value);
+      const listed = (document.getElementById('stock-listed') as HTMLInputElement).checked;
+      if (sell <= 0 || cost <= 0) return;
+      const gain = sell - cost;
+      const tax = listed ? 0 : (gain > 0 ? calcPIT(gain) : 0);
+      const net = gain - tax;
+      (document.getElementById('s-gain') as HTMLElement).textContent = fmt(gain);
+      (document.getElementById('s-gain') as HTMLElement).className = `text-xl font-bold ${gain >= 0 ? 'text-green-700' : 'text-red-600'}`;
+      (document.getElementById('s-tax') as HTMLElement).textContent = fmt(tax);
+      (document.getElementById('s-net') as HTMLElement).textContent = fmt(net);
+      (document.getElementById('s-note') as HTMLElement).textContent = listed
+        ? '✅ หุ้นในตลาด SET/mai: กำไรจากการขายได้รับยกเว้นภาษีเงินได้บุคคลธรรมดา'
+        : '⚠️ หุ้นนอกตลาด: กำไรต้องนำมารวมคำนวณภาษีเงินได้ (คำนวณเฉพาะกำไรส่วนนี้)';
+      (document.getElementById('stock-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('capital-gains');
+    });
+
+    // Property calc
+    document.getElementById('btn-prop-calc')!.addEventListener('click', () => {
+      const sell = parseNum((document.getElementById('prop-sell') as HTMLInputElement).value);
+      const cost = parseNum((document.getElementById('prop-cost') as HTMLInputElement).value);
+      const years = parseInt((document.getElementById('prop-years') as HTMLInputElement).value) || 1;
+      const otherIncome = parseNum((document.getElementById('prop-other-income') as HTMLInputElement).value);
+      if (sell <= 0 || cost <= 0) return;
+
+      const gain = Math.max(0, sell - cost);
+      // SBT 3.3% if < 5 years, else stamp duty 0.5%
+      const sbt = years < 5 ? sell * 0.033 : sell * 0.005;
+      // PIT: gain / years (spread over holding period), add to other income, multiply back
+      const annualGain = gain / years;
+      const totalAnnualIncome = otherIncome + annualGain;
+      // Standard deductions: 50% expense (max 100k) + 60k personal allowance
+      const expense = Math.min(totalAnnualIncome * 0.5, 100000);
+      const taxableIncome = Math.max(0, totalAnnualIncome - expense - 60000);
+      const annualTax = calcPIT(taxableIncome);
+      // Tax from other income only
+      const otherExpense = Math.min(otherIncome * 0.5, 100000);
+      const otherTaxable = Math.max(0, otherIncome - otherExpense - 60000);
+      const otherTax = calcPIT(otherTaxable);
+      const propTaxAnnual = Math.max(0, annualTax - otherTax);
+      const totalPIT = propTaxAnnual * years;
+
+      (document.getElementById('p-gain') as HTMLElement).textContent = fmt(gain);
+      (document.getElementById('p-sbt') as HTMLElement).textContent = fmt(sbt) + (years < 5 ? ' (3.3%)' : ' (อากรแสตมป์ 0.5%)');
+      (document.getElementById('p-pit') as HTMLElement).textContent = fmt(totalPIT);
+      (document.getElementById('p-net') as HTMLElement).textContent = fmt(gain - sbt - totalPIT);
+      (document.getElementById('prop-result') as HTMLDivElement).classList.remove('hidden');
+      trackCalculatorUsed('capital-gains');
+    });
+  </script>
+</BaseLayout>

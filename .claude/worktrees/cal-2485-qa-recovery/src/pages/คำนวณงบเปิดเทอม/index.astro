@@ -1,0 +1,181 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบเปิดเทอม 2569 | ค่าเล่าเรียน ชุดนักเรียน อุปกรณ์ | Kamnuanlek';
+const pageDescription = 'คำนวณค่าใช้จ่ายเปิดเทอม ค่าเล่าเรียน ชุดนักเรียน อุปกรณ์การเรียน ค่ากิจกรรม ตามระดับการศึกษาและประเภทโรงเรียน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบเปิดเทอม/`;
+
+const faqData = [
+  {
+    question: 'ค่าเปิดเทอมโรงเรียนรัฐเฉลี่ยเท่าไร?',
+    answer: 'ค่าเปิดเทอมโรงเรียนรัฐบาลโดยเฉลี่ยอยู่ที่ 2,000-5,000 บาทต่อเทอม รวมค่าเล่าเรียน ชุดนักเรียน และอุปกรณ์พื้นฐาน นักเรียนที่รับทุนการศึกษาอาจได้รับส่วนลดเพิ่มเติม',
+  },
+  {
+    question: 'ค่าเปิดเทอมโรงเรียนเอกชนต่างจากรัฐเท่าไร?',
+    answer: 'โรงเรียนเอกชนมีค่าใช้จ่ายสูงกว่ารัฐบาลมาก ตั้งแต่ 10,000-50,000 บาทต่อเทอมหรือมากกว่า ขึ้นอยู่กับชื่อเสียงและสิ่งอำนวยความสะดวกของโรงเรียน',
+  },
+  {
+    question: 'วิธีประหยัดค่าเปิดเทอมทำอย่างไร?',
+    answer: 'ซื้อชุดนักเรียนมือสองในสภาพดี ซื้ออุปกรณ์การเรียนในช่วงลดราคา ยืมหนังสือแทนซื้อใหม่ สมัครทุนการศึกษา และวางแผนซื้อของล่วงหน้าเพื่อกระจายค่าใช้จ่าย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบเปิดเทอม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบเปิดเทอม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบเปิดเทอม 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณค่าใช้จ่ายเปิดเทอม ค่าเล่าเรียน ชุดนักเรียน อุปกรณ์การเรียน ค่ากิจกรรม</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="school-form" class="space-y-4">
+        <div>
+          <label for="school-level" class="mb-1 block text-sm font-medium text-gray-700">ระดับการศึกษา</label>
+          <select id="school-level" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto">
+            <option value="kindergarten">อนุบาล</option>
+            <option value="primary" selected>ประถมศึกษา</option>
+            <option value="secondary">มัธยมศึกษา</option>
+            <option value="university">อุดมศึกษา</option>
+          </select>
+        </div>
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">ประเภทโรงเรียน</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="school-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="schoolType" value="public" class="sr-only" checked /> โรงเรียนรัฐ
+            </label>
+            <label class="school-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="schoolType" value="private" class="sr-only" /> โรงเรียนเอกชน
+            </label>
+          </div>
+        </fieldset>
+        <div>
+          <label for="students" class="mb-1 block text-sm font-medium text-gray-700">จำนวนนักเรียน</label>
+          <input id="students" type="text" inputmode="numeric" placeholder="เช่น 1"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-32" />
+        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">งบเปิดเทอมโดยประมาณ</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">รวมต่อเทอม (ต่อนักเรียน)</div>
+          <div id="res-total" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">📋 ค่าเล่าเรียน</span>
+            <span id="res-tuition" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">👔 ชุดนักเรียน</span>
+            <span id="res-uniform" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">📚 หนังสือและอุปกรณ์</span>
+            <span id="res-books" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🎒 กระเป๋าและอุปกรณ์อื่นๆ</span>
+            <span id="res-bag" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-gray-700">🎯 ค่ากิจกรรมและทัศนศึกษา</span>
+            <span id="res-activity" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+        </div>
+        <div id="all-students" class="mt-4 hidden rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+          <span id="all-students-text"></span>
+        </div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณงบเปิดเทอม/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  // [tuition, uniform, books, bag, activity] per term per student
+  const COSTS: Record<string, Record<string, number[]>> = {
+    kindergarten: { public: [3000, 1500, 1000, 800, 500], private: [15000, 3000, 2000, 1200, 2000] },
+    primary:      { public: [2000, 2000, 1500, 800, 800], private: [12000, 3000, 2500, 1000, 2000] },
+    secondary:    { public: [2500, 2500, 2000, 1000, 1000], private: [18000, 3500, 3000, 1500, 3000] },
+    university:   { public: [15000, 0, 3000, 1500, 1000], private: [40000, 0, 4000, 2000, 2000] },
+  };
+
+  document.querySelectorAll<HTMLLabelElement>('.school-pill').forEach((pill) => {
+    pill.querySelector('input')?.addEventListener('change', () => {
+      document.querySelectorAll<HTMLLabelElement>('.school-pill').forEach((p) => {
+        p.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        p.classList.add('border-gray-200', 'text-gray-700');
+      });
+      pill.classList.remove('border-gray-200', 'text-gray-700');
+      pill.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+    });
+  });
+
+  document.getElementById('school-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const level = (document.getElementById('school-level') as HTMLSelectElement).value;
+    const schoolType = (document.querySelector('input[name="schoolType"]:checked') as HTMLInputElement)?.value ?? 'public';
+    const students = parseNum((document.getElementById('students') as HTMLInputElement).value) || 1;
+
+    const [tuition, uniform, books, bag, activity] = COSTS[level][schoolType];
+    const total = tuition + uniform + books + bag + activity;
+
+    document.getElementById('res-total')!.textContent = fmt(total);
+    document.getElementById('res-tuition')!.textContent = fmt(tuition);
+    document.getElementById('res-uniform')!.textContent = uniform > 0 ? fmt(uniform) : '—';
+    document.getElementById('res-books')!.textContent = fmt(books);
+    document.getElementById('res-bag')!.textContent = fmt(bag);
+    document.getElementById('res-activity')!.textContent = fmt(activity);
+
+    if (students > 1) {
+      document.getElementById('all-students-text')!.textContent = `รวมสำหรับ ${students} คน: ${fmt(total * students)} บาทต่อเทอม`;
+      document.getElementById('all-students')!.classList.remove('hidden');
+    } else {
+      document.getElementById('all-students')!.classList.add('hidden');
+    }
+
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

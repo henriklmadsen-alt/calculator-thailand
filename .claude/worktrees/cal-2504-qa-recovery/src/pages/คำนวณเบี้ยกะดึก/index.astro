@@ -1,0 +1,253 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเบี้ยกะดึก ค่าทำงานกลางคืน 22:00-06:00 อัตรา 20-30% ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยกะดึก ค่าทำงานกลางคืนช่วง 22:00-06:00 บาทต่อชั่วโมงเพิ่มจากเงินเดือน โดยทั่วไปนายจ้างกำหนด 20-30% ของอัตราค่าจ้างรายชั่วโมง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยกะดึก/`;
+
+const faqData = [
+  {
+    question: 'เบี้ยกะดึกคืออะไร?',
+    answer: 'เบี้ยกะดึก (Night Shift Differential) คือค่าตอบแทนพิเศษสำหรับพนักงานที่ทำงานในช่วงกลางคืน โดยทั่วไปกำหนดเป็นเปอร์เซ็นต์ของอัตราค่าจ้างรายชั่วโมง เช่น 20-30%',
+  },
+  {
+    question: 'กฎหมายแรงงานกำหนดเบี้ยกะดึกไว้หรือไม่?',
+    answer: 'กฎหมายแรงงานไทยไม่ได้บังคับจ่ายเบี้ยกะดึกโดยตรง แต่นายจ้างหลายรายกำหนดไว้ในข้อบังคับการทำงานหรือสัญญาจ้าง ช่วงเวลากะดึกมักหมายถึง 22:00-06:00 น.',
+  },
+  {
+    question: 'ช่วงเวลากะดึกกี่โมงถึงกี่โมง?',
+    answer: 'ไม่มีมาตรฐานตายตัวตามกฎหมาย แต่นิยมใช้ช่วง 22:00-06:00 น. บางองค์กรอาจกำหนดต่างกัน เช่น 20:00-08:00 ขึ้นอยู่กับลักษณะงานและนโยบายบริษัท',
+  },
+  {
+    question: 'อัตราเบี้ยกะดึกทั่วไปในไทยเป็นเท่าไร?',
+    answer: 'โดยทั่วไปอยู่ที่ 20-30% ของค่าจ้างรายชั่วโมง บางองค์กรกำหนดเป็นอัตราคงที่ต่อชั่วโมง เช่น 15-50 บาท/ชั่วโมง ขึ้นอยู่กับอุตสาหกรรมและนโยบายบริษัท',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยกะดึก',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยกะดึก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ค่าทำงานกลางคืน 22:00-06:00 น.</p>
+      <p class="mt-1 text-sm text-slate-700">เบี้ยกะดึกโดยทั่วไปกำหนดที่ 20-30% ของค่าจ้างรายชั่วโมง ขึ้นอยู่กับนโยบายบริษัท</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับพนักงานกะดึก โรงงาน โรงพยาบาล และงานที่มีกะกลางคืน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเบี้ยกะดึก ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน วันทำงาน ชั่วโมงกะดึกต่อวัน และเปอร์เซ็นต์เบี้ยกะดึก ระบบจะคำนวณค่าตอบแทนกะดึกต่อเดือน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="night-shift-form" class="space-y-5">
+        <p id="night-shift-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ns-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="ns-salary" inputmode="numeric" placeholder="เช่น 25,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ns-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ns-work-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานต่อเดือน (วัน)</label>
+            <input type="text" id="ns-work-days" inputmode="decimal" placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ns-work-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ns-hours-day" class="mb-1 block text-sm font-medium text-gray-700">ชั่วโมงทำงานต่อวัน (ชั่วโมง)</label>
+            <input type="text" id="ns-hours-day" inputmode="decimal" placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ns-hours-day-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ns-night-hours" class="mb-1 block text-sm font-medium text-gray-700">ชั่วโมงกะดึกต่อวัน (22:00-06:00)</label>
+            <input type="text" id="ns-night-hours" inputmode="decimal" placeholder="เช่น 6"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ns-night-hours-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="ns-rate-pct" class="mb-1 block text-sm font-medium text-gray-700">อัตราเบี้ยกะดึก (%)</label>
+            <input type="text" id="ns-rate-pct" inputmode="decimal" placeholder="เช่น 25"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 20-30% ของค่าจ้าง/ชั่วโมง</p>
+            <p id="ns-rate-pct-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="ns-night-days" class="mb-1 block text-sm font-medium text-gray-700">วันกะดึกต่อเดือน (วัน)</label>
+            <input type="text" id="ns-night-days" inputmode="decimal" placeholder="เช่น 20"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="ns-night-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณเบี้ยกะดึก
+        </button>
+      </form>
+    </div>
+
+    <div id="night-shift-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยกะดึกต่อเดือน</div>
+            <div id="res-ns-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยกะดึกต่อชั่วโมง</div>
+            <div id="res-ns-hourly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้รวม (เงินเดือน + กะดึก)</div>
+            <div id="res-ns-total" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าแรงฐาน/ชั่วโมง</span>
+            <span id="res-ns-base-hourly" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เบี้ยกะดึก/ชั่วโมง</span>
+            <span id="res-ns-diff" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ชั่วโมงกะดึกทั้งเดือน</span>
+            <span id="res-ns-total-hours" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่าแรงฐาน/ชั่วโมง = เงินเดือน ÷ (วันทำงาน/เดือน × ชั่วโมง/วัน)</li>
+        <li>เบี้ยกะดึก/ชั่วโมง = ค่าแรงฐาน/ชั่วโมง × อัตราเบี้ยกะดึก ÷ 100</li>
+        <li>ชั่วโมงกะดึกรวม/เดือน = ชั่วโมงกะดึก/วัน × วันกะดึก/เดือน</li>
+        <li>เบี้ยกะดึก/เดือน = เบี้ยกะดึก/ชั่วโมง × ชั่วโมงกะดึกรวม/เดือน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าโอที/">คำนวณค่าโอที</a></li>
+        <li><a href="/คำนวณค่าจ้างวันหยุด/">คำนวณค่าจ้างวันหยุด</a></li>
+        <li><a href="/คำนวณเงินเดือนสุทธิ/">คำนวณเงินเดือนสุทธิ</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#night-shift-results" />
+    <RelatedArticles currentHref="/คำนวณเบี้ยกะดึก/" />
+    <RelatedCalculators currentHref="/คำนวณเบี้ยกะดึก/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการคำนวณตามอัตราที่ระบุ อัตราเบี้ยกะดึกที่แท้จริงขึ้นอยู่กับนโยบายบริษัทและสัญญาจ้างงาน กฎหมายแรงงานไทยไม่ได้กำหนดอัตราขั้นต่ำสำหรับเบี้ยกะดึก
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('night-shift-form');
+    const formError = document.getElementById('night-shift-form-error');
+    const resultBox = document.getElementById('night-shift-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['ns-salary-error','ns-work-days-error','ns-hours-day-error','ns-night-hours-error','ns-rate-pct-error','ns-night-days-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('ns-salary').value);
+      const workDays = parseNum(document.getElementById('ns-work-days').value);
+      const hoursDay = parseNum(document.getElementById('ns-hours-day').value);
+      const nightHours = parseNum(document.getElementById('ns-night-hours').value);
+      const ratePct = parseNum(document.getElementById('ns-rate-pct').value);
+      const nightDays = parseNum(document.getElementById('ns-night-days').value);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('ns-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(workDays) || workDays <= 0 || workDays > 31) { setErr('ns-work-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true; }
+      if (!Number.isFinite(hoursDay) || hoursDay <= 0 || hoursDay > 24) { setErr('ns-hours-day-error', 'กรอกชั่วโมงทำงาน 1-24'); hasError = true; }
+      if (!Number.isFinite(nightHours) || nightHours <= 0 || nightHours > 24) { setErr('ns-night-hours-error', 'กรอกชั่วโมงกะดึก 1-24'); hasError = true; }
+      if (!Number.isFinite(ratePct) || ratePct <= 0 || ratePct > 100) { setErr('ns-rate-pct-error', 'กรอกเปอร์เซ็นต์ 1-100'); hasError = true; }
+      if (!Number.isFinite(nightDays) || nightDays <= 0 || nightDays > 31) { setErr('ns-night-days-error', 'กรอกวันกะดึก 1-31 วัน'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const baseHourly = salary / (workDays * hoursDay);
+      const nightDiffPerHour = baseHourly * (ratePct / 100);
+      const totalNightHours = nightHours * nightDays;
+      const monthlyNightPay = nightDiffPerHour * totalNightHours;
+
+      setText('res-ns-monthly', formatMoney(monthlyNightPay));
+      setText('res-ns-hourly', formatMoney(nightDiffPerHour));
+      setText('res-ns-total', formatMoney(salary + monthlyNightPay));
+      setText('res-ns-base-hourly', formatMoney(baseHourly));
+      setText('res-ns-diff', formatMoney(nightDiffPerHour));
+      setText('res-ns-total-hours', `${new Intl.NumberFormat('th-TH').format(totalNightHours)} ชั่วโมง`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,249 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเงินเดือนงวดสุดท้าย เงินเดือนวันสุดท้ายก่อนออก + วันลาคงเหลือ ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณเงินเดือนงวดสุดท้ายแบบ Pro-rated สำหรับเดือนที่ทำงานไม่ครบ รวมค่าวันลาพักร้อนคงเหลือ สูตรตามกฎหมายแรงงานไทย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินเดือนงวดสุดท้าย/`;
+
+const faqData = [
+  {
+    question: 'เงินเดือนงวดสุดท้ายคำนวณอย่างไร?',
+    answer: 'เงินเดือนงวดสุดท้ายคำนวณแบบ Pro-rated คือ (เงินเดือน ÷ จำนวนวันทั้งหมดในเดือนนั้น) × จำนวนวันที่ทำงานจริง เช่น เงินเดือน 30,000 บาท ทำงาน 15 วันในเดือนที่มี 30 วัน = 30,000 ÷ 30 × 15 = 15,000 บาท',
+  },
+  {
+    question: 'วันลาพักร้อนคงเหลือได้รับเงินชดเชยหรือไม่?',
+    answer: 'ตามกฎหมายแรงงานไทย พ.ร.บ.คุ้มครองแรงงาน มาตรา 67 นายจ้างต้องจ่ายค่าจ้างสำหรับวันหยุดพักผ่อนประจำปีที่พนักงานยังไม่ได้หยุดหรือหยุดไม่ครบ',
+  },
+  {
+    question: 'ค่าวันลาคงเหลือคำนวณอย่างไร?',
+    answer: 'ค่าวันลาคงเหลือ = (เงินเดือน ÷ วันทำงานต่อเดือน) × จำนวนวันลาที่คงเหลือ โดยใช้วันทำงาน (Working Days) ไม่ใช่วันปฏิทิน',
+  },
+  {
+    question: 'นายจ้างต้องจ่ายเงินงวดสุดท้ายภายในกี่วัน?',
+    answer: 'ตาม พ.ร.บ.คุ้มครองแรงงาน มาตรา 70 หากลูกจ้างลาออก นายจ้างต้องจ่ายค่าจ้างภายใน 3 วันทำการนับแต่วันสิ้นสุดสัญญาจ้าง',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเงินเดือนงวดสุดท้าย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือนงวดสุดท้าย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">เงินเดือนงวดสุดท้าย — Pro-rated Salary + ค่าวันลาคงเหลือ</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณเงินเดือนสำหรับเดือนที่ทำงานไม่ครบ รวมค่าชดเชยวันลาพักร้อนที่ยังไม่ได้ใช้</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับพนักงานที่กำลังลาออก ถูกเลิกจ้าง หรือ HR ที่ต้องคำนวณ Final Paycheck</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเงินเดือนงวดสุดท้าย (Final Paycheck) ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน วันทำงานในเดือนสุดท้าย และวันลาคงเหลือ ระบบจะคำนวณเงินเดือนแบบ Pro-rated และค่าวันลาทั้งหมด
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="final-form" class="space-y-5">
+        <p id="final-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fp-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="fp-salary" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="fp-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="fp-total-days-month" class="mb-1 block text-sm font-medium text-gray-700">จำนวนวันทั้งหมดในเดือนสุดท้าย</label>
+            <input type="text" id="fp-total-days-month" inputmode="numeric" placeholder="เช่น 31"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">จำนวนวันในเดือนปฏิทินที่วันทำงานสุดท้ายอยู่</p>
+            <p id="fp-total-days-month-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fp-days-worked" class="mb-1 block text-sm font-medium text-gray-700">วันที่ทำงานจริงในเดือนสุดท้าย (วัน)</label>
+            <input type="text" id="fp-days-worked" inputmode="numeric" placeholder="เช่น 15"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">นับวันปฏิทินตั้งแต่วันแรกของเดือนถึงวันทำงานสุดท้าย</p>
+            <p id="fp-days-worked-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="fp-leave-days" class="mb-1 block text-sm font-medium text-gray-700">วันลาพักร้อนคงเหลือ (วัน) <span class="text-gray-400">(ถ้ามี)</span></label>
+            <input type="text" id="fp-leave-days" inputmode="numeric" placeholder="เช่น 5 (ถ้าไม่มีใส่ 0)"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="fp-work-days-month" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานต่อเดือน (สำหรับคำนวณค่าวันลา)</label>
+            <input type="text" id="fp-work-days-month" inputmode="numeric" placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">มาตรฐาน 26 วัน (6 วัน/สัปดาห์) หรือ 22 วัน (5 วัน/สัปดาห์)</p>
+            <p id="fp-work-days-month-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณเงินเดือนงวดสุดท้าย
+        </button>
+      </form>
+    </div>
+
+    <div id="final-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินเดือน Pro-rated</div>
+            <div id="res-fp-prorated" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าวันลาคงเหลือ</div>
+            <div id="res-fp-leave" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รวมรับสุทธิงวดสุดท้าย</div>
+            <div id="res-fp-total" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราเงินเดือนรายวัน (÷ วันในเดือน)</span>
+            <span id="res-fp-daily-calendar" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราค่าวันลา (÷ วันทำงาน/เดือน)</span>
+            <span id="res-fp-daily-working" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">วันที่ทำงาน × อัตรารายวัน</span>
+            <span id="res-fp-calc-detail" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>เงินเดือน Pro-rated = (เงินเดือน ÷ วันทั้งหมดในเดือน) × วันที่ทำงานจริง</li>
+        <li>ค่าวันลาคงเหลือ = (เงินเดือน ÷ วันทำงาน/เดือน) × วันลาคงเหลือ</li>
+        <li>รวมรับสุทธิ = เงินเดือน Pro-rated + ค่าวันลาคงเหลือ</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าชดเชย/">คำนวณค่าชดเชย</a></li>
+        <li><a href="/คำนวณค่าวันลาพักร้อนคงเหลือ/">คำนวณค่าวันลาพักร้อนคงเหลือ</a></li>
+        <li><a href="/คำนวณค้างจ่ายเงินเดือน/">คำนวณค้างจ่ายเงินเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#final-results" />
+    <RelatedArticles currentHref="/คำนวณเงินเดือนงวดสุดท้าย/" />
+    <RelatedCalculators currentHref="/คำนวณเงินเดือนงวดสุดท้าย/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการตามสูตรทั่วไป นโยบายบริษัทและสัญญาจ้างอาจกำหนดวิธีคำนวณที่แตกต่าง กรุณาตรวจสอบกับ HR หรือที่ปรึกษากฎหมายแรงงานก่อนนำไปใช้จริง
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('final-form');
+    const formError = document.getElementById('final-form-error');
+    const resultBox = document.getElementById('final-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['fp-salary-error', 'fp-total-days-month-error', 'fp-days-worked-error', 'fp-work-days-month-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('fp-salary').value);
+      const totalDaysMonth = parseNum(document.getElementById('fp-total-days-month').value);
+      const daysWorked = parseNum(document.getElementById('fp-days-worked').value);
+      const leaveDays = parseNum(document.getElementById('fp-leave-days').value) || 0;
+      const workDaysMonth = parseNum(document.getElementById('fp-work-days-month').value);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('fp-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(totalDaysMonth) || totalDaysMonth < 28 || totalDaysMonth > 31) { setErr('fp-total-days-month-error', 'กรอกจำนวนวัน 28-31 วัน'); hasError = true; }
+      if (!Number.isFinite(daysWorked) || daysWorked <= 0 || daysWorked > 31) { setErr('fp-days-worked-error', 'กรอกวันที่ทำงาน 1-31 วัน'); hasError = true; }
+      if (!Number.isFinite(workDaysMonth) || workDaysMonth <= 0 || workDaysMonth > 31) { setErr('fp-work-days-month-error', 'กรอกวันทำงานต่อเดือน 1-31 วัน'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const dailyRateCalendar = salary / totalDaysMonth;
+      const proratedSalary = dailyRateCalendar * daysWorked;
+      const dailyRateWorking = salary / workDaysMonth;
+      const leavePayout = dailyRateWorking * leaveDays;
+      const total = proratedSalary + leavePayout;
+
+      setText('res-fp-prorated', formatMoney(proratedSalary));
+      setText('res-fp-leave', formatMoney(leavePayout));
+      setText('res-fp-total', formatMoney(total));
+      setText('res-fp-daily-calendar', formatMoney(dailyRateCalendar));
+      setText('res-fp-daily-working', formatMoney(dailyRateWorking));
+      setText('res-fp-calc-detail', `${daysWorked} วัน × ${formatMoney(dailyRateCalendar)}`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

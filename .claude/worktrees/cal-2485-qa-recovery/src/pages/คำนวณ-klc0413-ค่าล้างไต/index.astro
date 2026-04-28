@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่าล้างไต | Kamnuanlek';
+const pageDescription = 'คำนวณค่าล้างไต Dialysis ฟอกเลือด ล้างไตทางช่องท้อง ต้นทุนรายเดือนและรายปี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0413-ค่าล้างไต/`;
+
+const faqData = [
+  { question: 'ค่าฟอกเลือดล้างไตเดือนละเท่าไหร่?', answer: 'การฟอกเลือด (Hemodialysis) สัปดาห์ละ 3 ครั้ง ค่าใช้จ่ายโรงพยาบาลเอกชน 30,000-50,000 บาทต่อเดือน บัตรทองได้รับฟรีที่โรงพยาบาลรัฐ' },
+  { question: 'ล้างไตทางช่องท้อง (CAPD) ต้นทุนเท่าไหร่?', answer: 'CAPD ค่าน้ำยาล้างไต 20,000-30,000 บาทต่อเดือน แต่ไม่ต้องเดินทาง สามารถทำที่บ้านได้เอง' },
+  { question: 'บัตรทองครอบคลุมค่าล้างไตไหม?', answer: 'ผู้มีสิทธิ์บัตรทองได้รับการล้างไตฟรีที่โรงพยาบาลรัฐในสังกัด รวมทั้งน้ำยาและอุปกรณ์ CAPD ที่บ้าน' },
+  { question: 'ผู้ป่วยไตวายต้องล้างไตนานแค่ไหน?', answer: 'ผู้ป่วยไตวายเรื้อรังระยะสุดท้ายต้องล้างไตตลอดชีวิตจนกว่าจะได้รับการปลูกถ่ายไต การรอปลูกถ่ายในไทยอาจใช้เวลา 5-10 ปี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าล้างไต">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าล้างไต</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณค่าใช้จ่ายการล้างไต ฟอกเลือด และล้างไตทางช่องท้อง</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div>
+          <label for="dialysis_type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทการล้างไต</label>
+          <select id="dialysis_type" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            <option value="3000" selected>ฟอกเลือด Hemodialysis (~3,000 บาท/ครั้ง)</option>
+            <option value="25000">ล้างไตทางช่องท้อง CAPD (~25,000 บาท/เดือน)</option>
+          </select>
+        </div>
+        <div><label for="sessions_week" class="block text-sm font-medium text-gray-700 mb-1">จำนวนครั้งต่อสัปดาห์ (สำหรับ HD)</label><input type="number" id="sessions_week" min="1" max="7" placeholder="เช่น 3" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="transport_dialysis" class="block text-sm font-medium text-gray-700 mb-1">ค่าเดินทางต่อครั้ง (บาท)</label><input type="text" id="transport_dialysis" inputmode="decimal" placeholder="เช่น 200" value="200" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="meds_dialysis" class="block text-sm font-medium text-gray-700 mb-1">ค่ายาต่อเดือน (บาท)</label><input type="text" id="meds_dialysis" inputmode="decimal" placeholder="เช่น 5000" value="5000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าล้างไตต่อเดือน</p>
+            <p id="monthly_dialysis" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3">
+            <p class="text-sm text-gray-600">รวมค่าใช้จ่ายต่อปี</p>
+            <p id="yearly_dialysis" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          {faqData.map((faq) => (
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3>
+              <p class="text-gray-600 text-sm">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const dialysisType = parseFloat((document.getElementById('dialysis_type') as HTMLSelectElement).value) || 0;
+      const sessionsWeek = parseInt((document.getElementById('sessions_week') as HTMLInputElement).value) || 3;
+      const transport = parseFloat((document.getElementById('transport_dialysis') as HTMLInputElement).value) || 0;
+      const meds = parseFloat((document.getElementById('meds_dialysis') as HTMLInputElement).value) || 0;
+
+      let monthlyDialysis = 0;
+      if (dialysisType === 3000) {
+        const sessionsMonth = sessionsWeek * 4.3;
+        monthlyDialysis = (dialysisType * sessionsMonth) + (transport * sessionsMonth) + meds;
+      } else {
+        monthlyDialysis = dialysisType + meds;
+      }
+      const yearlyDialysis = monthlyDialysis * 12;
+
+      (document.getElementById('monthly_dialysis') as HTMLElement).textContent = Math.round(monthlyDialysis).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('yearly_dialysis') as HTMLElement).textContent = Math.round(yearlyDialysis).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('dialysis-costs');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

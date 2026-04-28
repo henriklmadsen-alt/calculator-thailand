@@ -1,0 +1,757 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณผ่อนรถ | เครื่องคิดเงินผ่อนรถ ดอกเบี้ยต่ำ 2569';
+const pageDescription = 'คำนวณเงินผ่อนรถ ดอกเบี้ย และสิ่งที่ต้องจ่าย — เครื่องคิดผ่อนรถฟรี พร้อมเทียบต่างสัญญา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณผ่อนรถ/`;
+
+const faqData = [
+  {
+    question: 'ดอกเบี้ยรถยนต์ในไทยปี 2569 กี่เปอร์เซ็นต์?',
+    answer: 'ดอกเบี้ยสินเชื่อรถยนต์ใหม่ในไทยปี 2569 อยู่ที่ประมาณ 2.5-4% ต่อปี (flat rate) สำหรับรถใหม่ และ 4-7% สำหรับรถมือสอง ขึ้นอยู่กับยี่ห้อ รุ่น อายุรถ และเครดิตของผู้กู้',
+  },
+  {
+    question: 'เงินดาวน์รถควรจ่ายกี่เปอร์เซ็นต์?',
+    answer: 'โดยทั่วไปเงินดาวน์ขั้นต่ำอยู่ที่ 10-20% ของราคารถ แนะนำให้ดาวน์ 20-25% เพื่อลดภาระค่างวดและดอกเบี้ยรวม ดาวน์มากยิ่งจ่ายดอกเบี้ยน้อย',
+  },
+  {
+    question: 'ผ่อนรถกี่ปีดีที่สุด?',
+    answer: 'สินเชื่อรถยนต์ในไทยผ่อนได้ 4-7 ปี (48-84 งวด) ผ่อนสั้น 4 ปี ค่างวดสูงแต่ดอกเบี้ยน้อย ผ่อนยาว 6-7 ปี ค่างวดต่ำแต่ดอกเบี้ยรวมสูง แนะนำเลือกระยะเวลาที่ค่างวดไม่เกิน 30% ของรายได้',
+  },
+  {
+    question: 'ดอกเบี้ยแบบ flat rate กับ effective rate ต่างกันอย่างไร?',
+    answer: 'Flat rate คำนวณดอกเบี้ยจากเงินต้นเต็มจำนวนตลอดสัญญา ส่วน effective rate คือดอกเบี้ยที่แท้จริงเมื่อคิดจากยอดหนี้คงเหลือ Flat rate 3% เทียบเท่า effective rate ประมาณ 5.5-6% สินเชื่อรถยนต์ไทยใช้ flat rate เป็นหลัก',
+  },
+  {
+    question: 'ค่างวดรถไม่ควรเกินกี่เปอร์เซ็นต์ของเงินเดือน?',
+    answer: 'ค่างวดรถไม่ควรเกิน 15-20% ของรายได้ต่อเดือน และภาระหนี้ทั้งหมด (รถ + บ้าน + อื่นๆ) ไม่ควรเกิน 40% ของรายได้ เพื่อให้มีเงินเหลือใช้จ่ายและออมเพียงพอ',
+  },
+  {
+    question: 'ข้อผิดพลาดทั่วไปในการคำนวณผ่อนรถที่ต้องหลีกเลี่ยงคืออะไร?',
+    answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ลืมบวกค่าประกันภัชระบบ (ถ้าบังคับ) (2) ไม่ตรวจสอบอัตราดอกเบี้ยจริงจากไฟแนนซ์ (3) นำอัตรา effective rate มาคิด flat rate (4) ไม่คิดค่ารีจิสเตรชั่นและภาษีอื่น (5) ใช้ราคาสูงกว่าราคาตลาดจริง และ (6) ลืมจำนวนเดือนเบิก/ผ่อนให้ถูกต้อง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผ่อนรถ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่างวดรถยนต์ด้วยเครื่องคำนวณผ่อนรถ',
+  description: 'คำนวณค่างวดรถยนต์รายเดือน เงินดาวน์ และดอกเบี้ยรวมด้วยอัตราดอกเบี้ยแบบ flat rate ที่ใช้กับสินเชื่อรถยนต์ในประเทศไทย',
+  inLanguage: 'th',
+  totalTime: 'PT1M',
+  tool: [{ '@type': 'HowToTool', name: 'เครื่องคำนวณผ่อนรถออนไลน์ฟรี' }],
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'กรอกราคารถยนต์',
+      text: 'กรอกราคารถยนต์ที่ต้องการซื้อในช่อง "ราคารถ (บาท)" เช่น 900,000 บาท สำหรับรถยนต์ใหม่ หรือราคาที่ตกลงกับผู้ขายสำหรับรถมือสอง',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'ระบุเงินดาวน์และอัตราดอกเบี้ย',
+      text: 'กรอกเปอร์เซ็นต์เงินดาวน์ (แนะนำ 20% ขึ้นไป) และอัตราดอกเบี้ยแบบ flat rate ตามที่ไฟแนนซ์เสนอ (รถใหม่ประมาณ 2.5–4% ต่อปี รถมือสองประมาณ 4–7% ต่อปี)',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'เลือกระยะเวลาผ่อนชำระ',
+      text: 'เลือกจำนวนปีที่ต้องการผ่อน ตั้งแต่ 4–7 ปี (48–84 งวด) โดยผ่อนสั้นจะจ่ายดอกเบี้ยน้อยกว่าแต่ค่างวดต่อเดือนสูงกว่า',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'กดคำนวณและดูผลลัพธ์',
+      text: 'กดปุ่ม "คำนวณทันที" เพื่อดูค่างวดรายเดือน เงินดาวน์ ดอกเบี้ยรวม และค่าใช้จ่ายทั้งหมดตลอดสัญญา',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'ตรวจสอบตารางผ่อนชำระ',
+      text: 'คลิก "ตารางผ่อนชำระ" เพื่อดูรายละเอียดเงินต้น ดอกเบี้ย และยอดคงเหลือในแต่ละงวด เพื่อใช้วางแผนการเงินก่อนลงนามสัญญา',
+    },
+  ],
+};
+
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณผ่อนรถ — คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2">
+      <p class="text-xs font-semibold text-green-800">[อัปเดตตามอัตราดอกเบี้ยธนาคารแห่งประเทศไทย 2569]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าผ่อนรถยนต์รายเดือน เงินดาวน์ ดอกเบี้ยรวม ด้วยอัตราดอกเบี้ยแบบคงที่ (flat rate) ที่ใช้กับสินเชื่อรถยนต์ในไทย
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="vehicle-form" class="space-y-5">
+        <p id="vehicle-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+        <div>
+          <label for="car-price" class="block text-sm font-medium text-gray-700 mb-1">
+            ราคารถ (บาท)
+          </label>
+          <input
+            type="text"
+            id="car-price"
+            inputmode="numeric"
+            placeholder="เช่น 900,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="car-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="down-payment" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินดาวน์ (%)
+            </label>
+            <input
+              type="text"
+              id="down-payment"
+              inputmode="decimal"
+              placeholder="เช่น 20"
+              value="20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">
+              อัตราดอกเบี้ย (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="interest-rate"
+              inputmode="decimal"
+              placeholder="เช่น 3.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ใส่อัตราแบบ flat rate ตามไฟแนนซ์รถยนต์ไทย</p>
+            <p id="interest-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="term-years" class="block text-sm font-medium text-gray-700 mb-1">
+              ระยะเวลาผ่อน (ปี)
+            </label>
+            <select
+              id="term-years"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+            >
+              <option value="4">4 ปี (48 งวด)</option>
+              <option value="5" selected>5 ปี (60 งวด)</option>
+              <option value="6">6 ปี (72 งวด)</option>
+              <option value="7">7 ปี (84 งวด)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Down payment amount display -->
+        <div id="down-amount-display" class="text-sm text-gray-500 hidden">
+          เงินดาวน์: <span id="down-amount-text" class="font-medium text-gray-700"></span> บาท | ยอดจัด: <span id="finance-amount-text" class="font-medium text-gray-700"></span> บาท
+        </div>
+
+        <button
+          type="submit"
+          id="vehicle-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์</div>
+            <div id="res-down" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายทั้งหมด</div>
+            <div id="res-total-cost" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Summary Details -->
+        <div class="space-y-2 text-sm mb-6">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ราคารถ</span>
+            <span id="res-car-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินดาวน์</span>
+            <span id="res-down-detail" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดจัดไฟแนนซ์</span>
+            <span id="res-finance" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราดอกเบี้ย (flat rate)</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนงวด</span>
+            <span id="res-term" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดผ่อนรวม (เงินต้น+ดอกเบี้ย)</span>
+            <span id="res-total-paid" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <!-- Amortization Schedule -->
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางผ่อนชำระ (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">งวดที่</th>
+                  <th class="py-2 pr-2 text-right">ค่างวด</th>
+                  <th class="py-2 pr-2 text-right">เงินต้น</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
+                  <th class="py-2 text-right">ยอมคงเหลือ</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div id="vehicle-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณผ่อนบ้าน + รีไฟแนนซ์</p>
+      <p class="mt-1 text-sm text-primary-700">เทียบภาระหนี้บ้านและรถให้เห็นภาพกระแสเงินสดรวม</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณผ่อนบ้าน/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณผ่อนบ้าน + รีไฟแนนซ์</a>
+        <a data-next-action-link href="/บทความ/คำนวณ-ค่างวดรถยนต์-2569-ผ่อนเท่าไร/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: เทคนิควางแผนค่างวดรถ</a>
+      </div>
+    </div>
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="car-loan"
+      affiliateUrl="/go/ktc-brother-berm/?sub_id=คำนวณผ่อนรถ"
+      partnerName="KTC Brother Berm"
+      ctaText="สมัครสินเชื่อรถ KTC Brother Berm"
+      subtext="สินเชื่อรถใหม่และรถมือสอง ดอกเบี้ยพิเศษ"
+    />
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+<!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณค่าผ่อนรถยนต์</h2>
+
+      <p>
+        การซื้อรถยนต์เป็นการตัดสินใจทางการเงินครั้งใหญ่ เครื่องคำนวณผ่อนรถนี้ช่วยให้คุณวางแผนค่าใช้จ่ายก่อนตัดสินใจ
+        รองรับทั้งรถใหม่และรถมือสอง คำนวณด้วยอัตราดอกเบี้ยแบบคงที่ (flat rate) ซึ่งเป็นวิธีที่ไฟแนนซ์รถยนต์ในไทยใช้เป็นมาตรฐาน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรคำนวณค่างวดรถ</h3>
+
+      <p>
+        สินเชื่อรถยนต์ในไทยใช้ดอกเบี้ยแบบ flat rate ซึ่งคำนวณดังนี้:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ยอดจัดไฟแนนซ์</strong> = ราคารถ − เงินดาวน์</li>
+        <li><strong>ดอกเบี้ยรวม</strong> = ยอดจัด × อัตราดอกเบี้ย × จำนวนปี</li>
+        <li><strong>ค่างวด</strong> = (ยอดจัด + ดอกเบี้ยรวม) ÷ จำนวนงวด</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+
+      <p>
+        ซื้อรถราคา 900,000 บาท ดาวน์ 20% ดอกเบี้ย 3.5% ผ่อน 5 ปี:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เงินดาวน์: 900,000 × 20% = <strong>180,000 บาท</strong></li>
+        <li>ยอดจัด: 900,000 − 180,000 = <strong>720,000 บาท</strong></li>
+        <li>ดอกเบี้ยรวม: 720,000 × 3.5% × 5 = <strong>126,000 บาท</strong></li>
+        <li>ยอดผ่อนรวม: 720,000 + 126,000 = <strong>846,000 บาท</strong></li>
+        <li>ค่างวด: 846,000 ÷ 60 = <strong>14,100 บาท/เดือน</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราดอกเบี้ยรถยนต์ในไทย 2569</h3>
+
+      <p>อัตราดอกเบี้ย flat rate เฉลี่ยในไทยปี 2569 ตามข้อมูลจาก<a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 font-semibold">ธนาคารแห่งประเทศไทย (Bank of Thailand)</a>:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>รถใหม่:</strong> 2.5-4% ต่อปี</li>
+        <li><strong>รถมือสอง:</strong> 4-7% ต่อปี</li>
+        <li><strong>รถ EV:</strong> 1.99-3% ต่อปี (โปรโมชันพิเศษ)</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">เปรียบเทียบดอกเบี้ยสินเชื่อรถยนต์แต่ละธนาคาร 2569</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[480px] border-collapse border border-gray-200 text-sm">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="border border-gray-200 px-3 py-2 text-left">ธนาคาร</th>
+              <th class="border border-gray-200 px-3 py-2 text-left">ดอกเบี้ย flat rate</th>
+              <th class="border border-gray-200 px-3 py-2 text-left">ระยะเวลาสูงสุด</th>
+              <th class="border border-gray-200 px-3 py-2 text-left">หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-200 px-3 py-2 font-medium">กรุงไทย</td>
+              <td class="border border-gray-200 px-3 py-2">2.25–3.50%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">รถใหม่</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="border border-gray-200 px-3 py-2 font-medium">กสิกรไทย</td>
+              <td class="border border-gray-200 px-3 py-2">2.25–3.50%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">รถใหม่/มือสอง</td>
+            </tr>
+            <tr>
+              <td class="border border-gray-200 px-3 py-2 font-medium">ไทยพาณิชย์</td>
+              <td class="border border-gray-200 px-3 py-2">2.25–3.75%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">รถใหม่</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="border border-gray-200 px-3 py-2 font-medium">TTB</td>
+              <td class="border border-gray-200 px-3 py-2">2.00–3.25%</td>
+              <td class="border border-gray-200 px-3 py-2">84 เดือน</td>
+              <td class="border border-gray-200 px-3 py-2">โปรโมชั่น</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-gray-500">* อัตราดอกเบี้ยเป็นข้อมูลประมาณการ อาจเปลี่ยนแปลงตามนโยบายธนาคาร ตรวจสอบล่าสุดกับธนาคารโดยตรง</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับการผ่อนรถ</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่างวดรถไม่ควรเกิน 15-20% ของรายได้</li>
+        <li>ดาวน์ 20% ขึ้นไปช่วยลดภาระดอกเบี้ยอย่างมีนัยสำคัญ</li>
+        <li>เปรียบเทียบข้อเสนอจากหลายไฟแนนซ์ก่อนตัดสินใจ</li>
+        <li>อย่าลืมรวมค่าประกันภัย พ.ร.บ. และค่าบำรุงรักษาในการวางแผน</li>
+        <li>หากมีเงินก้อน การผ่อนสั้นจ่ายดอกเบี้ยน้อยกว่ามาก</li>
+      </ul>
+    </section>
+
+
+    <!-- CAL-654 Content Block -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณผ่อนรถ</h2>
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-base font-semibold">ค่างวด = P × [r(1+r)^n] / [(1+r)^n − 1]</p>
+        <p class="text-sm text-gray-500 mt-1">P = เงินกู้ | r = ดอกเบี้ยต่อเดือน | n = จำนวนเดือน</p>
+      </div>
+      <p>ค่าใช้จ่ายเพิ่มเติม: ค่าโอน 3–5%, ค่าประกัน 2,000–5,000 บาท/ปี, ค่าตรวจสภาพ 100–200 บาท/ปี</p>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณผ่อนรถ</h2>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 1: รถ 900,000 บาท ดาวน์ 30% กู้ 15 ปี อัตรา 3.5%</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>เงินดาวน์ = 900,000 × 30% = 270,000 บาท</li>
+          <li>เงินกู้ = 900,000 - 270,000 = 630,000 บาท</li>
+          <li>r = 3.5% ÷ 12 = 0.2917%/เดือน, n = 15 × 12 = 180 เดือน</li>
+          <li><strong>ค่างวด ≈ 4,453.50 บาท/เดือน</strong></li>
+          <li>ดอกเบี้ยรวม ≈ 171,630 บาท | ค่าโอน ≈ 27,000 บาท</li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 2: รถ 700,000 บาท ดาวน์ 40% กู้ 7 ปี อัตรา 3%</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>เงินกู้ = 700,000 × 60% = 420,000 บาท</li>
+          <li><strong>ค่างวดประมาณ ≈ 6,200 บาท/เดือน</strong></li>
+          <li>ดอกเบี้ยรวมประมาณ ≈ 79,200 บาท</li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 3: ชำระล่วงหน้าลดเงินต้น</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>เงินกู้คงเหลือเดือนที่ 50 ≈ 500,000 บาท</li>
+          <li>ชำระล่วงหน้า 100,000 บาท → เงินกู้เหลือ 400,000 บาท</li>
+          <li>ระยะเวลาลดลงจาก 130 เดือน → ประมาณ 90 เดือน</li>
+        </ul>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">วิธีคำนวณผ่อนรถ</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>เปรียบเทียบอัตราดอกเบี้ยจากธนาคารต่างๆ (2.9%–4.5%)</li>
+        <li>กำหนดราคารถและเงินดาวน์ (20%–40% แนะนำ)</li>
+        <li>ป้อนข้อมูล: เงินกู้ อัตราดอกเบี้ย จำนวนเดือน</li>
+        <li>คำนวณค่างวดและดอกเบี้ยรวมทั้งสิ้น</li>
+        <li>รวมค่าใช้จ่ายอื่น: โอน ประกัน ตรวจสภาพ</li>
+        <li>เตรียมเอกสาร: ID บัตรประชาชน หนังสือรับรองรายได้</li>
+      </ol>
+
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.bot.or.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">ธนาคารแห่งประเทศไทย: ข้อมูลเงินกู้ยานพาหนะ</a> [อัปเดต 2569]
+      </p>
+    </section>
+
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณสินเชื่อรถยนต์</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อคำนวณเงินผ่อนรถ เพื่อทำให้การตัดสินใจชาญฉลาด โปรดหลีกเลี่ยงข้อผิดพลาดเหล่านี้:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ไม่นำค่าประกันรถและค่าจดทะเบียนรวม</strong><br/>
+          รถราคา 600,000 บาท ธนาคารให้กู้ 90% = 540,000 แต่ลืมว่าต้องจ่ายค่าประกัน ค่าจดทะเบียน ค่าธรรมเนียมบวกกันหลายหมื่น ขอใบประมาณการที่มีทุกค่าใช้จ่าย
+        </li>
+        <li>
+          <strong>เลือกงวดผ่อนที่เกินความสามารถ</strong><br/>
+          เงินผ่อน 15,000 บาท/เดือน แต่เงินเดือนตัวเองเพียง 30,000 บาท ต้องเหลือเงินจ่ายค่ารักษารถ ค่าน้ำมัน ค่าประกัน เงินผ่อนรถควรไม่เกิน 20% ของเงินเดือน
+        </li>
+        <li>
+          <strong>ไม่เปรียบเทียบอัตราดอกเบี้ยระหว่างธนาคารและบริษัทสินเชื่อ</strong><br/>
+          ยินดีกู้จากตัวแทนจำหน่ายรถที่มีดอกเบี้ย 3.99% แต่ไม่ลองถามธนาคารที่ให้ 2.99% ปลายปีจะประหยัดแตกต่างกันมาก สอบถาม 3 ที่ขึ้นไป
+        </li>
+        <li>
+          <strong>ลืมรวมค่าดำเนินการและดอกเบี้ยเร็วๆ (Front Load Interest)</strong><br/>
+          เงินผ่อน 10,000 บาท แต่งวดแรก 12,000 บาท เนื่องจากดอกเบี้ยหนักเร็วไป ขอทราบอัตราแบบ "ลดต้นลดดอก" ซึ่งดีกว่าแบบ "Flat"
+        </li>
+        <li>
+          <strong>ไม่คิดปัญหากรณีขาดงานหรือเงินเดือนลด</strong><br/>
+          คำนวณเงินผ่อนได้แล้ว แต่ไม่คิดว่ากรณีเงินเดือนลด หรือสถานการณ์ฉุกเฉิน จะหาเงินมาจ่าย 15,000 บาท/เดือนได้ยาก ประกันอัมนัยชีวิตรถจะให้ความปลอดภัย
+        </li>
+      </ul>
+    </section>
+
+    <!-- Related Calculators Internal Linking Section -->
+    <section class="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องมือที่เกี่ยวข้องสำหรับการวางแผนการเงิน</h2>
+      <p class="text-gray-700 mb-5">เปรียบเทียบและวางแผนการเงินส่วนบุคคลของคุณอย่างสมบูรณ์:</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg p-4 border border-blue-100 hover:shadow-md transition-shadow">
+          <h3 class="font-semibold text-gray-900 mb-2 text-lg">เครื่องคำนวณผ่อนบ้าน</h3>
+          <p class="text-sm text-gray-600 mb-3">คำนวณค่างวดบ้าน เทียบแผนเดิมกับรีไฟแนนซ์ และหาจุดคุ้มทุน</p>
+          <a href="/คำนวณผ่อนบ้าน/" class="inline-block text-primary-600 font-semibold hover:text-primary-700 hover:underline">
+            ลองใช้เครื่องคำนวณผ่อนบ้าน →
+          </a>
+        </div>
+
+        <div class="bg-white rounded-lg p-4 border border-blue-100 hover:shadow-md transition-shadow">
+          <h3 class="font-semibold text-gray-900 mb-2 text-lg">เครื่องคำนวณเงินเดือนสุทธิ</h3>
+          <p class="text-sm text-gray-600 mb-3">คำนวณเงินเดือนหลังหักภาษีและประกันสังคม เพื่อวางแผนอัตราผ่อนรถให้เหมาะสม</p>
+          <a href="/คำนวณเงินเดือนสุทธิ/" class="inline-block text-primary-600 font-semibold hover:text-primary-700 hover:underline">
+            ดูเงินเดือนสุทธิของคุณ →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <section class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
+      <h3 class="mb-3 text-base font-semibold text-gray-900">เครื่องมือเกี่ยวกับรถยนต์ที่น่าสนใจ</h3>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li><a href="/คำนวณเบี้ยประกันรถยนต์/" class="text-primary-600 hover:underline">คำนวณเบี้ยประกันรถยนต์</a> — อย่าลืมบวกค่าประกันในงบรายปี</li>
+        <li><a href="/คำนวณค่าภาษีรถยนต์/" class="text-primary-600 hover:underline">คำนวณภาษีรถยนต์ประจำปี</a> — ค่าใช้จ่ายรถรายปีครบถ้วน</li>
+        <li><a href="/คำนวณค่าต่อทะเบียนรถ/" class="text-primary-600 hover:underline">คำนวณค่าต่อทะเบียนรถ</a> — ต่อทะเบียนและประกันพร้อมกัน</li>
+      </ul>
+    </section>
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณผ่อนรถ/" />
+    <RelatedCalculators currentHref="/คำนวณผ่อนรถ/" />
+
+    <!-- Official References -->
+    <section class="mb-8">
+      <h3 class="mb-3 text-lg font-semibold text-gray-900">แหล่งอ้างอิงทางการ</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 font-medium">ธนาคารแห่งประเทศไทย (Bank of Thailand) — ข้อมูลอัตราดอกเบี้ยและนโยบายการเงิน</a></li>
+        <li><a href="https://www.bot.or.th/thai/MonetaryPolicy/Pages/default.aspx" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 font-medium">ธนาคารแห่งประเทศไทย — นโยบายการเงินและอัตราดอกเบี้ยนโยบาย</a></li>
+        <li><a href="https://www.mowt.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 font-medium">กระทรวงขนส่ง (Ministry of Transport) — ข้อมูลสินเชื่อรถยนต์ไฟฟ้าและสินเชื่อพิเศษ</a></li>
+      </ul>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ค่างวดจริงอาจแตกต่างตามเงื่อนไขของสถาบันการเงินและไฟแนนซ์ ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('vehicle-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('vehicle-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('vehicle-form-error') as HTMLElement;
+    const nextActionCard = document.getElementById('vehicle-next-action') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const carPriceInput = document.getElementById('car-price') as HTMLInputElement;
+    const downPaymentInput = document.getElementById('down-payment') as HTMLInputElement;
+    const interestRateInput = document.getElementById('interest-rate') as HTMLInputElement;
+    let hasTrackedStart = false;
+
+    function setFieldError(elementId: string, message: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(elementId: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      clearFieldError('car-price-error');
+      clearFieldError('interest-rate-error');
+      formError.classList.add('hidden');
+    }
+
+    function updateSubmitState() {
+      const ready = parseNum(carPriceInput.value) > 0 && parseNum(interestRateInput.value) > 0;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    // Live preview of down payment amount
+    function updateDownPreview() {
+      const price = parseNum(carPriceInput.value);
+      const pct = parseFloat(downPaymentInput.value) || 0;
+      const display = document.getElementById('down-amount-display') as HTMLElement;
+      if (price > 0 && pct > 0) {
+        const down = price * pct / 100;
+        const finance = price - down;
+        (document.getElementById('down-amount-text') as HTMLElement).textContent = fmt(down);
+        (document.getElementById('finance-amount-text') as HTMLElement).textContent = fmt(finance);
+        display.classList.remove('hidden');
+      } else {
+        display.classList.add('hidden');
+      }
+    }
+
+    carPriceInput.addEventListener('input', updateDownPreview);
+    downPaymentInput.addEventListener('input', updateDownPreview);
+    carPriceInput.addEventListener('input', () => {
+      clearFieldError('car-price-error');
+      formError.classList.add('hidden');
+      updateSubmitState();
+    });
+    interestRateInput.addEventListener('input', () => {
+      clearFieldError('interest-rate-error');
+      formError.classList.add('hidden');
+      updateSubmitState();
+    });
+    updateSubmitState();
+
+    form.addEventListener('input', () => {
+      if (!hasTrackedStart) {
+        trackCalculatorStart('vehicle');
+        hasTrackedStart = true;
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearValidation();
+
+      const carPrice = parseNum(carPriceInput.value);
+      const downPct = parseFloat(downPaymentInput.value) || 0;
+      const annualRate = parseFloat(interestRateInput.value.replace(/,/g, '')) || 0;
+      const termYears = parseInt((document.getElementById('term-years') as HTMLSelectElement).value) || 5;
+      const termMonths = termYears * 12;
+
+      if (hasInvalidNumber(carPriceInput.value) || hasInvalidNumber(interestRateInput.value)) {
+        formError.classList.remove('hidden');
+        if (hasInvalidNumber(carPriceInput.value)) {
+          setFieldError('car-price-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          carPriceInput.focus();
+        }
+        if (hasInvalidNumber(interestRateInput.value)) {
+          setFieldError('interest-rate-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          if (!hasInvalidNumber(carPriceInput.value)) {
+            interestRateInput.focus();
+          }
+        }
+        updateSubmitState();
+        return;
+      }
+
+      if (carPrice <= 0) {
+        formError.classList.remove('hidden');
+        setFieldError('car-price-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
+        carPriceInput.focus();
+        updateSubmitState();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      if (!hasTrackedStart) {
+        trackCalculatorStart('vehicle');
+        hasTrackedStart = true;
+      }
+
+      const downPayment = carPrice * (downPct / 100);
+      const financeAmount = carPrice - downPayment;
+      const totalInterest = financeAmount * (annualRate / 100) * termYears;
+      const totalPaid = financeAmount + totalInterest;
+      const monthlyPayment = termMonths > 0 ? totalPaid / termMonths : 0;
+      const totalCost = downPayment + totalPaid;
+
+      // Update summary
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPayment) + ' บาท';
+      (document.getElementById('res-down') as HTMLElement).textContent = fmt(downPayment) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total-cost') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+      (document.getElementById('res-car-price') as HTMLElement).textContent = fmt(carPrice) + ' บาท';
+      (document.getElementById('res-down-detail') as HTMLElement).textContent = fmt(downPayment) + ' บาท (' + downPct.toFixed(0) + '%)';
+      (document.getElementById('res-finance') as HTMLElement).textContent = fmt(financeAmount) + ' บาท';
+      (document.getElementById('res-rate') as HTMLElement).textContent = annualRate.toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-term') as HTMLElement).textContent = termMonths + ' งวด (' + termYears + ' ปี)';
+      (document.getElementById('res-total-paid') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+
+      // Amortization table
+      const monthlyPrincipal = financeAmount / termMonths;
+      const monthlyInterest = totalInterest / termMonths;
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      let balance = financeAmount;
+      for (let m = 1; m <= termMonths; m++) {
+        balance = Math.max(0, balance - monthlyPrincipal);
+        const show = m <= 12 || m % 12 === 0 || m === termMonths;
+        if (!show) continue;
+
+        if (m > 13 && (m - 1) % 12 !== 0) {
+          const sep = document.createElement('tr');
+          sep.innerHTML = '<td colspan="5" class="py-1 text-center text-gray-400 text-xs">⋮</td>';
+          tbody.appendChild(sep);
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${m}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyPayment)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyPrincipal)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyInterest)}</td>
+          <td class="py-2 text-right">${fmt(balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      resultsDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;
+      if (affiliateCard) affiliateCard.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('vehicle');
+      trackCalculatorUsed('vehicle');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'vehicle',
+            target_href: href,
+          });
+        }
+      });
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('vehicle');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>
+

@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเงินดาวน์ที่ดิน ปี 2569 | วงเงินกู้ | ค่างวด | Kamnuanlek';
+const pageDescription = 'คำนวณเงินดาวน์ที่ต้องจ่าย วงเงินกู้ และค่างวดสำหรับการซื้อที่ดิน บ้าน คอนโด ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินดาวน์ที่ดิน/`;
+
+const faqData = [
+  { question: 'Cap Rate ที่ดีสำหรับอสังหาริมทรัพย์ไทยคือเท่าไร?', answer: 'Cap Rate ที่ดีในไทยมักอยู่ที่ 5-8% ต่อปี ขึ้นอยู่กับทำเลและประเภทอสังหาฯ ทำเลกรุงเทพฯ ชั้นในมักได้ cap rate ต่ำกว่าต่างจังหวัด' },
+  { question: 'ค่าใช้จ่ายแฝงในการซื้ออสังหาฯ มีอะไรบ้าง?', answer: 'ค่าโอน ค่าจดจำนอง ค่าอากรแสตมป์ ภาษีธุรกิจเฉพาะ ค่านายหน้า ค่าซ่อมแซม รวมกันอาจสูงถึง 3-7% ของราคาซื้อ' },
+  { question: 'ผลตอบแทนการลงทุนอสังหาฯ ที่ดีต้องเป็นเท่าไร?', answer: 'นักลงทุนส่วนใหญ่ต้องการ IRR อย่างน้อย 8-12% ต่อปี หรือ Yield ค่าเช่า 5-7% ขึ้นอยู่กับทำเลและเป้าหมาย' },
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกราคาซื้อ ค่าเช่า ค่าใช้จ่ายรายเดือน เครื่องจะคำนวณ Yield, Cash Flow และ Cap Rate ให้อัตโนมัติ' }
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' },
+  { question: 'ซื้อบ้านมือสองต้องระวังค่าใช้จ่ายอะไร?', answer: 'ค่าธรรมเนียมโอน ค่าภาษีธุรกิจเฉพาะหรืออากรแสตมป์ ค่าจดจำนอง ค่าตรวจสอบภาระผูกพัน ค่าประเมินราคา ค่าซ่อมแซม และค่าประกันภัย รวมกันอาจสูงถึง 5-10% ของราคาซื้อ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินดาวน์ที่ดิน">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณเงินดาวน์ที่ดิน ปี 2569</h1>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="downpayment-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="property-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาซื้อ (บาท)</label>
+            <input id="property-price" type="text" inputmode="numeric" placeholder="เช่น 5,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" />
+          </div>
+          <div>
+            <label for="downpay-percent" class="block text-sm font-medium text-gray-700 mb-1">เงินดาวน์ (%)</label>
+            <input id="downpay-percent" type="text" inputmode="numeric" placeholder="เช่น 20" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" value="20" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">ดอกเบี้ย (%)</label>
+            <input id="interest-rate" type="text" inputmode="numeric" placeholder="เช่น 3.5" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" value="3.5" />
+          </div>
+          <div>
+            <label for="loan-term" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลา (ปี)</label>
+            <input id="loan-term" type="text" inputmode="numeric" placeholder="เช่น 20" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base" value="20" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์</div>
+            <div id="res-downpay" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวด/เดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">วงเงินกู้</span>
+            <span id="res-loan" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ดอกเบี้ยรวม</span>
+            <span id="res-total-interest" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <AffiliateCard
+      category="home-loan"
+      affiliateUrl="https://tidjai.link/r/ArQMG"
+      partnerName="ทิดลอร์"
+      ctaText="ดูสินเชื่อที่ดินกับทิดลอร์"
+      subtext="สินเชื่อที่ดิน วงเงินสูง อนุมัติไว ใช้โฉนดที่ดินค้ำประกัน"
+    />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
+    <RelatedCalculators currentHref="/คำนวณเงินดาวน์ที่ดิน/" />
+  </article>
+</BaseLayout>
+
+<script>
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#downpayment-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const price = parseNumber(document.querySelector('#property-price')?.value || '');
+    const downPayPercent = parseNumber(document.querySelector('#downpay-percent')?.value || '');
+    const interestRate = parseNumber(document.querySelector('#interest-rate')?.value || '');
+    const loanTerm = parseNumber(document.querySelector('#loan-term')?.value || '');
+
+    if (!(Number.isFinite(price) && price > 0 && Number.isFinite(downPayPercent) && Number.isFinite(interestRate) && Number.isFinite(loanTerm) && loanTerm > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const downPay = price * (downPayPercent / 100);
+    const loanAmount = price - downPay;
+    const monthlyRate = interestRate / 12 / 100;
+    const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanTerm * 12)) / (Math.pow(1 + monthlyRate, loanTerm * 12) - 1);
+    const totalInterest = (monthlyPayment * loanTerm * 12) - loanAmount;
+
+    document.querySelector('#res-downpay').textContent = formatCurrency(downPay);
+    document.querySelector('#res-monthly').textContent = formatCurrency(monthlyPayment);
+    document.querySelector('#res-loan').textContent = formatCurrency(loanAmount);
+    document.querySelector('#res-total-interest').textContent = formatCurrency(totalInterest);
+
+    results?.classList.remove('hidden');
+    document.getElementById('affiliate-card')?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

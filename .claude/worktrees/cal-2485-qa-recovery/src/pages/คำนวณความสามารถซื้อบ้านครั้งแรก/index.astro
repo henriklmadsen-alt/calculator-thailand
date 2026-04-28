@@ -1,0 +1,343 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณกู้บ้านได้เท่าไร 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณว่ากู้บ้านได้เท่าไรจากรายได้ของคุณ 2569 ฟรี — ใส่เงินเดือน เงินดาวน์ ดอกเบี้ย รู้วงเงินสูงสุดที่ธนาคารจะอนุมัติ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณความสามารถซื้อบ้านครั้งแรก/`;
+
+const faqData = [
+  {
+    question: 'ควรซื้อบ้านราคาเท่าไหร่ตามรายได้ของฉัน?',
+    answer: 'ตามหลักทั่วไป งบประมาณสำหรับบ้านควรเป็น 2-3 เท่าของรายได้ประจำปี สำหรับสินเชื่อกู้ยืม ธนาคารมักให้ไม่เกิน 90% ของราคาอสังหาริมทรัพย์ และตัดสินจากความสามารถชำระต่อ (Debt-to-Income Ratio)',
+  },
+  {
+    question: 'Debt-to-Income Ratio คืออะไร?',
+    answer: 'Debt-to-Income Ratio (DTI) = ยอดจ่ายหนี้ต่อเดือน ÷ รายได้ต่อเดือน ธนาคารไทยโดยทั่วไปให้ได้ไม่เกิน 50% (คนเดียว) หรือ 60% (รวมคู่สมรส)',
+  },
+  {
+    question: 'เงินดาวน์ควรเป็นเท่าไหร่?',
+    answer: 'เงินดาวน์มินิมัม 20% เพื่อหลีกเลี่ยงค่าประกันสินเชื่อ หากน้อยกว่านี้ ต้องซื้อประกันพิเศษ บ่อยครั้งผู้ซื้อครั้งแรกอาจมีเงินดาวน์เพียง 10-15% เท่านั้น',
+  },
+  {
+    question: 'ต้องประมาณค่าใช้จ่ายประจำปีอื่นหรือ?',
+    answer: 'ใช่ ต้องคำนึงถึง ภาษีที่ดิน ค่าประกัน ค่าดูแลรักษา ค่าน้ำไฟ ค่าส่วนกลาง (ถ้ามี) คำนวณนี้ช่วยประมาณค่าจำนองเท่านั้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณความสามารถซื้อบ้านครั้งแรก',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณความสามารถซื้อบ้านครั้งแรก">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ตามความสามารถ ไม่เหนือกำลัง</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณราคาบ้านที่คุณจ่ายได้จริง ตามรายได้และสถานการณ์</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ตามอัตราตลาดไทย 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณความสามารถซื้อบ้านครั้งแรก
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณราคาบ้านสูงสุดที่คุณสามารถซื้อได้
+      บนพื้นฐานรายได้ประจำเดือน ดอกเบี้ยจำนอง เงินดาวน์ และกำหนดเวลา
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลการเงินส่วนตัว</h2>
+
+      <form id="homebuyer-form" class="space-y-6">
+        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-blue-900 mb-2">รายได้และหนี้</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="monthly-income" class="block text-sm font-medium text-gray-700 mb-1">
+                รายได้ต่อเดือน (บาท)
+              </label>
+              <input
+                type="text"
+                id="monthly-income"
+                inputmode="numeric"
+                placeholder="เช่น 75,000"
+                value="75000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="other-debt" class="block text-sm font-medium text-gray-700 mb-1">
+                หนี้อื่นต่อเดือน (บาท)
+              </label>
+              <input
+                type="text"
+                id="other-debt"
+                inputmode="numeric"
+                placeholder="เช่น 5,000"
+                value="5000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+              <p class="mt-1 text-xs text-gray-500">สินเชื่อรถ บัตรเครดิต ฯลฯ</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 border border-green-100 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-green-900 mb-2">เงินดาวน์และสินเชื่อ</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="down-payment" class="block text-sm font-medium text-gray-700 mb-1">
+                เงินดาวน์ (บาท)
+              </label>
+              <input
+                type="text"
+                id="down-payment"
+                inputmode="numeric"
+                placeholder="เช่น 500,000"
+                value="500000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="loan-term" class="block text-sm font-medium text-gray-700 mb-1">
+                ระยะเวลาสินเชื่อ (ปี)
+              </label>
+              <input
+                type="text"
+                id="loan-term"
+                inputmode="numeric"
+                placeholder="เช่น 20"
+                value="20"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 border border-purple-100 rounded-lg p-4">
+          <h3 class="font-semibold text-purple-900 mb-2">ดอกเบี้ยและอัตรา DTI</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="interest-rate" class="block text-sm font-medium text-gray-700 mb-1">
+                ดอกเบี้ยจำนอง (%) ต่อปี
+              </label>
+              <input
+                type="text"
+                id="interest-rate"
+                inputmode="numeric"
+                placeholder="เช่น 3.5"
+                value="3.5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="dti-ratio" class="block text-sm font-medium text-gray-700 mb-1">
+                อัตรา DTI ที่ยอมรับ (%)
+              </label>
+              <input
+                type="text"
+                id="dti-ratio"
+                inputmode="numeric"
+                placeholder="เช่น 50"
+                value="50"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base"
+              />
+              <p class="mt-1 text-xs text-gray-500">โดยทั่วไป 40-50%</p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณสามารถซื้อ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ความสามารถซื้อบ้าน</h2>
+
+      <div class="grid gap-3 sm:grid-cols-2 mb-6">
+        <div class="bg-green-50 rounded-lg p-4 text-center border border-green-100">
+          <div class="text-sm text-gray-600 mb-1">ราคาบ้านสูงสุด</div>
+          <div id="result-max-price" class="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-700">-</div>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-4 text-center border border-orange-100">
+          <div class="text-sm text-gray-600 mb-1">จำนวนสินเชื่อ</div>
+          <div id="result-loan-amount" class="text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-700">-</div>
+        </div>
+      </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">รายละเอียดสินเชื่อ</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">จำนวนกู้</span>
+                <span id="detail-loan" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ดอกเบี้ยต่อเดือน</span>
+                <span id="detail-monthly-payment" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">หนี้รวม/เดือน</span>
+                <span id="detail-total-monthly-debt" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">อัตรา DTI</span>
+                <span id="detail-dti-actual" class="font-medium">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-gray-200 p-4">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">ข้อมูลเพิ่มเติม</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">เงินดาวน์</span>
+                <span id="detail-down" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ร้อยละเงินดาวน์</span>
+                <span id="detail-down-percent" class="font-medium">-</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ค่าจำนองต่อเดือน</span>
+                <span id="detail-mortgage-months" class="font-medium">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-4 mb-4">
+          <p id="dti-note" class="text-sm text-yellow-800">-</p>
+        </div>
+
+        <details class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <summary class="font-semibold text-yellow-900 cursor-pointer select-none hover:text-yellow-800 transition-colors">
+            ⚠️ สำคัญ: หมายเหตุเกี่ยวกับการคำนวณ
+          </summary>
+          <div class="mt-3 text-sm text-yellow-800 space-y-2">
+            <p>• ผลการคำนวณเป็นการประมาณการตามสูตร DTI เท่านั้น ธนาคารอาจมีเงื่อนไขอื่นเพิ่มเติม</p>
+            <p>• ธนาคารจะพิจารณาประวัติเครดิต ความเสถียรของรายได้ และเงื่อนไขอื่นๆ</p>
+            <p>• ราคาบ้านควรเป็น 2-3 เท่าของรายได้ประจำปีสำหรับการวางแผนที่สมดุล</p>
+            <p>• ตรวจสอบกับธนาคารหลายแห่งเพื่อเปรียบเทียบอัตราดอกเบี้ย และเงื่อนไขสินเชื่อ</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณความสามารถซื้อบ้านครั้งแรก/" />
+    <RelatedCalculators currentHref="/คำนวณความสามารถซื้อบ้านครั้งแรก/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเท่านั้น ธนาคารอาจมีเงื่อนไขอื่นเพิ่มเติม
+    </div>
+  </article>
+
+  <script>
+    function parseNumber(val: string): number {
+      return Math.max(0, parseFloat(val.replace(/,/g, '')) || 0);
+    }
+
+    function formatThai(num: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(num));
+    }
+
+    const form = document.getElementById('homebuyer-form') as HTMLFormElement;
+    const resultsDiv = document.getElementById('results') as HTMLElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const monthlyIncome = parseNumber((document.getElementById('monthly-income') as HTMLInputElement).value);
+      const otherDebt = parseNumber((document.getElementById('other-debt') as HTMLInputElement).value);
+      const downPayment = parseNumber((document.getElementById('down-payment') as HTMLInputElement).value);
+      const loanTerm = parseNumber((document.getElementById('loan-term') as HTMLInputElement).value);
+      const interestRate = parseNumber((document.getElementById('interest-rate') as HTMLInputElement).value) / 100;
+      const dtiRatio = parseNumber((document.getElementById('dti-ratio') as HTMLInputElement).value) / 100;
+
+      // Calculate max monthly payment based on DTI
+      const maxMonthlyPayment = monthlyIncome * dtiRatio - otherDebt;
+
+      // Calculate max loan based on monthly payment
+      const monthlyRate = interestRate / 12;
+      const numPayments = loanTerm * 12;
+      const maxLoan = maxMonthlyPayment * (Math.pow(1 + monthlyRate, numPayments) - 1) / (monthlyRate * Math.pow(1 + monthlyRate, numPayments));
+
+      // Calculate max house price
+      const maxPrice = maxLoan + downPayment;
+
+      // Calculate actual monthly payment
+      const actualMonthlyPayment = maxLoan > 0 ? maxLoan * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1) : 0;
+      const totalDebt = actualMonthlyPayment + otherDebt;
+      const actualDTI = monthlyIncome > 0 ? (totalDebt / monthlyIncome) * 100 : 0;
+      const downPercent = maxPrice > 0 ? (downPayment / maxPrice) * 100 : 0;
+
+      // Update display
+      (document.getElementById('result-max-price') as HTMLElement).textContent = `${formatThai(maxPrice)} บาท`;
+      (document.getElementById('result-loan-amount') as HTMLElement).textContent = `${formatThai(maxLoan)} บาท`;
+
+      (document.getElementById('detail-loan') as HTMLElement).textContent = `${formatThai(maxLoan)} บาท`;
+      (document.getElementById('detail-monthly-payment') as HTMLElement).textContent = `${formatThai(actualMonthlyPayment)} บาท`;
+      (document.getElementById('detail-total-monthly-debt') as HTMLElement).textContent = `${formatThai(totalDebt)} บาท`;
+      (document.getElementById('detail-dti-actual') as HTMLElement).textContent = `${actualDTI.toFixed(2)}%`;
+
+      (document.getElementById('detail-down') as HTMLElement).textContent = `${formatThai(downPayment)} บาท`;
+      (document.getElementById('detail-down-percent') as HTMLElement).textContent = `${downPercent.toFixed(2)}%`;
+      (document.getElementById('detail-mortgage-months') as HTMLElement).textContent = `${formatThai(actualMonthlyPayment)} บาท`;
+
+      const dtiNote = actualDTI <= 50 ? `✓ อัตรา DTI อยู่ในเกณฑ์ยอมรับ (${actualDTI.toFixed(2)}% ≤ 50%)` : `⚠️ อัตรา DTI เกินเกณฑ์ ธนาคารอาจไม่ยอมรับ`;
+      (document.getElementById('dti-note') as HTMLElement).textContent = dtiNote;
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('homebuyer_affordability');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('homebuyer_affordability');
+    });
+
+    form.addEventListener('input', () => {
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('homebuyer_affordability');
+    }, { once: true });
+  </script>
+</BaseLayout>

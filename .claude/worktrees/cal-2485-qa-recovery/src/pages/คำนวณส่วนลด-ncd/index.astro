@@ -1,0 +1,205 @@
+---
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณส่วนลด NCD ไม่มีประวัติเคลม 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณส่วนลดเบี้ยประกันจากไม่มีประวัติเคลม (NCD: No Claim Discount) ลดเบี้ยประกันรถยนต์ และประกันอื่นๆ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณส่วนลด-ncd/`;
+
+const faqData = [
+  {
+    question: 'NCD (No Claim Discount) คืออะไร?',
+    answer: 'NCD เป็นส่วนลดเบี้ยประกันที่ให้แก่ผู้เอาประกันที่ไม่เคลมในปีประกันนั้น ส่วนลดนี้ค่อยๆ เพิ่มขึ้นหากไม่มีเคลมหลายปีติดต่อกัน',
+  },
+  {
+    question: 'ส่วนลด NCD อาจสูงถึงเท่าไร?',
+    answer: 'ส่วนลด NCD ของประกันรถยนต์ในไทยสูงถึง 50% (บางบริษัทถึง 60%) หากไม่มีเคลมติดต่อกัน 5 ปีขึ้นไป',
+  },
+  {
+    question: 'NCD หาย ถ้าเกิดเคลมหนึ่งครั้ง?',
+    answer: 'ใช่ หากเกิดเคลมในปีประกัน NCD ส่วนลดจะหายไป เบี้ยจะต้องจ่ายแบบปกติ และต้องเริ่มนับ NCD ใหม่ตั้งแต่ 0%',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณส่วนลด NCD',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณส่วนลด NCD">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณส่วนลด NCD ไม่มีประวัติเคลม</h1>
+    <p class="text-gray-600 mb-6">คำนวณส่วนลดเบี้ยประกันจากไม่มีประวัติเคลม เพื่อประมาณการเบี้ยประกันที่แท้จริง</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="basePremium" class="block text-sm font-medium text-gray-700 mb-1">เบี้ยฐาน (บาท)</label>
+          <input type="text" id="basePremium" inputmode="decimal" placeholder="เช่น 10,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="ncdPercent" class="block text-sm font-medium text-gray-700 mb-1">ส่วนลด NCD (%)</label>
+          <select id="ncdPercent" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="0">ไม่มี NCD (0%)</option>
+            <option value="15">ปี 1 (15%)</option>
+            <option value="25">ปี 2 (25%)</option>
+            <option value="30">ปี 3 (30%)</option>
+            <option value="40">ปี 4 (40%)</option>
+            <option value="50">ปี 5+ (50%)</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+        คำนวณเบี้ยสุดท้าย
+      </button>
+
+      <div id="result" class="hidden mt-6">
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">เบี้ยประกันสุดท้าย</div>
+          <div id="final-premium" class="text-5xl font-bold mb-2 text-primary-600">-</div>
+          <div class="text-lg font-semibold text-gray-700">บาท/ปี</div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+          <h3 class="font-semibold text-gray-900 mb-3">รายละเอียด</h3>
+          <div class="text-sm text-gray-700 space-y-2">
+            <div class="flex justify-between">
+              <span>เบี้ยฐาน:</span>
+              <span id="detail-base" class="font-semibold">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span>ส่วนลด NCD:</span>
+              <span id="detail-ncd" class="font-semibold">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span>จำนวนเงินลด:</span>
+              <span id="detail-savings" class="font-semibold text-green-600">-</span>
+            </div>
+            <div class="flex justify-between border-t pt-2 mt-2">
+              <span>เบี้ยสุดท้าย:</span>
+              <span id="detail-final" class="font-semibold text-primary-600">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-blue-50 rounded-lg">
+          <h3 class="font-semibold text-gray-900 mb-2">ประหยัดประจำปี</h3>
+          <p id="savings-text" class="text-sm text-gray-600"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ส่วนลด NCD (No Claim Discount)</h2>
+      <p>
+        ส่วนลด NCD เป็นหนึ่งในสิ่งจูงใจให้ผู้เอาประกันขับขี่อย่างปลอดภัยและไม่เกิดเคลม
+        การไม่เคลมติดต่อกันหลายปี สามารถช่วยประหยัดเบี้ยประกันได้เป็นจำนวนมาก
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรการคำนวณ</h3>
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-lg font-semibold">เบี้ยสุดท้าย = เบี้ยฐาน × (1 - ส่วนลด NCD%)</p>
+        <p class="text-sm text-gray-500 mt-2">ตัวอย่าง: 10,000 × (1 - 25%) = 7,500 บาท</p>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีสะสม NCD</h3>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>ปีที่ 1: ไม่มี NCD (0%) - เพราะเป็นปีแรก</li>
+        <li>ปีที่ 2: NCD 15% - หากปีแรกไม่เกิดเคลม</li>
+        <li>ปีที่ 3: NCD 25% - หากปีที่ 1-2 ไม่เกิดเคลม</li>
+        <li>ปีที่ 4: NCD 30% - หากปีที่ 1-3 ไม่เกิดเคลม</li>
+        <li>ปีที่ 5: NCD 40% - หากปีที่ 1-4 ไม่เกิดเคลม</li>
+        <li>ปีที่ 5+: NCD 50% - ส่วนลดสูงสุด</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัญหาเมื่อเกิดเคลม</h3>
+      <p>
+        หากเกิดเคลมแม้แต่เพียงครั้งเดียว NCD ของคุณจะหายไป เบี้ยประกันในปีถัดไปจะต้องจ่ายแบบปกติ (0% NCD)
+        ดังนั้นจึงควรขับขี่อย่างปลอดภัยเพื่อรักษา NCD ที่สะสม
+      </p>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณส่วนลด-ncd/" />
+    <RelatedCalculators currentHref="/คำนวณส่วนลด-ncd/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางการเงิน บริษัทประกันต่างๆ อาจมีอัตรา NCD แตกต่างกัน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    const basePremiumInput = document.getElementById('basePremium') as HTMLInputElement;
+    const ncdPercentSelect = document.getElementById('ncdPercent') as HTMLSelectElement;
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const basePremium = parseNum(basePremiumInput.value);
+      const ncdPercent = parseNum(ncdPercentSelect.value);
+
+      if (basePremium <= 0) { basePremiumInput.focus(); return; }
+
+      const discountAmount = (basePremium * ncdPercent) / 100;
+      const finalPremium = basePremium - discountAmount;
+
+      const fmt = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      (document.getElementById('final-premium') as HTMLElement).textContent = fmt.format(finalPremium);
+      (document.getElementById('detail-base') as HTMLElement).textContent = fmt.format(basePremium);
+      (document.getElementById('detail-ncd') as HTMLElement).textContent = ncdPercent.toFixed(0) + '%';
+      (document.getElementById('detail-savings') as HTMLElement).textContent = fmt.format(discountAmount);
+      (document.getElementById('detail-final') as HTMLElement).textContent = fmt.format(finalPremium);
+
+      const savingsText = ncdPercent > 0
+        ? `คุณประหยัดได้ ${fmt.format(discountAmount)} บาทต่อปี จากการไม่เคลม`
+        : 'ยังไม่มี NCD เพราะเป็นปีแรก';
+      (document.getElementById('savings-text') as HTMLElement).textContent = savingsText;
+
+      (document.getElementById('result') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('ncd_discount');
+    });
+
+    [basePremiumInput, ncdPercentSelect].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('btn-calculate')!.click();
+        }
+      });
+    });
+  </script>
+</BaseLayout>

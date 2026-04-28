@@ -1,0 +1,280 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนชั่วโมงแรงงาน รวม SSF กองทุนสำรองเลี้ยงชีพ สวัสดิการ ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนชั่วโมงแรงงานที่แท้จริง รวมเงินเดือน ประกันสังคมฝั่งนายจ้าง 5% กองทุนสำรองเลี้ยงชีพ และสวัสดิการรายเดือน แยกรายการชัดเจน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนชั่วโมงแรงงาน/`;
+
+const faqData = [
+  {
+    question: 'ต้นทุนชั่วโมงแรงงานที่แท้จริงคืออะไร?',
+    answer: 'ต้นทุนชั่วโมงแรงงานที่แท้จริงคือต้นทุนทั้งหมดที่นายจ้างต้องจ่ายต่อชั่วโมงทำงาน รวมถึงเงินเดือน เงินสมทบประกันสังคม (SSF) ฝั่งนายจ้าง 5% กองทุนสำรองเลี้ยงชีพ และสวัสดิการต่าง ๆ ซึ่งมักสูงกว่าเงินเดือนพนักงาน 15-30%',
+  },
+  {
+    question: 'นายจ้างต้องส่งเงินสมทบประกันสังคมเท่าไร?',
+    answer: 'นายจ้างต้องส่งเงินสมทบประกันสังคมในอัตรา 5% ของค่าจ้าง โดยใช้ฐานค่าจ้างสูงสุดไม่เกิน 15,000 บาท/เดือน ดังนั้นนายจ้างจ่ายสูงสุด 750 บาท/เดือน/คน',
+  },
+  {
+    question: 'กองทุนสำรองเลี้ยงชีพ (PVD) คิดอย่างไร?',
+    answer: 'กองทุนสำรองเลี้ยงชีพเป็นสิ่งที่นายจ้างสมัครใจจัดตั้ง โดยนายจ้างจะสมทบในอัตราที่กำหนดตามแผน (ทั่วไป 3-10% ของค่าจ้าง) คำนวณจากเงินเดือนจริง ไม่ใช่ฐาน SSF',
+  },
+  {
+    question: 'ต้นทุนพนักงานจริงสูงกว่าเงินเดือนเท่าไร?',
+    answer: 'โดยทั่วไปต้นทุนพนักงานจริงสูงกว่าเงินเดือน 15-30% ขึ้นอยู่กับสวัสดิการที่บริษัทให้ ได้แก่ ประกันสังคม 5% กองทุนสำรองเลี้ยงชีพ 3-10% และสวัสดิการอื่น ๆ เช่น ประกันสุขภาพ ค่าเดินทาง อาหาร',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณต้นทุนชั่วโมงแรงงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนชั่วโมงแรงงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">🔧 ต้นทุนชั่วโมงแรงงานที่แท้จริงสำหรับนายจ้าง</p>
+      <p class="mt-1 text-sm text-slate-700">รวม SSF นายจ้าง 5% + กองทุนสำรองเลี้ยงชีพ + สวัสดิการ ÷ ชั่วโมงทำงาน</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับวางแผนงบประมาณพนักงาน คำนวณต้นทุนโปรเจกต์ และกำหนดราคาบริการ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณต้นทุนชั่วโมงแรงงาน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกข้อมูลเงินเดือน อัตราสมทบ และสวัสดิการ เพื่อคำนวณต้นทุนรายเดือนและต้นทุนต่อชั่วโมงทำงานที่แท้จริง
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="labor-cost-form" class="space-y-5">
+        <p id="labor-cost-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="lc-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="lc-salary" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="lc-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="lc-ssf-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราสมทบ SSF นายจ้าง (%)</label>
+            <input type="text" id="lc-ssf-rate" inputmode="decimal" value="5"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ค่าเริ่มต้น 5% ฐานสูงสุด 15,000 บาท</p>
+            <p id="lc-ssf-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="lc-pvd-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราสมทบ PVD นายจ้าง (%) <span class="text-gray-400">(ไม่บังคับ)</span></label>
+            <input type="text" id="lc-pvd-rate" inputmode="decimal" placeholder="เช่น 5 (หากมี)"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="lc-pvd-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="lc-benefits" class="mb-1 block text-sm font-medium text-gray-700">สวัสดิการรายเดือน (บาท) <span class="text-gray-400">(ไม่บังคับ)</span></label>
+            <input type="text" id="lc-benefits" inputmode="numeric" placeholder="เช่น 2,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ประกันสุขภาพ ค่าอาหาร ค่าเดินทาง ฯลฯ</p>
+            <p id="lc-benefits-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="lc-work-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานต่อเดือน (วัน)</label>
+            <input type="text" id="lc-work-days" inputmode="numeric" placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="lc-work-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="lc-hours-day" class="mb-1 block text-sm font-medium text-gray-700">ชั่วโมงทำงานต่อวัน</label>
+            <input type="text" id="lc-hours-day" inputmode="decimal" placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="lc-hours-day-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณต้นทุนแรงงาน
+        </button>
+      </form>
+    </div>
+
+    <div id="labor-cost-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนรวมต่อเดือน</div>
+            <div id="res-lc-monthly-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนต่อชั่วโมงที่แท้จริง</div>
+            <div id="res-lc-hourly-cost" class="text-2xl font-bold text-primary-700">-</div>
+          </div>
+        </div>
+        <h3 class="mb-3 text-base font-semibold text-gray-700">รายละเอียดต้นทุน</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินเดือน</span>
+            <span id="res-lc-salary" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">SSF นายจ้าง (5% ของฐาน SSF สูงสุด 15,000 บาท)</span>
+            <span id="res-lc-ssf" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">กองทุนสำรองเลี้ยงชีพ (PVD)</span>
+            <span id="res-lc-pvd" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">สวัสดิการรายเดือน</span>
+            <span id="res-lc-benefits" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ชั่วโมงทำงานรวมต่อเดือน</span>
+            <span id="res-lc-hours" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 font-semibold">
+            <span class="text-gray-800">ต้นทุนรวม/เดือน</span>
+            <span id="res-lc-total-sum" class="text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>SSF นายจ้าง = min(เงินเดือน, 15,000) × อัตรา SSF%</li>
+        <li>PVD นายจ้าง = เงินเดือน × อัตรา PVD%</li>
+        <li>ต้นทุนรวม/เดือน = เงินเดือน + SSF + PVD + สวัสดิการ</li>
+        <li>ชั่วโมงทำงาน/เดือน = วันทำงาน × ชั่วโมง/วัน</li>
+        <li>ต้นทุน/ชั่วโมง = ต้นทุนรวม/เดือน ÷ ชั่วโมงทำงาน/เดือน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณค่าจ้างรายชั่วโมง/">คำนวณค่าจ้างรายชั่วโมง</a></li>
+        <li><a href="/คำนวณต้นทุนพนักงานรายเดือน/">คำนวณต้นทุนพนักงานรายเดือน</a></li>
+        <li><a href="/คำนวณงบประมาณพนักงาน/">คำนวณงบประมาณพนักงาน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#labor-cost-results" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.mol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กระทรวงแรงงาน (mol.go.th)</a> — อัตราค่าจ้างขั้นต่ำและสิทธิแรงงาน</li>
+        <li><a href="https://www.labour.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กรมสวัสดิการและคุ้มครองแรงงาน — พ.ร.บ.คุ้มครองแรงงาน 2541</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณต้นทุนชั่วโมงแรงงาน/" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนชั่วโมงแรงงาน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการต้นทุนแรงงาน ไม่รวมต้นทุนทางอ้อมอื่น เช่น พื้นที่สำนักงาน อุปกรณ์ การฝึกอบรม กรุณาปรึกษาผู้เชี่ยวชาญด้านบัญชีสำหรับการวางแผนงบประมาณจริง
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('labor-cost-form');
+    const formError = document.getElementById('labor-cost-form-error');
+    const resultBox = document.getElementById('labor-cost-results');
+    const SSF_CAP = 15000;
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['lc-salary-error', 'lc-ssf-rate-error', 'lc-pvd-rate-error', 'lc-benefits-error', 'lc-work-days-error', 'lc-hours-day-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('lc-salary').value);
+      const ssfRate = parseNum(document.getElementById('lc-ssf-rate').value);
+      const pvdRateRaw = document.getElementById('lc-pvd-rate').value.trim();
+      const benefitsRaw = document.getElementById('lc-benefits').value.trim();
+      const workDays = parseNum(document.getElementById('lc-work-days').value);
+      const hoursDay = parseNum(document.getElementById('lc-hours-day').value);
+
+      const pvdRate = pvdRateRaw === '' ? 0 : parseNum(pvdRateRaw);
+      const benefits = benefitsRaw === '' ? 0 : parseNum(benefitsRaw);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('lc-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(ssfRate) || ssfRate < 0 || ssfRate > 10) { setErr('lc-ssf-rate-error', 'กรอกอัตรา SSF 0-10%'); hasError = true; }
+      if (pvdRateRaw !== '' && (!Number.isFinite(pvdRate) || pvdRate < 0 || pvdRate > 30)) { setErr('lc-pvd-rate-error', 'กรอกอัตรา PVD 0-30%'); hasError = true; }
+      if (benefitsRaw !== '' && (!Number.isFinite(benefits) || benefits < 0)) { setErr('lc-benefits-error', 'กรอกสวัสดิการ >= 0'); hasError = true; }
+      if (!Number.isFinite(workDays) || workDays <= 0 || workDays > 31) { setErr('lc-work-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true; }
+      if (!Number.isFinite(hoursDay) || hoursDay <= 0 || hoursDay > 24) { setErr('lc-hours-day-error', 'กรอกชั่วโมง/วัน 1-24'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const ssfBase = Math.min(salary, SSF_CAP);
+      const ssfCost = ssfBase * (ssfRate / 100);
+      const pvdCost = salary * (pvdRate / 100);
+      const totalMonthly = salary + ssfCost + pvdCost + benefits;
+      const hoursPerMonth = workDays * hoursDay;
+      const hourlyCost = totalMonthly / hoursPerMonth;
+
+      setText('res-lc-monthly-total', formatMoney(totalMonthly));
+      setText('res-lc-hourly-cost', formatMoney(hourlyCost));
+      setText('res-lc-salary', formatMoney(salary));
+      setText('res-lc-ssf', formatMoney(ssfCost));
+      setText('res-lc-pvd', pvdRate > 0 ? formatMoney(pvdCost) : '-');
+      setText('res-lc-benefits', benefits > 0 ? formatMoney(benefits) : '-');
+      setText('res-lc-hours', `${hoursPerMonth} ชั่วโมง`);
+      setText('res-lc-total-sum', formatMoney(totalMonthly));
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

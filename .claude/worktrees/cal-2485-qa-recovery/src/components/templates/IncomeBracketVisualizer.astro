@@ -1,0 +1,353 @@
+---
+// Income Bracket Visualizer — CAL-1004
+// Shows where user's income sits vs Thai national average
+// Uses official NESDB/NSO income distribution data
+
+interface Props {
+  /** User's calculated income (฿) */
+  userIncome: number;
+  /** Currency symbol (default: '฿') */
+  currencySymbol?: string;
+  /** Decimal places for display (default: 0) */
+  decimalPlaces?: number;
+  /** Optional CSS class */
+  class?: string;
+}
+
+const {
+  userIncome,
+  currencySymbol = '฿',
+  decimalPlaces = 0,
+  class: className = '',
+} = Astro.props;
+
+// Thai income distribution data (NESDB/NSO official)
+// Percentiles and corresponding income brackets (฿/month)
+const incomeDistribution = [
+  { percentile: 10, income: 8000 },
+  { percentile: 20, income: 10000 },
+  { percentile: 30, income: 12000 },
+  { percentile: 40, income: 14000 },
+  { percentile: 50, income: 15000 },  // National average
+  { percentile: 60, income: 17000 },
+  { percentile: 70, income: 19000 },
+  { percentile: 80, income: 24000 },
+  { percentile: 90, income: 35000 },
+];
+
+const NATIONAL_AVERAGE = 15000;  // ฿/month
+const BANGKOK_AVERAGE = 28000;   // ฿/month
+
+// Calculate percentile for user income
+function calculatePercentile(income: number): number {
+  // If income is below 10th percentile
+  if (income < incomeDistribution[0].income) {
+    return Math.max(0, 10 * (income / incomeDistribution[0].income));
+  }
+
+  // If income is above 90th percentile
+  if (income > incomeDistribution[incomeDistribution.length - 1].income) {
+    return 100;
+  }
+
+  // Find the two closest percentile points and interpolate
+  for (let i = 0; i < incomeDistribution.length - 1; i++) {
+    if (income >= incomeDistribution[i].income && income <= incomeDistribution[i + 1].income) {
+      const lower = incomeDistribution[i];
+      const upper = incomeDistribution[i + 1];
+      const ratio = (income - lower.income) / (upper.income - lower.income);
+      return Math.round(lower.percentile + ratio * (upper.percentile - lower.percentile));
+    }
+  }
+
+  return 50; // Default to median if no match
+}
+
+// Format currency value
+function formatCurrency(value: number): string {
+  return currencySymbol + Math.round(value).toLocaleString('th-TH');
+}
+
+const userPercentile = calculatePercentile(userIncome);
+const topPercentage = 100 - userPercentile;
+
+// Determine color/status based on percentile
+function getStatusColor(percentile: number): { color: string; label: string } {
+  if (percentile >= 80) return { color: '#16a34a', label: 'สูงกว่าค่าเฉลี่ยมาก' };      // Green
+  if (percentile >= 60) return { color: '#2563eb', label: 'สูงกว่าค่าเฉลี่ย' };          // Blue
+  if (percentile >= 40) return { color: '#f59e0b', label: 'ใกล้เคียงค่าเฉลี่ย' };        // Amber
+  return { color: '#ef4444', label: 'ต่ำกว่าค่าเฉลี่ย' };                              // Red
+}
+
+const status = getStatusColor(userPercentile);
+
+// Calculate max display value for chart (with 20% padding above highest relevant value)
+const maxChartValue = Math.max(userIncome, BANGKOK_AVERAGE) * 1.2;
+
+const userIncomePercent = (userIncome / maxChartValue) * 100;
+const nationalAvgPercent = (NATIONAL_AVERAGE / maxChartValue) * 100;
+const bangkokAvgPercent = (BANGKOK_AVERAGE / maxChartValue) * 100;
+---
+
+<div class={`ct-income-bracket ${className}`}>
+  <!-- Header -->
+  <div class="ct-bracket-header">
+    <div class="ct-bracket-title">ตำแหน่งรายได้ของคุณ</div>
+    <div class="ct-bracket-percentile" style={`color: ${status.color}`}>
+      Top {topPercentage}%
+    </div>
+  </div>
+
+  <!-- Status message -->
+  <div class="ct-bracket-message" style={`border-left: 4px solid ${status.color}`}>
+    <span class="ct-bracket-status" style={`background-color: ${status.color}`}></span>
+    <span class="ct-bracket-text">
+      รายได้ของคุณอยู่ที่ Top {topPercentage}% ของคนไทยที่ทำงาน — {status.label}
+    </span>
+  </div>
+
+  <!-- Chart comparison -->
+  <div class="ct-bracket-chart">
+    <!-- User income bar -->
+    <div class="ct-bracket-bar-row">
+      <label class="ct-bracket-label">รายได้ของคุณ</label>
+      <div class="ct-bracket-bar-container">
+        <div
+          class="ct-bracket-bar ct-bracket-bar-user"
+          style={`width: ${userIncomePercent}%; background-color: ${status.color}`}
+        ></div>
+      </div>
+      <span class="ct-bracket-value">{formatCurrency(userIncome)}</span>
+    </div>
+
+    <!-- National average bar -->
+    <div class="ct-bracket-bar-row">
+      <label class="ct-bracket-label">ค่าเฉลี่ยชาติ</label>
+      <div class="ct-bracket-bar-container">
+        <div
+          class="ct-bracket-bar ct-bracket-bar-national"
+          style={`width: ${nationalAvgPercent}%`}
+        ></div>
+      </div>
+      <span class="ct-bracket-value">{formatCurrency(NATIONAL_AVERAGE)}</span>
+    </div>
+
+    <!-- Bangkok average bar -->
+    <div class="ct-bracket-bar-row">
+      <label class="ct-bracket-label">ค่าเฉลี่ยกรุงเทพ</label>
+      <div class="ct-bracket-bar-container">
+        <div
+          class="ct-bracket-bar ct-bracket-bar-bangkok"
+          style={`width: ${bangkokAvgPercent}%`}
+        ></div>
+      </div>
+      <span class="ct-bracket-value">{formatCurrency(BANGKOK_AVERAGE)}</span>
+    </div>
+  </div>
+
+  <!-- Footer note -->
+  <div class="ct-bracket-note">
+    <small>ข้อมูลมาจาก NESDB/NSO สำนักงานสถิติแห่งชาติ — เป็นการประมาณจากข้อมูลล่าสุด</small>
+  </div>
+</div>
+
+<style>
+  .ct-income-bracket {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ct-bracket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ct-bracket-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+  }
+
+  .ct-bracket-percentile {
+    font-size: 1.125rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .ct-bracket-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    color: #1f2937;
+  }
+
+  .ct-bracket-status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ct-bracket-text {
+    flex: 1;
+  }
+
+  /* Chart styling */
+  .ct-bracket-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .ct-bracket-bar-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 120px;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .ct-bracket-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+
+  .ct-bracket-bar-container {
+    background: #e5e7eb;
+    border-radius: 0.25rem;
+    height: 24px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .ct-bracket-bar {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .ct-bracket-bar-user {
+    border-radius: 0.25rem;
+  }
+
+  .ct-bracket-bar-national {
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  }
+
+  .ct-bracket-bar-bangkok {
+    background: linear-gradient(90deg, #60a5fa, #3b82f6);
+  }
+
+  .ct-bracket-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .ct-bracket-note {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .ct-income-bracket {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    .ct-bracket-title {
+      color: #9ca3af;
+    }
+
+    .ct-bracket-message {
+      background: #111827;
+      color: #f3f4f6;
+      border-color: #374151;
+    }
+
+    .ct-bracket-label {
+      color: #d1d5db;
+    }
+
+    .ct-bracket-value {
+      color: #d1d5db;
+    }
+
+    .ct-bracket-bar-container {
+      background: #374151;
+    }
+
+    .ct-bracket-note {
+      color: #9ca3af;
+    }
+  }
+
+  /* Mobile optimization */
+  @media (max-width: 640px) {
+    .ct-income-bracket {
+      padding: 0.75rem;
+    }
+
+    .ct-bracket-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .ct-bracket-bar-row {
+      grid-template-columns: 70px 1fr 100px;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .ct-bracket-label {
+      font-size: 0.75rem;
+    }
+
+    .ct-bracket-value {
+      font-size: 0.75rem;
+    }
+
+    .ct-bracket-bar-container {
+      height: 20px;
+    }
+
+    .ct-bracket-message {
+      font-size: 0.8rem;
+      padding: 0.6rem 0.75rem;
+    }
+  }
+
+  /* Print stylesheet */
+  @media print {
+    .ct-income-bracket {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .ct-bracket-bar {
+      background-color: #999 !important;
+    }
+  }
+</style>

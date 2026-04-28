@@ -1,0 +1,240 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณมูลค่าปัจจุบัน (Present Value) 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณมูลค่าปัจจุบันของเงินในอนาคต และเงินรับรายงวดตามอัตราคิดลด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณมูลค่าปัจจุบัน/`;
+
+const faqData = [
+  {
+    question: 'มูลค่าปัจจุบัน (Present Value) คืออะไร?',
+    answer: 'Present Value คือมูลค่าของเงินในอนาคตเมื่อคิดลดกลับมาเป็นมูลค่า ณ วันนี้ โดยใช้อัตราคิดลด (Discount Rate) สะท้อนหลักการว่าเงิน 1 บาทวันนี้มีค่ามากกว่าเงิน 1 บาทในอนาคต',
+  },
+  {
+    question: 'อัตราคิดลด (Discount Rate) ควรใช้เท่าไหร่?',
+    answer: 'อัตราคิดลดขึ้นอยู่กับความเสี่ยงและต้นทุนเงินทุน สำหรับการลงทุนทั่วไปอาจใช้อัตราผลตอบแทนที่คาดหวัง (Expected Return) ของพอร์ตลงทุน หรืออัตราดอกเบี้ยเงินกู้ของโครงการ',
+  },
+  {
+    question: 'PV ใช้ในกรณีใดบ้าง?',
+    answer: 'ใช้ในการประเมินมูลค่าการลงทุน (NPV Analysis) เปรียบเทียบเงินก้อนกับค่างวดรายเดือน ประเมินมูลค่าพันธบัตร และคำนวณว่าควรรับเงินก้อนหรือรับรายเดือน',
+  },
+  {
+    question: 'ความแตกต่างระหว่าง PV และ NPV คืออะไร?',
+    answer: 'PV คือมูลค่าปัจจุบันของกระแสเงินสดอนาคต ส่วน NPV (Net Present Value) คือผลต่างระหว่าง PV ของกระแสเงินสดรับกับเงินลงทุน NPV เป็นบวกหมายถึงการลงทุนคุ้มค่า',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณมูลค่าปัจจุบัน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณมูลค่าปัจจุบัน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-cyan-100 bg-cyan-50 p-4">
+      <p class="text-sm font-semibold text-cyan-700">⏮️ คำนวณมูลค่าปัจจุบัน (Present Value)</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร PV = FV ÷ (1+r)^n | PV รายงวด = PMT × [1 − (1+r)^-n] ÷ r</p>
+      <p class="mt-1 text-xs font-medium text-cyan-800">เงินในอนาคตมีมูลค่าเท่าไหร่ในปัจจุบัน?</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณมูลค่าปัจจุบัน ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกมูลค่าในอนาคต หรือรายได้รายงวด อัตราคิดลด และระยะเวลา เพื่อดูมูลค่าปัจจุบัน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pv-form" class="space-y-5">
+        <p id="pv-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="mb-2">
+          <label class="mb-1 block text-sm font-medium text-gray-700">ประเภทการคำนวณ</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="pv-type" value="lump" checked class="text-primary-600" />
+              เงินก้อนอนาคต (Lump Sum)
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="pv-type" value="annuity" class="text-primary-600" />
+              รายได้รายงวด (Annuity)
+            </label>
+          </div>
+        </div>
+
+        <div id="pv-lump-section" class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pv-fv" class="mb-1 block text-sm font-medium text-gray-700">มูลค่าในอนาคต (บาท)</label>
+            <input type="text" id="pv-fv" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pv-fv-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div id="pv-annuity-section" class="hidden grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pv-pmt" class="mb-1 block text-sm font-medium text-gray-700">รายได้ต่องวด (บาท)</label>
+            <input type="text" id="pv-pmt" inputmode="numeric" placeholder="เช่น 10,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pv-pmt-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pv-rate" class="mb-1 block text-sm font-medium text-gray-700">อัตราคิดลด (% ต่อปี)</label>
+            <input type="text" id="pv-rate" inputmode="numeric" placeholder="เช่น 7"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pv-rate-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pv-years" class="mb-1 block text-sm font-medium text-gray-700">ระยะเวลา (ปี)</label>
+            <input type="text" id="pv-years" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pv-years-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณมูลค่าปัจจุบัน
+        </button>
+      </form>
+    </div>
+
+    <div id="pv-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-cyan-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าปัจจุบัน (PV)</div>
+            <div id="res-pv-total" class="text-xl font-bold text-cyan-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">มูลค่าอนาคต/รวม</div>
+            <div id="res-pv-future" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ส่วนลด (Discount)</div>
+            <div id="res-pv-discount" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+        </div>
+        <p id="pv-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>PV เงินก้อน = FV ÷ (1 + r)^n</li>
+        <li>PV รายงวด = PMT × [1 − (1+r)^-n] ÷ r</li>
+        <li>โดย r = อัตราคิดลดรายเดือน, n = จำนวนเดือน</li>
+        <li>ส่วนลด = มูลค่ารวมอนาคต − มูลค่าปัจจุบัน</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#pv-results" />
+    <RelatedArticles currentHref="/คำนวณมูลค่าปัจจุบัน/" />
+    <RelatedCalculators currentHref="/คำนวณมูลค่าปัจจุบัน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการ การลงทุนมีความเสี่ยง ควรปรึกษาผู้เชี่ยวชาญทางการเงินก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const radios = document.querySelectorAll('input[name="pv-type"]');
+    radios.forEach(r => r.addEventListener('change', () => {
+      const isLump = document.querySelector('input[name="pv-type"]:checked').value === 'lump';
+      document.getElementById('pv-lump-section').classList.toggle('hidden', !isLump);
+      document.getElementById('pv-annuity-section').classList.toggle('hidden', isLump);
+    }));
+
+    document.getElementById('pv-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('pv-error').classList.add('hidden');
+      ['pv-fv-error','pv-pmt-error','pv-rate-error','pv-years-error'].forEach(id => setErr(id, ''));
+
+      if (typeof trackCalculatorStart === 'function') trackCalculatorStart('present-value-calculator');
+      const type = document.querySelector('input[name="pv-type"]:checked').value;
+      const rate = parseNum(document.getElementById('pv-rate').value);
+      const years = parseNum(document.getElementById('pv-years').value);
+
+      let hasError = false;
+      if (!rate || rate <= 0) { setErr('pv-rate-error', 'กรอกอัตราคิดลด'); hasError = true; }
+      if (!years || years <= 0) { setErr('pv-years-error', 'กรอกระยะเวลา'); hasError = true; }
+
+      let pv, futureTotal;
+      if (type === 'lump') {
+        const fv = parseNum(document.getElementById('pv-fv').value);
+        if (!fv || fv <= 0) { setErr('pv-fv-error', 'กรอกมูลค่าอนาคต'); hasError = true; }
+        if (hasError) { document.getElementById('pv-error').classList.remove('hidden'); document.getElementById('pv-results').classList.add('hidden'); return; }
+        const r = rate / 100 / 12;
+        const n = years * 12;
+        pv = fv / Math.pow(1 + r, n);
+        futureTotal = fv;
+      } else {
+        const pmt = parseNum(document.getElementById('pv-pmt').value);
+        if (!pmt || pmt <= 0) { setErr('pv-pmt-error', 'กรอกรายได้ต่องวด'); hasError = true; }
+        if (hasError) { document.getElementById('pv-error').classList.remove('hidden'); document.getElementById('pv-results').classList.add('hidden'); return; }
+        const r = rate / 100 / 12;
+        const n = years * 12;
+        pv = pmt * (1 - Math.pow(1 + r, -n)) / r;
+        futureTotal = pmt * n;
+      }
+
+      const discount = futureTotal - pv;
+      setText('res-pv-total', formatMoney(pv));
+      setText('res-pv-future', formatMoney(futureTotal));
+      setText('res-pv-discount', formatMoney(discount));
+
+      const statusEl = document.getElementById('pv-status');
+      statusEl.className = 'rounded-lg bg-cyan-50 p-3 text-sm font-medium text-cyan-800 border border-cyan-200';
+      statusEl.textContent = `มูลค่าปัจจุบัน ${formatMoney(pv)} เทียบกับมูลค่าอนาคต ${formatMoney(futureTotal)} (ส่วนลด ${formatMoney(discount)})`;
+
+      document.getElementById('pv-results').classList.remove('hidden');
+      document.getElementById('pv-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof trackCalculatorComplete === 'function') trackCalculatorComplete('present-value-calculator');
+      if (typeof trackCalculatorUsed === 'function') trackCalculatorUsed('present-value-calculator');
+    });
+  </script>
+</BaseLayout>

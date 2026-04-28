@@ -1,0 +1,198 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเบี้ยประกันมอเตอร์ไซค์ 2569 | ชั้น 1 2 3 พ.ร.บ. ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันมอเตอร์ไซค์ 2569 เปรียบเทียบประกันชั้น 1 2 3 และ พ.ร.บ. ตามขนาดเครื่องยนต์ อายุรถ และจังหวัด ช่วยเลือกแผนที่คุ้มค่าที่สุด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยประกันมอเตอร์ไซค์/`;
+
+const faqData = [
+  {
+    question: 'มอเตอร์ไซค์ต้องทำประกันอะไรบ้างตามกฎหมาย?',
+    answer: 'ตามกฎหมายไทย รถมอเตอร์ไซค์ทุกคันต้องมี พ.ร.บ. (ประกันภัยรถยนต์ภาคบังคับ) ซึ่งคุ้มครองบุคคลภายนอก ส่วนประกันภัยภาคสมัครใจ (ชั้น 1-3) ไม่บังคับแต่แนะนำให้ทำเพื่อความคุ้มครองที่ครอบคลุมขึ้น',
+  },
+  {
+    question: 'มอเตอร์ไซค์ชั้น 1 คุ้มครองอะไร?',
+    answer: 'ประกันมอเตอร์ไซค์ชั้น 1 คุ้มครอง: ความเสียหายต่อรถคู่กรณี ความเสียหายต่อรถเราเอง (รวมถูกขโมย) บุคคลภายนอก ผู้ขับขี่และผู้โดยสาร เหมาะสำหรับรถมีมูลค่าสูงหรือซื้อใหม่',
+  },
+  {
+    question: 'เบี้ยประกันมอเตอร์ไซค์คำนวณอย่างไร?',
+    answer: 'เบี้ยขึ้นอยู่กับ: ขนาดเครื่องยนต์ (cc) มูลค่ารถ อายุรถ ประเภทการใช้งาน (ส่วนตัว/รับจ้าง) และพื้นที่ใช้งาน โดยทั่วไปเบี้ยชั้น 1 อยู่ที่ 3,000-8,000 บาท/ปี ชั้น 2-3 อยู่ที่ 1,000-3,000 บาท/ปี',
+  },
+  {
+    question: 'พ.ร.บ. มอเตอร์ไซค์ราคาเท่าไร?',
+    answer: 'พ.ร.บ. มอเตอร์ไซค์ส่วนบุคคล: เครื่องยนต์ไม่เกิน 75 cc ราคา 163 บาท/ปี, 76-125 cc ราคา 227 บาท/ปี, 126-150 cc ราคา 322 บาท/ปี, เกิน 150 cc ราคา 432 บาท/ปี (ราคารวมภาษีอากร)',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันมอเตอร์ไซค์ 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันมอเตอร์ไซค์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">เปรียบเทียบเบี้ยประกันมอเตอร์ไซค์ทุกชั้น</p>
+      <p class="mt-1 text-sm text-slate-700">อ้างอิงอัตราตลาดปี 2569 ผลลัพธ์เป็นการประมาณการ</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณเบี้ยประกันมอเตอร์ไซค์ 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">เปรียบเทียบเบี้ยประกันมอเตอร์ไซค์ชั้น 1 2 3 และ พ.ร.บ. ตามขนาดเครื่องยนต์และอายุรถ</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลรถมอเตอร์ไซค์</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+
+        <div>
+          <label for="engine-size" class="block text-sm font-medium text-gray-700 mb-1">ขนาดเครื่องยนต์</label>
+          <select id="engine-size" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="75|163">ไม่เกิน 75 cc (เช่น Honda Wave 110 เก่า) | พ.ร.บ. 163 บาท</option>
+            <option value="125|227" selected>76-125 cc (เช่น Honda Wave, Yamaha Fino) | พ.ร.บ. 227 บาท</option>
+            <option value="150|322">126-150 cc (เช่น Honda CBR150, Yamaha MT-15) | พ.ร.บ. 322 บาท</option>
+            <option value="300|432">เกิน 150 cc (เช่น Honda CB300, Yamaha R3) | พ.ร.บ. 432 บาท</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="bike-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่ารถปัจจุบัน (บาท)</label>
+          <input type="text" id="bike-value" inputmode="numeric" placeholder="เช่น 55,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+
+        <div>
+          <label for="bike-age" class="block text-sm font-medium text-gray-700 mb-1">อายุรถ (ปี)</label>
+          <select id="bike-age" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="1">1-2 ปี</option>
+            <option value="3">3-5 ปี</option>
+            <option value="6">6-10 ปี</option>
+            <option value="11">มากกว่า 10 ปี</option>
+          </select>
+        </div>
+
+        <button type="button" id="btn-calculate"
+          class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">
+          คำนวณเบี้ยประกัน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการเปรียบเทียบ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6" id="plan-cards"></div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b border-gray-200">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">เลือกประกันมอเตอร์ไซค์อย่างไร?</h2>
+      <p>การเลือกประกันมอเตอร์ไซค์ควรพิจารณาจาก: อายุและมูลค่ารถ (รถเก่ามูลค่าต่ำ ชั้น 3 เพียงพอ), การใช้งาน (ในเมืองความเสี่ยงสูงกว่า), งบประมาณ และความต้องการคุ้มครองตัวเอง</p>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
+      partnerName="EasySunday"
+      ctaText="เปรียบเทียบประกันรถมอเตอร์ไซค์"
+      subtext="เปรียบเทียบประกันมอเตอร์ไซค์จากหลายบริษัทพร้อมกัน"
+    />
+    <RelatedCalculators currentHref="/คำนวณเบี้ยประกันมอเตอร์ไซค์/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ อัตราจริงขึ้นกับบริษัทประกันและเงื่อนไขกรมธรรม์
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const engineData = (document.getElementById('engine-size') as HTMLSelectElement).value.split('|');
+      const prb = parseInt(engineData[1]);
+      const bikeValue = parseNum((document.getElementById('bike-value') as HTMLInputElement).value);
+      const bikeAge = parseInt((document.getElementById('bike-age') as HTMLSelectElement).value);
+      const err = document.getElementById('form-error')!;
+
+      if (bikeValue < 5000) {
+        err.textContent = 'กรุณากรอกมูลค่ารถอย่างน้อย 5,000 บาท';
+        err.classList.remove('hidden'); return;
+      }
+      err.classList.add('hidden');
+
+      // Age depreciation factor
+      const ageFactor = bikeAge <= 2 ? 1.0 : bikeAge <= 5 ? 0.9 : bikeAge <= 10 ? 0.8 : 0.7;
+
+      // Estimated premiums
+      const class1 = bikeAge <= 10 ? bikeValue * 0.055 * ageFactor : 0; // Class 1 not available for old bikes
+      const class2 = bikeValue * 0.025 * ageFactor;
+      const class3 = bikeValue * 0.015 * ageFactor;
+      const class3plus = bikeValue * 0.012 * ageFactor;
+
+      const plans = [
+        { name: 'พ.ร.บ. (บังคับ)', premium: prb, note: 'ตามกฎหมาย', color: 'bg-green-50 border-green-200 text-green-700' },
+        { name: 'ชั้น 3+', premium: class3plus, note: 'คู่กรณี+ขโมย', color: 'bg-blue-50 border-blue-200 text-blue-700' },
+        { name: 'ชั้น 3', premium: class3, note: 'คุ้มครองคู่กรณี', color: 'bg-teal-50 border-teal-200 text-teal-700' },
+        { name: 'ชั้น 1', premium: class1, note: 'ครอบคลุมที่สุด', color: 'bg-primary-50 border-primary-200 text-primary-700' },
+      ].filter(p => p.premium > 0);
+
+      (document.getElementById('plan-cards') as HTMLElement).innerHTML = plans.map(p => `
+        <div class="${p.color} rounded-lg p-4 border">
+          <p class="text-xs font-semibold mb-1">${p.name}</p>
+          <p class="text-2xl font-bold">${fmt(p.premium)}</p>
+          <p class="text-xs">บาท/ปี</p>
+          <p class="text-xs mt-2">${p.note}</p>
+        </div>`).join('');
+
+      const rows = [
+        ['มูลค่ารถ', '', `${fmt(bikeValue)} บาท`],
+        ['ตัวคูณปรับตามอายุรถ', `× ${ageFactor}`, ''],
+        ['พ.ร.บ. (ภาคบังคับ)', 'ตามขนาดเครื่องยนต์', `${fmt(prb)} บาท/ปี`],
+        ['ประกันชั้น 1 (ประมาณ)', `${bikeAge > 10 ? 'ไม่รับประกัน (อายุเกิน 10 ปี)' : '5.5% × มูลค่า × ตัวคูณ'}`, bikeAge > 10 ? '-' : `${fmt(class1)} บาท/ปี`],
+        ['ประกันชั้น 3 (ประมาณ)', '1.5% × มูลค่า × ตัวคูณ', `${fmt(class3)} บาท/ปี`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="border-b border-gray-100">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td>
+        </tr>`).join('');
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

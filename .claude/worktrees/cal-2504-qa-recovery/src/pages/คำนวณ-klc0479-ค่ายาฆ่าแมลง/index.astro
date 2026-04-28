@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณค่ายาฆ่าแมลงและสารเคมีการเกษตร | Kamnuanlek';
+const pageDescription = 'คำนวณค่าใช้จ่ายยาฆ่าแมลง สารกำจัดศัตรูพืช ยาปราบวัชพืช ต่อไร่ต่อฤดูกาล';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0479-ค่ายาฆ่าแมลง/`;
+const faqData = [
+  { question: 'ค่าใช้จ่ายสารเคมีเกษตรต่อไร่เฉลี่ยเท่าไหร่?', answer: 'ค่าสารเคมีเกษตรทั่วไป 200-800 บาท/ไร่/ฤดู ขึ้นอยู่กับชนิดพืช สภาพการระบาดศัตรูพืช และการใช้สารเคมีชีวภาพทดแทน' },
+  { question: 'IPM (Integrated Pest Management) ช่วยลดค่าใช้จ่ายได้ไหม?', answer: 'IPM ผสมผสานการจัดการศัตรูพืชแบบครบวงจร ใช้ศัตรูธรรมชาติ กับดัก สารชีวภาพ ลดการใช้สารเคมีได้ 30-50% ประหยัดต้นทุนในระยะยาว' },
+  { question: 'สารเคมีห้ามใช้ในไทยมีอะไรบ้าง?', answer: 'ไทยห้ามใช้พาราควอต คลอร์ไพริฟอส และเมทิลโบรไมด์ ตั้งแต่ปี 2563 สารทดแทนที่แนะนำ เช่น ไกลโฟเซต (เฉพาะบางพืช) และสารชีวภาพ' },
+  { question: 'โดรนพ่นยาคุ้มค่าไหม?', answer: 'โดรนพ่นยาประหยัดน้ำยา 30-40% ลดแรงงาน แต่ต้นทุนเช่าโดรน 150-300 บาท/ไร่ คุ้มค่าสำหรับพื้นที่ขนาดกลาง-ใหญ่ หรือพื้นที่เข้าถึงยาก' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่ายาฆ่าแมลงและสารเคมีการเกษตร">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่ายาฆ่าแมลงและสารเคมี</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนสารเคมีการเกษตรต่อฤดูกาลและต่อปี</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="pest_area" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่ (ไร่)</label><input type="number" id="pest_area" min="1" placeholder="เช่น 20" value="20" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="insect_per_rai" class="block text-sm font-medium text-gray-700 mb-1">ยาฆ่าแมลงต่อไร่ (บาท)</label><input type="text" id="insect_per_rai" inputmode="decimal" placeholder="เช่น 120" value="120" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="herb_per_rai" class="block text-sm font-medium text-gray-700 mb-1">ยากำจัดวัชพืชต่อไร่ (บาท)</label><input type="text" id="herb_per_rai" inputmode="decimal" placeholder="เช่น 80" value="80" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="fungicide_per_rai" class="block text-sm font-medium text-gray-700 mb-1">ยาป้องกันเชื้อราต่อไร่ (บาท)</label><input type="text" id="fungicide_per_rai" inputmode="decimal" placeholder="เช่น 60" value="60" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ค่าสารเคมีต่อไร่</p><p id="chem_per_rai" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3"><p class="text-sm text-gray-600">ค่าสารเคมีรวมทั้งแปลง</p><p id="chem_total" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const area = parseFloat((document.getElementById('pest_area') as HTMLInputElement).value) || 0;
+      const insect = parseFloat((document.getElementById('insect_per_rai') as HTMLInputElement).value) || 0;
+      const herb = parseFloat((document.getElementById('herb_per_rai') as HTMLInputElement).value) || 0;
+      const fungicide = parseFloat((document.getElementById('fungicide_per_rai') as HTMLInputElement).value) || 0;
+      const perRai = insect + herb + fungicide;
+      const total = perRai * area;
+      (document.getElementById('chem_per_rai') as HTMLElement).textContent = Math.round(perRai).toLocaleString('th-TH') + ' บาท/ไร่';
+      (document.getElementById('chem_total') as HTMLElement).textContent = Math.round(total).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('pesticide-cost');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

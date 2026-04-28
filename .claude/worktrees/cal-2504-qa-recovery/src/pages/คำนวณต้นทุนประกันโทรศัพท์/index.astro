@@ -1,0 +1,132 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณต้นทุนประกันโทรศัพท์มือถือ 2569 | Phone Insurance Cost ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนประกันโทรศัพท์มือถือ 2569 เปรียบเทียบเบี้ยประกันกับค่าซ่อม/เปลี่ยนเครื่อง วิเคราะห์ว่าประกันโทรศัพท์คุ้มค่าหรือไม่';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณต้นทุนประกันโทรศัพท์/`;
+
+const faqData = [
+  { question: 'ประกันโทรศัพท์ครอบคลุมอะไรบ้าง?', answer: 'ประกันโทรศัพท์ในไทยมักครอบคลุม: หน้าจอแตก อุบัติเหตุกระแทก น้ำเข้า การสูญหายหรือถูกขโมย (บางแผน) และชำรุดจากการใช้งานปกติ (บางแผน) แต่ไม่รวมความเสียหายที่เกิดจากความประมาทเลินเล่อ' },
+  { question: 'ประกันโทรศัพท์จากค่ายมือถือ vs บริษัทประกัน ต่างกันไหม?', answer: 'ประกันจากค่ายมือถือมักสะดวกกว่าแต่แพงกว่า ส่วนประกันจากบริษัทประกันภัยอิสระมักราคาดีกว่าแต่ต้องตรวจสอบเงื่อนไขการเคลมที่อาจซับซ้อนกว่า ควรเปรียบเทียบทั้งสองก่อนตัดสินใจ' },
+  { question: 'ประกันโทรศัพท์คุ้มค่าไหม?', answer: 'คุ้มค่าถ้า: ราคาโทรศัพท์สูง (>20,000 บาท) คุณมักทำโทรศัพท์หล่นบ่อย หรืออยู่ในสภาพแวดล้อมเสี่ยง เช่น ทำงานกลางแจ้ง ถ้าโทรศัพท์ราคาต่ำกว่า 10,000 บาท เบี้ยประกันอาจไม่คุ้มค่า' },
+  { question: 'ค่า deductible ของประกันโทรศัพท์คือเท่าไร?', answer: 'ค่า deductible (ส่วนที่ต้องจ่ายเองก่อน) มักอยู่ที่ 500-2,000 บาทต่อการเคลม ขึ้นกับแผน บางแผนไม่มี deductible แต่เบี้ยจะแพงกว่า' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณต้นทุนประกันโทรศัพท์ 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนประกันโทรศัพท์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">วิเคราะห์ความคุ้มค่าประกันโทรศัพท์</p>
+      <p class="mt-1 text-sm text-slate-700">เปรียบเทียบต้นทุนประกันกับค่าซ่อม/เปลี่ยน</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณต้นทุนประกันโทรศัพท์มือถือ 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">เปรียบเทียบเบี้ยประกันโทรศัพท์กับค่าซ่อม/เปลี่ยนเครื่อง คำนวณว่าคุ้มค่าหรือไม่</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="phone-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาโทรศัพท์ (บาท)</label>
+          <input type="text" id="phone-price" inputmode="numeric" placeholder="เช่น 35,000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="insurance-plan" class="block text-sm font-medium text-gray-700 mb-1">แผนประกันที่ต้องการ</label>
+          <select id="insurance-plan" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="0.05|1000">แผนพื้นฐาน (หน้าจอแตก) ~5%/ปี, deductible 1,000</option>
+            <option value="0.08|500" selected>แผนมาตรฐาน (ทุกอุบัติเหตุ) ~8%/ปี, deductible 500</option>
+            <option value="0.12|0">แผนครอบคลุม (รวมสูญหาย) ~12%/ปี, ไม่มี deductible</option>
+          </select>
+        </div>
+        <div>
+          <label for="plan-years" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลาใช้โทรศัพท์ (ปี)</label>
+          <select id="plan-years" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base bg-white">
+            <option value="1">1 ปี</option>
+            <option value="2" selected>2 ปี</option>
+            <option value="3">3 ปี</option>
+          </select>
+        </div>
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณ</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+      <div class="rounded-lg p-4 border" id="verdict-box">
+        <p class="font-semibold" id="verdict-title">-</p>
+        <p class="text-sm mt-1" id="verdict-detail">-</p>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าซ่อมโทรศัพท์ในไทยราคาเท่าไร?</h2>
+      <p>ค่าเปลี่ยนหน้าจอ iPhone รุ่นใหม่ในไทยอยู่ที่ 5,000-15,000 บาท ค่าซ่อมกล้อง 3,000-8,000 บาท และหากต้องเปลี่ยนเครื่องใหม่ราคาเต็มอาจสูงถึง 30,000-50,000 บาท ประกันช่วยลดความเสี่ยงเหล่านี้</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+    <RelatedCalculators currentHref="/คำนวณต้นทุนประกันโทรศัพท์/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงขึ้นกับผู้ให้บริการประกัน</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const phonePrice = parseNum((document.getElementById('phone-price') as HTMLInputElement).value);
+      const planData = (document.getElementById('insurance-plan') as HTMLSelectElement).value.split('|');
+      const rate = parseFloat(planData[0]);
+      const deductible = parseFloat(planData[1]);
+      const years = parseInt((document.getElementById('plan-years') as HTMLSelectElement).value);
+      const err = document.getElementById('form-error')!;
+      if (phonePrice < 3000) { err.textContent = 'กรุณากรอกราคาโทรศัพท์'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const annualPremium = phonePrice * rate;
+      const totalPremium = annualPremium * years;
+      const repairCostScreen = phonePrice * 0.25; // ~25% for screen repair
+      const replacementCost = phonePrice * 0.85; // current market value
+
+      const rows = [
+        ['ราคาโทรศัพท์', '', `${fmt(phonePrice)} บาท`],
+        ['เบี้ยประกัน/ปี', `${(rate*100).toFixed(0)}%`, `${fmt(annualPremium)} บาท`],
+        [`เบี้ยรวม ${years} ปี`, '', `${fmt(totalPremium)} บาท`],
+        ['Deductible ต่อการเคลม', '', deductible > 0 ? `${fmt(deductible)} บาท` : 'ไม่มี'],
+        ['ค่าซ่อมหน้าจอโดยประมาณ', '~25% ของราคาโทรศัพท์', `${fmt(repairCostScreen)} บาท`],
+        ['ค่าเปลี่ยนเครื่องใหม่โดยประมาณ', '', `${fmt(replacementCost)} บาท`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-blue-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      const verdictBox = document.getElementById('verdict-box')!;
+      const ratio = totalPremium / replacementCost;
+      if (phonePrice >= 20000 && ratio < 0.3) {
+        verdictBox.className = 'rounded-lg p-4 border bg-green-50 border-green-200 text-green-800';
+        (document.getElementById('verdict-title') as HTMLElement).textContent = 'แนะนำทำประกัน — ราคาโทรศัพท์สูงเมื่อเทียบกับเบี้ย';
+        (document.getElementById('verdict-detail') as HTMLElement).textContent = `เบี้ยรวม ${fmt(totalPremium)} บาทใน ${years} ปี คิดเป็น ${(ratio*100).toFixed(0)}% ของมูลค่าเครื่อง ถือว่าคุ้มค่า`;
+      } else {
+        verdictBox.className = 'rounded-lg p-4 border bg-yellow-50 border-yellow-200 text-yellow-800';
+        (document.getElementById('verdict-title') as HTMLElement).textContent = 'พิจารณาตามพฤติกรรมใช้งาน';
+        (document.getElementById('verdict-detail') as HTMLElement).textContent = `เบี้ยรวม ${fmt(totalPremium)} บาท หากไม่เคยเคลมจะเสียเปล่า แต่ถ้าทำโทรศัพท์หล่นบ่อย คุ้มค่ากว่า`;
+      }
+
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

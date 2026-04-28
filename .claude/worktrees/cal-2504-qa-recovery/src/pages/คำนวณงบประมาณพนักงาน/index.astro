@@ -1,0 +1,261 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณพนักงาน Headcount Budget รวมเงินสมทบนายจ้าง ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณพนักงานทั้งทีม รวมเงินสมทบ SSF 5% PVD สวัสดิการต่อหัว งบรายเดือนและรายปี สำหรับการวางแผนงบประมาณ HR';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณพนักงาน/`;
+
+const faqData = [
+  {
+    question: 'งบประมาณพนักงาน (Headcount Budget) คืออะไร?',
+    answer: 'งบประมาณพนักงาน คือค่าใช้จ่ายรวมทั้งหมดที่นายจ้างต้องจ่ายสำหรับพนักงานในทีม ไม่ใช่แค่เงินเดือน แต่รวมถึงเงินสมทบกองทุนประกันสังคม (SSF) กองทุนสำรองเลี้ยงชีพ (PVD) และสวัสดิการต่างๆ',
+  },
+  {
+    question: 'นายจ้างต้องจ่ายเงินสมทบประกันสังคม (SSF) เท่าไร?',
+    answer: 'นายจ้างต้องจ่ายเงินสมทบประกันสังคม 5% ของเงินเดือนพนักงาน สูงสุดไม่เกินเดือนละ 750 บาทต่อคน (ฐานสูงสุด 15,000 บาท)',
+  },
+  {
+    question: 'PVD หรือกองทุนสำรองเลี้ยงชีพคำนวณอย่างไร?',
+    answer: 'กองทุนสำรองเลี้ยงชีพ (PVD) นายจ้างจ่ายสมทบตามอัตราที่กำหนดในข้อบังคับกองทุน โดยทั่วไป 3-15% ของเงินเดือน ขึ้นอยู่กับนโยบายบริษัท',
+  },
+  {
+    question: 'ทำไมต้องคำนวณงบประมาณพนักงานล่วงหน้า?',
+    answer: 'การคำนวณงบประมาณพนักงานล่วงหน้าช่วยให้ฝ่าย HR และผู้บริหารวางแผนการใช้จ่ายได้แม่นยำ ป้องกันการใช้งบเกินแผน และช่วยในการตัดสินใจรับพนักงานเพิ่ม',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณพนักงาน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณพนักงาน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">งบประมาณพนักงาน (Headcount Budget)</p>
+      <p class="mt-1 text-sm text-slate-700">คำนวณต้นทุนพนักงานรวมทั้งทีม ครอบคลุมเงินสมทบ SSF 5% PVD และสวัสดิการต่อหัว</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">เหมาะสำหรับ HR Manager, Finance และผู้บริหารที่วางแผนงบประมาณรายปี</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณพนักงาน (Headcount Budget) ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกจำนวนตำแหน่ง เงินเดือนเฉลี่ย และรายการค่าใช้จ่ายนายจ้าง ระบบจะคำนวณงบประมาณพนักงานรายเดือนและรายปี
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="hc-form" class="space-y-5">
+        <p id="hc-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="hc-positions" class="mb-1 block text-sm font-medium text-gray-700">จำนวนตำแหน่ง (คน)</label>
+            <input type="text" id="hc-positions" inputmode="numeric" placeholder="เช่น 10"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="hc-positions-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="hc-avg-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือนเฉลี่ย (บาท/เดือน)</label>
+            <input type="text" id="hc-avg-salary" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="hc-avg-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="hc-pvd" class="mb-1 block text-sm font-medium text-gray-700">อัตราสมทบ PVD นายจ้าง (%) <span class="text-gray-400">(ถ้ามี)</span></label>
+            <input type="text" id="hc-pvd" inputmode="decimal" placeholder="เช่น 5 (ถ้าไม่มีใส่ 0)"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 3-15% ถ้าไม่มี PVD ใส่ 0</p>
+          </div>
+          <div>
+            <label for="hc-benefits" class="mb-1 block text-sm font-medium text-gray-700">สวัสดิการต่อหัว (บาท/เดือน) <span class="text-gray-400">(ถ้ามี)</span></label>
+            <input type="text" id="hc-benefits" inputmode="numeric" placeholder="เช่น 2,000 (ถ้าไม่มีใส่ 0)"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p class="mt-1 text-xs text-gray-500">ประกันสุขภาพ ค่าอาหาร ฯลฯ</p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="hc-months" class="mb-1 block text-sm font-medium text-gray-700">จำนวนเดือน</label>
+            <input type="text" id="hc-months" inputmode="numeric" placeholder="เช่น 12"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div class="flex items-end">
+            <div class="rounded-lg bg-gray-50 p-3 text-sm text-gray-600">
+              <strong>SSF นายจ้าง 5%</strong> คำนวณอัตโนมัติจากเงินเดือน (สูงสุด 750 บาท/คน/เดือน)
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณงบประมาณพนักงาน
+        </button>
+      </form>
+    </div>
+
+    <div id="hc-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนรายเดือนรวม</div>
+            <div id="res-hc-monthly" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">งบประมาณรายปี</div>
+            <div id="res-hc-annual" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนต่อหัวต่อเดือน</div>
+            <div id="res-hc-per-head" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">เงินเดือนรวม (ทุกตำแหน่ง)</span>
+            <span id="res-hc-total-salary" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">SSF นายจ้าง 5% รวม</span>
+            <span id="res-hc-ssf" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">PVD นายจ้างรวม</span>
+            <span id="res-hc-pvd" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">สวัสดิการรวม</span>
+            <span id="res-hc-benefits" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">จำนวนเดือนที่คำนวณ</span>
+            <span id="res-hc-months" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>SSF นายจ้าง = min(เงินเดือน × 5%, 750 บาท) ต่อคน</li>
+        <li>PVD นายจ้าง = เงินเดือน × อัตรา PVD% ต่อคน</li>
+        <li>ต้นทุนต่อหัว/เดือน = เงินเดือน + SSF + PVD + สวัสดิการ</li>
+        <li>ต้นทุนรวม/เดือน = ต้นทุนต่อหัว × จำนวนตำแหน่ง</li>
+        <li>งบประมาณรายปี = ต้นทุนรวม/เดือน × จำนวนเดือน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณต้นทุนชั่วโมงแรงงาน/">คำนวณต้นทุนชั่วโมงแรงงาน</a></li>
+        <li><a href="/คำนวณความสามารถจ้างพนักงานใหม่/">คำนวณความสามารถจ้างพนักงานใหม่</a></li>
+        <li><a href="/คำนวณต้นทุนพนักงานรายเดือน/">คำนวณต้นทุนพนักงานรายเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#hc-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณพนักงาน/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณพนักงาน/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการเท่านั้น อัตรา SSF และ PVD ที่แท้จริงอาจแตกต่างกันตามนโยบายบริษัทและกฎหมายที่บังคับใช้ กรุณาตรวจสอบกับฝ่าย HR และที่ปรึกษากฎหมายแรงงาน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('hc-form');
+    const formError = document.getElementById('hc-form-error');
+    const resultBox = document.getElementById('hc-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['hc-positions-error', 'hc-avg-salary-error'].forEach((id) => setErr(id, ''));
+
+      const positions = parseNum(document.getElementById('hc-positions').value);
+      const avgSalary = parseNum(document.getElementById('hc-avg-salary').value);
+      const pvdPct = parseNum(document.getElementById('hc-pvd').value) || 0;
+      const benefits = parseNum(document.getElementById('hc-benefits').value) || 0;
+      const monthsVal = document.getElementById('hc-months').value;
+      const months = parseNum(monthsVal) || 12;
+
+      let hasError = false;
+      if (!Number.isFinite(positions) || positions <= 0 || !Number.isInteger(positions)) {
+        setErr('hc-positions-error', 'กรอกจำนวนตำแหน่งเป็นจำนวนเต็มมากกว่า 0'); hasError = true;
+      }
+      if (!Number.isFinite(avgSalary) || avgSalary <= 0) {
+        setErr('hc-avg-salary-error', 'กรอกเงินเดือนเฉลี่ยมากกว่า 0'); hasError = true;
+      }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const ssfPerHead = Math.min(avgSalary * 0.05, 750);
+      const pvdPerHead = avgSalary * (pvdPct / 100);
+      const costPerHead = avgSalary + ssfPerHead + pvdPerHead + benefits;
+      const monthlyTotal = costPerHead * positions;
+      const annualTotal = monthlyTotal * months;
+
+      setText('res-hc-monthly', formatMoney(monthlyTotal));
+      setText('res-hc-annual', formatMoney(annualTotal));
+      setText('res-hc-per-head', formatMoney(costPerHead));
+      setText('res-hc-total-salary', formatMoney(avgSalary * positions));
+      setText('res-hc-ssf', formatMoney(ssfPerHead * positions));
+      setText('res-hc-pvd', formatMoney(pvdPerHead * positions));
+      setText('res-hc-benefits', formatMoney(benefits * positions));
+      setText('res-hc-months', `${months} เดือน`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

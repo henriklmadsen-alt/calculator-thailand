@@ -1,0 +1,223 @@
+---
+// Transparency Panel — Phase 2 Feature 2
+// Shows how a calculation was performed: formula, inputs, steps, source.
+// The static formula is rendered at build time.
+// After calculation, JS calls window.ctUpdateTransparency(panelId, steps) to fill in dynamic values.
+
+interface Props {
+  /** Display formula string e.g. "BMI = น้ำหนัก (กก.) ÷ [ส่วนสูง (ม.)]²" */
+  formula: string;
+  /** Optional note about the formula standards used */
+  formulaNote?: string;
+  /** Authority source URL */
+  sourceUrl?: string;
+  /** Authority source name in Thai */
+  sourceName?: string;
+  /** Unique panel ID for JS targeting (default: transparency-panel) */
+  panelId?: string;
+}
+
+const {
+  formula,
+  formulaNote,
+  sourceUrl,
+  sourceName,
+  panelId = 'transparency-panel',
+} = Astro.props;
+---
+
+<details id={panelId} class="ct-transparency-panel">
+  <summary class="ct-transparency-summary">
+    <span class="ct-transparency-icon" aria-hidden="true">🔍</span>
+    <span>วิธีคำนวณ</span>
+    <svg class="ct-transparency-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </summary>
+
+  <div class="ct-transparency-body">
+    <!-- Formula -->
+    <div class="ct-transparency-section">
+      <div class="ct-transparency-label">สูตรที่ใช้</div>
+      <div class="ct-formula-box">{formula}</div>
+      {formulaNote && <div class="ct-formula-note">{formulaNote}</div>}
+    </div>
+
+    <!-- Dynamic: filled by JS after calculation -->
+    <div id={`${panelId}-inputs`} class="ct-transparency-section ct-transparency-hidden">
+      <div class="ct-transparency-label">ค่าที่คุณใส่</div>
+      <div id={`${panelId}-inputs-content`} class="ct-inputs-grid"></div>
+    </div>
+
+    <div id={`${panelId}-steps`} class="ct-transparency-section ct-transparency-hidden">
+      <div class="ct-transparency-label">ขั้นตอนการคำนวณ</div>
+      <ol id={`${panelId}-steps-content`} class="ct-steps-list"></ol>
+    </div>
+
+    <!-- Source link -->
+    {sourceUrl && sourceName && (
+      <div class="ct-transparency-section ct-transparency-source">
+        <span class="ct-transparency-label">แหล่งอ้างอิง</span>
+        <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="ct-source-link">
+          <span aria-hidden="true">🏛️</span> {sourceName}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline; vertical-align: middle;">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+          </svg>
+        </a>
+      </div>
+    )}
+  </div>
+</details>
+
+<style>
+  .ct-transparency-panel {
+    margin-top: 1rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: #f9fafb;
+  }
+
+  .ct-transparency-summary {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    cursor: pointer; user-select: none;
+    font-size: 0.875rem; font-weight: 600; color: #374151;
+    list-style: none;
+    transition: background 0.15s;
+  }
+  .ct-transparency-summary:hover { background: #f3f4f6; }
+  .ct-transparency-summary::-webkit-details-marker { display: none; }
+
+  .ct-transparency-icon { font-size: 1rem; }
+
+  .ct-transparency-chevron {
+    margin-left: auto;
+    transition: transform 0.2s;
+    color: #9ca3af;
+  }
+  details[open] .ct-transparency-chevron { transform: rotate(180deg); }
+
+  .ct-transparency-body {
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+
+  .ct-transparency-section { display: flex; flex-direction: column; gap: 0.3rem; }
+  .ct-transparency-hidden { display: none !important; }
+
+  .ct-transparency-label {
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #6b7280;
+  }
+
+  .ct-formula-box {
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 0.5rem; padding: 0.6rem 0.875rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem; font-weight: 600; color: #1e40af;
+    word-break: break-word;
+  }
+
+  .ct-formula-note {
+    font-size: 0.75rem; color: #6b7280;
+    font-style: italic;
+  }
+
+  .ct-inputs-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.4rem;
+  }
+  .ct-input-chip {
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 0.4rem; padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+  .ct-input-chip-label { color: #6b7280; font-size: 0.7rem; display: block; }
+  .ct-input-chip-value { font-weight: 700; color: #1f2937; }
+
+  .ct-steps-list {
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 0.3rem;
+    list-style: none; counter-reset: steps;
+  }
+  .ct-steps-list li {
+    counter-increment: steps;
+    display: flex; gap: 0.6rem; align-items: flex-start;
+    font-size: 0.82rem; color: #374151;
+  }
+  .ct-steps-list li::before {
+    content: counter(steps);
+    background: #2563eb; color: #fff;
+    border-radius: 50%; min-width: 1.3rem; height: 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  .ct-transparency-source {
+    flex-direction: row; align-items: center; gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .ct-source-link {
+    font-size: 0.8rem; color: #2563eb; text-decoration: none;
+    font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;
+  }
+  .ct-source-link:hover { text-decoration: underline; }
+</style>
+
+<script is:inline>
+/**
+ * Update the transparency panel with calculation inputs and steps.
+ *
+ * @param {string} panelId - The `panelId` prop value (default: "transparency-panel")
+ * @param {Object} data
+ * @param {Array<{label:string, value:string}>} data.inputs - User inputs
+ * @param {Array<string>} data.steps - Step-by-step calculation strings
+ */
+window.ctUpdateTransparency = function(panelId, data) {
+  if (!panelId || !data) return;
+
+  var inputsSection = document.getElementById(panelId + '-inputs');
+  var inputsContent = document.getElementById(panelId + '-inputs-content');
+  var stepsSection  = document.getElementById(panelId + '-steps');
+  var stepsContent  = document.getElementById(panelId + '-steps-content');
+
+  if (data.inputs && data.inputs.length > 0 && inputsSection && inputsContent) {
+    inputsContent.innerHTML = '';
+    data.inputs.forEach(function(inp) {
+      var chip = document.createElement('div');
+      chip.className = 'ct-input-chip';
+      chip.innerHTML = '<span class="ct-input-chip-label">' + escHtml(inp.label) + '</span>' +
+                       '<span class="ct-input-chip-value">' + escHtml(inp.value) + '</span>';
+      inputsContent.appendChild(chip);
+    });
+    inputsSection.style.removeProperty('display');
+    inputsSection.classList.remove('ct-transparency-hidden');
+  }
+
+  if (data.steps && data.steps.length > 0 && stepsSection && stepsContent) {
+    stepsContent.innerHTML = '';
+    data.steps.forEach(function(step) {
+      var li = document.createElement('li');
+      li.textContent = step;
+      stepsContent.appendChild(li);
+    });
+    stepsSection.style.removeProperty('display');
+    stepsSection.classList.remove('ct-transparency-hidden');
+  }
+
+  // Keep panel collapsed by default — user expands on demand
+  // (Removed auto-open per CAL-964: collapsed by default requirement)
+};
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+</script>

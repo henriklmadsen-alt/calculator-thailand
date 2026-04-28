@@ -1,0 +1,284 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณแยกความต้องการ Needs vs Wants ปี 2569 เปรียบเทียบสูตร 50/30/20 | Kamnuanlek';
+const pageDescription = 'แยกรายจ่ายเป็น Needs ความต้องการจำเป็น vs Wants ความอยากได้ เปรียบเทียบกับเป้าหมาย 50/30/20 ดูว่าสัดส่วนใดเกินหรือขาดเป้าหมาย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณแยกความต้องการ/`;
+
+const faqData = [
+  {
+    question: 'วิธีแยก Needs กับ Wants ทำอย่างไร?',
+    answer: 'ถามตัวเองว่า "ถ้าไม่มีรายจ่ายนี้ ชีวิตจะเดือดร้อนหรือไม่?" ถ้าใช่ = Needs เช่น ค่าเช่า อาหาร ยา ค่าเดินทางไปทำงาน ถ้าไม่ = Wants เช่น ท่องเที่ยว กาแฟสตาร์บัค Netflix ของตกแต่งบ้าน',
+  },
+  {
+    question: 'ถ้า Needs เกิน 50% ต้องทำอย่างไร?',
+    answer: 'Needs เกิน 50% อาจหมายความว่าค่าครองชีพสูงเกินรายได้ ทางออก: ลดค่าที่พักเช่นย้ายห้อง ลดค่าผ่อนหนี้โดยรีไฟแนนซ์ หรือเพิ่มรายได้ ไม่ควรตัด Needs แต่ควรหาทางลดค่าใช้จ่ายในหมวดนั้น',
+  },
+  {
+    question: 'ค่าเดินทางเป็น Need หรือ Want?',
+    answer: 'ค่าเดินทางไปทำงานถือเป็น Need เพราะจำเป็นสำหรับการมีรายได้ แต่ค่าเดินทางท่องเที่ยว ไปห้างสรรพสินค้า ถือเป็น Want เพราะเป็นทางเลือก',
+  },
+  {
+    question: 'ควรตัด Wants ออกทั้งหมดเพื่อออมเงินมากขึ้นไหม?',
+    answer: 'ไม่แนะนำให้ตัด Wants ออกทั้งหมด เพราะจะทำให้ความสุขในชีวิตลดลงและยากที่จะรักษาวินัยระยะยาว ควรมี Wants ในสัดส่วนที่เหมาะสม เช่น 20-30% และเลือก Wants ที่ให้ความสุขสูงสุดต่อเงินที่จ่าย',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณแยก Needs vs Wants',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณแยกความต้องการ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">แยกรายจ่ายเป็น Needs vs Wants เปรียบเทียบสูตร 50/30/20</p>
+      <p class="mt-1 text-sm text-slate-700">Needs = ความต้องการจำเป็น (เป้า 50%) | Wants = ความอยากได้ (เป้า 30%) | Savings = ออม (เป้า 20%)</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">กรอกรายจ่ายสูงสุด 10 รายการ แท็กแต่ละรายการว่าเป็น Need หรือ Want</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณแยกความต้องการ Needs vs Wants ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้และรายจ่ายแต่ละรายการ เลือกว่าเป็น Need หรือ Want เพื่อเปรียบเทียบกับสูตร 50/30/20
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="nw-form" class="space-y-5">
+        <p id="nw-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label for="nw-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้สุทธิต่อเดือน (บาท)</label>
+          <input type="text" id="nw-income" inputmode="numeric" placeholder="เช่น 30,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:max-w-xs" />
+          <p id="nw-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <p class="text-sm font-semibold text-gray-700">รายการค่าใช้จ่าย</p>
+        <div id="nw-items-container" class="space-y-2">
+          <div class="grid gap-2 sm:grid-cols-3 nw-item-row">
+            <input type="text" placeholder="ชื่อรายจ่าย เช่น ค่าเช่า" class="nw-item-name rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <input type="text" inputmode="numeric" placeholder="จำนวน (บาท)" class="nw-item-amount rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <select class="nw-item-type rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="need">Need — จำเป็น</option>
+              <option value="want">Want — อยากได้</option>
+              <option value="savings">Savings — ออม/ลงทุน</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="button" id="nw-add-item" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          + เพิ่มรายการ (สูงสุด 10)
+        </button>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          วิเคราะห์ Needs vs Wants
+        </button>
+      </form>
+    </div>
+
+    <div id="nw-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการวิเคราะห์</h2>
+
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4">
+            <div class="mb-2 text-sm font-medium text-blue-700">Needs — ความต้องการ</div>
+            <div id="res-nw-needs" class="text-xl font-bold text-blue-700">-</div>
+            <div id="res-nw-needs-pct" class="text-sm text-gray-600">-</div>
+            <div id="res-nw-needs-status" class="mt-1 text-xs font-medium"></div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4">
+            <div class="mb-2 text-sm font-medium text-orange-700">Wants — ความอยาก</div>
+            <div id="res-nw-wants" class="text-xl font-bold text-orange-700">-</div>
+            <div id="res-nw-wants-pct" class="text-sm text-gray-600">-</div>
+            <div id="res-nw-wants-status" class="mt-1 text-xs font-medium"></div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4">
+            <div class="mb-2 text-sm font-medium text-green-700">Savings — ออม</div>
+            <div id="res-nw-savings" class="text-xl font-bold text-green-700">-</div>
+            <div id="res-nw-savings-pct" class="text-sm text-gray-600">-</div>
+            <div id="res-nw-savings-status" class="mt-1 text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 text-left">
+              <th class="px-3 py-2 font-medium text-gray-700">รายการ</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">จำนวน</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">ประเภท</th>
+              <th class="px-3 py-2 text-right font-medium text-gray-700">% รายได้</th>
+            </tr>
+          </thead>
+          <tbody id="nw-table-body" class="divide-y divide-gray-100">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>Needs รวม = ผลรวมรายการที่แท็กเป็น Need</li>
+        <li>Wants รวม = ผลรวมรายการที่แท็กเป็น Want</li>
+        <li>Savings รวม = ผลรวมรายการที่แท็กเป็น Savings</li>
+        <li>สัดส่วน % = (จำนวนหมวด ÷ รายได้) × 100%</li>
+        <li>เป้าหมาย 50/30/20: Needs ≤50%, Wants ≤30%, Savings ≥20%</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+        <li><a href="/คำนวณส่วนต่างรายได้รายจ่าย/">คำนวณส่วนต่างรายได้รายจ่าย</a></li>
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#nw-results" />
+    <RelatedArticles currentHref="/คำนวณแยกความต้องการ/" />
+    <RelatedCalculators currentHref="/คำนวณแยกความต้องการ/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> การจัดประเภท Needs/Wants เป็นเรื่องส่วนตัว ผลลัพธ์เป็นแนวทางไม่ใช่กฎตายตัว
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('nw-form');
+    const formError = document.getElementById('nw-error');
+    const resultBox = document.getElementById('nw-results');
+    const addBtn = document.getElementById('nw-add-item');
+    const container = document.getElementById('nw-items-container');
+    let itemCount = 1;
+
+    function createItemRow() {
+      const div = document.createElement('div');
+      div.className = 'grid gap-2 sm:grid-cols-3 nw-item-row';
+      div.innerHTML = `
+        <input type="text" placeholder="ชื่อรายจ่าย" class="nw-item-name rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        <input type="text" inputmode="numeric" placeholder="จำนวน (บาท)" class="nw-item-amount rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        <div class="flex gap-2">
+          <select class="nw-item-type flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="need">Need — จำเป็น</option>
+            <option value="want">Want — อยากได้</option>
+            <option value="savings">Savings — ออม</option>
+          </select>
+          <button type="button" class="nw-remove-btn rounded-md border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50">ลบ</button>
+        </div>
+      `;
+      div.querySelector('.nw-remove-btn').addEventListener('click', () => div.remove());
+      return div;
+    }
+
+    addBtn?.addEventListener('click', () => {
+      if (itemCount < 10) {
+        container.appendChild(createItemRow());
+        itemCount++;
+      }
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('nw-income-error', '');
+
+      const income = parseNum(document.getElementById('nw-income').value);
+      let hasError = false;
+      if (!income || income <= 0) { setErr('nw-income-error', 'กรอกรายได้มากกว่า 0'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      let needsTotal = 0, wantsTotal = 0, savingsTotal = 0;
+      const tableRows = [];
+
+      container.querySelectorAll('.nw-item-row').forEach(row => {
+        const name = row.querySelector('.nw-item-name')?.value.trim() || 'ไม่ระบุ';
+        const amount = parseNum(row.querySelector('.nw-item-amount')?.value || '0');
+        const type = row.querySelector('.nw-item-type')?.value || 'need';
+        if (amount > 0) {
+          if (type === 'need') needsTotal += amount;
+          else if (type === 'want') wantsTotal += amount;
+          else savingsTotal += amount;
+          tableRows.push({ name, amount, type });
+        }
+      });
+
+      const needsPct = income > 0 ? (needsTotal / income) * 100 : 0;
+      const wantsPct = income > 0 ? (wantsTotal / income) * 100 : 0;
+      const savingsPct = income > 0 ? (savingsTotal / income) * 100 : 0;
+
+      setText('res-nw-needs', formatMoney(needsTotal));
+      setText('res-nw-needs-pct', `${needsPct.toFixed(1)}% (เป้า ≤50%)`);
+      setText('res-nw-wants', formatMoney(wantsTotal));
+      setText('res-nw-wants-pct', `${wantsPct.toFixed(1)}% (เป้า ≤30%)`);
+      setText('res-nw-savings', formatMoney(savingsTotal));
+      setText('res-nw-savings-pct', `${savingsPct.toFixed(1)}% (เป้า ≥20%)`);
+
+      const needsStatus = document.getElementById('res-nw-needs-status');
+      const wantsStatus = document.getElementById('res-nw-wants-status');
+      const savingsStatus = document.getElementById('res-nw-savings-status');
+
+      needsStatus.textContent = needsPct <= 50 ? '✓ อยู่ในเป้าหมาย' : `⚠ เกินเป้า ${(needsPct - 50).toFixed(1)}%`;
+      needsStatus.className = `mt-1 text-xs font-medium ${needsPct <= 50 ? 'text-green-700' : 'text-red-700'}`;
+      wantsStatus.textContent = wantsPct <= 30 ? '✓ อยู่ในเป้าหมาย' : `⚠ เกินเป้า ${(wantsPct - 30).toFixed(1)}%`;
+      wantsStatus.className = `mt-1 text-xs font-medium ${wantsPct <= 30 ? 'text-green-700' : 'text-red-700'}`;
+      savingsStatus.textContent = savingsPct >= 20 ? '✓ อยู่ในเป้าหมาย' : `⚠ ขาดเป้า ${(20 - savingsPct).toFixed(1)}%`;
+      savingsStatus.className = `mt-1 text-xs font-medium ${savingsPct >= 20 ? 'text-green-700' : 'text-amber-700'}`;
+
+      const typeMap = { need: 'Need', want: 'Want', savings: 'Savings' };
+      const typeBg = { need: 'bg-blue-50 text-blue-700', want: 'bg-orange-50 text-orange-700', savings: 'bg-green-50 text-green-700' };
+      const tbody = document.getElementById('nw-table-body');
+      tbody.innerHTML = tableRows.map(r => `
+        <tr>
+          <td class="px-3 py-2 text-gray-700">${r.name}</td>
+          <td class="px-3 py-2 text-right font-medium">${formatMoney(r.amount)}</td>
+          <td class="px-3 py-2 text-right"><span class="rounded px-2 py-0.5 text-xs font-medium ${typeBg[r.type]}">${typeMap[r.type]}</span></td>
+          <td class="px-3 py-2 text-right text-gray-500">${income > 0 ? ((r.amount / income) * 100).toFixed(1) : 0}%</td>
+        </tr>
+      `).join('');
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

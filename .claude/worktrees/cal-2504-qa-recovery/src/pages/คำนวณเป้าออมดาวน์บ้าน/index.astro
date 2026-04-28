@@ -1,0 +1,224 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเป้าหมายออมเงินดาวน์บ้าน 2569 | วางแผนซื้อบ้าน | Kamnuanlek';
+const pageDescription = 'คำนวณเงินออมรายเดือนเพื่อดาวน์บ้านหรือคอนโด จากราคาบ้าน สัดส่วนดาวน์ และระยะเวลา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเป้าออมดาวน์บ้าน/`;
+
+const faqData = [
+  {
+    question: 'ควรดาวน์บ้านกี่เปอร์เซ็นต์?',
+    answer: 'ธนาคารส่วนใหญ่กำหนดดาวน์บ้านขั้นต่ำ 5-10% สำหรับบ้านหลังแรก แต่แนะนำดาวน์อย่างน้อย 20% เพื่อลดภาระผ่อนรายเดือนและดอกเบี้ยระยะยาว การดาวน์สูงยังช่วยให้ได้รับอัตราดอกเบี้ยที่ดีกว่าจากธนาคาร',
+  },
+  {
+    question: 'นอกจากเงินดาวน์ยังมีค่าใช้จ่ายอื่นอีกไหม?',
+    answer: 'ใช่ ควรเตรียมค่าใช้จ่ายเพิ่มเติม ได้แก่ ค่าโอนกรรมสิทธิ์ 2% ค่าจดจำนอง 1% ค่าประกันอัคคีภัย และค่าตรวจสอบอาคาร รวมประมาณ 3-5% ของราคาบ้าน ควรเผื่อเงินส่วนนี้ไว้ด้วย',
+  },
+  {
+    question: 'ซื้อบ้านหรือคอนโดดีกว่ากัน?',
+    answer: 'ขึ้นอยู่กับไลฟ์สไตล์และงบประมาณ บ้านให้พื้นที่มากกว่าและมีที่ดิน แต่ราคาสูงกว่าและต้องดูแลบำรุงรักษาเอง คอนโดอยู่ในทำเลดีกว่า มีสิ่งอำนวยความสะดวก แต่มีค่าส่วนกลางรายเดือน ควรเปรียบเทียบค่าผ่อนกับค่าเช่าในทำเลเดียวกันก่อนตัดสินใจ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเป้าหมายออมเงินดาวน์บ้าน',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเป้าออมดาวน์บ้าน">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณเป้าหมายออมเงินดาวน์บ้าน 2569 — วางแผนซื้อบ้านและคอนโด
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณเงินออมรายเดือนเพื่อดาวน์บ้านหรือคอนโด จากราคาบ้าน สัดส่วนดาวน์ และระยะเวลา
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="down-payment-form" class="space-y-5">
+        <p id="down-payment-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="dp-price" class="block text-sm font-medium text-gray-700 mb-1">ราคาบ้าน/คอนโด (บาท)</label>
+            <input type="text" id="dp-price" inputmode="numeric" placeholder="เช่น 3,000,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="dp-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="dp-pct" class="block text-sm font-medium text-gray-700 mb-1">สัดส่วนดาวน์ (%)</label>
+            <input type="text" id="dp-pct" inputmode="decimal" placeholder="เช่น 20" value="20"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="dp-pct-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="dp-current" class="block text-sm font-medium text-gray-700 mb-1">เงินออมปัจจุบัน (บาท)</label>
+            <input type="text" id="dp-current" inputmode="numeric" placeholder="เช่น 100,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+          <div>
+            <label for="dp-months" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลา (เดือน)</label>
+            <input type="text" id="dp-months" inputmode="numeric" placeholder="เช่น 36"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+            <p id="dp-months-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="dp-rate" class="block text-sm font-medium text-gray-700 mb-1">อัตราดอกเบี้ย (% ต่อปี)</label>
+            <input type="text" id="dp-rate" inputmode="decimal" placeholder="เช่น 1.5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+        </div>
+
+        <button type="submit" id="down-payment-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์ที่ต้องการ</div>
+            <div id="res-downpayment" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินออมรายเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยสะสม</div>
+            <div id="res-interest" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณเงินออมเพื่อดาวน์บ้าน</h2>
+      <p>การออมเงินดาวน์บ้านเป็นขั้นตอนสำคัญในการซื้อที่อยู่อาศัย เครื่องคำนวณนี้จะคำนวณเงินดาวน์ที่ต้องการจากราคาบ้านและสัดส่วนดาวน์ แล้วหาเงินออมรายเดือนที่เหมาะสม</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">การคำนวณเงินดาวน์</h3>
+      <p>เงินดาวน์ที่ต้องการ = ราคาบ้าน × สัดส่วนดาวน์/100<br />จากนั้นใช้สูตร PMT คำนวณเงินออมรายเดือนโดยนำเงินออมปัจจุบันมาหักออกก่อน</p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ข้อควรรู้ก่อนซื้อบ้าน</h3>
+      <p>นอกจากเงินดาวน์ ควรเตรียมค่าโอน ค่าจดจำนอง และค่าใช้จ่ายแรกเข้าอื่นๆ อีกประมาณ 3-5% ของราคาบ้าน เพื่อให้กระบวนการซื้อบ้านราบรื่น</p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedCalculators currentHref="/คำนวณเป้าออมดาวน์บ้าน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น อัตราดอกเบี้ยจริงอาจแตกต่างตามเงื่อนไขของธนาคาร ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+    const form = document.getElementById('down-payment-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('down-payment-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('down-payment-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const priceInput = document.getElementById('dp-price') as HTMLInputElement;
+    const pctInput = document.getElementById('dp-pct') as HTMLInputElement;
+    const currentInput = document.getElementById('dp-current') as HTMLInputElement;
+    const monthsInput = document.getElementById('dp-months') as HTMLInputElement;
+    const rateInput = document.getElementById('dp-rate') as HTMLInputElement;
+    function setFieldError(id: string, msg: string) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.remove('hidden'); }
+    function clearFieldError(id: string) { const el = document.getElementById(id); if (!el) return; el.textContent = ''; el.classList.add('hidden'); }
+    function clearValidation() { formError.classList.add('hidden'); ['dp-price-error','dp-pct-error','dp-months-error'].forEach(clearFieldError); }
+    [priceInput, pctInput, currentInput, monthsInput, rateInput].forEach(input => { input.addEventListener('input', clearValidation); });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); clearValidation();
+      const price = parseNum(priceInput.value);
+      const pct = parseFloat(pctInput.value.replace(/,/g, '')) || 0;
+      const current = parseNum(currentInput.value);
+      const months = parseInt(monthsInput.value.replace(/,/g, '')) || 0;
+      const annualRate = parseFloat(rateInput.value.replace(/,/g, '')) || 0;
+      let hasError = false;
+      if (price <= 0) { setFieldError('dp-price-error', 'กรุณากรอกราคาบ้าน'); hasError = true; }
+      if (pct <= 0 || pct > 100) { setFieldError('dp-pct-error', 'กรุณากรอกสัดส่วนดาวน์ 1-100%'); hasError = true; }
+      if (months <= 0) { setFieldError('dp-months-error', 'กรุณากรอกระยะเวลาออม'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); return; }
+      submitBtn.disabled = true; submitBtn.textContent = 'กำลังคำนวณ...';
+      trackCalculatorStart('house-downpayment-savings');
+      const target = price * pct / 100;
+      const r = annualRate / 100;
+      let monthlyPmt: number;
+      if (r === 0) {
+        const needed = target - current;
+        monthlyPmt = needed > 0 ? needed / months : 0;
+      } else {
+        const rm = r / 12;
+        const factor = Math.pow(1 + rm, months);
+        const currentFV = current * factor;
+        const needed = target - currentFV;
+        monthlyPmt = needed <= 0 ? 0 : needed / ((factor - 1) / rm);
+      }
+      monthlyPmt = Math.max(0, monthlyPmt);
+      const totalContributions = current + monthlyPmt * months;
+      const totalInterest = Math.max(0, target - totalContributions);
+      (document.getElementById('res-downpayment') as HTMLElement).textContent = fmt(target) + ' บาท';
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPmt) + ' บาท/เดือน';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false; submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('house-downpayment-savings');
+      trackCalculatorUsed('house-downpayment-savings');
+    });
+  </script>
+</BaseLayout>

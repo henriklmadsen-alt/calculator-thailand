@@ -1,0 +1,673 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าผ่อนมือถือ 2569 | ฟรี เทียบ 0% กับผ่อนบัตรเครดิต | Kamnuanlek';
+const pageDescription = 'คำนวณค่าผ่อนมือถือรายเดือน เปรียบเทียบแคมเปญ 0% ผ่อนผ่านค่ายมือถือ และผ่อนบัตรเครดิต ฟรี เห็นยอดผ่อนและดอกเบี้ยรวมทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณผ่อนมือถือ/`;
+
+const faqData = [
+  {
+    question: 'ผ่อนมือถือ 0% จริงไหม?',
+    answer: 'แคมเปญผ่อน 0% จากค่ายมือถือ (AIS, True, dtac) หรือร้านค้าอย่าง Apple Store, Samsung Store เป็นดอกเบี้ย 0% จริง โดยร้านค้าเป็นผู้รับภาระดอกเบี้ยแทน แต่ต้องตรวจสอบว่าราคาเครื่องไม่สูงกว่าราคาเงินสดปกติ',
+  },
+  {
+    question: 'ผ่อนมือถือผ่านบัตรเครดิตดอกเบี้ยเท่าไร?',
+    answer: 'ดอกเบี้ยผ่อนบัตรเครดิตสำหรับมือถือในไทยปี 2569 อยู่ที่ประมาณ 0.7-0.9% ต่อเดือน (ประมาณ 8-10% ต่อปี) ขึ้นอยู่กับธนาคารและจำนวนงวด บางแคมเปญอาจมี 0% สำหรับบัตรเฉพาะ',
+  },
+  {
+    question: 'ผ่อนมือถือกี่เดือนดีที่สุด?',
+    answer: 'ถ้าเป็นแคมเปญ 0% ให้เลือกผ่อนยาวที่สุดเพราะไม่มีดอกเบี้ย แต่ถ้ามีดอกเบี้ย ผ่อนสั้น 6-10 เดือนจะจ่ายดอกเบี้ยน้อยกว่า ระยะเวลาที่นิยม: 6, 10, 12, 18, 24 เดือน',
+  },
+  {
+    question: 'ผ่อนมือถือผ่านค่ายมือถือกับบัตรเครดิตต่างกันอย่างไร?',
+    answer: 'ผ่อนผ่านค่ายมือถือ (AIS/True/dtac) มักรวมแพ็กเกจรายเดือน ราคาเครื่องอาจถูกกว่าแต่ต้องอยู่สัญญา 12-24 เดือน ส่วนผ่อนบัตรเครดิตยืดหยุ่นกว่า ไม่ผูกแพ็กเกจ แต่อาจมีดอกเบี้ย',
+  },
+  {
+    question: 'ควรซื้อเงินสดหรือผ่อนมือถือ?',
+    answer: 'ถ้ามีเงินสดพร้อม การซื้อเงินสดอาจได้ส่วนลดเพิ่ม แต่ถ้าเจอแคมเปญ 0% ผ่อนจะคุ้มกว่าเพราะสามารถเอาเงินไปลงทุนหรือฝากธนาคารระหว่างผ่อนได้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผ่อนมือถือ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนมือถือ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าผ่อนมือถือ — เทียบ 0% ผ่อนค่าย และบัตรเครดิต
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าผ่อนมือถือรายเดือน เปรียบเทียบแคมเปญ 0% ผ่อนผ่านค่ายมือถือ (AIS, True, dtac) และผ่อนบัตรเครดิต เห็นดอกเบี้ยรวมและยอดจ่ายจริงทันที
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="phone-form" class="space-y-5">
+        <p id="phone-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <div>
+          <label for="phone-price" class="block text-sm font-medium text-gray-700 mb-1">
+            ราคามือถือ (บาท)
+          </label>
+          <input
+            type="text"
+            id="phone-price"
+            inputmode="numeric"
+            placeholder="เช่น 45,900"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="phone-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div>
+          <label for="down-payment" class="block text-sm font-medium text-gray-700 mb-1">
+            เงินดาวน์ (บาท) <span class="text-gray-400 font-normal">— ไม่บังคับ</span>
+          </label>
+          <input
+            type="text"
+            id="down-payment"
+            inputmode="numeric"
+            placeholder="0"
+            value="0"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <!-- Plan Type -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">รูปแบบการผ่อน</label>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <label class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-primary-400 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+              <input type="radio" name="plan-type" value="zero" checked class="accent-primary-600" />
+              <div>
+                <span class="text-sm font-medium text-gray-900">0% แคมเปญ</span>
+                <span class="block text-xs text-gray-500">ร้านค้า / ค่ายมือถือ</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-primary-400 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+              <input type="radio" name="plan-type" value="carrier" class="accent-primary-600" />
+              <div>
+                <span class="text-sm font-medium text-gray-900">ค่ายมือถือ+แพ็ก</span>
+                <span class="block text-xs text-gray-500">AIS / True / dtac</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-primary-400 has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50">
+              <input type="radio" name="plan-type" value="credit" class="accent-primary-600" />
+              <div>
+                <span class="text-sm font-medium text-gray-900">บัตรเครดิต</span>
+                <span class="block text-xs text-gray-500">ผ่อนผ่านบัตร</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Carrier plan monthly fee (shown only for carrier) -->
+        <div id="carrier-fields" class="hidden space-y-4">
+          <div>
+            <label for="carrier-monthly" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าแพ็กเกจรายเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="carrier-monthly"
+              inputmode="numeric"
+              placeholder="เช่น 1,299"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ค่ารายเดือนที่ต้องจ่ายตลอดสัญญา (รวมค่าเครื่อง)</p>
+          </div>
+        </div>
+
+        <!-- Credit card interest (shown only for credit) -->
+        <div id="credit-fields" class="hidden">
+          <div>
+            <label for="cc-interest" class="block text-sm font-medium text-gray-700 mb-1">
+              ดอกเบี้ย (% ต่อเดือน)
+            </label>
+            <input
+              type="text"
+              id="cc-interest"
+              inputmode="decimal"
+              placeholder="เช่น 0.8"
+              value="0.8"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ดอกเบี้ยผ่อนบัตรเครดิตในไทยประมาณ 0.7-0.9% ต่อเดือน</p>
+            <p id="cc-interest-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="term-months" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนงวด (เดือน)
+          </label>
+          <select
+            id="term-months"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base bg-white"
+          >
+            <option value="4">4 เดือน</option>
+            <option value="6">6 เดือน</option>
+            <option value="10" selected>10 เดือน</option>
+            <option value="12">12 เดือน</option>
+            <option value="18">18 เดือน</option>
+            <option value="24">24 เดือน</option>
+          </select>
+        </div>
+
+        <!-- Finance preview -->
+        <div id="finance-preview" class="text-sm text-gray-500 hidden">
+          ยอดผ่อน: <span id="finance-text" class="font-medium text-gray-700"></span> บาท
+        </div>
+
+        <button
+          type="submit"
+          id="phone-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <!-- Summary Cards -->
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
+            <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เงินดาวน์</div>
+            <div id="res-down" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ดอกเบี้ยรวม</div>
+            <div id="res-interest" class="text-xl font-bold text-red-600">-</div>
+          </div>
+          <div class="bg-gray-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">จ่ายทั้งหมด</div>
+            <div id="res-total" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+        </div>
+
+        <!-- Carrier extra row (shown only for carrier plan) -->
+        <div id="carrier-result" class="hidden mb-6">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="bg-purple-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ค่าแพ็กเกจรวมตลอดสัญญา</div>
+              <div id="res-carrier-total" class="text-xl font-bold text-purple-700">-</div>
+            </div>
+            <div class="bg-orange-50 rounded-lg p-4 text-center">
+              <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายรวมทั้งหมด (เครื่อง+แพ็ก)</div>
+              <div id="res-grand-total" class="text-xl font-bold text-orange-700">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail breakdown -->
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ราคามือถือ</span>
+            <span id="res-price" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เงินดาวน์</span>
+            <span id="res-down-detail" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดผ่อน</span>
+            <span id="res-finance" class="font-medium">-</span>
+          </div>
+          <div id="row-rate" class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">อัตราดอกเบี้ย</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จำนวนงวด</span>
+            <span id="res-term" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ดอกเบี้ยรวม</span>
+            <span id="res-interest-detail" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ยอดผ่อนรวม (เงินต้น+ดอกเบี้ย)</span>
+            <span id="res-total-paid" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <!-- Payment schedule -->
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ตารางผ่อนชำระ (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-2">งวดที่</th>
+                  <th class="py-2 pr-2 text-right">ค่างวด</th>
+                  <th class="py-2 pr-2 text-right">เงินต้น</th>
+                  <th class="py-2 pr-2 text-right">ดอกเบี้ย</th>
+                  <th class="py-2 text-right">ยอดคงเหลือ</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div id="phone-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: เปรียบเทียบดอกเบี้ยบัตรเครดิต</p>
+      <p class="mt-1 text-sm text-primary-700">ตรวจสอบดอกเบี้ยบัตรเครดิตเพื่อเลือกบัตรที่ดีที่สุดสำหรับผ่อนมือถือ</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณดอกเบี้ยบัตรเครดิต/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณดอกเบี้ยบัตรเครดิต</a>
+        <a data-next-action-link href="/คำนวณผ่อนกู้/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">เปรียบเทียบ: คำนวณผ่อนกู้</a>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณค่าผ่อนมือถือ</h2>
+
+      <p>
+        การผ่อนมือถือเป็นตัวเลือกยอดนิยมสำหรับคนไทยที่ต้องการสมาร์ทโฟนรุ่นใหม่โดยไม่ต้องจ่ายเงินก้อน
+        เครื่องคำนวณนี้รองรับ 3 รูปแบบหลักที่ใช้ในไทย: แคมเปญ 0%, ผ่อนผ่านค่ายมือถือ, และผ่อนบัตรเครดิต
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">1. แคมเปญ 0% (ไม่มีดอกเบี้ย)</h3>
+      <p>สูตรคำนวณง่ายที่สุด:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ยอดผ่อน</strong> = ราคามือถือ − เงินดาวน์</li>
+        <li><strong>ค่างวด</strong> = ยอดผ่อน ÷ จำนวนเดือน</li>
+      </ul>
+      <p>
+        แคมเปญ 0% พบได้จาก Apple Store, Samsung Store, ค่ายมือถือ (AIS, True, dtac), ห้างสรรพสินค้า
+        และบัตรเครดิตบางธนาคารในช่วงโปรโมชัน
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">2. ผ่อนผ่านค่ายมือถือ (AIS/True/dtac)</h3>
+      <p>
+        ค่ายมือถือเสนอราคาเครื่องพิเศษเมื่อสมัครแพ็กเกจรายเดือน สิ่งที่ต้องจ่ายมี 2 ส่วน:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ค่างวดเครื่อง</strong> = (ราคามือถือ − เงินดาวน์) ÷ จำนวนเดือน (มักเป็น 0%)</li>
+        <li><strong>ค่าแพ็กเกจ</strong> = ค่ารายเดือนตลอดสัญญา</li>
+        <li><strong>จ่ายต่อเดือนจริง</strong> = ค่างวดเครื่อง + ค่าแพ็กเกจ</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">3. ผ่อนบัตรเครดิต (มีดอกเบี้ย)</h3>
+      <p>สูตรคำนวณแบบ flat rate ที่ธนาคารไทยใช้:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ยอดผ่อน</strong> = ราคามือถือ − เงินดาวน์</li>
+        <li><strong>ดอกเบี้ยรวม</strong> = ยอดผ่อน × ดอกเบี้ยต่อเดือน × จำนวนเดือน</li>
+        <li><strong>ค่างวด</strong> = (ยอดผ่อน + ดอกเบี้ยรวม) ÷ จำนวนเดือน</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+      <p>ผ่อน iPhone ราคา 45,900 บาท ผ่านบัตรเครดิต 10 เดือน ดอกเบี้ย 0.8% ต่อเดือน:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ยอดผ่อน: <strong>45,900 บาท</strong></li>
+        <li>ดอกเบี้ยรวม: 45,900 × 0.8% × 10 = <strong>3,672 บาท</strong></li>
+        <li>ยอดผ่อนรวม: 45,900 + 3,672 = <strong>49,572 บาท</strong></li>
+        <li>ค่างวด: 49,572 ÷ 10 = <strong>4,957.20 บาท/เดือน</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">อัตราดอกเบี้ยผ่อนมือถือในไทย 2569</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>แคมเปญ 0%:</strong> ไม่มีดอกเบี้ย (Apple Store, Samsung, ค่ายมือถือ)</li>
+        <li><strong>บัตรเครดิต:</strong> 0.7-0.9% ต่อเดือน (ประมาณ 8-10% ต่อปี)</li>
+        <li><strong>สินเชื่อส่วนบุคคล:</strong> 1-2% ต่อเดือน (ประมาณ 12-25% ต่อปี)</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">เคล็ดลับการผ่อนมือถือ</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เลือกแคมเปญ 0% เป็นอันดับแรกเสมอ เพราะไม่จ่ายดอกเบี้ย</li>
+        <li>เปรียบเทียบราคาเงินสดกับราคาผ่อน — บางร้านบวกราคาเครื่องชดเชยดอกเบี้ย 0%</li>
+        <li>ค่างวดมือถือรวมกับภาระหนี้อื่นไม่ควรเกิน 40% ของรายได้</li>
+        <li>ถ้าผ่อนผ่านค่ายมือถือ ให้ตรวจสอบค่าแพ็กเกจรวมตลอดสัญญา อาจแพงกว่าซื้อเครื่องเปล่า</li>
+        <li>ผ่อนบัตรเครดิต 0% ยาวที่สุดคุ้มสุด แต่ถ้ามีดอกเบี้ย ผ่อนสั้นจ่ายน้อยกว่า</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยนโยบายและสินเชื่อ</li>
+        <li><a href="https://www.bot.or.th/th/financial-consumer/loan.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">สิทธิผู้บริโภคด้านสินเชื่อ — ธนาคารแห่งประเทศไทย</a></li>
+      </ul>
+    </div>
+    <RelatedArticles currentHref="/คำนวณผ่อนมือถือ/" />
+    <RelatedCalculators currentHref="/คำนวณผ่อนมือถือ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ค่างวดจริงอาจแตกต่างตามเงื่อนไขของธนาคาร ค่ายมือถือ หรือร้านค้า ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    const form = document.getElementById('phone-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('phone-submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('phone-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const nextActionCard = document.getElementById('phone-next-action') as HTMLElement;
+    const priceInput = document.getElementById('phone-price') as HTMLInputElement;
+    const downInput = document.getElementById('down-payment') as HTMLInputElement;
+    const carrierFields = document.getElementById('carrier-fields') as HTMLElement;
+    const creditFields = document.getElementById('credit-fields') as HTMLElement;
+    const carrierResult = document.getElementById('carrier-result') as HTMLElement;
+    let hasTrackedStart = false;
+
+    function getSelectedPlan(): string {
+      return (document.querySelector('input[name="plan-type"]:checked') as HTMLInputElement)?.value || 'zero';
+    }
+
+    // Toggle plan-specific fields
+    document.querySelectorAll('input[name="plan-type"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        const plan = getSelectedPlan();
+        carrierFields.classList.toggle('hidden', plan !== 'carrier');
+        creditFields.classList.toggle('hidden', plan !== 'credit');
+        updateSubmitState();
+      });
+    });
+
+    function setFieldError(elementId: string, message: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(elementId: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      clearFieldError('phone-price-error');
+      clearFieldError('cc-interest-error');
+      formError.classList.add('hidden');
+    }
+
+    function updateSubmitState() {
+      const price = parseNum(priceInput.value);
+      const plan = getSelectedPlan();
+      let ready = price > 0;
+      if (plan === 'credit') {
+        const rate = parseFloat((document.getElementById('cc-interest') as HTMLInputElement).value.replace(/,/g, '')) || 0;
+        ready = ready && rate > 0;
+      }
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    function updateFinancePreview() {
+      const price = parseNum(priceInput.value);
+      const down = parseNum(downInput.value);
+      const preview = document.getElementById('finance-preview') as HTMLElement;
+      if (price > 0) {
+        const finance = Math.max(0, price - down);
+        (document.getElementById('finance-text') as HTMLElement).textContent = fmt(finance);
+        preview.classList.remove('hidden');
+      } else {
+        preview.classList.add('hidden');
+      }
+    }
+
+    priceInput.addEventListener('input', () => {
+      clearFieldError('phone-price-error');
+      formError.classList.add('hidden');
+      updateSubmitState();
+      updateFinancePreview();
+    });
+    downInput.addEventListener('input', updateFinancePreview);
+    document.getElementById('cc-interest')?.addEventListener('input', () => {
+      clearFieldError('cc-interest-error');
+      formError.classList.add('hidden');
+      updateSubmitState();
+    });
+    updateSubmitState();
+
+    form.addEventListener('input', () => {
+      if (!hasTrackedStart) {
+        trackCalculatorStart('phone');
+        hasTrackedStart = true;
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearValidation();
+
+      const plan = getSelectedPlan();
+      const phonePrice = parseNum(priceInput.value);
+      const downPayment = Math.min(parseNum(downInput.value), phonePrice);
+      const termMonths = parseInt((document.getElementById('term-months') as HTMLSelectElement).value) || 10;
+
+      // Validate price
+      if (hasInvalidNumber(priceInput.value)) {
+        formError.classList.remove('hidden');
+        setFieldError('phone-price-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+        priceInput.focus();
+        return;
+      }
+      if (phonePrice <= 0) {
+        formError.classList.remove('hidden');
+        setFieldError('phone-price-error', 'กรุณากรอกราคามือถือมากกว่า 0');
+        priceInput.focus();
+        return;
+      }
+
+      // Validate credit interest
+      let monthlyRate = 0;
+      if (plan === 'credit') {
+        const ccInput = document.getElementById('cc-interest') as HTMLInputElement;
+        if (hasInvalidNumber(ccInput.value)) {
+          formError.classList.remove('hidden');
+          setFieldError('cc-interest-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          ccInput.focus();
+          return;
+        }
+        monthlyRate = parseFloat(ccInput.value.replace(/,/g, '')) || 0;
+        if (monthlyRate <= 0) {
+          formError.classList.remove('hidden');
+          setFieldError('cc-interest-error', 'กรุณากรอกอัตราดอกเบี้ยมากกว่า 0');
+          ccInput.focus();
+          return;
+        }
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังคำนวณ...';
+      if (!hasTrackedStart) {
+        trackCalculatorStart('phone');
+        hasTrackedStart = true;
+      }
+
+      const financeAmount = phonePrice - downPayment;
+
+      // Calculate based on plan type
+      let totalInterest = 0;
+      let monthlyPayment = 0;
+      let carrierMonthly = 0;
+
+      if (plan === 'zero') {
+        // 0% campaign: no interest
+        totalInterest = 0;
+        monthlyPayment = termMonths > 0 ? financeAmount / termMonths : 0;
+      } else if (plan === 'carrier') {
+        // Carrier plan: 0% on device + monthly package
+        totalInterest = 0;
+        monthlyPayment = termMonths > 0 ? financeAmount / termMonths : 0;
+        carrierMonthly = parseNum((document.getElementById('carrier-monthly') as HTMLInputElement).value);
+      } else {
+        // Credit card: flat rate per month
+        totalInterest = financeAmount * (monthlyRate / 100) * termMonths;
+        const totalPaid = financeAmount + totalInterest;
+        monthlyPayment = termMonths > 0 ? totalPaid / termMonths : 0;
+      }
+
+      const totalPaid = financeAmount + totalInterest;
+      const totalCost = downPayment + totalPaid;
+
+      // Update summary cards
+      (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPayment) + ' บาท';
+      (document.getElementById('res-down') as HTMLElement).textContent = fmt(downPayment) + ' บาท';
+      (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalCost) + ' บาท';
+
+      // Carrier totals
+      if (plan === 'carrier') {
+        const carrierTotal = carrierMonthly * termMonths;
+        const grandTotal = totalCost + carrierTotal;
+        (document.getElementById('res-carrier-total') as HTMLElement).textContent = fmt(carrierTotal) + ' บาท';
+        (document.getElementById('res-grand-total') as HTMLElement).textContent = fmt(grandTotal) + ' บาท';
+        carrierResult.classList.remove('hidden');
+      } else {
+        carrierResult.classList.add('hidden');
+      }
+
+      // Detail rows
+      (document.getElementById('res-price') as HTMLElement).textContent = fmt(phonePrice) + ' บาท';
+      (document.getElementById('res-down-detail') as HTMLElement).textContent = fmt(downPayment) + ' บาท';
+      (document.getElementById('res-finance') as HTMLElement).textContent = fmt(financeAmount) + ' บาท';
+      (document.getElementById('res-term') as HTMLElement).textContent = termMonths + ' เดือน';
+      (document.getElementById('res-interest-detail') as HTMLElement).textContent = fmt(totalInterest) + ' บาท';
+      (document.getElementById('res-total-paid') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+
+      // Rate display
+      const rateRow = document.getElementById('row-rate') as HTMLElement;
+      const rateText = document.getElementById('res-rate') as HTMLElement;
+      if (plan === 'credit') {
+        rateText.textContent = monthlyRate.toFixed(2) + '% ต่อเดือน (' + (monthlyRate * 12).toFixed(2) + '% ต่อปี)';
+        rateRow.classList.remove('hidden');
+      } else {
+        rateText.textContent = '0% (ไม่มีดอกเบี้ย)';
+        rateRow.classList.remove('hidden');
+      }
+
+      // Payment schedule table
+      const tbody = document.getElementById('schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+
+      let balance = financeAmount;
+      const monthlyPrincipal = termMonths > 0 ? financeAmount / termMonths : 0;
+      const monthlyInterestAmt = termMonths > 0 ? totalInterest / termMonths : 0;
+
+      for (let m = 1; m <= termMonths; m++) {
+        balance = Math.max(0, balance - monthlyPrincipal);
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-2 text-gray-600">${m}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyPayment)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyPrincipal)}</td>
+          <td class="py-2 pr-2 text-right">${fmt(monthlyInterestAmt)}</td>
+          <td class="py-2 text-right">${fmt(balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      resultsDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('phone');
+      trackCalculatorUsed('phone');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'phone',
+            target_href: href,
+          });
+        }
+      });
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackResultViewed('phone');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

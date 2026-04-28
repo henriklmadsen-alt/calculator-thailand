@@ -1,0 +1,218 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณลดหย่อนประกันชีวิต 2569 | สูงสุด 100,000 + สุขภาพ 25,000 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าลดหย่อนภาษีจากเบี้ยประกันชีวิต (สูงสุด 100,000 บาท) และประกันสุขภาพ (สูงสุด 25,000 บาท) ตามกฎหมายภาษีไทยปี 2569 ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณลดหย่อนประกันชีวิต/`;
+
+const faqData = [
+  {
+    question: 'ประกันชีวิตลดหย่อนภาษีได้สูงสุดเท่าไร?',
+    answer: 'เบี้ยประกันชีวิตลดหย่อนภาษีได้ตามจริงสูงสุด 100,000 บาทต่อปี โดยกรมธรรม์ต้องมีระยะเวลาคุ้มครองตั้งแต่ 10 ปีขึ้นไป และทำกับบริษัทประกันชีวิตที่ประกอบกิจการในประเทศไทย',
+  },
+  {
+    question: 'ประกันสุขภาพลดหย่อนได้กี่บาท?',
+    answer: 'เบี้ยประกันสุขภาพลดหย่อนภาษีได้ตามจริงสูงสุด 25,000 บาทต่อปี เมื่อรวมกับเบี้ยประกันชีวิตแล้วต้องไม่เกิน 100,000 บาท (ประกันชีวิต + ประกันสุขภาพ รวมกันไม่เกิน 100,000 บาท)',
+  },
+  {
+    question: 'ประกันชีวิตของคู่สมรสลดหย่อนได้ไหม?',
+    answer: 'ประกันชีวิตของคู่สมรสที่ไม่มีเงินได้ สามารถนำมาลดหย่อนภาษีในนามคู่สมรสผู้มีเงินได้ได้ สูงสุด 10,000 บาท (ส่วนนี้แยกจากเพดาน 100,000 บาทของตนเอง)',
+  },
+  {
+    question: 'ประกันชีวิตแบบบำนาญลดหย่อนได้อีกไหม?',
+    answer: 'ประกันชีวิตแบบบำนาญลดหย่อนได้เพิ่มเติมสูงสุด 200,000 บาท (หรือ 15% ของเงินได้ในบางกรณี) แต่อยู่ในกลุ่มเพดานรวม 500,000 บาท เช่นเดียวกับ RMF และ PVD',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณลดหย่อนประกันชีวิต 2569',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณลดหย่อนประกันชีวิต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">ประกันชีวิต สูงสุด 100,000 | ประกันสุขภาพ สูงสุด 25,000</p>
+      <p class="mt-1 text-sm text-slate-700">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณลดหย่อนประกันชีวิต และประกันสุขภาพ 2569
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าลดหย่อนจากเบี้ยประกันชีวิตและประกันสุขภาพ พร้อมตรวจสอบเพดานที่กำหนด
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูลเบี้ยประกัน</h2>
+      <div class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="li-life" class="block text-sm font-medium text-gray-700 mb-1">
+              เบี้ยประกันชีวิต (บาท/ปี)
+            </label>
+            <input type="text" id="li-life" inputmode="numeric" placeholder="เช่น 50,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p class="mt-1 text-xs text-gray-400">กรมธรรม์ระยะเวลาคุ้มครอง ≥ 10 ปี</p>
+          </div>
+          <div>
+            <label for="li-health" class="block text-sm font-medium text-gray-700 mb-1">
+              เบี้ยประกันสุขภาพ (บาท/ปี)
+            </label>
+            <input type="text" id="li-health" inputmode="numeric" placeholder="เช่น 15,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+            <p class="mt-1 text-xs text-gray-400">เพดาน 25,000 บาท</p>
+          </div>
+        </div>
+        <div>
+          <label for="li-spouse" class="block text-sm font-medium text-gray-700 mb-1">
+            เบี้ยประกันชีวิตคู่สมรส (บาท/ปี) <span class="text-gray-400 font-normal">— คู่สมรสไม่มีเงินได้</span>
+          </label>
+          <input type="text" id="li-spouse" inputmode="numeric" placeholder="เช่น 10,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+          <p class="mt-1 text-xs text-gray-400">เพดาน 10,000 บาท (แยกจากเพดานตนเอง)</p>
+        </div>
+        <button type="button" id="btn-li-calc"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors text-base">
+          คำนวณทันที
+        </button>
+      </div>
+
+      <div id="li-result" class="hidden mt-6">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนประกันชีวิต</div>
+            <div id="lr-life" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนประกันสุขภาพ</div>
+            <div id="lr-health" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนประกันคู่สมรส</div>
+            <div id="lr-spouse" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ลดหย่อนรวม</div>
+            <div id="lr-total" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-1 text-sm bg-gray-50 rounded-lg p-3">
+          <div class="flex justify-between"><span class="text-gray-500">เบี้ยชีวิตจริง</span><span id="lr-life-actual" class="font-medium"></span></div>
+          <div class="flex justify-between"><span class="text-gray-500">เพดานประกันชีวิต</span><span class="font-medium">100,000 บาท</span></div>
+          <div class="flex justify-between"><span class="text-gray-500">เบี้ยสุขภาพจริง</span><span id="lr-health-actual" class="font-medium"></span></div>
+          <div class="flex justify-between"><span class="text-gray-500">เพดานประกันสุขภาพ</span><span class="font-medium">25,000 บาท</span></div>
+        </div>
+        <p id="lr-warning" class="hidden mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-2"></p>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ลดหย่อนประกันชีวิตและประกันสุขภาพ</h2>
+      <p>การลดหย่อนภาษีจากเบี้ยประกันเป็นสิทธิประโยชน์ที่ผู้เสียภาษีไทยสามารถใช้ได้ทุกปี โดยมีเพดานแยกกันดังนี้:</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>ประกันชีวิต:</strong> สูงสุด 100,000 บาทต่อปี กรมธรรม์ต้องคุ้มครอง ≥ 10 ปี</li>
+        <li><strong>ประกันสุขภาพ:</strong> สูงสุด 25,000 บาทต่อปี (เมื่อรวมประกันชีวิตต้องไม่เกิน 100,000 บาท)</li>
+        <li><strong>ประกันชีวิตคู่สมรส:</strong> สูงสุด 10,000 บาทต่อปี (เฉพาะคู่สมรสที่ไม่มีเงินได้)</li>
+      </ul>
+    </section>
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
+      partnerName="EasySunday"
+      ctaText="เปรียบเทียบประกันชีวิต"
+      subtext="เปรียบเทียบแผนประกันชีวิตและออมทรัพย์จาก FWD, SE Life และอื่น ๆ"
+    />
+    <RelatedArticles currentHref="/คำนวณลดหย่อนประกันชีวิต/" />
+    <RelatedCalculators currentHref="/คำนวณลดหย่อนประกันชีวิต/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ไม่ถือเป็นคำแนะนำทางภาษีหรือกฎหมาย กรุณาปรึกษาผู้เชี่ยวชาญด้านภาษีสำหรับกรณีเฉพาะ
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+
+    document.getElementById('btn-li-calc')!.addEventListener('click', () => {
+      const life = parseNum((document.getElementById('li-life') as HTMLInputElement).value);
+      const health = parseNum((document.getElementById('li-health') as HTMLInputElement).value);
+      const spouse = parseNum((document.getElementById('li-spouse') as HTMLInputElement).value);
+
+      // Health insurance: max 25,000, but life+health combined max 100,000
+      const healthDeduction = Math.min(health, 25000);
+      // Life insurance: max 100,000
+      const lifeDeduction = Math.min(life, 100000);
+      // Combined life + health: max 100,000
+      const combinedDeduction = Math.min(lifeDeduction + healthDeduction, 100000);
+      // Reallocate: health gets min(health, 25000), life gets remainder up to 100k
+      const healthFinal = Math.min(healthDeduction, combinedDeduction);
+      const lifeFinal = Math.min(lifeDeduction, combinedDeduction - healthFinal);
+      // Spouse: max 10,000, separate cap
+      const spouseDeduction = Math.min(spouse, 10000);
+      const total = lifeFinal + healthFinal + spouseDeduction;
+
+      (document.getElementById('lr-life') as HTMLElement).textContent = fmt(lifeFinal);
+      (document.getElementById('lr-health') as HTMLElement).textContent = fmt(healthFinal);
+      (document.getElementById('lr-spouse') as HTMLElement).textContent = fmt(spouseDeduction);
+      (document.getElementById('lr-total') as HTMLElement).textContent = fmt(total);
+      (document.getElementById('lr-life-actual') as HTMLElement).textContent = fmt(life);
+      (document.getElementById('lr-health-actual') as HTMLElement).textContent = fmt(health);
+
+      const warn = document.getElementById('lr-warning') as HTMLElement;
+      const warnings: string[] = [];
+      if (life > 100000) warnings.push(`เบี้ยประกันชีวิต ${new Intl.NumberFormat('th-TH').format(life)} บาท เกินเพดาน 100,000 บาท`);
+      if (health > 25000) warnings.push(`เบี้ยประกันสุขภาพ ${new Intl.NumberFormat('th-TH').format(health)} บาท เกินเพดาน 25,000 บาท`);
+      if (lifeDeduction + healthDeduction > 100000) warnings.push('ประกันชีวิต + สุขภาพ รวมกันเกิน 100,000 บาท');
+      if (warnings.length > 0) {
+        warn.textContent = '⚠️ ' + warnings.join(' | ');
+        warn.classList.remove('hidden');
+      } else {
+        warn.classList.add('hidden');
+      }
+
+      (document.getElementById('li-result') as HTMLDivElement).classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      trackCalculatorUsed('life-insurance-deduction');
+    });
+  </script>
+</BaseLayout>

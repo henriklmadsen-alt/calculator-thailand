@@ -1,0 +1,218 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียม POS ปี 2569 — เครื่องรูดบัตร ค่าเช่า ค่าบริการ | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียม POS รวมค่าเช่าเครื่อง ค่าธรรมเนียมต่อธุรกรรม และต้นทุนรายเดือนทั้งหมดสำหรับร้านค้าที่รับบัตรผ่านเครื่อง EDC';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-POS-fee/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียม POS มีอะไรบ้าง?',
+    answer: 'ค่าธรรมเนียม POS ประกอบด้วย: (1) ค่าเช่าเครื่อง EDC รายเดือน (2) MDR หรือค่าธรรมเนียมต่อธุรกรรมที่รับบัตร (3) ค่าบริการรายเดือนอื่นๆ ตามธนาคาร',
+  },
+  {
+    question: 'ค่าเช่าเครื่อง POS เท่าไหร่?',
+    answer: 'ค่าเช่าเครื่อง POS (EDC) ทั่วไปอยู่ที่ 300–800 บาท/เดือน ขึ้นอยู่กับธนาคารและรุ่นเครื่อง บางธนาคารให้ฟรีหากยอดธุรกรรมถึงเกณฑ์',
+  },
+  {
+    question: 'ควรเลือก POS หรือ QR Payment?',
+    answer: 'QR Payment มีค่าธรรมเนียมต่อธุรกรรมต่ำกว่า แต่ POS รองรับบัตรต่างประเทศและบัตรเครดิตได้ดีกว่า ควรเปรียบเทียบต้นทุนรวมตามยอดขายจริง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียม POS',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ-POS-fee">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-purple-100 bg-purple-50 p-4">
+      <p class="text-sm font-semibold text-purple-700">คำนวณค่าธรรมเนียม POS — ต้นทุนรับบัตรรายเดือน</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: ต้นทุน/เดือน = ค่าเช่าเครื่อง + (ยอดขาย × MDR%) + ค่าบริการอื่น</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าธรรมเนียม POS ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      คำนวณต้นทุนรวมของเครื่อง POS รายเดือน รวมค่าเช่าเครื่อง ค่าธรรมเนียมต่อธุรกรรม และค่าบริการอื่นๆ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="pos-form" class="space-y-5">
+        <p id="pos-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pos-rental" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่าเครื่อง POS/เดือน (บาท)</label>
+            <input type="text" id="pos-rental" inputmode="numeric" placeholder="เช่น 500"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pos-rental-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">ทั่วไป 300–800 บาท/เดือน</p>
+          </div>
+          <div>
+            <label for="pos-mdr" class="mb-1 block text-sm font-medium text-gray-700">อัตรา MDR (%)</label>
+            <input type="text" id="pos-mdr" inputmode="decimal" placeholder="เช่น 1.75"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pos-mdr-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="pos-sales" class="mb-1 block text-sm font-medium text-gray-700">ยอดขายรายเดือนรวม (บาท)</label>
+            <input type="text" id="pos-sales" inputmode="numeric" placeholder="เช่น 100,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="pos-sales-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="pos-other" class="mb-1 block text-sm font-medium text-gray-700">ค่าบริการอื่น/เดือน (บาท) — ไม่บังคับ</label>
+            <input type="text" id="pos-other" inputmode="numeric" placeholder="เช่น 0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณต้นทุน POS
+        </button>
+      </form>
+    </div>
+
+    <div id="pos-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณรายเดือน</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ต้นทุนรวม/เดือน</div>
+            <div id="res-pos-total" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่า MDR/เดือน</div>
+            <div id="res-pos-mdr" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">% ต้นทุนต่อยอดขาย</div>
+            <div id="res-pos-pct" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าเช่าเครื่อง</span>
+            <span id="res-pos-rental" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่า MDR (ธุรกรรม)</span>
+            <span id="res-pos-mdr2" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">ค่าบริการอื่น</span>
+            <span id="res-pos-other" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1 font-semibold">
+            <span class="text-gray-800">ยอดรับจริง/เดือน</span>
+            <span id="res-pos-net" class="text-green-600">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>ค่า MDR รายเดือน = ยอดขายรวม × (MDR% ÷ 100)</li>
+        <li>ต้นทุนรวม = ค่าเช่าเครื่อง + ค่า MDR + ค่าบริการอื่น</li>
+        <li>% ต้นทุน = ต้นทุนรวม ÷ ยอดขายรวม × 100</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณ-MDR-ค่าธรรมเนียมร้านค้า/">คำนวณ MDR ค่าธรรมเนียมร้านค้า</a></li>
+        <li><a href="/คำนวณ-QR-payment/">คำนวณค่าธรรมเนียม QR Payment</a></li>
+        <li><a href="/คำนวณ-payment-gateway/">คำนวณค่าธรรมเนียม Payment Gateway</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#pos-results" />
+    <RelatedArticles currentHref="/คำนวณ-POS-fee/" />
+    <RelatedCalculators currentHref="/คำนวณ-POS-fee/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> อัตราค่าธรรมเนียมและค่าเช่าเครื่องอาจแตกต่างตามธนาคาร ควรยืนยันกับธนาคารที่ใช้บริการ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function fmt(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    document.getElementById('pos-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('pos-error').classList.add('hidden');
+      ['pos-rental-error','pos-mdr-error','pos-sales-error'].forEach(id => setErr(id, ''));
+
+      const rental = parseNum(document.getElementById('pos-rental').value);
+      const mdr = parseNum(document.getElementById('pos-mdr').value);
+      const sales = parseNum(document.getElementById('pos-sales').value);
+      const other = parseNum(document.getElementById('pos-other').value) || 0;
+
+      let hasError = false;
+      if (!Number.isFinite(rental) || rental < 0) { setErr('pos-rental-error', 'กรอกค่าเช่าเครื่อง (ถ้าฟรีใส่ 0)'); hasError = true; }
+      if (!Number.isFinite(mdr) || mdr <= 0 || mdr >= 100) { setErr('pos-mdr-error', 'กรอกอัตรา MDR 0.01–99.99%'); hasError = true; }
+      if (!Number.isFinite(sales) || sales <= 0) { setErr('pos-sales-error', 'กรอกยอดขายรายเดือนมากกว่า 0'); hasError = true; }
+      if (hasError) { document.getElementById('pos-error').classList.remove('hidden'); document.getElementById('pos-results').classList.add('hidden'); return; }
+
+      const mdrFee = sales * mdr / 100;
+      const total = rental + mdrFee + other;
+      const net = sales - total;
+      const pct = (total / sales) * 100;
+
+      setText('res-pos-total', fmt(total));
+      setText('res-pos-mdr', fmt(mdrFee));
+      setText('res-pos-pct', `${pct.toFixed(2)}%`);
+      setText('res-pos-rental', fmt(rental));
+      setText('res-pos-mdr2', fmt(mdrFee));
+      setText('res-pos-other', fmt(other));
+      setText('res-pos-net', fmt(net));
+
+      document.getElementById('pos-results').classList.remove('hidden');
+      document.getElementById('pos-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,245 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณภาษีนำเข้า อากรศุลกากร 2569 ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณภาษีนำเข้า + VAT 2569 ฟรี — ใส่มูลค่า CIF อัตราอากร รู้ต้นทุนรวมสินค้านำเข้าทันที';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณภาษีนำเข้า/`;
+
+const faqData = [
+  {
+    question: 'ภาษีนำเข้า (อากรศุลกากร) คิดอย่างไร?',
+    answer: 'อากรศุลกากร = มูลค่า CIF × อัตราอากร% โดย CIF = ราคาสินค้า (Cost) + ค่าประกัน (Insurance) + ค่าขนส่ง (Freight) ตัวอย่าง: CIF 10,000 บาท อัตรา 20% = อากร 2,000 บาท',
+  },
+  {
+    question: 'VAT ในการนำเข้าคิดจากอะไร?',
+    answer: 'VAT 7% คิดจาก (CIF + อากรศุลกากร + ภาษีสรรพสามิต ถ้ามี) รวมกัน ตัวอย่าง: CIF 10,000 + อากร 2,000 = 12,000 บาท → VAT = 12,000 × 7% = 840 บาท',
+  },
+  {
+    question: 'ของที่ซื้อออนไลน์จากต่างประเทศต้องเสียภาษีนำเข้าไหม?',
+    answer: 'สินค้านำเข้าที่มีมูลค่า CIF เกิน 1,500 บาทต้องเสียอากรศุลกากรและ VAT ของที่มูลค่า CIF ไม่เกิน 1,500 บาทได้รับยกเว้นอากร (แต่ปัจจุบันมีการพิจารณาปรับเกณฑ์นี้)',
+  },
+  {
+    question: 'อัตราอากรนำเข้าหาได้จากที่ไหน?',
+    answer: 'อัตราอากรนำเข้าสามารถตรวจสอบได้จากเว็บไซต์กรมศุลกากร (customs.go.th) โดยค้นหาจากรหัส HS Code ของสินค้านั้นๆ อัตราอากรแตกต่างกันตามชนิดสินค้าและแหล่งกำเนิดสินค้า',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณภาษีนำเข้า + VAT',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "วิธีคำนวณภาษีนำเข้า (Import Duty) ปี 2569",
+  "description": "ขั้นตอนการคำนวณอากรศุลกากรและภาษีนำเข้าของสินค้า โดยใช้ค่า CIF และอัตราศุลกากรตามประเภทสินค้า ตามอัตราที่กำหนดของกรมศุลกากร",
+  "step": [
+    {"@type": "HowToStep", "name": "จัดหาเอกสารประกาศสินค้า", "text": "เก็บเอกสาร: (1) Commercial Invoice - บันทึกมูลค่า FOB, (2) Packing List, (3) Bill of Lading/AWB, (4) Harmonized System Code (HS Code)"},
+    {"@type": "HowToStep", "name": "ค้นหา HS Code ของสินค้า", "text": "ตรวจสอบ Thai HS Code ใน Tariff Schedule จากเว็บไซต์กรมศุลกากร (customs.go.th) ตัวอย่าง: เสื้อผ้า = HS Code 6204"},
+    {"@type": "HowToStep", "name": "ตรวจสอบอัตราศุลกากร (Tariff Rate)", "text": "อัตราศุลกากรแตกต่างไปตามประเทศต้นทาง (MFN, Free Trade Agreement Rate) ตัวอย่าง: เสื้อผ้าจากจีน MFN Rate 37.5%, จากสมาชิก ASEAN ได้อัตรา AFTA ต่ำกว่า"},
+    {"@type": "HowToStep", "name": "คำนวณค่า Customs Value (CIF)", "text": "Customs Value = มูลค่า FOB + Freight + Insurance ตัวอย่าง: FOB 10,000 + Freight 500 + Insurance 100 = 10,600 บาท"},
+    {"@type": "HowToStep", "name": "คำนวณ Customs Duty", "text": "Duty = Customs Value × อัตราศุลกากร ตัวอย่าง: 10,600 × 37.5% = 3,975 บาท"},
+    {"@type": "HowToStep", "name": "เพิ่ม VAT 7% และอากรอื่นๆ", "text": "VAT = (Customs Value + Duty) × 7% ตัวอย่าง: (10,600 + 3,975) × 7% = 1,020 บาท รวมจ่ายทั้งหมด = 3,975 + 1,020 = 4,995 บาท"}
+  ]
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณภาษีนำเข้า">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณภาษีนำเข้า + VAT
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณอากรศุลกากรและ VAT 7% จากมูลค่า CIF สินค้านำเข้า แสดงต้นทุนรวมทุกรายการ
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลการนำเข้าสินค้า</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label for="cif-value" class="block text-sm font-medium text-gray-700 mb-1">
+            มูลค่า CIF (บาท) <span class="text-gray-400 font-normal">— ราคาสินค้า + ประกัน + ค่าขนส่ง</span>
+          </label>
+          <input type="text" id="cif-value" inputmode="numeric" placeholder="เช่น 50,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+
+        <div>
+          <label for="duty-rate" class="block text-sm font-medium text-gray-700 mb-1">
+            อัตราอากรนำเข้า (%)
+          </label>
+          <input type="number" id="duty-rate" min="0" max="300" step="0.5" placeholder="เช่น 20"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          <p class="text-xs text-gray-500 mt-1">ตรวจสอบอัตราจาก HS Code บนเว็บกรมศุลกากร</p>
+        </div>
+
+        <div>
+          <label for="excise-rate" class="block text-sm font-medium text-gray-700 mb-1">
+            อัตราภาษีสรรพสามิต (%) <span class="text-gray-400 font-normal">— ใส่ 0 ถ้าไม่มี</span>
+          </label>
+          <input type="number" id="excise-rate" min="0" max="100" step="0.5" placeholder="เช่น 0"
+            value="0"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="mt-5 w-full sm:w-auto px-8 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+        คำนวณภาษีนำเข้า
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+        <h3 class="font-semibold text-primary-900 mb-3">ผลการคำนวณ</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-700">มูลค่า CIF</span>
+            <span id="res-cif" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">อากรศุลกากร</span>
+            <span id="res-duty" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div id="excise-row" class="flex justify-between">
+            <span class="text-gray-700">ภาษีสรรพสามิต</span>
+            <span id="res-excise" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">ฐาน VAT (CIF + อากร + สรรพสามิต)</span>
+            <span id="res-vat-base" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">VAT 7%</span>
+            <span id="res-vat" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-t border-primary-300 pt-2 mt-2">
+            <span class="font-bold text-primary-900">ต้นทุนรวมทั้งสิ้น</span>
+            <span id="res-total" class="font-bold text-primary-700 text-lg">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรคำนวณภาษีนำเข้า</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>มูลค่า CIF = ราคาสินค้า + ค่าประกันภัย + ค่าขนส่ง</li>
+        <li>อากรศุลกากร = มูลค่า CIF × อัตราอากร%</li>
+        <li>ภาษีสรรพสามิต = มูลค่า CIF × อัตราสรรพสามิต% (ถ้ามี)</li>
+        <li>ฐาน VAT = CIF + อากรศุลกากร + ภาษีสรรพสามิต</li>
+        <li>VAT = ฐาน VAT × 7%</li>
+        <li>ต้นทุนรวม = CIF + อากร + สรรพสามิต + VAT</li>
+      </ol>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่าง</h3>
+      <p>นำเข้าสินค้า CIF = 50,000 บาท อัตราอากร 20%</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>อากรศุลกากร = 50,000 × 20% = 10,000 บาท</li>
+        <li>ฐาน VAT = 50,000 + 10,000 = 60,000 บาท</li>
+        <li>VAT = 60,000 × 7% = 4,200 บาท</li>
+        <li>ต้นทุนรวม = 50,000 + 10,000 + 4,200 = 64,200 บาท</li>
+      </ul>
+    </section>
+
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
+      <p><strong>ภาษีนำเข้า = มูลค่า CIF × อัตราภาษี</strong></p>
+      <p>(CIF = Cost + Insurance + Freight; อัตรา 5%−50% ขึ้นอยู่กับสินค้า)</p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณ</h3>
+      <p><strong>ตัวอย่างที่ 1: นำเข้าสินค้า มูลค่า CIF 100,000 บาท (อัตรา 10%)</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>มูลค่า CIF</strong> = 100,000 บาท</li>
+        <li><strong>อัตราภาษีนำเข้า</strong> = 10%</li>
+        <li><strong>ภาษีนำเข้า</strong> = 100,000 × 10% = <strong>10,000 บาท</strong></li>
+      </ul>
+
+      <p class="mt-4"><strong>ตัวอย่างที่ 2: นำเข้าสินค้าฟุ่มเฟือย มูลค่า CIF 200,000 บาท (อัตรา 30%) + VAT 7%</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>มูลค่า CIF</strong> = 200,000 บาท</li>
+        <li><strong>อัตราภาษีนำเข้า</strong> = 30%</li>
+        <li><strong>ภาษีนำเข้า</strong> = 200,000 × 30% = 60,000 บาท</li>
+        <li><strong>ฐาน VAT</strong> = 200,000 + 60,000 = 260,000 บาท</li>
+        <li><strong>VAT 7%</strong> = 260,000 × 7% = 18,200 บาท</li>
+        <li><strong>รวมภาษีทั้งหมด</strong> = 60,000 + 18,200 = <strong>78,200 บาท</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สรุป</h3>
+      <p>ผู้นำเข้าสินค้าจากต่างประเทศต้องเสียภาษีนำเข้า ตามอัตราที่กำหนดตามประเภทสินค้า ภาษีนี้ช่วยปกป้องธุรกิจในประเทศและเก็บรายได้รัฐ</p>
+      <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.customs.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมศุลกากร: ภาษีนำเข้า</a> [อัปเดต 2569]</p>
+    </section>
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณภาษีนำเข้า/" />
+    <RelatedCalculators currentHref="/คำนวณภาษีนำเข้า/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      อัตราอากรและภาษีที่แท้จริงขึ้นอยู่กับ HS Code และแหล่งกำเนิดสินค้า กรุณาตรวจสอบกับกรมศุลกากร
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const cif = parseNum((document.getElementById('cif-value') as HTMLInputElement).value);
+      const dutyRate = parseNum((document.getElementById('duty-rate') as HTMLInputElement).value) / 100;
+      const exciseRate = parseNum((document.getElementById('excise-rate') as HTMLInputElement).value) / 100;
+
+      if (cif <= 0) { (document.getElementById('cif-value') as HTMLInputElement).focus(); return; }
+
+      const duty = cif * dutyRate;
+      const excise = cif * exciseRate;
+      const vatBase = cif + duty + excise;
+      const vat = vatBase * 0.07;
+      const total = vatBase + vat;
+
+      (document.getElementById('res-cif') as HTMLElement).textContent = fmt(cif);
+      (document.getElementById('res-duty') as HTMLElement).textContent = fmt(duty);
+      (document.getElementById('res-excise') as HTMLElement).textContent = fmt(excise);
+      (document.getElementById('res-vat-base') as HTMLElement).textContent = fmt(vatBase);
+      (document.getElementById('res-vat') as HTMLElement).textContent = fmt(vat);
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
+
+      const exciseRow = document.getElementById('excise-row') as HTMLElement;
+      exciseRow.style.display = exciseRate > 0 ? 'flex' : 'none';
+
+      document.getElementById('result')!.classList.remove('hidden');
+      trackCalculatorUsed('import-duty');
+    });
+  </script>
+</BaseLayout>

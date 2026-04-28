@@ -1,0 +1,204 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณประกันอสังหาฯ 2569 | ประกันบ้าน | เบี้ยประกัน | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันบ้าน คอนโด และอสังหาฯอื่นๆ ตามมูลค่าทรัพย์สินและประเภทของประกัน ฟรี';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันอสังหาฯ/`;
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณประกันอสังหาฯ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const faqData = [
+  { question: 'เบี้ยประกันสุขภาพคำนวณจากอะไร?', answer: 'เบี้ยประกันขึ้นอยู่กับ อายุ เพศ สุขภาพปัจจุบัน วงเงินคุ้มครอง และบริษัทประกัน โดยทั่วไปอายุมากยิ่งเบี้ยสูง' },
+  { question: 'ควรซื้อประกันสุขภาพตั้งแต่อายุเท่าไร?', answer: 'ยิ่งซื้อเร็วยิ่งดี เบี้ยต่ำกว่าและโรคที่ยังไม่มีถือเป็นโรคใหม่ที่คุ้มครองได้ แนะนำเริ่มต้นตั้งแต่วัยทำงาน 25-35 ปี' },
+  { question: 'ประกันสุขภาพกับประกันสังคมต่างกันอย่างไร?', answer: 'ประกันสังคมบังคับโดยรัฐ คุ้มครองพื้นฐาน ประกันสุขภาพเพิ่มเติมซื้อเองเพื่อรับการรักษาที่ดีกว่า วงเงินสูงกว่า และเลือกโรงพยาบาลได้' },
+  { question: 'ค่าเบี้ยที่คำนวณได้ถูกต้องแค่ไหน?', answer: 'เป็นการประมาณการเบื้องต้น ราคาจริงขึ้นอยู่กับการตรวจสุขภาพ ประวัติการรักษา และเงื่อนไขของแต่ละบริษัท ควรขอใบเสนอราคาจริงก่อนตัดสินใจ' }
+,
+  { question: 'ค่าโอนบ้านปี 2569 คิดอัตราเท่าไร?', answer: 'ค่าธรรมเนียมโอน 2% ของราคาประเมิน (ลดเหลือ 1% สำหรับที่อยู่อาศัยราคาไม่เกิน 3 ล้าน จนถึง 31 ธ.ค. 2568), ค่าจดจำนอง 1% ของวงเงิน (ลดเหลือ 0.01% สำหรับกู้ไม่เกิน 3 ล้าน)' },
+  { question: 'ภาษีธุรกิจเฉพาะกับอากรแสตมป์ต่างกันอย่างไร?', answer: 'ภาษีธุรกิจเฉพาะ 3.3% (ถือครองน้อยกว่า 5 ปีหรือไม่ได้มีชื่อในทะเบียนบ้าน) | อากรแสตมป์ 0.5% (ถือครอง 5 ปีขึ้นไปและมีชื่อในทะเบียนบ้านครบ 1 ปี) เสียอย่างใดอย่างหนึ่ง' },
+  { question: 'ราคาประเมินกรมที่ดินกับราคาตลาดต่างกันอย่างไร?', answer: 'ราคาประเมินคือราคาที่กรมที่ดินกำหนดเพื่อใช้คิดค่าธรรมเนียม อัปเดตทุก 4 ปี มักต่ำกว่าราคาตลาด 20-50% ภาษีและค่าธรรมเนียมใช้ราคาประเมินหรือราคาซื้อขาย แล้วแต่อย่างไหนสูงกว่า' },
+  { question: 'ซื้อบ้านมือสองต้องระวังค่าใช้จ่ายอะไร?', answer: 'ค่าธรรมเนียมโอน ค่าภาษีธุรกิจเฉพาะหรืออากรแสตมป์ ค่าจดจำนอง ค่าตรวจสอบภาระผูกพัน ค่าประเมินราคา ค่าซ่อมแซม และค่าประกันภัย รวมกันอาจสูงถึง 5-10% ของราคาซื้อ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกันอสังหาฯ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณเบี้ยประกันอสังหาฯ ปี 2569</h1>
+    <p class="text-gray-600 mb-6">ประมาณการเบี้ยประกันบ้าน คอนโด และอสังหาฯอื่นๆ โดยพิจารณาจากมูลค่าและประเภทของประกัน</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="insurance-form" class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="property-value" class="block text-sm font-medium text-gray-700 mb-1">มูลค่าทรัพย์สิน (บาท)</label>
+            <input id="property-value" type="text" inputmode="numeric" placeholder="เช่น 3,000,000" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="insurance-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภทประกัน</label>
+            <select id="insurance-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="basic">ประกันพื้นฐาน (ไฟไหม้ เสี่ยง)</option>
+              <option value="standard">ประกันมาตรฐาน (พื้นฐาน + ลักษณ์)</option>
+              <option value="comprehensive">ประกันครอบ (ครบครัน)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="property-type" class="block text-sm font-medium text-gray-700 mb-1">ประเภททรัพย์สิน</label>
+            <select id="property-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="house">บ้านเดี่ยว</option>
+              <option value="townhouse">ทาวน์โฮม</option>
+              <option value="condo">คอนโด</option>
+              <option value="commercial">อาคารพาณิชย์</option>
+            </select>
+          </div>
+          <div>
+            <label for="tenure-years" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลา (ปี)</label>
+            <select id="tenure-years" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="1">1 ปี</option>
+              <option value="3">3 ปี</option>
+              <option value="5">5 ปี</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full sm:w-auto rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700">
+          คำนวณเบี้ยประกัน
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 mb-6">
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เบี้ยประกัน/ปี</div>
+            <div id="res-annual-premium" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-sky-50 p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">เบี้ยทั้งหมด</div>
+            <div id="res-total-premium" class="text-xl font-bold text-sky-700">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">มูลค่าทรัพย์สิน</span>
+            <span id="res-property-value" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ประเภทประกัน</span>
+            <span id="res-insurance-type" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-600">ระยะเวลา</span>
+            <span id="res-tenure" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2 border-t border-gray-200 pt-2">
+            <span class="text-gray-600">อัตรา(%)</span>
+            <span id="res-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-700 font-semibold">เบี้ยประกัน/ปี</span>
+            <span id="res-calc-annual" class="font-bold">-</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-gray-700 font-semibold" id="tenure-label">เบี้ยประกัน</span>
+            <span id="res-calc-total" class="font-bold text-lg text-primary-700">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.dol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กรมที่ดิน (dol.go.th)</a> — อัตราค่าธรรมเนียมการโอนและจดทะเบียนสิทธิ์</li>
+        <li><a href="https://www.bot.or.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> — อัตราดอกเบี้ยสินเชื่อบ้านอ้างอิง MRR/MLR</li>
+      </ul>
+    </div>
+    <RelatedCalculators currentHref="/คำนวณประกันอสังหาฯ/" />
+  </article>
+</BaseLayout>
+
+<script>
+  // ประกันอสังหาฯ อัตราเบี้ย (% ต่อปี) ตัวอย่าง
+  const insuranceRates = {
+    house: { basic: 0.25, standard: 0.35, comprehensive: 0.50 },
+    townhouse: { basic: 0.28, standard: 0.38, comprehensive: 0.55 },
+    condo: { basic: 0.20, standard: 0.30, comprehensive: 0.45 },
+    commercial: { basic: 0.30, standard: 0.42, comprehensive: 0.60 },
+  };
+
+  function parseNumber(value) {
+    if (!value) return NaN;
+    return Number(String(value).replace(/,/g, '').trim());
+  }
+
+  function formatCurrency(value) {
+    return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)} บาท`;
+  }
+
+  const form = document.querySelector('#insurance-form');
+  const results = document.querySelector('#results');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const propertyValue = parseNumber(document.querySelector('#property-value')?.value || '');
+    const insuranceType = document.querySelector('#insurance-type')?.value || 'standard';
+    const propertyType = document.querySelector('#property-type')?.value || 'house';
+    const tenureYears = parseInt(document.querySelector('#tenure-years')?.value || '1');
+
+    if (!(Number.isFinite(propertyValue) && propertyValue > 0)) {
+      results?.classList.add('hidden');
+      return;
+    }
+
+    const ratePercentage = insuranceRates[propertyType]?.[insuranceType] || 0.35;
+    const annualPremium = propertyValue * (ratePercentage / 100);
+    const totalPremium = annualPremium * tenureYears;
+
+    document.querySelector('#res-annual-premium').textContent = formatCurrency(annualPremium);
+    document.querySelector('#res-total-premium').textContent = formatCurrency(totalPremium);
+    document.querySelector('#res-property-value').textContent = formatCurrency(propertyValue);
+    document.querySelector('#res-insurance-type').textContent = document.querySelector('#insurance-type').options[document.querySelector('#insurance-type').selectedIndex].text;
+    document.querySelector('#res-tenure').textContent = `${tenureYears} ปี`;
+    document.querySelector('#res-rate').textContent = `${ratePercentage.toFixed(2)}%`;
+    document.querySelector('#res-calc-annual').textContent = formatCurrency(annualPremium);
+    document.querySelector('#res-calc-total').textContent = formatCurrency(totalPremium);
+    document.querySelector('#tenure-label').textContent = `เบี้ยประกัน ${tenureYears} ปี`;
+
+    results?.classList.remove('hidden');
+    results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categories, getCalculatorsByCategory, getCategoryBySlug } from '../../lib/calculators';
+
+export function getStaticPaths() {
+  return categories.map((cat) => ({
+    params: { category: cat.slug },
+  }));
+}
+
+const { category: slug } = Astro.params;
+const cat = getCategoryBySlug(slug as string)!;
+const calcs = getCalculatorsByCategory(cat.id);
+const otherCategories = categories.filter((c) => c.id !== cat.id);
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+
+const faqItems = [
+  {
+    q: `หมวดหมู่${cat.name}มีเครื่องคำนวณอะไรบ้าง?`,
+    a: `หมวด${cat.name}มีเครื่องคำนวณ ${calcs.length} รายการ ได้แก่ ${calcs.map(c => c.title).join(', ')} ทั้งหมดใช้งานฟรี อัปเดตปี 2569`,
+  },
+  {
+    q: `เครื่องคำนวณ${cat.name}ใช้งานฟรีหรือไม่?`,
+    a: `ใช้งานฟรี 100% ไม่ต้องสมัครสมาชิก ไม่ต้องดาวน์โหลด ใช้งานได้ทั้งมือถือและคอมพิวเตอร์`,
+  },
+  {
+    q: `สูตรคำนวณ${cat.name}ถูกต้องหรือไม่?`,
+    a: `สูตรทุกตัวอ้างอิงจากแหล่งข้อมูลราชการและกฎหมายไทยที่เป็นปัจจุบัน อัปเดตล่าสุดปี 2569`,
+  },
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+};
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${cat.name} — เครื่องคำนวณ${cat.name}ออนไลน์`,
+  url: `${siteUrl}/หมวดหมู่/${cat.slug}/`,
+  description: cat.description,
+  inLanguage: 'th',
+};
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'หน้าแรก',
+      item: `${siteUrl}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: cat.name,
+      item: `${siteUrl}/หมวดหมู่/${cat.slug}/`,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`เครื่องคำนวณ${cat.name} ${calcs.length} รายการ ปี 2569 | Kamnuanlek`}
+  description={cat.description}
+  pageName={`หมวดหมู่ ${cat.name}`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+    <ol class="flex items-center gap-1.5 flex-wrap">
+      <li><a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a></li>
+      <li class="text-gray-300">/</li>
+      <li class="text-gray-700 font-medium">{cat.name}</li>
+    </ol>
+  </nav>
+
+  <!-- Category Header -->
+  <div class="mb-8">
+    <div class="flex items-center gap-4 mb-3">
+      <div class={`w-16 h-16 rounded-full ${cat.color} flex items-center justify-center text-3xl shadow-sm`}>
+        {cat.icon}
+      </div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">
+          เครื่องคำนวณ{cat.name}
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">{calcs.length} เครื่องคำนวณ</p>
+      </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed max-w-2xl">{cat.description}</p>
+  </div>
+
+  <!-- Calculator Grid -->
+  <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-12">
+    {calcs.map((calc) => (
+      <a
+        href={calc.href}
+        class="calc-card group relative block p-5 sm:p-6 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200"
+      >
+        {calc.tag && (
+          <span class={`absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-full ${calc.tagColor}`}>
+            {calc.tag}
+          </span>
+        )}
+        <div class="text-3xl mb-3">{calc.icon}</div>
+        <h2 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1.5">
+          {calc.title}
+        </h2>
+        <p class="text-sm text-gray-500 leading-relaxed">{calc.desc}</p>
+        <div class="mt-4 flex items-center text-primary-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          เปิดเครื่องคำนวณ
+          <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  <!-- Related Categories -->
+  <div class="mb-12">
+    <h2 class="text-lg font-bold text-gray-900 mb-4">หมวดหมู่อื่นๆ</h2>
+    <div class="grid grid-cols-4 sm:grid-cols-7 gap-3 sm:gap-4">
+      {otherCategories.map((other) => (
+        <a
+          href={`/หมวดหมู่/${other.slug}/`}
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div class={`w-12 h-12 sm:w-14 sm:h-14 rounded-full ${other.color} flex items-center justify-center text-xl sm:text-2xl group-hover:scale-110 transition-transform shadow-sm`}>
+            {other.icon}
+          </div>
+          <span class="text-xs font-medium text-gray-600 group-hover:text-primary-600 transition-colors text-center">
+            {other.name}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="mb-12">
+    <h2 class="text-lg font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
+    <div class="space-y-4">
+      {faqItems.map((item) => (
+        <details class="bg-white rounded-xl border border-gray-100 shadow-sm group">
+          <summary class="flex items-center justify-between p-5 cursor-pointer font-medium text-gray-900 hover:text-primary-600 transition-colors">
+            {item.q}
+            <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="px-5 pb-5 text-sm text-gray-600 leading-relaxed">
+            {item.a}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+
+  <!-- Internal Links -->
+  <div class="text-center py-6 border-t border-gray-100">
+    <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+      <a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a>
+      <a href="/บทความ/" class="hover:text-primary-600 transition-colors">บทความ</a>
+      {calcs.slice(0, 3).map((calc) => (
+        <a href={calc.href} class="hover:text-primary-600 transition-colors">{calc.title}</a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

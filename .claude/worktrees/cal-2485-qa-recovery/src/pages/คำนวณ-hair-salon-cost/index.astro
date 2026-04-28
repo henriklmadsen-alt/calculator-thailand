@@ -1,0 +1,416 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าตัดผมและดูแลผม 2569 | Hair Salon Cost | Kamnuanlek';
+const pageDescription = 'คำนวณค่าใช้จ่ายตัดผม ดัดผม ย้อมผม และดูแลผมต่อเดือนและต่อปีออนไลน์ฟรี พร้อมแนะนำวิธีประหยัดค่าสปา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-hair-salon-cost/`;
+
+const faqData = [
+  {
+    question: 'ค่าตัดผมเฉลี่ยในประเทศไทยเท่าไหร่?',
+    answer: 'ค่าตัดผมเฉลี่ยในกรุงเทพ 150-500 บาทขึ้นอยู่กับร้าน สำหรับสาขา 100-200 บาท ส่วนต่างจังหวัด 80-150 บาท ร้านแบรนด์ดังอาจสูงถึง 800-1,200 บาท',
+  },
+  {
+    question: 'วิธีหลีกเลี่ยงการใช้จ่ายตัดผมมากเกินไปเป็นอย่างไร?',
+    answer: 'ลองเลือกร้านที่มีราคาเหมาะสม มีสมาชิกหรือโปรโมชั่นส่วนลด ลด ความถี่การตัดผม หรือเรียนรู้การดูแลผมพื้นฐานด้วยตัวเอง',
+  },
+  {
+    question: 'ราคาดัดผมหรือย้อมผมแตกต่างจากตัดผมหรือไม่?',
+    answer: 'ใช่ ดัดผมมักจะแพงกว่า 300-1,500 บาท ย้อมผมสีปกติ 200-800 บาท สีพิเศษหรือรูตแตน 500-1,200 บาท ขึ้นอยู่กับความยาวและความหนาของผม',
+  },
+  {
+    question: 'นโยบายสมาชิก package ของร้านตัดผมคุ้มหรือไม่?',
+    answer: 'ขึ้นอยู่กับความถี่การใช้บริการของคุณ ถ้าตัดผมทุก 4-6 สัปดาห์ package อาจคุ้ม แต่ต้องเช็กเงื่อนไขและวันหมดอายุ',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าตัดผมและดูแลผม',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณค่าตัดผมรายเดือนและรายปี',
+  description: 'ขั้นตอนการประมาณค่าใช้จ่ายดูแลผมต่อเดือนและต่อปี รวมค่าตัดผม ดัดผม ย้อมผม',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุค่าตัดผม',
+      text: 'กำหนดค่าตัดผมปกติของคุณที่ร้านที่ใช้บริการ เช่น 200 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ระบุความถี่',
+      text: 'นับว่ามักตัดผมกี่ครั้งต่อเดือน เช่น 1-2 ครั้งต่อเดือน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เพิ่มค่าบริการเพิ่มเติม',
+      text: 'รวมค่าดัดผม ย้อมผม หรือบริการพิเศษอื่น ๆ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณรวม',
+      text: 'ผลรวมแสดงค่าใช้จ่ายต่อเดือนและต่อปี',
+    },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าตัดผม">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      คำนวณค่าตัดผมและดูแลผมต่อเดือน
+    </h1>
+
+    <div class="mb-4 inline-block rounded-lg border border-fuchsia-200 bg-fuchsia-50 px-3 py-2">
+      <p class="text-xs font-semibold text-fuchsia-800">[KLC-0776: อัปเดต 2569]</p>
+    </div>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าใช้จ่ายตัดผม ดัดผม ย้อมผม และบริการดูแลผมอื่น ๆ ต่อเดือนและต่อปี
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="haircut-cost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าตัดผม (บาท)
+          </label>
+          <input
+            type="text"
+            id="haircut-cost"
+            inputmode="decimal"
+            placeholder="เช่น 200"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="haircut-frequency" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนครั้งต่อเดือน
+          </label>
+          <input
+            type="text"
+            id="haircut-frequency"
+            inputmode="decimal"
+            placeholder="เช่น 1"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="perm-cost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าดัดผม (บาท/ครั้ง)
+          </label>
+          <input
+            type="text"
+            id="perm-cost"
+            inputmode="decimal"
+            placeholder="เช่น 500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="perm-frequency" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนครั้งต่อเดือน
+          </label>
+          <input
+            type="text"
+            id="perm-frequency"
+            inputmode="decimal"
+            placeholder="เช่น 0.5"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="dye-cost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าย้อมผม (บาท/ครั้ง)
+          </label>
+          <input
+            type="text"
+            id="dye-cost"
+            inputmode="decimal"
+            placeholder="เช่น 400"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="dye-frequency" class="block text-sm font-medium text-gray-700 mb-1">
+            จำนวนครั้งต่อเดือน
+          </label>
+          <input
+            type="text"
+            id="dye-frequency"
+            inputmode="decimal"
+            placeholder="เช่น 0.25"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+        <div>
+          <label for="other-cost" class="block text-sm font-medium text-gray-700 mb-1">
+            ค่าบริการอื่น ๆ (บาท/เดือน)
+          </label>
+          <input
+            type="text"
+            id="other-cost"
+            inputmode="decimal"
+            placeholder="เช่น 0"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-calculate"
+        class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+      >
+        คำนวณ
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6">
+        <div class="grid gap-4 sm:grid-cols-3 mb-6">
+          <div class="text-center">
+            <div class="text-sm text-gray-600 mb-1">รายเดือน</div>
+            <div id="monthly-cost" class="text-3xl font-bold text-primary-600">-</div>
+            <div class="text-xs text-gray-500">บาท</div>
+          </div>
+          <div class="text-center">
+            <div class="text-sm text-gray-600 mb-1">ประมาณการต่อปี</div>
+            <div id="yearly-cost" class="text-3xl font-bold text-primary-600">-</div>
+            <div class="text-xs text-gray-500">บาท</div>
+          </div>
+          <div class="text-center">
+            <div class="text-sm text-gray-600 mb-1">รายสัปดาห์โดยเฉลี่ย</div>
+            <div id="weekly-cost" class="text-3xl font-bold text-primary-600">-</div>
+            <div class="text-xs text-gray-500">บาท</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">รายละเอียดค่าใช้จ่าย</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between text-gray-700">
+              <span>ค่าตัดผม:</span>
+              <span id="breakdown-haircut" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between text-gray-700">
+              <span>ค่าดัดผม:</span>
+              <span id="breakdown-perm" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between text-gray-700">
+              <span>ค่าย้อมผม:</span>
+              <span id="breakdown-dye" class="font-medium">-</span>
+            </div>
+            <div class="flex justify-between text-gray-700">
+              <span>ค่าบริการอื่น:</span>
+              <span id="breakdown-other" class="font-medium">-</span>
+            </div>
+            <div class="border-t pt-2 flex justify-between font-semibold text-gray-900">
+              <span>รวมต่อเดือน:</span>
+              <span id="breakdown-total" class="font-bold text-primary-600">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ค่าตัดผมและดูแลผมเฉลี่ยในไทย</h2>
+
+      <p>
+        ค่าตัดผมในประเทศไทยนั้นแตกต่างกันไปตามสถานที่และคุณภาพของร้าน
+        โดยร้านตัดผมทั่วไปในกรุงเทพจะคิดค่าตัดผมประมาณ 100-300 บาท
+        สำหรับร้านแบรนด์ดังคิดค่าสูงกว่า 500-1,200 บาท
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างค่าใช้จ่ายตัดผมเฉลี่ยรายเดือน</h3>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-gray-300">
+              <th class="py-2 pr-4">ประเภท</th>
+              <th class="py-2 pr-4">ราคา/ครั้ง</th>
+              <th class="py-2 pr-4">ความถี่</th>
+              <th class="py-2">รวมต่อเดือน</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ตัดผม</td>
+              <td class="py-2 pr-4">200 บาท</td>
+              <td class="py-2 pr-4">2x/เดือน</td>
+              <td class="py-2">400 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ดัดผม</td>
+              <td class="py-2 pr-4">600 บาท</td>
+              <td class="py-2 pr-4">0.5x/เดือน</td>
+              <td class="py-2">300 บาท</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4">ย้อมผม</td>
+              <td class="py-2 pr-4">500 บาท</td>
+              <td class="py-2 pr-4">0.25x/เดือน</td>
+              <td class="py-2">125 บาท</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4 font-semibold">รวมทั้งสิ้น</td>
+              <td colspan="2" class="py-2"></td>
+              <td class="py-2 font-bold text-primary-600">825 บาท/เดือน</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีประหยัดค่าตัดผม</h3>
+
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เลือกร้านตัดผมที่มีราคาเหมาะสมกับงบประมาณ ไม่จำเป็นต้องเลือกแบรนด์ดัง</li>
+        <li>ตัดผมตามความจำเป็น ส่วนใหญ่ 4-6 สัปดาห์ต่อครั้ง</li>
+        <li>ดัดผมแทนการดูแลผมหนัก อาจเก็บได้นานกว่า</li>
+        <li>ใช้สมาชิก package สำหรับลูกค้าประจำ</li>
+        <li>ดูแลผมที่บ้านด้วยผลิตภัณฑ์ราคาถูก</li>
+        <li>เลิกดัด ย้อมแล้วให้ผมเป็นธรรมชาติเพื่อลดค่าใช้จ่าย</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">วิธีคำนวณค่าตัดผม</h3>
+
+      <p class="text-gray-700 mb-3">
+        สูตรการคำนวณค่าตัดผมเป็นดังนี้:
+      </p>
+
+      <div class="bg-blue-50 rounded-lg p-4 text-sm">
+        <p class="font-semibold text-gray-900 mb-2">ค่าใช้จ่ายต่อเดือน = </p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>(ค่าตัดผม × ความถี่ตัดผม) +</li>
+          <li>(ค่าดัดผม × ความถี่ดัดผม) +</li>
+          <li>(ค่าย้อมผม × ความถี่ย้อมผม) +</li>
+          <li>ค่าบริการอื่น ๆ</li>
+        </ul>
+      </div>
+
+      <p class="text-gray-600 text-sm mt-4">
+        <strong>ตัวอย่าง:</strong> ค่าตัดผม 200 บาท (2 ครั้ง/เดือน) + ค่าดัดผม 600 บาท (0.5 ครั้ง/เดือน) + ค่าย้อมผม 500 บาท (0.25 ครั้ง/เดือน) = 825 บาท/เดือน หรือ 9,900 บาท/ปี
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณ-hair-salon-cost/" />
+    <RelatedCalculators currentHref="/คำนวณ-hair-salon-cost/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเท่านั้น
+      ราคาจริงอาจแตกต่างตามสถานที่ ร้าน และเนื้อที่/ความหนาของผม
+    </div>
+  </article>
+
+  <script>
+    function calculateHairCost(
+      haircutCost: number,
+      haircutFreq: number,
+      permCost: number,
+      permFreq: number,
+      dyeCost: number,
+      dyeFreq: number,
+      otherCost: number
+    ): { monthly: number; yearly: number; weekly: number } {
+      const monthly =
+        haircutCost * haircutFreq +
+        permCost * permFreq +
+        dyeCost * dyeFreq +
+        otherCost;
+      const yearly = monthly * 12;
+      const weekly = monthly / 4.33;
+
+      return { monthly, yearly, weekly };
+    }
+
+    function formatCurrency(value: number): string {
+      return new Intl.NumberFormat('th-TH', {
+        style: 'currency',
+        currency: 'THB',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(value);
+    }
+
+    const btncalculate = document.getElementById('btn-calculate');
+    const resultDiv = document.getElementById('result');
+    const monthlyCostEl = document.getElementById('monthly-cost');
+    const yearlyCostEl = document.getElementById('yearly-cost');
+    const weeklyCostEl = document.getElementById('weekly-cost');
+    const breakdownHaircut = document.getElementById('breakdown-haircut');
+    const breakdownPerm = document.getElementById('breakdown-perm');
+    const breakdownDye = document.getElementById('breakdown-dye');
+    const breakdownOther = document.getElementById('breakdown-other');
+    const breakdownTotal = document.getElementById('breakdown-total');
+
+    btncalculate?.addEventListener('click', () => {
+      const haircutCost = parseFloat((document.getElementById('haircut-cost') as HTMLInputElement)?.value) || 0;
+      const haircutFreq = parseFloat((document.getElementById('haircut-frequency') as HTMLInputElement)?.value) || 0;
+      const permCost = parseFloat((document.getElementById('perm-cost') as HTMLInputElement)?.value) || 0;
+      const permFreq = parseFloat((document.getElementById('perm-frequency') as HTMLInputElement)?.value) || 0;
+      const dyeCost = parseFloat((document.getElementById('dye-cost') as HTMLInputElement)?.value) || 0;
+      const dyeFreq = parseFloat((document.getElementById('dye-frequency') as HTMLInputElement)?.value) || 0;
+      const otherCost = parseFloat((document.getElementById('other-cost') as HTMLInputElement)?.value) || 0;
+
+      if (haircutFreq < 0 || permFreq < 0 || dyeFreq < 0) {
+        alert('ความถี่ต้องเป็นตัวเลขบวก');
+        return;
+      }
+
+      const result = calculateHairCost(haircutCost, haircutFreq, permCost, permFreq, dyeCost, dyeFreq, otherCost);
+
+      monthlyCostEl!.textContent = formatCurrency(result.monthly);
+      yearlyCostEl!.textContent = formatCurrency(result.yearly);
+      weeklyCostEl!.textContent = formatCurrency(result.weekly);
+
+      breakdownHaircut!.textContent = formatCurrency(haircutCost * haircutFreq);
+      breakdownPerm!.textContent = formatCurrency(permCost * permFreq);
+      breakdownDye!.textContent = formatCurrency(dyeCost * dyeFreq);
+      breakdownOther!.textContent = formatCurrency(otherCost);
+      breakdownTotal!.textContent = formatCurrency(result.monthly);
+
+      resultDiv!.classList.remove('hidden');
+    });
+  </script>
+</BaseLayout>

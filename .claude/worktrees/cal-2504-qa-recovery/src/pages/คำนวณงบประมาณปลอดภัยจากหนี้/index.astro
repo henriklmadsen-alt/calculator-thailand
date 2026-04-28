@@ -1,0 +1,237 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณปลอดภัยจากหนี้ ปี 2569 DTI ratio สัดส่วนหนี้ต่อรายได้ | Kamnuanlek';
+const pageDescription = 'คำนวณ DTI ratio สัดส่วนภาระหนี้ต่อรายได้ น้อยกว่า 40% ปลอดภัย 40-60% ระวัง มากกว่า 60% อันตราย คำนวณงบประมาณที่เหลือหลังหักหนี้';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณปลอดภัยจากหนี้/`;
+
+const faqData = [
+  {
+    question: 'DTI ratio คืออะไร?',
+    answer: 'DTI (Debt-to-Income Ratio) คือสัดส่วนภาระหนี้ต่อรายได้ คำนวณจาก (ยอดผ่อนหนี้รายเดือนทั้งหมด ÷ รายได้รายเดือน) × 100% ธนาคารส่วนใหญ่กำหนดว่า DTI ไม่เกิน 40-50% จึงจะอนุมัติสินเชื่อ',
+  },
+  {
+    question: 'DTI เกิน 40% แปลว่าอะไร?',
+    answer: 'DTI มากกว่า 40% หมายความว่ารายได้มากกว่าครึ่งถูกใช้ชำระหนี้ เหลือน้อยสำหรับค่าครองชีพและออมเงิน ถ้า DTI เกิน 60% อยู่ในโซนอันตราย ควรเร่งลดหนี้ก่อนก่อหนี้ใหม่',
+  },
+  {
+    question: 'ภาระหนี้รายเดือนรวมอะไรบ้าง?',
+    answer: 'รวมผ่อนชำระทุกประเภท: ผ่อนบ้าน ผ่อนรถ ผ่อนมอเตอร์ไซค์ ค่างวดสินเชื่อส่วนบุคคล ยอดชำระขั้นต่ำบัตรเครดิต สินเชื่อนาโนไฟแนนซ์ กู้ธนาคาร กู้สหกรณ์ ทุกรายการที่ต้องจ่ายทุกเดือน',
+  },
+  {
+    question: 'จะลด DTI ได้อย่างไร?',
+    answer: 'ลดได้สองทาง: (1) ลดหนี้ — ชำระหนี้ดอกเบี้ยสูงก่อน รีไฟแนนซ์เพื่อลดค่างวด ไม่ก่อหนี้ใหม่ (2) เพิ่มรายได้ — หางานพิเศษ ขึ้นเงินเดือน ขายทรัพย์สิน เพื่อให้ตัวส่วนใหญ่ขึ้น',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณปลอดภัยจากหนี้',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณปลอดภัยจากหนี้">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณ DTI ratio และงบประมาณที่ปลอดภัยจากหนี้</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: DTI = (ภาระหนี้/เดือน ÷ รายได้) × 100% | งบสำรองชีวิต = รายได้ - ภาระหนี้</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">เกณฑ์: DTI น้อยกว่า 40% = ปลอดภัย | 40-60% = ระวัง | มากกว่า 60% = อันตราย</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณปลอดภัยจากหนี้ ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกรายได้และยอดผ่อนหนี้ทั้งหมดต่อเดือน เพื่อดู DTI ratio และงบประมาณที่เหลือสำหรับชีวิต
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="dti-form" class="space-y-5">
+        <p id="dti-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="dti-income" class="mb-1 block text-sm font-medium text-gray-700">รายได้รวมต่อเดือน (บาท)</label>
+            <input type="text" id="dti-income" inputmode="numeric" placeholder="เช่น 40,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="dti-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="dti-debt" class="mb-1 block text-sm font-medium text-gray-700">ภาระหนี้รวมต่อเดือน (บาท)</label>
+            <input type="text" id="dti-debt" inputmode="numeric" placeholder="เช่น 15,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="dti-debt-error" class="mt-1 hidden text-sm text-red-600"></p>
+            <p class="mt-1 text-xs text-gray-500">รวมผ่อนบ้าน รถ บัตรเครดิต สินเชื่อทุกประเภท</p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ DTI และงบประมาณ
+        </button>
+      </form>
+    </div>
+
+    <div id="dti-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div id="dti-ratio-box" class="rounded-lg p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">DTI Ratio</div>
+            <div id="res-dti-ratio" class="text-2xl font-bold">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้</div>
+            <div id="res-dti-income" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ภาระหนี้/เดือน</div>
+            <div id="res-dti-debt" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">งบสำรองชีวิต</div>
+            <div id="res-dti-safe" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+
+        <div id="dti-indicator" class="mb-4 rounded-xl p-4 text-center">
+          <div id="dti-indicator-label" class="text-lg font-bold"></div>
+          <div id="dti-indicator-desc" class="mt-1 text-sm"></div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">DTI สูงสุดที่ธนาคารยอมรับ (40%)</span>
+            <span id="res-dti-max-safe" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">สามารถรับหนี้เพิ่มได้สูงสุด</span>
+            <span id="res-dti-headroom" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>DTI ratio = (ภาระหนี้รายเดือน ÷ รายได้รายเดือน) × 100%</li>
+        <li>งบสำรองชีวิต = รายได้ - ภาระหนี้ทั้งหมด</li>
+        <li>ภาระหนี้สูงสุดที่ปลอดภัย (40%) = รายได้ × 40%</li>
+        <li>ช่องว่างก่อหนี้ได้ = ภาระสูงสุด 40% - ภาระปัจจุบัน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณส่วนต่างรายได้รายจ่าย/">คำนวณส่วนต่างรายได้รายจ่าย</a></li>
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#dti-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณปลอดภัยจากหนี้/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณปลอดภัยจากหนี้/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นแนวทางทั่วไป เกณฑ์ DTI ของสถาบันการเงินแต่ละแห่งอาจแตกต่างกัน ควรปรึกษาที่ปรึกษาทางการเงินสำหรับการวางแผนหนี้ที่ซับซ้อน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('dti-form');
+    const formError = document.getElementById('dti-error');
+    const resultBox = document.getElementById('dti-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['dti-income-error','dti-debt-error'].forEach(id => setErr(id, ''));
+
+      const income = parseNum(document.getElementById('dti-income').value);
+      const debt = parseNum(document.getElementById('dti-debt').value);
+      let hasError = false;
+      if (!Number.isFinite(income) || income <= 0) { setErr('dti-income-error', 'กรอกรายได้มากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(debt) || debt < 0) { setErr('dti-debt-error', 'กรอกภาระหนี้ (0 ถ้าไม่มีหนี้)'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const dti = (debt / income) * 100;
+      const safeBudget = income - debt;
+      const maxSafeDebt = income * 0.4;
+      const headroom = Math.max(0, maxSafeDebt - debt);
+
+      setText('res-dti-ratio', `${dti.toFixed(1)}%`);
+      setText('res-dti-income', formatMoney(income));
+      setText('res-dti-debt', formatMoney(debt));
+      setText('res-dti-safe', formatMoney(safeBudget));
+      setText('res-dti-max-safe', formatMoney(maxSafeDebt));
+      setText('res-dti-headroom', headroom > 0 ? formatMoney(headroom) + '/เดือน' : 'ไม่ควรก่อหนี้เพิ่ม');
+
+      const ratioBox = document.getElementById('dti-ratio-box');
+      const ratioEl = document.getElementById('res-dti-ratio');
+      const indicator = document.getElementById('dti-indicator');
+      const indicatorLabel = document.getElementById('dti-indicator-label');
+      const indicatorDesc = document.getElementById('dti-indicator-desc');
+
+      if (dti < 40) {
+        ratioBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+        ratioEl.className = 'text-2xl font-bold text-green-700';
+        indicator.className = 'mb-4 rounded-xl bg-green-50 border border-green-200 p-4 text-center text-green-800';
+        indicatorLabel.textContent = '🟢 ปลอดภัย — DTI น้อยกว่า 40%';
+        indicatorDesc.textContent = `ภาระหนี้ ${dti.toFixed(1)}% ของรายได้ อยู่ในเกณฑ์ปลอดภัย สามารถขอสินเชื่อเพิ่มได้หากจำเป็น`;
+      } else if (dti < 60) {
+        ratioBox.className = 'rounded-lg bg-amber-50 p-4 text-center';
+        ratioEl.className = 'text-2xl font-bold text-amber-700';
+        indicator.className = 'mb-4 rounded-xl bg-amber-50 border border-amber-200 p-4 text-center text-amber-800';
+        indicatorLabel.textContent = '🟡 ระวัง — DTI 40-60%';
+        indicatorDesc.textContent = `ภาระหนี้ ${dti.toFixed(1)}% สูงกว่าเกณฑ์ปลอดภัย ไม่ควรก่อหนี้เพิ่ม และเร่งชำระหนี้ดอกเบี้ยสูงก่อน`;
+      } else {
+        ratioBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+        ratioEl.className = 'text-2xl font-bold text-red-700';
+        indicator.className = 'mb-4 rounded-xl bg-red-50 border border-red-200 p-4 text-center text-red-800';
+        indicatorLabel.textContent = '🔴 อันตราย — DTI มากกว่า 60%';
+        indicatorDesc.textContent = `ภาระหนี้ ${dti.toFixed(1)}% สูงมาก งบชีวิตที่เหลือน้อยเกินไป ควรปรึกษาที่ปรึกษาหนี้และหาทางรีไฟแนนซ์`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

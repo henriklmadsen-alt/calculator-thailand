@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าชุดเจ้าบ่าว 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าชุดเจ้าบ่าว สูท เสื้อวสต์ และอุปกรณ์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-ค่าชุดเจ้าบ่าวแต่งงาน/`;
+
+const faqData = [
+  { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลที่ต้องการในช่องที่กำหนด แล้วกดปุ่มคำนวณ ผลลัพธ์จะแสดงทันทีพร้อมรายละเอียด' },
+  { question: 'ผลลัพธ์ที่ได้ถูกต้องแค่ไหน?', answer: 'เครื่องคำนวณใช้สูตรมาตรฐานและข้อมูลอัปเดต ผลลัพธ์เป็นการประมาณการเพื่อช่วยวางแผน ควรปรึกษาผู้เชี่ยวชาญสำหรับการตัดสินใจสำคัญ' },
+  { question: 'ข้อมูลที่ใช้คำนวณมาจากไหน?', answer: 'อิงจากกฎหมายและระเบียบปัจจุบันของประเทศไทย อัตราที่ประกาศโดยหน่วยงานรัฐ และสูตรมาตรฐานที่ใช้กันทั่วไป' },
+  { question: 'มีค่าใช้จ่ายในการใช้งานไหม?', answer: 'ใช้งานฟรีทั้งหมด ไม่ต้องสมัครสมาชิก ไม่มีค่าธรรมเนียม เครื่องคำนวณทั้งหมดบน Kamnuanlek ให้บริการฟรี' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าชุดเจ้าบ่าว">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณค่าชุดเจ้าบ่าว</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2">
+      <p class="text-xs font-semibold text-blue-800">[ชุดเจ้าบ่าว 2569]</p>
+    </div>
+    <p class="text-gray-600 mb-6">คำนวณค่าชุดเจ้าบ่าว และอุปกรณ์เสริม</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="grid gap-4 sm:grid-cols-2 mb-6">
+        <div>
+          <label for="suit" class="block text-sm font-medium text-gray-700 mb-1">ค่าสูท/ชุด (บาท)</label>
+          <input type="text" id="suit" inputmode="decimal" placeholder="เช่น 60000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base" />
+        </div>
+        <div>
+          <label for="shirt-tie" class="block text-sm font-medium text-gray-700 mb-1">ค่าเสื้อ เนคไท (บาท)</label>
+          <input type="text" id="shirt-tie" inputmode="decimal" placeholder="เช่น 15000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base" />
+        </div>
+        <div>
+          <label for="shoes" class="block text-sm font-medium text-gray-700 mb-1">ค่ารองเท้า (บาท)</label>
+          <input type="text" id="shoes" inputmode="decimal" placeholder="เช่น 10000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base" />
+        </div>
+        <div>
+          <label for="accessories" class="block text-sm font-medium text-gray-700 mb-1">ค่าอุปกรณ์เสริม (บาท)</label>
+          <input type="text" id="accessories" inputmode="decimal" placeholder="เช่น 5000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base" />
+        </div>
+      </div>
+      <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors text-base">คำนวณ</button>
+      <div id="result" class="hidden mt-8 border-t pt-6">
+        <div class="bg-blue-50 rounded-lg p-6 text-center">
+          <div class="text-sm text-gray-600 mb-2">ค่าชุดเจ้าบ่าวรวม</div>
+          <div class="text-5xl font-bold text-blue-700"><span id="total">-</span></div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+      </div>
+    </div>
+    <RelatedCalculators />
+    <RelatedArticles />
+  </article>
+</BaseLayout>
+
+<script>
+  document.getElementById('btn-calculate')?.addEventListener('click', () => {
+    const suit = parseFloat(document.getElementById('suit')?.value || 0);
+    const shirt = parseFloat(document.getElementById('shirt-tie')?.value || 0);
+    const shoes = parseFloat(document.getElementById('shoes')?.value || 0);
+    const acc = parseFloat(document.getElementById('accessories')?.value || 0);
+    const total = suit + shirt + shoes + acc;
+    if (total === 0) { alert('กรุณาป้อนค่าใช้จ่าย'); return; }
+    document.getElementById('total').textContent = total.toLocaleString('th-TH');
+    document.getElementById('result').classList.remove('hidden');
+  });
+</script>

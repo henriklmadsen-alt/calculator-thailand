@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณเบี้ยเด็กอุมเลี้ยง | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันเด็กอุมเลี้ยง การรับเด็กเลี้ยง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0605-เบี้ยเด็กอุมเลี้ยง/`;
+
+const faqData = [
+  { question: 'เบี้ยประกันสุขภาพคำนวณจากอะไร?', answer: 'เบี้ยประกันขึ้นอยู่กับ อายุ เพศ สุขภาพปัจจุบัน วงเงินคุ้มครอง และบริษัทประกัน โดยทั่วไปอายุมากยิ่งเบี้ยสูง' },
+  { question: 'ควรซื้อประกันสุขภาพตั้งแต่อายุเท่าไร?', answer: 'ยิ่งซื้อเร็วยิ่งดี เบี้ยต่ำกว่าและโรคที่ยังไม่มีถือเป็นโรคใหม่ที่คุ้มครองได้ แนะนำเริ่มต้นตั้งแต่วัยทำงาน 25-35 ปี' },
+  { question: 'ประกันสุขภาพกับประกันสังคมต่างกันอย่างไร?', answer: 'ประกันสังคมบังคับโดยรัฐ คุ้มครองพื้นฐาน ประกันสุขภาพเพิ่มเติมซื้อเองเพื่อรับการรักษาที่ดีกว่า วงเงินสูงกว่า และเลือกโรงพยาบาลได้' },
+  { question: 'ค่าเบี้ยที่คำนวณได้ถูกต้องแค่ไหน?', answer: 'เป็นการประมาณการเบื้องต้น ราคาจริงขึ้นอยู่กับการตรวจสุขภาพ ประวัติการรักษา และเงื่อนไขของแต่ละบริษัท ควรขอใบเสนอราคาจริงก่อนตัดสินใจ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยเด็กอุมเลี้ยง">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเบี้ยเด็กอุมเลี้ยง</h1>
+    <div class="mb-4 inline-block rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2"><p class="text-xs font-semibold text-indigo-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณค่าเลี้ยงดูและเบี้ยประกัน เด็กอุมเลี้ยง เด็กรับเลี้ยง</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="num_children" class="block text-sm font-medium text-gray-700 mb-1">จำนวนเด็กอุมเลี้ยง (คน)</label><input type="number" id="num_children" min="1" max="5" placeholder="เช่น 1" value="1" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="monthly_food" class="block text-sm font-medium text-gray-700 mb-1">ค่าอาหารต่อเดือน (บาท/คน)</label><input type="text" id="monthly_food" inputmode="decimal" placeholder="เช่น 2000" value="2000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="monthly_insurance" class="block text-sm font-medium text-gray-700 mb-1">เบี้ยประกันต่อเดือน (บาท/คน)</label><input type="text" id="monthly_insurance" inputmode="decimal" placeholder="เช่น 500" value="500" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="other_cost" class="block text-sm font-medium text-gray-700 mb-1">ค่าอื่นๆต่อเดือน (บาท)</label><input type="text" id="other_cost" inputmode="decimal" placeholder="เช่น 1000" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-indigo-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-indigo-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าต่อเดือน</p>
+            <p id="monthly" class="font-bold">-</p>
+          </div>
+          <div class="bg-indigo-50 rounded p-3">
+            <p class="text-sm text-gray-600">ค่าต่อปี</p>
+            <p id="yearly" class="font-bold">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">ต้องขออนุญาต สปส. หรือไม่?</h3>
+            <p class="text-gray-600 text-sm">ใช่ ตามพระราชกฤษณมูลนิติคุ้มครองเด็ก เลี้ยงดูเด็กโดยไม่ได้รับสัญญาการเลี้ยงดู ต้องขออนุญาต</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">กรณีเด็กทะลุบาดหรือเสียชีวิต ใครรับผิดชอบ?</h3>
+            <p class="text-gray-600 text-sm">ผู้อุมเลี้ยงรับผิดชอบแต่ประกันภัยสามารถครอบได้ ขึ้นอยู่กับสัญญาประกัน</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">คืนเด็กได้ตลอดเวลาหรือมีเงื่อนไข?</h3>
+            <p class="text-gray-600 text-sm">ตามสัญญาการรับเลี้ยงดู เช่นอาจมีการแจ้งล่วงหน้า 30 วัน หรือสายชดเชยตามสัญญา</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const numChildren = parseInt((document.getElementById('num_children') as HTMLInputElement).value) || 1;
+      const monthlyFood = parseFloat((document.getElementById('monthly_food') as HTMLInputElement).value) || 0;
+      const monthlyInsurance = parseFloat((document.getElementById('monthly_insurance') as HTMLInputElement).value) || 0;
+      const otherCost = parseFloat((document.getElementById('other_cost') as HTMLInputElement).value) || 0;
+
+      const totalPerChild = monthlyFood + monthlyInsurance;
+      const monthlyTotal = (totalPerChild * numChildren) + otherCost;
+      const yearlyTotal = monthlyTotal * 12;
+
+      (document.getElementById('monthly') as HTMLElement).textContent = monthlyTotal.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('yearly') as HTMLElement).textContent = yearlyTotal.toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('foster-care');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

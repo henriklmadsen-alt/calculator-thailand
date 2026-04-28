@@ -1,0 +1,163 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบซื้อของชำ 2569 | วางแผนงบซื้อของรายสัปดาห์รายเดือน | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณซื้อของชำรายสัปดาห์และรายเดือน ตามจำนวนคนในบ้านและระดับราคา เพื่อควบคุมค่าใช้จ่ายในครัวเรือนได้อย่างมีประสิทธิภาพ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบซื้อของชำ/`;
+
+const faqData = [
+  {
+    question: 'งบซื้อของชำต่อเดือนสำหรับคนคนเดียวควรเป็นเท่าไร?',
+    answer: 'สำหรับคนเดียวในระดับราคากลาง งบซื้อของชำควรอยู่ที่ประมาณ 2,000-3,500 บาทต่อเดือน ขึ้นอยู่กับไลฟ์สไตล์และการทำอาหารเองที่บ้าน',
+  },
+  {
+    question: 'วิธีประหยัดค่าของชำทำอย่างไร?',
+    answer: 'วางแผนเมนูล่วงหน้า เขียนรายการของที่ต้องซื้อก่อนไปตลาด ซื้อสินค้าตามฤดูกาล และซื้อเป็นจำนวนมากสำหรับสินค้าที่ใช้บ่อยเพื่อประหยัดต่อหน่วย',
+  },
+  {
+    question: 'ควรซื้อของชำบ่อยแค่ไหน?',
+    answer: 'การซื้อของชำสัปดาห์ละครั้งเป็นแนวปฏิบัติที่ดีที่สุดสำหรับผักและผลไม้สด ส่วนของแห้งและของกระป๋องอาจซื้อครั้งเดียวต่อเดือนเพื่อประหยัดเวลาและค่าเดินทาง',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบซื้อของชำ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบซื้อของชำ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณงบซื้อของชำ 2569</h1>
+    <p class="mb-6 text-gray-600">คำนวณงบประมาณซื้อของชำรายสัปดาห์และรายเดือน ตามจำนวนคนในบ้านและระดับราคา</p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="grocery-form" class="space-y-4">
+        <div>
+          <label for="members" class="mb-1 block text-sm font-medium text-gray-700">จำนวนคนในบ้าน</label>
+          <input id="members" type="text" inputmode="numeric" placeholder="เช่น 2"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-48" />
+        </div>
+        <div>
+          <label for="frequency" class="mb-1 block text-sm font-medium text-gray-700">ความถี่ในการซื้อ</label>
+          <select id="frequency" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-auto">
+            <option value="weekly">รายสัปดาห์</option>
+            <option value="biweekly">ทุก 2 สัปดาห์</option>
+            <option value="monthly">รายเดือน</option>
+          </select>
+        </div>
+        <fieldset>
+          <legend class="mb-2 text-sm font-medium text-gray-700">ระดับราคา</legend>
+          <div class="flex flex-wrap gap-2">
+            <label class="price-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="priceLevel" value="budget" class="sr-only" /> ประหยัด
+            </label>
+            <label class="price-pill cursor-pointer rounded-full border-2 border-primary-500 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition-colors">
+              <input type="radio" name="priceLevel" value="mid" class="sr-only" checked /> กลาง
+            </label>
+            <label class="price-pill cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors">
+              <input type="radio" name="priceLevel" value="premium" class="sr-only" /> พรีเมียม
+            </label>
+          </div>
+        </fieldset>
+        <button type="submit"
+          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณ
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">งบประมาณซื้อของชำ</h2>
+        <div class="mb-6 rounded-lg bg-primary-50 p-4 text-center">
+          <div class="mb-1 text-sm text-gray-600">งบต่อเดือน</div>
+          <div id="res-monthly" class="text-4xl font-bold text-primary-700 sm:text-5xl">-</div>
+          <div class="mt-1 text-sm text-gray-500">บาท</div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">งบต่อครั้ง</span>
+            <span id="res-per-trip" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🥬 ผัก ผลไม้ เนื้อสัตว์ (50%)</span>
+            <span id="res-fresh" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-100 py-3">
+            <span class="text-sm text-gray-700">🧴 ของแห้ง เครื่องปรุง (30%)</span>
+            <span id="res-dry" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <span class="text-sm text-gray-700">🧹 ของใช้ในบ้าน (20%)</span>
+            <span id="res-household" class="text-sm font-medium text-gray-900">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณงบซื้อของชำ/" categoryId="bills" maxItems={4} />
+  </article>
+</BaseLayout>
+
+<script>
+  const parseNum = (v: string) => {
+    const n = parseFloat(String(v ?? '').replace(/,/g, '').trim());
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  };
+  const fmt = (v: number) => '฿' + Math.round(v).toLocaleString('th-TH');
+
+  const BASE: Record<string, number> = { budget: 1800, mid: 2800, premium: 4500 };
+  const FREQ_TRIPS: Record<string, number> = { weekly: 4, biweekly: 2, monthly: 1 };
+
+  document.querySelectorAll<HTMLLabelElement>('.price-pill').forEach((pill) => {
+    pill.querySelector('input')?.addEventListener('change', () => {
+      document.querySelectorAll<HTMLLabelElement>('.price-pill').forEach((p) => {
+        p.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        p.classList.add('border-gray-200', 'text-gray-700');
+      });
+      pill.classList.remove('border-gray-200', 'text-gray-700');
+      pill.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+    });
+  });
+
+  document.getElementById('grocery-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const members = parseNum((document.getElementById('members') as HTMLInputElement).value) || 1;
+    const freq = (document.getElementById('frequency') as HTMLSelectElement).value;
+    const level = (document.querySelector('input[name="priceLevel"]:checked') as HTMLInputElement)?.value ?? 'mid';
+
+    const monthly = BASE[level] * members;
+    const trips = FREQ_TRIPS[freq];
+    const perTrip = monthly / trips;
+
+    document.getElementById('res-monthly')!.textContent = fmt(monthly);
+    document.getElementById('res-per-trip')!.textContent = fmt(perTrip);
+    document.getElementById('res-fresh')!.textContent = fmt(monthly * 0.5);
+    document.getElementById('res-dry')!.textContent = fmt(monthly * 0.3);
+    document.getElementById('res-household')!.textContent = fmt(monthly * 0.2);
+    document.getElementById('results')!.classList.remove('hidden');
+  });
+</script>

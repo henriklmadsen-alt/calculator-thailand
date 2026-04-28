@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณเบี้ยประกันเด็ก | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกันชีวิต ประกันการศึกษา สำหรับเด็ก';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0603-เบี้ยประกันเด็ก/`;
+
+const faqData = [
+  { question: 'เบี้ยประกันสุขภาพคำนวณจากอะไร?', answer: 'เบี้ยประกันขึ้นอยู่กับ อายุ เพศ สุขภาพปัจจุบัน วงเงินคุ้มครอง และบริษัทประกัน โดยทั่วไปอายุมากยิ่งเบี้ยสูง' },
+  { question: 'ควรซื้อประกันสุขภาพตั้งแต่อายุเท่าไร?', answer: 'ยิ่งซื้อเร็วยิ่งดี เบี้ยต่ำกว่าและโรคที่ยังไม่มีถือเป็นโรคใหม่ที่คุ้มครองได้ แนะนำเริ่มต้นตั้งแต่วัยทำงาน 25-35 ปี' },
+  { question: 'ประกันสุขภาพกับประกันสังคมต่างกันอย่างไร?', answer: 'ประกันสังคมบังคับโดยรัฐ คุ้มครองพื้นฐาน ประกันสุขภาพเพิ่มเติมซื้อเองเพื่อรับการรักษาที่ดีกว่า วงเงินสูงกว่า และเลือกโรงพยาบาลได้' },
+  { question: 'ค่าเบี้ยที่คำนวณได้ถูกต้องแค่ไหน?', answer: 'เป็นการประมาณการเบื้องต้น ราคาจริงขึ้นอยู่กับการตรวจสุขภาพ ประวัติการรักษา และเงื่อนไขของแต่ละบริษัท ควรขอใบเสนอราคาจริงก่อนตัดสินใจ' }
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันเด็ก">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเบี้ยประกันเด็ก</h1>
+    <div class="mb-4 inline-block rounded-lg border border-red-200 bg-red-50 px-3 py-2"><p class="text-xs font-semibold text-red-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณเบี้ยประกันชีวิต ประกันการศึกษา ค่าเสียหาย ประกันเด็ก</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="coverage" class="block text-sm font-medium text-gray-700 mb-1">วงเงินเอาประกัน (บาท)</label><input type="text" id="coverage" inputmode="decimal" placeholder="เช่น 500000" value="500000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="age" class="block text-sm font-medium text-gray-700 mb-1">อายุเด็ก (ปี)</label><input type="number" id="age" min="0" max="18" placeholder="เช่น 5" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rate" class="block text-sm font-medium text-gray-700 mb-1">อัตราเบี้ยต่อพันบาท (%)</label><input type="text" id="rate" inputmode="decimal" placeholder="เช่น 2.5" value="2.5" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="term" class="block text-sm font-medium text-gray-700 mb-1">ระยะเวลา (ปี)</label><input type="number" id="term" min="1" max="30" placeholder="เช่น 15" value="15" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-red-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">เบี้ยต่อปี</p>
+            <p id="yearly" class="font-bold">-</p>
+          </div>
+          <div class="bg-red-50 rounded p-3">
+            <p class="text-sm text-gray-600">เบี้ยต่อเดือน</p>
+            <p id="monthly" class="font-bold">-</p>
+          </div>
+          <div class="bg-orange-50 rounded p-3 col-span-2">
+            <p class="text-sm text-gray-600">เบี้ยรวม (ตลอดระยะ)</p>
+            <p id="total" class="font-bold text-lg">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 space-y-6">
+      <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+        <div class="space-y-4">
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">ประกันเด็กวงเงินควรเท่าไหร่?</h3>
+            <p class="text-gray-600 text-sm">ขึ้นอยู่กับ: ค่าใจ ค่าศึกษา ค่ารักษา เบี้ยต่อเดือน ท่านสามารถเลือก 100,000-2,000,000 บาท</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">เด็กป่วยได้รับเอาประกันหรือไม่?</h3>
+            <p class="text-gray-600 text-sm">ขึ้นอยู่กับเงื่อนไขสัญญา: บางประกันครอบตั้งแต่แรกเกิด บางประกันตรวจสุขภาพก่อน</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">หยุดจ่ายเบี้ยได้หรือไม่?</h3>
+            <p class="text-gray-600 text-sm">ปกติได้ แต่สวัสดิการอาจลดลง หรือหลักสูตรที่ออม ให้สิทธิสูง ท่านสามารถปรึกษาตัวแทนประกันเพื่อทราบข้อมูลเพิ่มเติม</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const coverage = parseFloat((document.getElementById('coverage') as HTMLInputElement).value) || 0;
+      const rate = parseFloat((document.getElementById('rate') as HTMLInputElement).value) || 0;
+      const term = parseInt((document.getElementById('term') as HTMLInputElement).value) || 0;
+
+      const yearlyPremium = (coverage * rate) / 1000;
+      const monthlyPremium = yearlyPremium / 12;
+      const totalPremium = yearlyPremium * term;
+
+      (document.getElementById('yearly') as HTMLElement).textContent = yearlyPremium.toLocaleString('th-TH', {maximumFractionDigits: 2}) + ' บาท';
+      (document.getElementById('monthly') as HTMLElement).textContent = monthlyPremium.toLocaleString('th-TH', {maximumFractionDigits: 2}) + ' บาท';
+      (document.getElementById('total') as HTMLElement).textContent = totalPremium.toLocaleString('th-TH', {maximumFractionDigits: 2}) + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('child-insurance');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

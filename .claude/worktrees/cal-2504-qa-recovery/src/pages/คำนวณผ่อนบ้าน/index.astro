@@ -1,0 +1,964 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณผ่อนบ้าน | เครื่องคิดเงินผ่อนบ้าน ดอกเบี้ยต่ำ 2569';
+const pageDescription = 'คำนวณงวดผ่อนบ้าน ดอกเบี้ย และต้นเงิน — เครื่องคิด เงินผ่อนบ้านฟรี พร้อมสูตรคำนวณและตัวอย่างจริง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณผ่อนบ้าน/`;
+
+const faqData = [
+  {
+    question: 'รีไฟแนนซ์บ้านคุ้มเมื่อไร?',
+    answer: 'มักคุ้มเมื่ออัตราดอกเบี้ยใหม่ต่ำลงชัดเจน และยอดประหยัดรวมมากกว่าค่าธรรมเนียมรีไฟแนนซ์ภายในระยะเวลาที่คุณตั้งใจถือหนี้',
+  },
+  {
+    question: 'จุดคุ้มทุนรีไฟแนนซ์คืออะไร?',
+    answer: 'คือจำนวนเดือนที่ส่วนต่างค่างวดสะสมเท่ากับค่าใช้จ่ายรีไฟแนนซ์ เมื่อเกินจุดนี้ไปแล้วผลรวมมักเริ่มคุ้ม',
+  },
+  {
+    question: 'ควรโปะบ้านร่วมกับรีไฟแนนซ์ไหม?',
+    answer: 'ถ้ากระแสเงินสดไหว การโปะเงินต้นจะช่วยลดดอกเบี้ยรวมได้เร็วขึ้นทั้งในแผนเดิมและแผนรีไฟแนนซ์',
+  },
+  {
+    question: 'ระยะเวลากู้ใหม่ควรเท่าของเดิมหรือยืดออก?',
+    answer: 'ถ้าต้องการลดดอกเบี้ยรวมควรเลือกใกล้เคียงหรือสั้นกว่าเดิม แต่ถ้าต้องการลดภาระรายเดือนอาจยืดระยะเวลาได้โดยยอมรับดอกเบี้ยรวมที่เพิ่มขึ้น',
+  },
+  {
+    question: 'ข้อผิดพลาดทั่วไปในการคำนวณผ่อนบ้านที่ต้องหลีกเลี่ยง?',
+    answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ลืมนำยอดหนี้คงเหลือปัจจุบันแทนเงินกู้เดิม (2) ใช้อัตราดอกเบี้ยจากสัญญาเก่าแทนสัญญาใหม่ (3) ไม่รวมค่าธรรมเนียมรีไฟแนนซ์ (4) เปรียบเทียบเปอร์เซ็นต์ดอกเบี้ยไม่เท่า (flat vs effective) (5) ลืมค่าประกันภัชระบบแรงงาน และ (6) คำนวณ break-even ไม่คำนึงถึงโปะเงินต้น',
+  },
+,
+  { question: 'กู้บ้านได้สูงสุดกี่เท่าของรายได้?', answer: 'ธนาคารส่วนใหญ่อนุมัติให้ผ่อนได้ไม่เกิน 40% ของรายได้สุทธิต่อเดือน เช่น รายได้ 50,000 บาท ผ่อนได้สูงสุด 20,000 บาท/เดือน วงเงินกู้สูงสุดขึ้นกับอัตราดอกเบี้ยและระยะเวลา' },
+  { question: 'อัตราดอกเบี้ยสินเชื่อบ้านปัจจุบันอยู่ที่เท่าไร?', answer: 'MRR ของธนาคารพาณิชย์ส่วนใหญ่อยู่ที่ 6.25-7.00% ต่อปี สินเชื่อบ้านทั่วไปได้รับส่วนลด เช่น MRR-1% ถึง MRR-2% ตรวจสอบอัตราปัจจุบันได้จากเว็บไซต์ธนาคารหรือ bot.or.th' },
+  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณผ่อนบ้านและรีไฟแนนซ์',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'THB',
+  },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณผ่อนบ้านและเปรียบเทียบรีไฟแนนซ์',
+  description: 'ขั้นตอนการใช้เครื่องคำนวณผ่อนบ้าน เปรียบเทียบแผนเดิมกับรีไฟแนนซ์ และหาจุดคุ้มทุน',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เลือกโหมดการคำนวณ',
+      text: 'ระบุว่าต้องการคำนวณผ่อนบ้านแบบ "รีไฟแนนซ์เปรียบเทียบ" (เทียบแผนเดิมกับแผนใหม่) หรือ "ซื้อบ้านใหม่" (คำนวณแผนเดี่ยว)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กรอกข้อมูลสัญญาเดิม',
+      text: 'ป้อนข้อมูลจากสัญญาปัจจุบัน: สินเชื่อก่อนอื่น ระยะเวลาทั้งหมด (ปี) ระยะเวลาที่ผ่านไป (ปี) และอัตราดอกเบี้ยต่อปี (%)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ป้อนข้อมูลสัญญารีไฟแนนซ์ (หากเป็นโหมดเปรียบเทียบ)',
+      text: 'หากเลือกโหมดรีไฟแนนซ์ ให้ป้อนข้อมูลแผนใหม่: สินเชื่อใหม่ ระยะเวลาใหม่ (ปี) อัตราดอกเบี้ยใหม่ (%) และค่าธรรมเนียมรีไฟแนนซ์ (บาท)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ป้อนจำนวนเงินที่ต้องการเพิ่มหรือลด',
+      text: 'ถ้าต้องการโปะหนี้ (ลดเงินต้น) หรือเพิ่มเงินกู้เพิ่มเติม ให้ป้อนจำนวนนั้น หากไม่มีให้ใส่ 0',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กดปุ่มคำนวณ',
+      text: 'หลังจากกรอกข้อมูลครบแล้ว ให้คลิกปุ่ม "คำนวณผ่อนบ้าน" เพื่อให้ระบบคำนวณผลลัพธ์',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบผลการเปรียบเทียบ',
+      text: 'ดูผลลัพธ์ที่แสดง ประกอบด้วย ค่างวดรายเดือน ดอกเบี้ยรวมทั้งสัญญา ยอดประหยัดหรือค่าใช้จ่ายเพิ่มเติม และจุดคุ้มทุน (เมื่อรีไฟแนนซ์คุ้ม)',
+    },
+  ],
+};
+
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนบ้านและรีไฟแนนซ์">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569 • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณผ่อนบ้าน + เปรียบเทียบรีไฟแนนซ์ 2569 (2026)
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณค่างวดบ้านแบบลดต้นลดดอก และเทียบแผนเดิมกับแผนรีไฟแนนซ์แบบเห็นตัวเลขชัดเจน:
+      ค่างวดใหม่ ดอกเบี้ยรวม ค่าใช้จ่ายรีไฟแนนซ์ และจุดคุ้มทุน
+    </p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="mortgage-form" class="space-y-6">
+        <p id="mortgage-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-3">โหมดคำนวณ</legend>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="flex items-start gap-2 p-3 rounded-lg border border-primary-200 bg-primary-50">
+              <input type="radio" name="calc-mode" value="refinance" checked class="mt-0.5 w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">
+                <span class="block font-semibold text-gray-900">รีไฟแนนซ์เปรียบเทียบ (แนะนำ)</span>
+                เทียบสัญญาเดิม vs สัญญาใหม่ พร้อมจุดคุ้มทุน
+              </span>
+            </label>
+            <label class="flex items-start gap-2 p-3 rounded-lg border border-gray-200">
+              <input type="radio" name="calc-mode" value="new-home" class="mt-0.5 w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">
+                <span class="block font-semibold text-gray-900">ซื้อบ้านใหม่</span>
+                คำนวณค่างวดจากราคาบ้านและเงินดาวน์
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div id="mode-refinance" class="space-y-5">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="outstanding-balance" class="block text-sm font-medium text-gray-700 mb-1">
+                เงินต้นคงเหลือ (บาท)
+              </label>
+              <input
+                type="text"
+                id="outstanding-balance"
+                inputmode="numeric"
+                value="2500000"
+                placeholder="เช่น 2,500,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+              <p id="outstanding-balance-error" class="mt-1 hidden text-sm text-red-600"></p>
+            </div>
+            <div>
+              <label for="remaining-years" class="block text-sm font-medium text-gray-700 mb-1">
+                ระยะเวลาคงเหลือ (ปี)
+              </label>
+              <input
+                type="text"
+                id="remaining-years"
+                inputmode="numeric"
+                value="22"
+                placeholder="เช่น 22"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="current-rate" class="block text-sm font-medium text-gray-700 mb-1">
+                ดอกเบี้ยแผนเดิม (% ต่อปี)
+              </label>
+              <input
+                type="text"
+                id="current-rate"
+                inputmode="decimal"
+                value="6.2"
+                placeholder="เช่น 6.2"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="refinance-rate" class="block text-sm font-medium text-gray-700 mb-1">
+                ดอกเบี้ยแผนรีไฟแนนซ์ (% ต่อปี)
+              </label>
+              <input
+                type="text"
+                id="refinance-rate"
+                inputmode="decimal"
+                value="4.2"
+                placeholder="เช่น 4.2"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label for="refinance-term-years" class="block text-sm font-medium text-gray-700 mb-1">
+                ระยะเวลาแผนใหม่ (ปี)
+              </label>
+              <input
+                type="text"
+                id="refinance-term-years"
+                inputmode="numeric"
+                value="22"
+                placeholder="เช่น 22"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="refinance-fees" class="block text-sm font-medium text-gray-700 mb-1">
+                ค่าใช้จ่ายรีไฟแนนซ์รวม (บาท)
+              </label>
+              <input
+                type="text"
+                id="refinance-fees"
+                inputmode="numeric"
+                value="50000"
+                placeholder="เช่น 50,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="extra-payment" class="block text-sm font-medium text-gray-700 mb-1">
+                โปะเพิ่มต่อเดือน (บาท) <span class="text-gray-400 font-normal">ไม่บังคับ</span>
+              </label>
+              <input
+                type="text"
+                id="extra-payment"
+                inputmode="numeric"
+                value="0"
+                placeholder="เช่น 3,000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="mode-new-home" class="space-y-5 hidden">
+          <div>
+            <label for="home-price" class="block text-sm font-medium text-gray-700 mb-1">
+              ราคาบ้าน (บาท)
+            </label>
+            <input
+              type="text"
+              id="home-price"
+              inputmode="numeric"
+              value="3500000"
+              placeholder="เช่น 3,500,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p id="home-price-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label for="down-payment-pct" class="block text-sm font-medium text-gray-700 mb-1">
+                เงินดาวน์ (%)
+              </label>
+              <input
+                type="text"
+                id="down-payment-pct"
+                inputmode="decimal"
+                value="20"
+                placeholder="เช่น 20"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="new-home-rate" class="block text-sm font-medium text-gray-700 mb-1">
+                ดอกเบี้ยต่อปี (%)
+              </label>
+              <input
+                type="text"
+                id="new-home-rate"
+                inputmode="decimal"
+                value="5.5"
+                placeholder="เช่น 5.5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+            <div>
+              <label for="new-home-years" class="block text-sm font-medium text-gray-700 mb-1">
+                ระยะเวลากู้ (ปี)
+              </label>
+              <input
+                type="text"
+                id="new-home-years"
+                inputmode="numeric"
+                value="30"
+                placeholder="เช่น 30"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+              />
+            </div>
+          </div>
+          <div id="new-home-preview" class="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+            ยอดกู้โดยประมาณ: <span id="new-home-loan-amount" class="font-semibold text-gray-900">-</span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="mortgage-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8 border-2 border-primary-600 bg-primary-50 rounded-lg p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดแผนเดิม</div>
+            <div id="res-current-monthly" class="text-lg sm:text-xl lg:text-2xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
+            <div class="text-sm text-gray-600 mb-1">ค่างวดแผนใหม่</div>
+            <div id="res-new-monthly" class="text-lg sm:text-xl lg:text-2xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
+            <div class="text-sm text-gray-600 mb-1">ส่วนต่างต่อเดือน</div>
+            <div id="res-monthly-delta" class="text-lg sm:text-xl lg:text-2xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="bg-white rounded-lg p-4 text-center border border-gray-100">
+            <div class="text-sm text-gray-600 mb-1">ประหยัดรวมสุทธิ</div>
+            <div id="res-total-saving" class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">-</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm mb-6">
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ดอกเบี้ยรวมแผนเดิม</span>
+            <span id="res-current-interest" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ดอกเบี้ยรวมแผนใหม่</span>
+            <span id="res-new-interest" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">ค่าใช้จ่ายรีไฟแนนซ์</span>
+            <span id="res-refi-fees" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">เวลาปิดหนี้ (เดิม/ใหม่)</span>
+            <span id="res-payoff-months" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-100">
+            <span class="text-gray-600">จุดคุ้มทุนรีไฟแนนซ์</span>
+            <span id="res-break-even" class="font-medium">-</span>
+          </div>
+        </div>
+
+        <div id="res-summary-note" class="p-3 rounded-lg text-sm bg-white border border-gray-100 text-gray-900 mb-4">
+          -
+        </div>
+
+        <details class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <summary class="font-semibold text-yellow-900 cursor-pointer select-none hover:text-yellow-800 transition-colors">
+            ⚠️ สำคัญ: หมายเหตุเกี่ยวกับการคำนวณ
+          </summary>
+          <div class="mt-3 text-sm text-yellow-800 space-y-2">
+            <p>• ผลการคำนวณเป็นการประมาณการตามสูตร DTI เท่านั้น ธนาคารอาจมีเงื่อนไขอื่นเพิ่มเติม</p>
+            <p>• อัตราดอกเบี้ยและเงื่อนไขสินเชื่ออาจเปลี่ยนแปลงตามนโยบายของแต่ละธนาคาร</p>
+            <p>• ค่าธรรมเนียมรีไฟแนนซ์อาจแตกต่างกันระหว่างธนาคาร ควรตรวจสอบอัตราดอกเบี้ยจริงจากธนาคาร</p>
+            <p>• สำหรับข้อมูลอย่างเป็นทางการและการปรึกษาเฉพาะบุคคล ติดต่อธนาคารของคุณโดยตรง</p>
+          </div>
+        </details>
+    </div>
+
+    <div class="my-8 border-t-2 border-gray-200"></div>
+
+    <div id="mortgage-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณผ่อนรถ</p>
+      <p class="mt-1 text-sm text-primary-700">รวมภาระหนี้บ้านและรถให้เห็นค่างวดรวมต่อเดือนก่อนตัดสินใจ</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณผ่อนรถ/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: คำนวณผ่อนรถ</a>
+        <a data-next-action-link href="/บทความ/รีไฟแนนซ์บ้าน-vs-โปะบ้าน-แบบไหนคุ้ม-2569/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">อ่านต่อ: รีไฟแนนซ์ vs โปะบ้าน</a>
+      </div>
+    </div>
+
+    <!-- Affiliate CTA — hidden until result shown -->
+    <AffiliateCard
+      category="home-loan"
+      affiliateUrl="/go/rabbit-care-home/"
+      partnerName="Rabbit Care"
+      ctaText="เปรียบเทียบสินเชื่อบ้านฟรี"
+      subtext="ดูดอกเบี้ยจากหลายธนาคาร ไม่มีค่าใช้จ่าย"
+    />
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีใช้เครื่องคำนวณผ่อนบ้านและรีไฟแนนซ์</h2>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>เลือกโหมด <strong>รีไฟแนนซ์เปรียบเทียบ</strong> เพื่อเทียบสัญญาเดิมกับข้อเสนอใหม่</li>
+        <li>กรอกเงินต้นคงเหลือ ดอกเบี้ยเดิม ดอกเบี้ยใหม่ ระยะเวลา และค่าใช้จ่ายรีไฟแนนซ์</li>
+        <li>ถ้าตั้งใจโปะเพิ่ม ให้กรอกจำนวนโปะต่อเดือนเพื่อดูผลต่อการปิดหนี้เร็วขึ้น</li>
+        <li>อ่านค่า <strong>ประหยัดรวมสุทธิ</strong> และ <strong>จุดคุ้มทุน</strong> ก่อนตัดสินใจ</li>
+      </ol>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สิ่งที่ควรเช็กก่อนรีไฟแนนซ์</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>ค่าปรับปิดบัญชีก่อนกำหนดของธนาคารเดิม</li>
+        <li>ค่าใช้จ่ายวันโอน: ประเมินหลักทรัพย์ ค่าจดจำนอง ค่าธรรมเนียมต่างๆ</li>
+        <li>ดอกเบี้ยหลังหมดโปรโมชัน 2-3 ปีแรก</li>
+        <li>กระแสเงินสดรายเดือนหลังรวมภาระหนี้อื่น เช่น รถยนต์</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">หมายเหตุการคำนวณ</h3>
+      <p>
+        เครื่องมือนี้ใช้สูตรลดต้นลดดอกมาตรฐานเพื่อช่วยวางแผนเบื้องต้น ตัวเลขจริงอาจต่างจากสถาบันการเงิน
+        ตามเงื่อนไขสัญญา วันตัดรอบดอกเบี้ย และค่าธรรมเนียมเฉพาะกรณี
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณผ่อนบ้าน: เงินกู้ 2,000,000 บาท</h3>
+
+      <p class="text-gray-700 mb-3">
+        สถานการณ์ทั่วไป: ซื้อบ้าน 2,500,000 บาท ดาวน์ 500,000 บาท เงินกู้ 2,000,000 บาท ระยะเวลา 20 ปี ดอกเบี้ย 4.5% ต่อปี
+      </p>
+
+      <div class="bg-blue-50 rounded-lg p-4 mb-4 text-sm">
+        <p class="font-semibold text-gray-900 mb-2">การคำนวณ:</p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>เงินต้น: 2,000,000 บาท</li>
+          <li>อัตราดอกเบี้ย: 4.5% ต่อปี = 0.375% ต่อเดือน</li>
+          <li>ระยะเวลา: 20 ปี = 240 เดือน</li>
+          <li>ค่างวดรายเดือน: ≈ 11,223 บาท (คำนวณตามสูตรลดต้นลดดอก)</li>
+          <li>ดอกเบี้ยรวม: (11,223 × 240) - 2,000,000 = 695,520 บาท</li>
+          <li>เงินรวมที่จ่ายทั้งหมด: 2,695,520 บาท</li>
+        </ul>
+      </div>
+
+      <p class="text-gray-700 text-sm">
+        หากคิดรีไฟแนนซ์ในปีที่ 5 (ปี 2569) เมื่อดอกเบี้ยลดลงเป็น 3.5% ต่อปี จะได้ประหยัดดอกเบี้ยจำนวนมาก
+        หรือถ้ามีเงินพอ อาจโปะเงินต้นเพิ่มเติมเพื่อลดดอกเบี้ยรวม
+      </p>
+    </section>
+
+
+    <!-- CAL-654 Content Block -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณผ่อนบ้าน (Amortization)</h2>
+      <div class="bg-gray-50 rounded-lg p-4 text-center my-4">
+        <p class="text-base font-semibold">ค่างวด = P × [r(1+r)^n] / [(1+r)^n − 1]</p>
+        <p class="text-sm text-gray-500 mt-1">P = เงินกู้ | r = ดอกเบี้ยต่อเดือน | n = จำนวนเดือน</p>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณผ่อนบ้าน</h2>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 1: กู้บ้าน 2,000,000 บาท 20 ปี อัตรา 4%</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>เงินกู้ (P) = 2,000,000 บาท</li>
+          <li>อัตราดอกเบี้ยต่อเดือน (r) = 4% ÷ 12 = 0.3333%</li>
+          <li>จำนวนเดือน (n) = 20 × 12 = 240 เดือน</li>
+          <li><strong>ค่างวด ≈ 13,288 บาท/เดือน</strong></li>
+          <li>ดอกเบี้ยรวมทั้งสิ้น ≈ 1,189,120 บาท</li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 2: กู้บ้าน 2,000,000 บาท 15 ปี อัตรา 4%</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>ค่างวด ≈ 14,927 บาท/เดือน</li>
+          <li>ดอกเบี้ยรวมประมาณ ≈ 678,050 บาท (ประหยัดกว่า 20 ปีถึง 511,070 บาท)</li>
+        </ul>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ตัวอย่างที่ 3: ชำระล่วงหน้าลดเงินต้น</h3>
+      <div class="bg-blue-50 rounded-lg p-4 text-sm mb-4">
+        <ul class="list-disc pl-6 text-gray-700 space-y-1">
+          <li>เงินกู้คงเหลือเดือนที่ 100 ≈ 1,500,000 บาท</li>
+          <li>ชำระล่วงหน้า 500,000 บาท → เงินกู้เหลือ 1,000,000 บาท</li>
+          <li>ปรับค่างวดใหม่หรือลดระยะเวลาผ่อนตามสัญญา</li>
+        </ul>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">วิธีคำนวณผ่อนบ้าน</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li>ดึงเอกสารสัญญากู้ — ศึกษาอัตราดอกเบี้ย ระยะเวลา เงื่อนไข</li>
+        <li>ป้อนข้อมูลพื้นฐาน: เงินกู้ อัตราดอกเบี้ย ระยะเวลา (ปี)</li>
+        <li>คำนวณค่างวดด้วยเครื่องคำนวณหรือสูตร Amortization</li>
+        <li>ตรวจสอบตารางผ่อนชำระ: สัดส่วนเงินต้น/ดอกเบี้ยแต่ละเดือน</li>
+        <li>วางแผนชำระล่วงหน้าเพื่อลดดอกเบี้ยรวม</li>
+        <li>เทียบกับสัญญา: ตรวจค่าธรรมเนียม อากรแสตมป์ และค่าจดจำนอง</li>
+      </ol>
+
+      <p class="mt-4 text-sm text-gray-600">
+        <strong>แหล่งอ้างอิง:</strong>
+        <a href="https://www.bot.or.th/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700">ธนาคารแห่งประเทศไทย: ข้อมูลเงินกู้ที่อยู่อาศัย</a> [อัปเดต 2569]
+      </p>
+    </section>
+
+    <section class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 prose prose-slate max-w-none">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรการคำนวณค่างวดผ่อนบ้าน</h2>
+      <p class="text-gray-700">สูตรคำนวณค่างวดผ่อนบ้าน (PMT) ที่ธนาคารใช้คือ:</p>
+      <p class="font-semibold text-gray-900 bg-gray-50 p-3 rounded-lg"><strong>PMT = P × [r(1+r)^n] / [(1+r)^n − 1]</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>P</strong> = วงเงินกู้ที่ขอ (เช่น 2,000,000 บาท)</li>
+        <li><strong>r</strong> = อัตราดอกเบี้ยรายเดือน (ดอกเบี้ยประจำปี ÷ 12)</li>
+        <li><strong>n</strong> = จำนวนงวดทั้งหมด (ปี × 12 เดือน)</li>
+      </ul>
+      <p class="text-gray-700 mt-3"><strong>ตัวอย่าง:</strong> ซื้อบ้านราคา 2,000,000 บาท กู้ 20 ปี ดอกเบี้ย 4%/ปี</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>P = 2,000,000 บาท, r = 4% ÷ 12 = 0.003333, n = 20 × 12 = 240 งวด</li>
+        <li>PMT = 2,000,000 × [0.003333 × 2.208] / [2.208 − 1] ≈ <strong>12,120 บาท/เดือน</strong></li>
+        <li>ตลอด 20 ปี จ่ายรวม: 12,120 × 240 = 2,908,800 บาท</li>
+        <li>ดอกเบี้ยรวมทั้งสัญญา: 2,908,800 − 2,000,000 = <strong>908,800 บาท</strong></li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-5 mb-2">ตัวอย่างที่ 2: ผ่อนนานกว่านี้, อัตราต่ำกว่า</h3>
+      <p class="text-gray-700"><strong>กู้ 3,500,000 บาท ระยะเวลา 30 ปี ดอกเบี้ย 3.5%/ปี</strong></p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>r = 0.002917, n = 360 งวด → PMT ≈ <strong>15,720 บาท/เดือน</strong></li>
+        <li>ตลอด 30 ปี: 5,659,200 บาท (ดอกเบี้ยรวม: 2,159,200 บาท)</li>
+        <li><strong>กฎ 40%:</strong> ธนาคารต้องการให้ค่างวดไม่เกิน 40% ของรายได้รายเดือน — ค่างวด 15,720 บาท ต้องมีรายได้อย่างต่ำ 15,720 ÷ 0.4 = <strong>39,300 บาท/เดือน</strong></li>
+      </ul>
+
+      <h2 class="text-xl font-semibold text-gray-900 mt-6 mb-3">ความแตกต่างระหว่าง MLR, MRR, และอัตราลอย</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li><strong>MLR (Maximum Lending Rate):</strong> อัตราดอกเบี้ยสูงสุดที่ธนาคารจะให้กู้</li>
+        <li><strong>MRR (Mortgage Reference Rate):</strong> อัตราอ้างอิงสำหรับสินเชื่อบ้าน — ส่วนใหญ่ธนาคารจะใช้ MLR</li>
+        <li><strong>อัตราลอย:</strong> ดอกเบี้ยที่เปลี่ยนแปลงตามเศรษฐกิจ เช่น 3.5% + 0.5% = 4%</li>
+      </ul>
+      <p class="mt-3 text-sm text-gray-600">อัตราดอกเบี้ยปัจจุบันตรวจสอบได้จาก <a href="https://www.bot.or.th/" target="_blank" rel="noopener" class="text-primary-600 hover:underline">ธนาคารแห่งประเทศไทย (bot.or.th)</a> [อัปเดต 2569]</p>
+      <p class="text-sm text-gray-500 mt-2">ก่อนผ่อนบ้าน ตรวจสอบ → <a href="/คำนวณค่าธรรมเนียมโอนบ้าน/" class="text-primary-600 hover:underline">ค่าธรรมเนียมโอนบ้าน</a> ที่ต้องจ่ายวันโอนกรรมสิทธิ์</p>
+    </section>
+
+    <!-- CAL-1012: Common Mistakes -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ข้อผิดพลาดทั่วไปในการคำนวณสินเชื่อบ้าน</h2>
+      <p class="text-gray-700 mb-4">
+        เมื่อคำนวณเงินผ่อนบ้าน ข้อผิดพลาดเหล่านี้อาจทำให้คุณตัดสินใจผิด:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-3 text-gray-700">
+        <li>
+          <strong>ไม่นำเงินดาวน์ลบออกจากราคาบ้าน</strong><br/>
+          บ้าน 3 ล้านบาท มีเงินดาวน์ 600,000 บาท แต่คิดเงินกู้เป็น 3 ล้าน ไม่ได้ลบดาวน์ออก เงินกู้ = ราคาบ้าน - เงินดาวน์ = 2,400,000 บาท
+        </li>
+        <li>
+          <strong>ลืมรวมค่าสินไถ่ ค่าประกันสินเชื่อ และค่าธรรมเนียม</strong><br/>
+          เงินผ่อน 11,000 บาท/เดือน แต่มีค่าประกันสินเชื่อ ค่าดำเนินการ ค่าสินไถ่เพิ่มเติม ขอใบประมาณการจากธนาคาร เพื่อดูเงินผ่อนทั้งหมด
+        </li>
+        <li>
+          <strong>เลือกอัตราดอกเบี้ยผิด (ลดต้นลดดอก vs ประจำ)</strong><br/>
+          ลดต้นลดดอก: เงินผ่อนสูงตอนแรก ลดลงเรื่อยๆ ประจำ: เงินผ่อนเท่าเดิมทุกเดือน เลือกตามสถานการณ์และแผนของคุณ
+        </li>
+        <li>
+          <strong>ไม่คำนึงถึง LTV (สัดส่วนเงินกู้ต่อมูลค่าทรัพย์สิน)</strong><br/>
+          ธนาคารไม่ให้กู้ 100% ถ้า LTV 80% บ้าน 3 ล้าน ให้กู้เพียง 2.4 ล้าน ต้องหาเงินดาวน์อีก 600,000 ตรวจสอบ LTV ของธนาคารแต่ละแห่ง
+        </li>
+        <li>
+          <strong>ไม่คำนึงถึงความจำเป็นของประกันอัมนัยชีวิต</strong><br/>
+          เงินผ่อน 12,000 บาท/เดือน แต่ไม่คิดว่ากรณีสุดร้ายจะเกิดอะไร ทำประกันอัมนัยชีวิตเพื่อให้บ้านปลอดหนี้หากเสียชีวิต
+        </li>
+      </ul>
+    </section>
+
+    <!-- Related Calculators Internal Linking Section -->
+    <section class="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">เครื่องมือที่เกี่ยวข้องสำหรับการวางแผนการเงิน</h2>
+      <p class="text-gray-700 mb-5">ใช้เครื่องมือเหล่านี้เพื่อวางแผนการเงินส่วนบุคคลของคุณให้สมบูรณ์:</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg p-4 border border-blue-100 hover:shadow-md transition-shadow">
+          <h3 class="font-semibold text-gray-900 mb-2 text-lg">เครื่องคำนวณผ่อนรถ</h3>
+          <p class="text-sm text-gray-600 mb-3">คำนวณเงินผ่อนรถ ดอกเบี้ย และเปรียบเทียบต่างสัญญา พร้อมดูงวดผ่อนแรกและทั้งสัญญา</p>
+          <a href="/คำนวณผ่อนรถ/" class="inline-block text-primary-600 font-semibold hover:text-primary-700 hover:underline">
+            ลองใช้เครื่องคำนวณผ่อนรถ →
+          </a>
+        </div>
+
+        <div class="bg-white rounded-lg p-4 border border-blue-100 hover:shadow-md transition-shadow">
+          <h3 class="font-semibold text-gray-900 mb-2 text-lg">เครื่องคำนวณเงินเดือนสุทธิ</h3>
+          <p class="text-sm text-gray-600 mb-3">คำนวณเงินเดือนหลังหักภาษีและประกันสังคม เพื่อวางแผนงบประมาณการผ่อนบ้านให้เหมาะสม</p>
+          <a href="/คำนวณเงินเดือนสุทธิ/" class="inline-block text-primary-600 font-semibold hover:text-primary-700 hover:underline">
+            ดูเงินเดือนสุทธิของคุณ →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณผ่อนบ้าน/" />
+    <RelatedCalculators currentHref="/คำนวณผ่อนบ้าน/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลคำนวณเป็นการประมาณการเพื่อวางแผนเท่านั้น ไม่ใช่คำแนะนำการเงินหรือข้อเสนอจากธนาคาร
+      โปรดตรวจสอบเงื่อนไขจริงกับสถาบันการเงินก่อนตัดสินใจ
+    </div>
+  </article>
+
+  <script>
+    interface LoanSimulation {
+      monthlyPayment: number;
+      totalInterest: number;
+      totalPaid: number;
+      payoffMonths: number;
+    }
+
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+
+    function hasInvalidNumber(v: string): boolean {
+      const normalized = v.replace(/,/g, '').trim();
+      return normalized !== '' && Number.isNaN(Number(normalized));
+    }
+
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    function calcMonthlyPayment(principal: number, annualRate: number, months: number): number {
+      if (months <= 0) return 0;
+      const monthlyRate = annualRate / 100 / 12;
+      if (monthlyRate === 0) return principal / months;
+      const factor = Math.pow(1 + monthlyRate, months);
+      return principal * (monthlyRate * factor) / (factor - 1);
+    }
+
+    function simulateLoan(principal: number, annualRate: number, months: number, extraPayment: number): LoanSimulation {
+      if (principal <= 0 || months <= 0) {
+        return { monthlyPayment: 0, totalInterest: 0, totalPaid: 0, payoffMonths: 0 };
+      }
+
+      const monthlyRate = annualRate / 100 / 12;
+      const baseMonthly = calcMonthlyPayment(principal, annualRate, months);
+
+      let balance = principal;
+      let totalInterest = 0;
+      let totalPaid = 0;
+      let payoffMonths = 0;
+
+      // Safety cap keeps loop bounded even when malformed values are entered.
+      const maxLoops = months + 600;
+
+      while (balance > 0.01 && payoffMonths < maxLoops) {
+        const interestPart = monthlyRate > 0 ? balance * monthlyRate : 0;
+        const scheduledPayment = baseMonthly + extraPayment;
+        const payment = Math.min(scheduledPayment, balance + interestPart);
+        const principalPart = Math.max(0, payment - interestPart);
+
+        totalInterest += interestPart;
+        totalPaid += payment;
+        balance = Math.max(0, balance - principalPart);
+        payoffMonths += 1;
+      }
+
+      return {
+        monthlyPayment: baseMonthly,
+        totalInterest,
+        totalPaid,
+        payoffMonths,
+      };
+    }
+
+    function monthLabel(months: number): string {
+      const years = Math.floor(months / 12);
+      const rem = months % 12;
+      if (years <= 0) return `${months} เดือน`;
+      if (rem === 0) return `${years} ปี`;
+      return `${years} ปี ${rem} เดือน`;
+    }
+
+    const form = document.getElementById('mortgage-form') as HTMLFormElement;
+    const formError = document.getElementById('mortgage-form-error') as HTMLElement;
+    const submitBtn = document.getElementById('mortgage-submit-btn') as HTMLButtonElement;
+    const nextActionCard = document.getElementById('mortgage-next-action') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+    const modeRefinance = document.getElementById('mode-refinance') as HTMLElement;
+    const modeNewHome = document.getElementById('mode-new-home') as HTMLElement;
+    const outstandingBalanceInput = document.getElementById('outstanding-balance') as HTMLInputElement;
+    const homePriceInput = document.getElementById('home-price') as HTMLInputElement;
+    const downPaymentPctInput = document.getElementById('down-payment-pct') as HTMLInputElement;
+    const currentRateInput = document.getElementById('current-rate') as HTMLInputElement;
+    const refinanceRateInput = document.getElementById('refinance-rate') as HTMLInputElement;
+    const remainingYearsInput = document.getElementById('remaining-years') as HTMLInputElement;
+    const refinanceTermYearsInput = document.getElementById('refinance-term-years') as HTMLInputElement;
+    const newHomeRateInput = document.getElementById('new-home-rate') as HTMLInputElement;
+    const newHomeYearsInput = document.getElementById('new-home-years') as HTMLInputElement;
+    const newHomeLoanAmount = document.getElementById('new-home-loan-amount') as HTMLElement;
+    let hasTrackedStart = false;
+
+    function setFieldError(elementId: string, message: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearFieldError(elementId: string) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function clearValidation() {
+      formError.classList.add('hidden');
+      clearFieldError('outstanding-balance-error');
+      clearFieldError('home-price-error');
+    }
+
+    function updateSubmitState() {
+      const mode = getSelectedMode();
+      const ready =
+        mode === 'new-home'
+          ? parseNum(homePriceInput.value) > 0 && parseNum(newHomeRateInput.value) > 0 && parseNum(newHomeYearsInput.value) > 0
+          : parseNum(outstandingBalanceInput.value) > 0 &&
+            parseNum(currentRateInput.value) > 0 &&
+            parseNum(refinanceRateInput.value) > 0 &&
+            parseNum(remainingYearsInput.value) > 0 &&
+            parseNum(refinanceTermYearsInput.value) > 0;
+      submitBtn.disabled = !ready;
+      submitBtn.textContent = ready ? 'คำนวณทันที' : 'กรอกข้อมูลให้ครบ';
+      submitBtn.classList.toggle('opacity-70', !ready);
+      submitBtn.classList.toggle('cursor-not-allowed', !ready);
+    }
+
+    function getSelectedMode(): 'refinance' | 'new-home' {
+      const selected = document.querySelector('input[name="calc-mode"]:checked') as HTMLInputElement;
+      return (selected?.value as 'refinance' | 'new-home') || 'refinance';
+    }
+
+    function updateModeVisibility() {
+      const mode = getSelectedMode();
+      if (mode === 'refinance') {
+        modeRefinance.classList.remove('hidden');
+        modeNewHome.classList.add('hidden');
+      } else {
+        modeRefinance.classList.add('hidden');
+        modeNewHome.classList.remove('hidden');
+      }
+      clearValidation();
+      updateSubmitState();
+    }
+
+    function updateNewHomePreview() {
+      const homePrice = parseNum(homePriceInput.value);
+      const downPct = parseNum(downPaymentPctInput.value);
+      const downAmount = homePrice * Math.min(100, downPct) / 100;
+      const loanAmount = Math.max(0, homePrice - downAmount);
+      newHomeLoanAmount.textContent = fmt(loanAmount) + ' บาท';
+    }
+
+    document.querySelectorAll('input[name="calc-mode"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        updateModeVisibility();
+      });
+    });
+
+    homePriceInput.addEventListener('input', updateNewHomePreview);
+    downPaymentPctInput.addEventListener('input', updateNewHomePreview);
+    homePriceInput.addEventListener('input', () => {
+      clearFieldError('home-price-error');
+      formError.classList.add('hidden');
+      updateSubmitState();
+    });
+    outstandingBalanceInput.addEventListener('input', () => {
+      clearFieldError('outstanding-balance-error');
+      formError.classList.add('hidden');
+      updateSubmitState();
+    });
+    [currentRateInput, refinanceRateInput, remainingYearsInput, refinanceTermYearsInput, newHomeRateInput, newHomeYearsInput].forEach((input) => {
+      input.addEventListener('input', () => {
+        formError.classList.add('hidden');
+        updateSubmitState();
+      });
+    });
+    updateModeVisibility();
+    updateNewHomePreview();
+
+    form.addEventListener('input', () => {
+      if (!hasTrackedStart) {
+        trackCalculatorStart('mortgage_refinance');
+        hasTrackedStart = true;
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearValidation();
+
+      const mode = getSelectedMode();
+
+      if (mode === 'new-home') {
+        if (hasInvalidNumber(homePriceInput.value)) {
+          formError.classList.remove('hidden');
+          setFieldError('home-price-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          homePriceInput.focus();
+          updateSubmitState();
+          return;
+        }
+
+        const homePrice = parseNum(homePriceInput.value);
+        const downPct = parseNum((document.getElementById('down-payment-pct') as HTMLInputElement).value);
+        const annualRate = parseNum(newHomeRateInput.value);
+        const years = parseNum(newHomeYearsInput.value);
+        const months = Math.round(years * 12);
+
+        if (homePrice <= 0 || years <= 0) {
+          formError.classList.remove('hidden');
+          setFieldError('home-price-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
+          homePriceInput.focus();
+          updateSubmitState();
+          return;
+        }
+
+        if (!hasTrackedStart) {
+          trackCalculatorStart('mortgage_refinance');
+          hasTrackedStart = true;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังคำนวณ...';
+
+        const downAmount = homePrice * Math.min(100, downPct) / 100;
+        const principal = Math.max(0, homePrice - downAmount);
+        const scenario = simulateLoan(principal, annualRate, months, 0);
+
+        (document.getElementById('res-current-monthly') as HTMLElement).textContent = fmt(scenario.monthlyPayment) + ' บาท';
+        (document.getElementById('res-new-monthly') as HTMLElement).textContent = '-';
+        (document.getElementById('res-monthly-delta') as HTMLElement).textContent = '-';
+        (document.getElementById('res-total-saving') as HTMLElement).textContent = '-';
+        (document.getElementById('res-current-interest') as HTMLElement).textContent = fmt(scenario.totalInterest) + ' บาท';
+        (document.getElementById('res-new-interest') as HTMLElement).textContent = '-';
+        (document.getElementById('res-refi-fees') as HTMLElement).textContent = '-';
+        (document.getElementById('res-payoff-months') as HTMLElement).textContent = monthLabel(scenario.payoffMonths);
+        (document.getElementById('res-break-even') as HTMLElement).textContent = 'ไม่เกี่ยวข้องในโหมดนี้';
+        (document.getElementById('res-summary-note') as HTMLElement).textContent =
+          `ผ่อนบ้านใหม่: ยอดกู้ ${fmt(principal)} บาท ค่างวดประมาณ ${fmt(scenario.monthlyPayment)} บาท/เดือน ดอกเบี้ยรวมประมาณ ${fmt(scenario.totalInterest)} บาท`;
+      } else {
+        if (hasInvalidNumber(outstandingBalanceInput.value)) {
+          formError.classList.remove('hidden');
+          setFieldError('outstanding-balance-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          outstandingBalanceInput.focus();
+          updateSubmitState();
+          return;
+        }
+
+        const principal = parseNum(outstandingBalanceInput.value);
+        const remainingYears = parseNum(remainingYearsInput.value);
+        const currentRate = parseNum(currentRateInput.value);
+        const newRate = parseNum(refinanceRateInput.value);
+        const newYears = parseNum(refinanceTermYearsInput.value);
+        const fees = parseNum((document.getElementById('refinance-fees') as HTMLInputElement).value);
+        const extraPayment = parseNum((document.getElementById('extra-payment') as HTMLInputElement).value);
+
+        if (principal <= 0 || remainingYears <= 0 || newYears <= 0) {
+          formError.classList.remove('hidden');
+          setFieldError('outstanding-balance-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
+          outstandingBalanceInput.focus();
+          updateSubmitState();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'กำลังคำนวณ...';
+
+        const currentMonths = Math.round(remainingYears * 12);
+        const newMonths = Math.round(newYears * 12);
+        const currentScenario = simulateLoan(principal, currentRate, currentMonths, extraPayment);
+        const newScenario = simulateLoan(principal, newRate, newMonths, extraPayment);
+
+        const monthlyDelta = currentScenario.monthlyPayment - newScenario.monthlyPayment;
+        const currentTotalCost = currentScenario.totalPaid;
+        const newTotalCost = newScenario.totalPaid + fees;
+        const totalSaving = currentTotalCost - newTotalCost;
+
+        const breakEvenMonths = monthlyDelta > 0 ? Math.ceil(fees / monthlyDelta) : 0;
+
+        (document.getElementById('res-current-monthly') as HTMLElement).textContent = fmt(currentScenario.monthlyPayment) + ' บาท';
+        (document.getElementById('res-new-monthly') as HTMLElement).textContent = fmt(newScenario.monthlyPayment) + ' บาท';
+        (document.getElementById('res-monthly-delta') as HTMLElement).textContent =
+          (monthlyDelta >= 0 ? '-' : '+') + fmt(Math.abs(monthlyDelta)) + ' บาท';
+        (document.getElementById('res-total-saving') as HTMLElement).textContent =
+          (totalSaving >= 0 ? '+' : '-') + fmt(Math.abs(totalSaving)) + ' บาท';
+        (document.getElementById('res-current-interest') as HTMLElement).textContent = fmt(currentScenario.totalInterest) + ' บาท';
+        (document.getElementById('res-new-interest') as HTMLElement).textContent = fmt(newScenario.totalInterest) + ' บาท';
+        (document.getElementById('res-refi-fees') as HTMLElement).textContent = fmt(fees) + ' บาท';
+        (document.getElementById('res-payoff-months') as HTMLElement).textContent =
+          `${monthLabel(currentScenario.payoffMonths)} / ${monthLabel(newScenario.payoffMonths)}`;
+        (document.getElementById('res-break-even') as HTMLElement).textContent =
+          breakEvenMonths > 0 ? `${monthLabel(breakEvenMonths)}` : 'ไม่มีจุดคุ้มทุนจากค่างวดรายเดือน';
+
+        const summary = document.getElementById('res-summary-note') as HTMLElement;
+        if (totalSaving > 0) {
+          summary.className = 'p-3 rounded-lg text-sm bg-green-50 border border-green-200 text-green-900';
+          summary.textContent =
+            `แผนรีไฟแนนซ์คาดว่าคุ้มกว่า โดยประหยัดสุทธิประมาณ ${fmt(totalSaving)} บาท` +
+            (breakEvenMonths > 0 ? ` และถึงจุดคุ้มทุนราว ${monthLabel(breakEvenMonths)}` : '');
+        } else if (totalSaving < 0) {
+          summary.className = 'p-3 rounded-lg text-sm bg-amber-50 border border-amber-200 text-amber-900';
+          summary.textContent =
+            `แผนรีไฟแนนซ์ยังไม่คุ้มตามตัวเลขปัจจุบัน (เสียเพิ่มประมาณ ${fmt(Math.abs(totalSaving))} บาท) ` +
+            'ลองปรับระยะเวลาใหม่หรือเจรจาดอกเบี้ย/ค่าธรรมเนียมเพิ่มเติม';
+        } else {
+          summary.className = 'p-3 rounded-lg text-sm bg-primary-50 border border-primary-200 text-primary-900';
+          summary.textContent = 'ผลรวมใกล้เคียงกันมาก ควรตัดสินใจจากสภาพคล่องรายเดือนและความเสี่ยงดอกเบี้ยในอนาคต';
+        }
+      }
+
+      resultsDiv.classList.remove('hidden');
+      nextActionCard.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;
+      if (affiliateCard) affiliateCard.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'คำนวณทันที';
+      trackCalculatorComplete('mortgage_refinance');
+      trackCalculatorUsed('mortgage_refinance');
+    });
+
+    document.querySelectorAll('[data-next-action-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (typeof window.gtag === 'function') {
+          const href = (link as HTMLAnchorElement).getAttribute('href') || '';
+          window.gtag('event', 'next_action_click', {
+            calculator: 'mortgage_refinance',
+            target_href: href,
+          });
+        }
+      });
+    });
+
+    const resultObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackResultViewed('mortgage_refinance');
+          resultObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    resultObserver.observe(resultsDiv);
+  </script>
+</BaseLayout>

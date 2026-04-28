@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณต้นทุนการปลูกและดูแลสวนยางพารา | Kamnuanlek';
+const pageDescription = 'คำนวณต้นทุนการปลูกยางพาราใหม่ ค่าต้นพันธุ์ ปุ๋ย แรงงาน ระยะเวลาคืนทุน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0499-ปลูกยางพารา/`;
+const faqData = [
+  { question: 'ต้นทุนปลูกยางพาราใหม่ต่อไร่เท่าไหร่?', answer: 'ต้นทุนปลูกยางพาราใหม่ 8,000-15,000 บาท/ไร่ รวมค่าพันธุ์ต้น เตรียมพื้นที่ ปลูก ดูแลปีแรก ต้นทุนดูแลปีที่ 2-6 (ก่อนกรีด) 3,000-5,000 บาท/ไร่/ปี' },
+  { question: 'ยางพาราเริ่มกรีดได้เมื่อไหร่?', answer: 'ยางพาราเริ่มกรีดได้เมื่ออายุ 6-7 ปี เส้นรอบวงลำต้น 50 ซม. ที่ความสูง 150 ซม. ให้ผลผลิตดีสุดปีที่ 10-20 หลังกรีดอายุ 25-30 ปี ต้นยางหมดอายุ' },
+  { question: 'รัฐบาลมีโครงการส่งเสริมปลูกยางไหม?', answer: 'การยางแห่งประเทศไทย (กยท.) ให้ทุนสงเคราะห์แก่สวนยางที่เข้าร่วมโครงการ ปลูกแทนสวนยางเก่า ได้รับเงินสนับสนุนไร่ละ 11,250 บาท พร้อมกล้ายาง' },
+  { question: 'ยางพาราปลูกในพื้นที่ไหนได้บ้าง?', answer: 'ยางพาราเหมาะพื้นที่ที่มีฝน 1,200-2,000 มม./ปี ระดับสูงไม่เกิน 600 ม. จากน้ำทะเล ภาคใต้และภาคตะวันออกเหมาะที่สุด ภาคเหนือและอีสานบางพื้นที่ก็ปลูกได้' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณต้นทุนการปลูกและดูแลสวนยางพารา">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณต้นทุนการปลูกสวนยางพาราใหม่</h1>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2"><p class="text-xs font-semibold text-green-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนการปลูกยางพาราใหม่และระยะคืนทุน</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="rubber_plant_area" class="block text-sm font-medium text-gray-700 mb-1">พื้นที่ปลูก (ไร่)</label><input type="number" id="rubber_plant_area" min="1" placeholder="เช่น 10" value="10" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rubber_setup_cost" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนปลูกปีแรก/ไร่ (บาท)</label><input type="text" id="rubber_setup_cost" inputmode="decimal" placeholder="เช่น 12000" value="12000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rubber_care_cost" class="block text-sm font-medium text-gray-700 mb-1">ต้นทุนดูแลปี 2-6/ไร่/ปี (บาท)</label><input type="text" id="rubber_care_cost" inputmode="decimal" placeholder="เช่น 4000" value="4000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="rubber_annual_income" class="block text-sm font-medium text-gray-700 mb-1">รายได้หลังกรีด/ไร่/ปี (บาท)</label><input type="text" id="rubber_annual_income" inputmode="decimal" placeholder="เช่น 15000" value="15000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-green-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนสะสม 7 ปีก่อนกรีด</p><p id="rubber_7yr_cost" class="font-bold">-</p></div>
+          <div class="bg-emerald-50 rounded p-3"><p class="text-sm text-gray-600">ระยะคืนทุนหลังเริ่มกรีด</p><p id="rubber_payback" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const area = parseFloat((document.getElementById('rubber_plant_area') as HTMLInputElement).value) || 0;
+      const setupCost = parseFloat((document.getElementById('rubber_setup_cost') as HTMLInputElement).value) || 0;
+      const careCost = parseFloat((document.getElementById('rubber_care_cost') as HTMLInputElement).value) || 0;
+      const annualIncome = parseFloat((document.getElementById('rubber_annual_income') as HTMLInputElement).value) || 0;
+      const totalSetup = area * setupCost;
+      const totalCare = area * careCost * 5;
+      const total7yr = totalSetup + totalCare;
+      const annualProfit = area * annualIncome;
+      const payback = annualProfit > 0 ? total7yr / annualProfit : Infinity;
+      (document.getElementById('rubber_7yr_cost') as HTMLElement).textContent = Math.round(total7yr).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('rubber_payback') as HTMLElement).textContent = isFinite(payback) ? payback.toFixed(1) + ' ปี' : 'ไม่คืนทุน';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('rubber-planting-cost');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

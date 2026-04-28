@@ -1,0 +1,253 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณหักเงินเดือนมาสาย อัตราต่อนาที ต่อครั้ง รวมเดือน ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณยอดหักเงินเดือนกรณีมาทำงานสาย คำนวณอัตราค่าจ้างต่อนาที ยอดหักต่อครั้ง และยอดหักรวมทั้งเดือน พร้อมเงินเดือนสุทธิ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณหักเงินเดือนมาสาย/`;
+
+const faqData = [
+  {
+    question: 'นายจ้างหักเงินเดือนกรณีมาสายได้หรือไม่?',
+    answer: 'กฎหมายแรงงานไทยไม่ได้กำหนดให้หักเงินกรณีมาสายโดยเฉพาะ แต่นายจ้างสามารถกำหนดระเบียบในข้อบังคับการทำงานเพื่อหักเงินกรณีมาสายได้ โดยต้องแจ้งพนักงานล่วงหน้าและปฏิบัติตามระเบียบที่กำหนด',
+  },
+  {
+    question: 'อัตราหักเงินกรณีมาสายคำนวณอย่างไร?',
+    answer: 'อัตราต่อนาที = เงินเดือน ÷ (วันทำงาน/เดือน × ชั่วโมง/วัน × 60 นาที) แล้วคำนวณ ยอดหัก = อัตราต่อนาที × จำนวนนาทีที่สาย × จำนวนครั้งที่สาย',
+  },
+  {
+    question: 'บริษัทสามารถกำหนดอัตราหักมาสายได้เองหรือไม่?',
+    answer: 'ได้ บริษัทสามารถกำหนดนโยบายและอัตราหักกรณีมาสายได้เอง แต่ต้องระบุในข้อบังคับการทำงาน แจ้งให้พนักงานทราบล่วงหน้า และปฏิบัติอย่างเป็นธรรมและสม่ำเสมอกับพนักงานทุกคน',
+  },
+  {
+    question: 'มาสายกี่นาทีถึงจะถูกหักเงิน?',
+    answer: 'ขึ้นอยู่กับนโยบายบริษัท บางบริษัทกำหนดเวลาผ่อนผัน เช่น มาสายไม่เกิน 15 นาที ไม่ถูกหัก หรือถ้าสายเกิน 30 นาทีถือว่าขาดงานครึ่งวัน ควรตรวจสอบข้อบังคับของบริษัทของตนเอง',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณหักเงินเดือนมาสาย',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณหักเงินเดือนมาสาย">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">⏰ คำนวณหักเงินเดือนกรณีมาทำงานสาย</p>
+      <p class="mt-1 text-sm text-slate-700">อัตราต่อนาที = เงินเดือน ÷ (วันทำงาน × ชั่วโมง/วัน × 60 นาที)</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">คำนวณยอดหักต่อครั้งและรวมทั้งเดือน พร้อมเงินเดือนสุทธิ</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณหักเงินเดือนมาสาย ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือน วันทำงาน ชั่วโมงต่อวัน จำนวนนาทีที่สาย และจำนวนครั้งที่สายในเดือนนี้ ระบบจะคำนวณยอดหักและเงินเดือนสุทธิ
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="late-form" class="space-y-5">
+        <p id="late-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="late-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+            <input type="text" id="late-salary" inputmode="numeric" placeholder="เช่น 30,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="late-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="late-work-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงาน/เดือน (วัน)</label>
+            <input type="text" id="late-work-days" inputmode="numeric" placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="late-work-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="late-hours-day" class="mb-1 block text-sm font-medium text-gray-700">ชั่วโมงทำงาน/วัน (ชั่วโมง)</label>
+            <input type="text" id="late-hours-day" inputmode="decimal" placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="late-hours-day-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="late-minutes" class="mb-1 block text-sm font-medium text-gray-700">นาทีที่สายต่อครั้ง (นาที)</label>
+            <input type="text" id="late-minutes" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="late-minutes-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="late-occurrences" class="mb-1 block text-sm font-medium text-gray-700">จำนวนครั้งที่สายในเดือนนี้ (ครั้ง)</label>
+            <input type="text" id="late-occurrences" inputmode="numeric" placeholder="เช่น 3"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="late-occurrences-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณยอดหักมาสาย
+        </button>
+      </form>
+    </div>
+
+    <div id="late-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">อัตราต่อนาที</div>
+            <div id="res-late-per-minute" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-orange-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">หักต่อครั้ง</div>
+            <div id="res-late-per-occurrence" class="text-xl font-bold text-orange-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">หักมาสายรวมเดือน</div>
+            <div id="res-late-total-deduct" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินเดือนสุทธิ</div>
+            <div id="res-late-net" class="text-xl font-bold text-green-700">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราค่าจ้างรายชั่วโมง</span>
+            <span id="res-late-hourly-rate" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">นาทีที่สายต่อครั้ง</span>
+            <span id="res-late-minutes-display" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">จำนวนครั้งที่สาย</span>
+            <span id="res-late-occurrences-display" class="font-medium">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>อัตราค่าจ้าง/ชั่วโมง = เงินเดือน ÷ (วันทำงาน/เดือน × ชั่วโมง/วัน)</li>
+        <li>อัตราหัก/นาที = อัตราค่าจ้าง/ชั่วโมง ÷ 60</li>
+        <li>ยอดหักต่อครั้ง = อัตราหัก/นาที × จำนวนนาทีที่สาย</li>
+        <li>ยอดหักรวมเดือน = ยอดหักต่อครั้ง × จำนวนครั้งที่สาย</li>
+        <li>เงินเดือนสุทธิ = เงินเดือน - ยอดหักรวมเดือน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณหักเงินเดือนขาดงาน/">คำนวณหักเงินเดือนขาดงาน</a></li>
+        <li><a href="/คำนวณหักเงินวันขาดงาน/">คำนวณหักเงินวันขาดงาน</a></li>
+        <li><a href="/คำนวณสลิปเงินเดือน/">คำนวณสลิปเงินเดือน</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#late-results" />
+    <RelatedArticles currentHref="/คำนวณหักเงินเดือนมาสาย/" />
+    <RelatedCalculators currentHref="/คำนวณหักเงินเดือนมาสาย/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นการประมาณการเบื้องต้น นโยบายการหักเงินกรณีมาสายขึ้นอยู่กับข้อบังคับการทำงานของบริษัท กฎหมายแรงงานไทยไม่ได้กำหนดอัตราหักมาสายไว้โดยเฉพาะ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('late-form');
+    const formError = document.getElementById('late-form-error');
+    const resultBox = document.getElementById('late-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['late-salary-error', 'late-work-days-error', 'late-hours-day-error', 'late-minutes-error', 'late-occurrences-error'].forEach((id) => setErr(id, ''));
+
+      const salary = parseNum(document.getElementById('late-salary').value);
+      const workDays = parseNum(document.getElementById('late-work-days').value);
+      const hoursDay = parseNum(document.getElementById('late-hours-day').value);
+      const lateMinutes = parseNum(document.getElementById('late-minutes').value);
+      const occurrences = parseNum(document.getElementById('late-occurrences').value);
+
+      let hasError = false;
+      if (!Number.isFinite(salary) || salary <= 0) { setErr('late-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(workDays) || workDays < 1 || workDays > 31) { setErr('late-work-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true; }
+      if (!Number.isFinite(hoursDay) || hoursDay <= 0 || hoursDay > 24) { setErr('late-hours-day-error', 'กรอกชั่วโมง 1-24'); hasError = true; }
+      if (!Number.isFinite(lateMinutes) || lateMinutes < 1) { setErr('late-minutes-error', 'กรอกจำนวนนาทีที่สายมากกว่า 0'); hasError = true; }
+      if (!Number.isFinite(occurrences) || occurrences < 1 || occurrences > 31) { setErr('late-occurrences-error', 'กรอกจำนวนครั้ง 1 ขึ้นไป'); hasError = true; }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const hourlyRate = salary / (workDays * hoursDay);
+      const perMinuteRate = hourlyRate / 60;
+      const perOccurrence = perMinuteRate * lateMinutes;
+      const totalDeduct = perOccurrence * occurrences;
+      const net = salary - totalDeduct;
+
+      setText('res-late-per-minute', formatMoney(perMinuteRate));
+      setText('res-late-per-occurrence', formatMoney(perOccurrence));
+      setText('res-late-total-deduct', formatMoney(totalDeduct));
+      setText('res-late-net', formatMoney(net));
+      setText('res-late-hourly-rate', formatMoney(hourlyRate));
+      setText('res-late-minutes-display', `${lateMinutes} นาที`);
+      setText('res-late-occurrences-display', `${occurrences} ครั้ง`);
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

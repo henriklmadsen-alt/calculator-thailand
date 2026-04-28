@@ -1,0 +1,133 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเงินชดเชยรายวันโรงพยาบาล (Hospital Cash Plan) 2569 | ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเงินชดเชยรายวันโรงพยาบาลจากประกัน Hospital Cash Plan 2569 จำนวนวันนอนรพ. × เงินชดเชย/วัน และเบี้ยประกันที่ต้องจ่าย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเงินชดเชยรายวันโรงพยาบาล/`;
+
+const faqData = [
+  { question: 'Hospital Cash Plan คืออะไร?', answer: 'Hospital Cash Plan หรือประกันเงินชดเชยรายวัน จ่ายเงินสดให้ผู้เอาประกันทุกวันที่นอนในโรงพยาบาล ไม่ว่าจะจ่ายค่ารักษาจริงเท่าไร เงินนี้ใช้จ่ายอะไรก็ได้ เช่น ทดแทนรายได้ที่หายไปขณะรักษาตัว' },
+  { question: 'Hospital Cash กับประกันสุขภาพต่างกันอย่างไร?', answer: 'ประกันสุขภาพจ่ายค่ารักษาพยาบาลจริง Hospital Cash จ่ายเงินสดรายวันโดยไม่ต้องพิสูจน์ค่าใช้จ่าย ทั้งสองเสริมกัน: ใช้ประกันสุขภาพจ่ายค่ารักษา และใช้ Hospital Cash ทดแทนรายได้' },
+  { question: 'เงินชดเชยรายวันควรเลือกเท่าไร?', answer: 'ควรเลือกให้ใกล้เคียงกับรายได้สุทธิต่อวัน เช่น รายได้ 30,000 บาท/เดือน = 1,000 บาท/วัน ควรเลือกชดเชย 500-1,000 บาท/วัน เพื่อทดแทนรายได้ที่หายไประหว่างนอนโรงพยาบาล' },
+  { question: 'Hospital Cash Plan เบี้ยแพงไหม?', answer: 'ถูกมาก เบี้ยขึ้นกับจำนวนวันสูงสุดที่คุ้มครองและจำนวนเงินชดเชยต่อวัน โดยทั่วไปเบี้ยอยู่ที่ 1,500-5,000 บาท/ปี สำหรับชดเชย 500-1,000 บาท/วัน' },
+,
+  { question: 'ค่าชดเชยตามกฎหมายแรงงานคำนวณอย่างไร?', answer: 'ทำงาน 120 วัน-1 ปี: 30 วัน | 1-3 ปี: 90 วัน | 3-6 ปี: 180 วัน | 6-10 ปี: 240 วัน | 10-20 ปี: 300 วัน | 20 ปีขึ้นไป: 400 วัน (ล่าสุดแก้ไข ปี 2562) คิดจากค่าจ้างอัตราสุดท้าย' },
+  { question: 'เลิกจ้างเพราะปิดกิจการได้รับค่าชดเชยเพิ่มพิเศษไหม?', answer: 'ใช่ กรณีนายจ้างย้ายสถานประกอบการ ลูกจ้างได้รับค่าชดเชยพิเศษเพิ่มอีก 50% ของค่าชดเชยปกติ กรณีเลิกจ้างโดยไม่แจ้งล่วงหน้า 30-60 วัน ลูกจ้างได้รับค่าชดเชยแทนการบอกกล่าวล่วงหน้าด้วย' },
+  { question: 'ค่าชดเชยเสียภาษีไหม?', answer: 'ค่าชดเชยได้รับการยกเว้นภาษีสำหรับส่วนที่ไม่เกิน 300 วันสุดท้าย และต้องคำนวณตามอายุงาน ส่วนเกินต้องนำมารวมคำนวณภาษีหักค่าใช้จ่ายได้ 50% แต่ไม่เกิน 100,000 บาท' },
+  { question: 'นายจ้างไม่จ่ายค่าชดเชยต้องทำอย่างไร?', answer: 'ยื่นเรื่องที่สำนักงานสวัสดิการและคุ้มครองแรงงาน (กรมสวัสดิการและคุ้มครองแรงงาน) ในพื้นที่ หรือฟ้องศาลแรงงาน มีอายุความ 2 ปีนับจากวันที่ถูกเลิกจ้าง' }
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณเงินชดเชยรายวันโรงพยาบาล 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินชดเชยรายวันโรงพยาบาล">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณเงินชดเชยรายวัน Hospital Cash Plan</p>
+      <p class="mt-1 text-sm text-slate-700">ทั้งการคำนวณเงินที่จะได้รับและเบี้ยประกัน</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณเงินชดเชยรายวันโรงพยาบาล 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">คำนวณเงินชดเชยที่จะได้รับจาก Hospital Cash Plan และเบี้ยประกันที่เหมาะสม</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <p class="text-sm font-semibold text-blue-800 mb-3">คำนวณเงินชดเชยที่จะได้รับ (กรณีนอนโรงพยาบาล)</p>
+          <div class="space-y-3">
+            <div><label class="block text-xs text-gray-600 mb-1">เงินชดเชยต่อวัน (บาท)</label><input type="text" id="daily-benefit" inputmode="numeric" placeholder="เช่น 1,000" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+            <div><label class="block text-xs text-gray-600 mb-1">จำนวนวันที่นอนโรงพยาบาล (วัน)</label><input type="text" id="hospital-days" inputmode="numeric" placeholder="เช่น 5" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+            <div><label class="block text-xs text-gray-600 mb-1">วันสูงสุดที่คุ้มครองต่อปี (วัน)</label><input type="text" id="max-days" inputmode="numeric" placeholder="เช่น 365" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+          <p class="text-sm font-semibold text-green-800 mb-3">ประมาณเบี้ยประกัน Hospital Cash</p>
+          <div class="space-y-3">
+            <div><label class="block text-xs text-gray-600 mb-1">อายุ (ปี)</label><input type="text" id="age" inputmode="numeric" placeholder="เช่น 35" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          </div>
+        </div>
+
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณ</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center"><p class="text-xs text-primary-700 mb-1">เงินชดเชยที่จะได้รับ</p><p class="text-2xl font-bold text-primary-700" id="payout">-</p></div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center"><p class="text-xs text-green-700 mb-1">เบี้ยประกัน/ปี</p><p class="text-2xl font-bold text-green-700" id="premium">-</p></div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ทำไม Hospital Cash Plan ถึงสำคัญ?</h2>
+      <p>ขณะนอนโรงพยาบาล รายได้หยุด แต่ค่าใช้จ่ายยังดำเนินต่อ เงินชดเชยรายวันช่วยให้คุณมีเงินจ่ายค่าเช่า ค่าผ่อน ค่าอาหารครอบครัว โดยไม่ต้องกังวลเรื่องการเงินระหว่างรักษาตัว</p>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+      <p class="font-semibold text-gray-700 mb-2">แหล่งอ้างอิงทางการ</p>
+      <ul class="space-y-1 text-gray-600">
+        <li><a href="https://www.mol.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline font-medium">กระทรวงแรงงาน (mol.go.th)</a> — อัตราค่าจ้างขั้นต่ำและสิทธิแรงงาน</li>
+        <li><a href="https://www.labour.go.th" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">กรมสวัสดิการและคุ้มครองแรงงาน — พ.ร.บ.คุ้มครองแรงงาน 2541</a></li>
+      </ul>
+    </div>
+    <RelatedCalculators currentHref="/คำนวณเงินชดเชยรายวันโรงพยาบาล/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ ขึ้นกับเงื่อนไขกรมธรรม์จริง</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const dailyBenefit = parseNum((document.getElementById('daily-benefit') as HTMLInputElement).value);
+      const days = parseNum((document.getElementById('hospital-days') as HTMLInputElement).value);
+      const maxDays = parseNum((document.getElementById('max-days') as HTMLInputElement).value) || 365;
+      const age = parseNum((document.getElementById('age') as HTMLInputElement).value);
+      const err = document.getElementById('form-error')!;
+      if (dailyBenefit < 100) { err.textContent = 'กรุณากรอกเงินชดเชยต่อวัน'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const actualDays = Math.min(days, maxDays);
+      const payout = dailyBenefit * actualDays;
+      const annualBenefit = dailyBenefit * Math.min(maxDays, 365);
+      const ageRate = age < 30 ? 0.012 : age < 40 ? 0.016 : age < 50 ? 0.024 : age < 60 ? 0.038 : 0.058;
+      const premium = annualBenefit * ageRate;
+
+      const rows = [
+        ['เงินชดเชยต่อวัน', '', `${fmt(dailyBenefit)} บาท`],
+        ['จำนวนวันที่นอน', '', `${days} วัน`],
+        ['วันที่คุ้มครอง (จำกัดที่สูงสุด)', `สูงสุด ${maxDays} วัน/ปี`, `${actualDays} วัน`],
+        ['เงินชดเชยที่จะได้รับ', '', `<strong>${fmt(payout)} บาท</strong>`],
+        ['---', '', '---'],
+        ['วงเงินคุ้มครองสูงสุด/ปี', `${dailyBenefit} × ${maxDays} วัน`, `${fmt(annualBenefit)} บาท`],
+        ['เบี้ยประมาณการ/ปี', age > 0 ? `${(ageRate*100).toFixed(1)}% ของวงเงิน` : 'กรอกอายุเพื่อคำนวณ', age > 0 ? `${fmt(premium)} บาท` : '-'],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('payout') as HTMLElement).textContent = fmt(payout) + ' บาท';
+      (document.getElementById('premium') as HTMLElement).textContent = age > 0 ? fmt(premium) + ' บาท/ปี' : 'กรอกอายุ';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,388 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณถอนเงินเกษียณ 2569 | Drawdown Rate เงินอยู่ได้กี่ปี | Kamnuanlek';
+const pageDescription = 'คำนวณอัตราถอนเงินจากพอร์ตเกษียณ ประมาณการว่าเงินจะอยู่ได้กี่ปี หรือถอนเดือนละเท่าไรให้เงินอยู่ตลอดชีวิต รวมอัตราผลตอบแทนและเงินเฟ้อ อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณถอนเงินเกษียณ/`;
+
+const faqData = [
+  {
+    question: 'Drawdown Rate คืออะไร?',
+    answer: 'Drawdown Rate หรืออัตราถอนเงิน คืออัตราร้อยละของพอร์ตที่ถอนออกมาใช้ต่อปี เช่น พอร์ต 5 ล้านบาท ถอน 4% = 200,000 บาท/ปี หรือ 16,667 บาท/เดือน อัตราถอนที่ปลอดภัยขึ้นกับระยะเวลาเกษียณและผลตอบแทนพอร์ต',
+  },
+  {
+    question: 'ถอนเงินเกษียณเดือนละเท่าไรถึงเหมาะสม?',
+    answer: 'อัตราถอนที่ปลอดภัย (Safe Withdrawal Rate) ทั่วโลกอ้างอิงที่ 4% ต่อปี สำหรับเกษียณ 30 ปี แต่หากเกษียณนานกว่านั้นหรือต้องการความปลอดภัยมากขึ้น แนะนำ 3-3.5% ต่อปี ซึ่งเท่ากับถอนพอร์ต 10 ล้านบาท ได้ 25,000-29,000 บาท/เดือน',
+  },
+  {
+    question: 'เงินเฟ้อมีผลต่อการถอนเงินเกษียณอย่างไร?',
+    answer: 'เงินเฟ้อลดมูลค่าการซื้อของเงินที่ถอน หากเงินเฟ้อ 3% ต่อปี เงิน 30,000 บาทวันนี้จะซื้อของได้เหมือนกับ 14,832 บาทในอีก 23 ปี การคำนวณด้วยผลตอบแทนจริง (หักเงินเฟ้อ) จะให้ภาพที่แม่นยำกว่า',
+  },
+  {
+    question: 'เกษียณแล้วควรลงทุนอะไร?',
+    answer: 'หลังเกษียณควรปรับพอร์ตให้มีความเสี่ยงต่ำลง เน้นตราสารหนี้ กองทุนรวมตราสารหนี้ และเงินฝากประจำมากขึ้น บางส่วนยังคงลงทุนในหุ้นเพื่อรองรับเงินเฟ้อระยะยาว สัดส่วนยอดนิยมคือ 40% หุ้น / 60% ตราสารหนี้',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณถอนเงินเกษียณ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณถอนเงินเกษียณ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">รู้ผลในไม่ถึง 30 วินาที</p>
+      <p class="mt-1 text-sm text-slate-700">ข้อมูลไม่ถูกบันทึก และใช้เพื่อการคำนวณเท่านั้น</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">อัปเดตเกณฑ์ปี 2569</p>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณถอนเงินเกษียณ 2569 — Drawdown Rate เงินอยู่ได้กี่ปี
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      คำนวณว่าเงินในพอร์ตเกษียณจะอยู่ได้กี่ปีหากถอนเดือนละเท่านั้น หรือถอนได้เดือนละเท่าไรให้เงินอยู่ตามระยะเวลาที่กำหนด รวมผลตอบแทนพอร์ตและเงินเฟ้อ
+    </p>
+
+    <!-- Calculator Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="drawdown-form" class="space-y-5">
+        <p id="drawdown-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรอกข้อมูลให้ครบก่อนคำนวณ
+        </p>
+
+        <!-- Mode Toggle -->
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-900 mb-2">โหมดคำนวณ</legend>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="drawdown-mode" value="years" checked class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">กำหนดยอดถอนรายเดือน → คำนวณจำนวนปีที่เงินอยู่ได้</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="drawdown-mode" value="amount" class="w-4 h-4 text-primary-600" />
+              <span class="text-sm text-gray-700">กำหนดระยะเวลา → คำนวณยอดถอนรายเดือนสูงสุด</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="drawdown-portfolio" class="block text-sm font-medium text-gray-700 mb-1">
+            พอร์ตเกษียณทั้งหมด (บาท)
+          </label>
+          <input
+            type="text"
+            id="drawdown-portfolio"
+            inputmode="numeric"
+            placeholder="เช่น 5,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="drawdown-portfolio-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div id="drawdown-monthly-group">
+          <label for="drawdown-monthly-withdrawal" class="block text-sm font-medium text-gray-700 mb-1">
+            ถอนรายเดือน (บาท)
+          </label>
+          <input
+            type="text"
+            id="drawdown-monthly-withdrawal"
+            inputmode="numeric"
+            placeholder="เช่น 25,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+          <p id="drawdown-monthly-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div id="drawdown-years-group" class="hidden">
+          <label for="drawdown-duration-years" class="block text-sm font-medium text-gray-700 mb-1">
+            ระยะเวลาที่ต้องการให้เงินอยู่ได้ (ปี)
+          </label>
+          <input
+            type="number"
+            id="drawdown-duration-years"
+            min="1"
+            max="60"
+            value="25"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="drawdown-return" class="block text-sm font-medium text-gray-700 mb-1">
+              ผลตอบแทนพอร์ต (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="drawdown-return"
+              inputmode="decimal"
+              placeholder="เช่น 5"
+              value="5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+          <div>
+            <label for="drawdown-inflation" class="block text-sm font-medium text-gray-700 mb-1">
+              เงินเฟ้อ (% ต่อปี)
+            </label>
+            <input
+              type="text"
+              id="drawdown-inflation"
+              inputmode="decimal"
+              placeholder="เช่น 3"
+              value="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="drawdown-submit-btn"
+          class="w-full sm:w-auto px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base"
+        >
+          คำนวณทันที
+        </button>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณการถอนเงินเกษียณ</h2>
+
+        <div class="grid gap-3 sm:grid-cols-3 mb-6">
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1" id="res-primary-label">ผลลัพธ์หลัก</div>
+            <div id="res-primary-value" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="bg-primary-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ผลตอบแทนจริง (หักเงินเฟ้อ)</div>
+            <div id="res-real-return" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">พอร์ตเริ่มต้น</div>
+            <div id="res-portfolio-display" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+
+        <!-- Year-by-year balance table -->
+        <details class="mt-4">
+          <summary class="cursor-pointer font-semibold text-gray-900 hover:text-primary-600 mb-2">
+            ยอดเงินคงเหลือรายปี (คลิกเพื่อดู)
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-gray-500 border-b border-gray-200">
+                  <th class="py-2 pr-4">ปีที่</th>
+                  <th class="py-2 pr-4 text-right">ถอนรายปี</th>
+                  <th class="py-2 pr-4 text-right">ผลตอบแทน</th>
+                  <th class="py-2 text-right">ยอดคงเหลือ</th>
+                </tr>
+              </thead>
+              <tbody id="drawdown-schedule-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <GuardedAdSlot
+      templateType="calculator"
+      slotId="C1"
+      revealAfterSelector="#results"
+    />
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">วิธีคำนวณการถอนเงินเกษียณ (Drawdown)</h2>
+      <p>
+        การถอนเงินจากพอร์ตเกษียณต้องสมดุลระหว่างการดำรงชีวิตปัจจุบันและการรักษาเงินให้อยู่นาน เครื่องคำนวณนี้ใช้ผลตอบแทนจริง (Real Return) เพื่อให้ผลที่แม่นยำ
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สูตรผลตอบแทนจริง</h3>
+      <p>
+        ผลตอบแทนจริง = (1 + ผลตอบแทนพอร์ต) ÷ (1 + เงินเฟ้อ) - 1<br/>
+        ตัวอย่าง: ผลตอบแทน 5% เงินเฟ้อ 3% → ผลตอบแทนจริง ≈ 1.94% ต่อปี
+      </p>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">การหาจำนวนปีที่เงินอยู่ได้</h3>
+      <p>
+        คำนวณโดยจำลองยอดเงินทุกปี: เงินต้นเติบโตตามผลตอบแทนพอร์ต ลบด้วยยอดถอนรายปี (ปรับเงินเฟ้อทุกปี) จนกว่ายอดจะถึง 0
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedCalculators currentHref="/คำนวณถอนเงินเกษียณ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ผลตอบแทนและเงินเฟ้อจริงอาจแตกต่างกัน ไม่ถือเป็นคำแนะนำทางการเงิน
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    }
+
+    // Mode toggle
+    const modeRadios = document.querySelectorAll('input[name="drawdown-mode"]');
+    const monthlyGroup = document.getElementById('drawdown-monthly-group') as HTMLElement;
+    const yearsGroup = document.getElementById('drawdown-years-group') as HTMLElement;
+
+    modeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        const mode = (document.querySelector('input[name="drawdown-mode"]:checked') as HTMLInputElement).value;
+        if (mode === 'years') {
+          monthlyGroup.classList.remove('hidden');
+          yearsGroup.classList.add('hidden');
+        } else {
+          monthlyGroup.classList.add('hidden');
+          yearsGroup.classList.remove('hidden');
+        }
+      });
+    });
+
+    const form = document.getElementById('drawdown-form') as HTMLFormElement;
+    const formError = document.getElementById('drawdown-form-error') as HTMLElement;
+    const resultsDiv = document.getElementById('results') as HTMLDivElement;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const mode = (document.querySelector('input[name="drawdown-mode"]:checked') as HTMLInputElement).value;
+      const portfolio = parseNum((document.getElementById('drawdown-portfolio') as HTMLInputElement).value);
+      const monthlyWithdrawal = parseNum((document.getElementById('drawdown-monthly-withdrawal') as HTMLInputElement).value);
+      const durationYears = parseInt((document.getElementById('drawdown-duration-years') as HTMLInputElement).value) || 25;
+      const portfolioReturn = parseNum((document.getElementById('drawdown-return') as HTMLInputElement).value) || 5;
+      const inflation = parseNum((document.getElementById('drawdown-inflation') as HTMLInputElement).value) || 3;
+
+      if (portfolio <= 0) {
+        formError.classList.remove('hidden');
+        (document.getElementById('drawdown-portfolio') as HTMLInputElement).focus();
+        return;
+      }
+      if (mode === 'years' && monthlyWithdrawal <= 0) {
+        formError.classList.remove('hidden');
+        (document.getElementById('drawdown-monthly-withdrawal') as HTMLInputElement).focus();
+        return;
+      }
+
+      trackCalculatorStart('drawdown');
+
+      const annualReturn = portfolioReturn / 100;
+      const annualInflation = inflation / 100;
+      const realReturn = (1 + annualReturn) / (1 + annualInflation) - 1;
+
+      interface YearRow { year: number; withdrawal: number; growth: number; balance: number; }
+      const schedule: YearRow[] = [];
+
+      let primaryLabel = '';
+      let primaryValue = '';
+
+      if (mode === 'years') {
+        // Find how many years money lasts
+        let balance = portfolio;
+        let annualWithdrawal = monthlyWithdrawal * 12;
+        let year = 0;
+        const maxYears = 100;
+        while (balance > 0 && year < maxYears) {
+          year++;
+          const growth = balance * annualReturn;
+          balance = balance + growth - annualWithdrawal;
+          schedule.push({
+            year,
+            withdrawal: annualWithdrawal,
+            growth,
+            balance: Math.max(0, balance),
+          });
+          annualWithdrawal *= (1 + annualInflation); // adjust for inflation next year
+          if (balance <= 0) break;
+        }
+        primaryLabel = 'เงินอยู่ได้';
+        primaryValue = year >= maxYears ? 'มากกว่า 100 ปี' : year + ' ปี';
+      } else {
+        // Find max monthly withdrawal for given duration
+        const n = durationYears * 12;
+        const monthlyRate = portfolioReturn / 100 / 12;
+        let maxMonthly: number;
+        if (Math.abs(monthlyRate) < 0.0000001) {
+          maxMonthly = portfolio / n;
+        } else {
+          maxMonthly = portfolio * monthlyRate / (1 - Math.pow(1 + monthlyRate, -n));
+        }
+        primaryLabel = 'ถอนได้รายเดือนสูงสุด';
+        primaryValue = fmt(maxMonthly) + ' บาท';
+
+        // Build schedule using this amount
+        let balance = portfolio;
+        let annualWithdrawal = maxMonthly * 12;
+        for (let y = 1; y <= durationYears && balance > 0; y++) {
+          const growth = balance * annualReturn;
+          balance = balance + growth - annualWithdrawal;
+          schedule.push({
+            year: y,
+            withdrawal: annualWithdrawal,
+            growth,
+            balance: Math.max(0, balance),
+          });
+          annualWithdrawal *= (1 + annualInflation);
+        }
+      }
+
+      (document.getElementById('res-primary-label') as HTMLElement).textContent = primaryLabel;
+      (document.getElementById('res-primary-value') as HTMLElement).textContent = primaryValue;
+      (document.getElementById('res-real-return') as HTMLElement).textContent = (realReturn * 100).toFixed(2) + '% ต่อปี';
+      (document.getElementById('res-portfolio-display') as HTMLElement).textContent = fmt(portfolio) + ' บาท';
+
+      const tbody = document.getElementById('drawdown-schedule-body') as HTMLTableSectionElement;
+      tbody.innerHTML = '';
+      schedule.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100';
+        tr.innerHTML = `
+          <td class="py-2 pr-4 text-gray-600">${row.year}</td>
+          <td class="py-2 pr-4 text-right">${fmt(row.withdrawal)}</td>
+          <td class="py-2 pr-4 text-right">${fmt(row.growth)}</td>
+          <td class="py-2 text-right ${row.balance <= 0 ? 'text-red-600 font-bold' : ''}">${fmt(row.balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackCalculatorComplete('drawdown');
+      trackCalculatorUsed('drawdown');
+    });
+  </script>
+</BaseLayout>

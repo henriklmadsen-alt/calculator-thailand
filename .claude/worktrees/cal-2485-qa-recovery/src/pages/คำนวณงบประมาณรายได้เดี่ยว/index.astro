@@ -1,0 +1,279 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณงบประมาณรายได้เดี่ยว ปี 2569 เงินเดือนเดี่ยว รายรับ-รายจ่าย เป้าหมายออม | Kamnuanlek';
+const pageDescription = 'คำนวณงบประมาณสำหรับผู้มีรายได้เดี่ยว แยกรายจ่ายคงที่และแปรผัน ตรวจสอบว่าเป้าหมายออมเงินทำได้จริงไหม แสดงเงินสดสุทธิที่เหลือต่อเดือน';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณงบประมาณรายได้เดี่ยว/`;
+
+const faqData = [
+  {
+    question: 'ผู้มีรายได้เดี่ยวควรออมเงินขั้นต่ำเท่าไร?',
+    answer: 'แนะนำให้ออมอย่างน้อย 10% ของรายได้ทุกเดือน และเพิ่มเป็น 20% เมื่อทำได้ สำหรับผู้มีรายได้เดี่ยว การมีเงินสำรองฉุกเฉิน 6 เดือนของค่าใช้จ่ายสำคัญมากกว่าผู้มีสองรายได้',
+  },
+  {
+    question: 'รายจ่ายคงที่และแปรผันต่างกันอย่างไร?',
+    answer: 'รายจ่ายคงที่ (Fixed) คือค่าใช้จ่ายที่เท่ากันทุกเดือน เช่น ค่าเช่า ค่าผ่อนหนี้ ค่าประกัน ส่วนรายจ่ายแปรผัน (Variable) คือค่าใช้จ่ายที่เปลี่ยนแปลงได้ เช่น ค่าอาหาร ค่าน้ำมัน ค่าบันเทิง',
+  },
+  {
+    question: 'เมื่อเงินสดสุทธิติดลบควรทำอย่างไร?',
+    answer: 'ลดรายจ่ายแปรผันก่อน เช่น ทำอาหารกินเองแทนซื้อ ลดความถี่บันเทิง ถ้ายังไม่พอให้พิจารณาลดรายจ่ายคงที่ เช่น ย้ายห้องที่ถูกลง และหารายได้เสริม',
+  },
+  {
+    question: 'อัตราการออม 20% สำหรับรายได้เดี่ยวเป็นไปได้ไหม?',
+    answer: 'เป็นไปได้หากวางแผนดี โดยเฉพาะการควบคุมรายจ่ายคงที่ไม่ให้เกิน 50% ของรายได้ และลดรายจ่ายแปรผันให้อยู่ในงบ การมีวินัยและติดตามค่าใช้จ่ายทุกเดือนช่วยได้มาก',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณงบประมาณรายได้เดี่ยว',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณงบประมาณรายได้เดี่ยว">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-700">คำนวณงบประมาณสำหรับผู้มีรายได้เดี่ยว</p>
+      <p class="mt-1 text-sm text-slate-700">สูตร: เงินสดสุทธิ = รายได้ - รายจ่ายคงที่ - รายจ่ายแปรผัน - เงินออม</p>
+      <p class="mt-1 text-xs font-medium text-emerald-800">ตรวจสอบว่าเป้าหมายออมทำได้หรือไม่</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณงบประมาณรายได้เดี่ยว ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกเงินเดือนและรายจ่ายทุกประเภท ระบบจะบอกว่าเป้าหมายออมเงินทำได้จริงและมีเงินเหลือเท่าไร
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="single-form" class="space-y-5">
+        <p id="single-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="si-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน / รายได้ต่อเดือน (บาท)</label>
+            <input type="text" id="si-salary" inputmode="numeric" placeholder="เช่น 25,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="si-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="si-savingsgoal" class="mb-1 block text-sm font-medium text-gray-700">เป้าหมายออมต่อเดือน (บาท)</label>
+            <input type="text" id="si-savingsgoal" inputmode="numeric" placeholder="เช่น 3,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-gray-700">รายจ่ายคงที่ (Fixed) — เท่ากันทุกเดือน</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="si-rent" class="mb-1 block text-sm font-medium text-gray-700">ค่าเช่า / ผ่อนบ้าน</label>
+            <input type="text" id="si-rent" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="si-utilities" class="mb-1 block text-sm font-medium text-gray-700">สาธารณูปโภค (ไฟ/น้ำ/เน็ต)</label>
+            <input type="text" id="si-utilities" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="si-loans" class="mb-1 block text-sm font-medium text-gray-700">ค่าผ่อนหนี้รายเดือน</label>
+            <input type="text" id="si-loans" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="si-insurance" class="mb-1 block text-sm font-medium text-gray-700">ประกันชีวิต / สุขภาพ</label>
+            <input type="text" id="si-insurance" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-gray-700">รายจ่ายแปรผัน (Variable) — เปลี่ยนแปลงได้</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="si-food" class="mb-1 block text-sm font-medium text-gray-700">ค่าอาหาร</label>
+            <input type="text" id="si-food" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="si-transport" class="mb-1 block text-sm font-medium text-gray-700">ค่าเดินทาง / น้ำมัน</label>
+            <input type="text" id="si-transport" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="si-entertainment" class="mb-1 block text-sm font-medium text-gray-700">บันเทิง / ช้อปปิ้ง</label>
+            <input type="text" id="si-entertainment" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div>
+            <label for="si-misc" class="mb-1 block text-sm font-medium text-gray-700">อื่นๆ</label>
+            <input type="text" id="si-misc" inputmode="numeric" placeholder="0"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณงบประมาณ
+        </button>
+      </form>
+    </div>
+
+    <div id="single-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายได้</div>
+            <div id="res-si-income" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-red-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">รายจ่ายรวม</div>
+            <div id="res-si-expense" class="text-xl font-bold text-red-700">-</div>
+          </div>
+          <div id="si-net-box" class="rounded-lg p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เงินสดสุทธิ</div>
+            <div id="res-si-net" class="text-xl font-bold">-</div>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายจ่ายคงที่รวม</span>
+            <span id="res-si-fixed" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">รายจ่ายแปรผันรวม</span>
+            <span id="res-si-variable" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span class="text-gray-600">อัตราการออม</span>
+            <span id="res-si-saverate" class="font-medium">-</span>
+          </div>
+        </div>
+        <p id="si-goal-status" class="mt-4 rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>รายจ่ายคงที่รวม = เช่า + สาธารณูปโภค + ผ่อนหนี้ + ประกัน</li>
+        <li>รายจ่ายแปรผันรวม = อาหาร + เดินทาง + บันเทิง + อื่นๆ</li>
+        <li>รายจ่ายรวม = คงที่ + แปรผัน + เงินออมเป้าหมาย</li>
+        <li>เงินสดสุทธิ = รายได้ - รายจ่ายรวม</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณงบประมาณ-50-30-20/">คำนวณงบประมาณ 50/30/20</a></li>
+        <li><a href="/คำนวณงบประมาณ-zero-based/">คำนวณงบประมาณ Zero-Based</a></li>
+        <li><a href="/คำนวณส่วนต่างรายได้รายจ่าย/">คำนวณส่วนต่างรายได้รายจ่าย</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#single-results" />
+    <RelatedArticles currentHref="/คำนวณงบประมาณรายได้เดี่ยว/" />
+    <RelatedCalculators currentHref="/คำนวณงบประมาณรายได้เดี่ยว/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นแนวทางการวางแผน ค่าใช้จ่ายจริงอาจแตกต่างตามพฤติกรรมการใช้จ่ายส่วนบุคคล
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    const form = document.getElementById('single-form');
+    const formError = document.getElementById('single-error');
+    const resultBox = document.getElementById('single-results');
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      setErr('si-salary-error', '');
+
+      const salary = parseNum(document.getElementById('si-salary').value);
+      let hasError = false;
+      if (!salary || salary <= 0) { setErr('si-salary-error', 'กรอกรายได้มากกว่า 0'); hasError = true; }
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const savingsGoal = parseNum(document.getElementById('si-savingsgoal').value);
+      const rent = parseNum(document.getElementById('si-rent').value);
+      const utilities = parseNum(document.getElementById('si-utilities').value);
+      const loans = parseNum(document.getElementById('si-loans').value);
+      const insurance = parseNum(document.getElementById('si-insurance').value);
+      const food = parseNum(document.getElementById('si-food').value);
+      const transport = parseNum(document.getElementById('si-transport').value);
+      const entertainment = parseNum(document.getElementById('si-entertainment').value);
+      const misc = parseNum(document.getElementById('si-misc').value);
+
+      const fixedTotal = rent + utilities + loans + insurance;
+      const variableTotal = food + transport + entertainment + misc;
+      const totalExpense = fixedTotal + variableTotal + savingsGoal;
+      const netCash = salary - totalExpense;
+      const saveRate = salary > 0 ? (savingsGoal / salary) * 100 : 0;
+
+      setText('res-si-income', formatMoney(salary));
+      setText('res-si-expense', formatMoney(totalExpense));
+      setText('res-si-net', netCash >= 0 ? `+${formatMoney(netCash)}` : formatMoney(netCash));
+      setText('res-si-fixed', formatMoney(fixedTotal));
+      setText('res-si-variable', formatMoney(variableTotal));
+      setText('res-si-saverate', `${saveRate.toFixed(1)}%`);
+
+      const netBox = document.getElementById('si-net-box');
+      const netEl = document.getElementById('res-si-net');
+      const goalStatus = document.getElementById('si-goal-status');
+
+      if (netCash >= 0) {
+        netBox.className = 'rounded-lg bg-green-50 p-4 text-center';
+        netEl.className = 'text-xl font-bold text-green-700';
+        goalStatus.className = 'mt-4 rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+        goalStatus.textContent = savingsGoal > 0
+          ? `เป้าหมายออม ${formatMoney(savingsGoal)}/เดือน ทำได้จริง! มีเงินเหลือเผื่อ ${formatMoney(netCash)}`
+          : `งบประมาณสมดุล มีเงินเหลือ ${formatMoney(netCash)} ลองตั้งเป้าออมเงินเพิ่ม`;
+      } else {
+        netBox.className = 'rounded-lg bg-red-50 p-4 text-center';
+        netEl.className = 'text-xl font-bold text-red-700';
+        goalStatus.className = 'mt-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800 border border-red-200';
+        goalStatus.textContent = `รายจ่ายเกินรายได้ ${formatMoney(Math.abs(netCash))} ต้องปรับลดรายจ่ายหรือลดเป้าออมก่อน`;
+      }
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณ ROI โฆษณา | Kamnuanlek';
+const pageDescription = 'คำนวณ ROI โฆษณา ROAS Return on Ad Spend ผลตอบแทนการลงทุนโฆษณาออนไลน์';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0462-roi-โฆษณา/`;
+const faqData = [
+  { question: 'ROAS ที่ดีสำหรับโฆษณา Facebook คือเท่าไหร่?', answer: 'ROAS ที่ดีสำหรับ Facebook Ads โดยทั่วไป 3-5x (ทุก 1 บาทได้รายได้ 3-5 บาท) แต่ขึ้นอยู่กับ margin สินค้า ธุรกิจ margin สูงอาจยอมรับ ROAS ต่ำกว่า' },
+  { question: 'CPM, CPC, CPA ต่างกันอย่างไร?', answer: 'CPM = ต้นทุนต่อ 1,000 impressions วัดการรับรู้ CPC = ต้นทุนต่อคลิก วัดความสนใจ CPA = ต้นทุนต่อ conversion วัดผลลัพธ์จริง' },
+  { question: 'ควรลงโฆษณา Facebook หรือ Google ดีกว่า?', answer: 'Facebook เหมาะ Brand Awareness สินค้า B2C สร้างความต้องการ Google เหมาะสินค้าที่มีคนค้นหา B2B และสินค้าที่คนรู้จักแล้ว ควรใช้ทั้งสองร่วมกัน' },
+  { question: 'งบโฆษณาขั้นต่ำควรเป็นเท่าไหร่?', answer: 'Facebook Ads เริ่มได้ที่ 300-1,000 บาท/วัน Google Ads เริ่มได้ที่ 500-2,000 บาท/วัน สำหรับเก็บ data อย่างน้อย 30 วันต่อแคมเปญ' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณ ROI โฆษณา">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณ ROI โฆษณา (ROAS)</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณผลตอบแทนการลงทุนโฆษณา ROAS และต้นทุนต่อ Conversion</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="ad_spend" class="block text-sm font-medium text-gray-700 mb-1">งบโฆษณา (บาท)</label><input type="text" id="ad_spend" inputmode="decimal" placeholder="เช่น 50000" value="50000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="ad_revenue" class="block text-sm font-medium text-gray-700 mb-1">รายได้จากโฆษณา (บาท)</label><input type="text" id="ad_revenue" inputmode="decimal" placeholder="เช่น 200000" value="200000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="conversions" class="block text-sm font-medium text-gray-700 mb-1">จำนวน Conversion (ออเดอร์)</label><input type="number" id="conversions" min="1" placeholder="เช่น 100" value="100" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ROAS</p><p id="roas" class="font-bold">-</p></div>
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">CPA (ต้นทุนต่อ Conversion)</p><p id="cpa" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3 col-span-2"><p class="text-sm text-gray-600">ROI โฆษณา</p><p id="ad_roi" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const adSpend = parseFloat((document.getElementById('ad_spend') as HTMLInputElement).value) || 0;
+      const adRevenue = parseFloat((document.getElementById('ad_revenue') as HTMLInputElement).value) || 0;
+      const conversions = parseInt((document.getElementById('conversions') as HTMLInputElement).value) || 1;
+      const roas = adSpend > 0 ? adRevenue / adSpend : 0;
+      const cpa = conversions > 0 ? adSpend / conversions : 0;
+      const adRoi = adSpend > 0 ? ((adRevenue - adSpend) / adSpend * 100) : 0;
+      (document.getElementById('roas') as HTMLElement).textContent = roas.toFixed(2) + 'x';
+      (document.getElementById('cpa') as HTMLElement).textContent = cpa.toLocaleString('th-TH', {maximumFractionDigits: 2}) + ' บาท';
+      (document.getElementById('ad_roi') as HTMLElement).textContent = adRoi.toFixed(2) + '%';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('advertising-roi');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>

@@ -1,0 +1,201 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าธรรมเนียมจดทะเบียนธุรกิจ ปี 2569 | บริษัท ห้างหุ้นส่วน | Kamnuanlek';
+const pageDescription = 'คำนวณค่าธรรมเนียมจดทะเบียนบริษัทจำกัด ห้างหุ้นส่วนจำกัด ตามทุนจดทะเบียน อัตรากรมพัฒนาธุรกิจการค้า (DBD) อัปเดตปี 2569';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจดทะเบียนธุรกิจ/`;
+
+const faqData = [
+  {
+    question: 'ค่าธรรมเนียมจดทะเบียนบริษัทคิดอย่างไร?',
+    answer: 'ค่าธรรมเนียมจดทะเบียนบริษัทจำกัดคิดตามทุนจดทะเบียน ในอัตรา 500 บาท ต่อทุน 100,000 บาท (หรือเศษของ 100,000) แต่ไม่น้อยกว่า 5,000 บาท และไม่เกิน 250,000 บาท',
+  },
+  {
+    question: 'ค่าธรรมเนียมจดทะเบียนห้างหุ้นส่วนจำกัดเท่าไร?',
+    answer: 'ห้างหุ้นส่วนจำกัดคิดค่าธรรมเนียม 100 บาท ต่อทุน 100,000 บาท แต่ไม่น้อยกว่า 1,000 บาท และไม่เกิน 50,000 บาท',
+  },
+  {
+    question: 'นอกจากค่าธรรมเนียมจดทะเบียน มีค่าใช้จ่ายอะไรอีก?',
+    answer: 'ยังมีค่าธรรมเนียมอื่นๆ เช่น ค่าอากรหนังสือบริคณห์สนธิ 200 บาท ค่าจดทะเบียนหนังสือบริคณห์สนธิ 500 บาท และค่าธรรมเนียมพิเศษอื่นๆ ที่อาจเกิดขึ้นตามกรณี รวมแล้วประมาณ 7,000–10,000 บาท สำหรับบริษัทขนาดเล็ก',
+  },
+  {
+    question: 'จดทะเบียนบริษัทออนไลน์ได้ไหม?',
+    answer: 'ได้ กรมพัฒนาธุรกิจการค้า (DBD) มีระบบ DBD e-Registration สำหรับจดทะเบียนนิติบุคคลออนไลน์ที่ dbd.go.th สามารถจดทะเบียนจัดตั้งบริษัทและห้างหุ้นส่วนได้โดยไม่ต้องเดินทางมาที่สำนักงาน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าธรรมเนียมจดทะเบียนธุรกิจ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจดทะเบียนธุรกิจ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณค่าธรรมเนียมจดทะเบียนธุรกิจ
+    </h1>
+    <p class="text-gray-600 mb-6">
+      คำนวณค่าธรรมเนียมจดทะเบียนบริษัทจำกัดและห้างหุ้นส่วนจำกัด ตามอัตรากรมพัฒนาธุรกิจการค้า (DBD) ปี 2569
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ข้อมูลการจดทะเบียน</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทนิติบุคคล</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="biz-type" id="type-company" value="company" checked class="text-primary-600" />
+              <span class="text-sm">บริษัทจำกัด</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="biz-type" id="type-partnership" value="partnership" class="text-primary-600" />
+              <span class="text-sm">ห้างหุ้นส่วนจำกัด</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label for="capital" class="block text-sm font-medium text-gray-700 mb-1">
+            ทุนจดทะเบียน (บาท)
+          </label>
+          <input type="text" id="capital" inputmode="numeric" placeholder="เช่น 1,000,000"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          <p class="text-xs text-gray-500 mt-1">ทุนจดทะเบียนขั้นต่ำสำหรับบริษัทจำกัดคือ 5 บาท (ไม่มีขั้นต่ำตามกฎหมาย แต่แนะนำ 1,000,000 บาท)</p>
+        </div>
+      </div>
+
+      <button type="button" id="btn-calculate"
+        class="mt-5 w-full sm:w-auto px-8 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+        คำนวณค่าธรรมเนียม
+      </button>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+        <h3 class="font-semibold text-primary-900 mb-3">ผลการคำนวณ</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-700">ประเภทนิติบุคคล</span>
+            <span id="res-type" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">ทุนจดทะเบียน</span>
+            <span id="res-capital" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-t border-primary-300 pt-2 mt-2">
+            <span class="font-bold text-primary-900">ค่าธรรมเนียมจดทะเบียน</span>
+            <span id="res-fee" class="font-bold text-primary-700 text-lg">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">ค่าใช้จ่ายเพิ่มเติมโดยประมาณ</span>
+            <span id="res-extra" class="font-semibold text-gray-900">-</span>
+          </div>
+          <div class="flex justify-between border-t border-gray-200 pt-2">
+            <span class="font-semibold text-gray-800">ค่าใช้จ่ายรวมโดยประมาณ</span>
+            <span id="res-total" class="font-semibold text-gray-900">-</span>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">* ค่าใช้จ่ายเพิ่มเติมรวมค่าอากรหนังสือบริคณห์สนธิ ค่าจดทะเบียนหนังสือบริคณห์สนธิ และค่าธรรมเนียมอื่นๆ (ประมาณการเท่านั้น)</p>
+      </div>
+    </div>
+
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">[โฆษณา — AdSense]</div>
+
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">อัตราค่าธรรมเนียมจดทะเบียนธุรกิจ (DBD)</h2>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">บริษัทจำกัด</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>อัตรา: 500 บาท ต่อทุน 100,000 บาท (หรือเศษ)</li>
+        <li>ขั้นต่ำ: 5,000 บาท</li>
+        <li>สูงสุด: 250,000 บาท</li>
+      </ul>
+      <h3 class="text-lg font-semibold text-gray-900 mt-4 mb-2">ห้างหุ้นส่วนจำกัด</h3>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>อัตรา: 100 บาท ต่อทุน 100,000 บาท (หรือเศษ)</li>
+        <li>ขั้นต่ำ: 1,000 บาท</li>
+        <li>สูงสุด: 50,000 บาท</li>
+      </ul>
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ตัวอย่างการคำนวณ</h3>
+      <p>จดทะเบียนบริษัทจำกัด ทุน 1,000,000 บาท</p>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>จำนวนหน่วย = 1,000,000 ÷ 100,000 = 10 หน่วย</li>
+        <li>ค่าธรรมเนียม = 10 × 500 = 5,000 บาท</li>
+      </ul>
+    </section>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <RelatedArticles currentHref="/คำนวณค่าจดทะเบียนธุรกิจ/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจดทะเบียนธุรกิจ/" />
+
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น
+      ค่าธรรมเนียมอาจเปลี่ยนแปลงตามประกาศกรมพัฒนาธุรกิจการค้า กรุณาตรวจสอบที่ dbd.go.th
+    </div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number {
+      return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0);
+    }
+    function fmt(n: number): string {
+      return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' บาท';
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const capital = parseNum((document.getElementById('capital') as HTMLInputElement).value);
+      if (capital <= 0) { (document.getElementById('capital') as HTMLInputElement).focus(); return; }
+
+      const isCompany = (document.getElementById('type-company') as HTMLInputElement).checked;
+      const units = Math.ceil(capital / 100000);
+
+      let fee: number;
+      let typeName: string;
+      let extraFee: number;
+
+      if (isCompany) {
+        fee = Math.min(Math.max(units * 500, 5000), 250000);
+        typeName = 'บริษัทจำกัด';
+        extraFee = 2700; // MOA stamp + registration + misc
+      } else {
+        fee = Math.min(Math.max(units * 100, 1000), 50000);
+        typeName = 'ห้างหุ้นส่วนจำกัด';
+        extraFee = 1500;
+      }
+
+      const total = fee + extraFee;
+
+      (document.getElementById('res-type') as HTMLElement).textContent = typeName;
+      (document.getElementById('res-capital') as HTMLElement).textContent = fmt(capital);
+      (document.getElementById('res-fee') as HTMLElement).textContent = fmt(fee);
+      (document.getElementById('res-extra') as HTMLElement).textContent = fmt(extraFee);
+      (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
+      document.getElementById('result')!.classList.remove('hidden');
+      trackCalculatorUsed('business-registration-fee');
+    });
+  </script>
+</BaseLayout>

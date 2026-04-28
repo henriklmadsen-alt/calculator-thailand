@@ -1,0 +1,123 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณประกัน Top-up สุขภาพ 2569 | เพิ่มวงเงินประกันสุขภาพ ฟรี | Kamnuanlek';
+const pageDescription = 'คำนวณเบี้ยประกัน Top-up สุขภาพ 2569 สำหรับผู้ที่มีประกันพื้นฐานแล้วแต่วงเงินไม่พอ เพิ่มวงเงินคุ้มครองด้วยเบี้ยที่ประหยัด';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณประกันtopup/`;
+
+const faqData = [
+  { question: 'ประกัน Top-up คืออะไร?', answer: 'ประกัน Top-up หรือ Top-up Health Insurance คือประกันสุขภาพที่เพิ่มวงเงินคุ้มครองเหนือกว่าประกันพื้นฐาน (Base Plan) จ่ายเฉพาะส่วนที่เกินจากประกันพื้นฐาน ทำให้เบี้ยถูกกว่าซื้อวงเงินสูงตั้งแต่แรก' },
+  { question: 'ต้องมีประกันพื้นฐานก่อนถึงซื้อ Top-up ได้ไหม?', answer: 'ขึ้นกับบริษัท บางแห่งกำหนดว่าต้องมีประกันพื้นฐานก่อน บางแห่งขายได้อิสระ แต่สำหรับ Top-up แบบเต็มตัว (ไม่มี deductible ของตัวเอง) มักต้องมีประกันพื้นฐานอ้างอิงก่อน' },
+  { question: 'ประกัน Top-up ต่างจากการเพิ่มวงเงินในกรมธรรม์เดิมอย่างไร?', answer: 'การเพิ่มวงเงินในกรมธรรม์เดิมทำให้เบี้ยทุกส่วนแพงขึ้น ส่วน Top-up จ่ายเบี้ยเฉพาะวงเงินส่วนที่เพิ่ม ทำให้ต้นทุนรวมอาจถูกกว่า เหมาะสำหรับผู้ที่ต้องการวงเงินสูงแต่งบจำกัด' },
+  { question: 'วงเงิน Top-up ควรเลือกเท่าไร?', answer: 'ขึ้นกับวงเงินพื้นฐานและความเสี่ยง ถ้าวงเงินพื้นฐาน 500,000 บาท และต้องการรวมถึง 2,000,000 บาท ก็ซื้อ Top-up เพิ่มอีก 1,500,000 บาท' },
+];
+
+const jsonLdWebApp = { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'เครื่องคำนวณประกัน Top-up สุขภาพ 2569', description: pageDescription, url: canonical, applicationCategory: 'FinanceApplication', operatingSystem: 'All', offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' }, inLanguage: 'th' };
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณประกัน Top-up">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">คำนวณเบี้ยประกัน Top-up สุขภาพ</p>
+      <p class="mt-1 text-sm text-slate-700">เพิ่มวงเงินคุ้มครองด้วยเบี้ยที่ประหยัด</p>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">คำนวณประกัน Top-up สุขภาพ 2569 (2026)</h1>
+    <p class="text-gray-600 mb-6">ประมาณเบี้ย Top-up Health Insurance และเปรียบเทียบกับการซื้อประกันวงเงินสูงตั้งแต่แรก</p>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">กรอกข้อมูล</h2>
+      <form id="calc-form" class="space-y-5">
+        <p id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">กรุณากรอกข้อมูลให้ครบถ้วน</p>
+        <div>
+          <label for="age" class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label>
+          <input type="text" id="age" inputmode="numeric" placeholder="เช่น 35" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="base-coverage" class="block text-sm font-medium text-gray-700 mb-1">วงเงินประกันพื้นฐานที่มีอยู่ (บาท)</label>
+          <input type="text" id="base-coverage" inputmode="numeric" placeholder="เช่น 500,000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <div>
+          <label for="target-coverage" class="block text-sm font-medium text-gray-700 mb-1">วงเงินคุ้มครองรวมที่ต้องการ (บาท)</label>
+          <input type="text" id="target-coverage" inputmode="numeric" placeholder="เช่น 2,000,000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-base" />
+        </div>
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition-colors text-base">คำนวณเบี้ย Top-up</button>
+      </form>
+    </div>
+
+    <div id="results" class="hidden mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mb-4">
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 text-center"><p class="text-xs text-primary-700 mb-1">เบี้ย Top-up/ปี (ประมาณ)</p><p class="text-2xl font-bold text-primary-700" id="topup-premium">-</p></div>
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center"><p class="text-xs text-gray-600 mb-1">ซื้อใหม่ทั้งวงเงิน</p><p class="text-2xl font-bold text-gray-700" id="full-premium">-</p></div>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <h3 class="px-4 py-3 bg-gray-50 font-semibold text-gray-900 border-b">รายละเอียดการคำนวณ</h3>
+        <table class="w-full text-sm"><tbody id="breakdown-body"></tbody></table>
+      </div>
+    </div>
+
+    <GuardedAdSlot templateType="calculator" slotId="C1" revealAfterSelector="#results" />
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">ข้อดีของประกัน Top-up</h2>
+      <ul class="list-disc pl-6 space-y-1 text-gray-700">
+        <li>เบี้ยถูกกว่าซื้อวงเงินสูงตั้งแต่แรก</li>
+        <li>คุ้มครองกรณีเจ็บป่วยรุนแรงที่ค่ารักษาสูงเกินวงเงินพื้นฐาน</li>
+        <li>ยืดหยุ่น ปรับวงเงินได้ตามความต้องการ</li>
+        <li>เหมาะสำหรับผู้มีประกันกลุ่มจากที่ทำงานแต่วงเงินไม่พอ</li>
+      </ul>
+    </section>
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+    <RelatedCalculators currentHref="/คำนวณประกันtopup/" />
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการ เบี้ยจริงขึ้นกับบริษัทประกันและสุขภาพ</div>
+  </article>
+
+  <script>
+    function parseNum(v: string): number { return Math.max(0, parseFloat(v.replace(/,/g, '')) || 0); }
+    function fmt(n: number): string { return new Intl.NumberFormat('th-TH').format(Math.round(n)); }
+
+    function getRate(age: number): number {
+      return age < 30 ? 0.01 : age < 40 ? 0.014 : age < 50 ? 0.02 : age < 60 ? 0.032 : 0.05;
+    }
+
+    document.getElementById('btn-calculate')!.addEventListener('click', () => {
+      const age = parseNum((document.getElementById('age') as HTMLInputElement).value);
+      const baseCoverage = parseNum((document.getElementById('base-coverage') as HTMLInputElement).value);
+      const targetCoverage = parseNum((document.getElementById('target-coverage') as HTMLInputElement).value);
+      const err = document.getElementById('form-error')!;
+      if (age < 18 || age > 75) { err.textContent = 'กรุณากรอกอายุ 18-75 ปี'; err.classList.remove('hidden'); return; }
+      if (targetCoverage <= baseCoverage) { err.textContent = 'วงเงินที่ต้องการต้องสูงกว่าวงเงินพื้นฐาน'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+
+      const topupAmount = targetCoverage - baseCoverage;
+      const rate = getRate(age);
+      // Top-up rate is lower than full because it's excess coverage (deductible effect)
+      const topupPremium = topupAmount * rate * 0.6;
+      const fullPremium = targetCoverage * rate;
+
+      const rows = [
+        ['วงเงินพื้นฐาน', '', `${fmt(baseCoverage)} บาท`],
+        ['วงเงินที่ต้องการรวม', '', `${fmt(targetCoverage)} บาท`],
+        ['วงเงิน Top-up ที่เพิ่ม', '', `${fmt(topupAmount)} บาท`],
+        ['อัตราเบี้ย Top-up', `${(rate*0.6*100).toFixed(2)}% (ลด 40% จากอัตราปกติ)`, `${fmt(topupPremium)} บาท/ปี`],
+        ['เทียบกับซื้อทั้งวงเงินใหม่', `${(rate*100).toFixed(2)}%`, `${fmt(fullPremium)} บาท/ปี`],
+        ['ประหยัดได้', '', `<strong>${fmt(fullPremium - topupPremium)} บาท/ปี</strong>`],
+      ];
+
+      (document.getElementById('breakdown-body') as HTMLTableSectionElement).innerHTML = rows.map((r, i) => `
+        <tr class="${i < rows.length - 1 ? 'border-b border-gray-100' : 'bg-green-50'}">
+          <td class="px-4 py-3 text-gray-600">${r[0]}</td><td class="px-4 py-3 text-gray-500 text-xs">${r[1]}</td>
+          <td class="px-4 py-3 text-right font-medium text-gray-900">${r[2]}</td></tr>`).join('');
+
+      (document.getElementById('topup-premium') as HTMLElement).textContent = fmt(topupPremium) + ' บาท/ปี';
+      (document.getElementById('full-premium') as HTMLElement).textContent = fmt(fullPremium) + ' บาท/ปี';
+      document.getElementById('results')!.classList.remove('hidden');
+      document.getElementById('results')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

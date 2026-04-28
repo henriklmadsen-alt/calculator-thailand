@@ -1,0 +1,252 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณค่าจ้างรายชั่วโมง จากเงินเดือนหรือค่าจ้างรายวัน ปี 2569 | Kamnuanlek';
+const pageDescription = 'คำนวณค่าจ้างรายชั่วโมงจากเงินเดือนหรือค่าจ้างรายวัน ระบุวันทำงานและชั่วโมงต่อวัน คำนวณรายวัน รายสัปดาห์ และรายชั่วโมง';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณค่าจ้างรายชั่วโมง/`;
+
+const faqData = [
+  {
+    question: 'คำนวณค่าแรงรายชั่วโมงจากเงินเดือนอย่างไร?',
+    answer: 'คำนวณโดย: ค่าแรงรายชั่วโมง = เงินเดือน ÷ (วันทำงาน/เดือน × ชั่วโมง/วัน) ตัวอย่าง เงินเดือน 30,000 บาท ทำงาน 26 วัน/เดือน 8 ชั่วโมง/วัน = 30,000 ÷ (26×8) = 144.23 บาท/ชั่วโมง',
+  },
+  {
+    question: 'ค่าแรงขั้นต่ำรายชั่วโมงในไทยคือเท่าไร?',
+    answer: 'อัตราค่าจ้างขั้นต่ำในไทยกำหนดเป็นรายวัน แตกต่างกันตามจังหวัด เช่น กรุงเทพฯ และปริมณฑล 400 บาท/วัน (ปี 2567) คิดเป็นชั่วโมงละประมาณ 50 บาท (8 ชั่วโมง/วัน)',
+  },
+  {
+    question: 'ค่าจ้างรายชั่วโมงใช้คำนวณอะไรได้บ้าง?',
+    answer: 'ค่าจ้างรายชั่วโมงใช้คำนวณค่าโอทีล่วงเวลา เบี้ยกะดึก ค่าแรงพาร์ทไทม์ ต้นทุนแรงงานต่อโปรเจกต์ และการเปรียบเทียบอัตราค่าจ้างระหว่างงานประจำและฟรีแลนซ์',
+  },
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณค่าจ้างรายชั่วโมง',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าจ้างรายชั่วโมง">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
+      <p class="text-sm font-semibold text-sky-700">⏱️ คำนวณค่าจ้างรายชั่วโมง จากเงินเดือนหรือค่าจ้างรายวัน</p>
+      <p class="mt-1 text-sm text-slate-700">ระบุเงินเดือนหรือค่าจ้างรายวัน วันทำงาน และชั่วโมงต่อวัน เพื่อหาค่าแรงรายชั่วโมง</p>
+      <p class="mt-1 text-xs font-medium text-sky-800">ใช้สำหรับคำนวณโอที เบี้ยกะดึก และต้นทุนแรงงาน</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณค่าจ้างรายชั่วโมง ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      เลือกวิธีกรอกข้อมูล: จากเงินเดือนรายเดือน หรือค่าจ้างรายวัน พร้อมระบุวันทำงานและชั่วโมงต่อวัน
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="hourly-form" class="space-y-5">
+        <p id="hourly-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700">วิธีคำนวณ</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="hourly-input-type" id="type-monthly" value="monthly" checked class="text-primary-600" />
+              <span class="text-sm">จากเงินเดือน</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="hourly-input-type" id="type-daily" value="daily" class="text-primary-600" />
+              <span class="text-sm">จากค่าจ้างรายวัน</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="monthly-input-row">
+          <label for="hourly-monthly-salary" class="mb-1 block text-sm font-medium text-gray-700">เงินเดือน (บาท/เดือน)</label>
+          <input type="text" id="hourly-monthly-salary" inputmode="numeric" placeholder="เช่น 30,000"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+          <p id="hourly-monthly-salary-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div id="daily-input-row" class="hidden">
+          <label for="hourly-daily-wage" class="mb-1 block text-sm font-medium text-gray-700">ค่าจ้างรายวัน (บาท/วัน)</label>
+          <input type="text" id="hourly-daily-wage" inputmode="numeric" placeholder="เช่น 400"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64" />
+          <p id="hourly-daily-wage-error" class="mt-1 hidden text-sm text-red-600"></p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div id="work-days-row">
+            <label for="hourly-work-days" class="mb-1 block text-sm font-medium text-gray-700">วันทำงานต่อเดือน (วัน)</label>
+            <input type="text" id="hourly-work-days" inputmode="numeric" placeholder="เช่น 26"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="hourly-work-days-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="hourly-hours-day" class="mb-1 block text-sm font-medium text-gray-700">ชั่วโมงทำงานต่อวัน</label>
+            <input type="text" id="hourly-hours-day" inputmode="decimal" placeholder="เช่น 8"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="hourly-hours-day-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          คำนวณค่าจ้างรายชั่วโมง
+        </button>
+      </form>
+    </div>
+
+    <div id="hourly-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายชั่วโมง</div>
+            <div id="res-hourly-rate" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-primary-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ค่าจ้างรายวัน</div>
+            <div id="res-hourly-daily" class="text-xl font-bold text-primary-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ประมาณรายสัปดาห์</div>
+            <div id="res-hourly-weekly" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">สูตรที่ใช้คำนวณ</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>จากเงินเดือน: ค่าจ้างรายชั่วโมง = เงินเดือน ÷ (วันทำงาน/เดือน × ชั่วโมง/วัน)</li>
+        <li>จากรายวัน: ค่าจ้างรายชั่วโมง = ค่าจ้างรายวัน ÷ ชั่วโมง/วัน</li>
+        <li>ประมาณรายสัปดาห์ = ค่าจ้างรายชั่วโมง × ชั่วโมง/วัน × 5 วัน</li>
+      </ul>
+      <h3 class="mb-2 mt-6 text-lg font-semibold text-gray-900">ลิงก์ที่เกี่ยวข้อง</h3>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li><a href="/คำนวณต้นทุนชั่วโมงแรงงาน/">คำนวณต้นทุนชั่วโมงแรงงาน</a></li>
+        <li><a href="/คำนวณค่าโอที/">คำนวณค่าโอที</a></li>
+        <li><a href="/คำนวณเบี้ยกะดึก/">คำนวณเบี้ยกะดึก</a></li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#hourly-results" />
+    <RelatedArticles currentHref="/คำนวณค่าจ้างรายชั่วโมง/" />
+    <RelatedCalculators currentHref="/คำนวณค่าจ้างรายชั่วโมง/" />
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการตามข้อมูลที่กรอก ค่าจ้างจริงอาจแตกต่างขึ้นอยู่กับโครงสร้างเงินเดือนและนโยบายบริษัท กรุณาตรวจสอบกับฝ่ายบุคคลหรือสัญญาจ้างของท่าน
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.toggle('hidden', !msg);
+    }
+
+    const form = document.getElementById('hourly-form');
+    const formError = document.getElementById('hourly-form-error');
+    const resultBox = document.getElementById('hourly-results');
+    const monthlyInputRow = document.getElementById('monthly-input-row');
+    const dailyInputRow = document.getElementById('daily-input-row');
+    const workDaysRow = document.getElementById('work-days-row');
+
+    document.querySelectorAll('input[name="hourly-input-type"]').forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        const isMonthly = e.target.value === 'monthly';
+        monthlyInputRow.classList.toggle('hidden', !isMonthly);
+        dailyInputRow.classList.toggle('hidden', isMonthly);
+        workDaysRow.classList.toggle('hidden', !isMonthly);
+      });
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      ['hourly-monthly-salary-error', 'hourly-daily-wage-error', 'hourly-work-days-error', 'hourly-hours-day-error'].forEach((id) => setErr(id, ''));
+
+      const inputType = document.querySelector('input[name="hourly-input-type"]:checked').value;
+      const hoursDay = parseNum(document.getElementById('hourly-hours-day').value);
+      let hasError = false;
+      let hourlyRate, dailyRate;
+
+      if (!Number.isFinite(hoursDay) || hoursDay <= 0 || hoursDay > 24) { setErr('hourly-hours-day-error', 'กรอกชั่วโมง/วัน 1-24'); hasError = true; }
+
+      if (inputType === 'monthly') {
+        const salary = parseNum(document.getElementById('hourly-monthly-salary').value);
+        const workDays = parseNum(document.getElementById('hourly-work-days').value);
+        if (!Number.isFinite(salary) || salary <= 0) { setErr('hourly-monthly-salary-error', 'กรอกเงินเดือนมากกว่า 0'); hasError = true; }
+        if (!Number.isFinite(workDays) || workDays <= 0 || workDays > 31) { setErr('hourly-work-days-error', 'กรอกวันทำงาน 1-31 วัน'); hasError = true; }
+        if (!hasError) {
+          hourlyRate = salary / (workDays * hoursDay);
+          dailyRate = salary / workDays;
+        }
+      } else {
+        const dailyWage = parseNum(document.getElementById('hourly-daily-wage').value);
+        if (!Number.isFinite(dailyWage) || dailyWage <= 0) { setErr('hourly-daily-wage-error', 'กรอกค่าจ้างรายวันมากกว่า 0'); hasError = true; }
+        if (!hasError) {
+          hourlyRate = dailyWage / hoursDay;
+          dailyRate = dailyWage;
+        }
+      }
+
+      if (hasError) { formError.classList.remove('hidden'); resultBox.classList.add('hidden'); return; }
+
+      const weeklyEstimate = hourlyRate * hoursDay * 5;
+
+      setText('res-hourly-rate', formatMoney(hourlyRate));
+      setText('res-hourly-daily', formatMoney(dailyRate));
+      setText('res-hourly-weekly', formatMoney(weeklyEstimate));
+
+      resultBox.classList.remove('hidden');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

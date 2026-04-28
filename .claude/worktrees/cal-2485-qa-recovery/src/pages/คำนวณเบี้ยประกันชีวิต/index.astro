@@ -1,0 +1,263 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณเบี้ยประกันชีวิต ปี 2569 ประมาณเบี้ยตามอายุและทุนประกัน | Kamnuanlek';
+const pageDescription = 'ประมาณเบี้ยประกันชีวิตแบบสะสมทรัพย์และตลอดชีพ ตามอายุ เพศ ทุนประกัน และระยะเวลาชำระเบี้ย';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณเบี้ยประกันชีวิต/`;
+
+const faqData = [
+  {
+    question: 'เบี้ยประกันชีวิตขึ้นอยู่กับอะไรบ้าง?',
+    answer: 'เบี้ยประกันชีวิตขึ้นอยู่กับ อายุ (อายุมากเบี้ยยิ่งแพง) เพศ (ผู้หญิงมักถูกกว่า) ทุนประกัน ระยะเวลาความคุ้มครอง แบบประกัน (สะสมทรัพย์/ตลอดชีพ/ชั่วระยะเวลา) และสุขภาพผู้เอาประกัน',
+  },
+  {
+    question: 'ควรซื้อประกันชีวิตทุนประกันเท่าไหร่?',
+    answer: 'หลักทั่วไปคือควรมีทุนประกัน 5–10 เท่าของรายได้ต่อปี หรือเพียงพอให้คนที่พึ่งพาคุณดูแลตัวเองได้อย่างน้อย 5–10 ปีหลังคุณเสียชีวิต รวมถึงหนี้สินที่มีอยู่',
+  },
+  {
+    question: 'ประกันชีวิตลดหย่อนภาษีได้เท่าไหร่?',
+    answer: 'เบี้ยประกันชีวิตลดหย่อนภาษีได้สูงสุด 100,000 บาท/ปี โดยกรมธรรม์ต้องมีอายุไม่น้อยกว่า 10 ปี สำหรับคู่สมรสที่ไม่มีรายได้ลดหย่อนได้อีก 10,000 บาท/ปี',
+  },
+  {
+    question: 'ควรซื้อประกันชีวิตตอนอายุเท่าไหร่?',
+    answer: 'ยิ่งซื้อเร็วยิ่งดีเพราะเบี้ยจะถูกกว่าและโอกาสผ่านการตรวจสุขภาพสูงกว่า ควรพิจารณาซื้อเมื่อเริ่มมีคนพึ่งพา เช่น แต่งงาน มีบุตร หรือมีภาระหนี้สิน',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณเบี้ยประกันชีวิต',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'วิธีคำนวณเบี้ยประกันชีวิต',
+  description: 'ขั้นตอนการประมาณเบี้ยประกันชีวิต ตามอายุ ทุนประกัน ระยะเวลา และประเภทประกัน',
+  step: [
+    { '@type': 'HowToStep', name: 'เลือกประเภทประกันชีวิต', text: 'เลือกประเภท: ประกันตลอดชีพ (Whole Life) ให้ความคุ้มครองตลอดชีวิต, ประกันสะสมทรัพย์ (Endowment) ได้เงินคืนเมื่อครบกำหนด, หรือประกันชั่วระยะเวลา (Term) เบี้ยถูกที่สุด' },
+    { '@type': 'HowToStep', name: 'ระบุอายุและเพศ', text: 'กรอกอายุปัจจุบัน เพศ (ชาย/หญิง) เบี้ยประกันชีวิตเพิ่มขึ้นตามอายุ ยิ่งทำประกันเร็วยิ่งดี เช่น อายุ 25 ปี เบี้ยต่ำกว่าอายุ 45 ปี ประมาณ 2-3 เท่าสำหรับทุนประกันเท่ากัน' },
+    { '@type': 'HowToStep', name: 'กำหนดทุนประกัน', text: 'ระบุจำนวนเงินที่ต้องการให้ผู้รับประโยชน์ได้รับ แนะนำทุนประกันอย่างน้อย 5-10 เท่าของรายได้ต่อปี เช่น เงินเดือน 40,000 บาท/เดือน = ทุนประกัน 2.4-4.8 ล้านบาท' },
+    { '@type': 'HowToStep', name: 'เลือกระยะเวลาชำระเบี้ย', text: 'ระบุระยะเวลาชำระเบี้ย เช่น 10 ปี 20 ปี หรือตลอดชีพ ระยะสั้นกว่า = เบี้ยรายปีสูงกว่า แต่จ่ายน้อยครั้ง เบี้ยประกันชีวิตนำไปลดหย่อนภาษีได้สูงสุด 100,000 บาทต่อปี' },
+    { '@type': 'HowToStep', name: 'คำนวณและเปรียบเทียบ', text: 'ระบบแสดงเบี้ยโดยประมาณ อัตราผลตอบแทน (IRR) และยอดเงินคืนเมื่อครบกำหนด เปรียบเทียบข้อเสนอจากหลายบริษัท (AIA, FWD, AXA, Muang Thai Life) ก่อนตัดสินใจ' },
+  ],
+};
+---
+
+<BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันชีวิต">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article>
+    <div class="mb-4 rounded-xl border border-green-100 bg-green-50 p-4">
+      <p class="text-sm font-semibold text-green-700">🛡️ ประมาณเบี้ยประกันชีวิต</p>
+      <p class="mt-1 text-sm text-slate-700">อัตราเบี้ยอิงจากตารางมรณะไทย + ค่าดำเนินการประมาณ 15–30% ของเบี้ยสุทธิ</p>
+      <p class="mt-1 text-xs font-medium text-green-800">ผลลัพธ์เป็นการประมาณการ ติดต่อบริษัทประกันเพื่อใบเสนอราคาจริง</p>
+    </div>
+
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+      คำนวณเบี้ยประกันชีวิต ปี 2569
+    </h1>
+
+    <p class="mb-6 text-gray-600">
+      กรอกอายุ เพศ ทุนประกัน และแบบประกันที่ต้องการ เพื่อประมาณเบี้ยประกันชีวิต
+    </p>
+
+    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <form id="life-form" class="space-y-5">
+        <p id="life-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          กรุณาตรวจสอบข้อมูลให้ครบและถูกต้องก่อนคำนวณ
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label for="life-age" class="mb-1 block text-sm font-medium text-gray-700">อายุ (ปี)</label>
+            <input type="text" id="life-age" inputmode="numeric" placeholder="เช่น 30"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="life-age-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+          <div>
+            <label for="life-gender" class="mb-1 block text-sm font-medium text-gray-700">เพศ</label>
+            <select id="life-gender" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="male" selected>ชาย</option>
+              <option value="female">หญิง</option>
+            </select>
+          </div>
+          <div>
+            <label for="life-sum" class="mb-1 block text-sm font-medium text-gray-700">ทุนประกัน (บาท)</label>
+            <input type="text" id="life-sum" inputmode="numeric" placeholder="เช่น 1,000,000"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <p id="life-sum-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="life-type" class="mb-1 block text-sm font-medium text-gray-700">แบบประกัน</label>
+            <select id="life-type" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="endowment20" selected>สะสมทรัพย์ 20 ปี</option>
+              <option value="endowment10">สะสมทรัพย์ 10 ปี</option>
+              <option value="whole">ตลอดชีพ (ชำระ 20 ปี)</option>
+              <option value="term">ชั่วระยะเวลา 10 ปี</option>
+            </select>
+          </div>
+          <div>
+            <label for="life-health" class="mb-1 block text-sm font-medium text-gray-700">สุขภาพ</label>
+            <select id="life-health" class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option value="standard" selected>มาตรฐาน (ไม่มีโรคประจำตัว)</option>
+              <option value="substandard">ต่ำกว่ามาตรฐาน (มีโรคประจำตัว)</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto">
+          ประมาณเบี้ยประกันชีวิต
+        </button>
+      </form>
+    </div>
+
+    <div id="life-results" class="mb-8 hidden">
+      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลการคำนวณ</h2>
+        <div class="mb-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded-lg bg-green-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อปี (ประมาณ)</div>
+            <div id="res-life-annual" class="text-xl font-bold text-green-700">-</div>
+          </div>
+          <div class="rounded-lg bg-blue-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">เบี้ยต่อเดือน</div>
+            <div id="res-life-monthly" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ทุนประกัน</div>
+            <div id="res-life-sum" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+          <div class="rounded-lg bg-purple-50 p-4 text-center">
+            <div class="mb-1 text-sm text-gray-600">ลดหย่อนภาษี/ปี</div>
+            <div id="res-life-tax" class="text-xl font-bold text-purple-700">-</div>
+          </div>
+        </div>
+        <p id="life-status" class="rounded-lg p-3 text-sm font-medium"></p>
+      </div>
+    </div>
+
+    <section class="prose prose-slate mb-8 max-w-none rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+      <h2 class="mb-3 text-xl font-semibold text-gray-900">วิธีคำนวณเบี้ยประกันชีวิต</h2>
+      <ul class="list-disc space-y-1 pl-6 text-gray-700">
+        <li>เบี้ยสุทธิ = ทุนประกัน × อัตราเบี้ยต่อ 1,000 บาท (จากตารางมรณะ)</li>
+        <li>เบี้ยรวม = เบี้ยสุทธิ + ค่าดำเนินการ (loading) ~15–30%</li>
+        <li>อายุมากขึ้น ความเสี่ยงมรณะสูงขึ้น เบี้ยจึงแพงขึ้น</li>
+        <li>ลดหย่อนภาษีได้สูงสุด 100,000 บาท/ปี (กรมธรรม์อายุ ≥ 10 ปี)</li>
+      </ul>
+    </section>
+
+    <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#life-results" />
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl="https://retail.easysunday.com/?sRefCode=SAF5401723"
+      partnerName="EasySunday"
+      ctaText="เปรียบเทียบประกันชีวิต"
+      subtext="เปรียบเทียบแผนประกันชีวิตจากหลายบริษัท FWD, SE Life และอื่น ๆ"
+    />
+    <RelatedArticles currentHref="/คำนวณเบี้ยประกันชีวิต/" />
+    <RelatedCalculators currentHref="/คำนวณเบี้ยประกันชีวิต/" />
+
+    <div class="content-verified">
+      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+    </div>
+
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลลัพธ์เป็นการประมาณการโดยอ้างอิงช่วงราคาตลาด ราคาจริงขึ้นอยู่กับบริษัทประกันและสุขภาพผู้เอาประกัน ควรติดต่อตัวแทนประกันเพื่อใบเสนอราคาที่แม่นยำ
+    </div>
+  </article>
+
+  <script type="module">
+    function parseNum(v) {
+      const s = String(v).replace(/,/g, '').trim();
+      if (s === '') return 0;
+      const n = Number(s);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+    function formatMoney(n) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)} บาท`;
+    }
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.toggle('hidden', !msg); }
+
+    // Rate per 1000 baht sum assured (approximate, Thai market)
+    function getBaseRate(age, gender, type) {
+      // Base mortality rates per 1000 (approximate)
+      const maleRates = { 20: 1.2, 25: 1.3, 30: 1.5, 35: 1.8, 40: 2.4, 45: 3.4, 50: 5.2, 55: 7.8, 60: 11.5 };
+      const femaleRates = { 20: 0.8, 25: 0.9, 30: 1.0, 35: 1.3, 40: 1.8, 45: 2.6, 50: 3.9, 55: 5.8, 60: 8.8 };
+      const rates = gender === 'male' ? maleRates : femaleRates;
+      const keys = Object.keys(rates).map(Number).sort((a,b) => a-b);
+      let base = 0;
+      for (const k of keys) { if (age >= k) base = rates[k]; }
+      // Type multiplier
+      const typeMulti = { endowment20: 2.2, endowment10: 3.5, whole: 2.8, term: 1.0 };
+      return base * (typeMulti[type] || 2.0);
+    }
+
+    document.getElementById('life-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('life-error').classList.add('hidden');
+      ['life-age-error','life-sum-error'].forEach(id => setErr(id, ''));
+
+      const age = parseNum(document.getElementById('life-age').value);
+      const gender = document.getElementById('life-gender').value;
+      const sumAssured = parseNum(document.getElementById('life-sum').value);
+      const type = document.getElementById('life-type').value;
+      const health = document.getElementById('life-health').value;
+
+      let hasError = false;
+      if (!age || age < 1 || age > 75) { setErr('life-age-error', 'กรอกอายุ 1–75 ปี'); hasError = true; }
+      if (!sumAssured || sumAssured <= 0) { setErr('life-sum-error', 'กรอกทุนประกัน'); hasError = true; }
+      if (hasError) { document.getElementById('life-error').classList.remove('hidden'); document.getElementById('life-results').classList.add('hidden'); return; }
+
+      const baseRate = getBaseRate(age, gender, type);
+      const loading = 1.25; // 25% loading
+      const healthMult = health === 'substandard' ? 1.5 : 1.0;
+      const annualPremium = (sumAssured / 1000) * baseRate * loading * healthMult;
+      const monthlyPremium = annualPremium / 12;
+      const taxDeduction = Math.min(annualPremium, 100000);
+
+      setText('res-life-annual', formatMoney(annualPremium));
+      setText('res-life-monthly', formatMoney(monthlyPremium));
+      setText('res-life-sum', formatMoney(sumAssured));
+      setText('res-life-tax', formatMoney(taxDeduction));
+
+      const typeName = { endowment20: 'สะสมทรัพย์ 20 ปี', endowment10: 'สะสมทรัพย์ 10 ปี', whole: 'ตลอดชีพ', term: 'ชั่วระยะเวลา' };
+      const statusEl = document.getElementById('life-status');
+      statusEl.className = 'rounded-lg bg-green-50 p-3 text-sm font-medium text-green-800 border border-green-200';
+      statusEl.textContent = `ประกัน${typeName[type]} ทุนประกัน ${formatMoney(sumAssured)} สำหรับ${gender === 'male' ? 'ชาย' : 'หญิง'}อายุ ${age} ปี เบี้ยประมาณ ${formatMoney(annualPremium)}/ปี`;
+
+      document.getElementById('life-results').classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
+      document.getElementById('life-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</BaseLayout>

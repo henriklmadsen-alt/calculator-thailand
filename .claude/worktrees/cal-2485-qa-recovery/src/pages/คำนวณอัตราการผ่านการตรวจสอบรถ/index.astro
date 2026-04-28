@@ -1,0 +1,254 @@
+---
+import RelatedCalculators from '../../components/templates/RelatedCalculators.astro';
+import RelatedArticles from '../../components/templates/RelatedArticles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const pageTitle = 'คำนวณอัตราการผ่านการตรวจสอบรถ | ประเมินผลกลับการบำรุง | Kamnuanlek';
+const pageDescription = 'คำนวณและประเมินอัตราการผ่านการตรวจสอบรถ วิเคราะห์ประสิทธิภาพการบำรุงรักษา';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณอัตราการผ่านการตรวจสอบรถ/`;
+
+const faqData = [
+  {
+    question: 'อัตราการผ่านการตรวจสอบรถคืออะไร?',
+    answer: 'อัตราการผ่านการตรวจสอบรถ คือเปอร์เซ็นต์ของรถที่ผ่านการตรวจสอบประจำปีเมื่อครั้งแรกที่ส่ง โดยไม่ต้องซ่อมแซมหรือส่งตรวจซ้ำ สูงกว่าแสดงว่าการบำรุงรักษาดีมี',
+  },
+  {
+    question: 'เหตุใดอัตราการผ่านจึงสำคัญ?',
+    answer: 'อัตราการผ่านสูง หมายความว่า: (1) รถได้รับการบำรุงดี (2) ลดค่าใช้จ่ายจากการซ่อมแซมฉุกเฉิน (3) รถได้อายุการใช้งานนาน (4) ลดความเสี่ยงจากอุบัติเหตุเนื่องจากข้อบกพร่อง',
+  },
+  {
+    question: 'วิธีเพิ่มอัตราการผ่านการตรวจสอบเป็นอย่างไร?',
+    answer: 'วิธี: (1) บำรุงรักษาตามกำหนด (2) ตรวจสอบรถเป็นระยะ (3) ซ่อมแซมปัญหาเล็กน้อยทันที (4) ใช้อุปกรณ์และอะไหล่ที่มีคุณภาพ (5) บันทึกประวัติการซ่อม',
+  },
+  {
+    question: 'อัตราการผ่านในประเทศไทยเป็นเท่าไหร่?',
+    answer: 'ค่าเฉลี่ยอัตราการผ่านในประเทศไทยอยู่ที่ประมาณ 60-75% ขึ้นอยู่กับอายุรถและการบำรุงรักษา',
+  },
+];
+
+const jsonLdWebApp = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'เครื่องคำนวณอัตราการผ่านการตรวจสอบรถ',
+  description: pageDescription,
+  url: canonical,
+  applicationCategory: 'UtilityApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'THB' },
+  inLanguage: 'th',
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณอัตราการผ่านการตรวจสอบรถ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+      คำนวณอัตราการผ่านการตรวจสอบรถ
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      ประเมินและวิเคราะห์อัตราการผ่านการตรวจสอบรถของบริษัท
+    </p>
+
+    <!-- Calculator -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <form id="calculator-form" class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="total-vehicles" class="block text-sm font-medium text-gray-700 mb-1">
+              จำนวนรถทั้งหมด (คัน)
+            </label>
+            <input type="text" id="total-vehicles" inputmode="decimal" placeholder="เช่น 100" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+
+          <div>
+            <label for="passed-first-time" class="block text-sm font-medium text-gray-700 mb-1">
+              ผ่านการตรวจสอบครั้งแรก (คัน)
+            </label>
+            <input type="text" id="passed-first-time" inputmode="decimal" placeholder="เช่น 75" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+
+          <div>
+            <label for="failed-vehicles" class="block text-sm font-medium text-gray-700 mb-1">
+              ตกการตรวจสอบ (คัน)
+            </label>
+            <input type="text" id="failed-vehicles" inputmode="decimal" placeholder="เช่น 25" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+
+          <div>
+            <label for="avg-repair-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าซ่อมเฉลี่ยต่อรถที่ตก (บาท)
+            </label>
+            <input type="text" id="avg-repair-cost" inputmode="decimal" placeholder="เช่น 3000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+
+          <div>
+            <label for="inspection-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าตรวจสอบต่อรถ (บาท)
+            </label>
+            <input type="text" id="inspection-cost" inputmode="decimal" placeholder="เช่น 1200" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+
+          <div>
+            <label for="downtime-cost" class="block text-sm font-medium text-gray-700 mb-1">
+              ค่าเสียหายจากหยุดทำงาน/รถ (บาท)
+            </label>
+            <input type="text" id="downtime-cost" inputmode="decimal" placeholder="เช่น 2000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base" />
+          </div>
+        </div>
+
+        <button type="button" id="btn-calculate" class="w-full sm:w-auto px-6 py-2 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-base">
+          คำนวณอัตรา
+        </button>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="hidden mt-6 space-y-4">
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600 mb-1">อัตราการผ่านการตรวจสอบ</div>
+          <div id="pass-rate" class="text-4xl font-bold mb-2 text-primary-600">0%</div>
+        </div>
+
+        <div class="bg-blue-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600">ผ่านครั้งแรก</div>
+          <div class="text-2xl font-bold text-blue-700"><span id="passed-count">0</span> คัน</div>
+        </div>
+
+        <div class="bg-red-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600">ตกการตรวจสอบ</div>
+          <div class="text-2xl font-bold text-red-700"><span id="failed-count">0</span> คัน</div>
+        </div>
+
+        <div class="bg-orange-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600">ต้นทุนซ่อมแซมจากการตก</div>
+          <div id="total-repair-cost" class="text-2xl font-bold text-orange-700">0</div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+
+        <div class="bg-purple-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600">ต้นทุนรวมจากการตก (รวมค่าตรวจสอบซ้ำและเสียหาย)</div>
+          <div id="total-cost" class="text-2xl font-bold text-purple-700">0</div>
+          <div class="text-sm text-gray-600">บาท</div>
+        </div>
+
+        <div class="bg-green-50 rounded-lg p-4">
+          <div class="text-sm text-gray-600">ประสิทธิผลในการบำรุงรักษา</div>
+          <div id="efficiency" class="text-2xl font-bold text-green-700"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder -->
+    <div class="my-8 p-4 bg-gray-100 rounded text-center text-gray-400 text-sm">
+      [โฆษณา — AdSense]
+    </div>
+
+    <!-- SEO Content -->
+    <section class="prose prose-gray max-w-none mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">อัตราการผ่านการตรวจสอบรถ</h2>
+
+      <p>
+        อัตราการผ่านการตรวจสอบรถเป็นตัวบ่งชี้สำคัญของประสิทธิภาพการบำรุงรักษา
+        อัตราที่สูง หมายความว่ารถได้รับการบำรุงดี และลดความเสี่ยงจากปัญหาทางเทคนิค
+      </p>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ปัจจัยที่ส่งผลต่ออัตราการผ่าน</h3>
+
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+        <li><strong>อายุรถ:</strong> รถเก่าจะมีอัตราการผ่านต่ำกว่า</li>
+        <li><strong>การบำรุงรักษา:</strong> บำรุงดี = อัตราสูง</li>
+        <li><strong>ประเภทรถ:</strong> รถบรรทุกหนักมีปัญหามากกว่ารถเล็ก</li>
+        <li><strong>สภาพถนน:</strong> ถนนด้อยทำให้ความเสื่อมลดลง</li>
+        <li><strong>พฤติกรรมการขับขี่:</strong> ขับอย่างรุนแรงทำให้สึกหรอเร็ว</li>
+      </ul>
+
+      <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">ต้นทุนจากการตกการตรวจสอบ</h3>
+
+      <p>
+        ต้นทุนรวมจากการตกการตรวจสอบประกอบด้วย:
+      </p>
+
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li>ค่าซ่อมแซมปัญหาที่พบจากการตรวจสอบ</li>
+        <li>ค่าตรวจสอบซ้ำ</li>
+        <li>ค่าเสียหายจากรถหยุดใช้งาน (downtime)</li>
+        <li>อาจมีค่าปรับในกรณีที่เสื่อมสภาพมาก</li>
+      </ol>
+
+      <p>
+        การบำรุงรักษาอย่างสม่ำเสมอและเป้าหมายให้อัตราการผ่าน 90% ขึ้นไปจะช่วยลดค่าใช้จ่ายและเพิ่มประสิทธิภาพการจัดการรถบริษัท
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
+
+    <!-- Related -->
+    <RelatedArticles currentHref="/คำนวณอัตราการผ่านการตรวจสอบรถ/" />
+    <RelatedCalculators currentHref="/คำนวณอัตราการผ่านการตรวจสอบรถ/" />
+
+    <!-- Disclaimer -->
+    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+      <strong>ข้อจำกัดความรับผิดชอบ:</strong> ผลการคำนวณเป็นเพียงการประมาณการเท่านั้น ต้นทุนจริงอาจแตกต่างตามสภาพรถและการซ่อมแซม
+    </div>
+  </article>
+
+  <script>
+    function formatNumber(num: number): string {
+      return new Intl.NumberFormat('th-TH', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      }).format(num);
+    }
+
+    function calculatePassRate() {
+      const totalVehicles = parseFloat(document.getElementById('total-vehicles')?.value || '0') || 1;
+      const passedFirstTime = parseFloat(document.getElementById('passed-first-time')?.value || '0') || 0;
+      const failedVehicles = parseFloat(document.getElementById('failed-vehicles')?.value || '0') || 0;
+      const avgRepairCost = parseFloat(document.getElementById('avg-repair-cost')?.value || '0') || 0;
+      const inspectionCost = parseFloat(document.getElementById('inspection-cost')?.value || '0') || 0;
+      const downtimeCost = parseFloat(document.getElementById('downtime-cost')?.value || '0') || 0;
+
+      const passRate = (passedFirstTime / totalVehicles) * 100;
+      const totalRepairCost = failedVehicles * avgRepairCost;
+      const inspectionRetestCost = failedVehicles * inspectionCost;
+      const downtimeTotalCost = failedVehicles * downtimeCost;
+      const totalCost = totalRepairCost + inspectionRetestCost + downtimeTotalCost;
+
+      let efficiency = '';
+      if (passRate >= 90) {
+        efficiency = '💚 ยอดเยี่ยม — ประสิทธิผลการบำรุงดี';
+      } else if (passRate >= 75) {
+        efficiency = '💙 ดี — มีประสิทธิผล';
+      } else if (passRate >= 60) {
+        efficiency = '💛 ปานกลาง — ต้องปรับปรุง';
+      } else {
+        efficiency = '❤️ ต้องพิจารณา — ต้องปรับปรุงอย่างเร่งด่วน';
+      }
+
+      // Update display
+      document.getElementById('pass-rate')!.textContent = formatNumber(passRate) + '%';
+      document.getElementById('passed-count')!.textContent = formatNumber(passedFirstTime);
+      document.getElementById('failed-count')!.textContent = formatNumber(failedVehicles);
+      document.getElementById('total-repair-cost')!.textContent = formatNumber(totalRepairCost);
+      document.getElementById('total-cost')!.textContent = formatNumber(totalCost);
+      document.getElementById('efficiency')!.textContent = efficiency;
+
+      document.getElementById('result')?.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-calculate')?.addEventListener('click', calculatePassRate);
+  </script>
+</BaseLayout>

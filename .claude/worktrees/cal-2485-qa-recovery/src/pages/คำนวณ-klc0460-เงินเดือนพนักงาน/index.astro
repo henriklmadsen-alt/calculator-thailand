@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+const pageTitle = 'คำนวณเงินเดือนพนักงาน | Kamnuanlek';
+const pageDescription = 'คำนวณเงินเดือนพนักงาน ต้นทุนแรงงานรวม ประกันสังคมนายจ้าง กองทุนสำรองเลี้ยงชีพ';
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/คำนวณ-klc0460-เงินเดือนพนักงาน/`;
+const faqData = [
+  { question: 'นายจ้างจ่ายประกันสังคมเท่าไหร่?', answer: 'นายจ้างจ่ายประกันสังคมมาตรา 33 ในอัตรา 5% ของเงินเดือน สูงสุด 750 บาทต่อคนต่อเดือน (เงินเดือนสูงสุดที่คำนวณ 15,000 บาท)' },
+  { question: 'ต้นทุนจริงของพนักงานคิดอย่างไร?', answer: 'ต้นทุนจริง = เงินเดือน + ประกันสังคมนายจ้าง + กองทุนสำรองเลี้ยงชีพ (PVD) + สวัสดิการอื่น เช่น โบนัส ค่าน้ำมัน ประกันสุขภาพ' },
+  { question: 'กองทุนสำรองเลี้ยงชีพบังคับใช้กับธุรกิจไหน?', answer: 'PVD ไม่บังคับตามกฎหมาย แต่บริษัทอาจจัดตั้งเองโดยสมัครใจ นายจ้างสมทบขั้นต่ำ 2% ของเงินเดือน ลูกจ้างสมทบเท่ากันหรือมากกว่า' },
+  { question: 'ค่าแรงขั้นต่ำในไทยเท่าไหร่?', answer: 'ค่าแรงขั้นต่ำในไทย ปี 2567 อยู่ที่ 330-400 บาทต่อวัน ขึ้นอยู่กับจังหวัด กรุงเทพฯ และปริมณฑล 363-400 บาท ต่างจังหวัด 330-345 บาท' }
+,
+  { question: 'ค่าแรงขั้นต่ำปี 2569 อยู่ที่เท่าไร?', answer: 'ค่าแรงขั้นต่ำปี 2568-2569 กรุงเทพและปริมณฑล 370-400 บาท/วัน ต่างจังหวัดอยู่ที่ 330-370 บาท/วัน ขึ้นอยู่กับจังหวัด ตรวจสอบอัตราล่าสุดได้จากกระทรวงแรงงาน mol.go.th' },
+  { question: 'เงินเดือนสุทธิคำนวณจากอะไรบ้าง?', answer: 'เงินเดือนสุทธิ = เงินเดือนรวม - ภาษีหัก ณ ที่จ่าย - เงินสมทบประกันสังคม (5% สูงสุด 750 บาท) - กองทุนสำรองเลี้ยงชีพ (ถ้ามี) นายจ้างจ่ายประกันสังคมเพิ่มอีกฝ่าย 5%' },
+  { question: 'OT คำนวณอย่างไร?', answer: 'วันธรรมดา: 1.5 เท่าของค่าจ้างปกติต่อชั่วโมง | วันหยุด: 2 เท่า (ชั่วโมงปกติ) และ 3 เท่า (เกินเวลาปกติ) | ตามพระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541' },
+  { question: 'กองทุนสำรองเลี้ยงชีพมีประโยชน์อย่างไร?', answer: 'เป็นเงินออมระยะยาวที่นายจ้างสมทบ (1-15% ของค่าจ้าง) + ลดหย่อนภาษีได้สูงสุด 15% ของรายได้หรือ 500,000 บาท + ผลตอบแทนจากการลงทุน ดึงออกได้เมื่อออกจากงานหรือเกษียณ' }
+];
+const jsonLdFaq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
+---
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเงินเดือนพนักงาน">  <article>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">คำนวณเงินเดือนพนักงาน</h1>
+    <div class="mb-4 inline-block rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"><p class="text-xs font-semibold text-blue-800">[อัปเดตปี 2569]</p></div>
+    <p class="text-gray-600 mb-6">คำนวณต้นทุนแรงงานจริงรวมทุกรายการสำหรับนายจ้าง</p>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
+      <div class="space-y-4 mb-6">
+        <div><label for="base_salary" class="block text-sm font-medium text-gray-700 mb-1">เงินเดือนพนักงาน (บาท)</label><input type="text" id="base_salary" inputmode="decimal" placeholder="เช่น 25000" value="25000" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="num_employees" class="block text-sm font-medium text-gray-700 mb-1">จำนวนพนักงาน (คน)</label><input type="number" id="num_employees" min="1" placeholder="เช่น 5" value="5" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="pvd_rate" class="block text-sm font-medium text-gray-700 mb-1">อัตราสมทบ PVD นายจ้าง (%)</label><input type="number" id="pvd_rate" min="0" max="15" placeholder="เช่น 3" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+        <div><label for="bonus_months" class="block text-sm font-medium text-gray-700 mb-1">โบนัสต่อปี (เดือน)</label><input type="number" id="bonus_months" min="0" max="6" step="0.5" placeholder="เช่น 1" value="1" class="w-full px-3 py-2 border border-gray-300 rounded-md" /></div>
+      </div>
+      <button type="button" id="btn" class="px-6 py-2 bg-blue-600 text-white rounded-md">คำนวณ</button>
+      <div id="res" class="hidden mt-6 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนแรงงานต่อเดือน</p><p id="monthly_labor" class="font-bold">-</p></div>
+          <div class="bg-indigo-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนแรงงานต่อปี</p><p id="yearly_labor" class="font-bold text-lg">-</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">❓ คำถามที่พบบ่อย</h2>
+      <div class="space-y-4">{faqData.map((faq) => (<div><h3 class="font-semibold text-gray-900 mb-2">{faq.question}</h3><p class="text-gray-600 text-sm">{faq.answer}</p></div>))}</div>
+    </div>
+  </article>
+  <script>
+    document.getElementById('btn')!.addEventListener('click', () => {
+      const salary = parseFloat((document.getElementById('base_salary') as HTMLInputElement).value) || 0;
+      const employees = parseInt((document.getElementById('num_employees') as HTMLInputElement).value) || 1;
+      const pvdRate = parseFloat((document.getElementById('pvd_rate') as HTMLInputElement).value) || 0;
+      const bonusMonths = parseFloat((document.getElementById('bonus_months') as HTMLInputElement).value) || 0;
+      const sso = Math.min(salary * 0.05, 750);
+      const pvd = salary * (pvdRate / 100);
+      const monthlyCostPerPerson = salary + sso + pvd;
+      const monthlyLabor = monthlyCostPerPerson * employees;
+      const annualBonus = salary * bonusMonths * employees;
+      const yearlyLabor = (monthlyLabor * 12) + annualBonus;
+      (document.getElementById('monthly_labor') as HTMLElement).textContent = Math.round(monthlyLabor).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('yearly_labor') as HTMLElement).textContent = Math.round(yearlyLabor).toLocaleString('th-TH') + ' บาท';
+      (document.getElementById('res') as HTMLElement).classList.remove('hidden');
+      trackCalculatorUsed('payroll');
+    });
+    document.getElementById('btn')!.click();
+  </script>
+</BaseLayout>
