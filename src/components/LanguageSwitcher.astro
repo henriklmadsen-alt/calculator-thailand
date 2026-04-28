@@ -1,0 +1,53 @@
+---
+import { getCurrentLanguage, getLanguageURL } from '../lib/i18n';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const currentLang = getCurrentLanguage(currentPath);
+const otherLang = currentLang === 'th' ? 'en' : 'th';
+const otherPath = getLanguageURL(currentPath, otherLang);
+
+const langLabels = {
+  th: { label: 'ไทย', flag: '🇹🇭' },
+  en: { label: 'English', flag: '🇬🇧' },
+};
+---
+
+<div class="language-switcher flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg">
+  <a
+    href={currentPath}
+    class:list={[
+      'px-2.5 py-1 rounded text-sm font-medium transition-colors',
+      currentLang === 'th'
+        ? 'bg-white text-primary-700 shadow-sm'
+        : 'text-gray-600 hover:text-gray-900',
+    ]}
+    aria-current={currentLang === 'th' ? 'page' : undefined}
+  >
+    <span class="mr-1">{langLabels.th.flag}</span>
+    {langLabels.th.label}
+  </a>
+  <span class="text-gray-300">|</span>
+  <a
+    href={otherPath}
+    class:list={[
+      'px-2.5 py-1 rounded text-sm font-medium transition-colors',
+      currentLang === 'en'
+        ? 'bg-white text-primary-700 shadow-sm'
+        : 'text-gray-600 hover:text-gray-900',
+    ]}
+    aria-current={currentLang === 'en' ? 'page' : undefined}
+  >
+    <span class="mr-1">{langLabels.en.flag}</span>
+    {langLabels.en.label}
+  </a>
+</div>
+
+<style>
+  .language-switcher {
+    border: 1px solid #e5e7eb;
+  }
+</style>

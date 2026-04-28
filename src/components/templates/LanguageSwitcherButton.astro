@@ -1,0 +1,49 @@
+---
+// Minimal language switcher button with client-side logic
+// Loads English translations dynamically without requiring full page rebuild
+---
+
+<button
+  id="lang-toggle-btn"
+  class="fixed top-4 right-4 z-50 inline-flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-primary-300 transition-all font-medium text-sm"
+  aria-label="Toggle language"
+  title="Click to switch between Thai and English"
+>
+  <span id="lang-toggle-flag" class="text-lg">🇹🇭</span>
+  <span id="lang-toggle-label" class="hidden sm:inline">ไทย</span>
+</button>
+
+<script is:inline define:vars={{ PUBLIC_SITE_URL: import.meta.env.PUBLIC_SITE_URL }}>
+  (function initLanguageSwitcher() {
+    const btn = document.getElementById('lang-toggle-btn');
+    const flag = document.getElementById('lang-toggle-flag');
+    const label = document.getElementById('lang-toggle-label');
+    const LANG_KEY = 'ct.language.v1';
+
+    function getCurrentLanguage() {
+      return localStorage.getItem(LANG_KEY) || 'th';
+    }
+
+    function setLanguage(lang) {
+      localStorage.setItem(LANG_KEY, lang);
+      // Simple reload for now; future: implement client-side translation
+      window.location.reload();
+    }
+
+    function updateButton() {
+      const current = getCurrentLanguage();
+      const isEnglish = current === 'en';
+      flag.textContent = isEnglish ? '🇬🇧' : '🇹🇭';
+      if (label) label.textContent = isEnglish ? 'English' : 'ไทย';
+      btn.title = isEnglish ? 'Switch to Thai' : 'Switch to English';
+    }
+
+    if (btn) {
+      updateButton();
+      btn.addEventListener('click', () => {
+        const current = getCurrentLanguage();
+        setLanguage(current === 'th' ? 'en' : 'th');
+      });
+    }
+  })();
+</script>
