@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณค่างวดเงินกู้ — คำแนะนำแบบละเอียด';
+const pageDescription = 'เรียนรู้วิธีคำนวณค่างวดรายเดือน อัตราดอกเบี้ย และตารางค่างวดอย่างถูกต้อง พร้อมตัวอย่างจำนวนจริงของประเทศไทย';
+const canonical = `${siteUrl}/how-to/loan-payment/`;
+const calculatorPath = '/คำนวณ-ค่างวดเงินกู้/';
+const authorDate = '2026-04-29';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Understand the Formula',
+      text: 'The amortization formula calculates monthly payment based on principal, interest rate, and loan term.',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Gather Your Information',
+      text: 'Collect: loan amount, annual interest rate, and loan term in years.',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Calculate Monthly Rate',
+      text: 'Divide annual interest rate by 12 to get monthly interest rate.',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Apply the Formula',
+      text: 'Use M = P × [r(1+r)^n] / [(1+r)^n - 1] to calculate monthly payment.',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณค่างวดเงินกู้ — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>การกู้เงินเป็นสิ่งธรรมชาติในชีวิตการเงิน ไม่ว่าจะเป็นการกู้เงินซื้อบ้าน รถยนต์ หรือเงินกู้ส่วนบุคคล ในบทความนี้ เราจะอธิบายวิธีคำนวณค่างวดรายเดือน (Monthly Payment) โดยละเอียด พร้อมตัวอย่างในชีวิตจริง</p>
+
+    <h2>เหตุใดการคำนวณค่างวดจึงสำคัญ?</h2>
+
+    <p>การรู้ว่าค่างวดรายเดือนของเงินกู้คุณคือเท่าไหร่ช่วยให้คุณ:</p>
+    <ul>
+      <li><strong>วางแผนการเงิน:</strong> คุณรู้ว่าต้องจ่ายเท่าไหร่ต่อเดือน เพื่อให้สามารถวางแผนงบประมาณได้อย่างเหมาะสม</li>
+      <li><strong>เปรียบเทียบเงินกู้:</strong> เมื่อสนใจเงินกู้จากหลายธนาคาร คุณสามารถเปรียบเทียบค่างวดรายเดือนได้</li>
+      <li><strong>ตรวจสอบความถูกต้อง:</strong> ตรวจสอบว่าธนาคารคำนวณค่างวดให้คุณถูกต้องหรือไม่</li>
+      <li><strong>วางแผนล่วงหน้า:</strong> รู้ได้ว่าจะต้องจ่ายเงินกู้นานแค่ไหนและต้องจ่ายดอกเบี้ยรวมเท่าไหร่</li>
+    </ul>
+
+    <h2>สูตรการคำนวณค่างวดรายเดือน</h2>
+
+    <p>สูตรที่ใช้คำนวณค่างวดรายเดือนเรียกว่า "Amortization Formula" ตามมาตรฐานสากล:</p>
+
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>M = P × [r(1+r)^n] / [(1+r)^n - 1]</strong></p>
+      <p>โดยที่:</p>
+      <ul>
+        <li><strong>M</strong> = ค่างวดรายเดือน (Monthly Payment)</li>
+        <li><strong>P</strong> = จำนวนเงินกู้เงินต้น (Principal)</li>
+        <li><strong>r</strong> = อัตราดอกเบี้ยต่อเดือน (Monthly Interest Rate)</li>
+        <li><strong>n</strong> = จำนวนเดือนทั้งหมด (Number of Months)</li>
+      </ul>
+    </div>
+
+    <p><strong>หมายเหตุ:</strong> หากคุณทราบอัตราดอกเบี้ยรายปี ให้หารด้วย 12 เพื่อได้อัตราดอกเบี้ยต่อเดือน</p>
+
+    <h2>ตัวอย่างการคำนวณจากชีวิตจริง</h2>
+
+    <h3>สถานการณ์: กู้เงินซื้อรถยนต์</h3>
+
+    <p>สมมติว่าคุณต้องการกู้เงินซื้อรถยนต์ในประเทศไทย:</p>
+
+    <ul>
+      <li><strong>ราคารถ:</strong> 800,000 บาท</li>
+      <li><strong>เงินดาวน์:</strong> 200,000 บาท</li>
+      <li><strong>เงินกู้เงินต้น (P):</strong> 600,000 บาท</li>
+      <li><strong>อัตราดอกเบี้ยรายปี:</strong> 4.5% (ทั่วไปสำหรับรถยนต์ในไทย)</li>
+      <li><strong>อัตราดอกเบี้ยต่อเดือน (r):</strong> 4.5% ÷ 12 = 0.375% = 0.00375</li>
+      <li><strong>ระยะเวลากู้:</strong> 5 ปี = 60 เดือน (n = 60)</li>
+    </ul>
+
+    <p><strong>การคำนวณ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p>M = 600,000 × [0.00375(1.00375)^60] / [(1.00375)^60 - 1]</p>
+      <p>M = 600,000 × [0.00375 × 1.24527] / [0.24527]</p>
+      <p>M = 600,000 × 0.01859 / 0.24527</p>
+      <p>M = <strong>11,154 บาท/เดือน</strong></p>
+    </div>
+
+    <p><strong>ความหมาย:</strong> คุณจะต้องจ่ายค่างวดรายเดือน <strong>11,154 บาท</strong> เป็นระยะเวลา 60 เดือน</p>
+
+    <p><strong>ดอกเบี้ยรวมที่ต้องจ่าย:</strong></p>
+    <ul>
+      <li>จำนวนเงินทั้งหมดที่จ่าย = 11,154 × 60 = 669,240 บาท</li>
+      <li>ดอกเบี้ยรวม = 669,240 - 600,000 = <strong>69,240 บาท</strong></li>
+    </ul>
+
+    <h3>สถานการณ์: กู้เงินซื้อบ้าน</h3>
+
+    <ul>
+      <li><strong>ราคาบ้าน:</strong> 3,000,000 บาท</li>
+      <li><strong>เงินดาวน์:</strong> 600,000 บาท (20%)</li>
+      <li><strong>เงินกู้เงินต้น (P):</strong> 2,400,000 บาท</li>
+      <li><strong>อัตราดอกเบี้ยรายปี:</strong> 3.5% (ทั่วไปสำหรับสินเชื่อบ้าน)</li>
+      <li><strong>อัตราดอกเบี้ยต่อเดือน (r):</strong> 3.5% ÷ 12 = 0.29167% = 0.0029167</li>
+      <li><strong>ระยะเวลากู้:</strong> 20 ปี = 240 เดือน (n = 240)</li>
+    </ul>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p>M = 2,400,000 × [0.0029167(1.0029167)^240] / [(1.0029167)^240 - 1]</p>
+      <p>M ≈ <strong>11,266 บาท/เดือน</strong></p>
+    </div>
+
+    <p><strong>สังเกตว่า:</strong> แม้ว่าเงินกู้บ้านจะมากกว่า (2.4M vs 600K) แต่ค่างวดรายเดือนใกล้เคียงกัน เพราะระยะเวลากู้นานขึ้น (240 เดือน vs 60 เดือน) และอัตราดอกเบี้ยต่ำลงด้วย (3.5% vs 4.5%)</p>
+
+    <h2>ปัจจัยที่ส่งผลต่อค่างวดรายเดือน</h2>
+
+    <table class="w-full border-collapse border border-gray-300 my-4">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 p-3">ปัจจัย</th>
+          <th class="border border-gray-300 p-3">ผลกระทบ</th>
+          <th class="border border-gray-300 p-3">ตัวอย่าง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>จำนวนเงินกู้</strong></td>
+          <td class="border border-gray-300 p-3">เงินกู้มากขึ้น = ค่างวดมากขึ้น</td>
+          <td class="border border-gray-300 p-3">จาก 1M บาท → 2M บาท = ค่างวดเพิ่มเป็นสองเท่า</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>อัตราดอกเบี้ย</strong></td>
+          <td class="border border-gray-300 p-3">ดอกเบี้ยสูง = ค่างวดสูง</td>
+          <td class="border border-gray-300 p-3">จาก 3% → 5% = ค่างวดเพิ่ม ~5-7%</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>ระยะเวลากู้</strong></td>
+          <td class="border border-gray-300 p-3">ระยะเวลานาน = ค่างวดลดลง แต่ดอกเบี้ยรวมสูง</td>
+          <td class="border border-gray-300 p-3">5 ปี vs 20 ปี = ค่างวดต่างกันครึ่งหนึ่ง แต่ดอกเบี้ยรวมมากกว่า</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>บันทึกสำคัญเมื่อกู้เงิน</h2>
+
+    <ul>
+      <li><strong>โปรดตรวจสอบอัตราดอกเบี้ยที่แท้จริง:</strong> บางครั้งธนาคารอาจมีค่าธรรมเนียมอื่น ๆ เพิ่มเติม</li>
+      <li><strong>พิจารณาการจ่ายล่วงหน้า:</strong> บางเงินกู้อนุญาตให้คุณจ่ายล่วงหน้าโดยไม่มีค่าปรับ</li>
+      <li><strong>วางแผนเพื่ออนาคต:</strong> ตรวจสอบว่าค่างวดรายเดือนสมเหตุสมผลกับรายได้ของคุณ</li>
+      <li><strong>ใช้เครื่องคิดเลข Kamnuanlek:</strong> สำหรับการคำนวณที่แม่นยำและรวดเร็ว</li>
+    </ul>
+
+    <h2>สูตรเพิ่มเติม</h2>
+
+    <h3>คำนวณทั้งหมดที่ต้องจ่าย (Total Amount Paid)</h3>
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>Total = M × n</strong></p>
+      <p>โดยที่ M คือค่างวดรายเดือน และ n คือจำนวนเดือน</p>
+    </div>
+
+    <h3>คำนวณดอกเบี้ยรวม (Total Interest)</h3>
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>Total Interest = (M × n) - P</strong></p>
+      <p>โดยที่ P คือเงินกู้เงินต้น</p>
+    </div>
+
+    <h2>การใช้เครื่องคิดเลขค่างวดของ Kamnuanlek</h2>
+
+    <p>แม้ว่าคุณจะเข้าใจสูตรแล้ว แต่การใช้เครื่องคิดเลขออนไลน์จะเป็นวิธีที่รวดเร็วและแม่นยำมากขึ้น Kamnuanlek ได้พัฒนาเครื่องคิดเลขค่างวดเงินกู้ที่:</p>
+
+    <ul>
+      <li>✓ คำนวณค่างวดรายเดือนอย่างแม่นยำ</li>
+      <li>✓ แสดงตารางค่างวดแบบละเอียด</li>
+      <li>✓ ช่วยให้คุณเปรียบเทียบเงินกู้จากหลายแหล่ง</li>
+      <li>✓ ใช้ได้ฟรีและไม่ต้องสมัครสมาชิก</li>
+    </ul>
+
+    <p>เยี่ยมชม: <a href={calculatorPath}>เครื่องคิดเลขค่างวดเงินกู้</a> เพื่อทดลองด้วยตัวคุณเอง</p>
+
+    <h2>สรุป</h2>
+
+    <p>การคำนวณค่างวดเงินกู้เป็นสิ่งสำคัญในการวางแผนการเงิน ด้วยการเข้าใจสูตรและการใช้เครื่องคิดเลข Kamnuanlek คุณสามารถตัดสินใจที่ดีขึ้นเกี่ยวกับเงินกู้ของคุณได้</p>
+
+    <p>หากคุณมีคำถามหรือต้องการความช่วยเหลือเพิ่มเติม โปรดติดต่อเรา หรือลองใช้เครื่องคิดเลขของเราเพื่อคำนวณค่างวดของคุณเอง</p>
+
+  </article>
+
+  <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+    <h2 class="mt-0">ยังคงมีคำถาม?</h2>
+    <p>ลองใช้เครื่องคิดเลข Kamnuanlek สำหรับการคำนวณที่รวดเร็วและแม่นยำ</p>
+    <a href={calculatorPath} class="btn btn-primary">ไปยังเครื่องคิดเลข</a>
+  </div>
+</BaseLayout>
