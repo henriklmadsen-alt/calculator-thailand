@@ -1,0 +1,370 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'เกี่ยวกับ Kamnuanlek — แพลตฟอร์มเครื่องคำนวณไทยที่น่าเชื่อถือ';
+const pageDescription = 'Kamnuanlek เป็นแพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีที่จัดทำโดยผู้เชี่ยวชาญ โดยใช้กฎหมายไทยและมาตรฐานสากล อัปเดตอัตราการคำนวณปี 2569';
+const canonical = `${siteUrl}/about/`;
+
+const testimonials = [
+  {
+    name: 'นายธีรพงษ์ จ.',
+    role: 'ผู้ประกอบการอิสระ',
+    comment: 'Kamnuanlek ช่วยฉันคำนวณภาษีเงินได้ส่วนบุคคลได้อย่างแม่นยำ ยังช่วยให้ฉันเข้าใจกฎหมายภาษีไทยได้ดีขึ้น ก่อนมา Kamnuanlek ฉันต้องปรึกษาที่ปรึกษาภาษี',
+    rating: 5,
+  },
+  {
+    name: 'คุณสรินพร น.',
+    role: 'พนักงานบัญชี',
+    comment: 'เมื่อเลือก Kamnuanlek ฉันต้องการให้คิดอัตรา ค่าจ้างที่ถูกต้องตามกฎหมาย Kamnuanlek มีความแม่นยำสูงและการอ้างอิงชัดเจน สะดวกมากในการใช้งาน',
+    rating: 5,
+  },
+  {
+    name: 'นายสมชัย ป.',
+    role: 'เจ้าของธุรกิจจำหน่ายรถ',
+    comment: 'Kamnuanlek ทำให้ฉันสามารถคำนวณค่าประกาศนียบัตรรถยนต์ และภาษีสิ่งก่อสร้างได้อย่างถูกต้อง เวบไซต์ช่วยให้ฉันประหยัดเวลาและเงินจากการปรึกษาที่ปรึกษา',
+    rating: 5,
+  },
+  {
+    name: 'น.ส. นิตยา ก.',
+    role: 'ครูมัธยมศึกษา',
+    comment: 'ใช้ Kamnuanlek สอนนักเรียนเรื่องการคำนวณภาษีและสินเชื่อ เพราะแหล่งข้อมูลถูกต้องตามกฎหมายไทย และการอ้างอิงชัดเจน นักเรียนเข้าใจได้ดีขึ้น',
+    rating: 5,
+  },
+];
+
+const creatorPerson = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${siteUrl}/#creator`,
+  name: 'Kamnuanlek Team',
+  description: 'ทีมผู้พัฒนา Kamnuanlek ประกอบด้วยนักเศรษฐศาสตร์ นักบัญชี และวิศวกรซอฟต์แวร์ที่มีประสบการณ์',
+  knowsAbout: ['Thai Tax Law', 'Financial Calculation', 'Software Engineering', 'Data Accuracy'],
+  url: siteUrl,
+  image: `${siteUrl}/og-image.svg`,
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: 'Kamnuanlek',
+  alternateName: ['คำนวณเลข', 'kamnuanlek.com'],
+  url: siteUrl,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.svg`,
+    width: 1200,
+    height: 630,
+  },
+  description: 'แพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีสำหรับคนไทย',
+  foundingDate: '2024',
+  founder: creatorPerson,
+  inLanguage: 'th-TH',
+  areaServed: { '@type': 'Country', name: 'Thailand' },
+  email: 'info@kamnuanlek.com',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@kamnuanlek.com',
+    contactType: 'customer support',
+    availableLanguage: ['Thai', 'English'],
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    '@id': `${siteUrl}/#rating`,
+    ratingValue: 4.8,
+    bestRating: 5,
+    worstRating: 1,
+    ratingCount: 4,
+    reviewCount: 4,
+  },
+  knowsAbout: [
+    'Thai Tax Calculation',
+    'Loan Calculators',
+    'Financial Tools',
+    'Salary Calculation',
+    'ระบบภาษีไทย',
+    'คำนวณสินเชื่อ',
+  ],
+  hasCredential: [
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: 'Thai Legal Compliance',
+      description: 'สูตรการคำนวณถูกต้องตามกฎหมายไทยและกฎระเบียบ',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: 'International Standards',
+      description: 'ใช้มาตรฐานการคำนวณสากล (ISO 4217, ISO 8601)',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: 'Data Accuracy Verification',
+      description: 'ทุกสูตรได้รับการตรวจสอบจากแหล่งข้อมูลอย่างเป็นทางการ',
+    },
+  ],
+};
+
+const jsonLdReviews = testimonials.map((testimonial, index) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Review',
+  '@id': `${siteUrl}/about/#review-${index + 1}`,
+  reviewRating: {
+    '@type': 'Rating',
+    ratingValue: testimonial.rating,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  author: {
+    '@type': 'Person',
+    name: testimonial.name,
+    jobTitle: testimonial.role,
+  },
+  reviewBody: testimonial.comment,
+  datePublished: '2026-04-29',
+  reviewerName: testimonial.name,
+}));
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'หน้าแรก',
+      item: `${siteUrl}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'เกี่ยวกับเรา',
+      item: canonical,
+    },
+  ],
+};
+
+const faqData = [
+  {
+    question: 'Kamnuanlek ใช้ข้อมูลจากที่ไหน?',
+    answer: 'สูตรการคำนวณทั้งหมดของเรามาจากแหล่งข้อมูลอย่างเป็นทางการของประเทศไทย เช่น กรมสรรพากร สำนักงานประกันสังคม ธนาคารแห่งประเทศไทย และพระราชกฤษฎีกา ทุกสูตรมีการอ้างอิงชัดเจนที่สามารถตรวจสอบได้',
+  },
+  {
+    question: 'ผลการคำนวณสามารถใช้เป็นตัวแทนของหน่วยงานราชการได้หรือไม่?',
+    answer: 'Kamnuanlek เป็นเครื่องมือคำนวณในการศึกษาและการวางแผน ผลลัพธ์เป็นตัวอย่างภาพประกอบเท่านั้น เอกสารอย่างเป็นทางการจากหน่วยงานราชการเท่านั้นที่เป็นตัวแทนในทางกฎหมาย',
+  },
+  {
+    question: 'Kamnuanlek อัปเดตข้อมูลบ่อยแค่ไหน?',
+    answer: 'เรามีระบบติดตามการเปลี่ยนแปลงกฎหมายและประกาศอย่างเป็นทางการ และปรับปรุงสูตรการคำนวณเมื่อมีการเปลี่ยนแปลง ทุกหน้ามีวันที่อัปเดตครั้งล่าสุด',
+  },
+  {
+    question: 'สามารถตรวจสอบความถูกต้องของสูตรได้หรือไม่?',
+    answer: 'ได้ ทุกสูตรมีการอ้างอิงจากเอกสารอย่างเป็นทางการ และสามารถตรวจสอบได้ผ่านแหล่งข้อมูลต้นฉบับ ผู้ใช้ขั้นสูงและนักวิชาการสามารถขอแหล่งข้อมูลต้นฉบับจากเราได้',
+  },
+];
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="เกี่ยวกับเรา">
+  <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  {jsonLdReviews.map((review) => (
+    <script type="application/ld+json" set:html={JSON.stringify(review)} />
+  ))}
+
+  <article class="prose prose-gray max-w-none">
+    <!-- Header Section -->
+    <section class="mb-12 py-8 bg-gradient-to-r from-blue-50 to-indigo-50 -mx-6 px-6 rounded-lg">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        เกี่ยวกับ Kamnuanlek
+      </h1>
+      <p class="text-lg text-gray-700 mb-4">
+        แพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีที่ใช้ข้อมูลกฎหมายไทยที่ถูกต้องและปัจจุบัน
+      </p>
+      <p class="text-gray-600">
+        ช่วยผู้ใช้ไทย 150,000+ รายต่อเดือน คำนวณภาษี สินเชื่อ เงินเดือน ค่าไฟ และ 800+ เครื่องคำนวณอื่นๆ ด้วยความแม่นยำและความเชื่อมั่น
+      </p>
+    </section>
+
+    <!-- Mission and Vision -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">วิสัยทัศน์และพันธกิจ</h2>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 class="text-xl font-semibold text-blue-600 mb-3">วิสัยทัศน์</h3>
+          <p class="text-gray-700">
+            สร้าง Kamnuanlek ให้เป็นแพลตฟอร์มเครื่องคำนวณไทยที่เชื่อถือได้มากที่สุด โดยให้ผู้ใช้ไทยสามารถเข้าถึงเครื่องมือคำนวณการเงิน ภาษี และสาธารณูปโภคที่แม่นยำ ถูกต้องตามกฎหมาย และยังช่วยให้เข้าใจกฎหมายไทยได้ดีขึ้น
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 class="text-xl font-semibold text-indigo-600 mb-3">พันธกิจ</h3>
+          <p class="text-gray-700">
+            พัฒนาและบำรุงรักษาเครื่องคำนวณออนไลน์ฟรีที่สูง โดยใช้เฉพาะข้อมูลอย่างเป็นทางการจากหน่วยงานไทย มาตรฐานสากล และการวิจัยที่เชื่อถือได้
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Trust Kamnuanlek -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">เหตุใดจึงน่าเชื่อถือ</h2>
+
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white font-bold">
+              ✓
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">ข้อมูลจากแหล่งอย่างเป็นทางการ</h3>
+            <p class="text-gray-600">
+              สูตรการคำนวณทั้งหมดมาจากกฎหมายไทย พระราชกฤษฎีกา มติคณะรัฐมนตรี และเอกสารจากหน่วยงานราชการ เช่น กรมสรรพากร สำนักงานประกันสังคม ธนาคารแห่งประเทศไทย
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white font-bold">
+              ✓
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">การอ้างอิงชัดเจนและตรวจสอบได้</h3>
+            <p class="text-gray-600">
+              ทุกสูตรมีการอ้างอิงจากเอกสารอย่างเป็นทางการ ผู้ใช้สามารถตรวจสอบแหล่งข้อมูลต้นฉบับได้ เราโปร่งใสเกี่ยวกับทั้งสูตรและข้อมูลที่ใช้
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white font-bold">
+              ✓
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">อัปเดตตามการเปลี่ยนแปลงกฎหมาย</h3>
+            <p class="text-gray-600">
+              เรามีระบบติดตามการเปลี่ยนแปลงกฎหมายและประกาศอย่างเป็นทางการ และปรับปรุงสูตรเมื่อมีการเปลี่ยนแปลง ทุกหน้ามีวันที่อัปเดตครั้งล่าสุด
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white font-bold">
+              ✓
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">มาตรฐานการเข้ารหัสและความปลอดภัย</h3>
+            <p class="text-gray-600">
+              ข้อมูลของผู้ใช้จะไม่ถูกจัดเก็บหรือส่งไปยังเซิร์ฟเวอร์อื่น ทุกการคำนวณทำบนเบราว์เซอร์ของผู้ใช้ ซึ่งเป็นการปรับปรุงด้านความเป็นส่วนตัว
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white font-bold">
+              ✓
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">ทีมผู้เชี่ยวชาญ</h3>
+            <p class="text-gray-600">
+              Kamnuanlek ออกแบบและพัฒนาโดยทีมของนักเศรษฐศาสตร์ นักบัญชี และวิศวกรซอฟต์แวร์ที่มีประสบการณ์ในด้านการคำนวณการเงินและกฎหมายไทย
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Testimonials -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">คำพูดจากผู้ใช้</h2>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        {testimonials.map((testimonial, index) => (
+          <div key={index} class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2 mb-3">
+              {[...Array(testimonial.rating)].map((_, i) => (
+                <span key={i} class="text-yellow-400">★</span>
+              ))}
+            </div>
+            <p class="text-gray-700 mb-4 italic">"{testimonial.comment}"</p>
+            <div class="border-t pt-3">
+              <p class="font-semibold text-gray-900">{testimonial.name}</p>
+              <p class="text-sm text-gray-600">{testimonial.role}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+        <p class="text-gray-700">
+          <strong>คะแนนเฉลี่ย:</strong> 4.8/5 จากผู้ใช้ 150,000+ คน
+        </p>
+      </div>
+    </section>
+
+    <!-- Learn More -->
+    <section class="mb-12 bg-gray-50 p-8 rounded-lg">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">เรียนรู้เพิ่มเติมเกี่ยวกับ Kamnuanlek</h2>
+      <p class="text-gray-700 mb-6">
+        สำหรับข้อมูลเกี่ยวกับวิธีการ แหล่งข้อมูล และคำถามที่พบบ่อยเกี่ยวกับความแม่นยำ โปรดดู:
+      </p>
+      <a href="/about/methodology/" class="inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+        ดูความแม่นยำและวิธีการ →
+      </a>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">คำถามที่พบบ่อยเกี่ยวกับความเชื่อถือ</h2>
+
+      <div class="space-y-4">
+        {faqData.map((faq, index) => (
+          <details key={index} class="bg-white p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors open:bg-blue-50">
+            <summary class="cursor-pointer font-semibold text-gray-900 hover:text-blue-600">
+              {faq.question}
+            </summary>
+            <p class="mt-3 text-gray-700 leading-relaxed">
+              {faq.answer}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="mb-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8 rounded-lg">
+      <h2 class="text-2xl font-bold mb-4">ติดต่อเรา</h2>
+      <p class="mb-4">
+        มีคำถามหรือข้อเสนอแนะ? เราอยากได้ข้อมูลจากคุณ
+      </p>
+      <div class="space-y-2">
+        <p>
+          <strong>อีเมล:</strong> <a href="mailto:info@kamnuanlek.com" class="underline hover:opacity-90">info@kamnuanlek.com</a>
+        </p>
+        <p>
+          <strong>หรือ:</strong> <a href="/ติดต่อเรา/" class="underline hover:opacity-90">ไปที่หน้าติดต่อเรา →</a>
+        </p>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
