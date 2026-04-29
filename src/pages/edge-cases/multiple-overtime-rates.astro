@@ -1,0 +1,264 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'คำนวณค่าตอบแทนพิเศษหลายอัตรา — ตัวอักษรพยาบาล วันหยุด และเวลากลางคืน';
+const pageDescription = 'วิธีคำนวณค่าจ้างเมื่อมีอัตราต่างๆ หลาย: พยาบาล วันหยุด ความเสี่ยง และเวลากลางคืน พร้อมตัวอย่างจริงจากประเทศไทย';
+const canonical = `${siteUrl}/edge-cases/multiple-overtime-rates/`;
+const calculatorPath = '/คำนวณ-เงินค่าตอบแทนพิเศษ/';
+const howToPath = '/how-to/overtime-pay/';
+const authorDate = '2026-04-29';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'วันหยุดนับเป็นค่าตอบแทนพิเศษหรือไม่?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ในประเทศไทย การทำงานในวันหยุดนั่งร้านให้คำนวณเป็นค่าตอบแทนพิเศษตามกฎหมายแรงงาน',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'เวลากลางคืนจ่ายให้เพิ่มเติมหรือไม่?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'บางอุตสาหกรรม เช่น สถาบันเพื่อสุขภาพ และบริการท่องเที่ยว อาจจ่ายพบ, หรือค่าตอบแทนอื่นสำหรับเวลากลางคืน',
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFAQ)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>คำนวณค่าตอบแทนพิเศษหลายอัตรา — คำแนะนำสำหรับอาชีพเฉพาะ</h1>
+
+    <p>บางอาชีพในประเทศไทยต้องทำงานในเวลาพิเศษ เช่น พยาบาล ตำรวจ โครงการล้ำวิศวะ และบริการท่องเที่ยว ซึ่งมีระบบค่าจ้างที่ซับซ้อน บทความนี้จะอธิบายวิธีคำนวณเมื่อมีหลายอัตราในเวลาเดียว</p>
+
+    <h2>อัตราค่าตอบแทนพิเศษต่างๆ ที่พบบ่อยในประเทศไทย</h2>
+
+    <table class="w-full border-collapse border border-gray-300 my-6">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 p-3">ประเภท</th>
+          <th class="border border-gray-300 p-3">อัตรา (กฎหมาย)</th>
+          <th class="border border-gray-300 p-3">หมายเหตุ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>ค่าตอบแทนพิเศษปกติ (OT)</strong></td>
+          <td class="border border-gray-300 p-3">1.5 เท่า</td>
+          <td class="border border-gray-300 p-3">ชั่วโมงที่ 1-4 หลังเวลา 8 ชั่วโมง</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>ค่าตอบแทนพิเศษสูง</strong></td>
+          <td class="border border-gray-300 p-3">2.0 เท่า</td>
+          <td class="border border-gray-300 p-3">ชั่วโมงที่ 5+ หรือเวลากลางคืน</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>วันหยุด</strong></td>
+          <td class="border border-gray-300 p-3">2.0 เท่า</td>
+          <td class="border border-gray-300 p-3">ปกติสำหรับวันหยุด/วันปิด</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>วันหยุดยาว</strong></td>
+          <td class="border border-gray-300 p-3">3.0 เท่า</td>
+          <td class="border border-gray-300 p-3">วันเทศกาล วันมีชาติ ส่วนรวม</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>เวลากลางคืน</strong></td>
+          <td class="border border-gray-300 p-3">แปรผัน</td>
+          <td class="border border-gray-300 p-3">ตั้งแต่ 22:00 - 06:00 (บางที่)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 my-6">
+      <h3 class="mt-0">⚠️ สำคัญ:</h3>
+      <p>อัตรา OT แต่ละสถาบันอาจต่างกัน ตามอุตสาหกรรมและสัญญาจ้างแรงงาน กรุณาตรวจสอบสัญญาจ้างของคุณเสมอ</p>
+    </div>
+
+    <h2>สถานการณ์ 1: พยาบาลขอบค่าจ้างหลายอัตรา</h2>
+
+    <h3>ข้อมูล:</h3>
+    <ul>
+      <li><strong>เงินเดือนฐาน:</strong> 20,000 บาท/เดือน</li>
+      <li><strong>ค่าจ้างต่อชั่วโมง:</strong> 20,000 ÷ 160 = 125 บาท/ชั่วโมง</li>
+      <li><strong>สถานการณ์สัปดาห์นี้:</strong>
+        <ul>
+          <li>วันจันทร์-ศุกร์: 8 ชั่วโมง (ปกติ)</li>
+          <li>เสาร์ (วันหยุด): 8 ชั่วโมง OT ที่ 2.0 เท่า</li>
+          <li>อาทิตย์ (วันหยุด): 4 ชั่วโมง OT ที่ 2.0 เท่า + 4 ชั่วโมง OT ที่ 3.0 เท่า (เทศกาล)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>การคำนวณ:</h3>
+
+    <div class="bg-gray-100 p-6 rounded-lg my-6">
+      <h4>วันจันทร์-ศุกร์ (ปกติ):</h4>
+      <p><strong>5 วัน × 8 ชั่วโมง × 125 บาท = 5,000 บาท</strong></p>
+
+      <h4>เสาร์ (วันหยุด - 2.0 เท่า):</h4>
+      <p>8 ชั่วโมง × 125 บาท × 2.0 = <strong>2,000 บาท</strong></p>
+
+      <h4>อาทิตย์ (วันหยุดยาว):</h4>
+      <ul>
+        <li>OT ที่ 2.0 เท่า: 4 ชั่วโมง × 125 บาท × 2.0 = 1,000 บาท</li>
+        <li>OT ที่ 3.0 เท่า: 4 ชั่วโมง × 125 บาท × 3.0 = 1,500 บาท</li>
+        <li>รวม: <strong>2,500 บาท</strong></li>
+      </ul>
+
+      <h4><strong>รวมทั้งสัปดาห์: 5,000 + 2,000 + 2,500 = 9,500 บาท</strong></h4>
+      <p><em>หากเดือนนี้มี 4 สัปดาห์: 9,500 × 4 = 38,000 บาท</em></p>
+    </div>
+
+    <h2>สถานการณ์ 2: กองทุนปกป้องแรงงาน (หลายหนดปะเทศ)</h2>
+
+    <h3>ข้อมูล:</h3>
+    <ul>
+      <li><strong>เงินเดือนฐาน:</strong> 18,000 บาท</li>
+      <li><strong>ค่าจ้างต่อชั่วโมง:</strong> 18,000 ÷ 160 = 112.5 บาท/ชั่วโมง</li>
+      <li><strong>สัปดาห์นี้:</strong>
+        <ul>
+          <li>วันธรรมชาติ (จันทร์-ศุกร์): 40 ชั่วโมง ปกติ</li>
+          <li>ค่ำคืน (22:00-06:00): 8 ชั่วโมง ที่ 1.5 เท่า</li>
+          <li>OT เพิ่มเติม (หลังจาก 48 ชั่วโมง): 6 ชั่วโมง ที่ 2.0 เท่า</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>การคำนวณ:</h3>
+
+    <div class="bg-blue-50 p-6 rounded-lg my-6">
+      <h4>เวลาธรรมชาติ (40 ชั่วโมง):</h4>
+      <p>40 × 112.5 = <strong>4,500 บาท</strong></p>
+
+      <h4>ค่ำคืน (8 ชั่วโมง × 1.5 เท่า):</h4>
+      <p>8 × 112.5 × 1.5 = <strong>1,350 บาท</strong></p>
+
+      <h4>OT เพิ่มเติม (6 ชั่วโมง × 2.0 เท่า):</h4>
+      <p>6 × 112.5 × 2.0 = <strong>1,350 บาท</strong></p>
+
+      <h4><strong>รวมเดือน: 4,500 + 1,350 + 1,350 = 7,200 บาท (นอกเหนือจากเงินเดือนฐาน)</strong></h4>
+    </div>
+
+    <h2>บันทึกสำคัญ: ปัจจัยที่ส่งผลต่อค่าตอบแทนพิเศษ</h2>
+
+    <ul>
+      <li><strong>ประเภทงาน:</strong> ค่าตอบแทนต่างกันระหว่าง:
+        <ul>
+          <li>โรงแรม/บริการ: มักมีค่าตอบแทน 1.5-2.0 เท่า</li>
+          <li>โรงพยาบาล/ยารักษา: อาจมี 2.0-3.0 เท่า</li>
+          <li>โรงงาน: ตามกฎหมายแรงงาน 1.5-2.0 เท่า</li>
+        </ul>
+      </li>
+      <li><strong>ชั่วโมงเพิ่มเติม:</strong> ชั่วโมงที่ 1-4 OT ปกติ (1.5 เท่า) แต่ชั่วโมงที่ 5+ อาจเป็น 2.0 หรือ 3.0 เท่า</li>
+      <li><strong>วันหยุด:</strong> ถ้าทำงานในวันหยุด อัตราจะถูกคำนวณเสมอ</li>
+      <li><strong>เวลากลางคืน:</strong> มีผลต่อบางอุตสาหกรรมเท่านั้น ตรวจสอบสัญญาจ้างของคุณ</li>
+    </ul>
+
+    <h2>ตารางสรุป: ค่าตอบแทนตั้งแต่อัตรา</h2>
+
+    <div class="bg-gray-50 p-6 rounded-lg my-6">
+      <p><strong>หมายเหตุ:</strong> สมมติว่าค่าจ้างต่อชั่วโมงฐาน = 100 บาท</p>
+
+      <table class="w-full border-collapse border border-gray-300 my-4">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border border-gray-300 p-3">ประเภท</th>
+            <th class="border border-gray-300 p-3">อัตรา</th>
+            <th class="border border-gray-300 p-3">ค่าตอบแทน/ชั่วโมง</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border border-gray-300 p-3">ปกติ</td>
+            <td class="border border-gray-300 p-3">1.0 เท่า</td>
+            <td class="border border-gray-300 p-3">100 บาท</td>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 p-3">OT ปกติ</td>
+            <td class="border border-gray-300 p-3">1.5 เท่า</td>
+            <td class="border border-gray-300 p-3">150 บาท</td>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 p-3">OT สูง / วันหยุด</td>
+            <td class="border border-gray-300 p-3">2.0 เท่า</td>
+            <td class="border border-gray-300 p-3">200 บาท</td>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 p-3">วันหยุดยาว/เทศกาล</td>
+            <td class="border border-gray-300 p-3">3.0 เท่า</td>
+            <td class="border border-gray-300 p-3">300 บาท</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>เคล็ดลับการจัดการ OT หลายอัตรา</h2>
+
+    <ul>
+      <li><strong>1. ตรวจสอบสัญญาจ้างก่อน:</strong> ค่าตอบแทนแต่ละสถาบันอาจต่างกัน</li>
+      <li><strong>2. เก็บบันทึกเวลางาน:</strong> บันทึกเวลาเข้า-ออกวันละ วันหยุด และเวลากลางคืน</li>
+      <li><strong>3. คำนวณรายเดือน:</strong> ระบบค่าตอบแทนบางแบบคำนวณรายเดือน บางแบบรายสัปดาห์</li>
+      <li><strong>4. ตรวจสอบสลิปเงินเดือน:</strong> ตรวจสอบว่านายจ้างคำนวณถูกต้อง</li>
+      <li><strong>5. ใช้เครื่องคิดเลข Kamnuanlek:</strong> คำนวณหลายสถานการณ์เพื่อความแน่นอน</li>
+    </ul>
+
+    <h2>คำถามที่ถามบ่อย</h2>
+
+    <h3>Q: วันหยุดและวันธรรมชาติ จ่ายให้ต่างกันหรือ?</h3>
+    <p><strong>A:</strong> ใช่ แตกต่างกัน วันหยุดธรรมชาติคิดเป็น 2.0 เท่า แต่วันเทศกาล/วันปิด อาจเป็น 3.0 เท่า ตามกฎหมายแรงงาน</p>
+
+    <h3>Q: หากทำงาน 16 ชั่วโมงในวันเดียว จ่ายเท่าไหร่?</h3>
+    <p><strong>A:</strong> 8 ชั่วโมงแรก = ปกติ (1.0 เท่า) | ชั่วโมงที่ 9-12 = OT ปกติ (1.5 เท่า) | ชั่วโมงที่ 13-16 = OT สูง (2.0 เท่า)</p>
+
+    <h3>Q: หากเป็นวันหยุดและทำงาน 12 ชั่วโมง?</h3>
+    <p><strong>A:</strong> ทั้งวันคิดเป็น 2.0 เท่าของค่าจ้างต่อชั่วโมง (ในอุตสาหกรรมที่ระบุ)</p>
+
+    <h2>เชื่อมโยง</h2>
+    <ul>
+      <li><a href={howToPath}>คำแนะนำ: วิธีคำนวณค่าตอบแทนพิเศษแบบละเอียด</a></li>
+      <li><a href={calculatorPath}>เครื่องคิดเลขค่าตอบแทนพิเศษ — คำนวณฟรี</a></li>
+    </ul>
+
+    <h2>สรุป</h2>
+
+    <p>การคำนวณค่าตอบแทนพิเศษเมื่อมีหลายอัตรา ต้องการความใจดีและการติดตามข้อมูลอย่างเข้มงวด ด้วยการเข้าใจอัตราแต่ละประเภท คุณสามารถตรวจสอบว่าได้รับค่าตอบแทนที่ถูกต้องตามกฎหมายแรงงานไทยหรือไม่</p>
+
+  </article>
+
+  <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+    <h2 class="mt-0">ต้องการคำนวณค่าตอบแทนพิเศษ?</h2>
+    <p>ลองใช้เครื่องคิดเลข Kamnuanlek เพื่อคำนวณค่าตอบแทนพิเศษของคุณ</p>
+    <a href={calculatorPath} class="btn btn-primary">ไปยังเครื่องคิดเลข</a>
+  </div>
+</BaseLayout>

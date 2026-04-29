@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'สินเชื่อบ้านอัตราดอกเบี้ยผันแปร (ARM) — วิธีคำนวณและการเปรียบเทียบ';
+const pageDescription = 'เข้าใจสินเชื่อบ้านอัตราดอกเบี้ยผันแปร (ARM) วิธีคำนวณค่างวด ข้อดี ข้อเสีย และเปรียบเทียบกับอัตราคงที่ พร้อมตัวอย่างจากประเทศไทย';
+const canonical = `${siteUrl}/edge-cases/adjustable-rate-mortgages/`;
+const calculatorPath = '/คำนวณ-ค่างวดเงินกู้/';
+const howToPath = '/how-to/loan-payment/';
+const authorDate = '2026-04-29';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'อัตราดอกเบี้ยผันแปร (ARM) คืออะไร?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'อัตราดอกเบี้ยผันแปรเป็นสินเชื่อบ้านที่มีอัตราดอกเบี้ยเปลี่ยนแปลงตามสถานการณ์ตลาด โดยมีระยะเวลาอัตราคงที่ (เช่น 3 ปี) จากนั้นจึงปรับขึ้นหรือลดลงตามดัชนี',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'ARM ดีกว่าอัตราคงที่หรือไม่?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ARM มีค่างวดเริ่มต้นต่ำกว่า แต่มีความเสี่ยงเมื่อดอกเบี้ยเพิ่มขึ้น ส่วนอัตราคงที่มั่นคงแต่อัตราเริ่มต้นสูงกว่า',
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFAQ)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>สินเชื่อบ้านอัตราดอกเบี้ยผันแปร (ARM) — คำแนะนำแบบสมบูรณ์</h1>
+
+    <p>สินเชื่อบ้านอัตราดอกเบี้ยผันแปร (Adjustable Rate Mortgage - ARM) เป็นตัวเลือกยอดนิยมในประเทศไทย เพราะให้อัตราดอกเบี้ยต่ำกว่าอัตราคงที่ในช่วงเริ่มต้น แต่จะมีความเสี่ยงเมื่อดอกเบี้ยปรับขึ้น บทความนี้จะอธิบายวิธีคำนวณและการเลือก ARM อย่างชาญฉลาด</p>
+
+    <h2>ARM คืออะไร? (ความหมายและโครงสร้าง)</h2>
+
+    <p>Adjustable Rate Mortgage (ARM) คือสินเชื่อบ้านที่มีอัตราดอกเบี้ยแบ่งเป็น 2 ช่วง:</p>
+
+    <ul>
+      <li><strong>ช่วงแรก (Fixed Period):</strong> มีอัตราดอกเบี้ยคงที่เป็นระยะเวลาที่กำหนด เช่น 3 ปี, 5 ปี, หรือ 7 ปี</li>
+      <li><strong>ช่วงที่สอง (Floating Period):</strong> หลังจากช่วงแรกสิ้นสุด อัตราดอกเบี้ยจะปรับตามสถานการณ์ตลาด (โดยอ้างอิงดัชนีเช่น LIBOR หรือ Thai Short-term Reference Rate)</li>
+    </ul>
+
+    <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 my-6">
+      <h3 class="mt-0">ตัวอย่าง ARM 3/20:</h3>
+      <p><strong>3/20 ARM</strong> หมายถึง: 3 ปีแรกมีอัตราคงที่ (เช่น 3%) แล้วอีก 17 ปีจึงปรับอัตราตามตลาด</p>
+    </div>
+
+    <h2>วิธีคำนวณค่างวด ARM</h2>
+
+    <h3>ช่วงแรก (Fixed Period)</h3>
+
+    <p>ช่วงแรกคำนวณเหมือนสินเชื่อธรรมดา โดยใช้สูตร Amortization:</p>
+
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>M = P × [r(1+r)^n] / [(1+r)^n - 1]</strong></p>
+      <ul>
+        <li>M = ค่างวดรายเดือน</li>
+        <li>P = เงินกู้เงินต้น</li>
+        <li>r = อัตราดอกเบี้ยต่อเดือน</li>
+        <li>n = จำนวนเดือนทั้งหมด</li>
+      </ul>
+    </div>
+
+    <h3>ช่วงที่สอง (Floating Period) — การคำนวณใหม่</h3>
+
+    <p>เมื่อเข้าช่วงที่สอง ธนาคารจะคำนวณค่างวดใหม่โดยใช้:</p>
+    <ul>
+      <li><strong>เงินคงเหลือ:</strong> เงินกู้ที่เหลือ (ไม่ใช่เงินต้นเดิม)</li>
+      <li><strong>อัตราดอกเบี้ยใหม่:</strong> อัตราตลาด + ส่วนเบี้ยประกันของธนาคาร</li>
+      <li><strong>ระยะเวลาใหม่:</strong> ปีที่เหลือของสัญญา</li>
+    </ul>
+
+    <h2>ตัวอย่างการคำนวณ ARM จากชีวิตจริง</h2>
+
+    <h3>กรณีศึกษา: ARM 3/17 สำหรับบ้านราคา 3 ล้านบาท</h3>
+
+    <div class="bg-gray-50 p-6 rounded-lg my-6">
+      <h4>ข้อมูลเบื้องต้น:</h4>
+      <ul>
+        <li>ราคาบ้าน: 3,000,000 บาท</li>
+        <li>เงินดาวน์: 600,000 บาท (20%)</li>
+        <li><strong>เงินกู้เงินต้น (P):</strong> 2,400,000 บาท</li>
+        <li><strong>ARM Type:</strong> 3/17 (3 ปีคงที่, 17 ปีลอย)</li>
+        <li><strong>อัตราดอกเบี้ยช่วงแรก:</strong> 2.9% ต่อปี</li>
+        <li><strong>ระยะเวลาทั้งหมด:</strong> 20 ปี (240 เดือน)</li>
+      </ul>
+    </div>
+
+    <h3>ขั้นที่ 1: คำนวณค่างวดช่วง 3 ปีแรก (Fixed Period)</h3>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p><strong>ข้อมูล:</strong></p>
+      <ul>
+        <li>P = 2,400,000</li>
+        <li>r = 2.9% ÷ 12 = 0.2417% = 0.002417</li>
+        <li>n = 36 เดือน (3 ปี)</li>
+      </ul>
+      <p><strong>การคำนวณ:</strong></p>
+      <p>M = 2,400,000 × [0.002417(1.002417)^36] / [(1.002417)^36 - 1]</p>
+      <p>M ≈ <strong>69,980 บาท/เดือน</strong></p>
+      <p><em>ค่างวดรายเดือนในช่วง 3 ปีแรก: 69,980 บาท</em></p>
+    </div>
+
+    <h3>ขั้นที่ 2: คำนวณเงินคงเหลือหลังจากปลายปีที่ 3</h3>
+
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>จำนวนเงินที่จ่ายไปแล้ว:</strong> 69,980 × 36 = 2,519,280 บาท</p>
+      <p><strong>ดอกเบี้ยที่จ่ายไปแล้ว:</strong> 2,519,280 - 2,400,000 = 119,280 บาท</p>
+      <p><strong>เงินต้นที่ชำระแล้ว:</strong> 2,400,000 - 119,280 = 2,280,720 บาท</p>
+      <p><strong>เงินคงเหลือ (Remaining Balance):</strong> 2,400,000 - 2,280,720 = <strong>119,280 บาท</strong></p>
+    </div>
+
+    <p><em>หมายเหตุ: โดยปกติอัตราดอกเบี้ยต่ำเช่นนี้ เงินต้นที่ชำระในช่วง 3 ปีแรกจะน้อยมาก</em></p>
+
+    <h3>ขั้นที่ 3: คำนวณค่างวดใหม่ช่วง 17 ปีที่เหลือ (Floating Period)</h3>
+
+    <div class="bg-yellow-50 p-4 rounded-md my-4">
+      <p><strong>สมมติสถานการณ์หลังปีที่ 3:</strong></p>
+      <ul>
+        <li>อัตราตลาด THOR (Thai Reference Rate) ขึ้นเป็น 4.0%</li>
+        <li>ส่วนเบี้ยประกันของธนาคาร: 1.5%</li>
+        <li><strong>อัตราดอกเบี้ยใหม่:</strong> 4.0% + 1.5% = 5.5%</li>
+      </ul>
+
+      <p><strong>ข้อมูลการคำนวณ:</strong></p>
+      <ul>
+        <li>P = 2,280,720 (เงินคงเหลือ)</li>
+        <li>r = 5.5% ÷ 12 = 0.4583% = 0.004583</li>
+        <li>n = 204 เดือน (17 ปี)</li>
+      </ul>
+
+      <p><strong>การคำนวณ:</strong></p>
+      <p>M = 2,280,720 × [0.004583(1.004583)^204] / [(1.004583)^204 - 1]</p>
+      <p>M ≈ <strong>13,850 บาท/เดือน</strong></p>
+    </div>
+
+    <p><strong>จะเห็นว่า:</strong> ค่างวดเพิ่มขึ้นจากเดิม 69,980 บาท เป็น 13,850 บาท — เพิ่มขึ้นหลายเท่า!</p>
+
+    <h2>ข้อดีและข้อเสีย ARM</h2>
+
+    <table class="w-full border-collapse border border-gray-300 my-6">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 p-3">ข้อดี (Advantages)</th>
+          <th class="border border-gray-300 p-3">ข้อเสีย (Disadvantages)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-300 p-3">
+            <strong>✓ ค่างวดต่ำเริ่มต้น</strong><br/>ช่วงแรกจ่ายต่ำกว่าอัตราคงที่ 1-2% ต่อปี
+          </td>
+          <td class="border border-gray-300 p-3">
+            <strong>✗ ความเสี่ยงด้านอัตราดอกเบี้ย</strong><br/>ดอกเบี้ยอาจปรับสูงขึ้นนับสิบหนึ่งครั้ง
+          </td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3">
+            <strong>✓ วางแผนการเงินได้ง่าย</strong><br/>ช่วง 3-7 ปีแรกมั่นคงและคาดการณ์ได้
+          </td>
+          <td class="border border-gray-300 p-3">
+            <strong>✗ ค่างวดอาจพุ่งขึ้นแบบสูงชัน</strong><br/>การปรับขึ้นทีละนิดในระยะยาวสะสมมาก
+          </td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3">
+            <strong>✓ เหมาะสำหรับผู้มีแผนขายบ้าน</strong><br/>ถ้าขายก่อนอัตราปรับ ได้ประโยชน์สูงสุด
+          </td>
+          <td class="border border-gray-300 p-3">
+            <strong>✗ ไม่เหมาะกับผู้รักษะแบบเก็บไว้ที่ยาว</strong><br/>ถ้าอยู่นาน อัตราคงที่คุ้มกว่า
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>ARM vs. Fixed Rate — การเปรียบเทียบในตัวอย่างจริง</h2>
+
+    <div class="bg-gray-50 p-6 rounded-lg my-6">
+      <h3>เงินกู้ 2.4 ล้านบาท ระยะ 20 ปี</h3>
+
+      <h4>ARM 3/17 ที่ 2.9%/5.5%:</h4>
+      <ul>
+        <li>ค่างวดปี 1-3: 69,980 บาท/เดือน</li>
+        <li>ค่างวดปี 4-20: 13,850 บาท/เดือน (หลังปรับอัตรา)</li>
+        <li>จำนวนเงินรวมจ่าย: (69,980×36) + (13,850×204) ≈ 3,396,670 บาท</li>
+        <li>ดอกเบี้ยรวม: 3,396,670 - 2,400,000 = 996,670 บาท</li>
+      </ul>
+
+      <h4>Fixed Rate ที่ 3.8% ตลอด 20 ปี:</h4>
+      <ul>
+        <li>ค่างวดตลอด 20 ปี: 11,266 บาท/เดือน (คงที่)</li>
+        <li>จำนวนเงินรวมจ่าย: 11,266 × 240 = 2,703,840 บาท</li>
+        <li>ดอกเบี้ยรวม: 2,703,840 - 2,400,000 = 303,840 บาท</li>
+      </ul>
+
+      <p><strong>การเปรียบเทียบ:</strong></p>
+      <ul>
+        <li>ARM ช่วงแรกประหยัด: (11,266 - 69,980) × (-58,714) × 36 = ประหยัด ??? แต่จ่ายมากในภายหลัง</li>
+        <li>ความแตกต่างของดอกเบี้ยรวม: 996,670 - 303,840 = 692,830 บาท (ARM แพงกว่า!)</li>
+      </ul>
+    </div>
+
+    <h2>ใครควรเลือก ARM?</h2>
+
+    <ul>
+      <li><strong>ผู้ขายภายใน 3-5 ปี:</strong> ถ้ามีแผนขายบ้านหรือสรุปเงินกู้ก่อนช่วง Floating</li>
+      <li><strong>ผู้มีรายได้ที่คาดว่าจะเพิ่มขึ้น:</strong> ถ้าแน่ใจว่ารายได้จะสูงขึ้นเมื่อมีการปรับอัตรา</li>
+      <li><strong>ผู้ที่ต้องการประหยัดเงินสดในระยะสั้น:</strong> ห้องเรือนแรก และต้องการให้ค่างวดต่ำ</li>
+    </ul>
+
+    <h2>ใครควรหลีกเลี่ยง ARM?</h2>
+
+    <ul>
+      <li><strong>ผู้วางแผนอยู่นาน (15+ ปี):</strong> ดอกเบี้ยรวมสูงกว่า Fixed Rate มาก</li>
+      <li><strong>ผู้ที่ไม่แน่ใจเรื่องรายได้:</strong> หากรายได้ไม่เพิ่ม การปรับขึ้นจะเป็นภาระหนัก</li>
+      <li><strong>ผู้ที่ชื่นชอบความมั่นคง:</strong> ถ้าต้องการความแน่นอนในค่างวดตลอด 20 ปี</li>
+    </ul>
+
+    <h2>คำแนะนำสำคัญเมื่อสมัคร ARM</h2>
+
+    <ul>
+      <li><strong>ถามถึง "Cap Rate":</strong> อัตราดอกเบี้ยเพิ่มขึ้นไม่เกินเท่าไหร่ (เช่น สูงสุด 8%)</li>
+      <li><strong>ถามเรื่องวงเงินประมาณการ:</strong> ก่อนปรับอัตรา ควรกำหนดว่าจะปรับได้สูงสุดเท่าไหร่</li>
+      <li><strong>ตรวจสอบค่าธรรมเนียม:</strong> ARM บางแบบมีค่าธรรมเนียมการปรับปรุง</li>
+      <li><strong>เปรียบเทียบกับ Fixed Rate:</strong> อย่าเลือก ARM โดยยึดแต่อัตราต่ำ หากไม่วางแผนขายหรือสรุปเงินกู้</li>
+      <li><strong>ใช้เครื่องคิดเลข Kamnuanlek:</strong> คำนวณสถานการณ์ต่างๆ ก่อนตัดสินใจ</li>
+    </ul>
+
+    <h2>ข้อสรุป</h2>
+
+    <p>Adjustable Rate Mortgage (ARM) เป็นตัวเลือกที่ดีสำหรับผู้ที่วางแผนอยู่ระยะสั้นหรือมั่นใจในรายได้ที่จะเพิ่มขึ้น แต่จำเป็นต้องคำนวณและเข้าใจความเสี่ยงอย่างแจ่มแจง โดยเปรียบเทียบกับตัวเลือก Fixed Rate และคำนวณทุกสถานการณ์ที่อาจเกิดขึ้นในอนาคต</p>
+
+    <h2>เชื่อมโยงข้อมูล</h2>
+    <ul>
+      <li><a href={howToPath}>คำแนะนำ: วิธีคำนวณค่างวดเงินกู้แบบละเอียด</a></li>
+      <li><a href={calculatorPath}>เครื่องคิดเลขค่างวดเงินกู้ — คำนวณฟรี</a></li>
+    </ul>
+
+  </article>
+
+  <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+    <h2 class="mt-0">ต้องการคำนวณ ARM ของคุณ?</h2>
+    <p>ลองใช้เครื่องคิดเลข Kamnuanlek เพื่อเปรียบเทียบค่างวด ARM และ Fixed Rate จริงๆ</p>
+    <a href={calculatorPath} class="btn btn-primary">ไปยังเครื่องคิดเลข</a>
+  </div>
+</BaseLayout>
