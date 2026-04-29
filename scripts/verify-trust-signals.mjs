@@ -34,33 +34,33 @@ function checkSignals(html) {
     sentry: { count: 0, target: 'sentry' },
   };
 
-  // OG tags
-  if (html.includes('property="og:')) signals.og.present = true;
+  // OG tags - check for any og: property
+  if (html.match(/property="og:[^"]+"/)) signals.og.present = true;
 
-  // Twitter tags
-  if (html.includes('name="twitter:')) signals.twitter.present = true;
+  // Twitter tags - check for any twitter: meta tag
+  if (html.match(/name="twitter:[^"]+"/)) signals.twitter.present = true;
 
-  // Schema.org
+  // Schema.org - check for JSON-LD structured data
   if (html.includes('application/ld+json')) signals.schema.present = true;
 
-  // GA4
-  if (html.includes('gtag') || html.includes('GA_MEASUREMENT_ID') || html.includes('googletagmanager')) {
+  // GA4 - check for gtag.js or measurement ID
+  if (html.includes('gtag') || html.includes('google-analytics')) {
     signals.ga4.present = true;
   }
 
-  // Mobile viewport
-  if (html.includes('viewport') && html.includes('mobile-optimized|width=device-width')) {
+  // Mobile viewport - check for viewport meta tag with any content
+  if (html.includes('name="viewport"') || html.includes('content="width=device-width')) {
     signals.mobileViewport.present = true;
   }
 
-  // Google verification
+  // Google verification - check for google-site-verification meta tag
   if (html.includes('google-site-verification')) signals.googleVerify.present = true;
 
-  // Hreflang
-  if (html.includes('hreflang=')) signals.hreflang.present = true;
+  // Hreflang - check for alternate hreflang links
+  if (html.includes('hreflang')) signals.hreflang.present = true;
 
-  // Sentry
-  if (html.includes('sentry') || html.includes('dsn')) signals.sentry.present = true;
+  // Sentry - check for sentry initialization
+  if (html.includes('sentry') && html.includes('dsn')) signals.sentry.present = true;
 
   return signals;
 }
