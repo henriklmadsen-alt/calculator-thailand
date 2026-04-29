@@ -1,0 +1,240 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณภาษีโอนที่ดินและสิ่งก่อสร้าง — คำแนะนำสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณภาษีโอนที่ดิน อากรแสตมป์, ค่าธรรมเนียมสำนักงานที่ดิน ตามกฎหมายไทย พร้อมตัวอย่างจำนวนจริง';
+const canonical = `${siteUrl}/how-to/property-transfer-tax/`;
+const calculatorPath = '/คำนวณ-ภาษีโอนที่ดิน/';
+const authorDate = '2026-04-29';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Identify Property Value',
+      text: 'Determine the property price used for land transfer tax calculation (actual sale price or assessed value, whichever is higher)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Calculate Land Transfer Tax',
+      text: 'Apply 0.5% or 1.0% tax rate depending on property type and relationship between buyer and seller',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Calculate Stamp Duty',
+      text: 'Apply 0.5% stamp duty (อากรแสตมป์) on the same property value',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Add Land Department Fees',
+      text: 'Land office charges approximately 1,000-5,000 THB depending on property location',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณภาษีโอนที่ดิน — คำแนะนำสมบูรณ์</h1>
+
+    <p>เมื่อคุณซื้อขายที่ดินหรือทรัพย์สินอสังหาริมทรัพย์ ต้องจ่ายภาษีและค่าธรรมเนียมต่าง ๆ บทความนี้จะอธิบายวิธีคำนวณภาษีโอนที่ดินอย่างละเอียด</p>
+
+    <h2>เหตุใดการคำนวณภาษีโอนจึงสำคัญ?</h2>
+
+    <p>การรู้เท่าไหร่ที่จะต้องจ่ายภาษีโอนเป็นสิ่งสำคัญเพราะ:</p>
+    <ul>
+      <li><strong>วางแผนการเงิน:</strong> รู้ว่าต้องเตรียมเงินเพิ่มเติมกับเท่าไหร่นอกเหนือจากราคาที่ดิน</li>
+      <li><strong>ป้องกันการโกง:</strong> ตรวจสอบว่านายหน้าหรือสำนักงานที่ดินคำนวณให้ถูกต้องหรือไม่</li>
+      <li><strong>เปรียบเทียบสิ่งอุปถัมภ์:</strong> เมื่อมีข้อเสนอที่ดินหลายแปลง ช่วยในการตัดสินใจ</li>
+      <li><strong>เข้าใจสิทธิ:</strong> บางครั้งบ้านค้นหาสามารถลดภาษีได้ คุณควรรู้</li>
+    </ul>
+
+    <h2>ภาษีและค่าธรรมเนียมที่เกี่ยวข้อง</h2>
+
+    <p>เมื่อโอนที่ดิน จะต้องจ่ายดังนี้:</p>
+
+    <h3>1. ภาษีโอนที่ดิน (Transfer Tax / Land Transfer Tax)</h3>
+    <ul>
+      <li><strong>ทั่วไป (บ้าน):</strong> 0.5% ของราคาที่ดิน</li>
+      <li><strong>ที่ดินเปล่า:</strong> 1.0% ของราคาที่ดิน</li>
+      <li><strong>รีอล estate / พาณิชย์:</strong> 1.0% ของราคา</li>
+      <li><strong>ลดกำลัง / บ้านแรกของตัวเอง:</strong> 0.01% (ลดเหลือเพียง 1 บาท ต่อแปลง)</li>
+    </ul>
+
+    <h3>2. อากรแสตมป์ (Stamp Duty)</h3>
+    <ul>
+      <li><strong>ทั่วไป:</strong> 0.5% ของราคาที่ดิน</li>
+      <li><strong>ทั้งผู้ขายและผู้ซื้อ:</strong> แต่ละฝ่ายจ่ายให้กับเอกสารของตน</li>
+    </ul>
+
+    <h3>3. ค่าธรรมเนียมสำนักงานที่ดิน (Land Registration Fee)</h3>
+    <ul>
+      <li><strong>ปกติ:</strong> 1,100 - 5,000 บาท (ขึ้นอยู่กับพื้นที่)</li>
+      <li><strong>หาก 1 แปลง = 1,100 บาท</strong></li>
+      <li><strong>หาก 2 แปลง = 2,200 บาท</strong></li>
+      <li><strong>ไม่มีสูงสุด แต่ไม่เกิน 5,000 บาท ต่อแปลง</strong></li>
+    </ul>
+
+    <h2>สูตรการคำนวณภาษีโอน</h2>
+
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>ภาษีโอนทั้งหมด = (Transfer Tax) + (Stamp Duty) + (Land Registration Fee)</strong></p>
+      <p><strong>= (Property Value × Transfer Tax Rate) + (Property Value × Stamp Duty Rate) + Land Office Fee</strong></p>
+    </div>
+
+    <h2>ตัวอย่างการคำนวณจากชีวิตจริง</h2>
+
+    <h3>สถานการณ์ 1: ซื้อบ้านแรก</h3>
+
+    <ul>
+      <li><strong>ราคาทรัพย์สิน:</strong> 2,500,000 บาท</li>
+      <li><strong>ประเภท:</strong> บ้านแรกของตัวเอง</li>
+      <li><strong>Tax Rate (บ้านแรก):</strong> 0.01% (ลดกำลัง)</li>
+      <li><strong>Stamp Duty:</strong> 0.5%</li>
+      <li><strong>Land Fee:</strong> 2,200 บาท (2 แปลง)</li>
+    </ul>
+
+    <p><strong>การคำนวณ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p><strong>ภาษีโอน (Transfer Tax):</strong> 2,500,000 × 0.01% = 250 บาท</p>
+      <p><strong>อากรแสตมป์ (Stamp Duty):</strong> 2,500,000 × 0.5% = 12,500 บาท</p>
+      <p><strong>ค่าธรรมเนียมสำนักงานที่ดิน:</strong> 2,200 บาท</p>
+      <p><strong>ภาษีโอนรวม = 250 + 12,500 + 2,200 = 14,950 บาท</strong></p>
+    </div>
+
+    <h3>สถานการณ์ 2: ซื้อที่ดินเปล่า</h3>
+
+    <ul>
+      <li><strong>ราคาที่ดิน:</strong> 3,000,000 บาท</li>
+      <li><strong>ประเภท:</strong> ที่ดินเปล่า</li>
+      <li><strong>Tax Rate:</strong> 1.0%</li>
+      <li><strong>Stamp Duty:</strong> 0.5%</li>
+      <li><strong>Land Fee:</strong> 1,100 บาท (1 แปลง)</li>
+    </ul>
+
+    <p><strong>การคำนวณ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p><strong>ภาษีโอน (Transfer Tax):</strong> 3,000,000 × 1.0% = 30,000 บาท</p>
+      <p><strong>อากรแสตมป์ (Stamp Duty):</strong> 3,000,000 × 0.5% = 15,000 บาท</p>
+      <p><strong>ค่าธรรมเนียมสำนักงานที่ดิน:</strong> 1,100 บาท</p>
+      <p><strong>ภาษีโอนรวม = 30,000 + 15,000 + 1,100 = 46,100 บาท</strong></p>
+    </div>
+
+    <h3>สถานการณ์ 3: ขายคอนโดมิเนียม</h3>
+
+    <ul>
+      <li><strong>ราคาคอนโด:</strong> 5,000,000 บาท</li>
+      <li><strong>ประเภท:</strong> คอนโดมิเนียม (พาณิชย์)</li>
+      <li><strong>Tax Rate:</strong> 1.0%</li>
+      <li><strong>Stamp Duty:</strong> 0.5% (ทั้งผู้ขายและผู้ซื้อ)</li>
+      <li><strong>Land Fee:</strong> 1,100 บาท</li>
+    </ul>
+
+    <p><strong>สำหรับผู้ซื้อ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p><strong>ภาษีโอน (Transfer Tax):</strong> 5,000,000 × 1.0% = 50,000 บาท</p>
+      <p><strong>อากรแสตมป์ของผู้ซื้อ:</strong> 5,000,000 × 0.5% = 25,000 บาท</p>
+      <p><strong>ค่าธรรมเนียมสำนักงานที่ดิน:</strong> 1,100 บาท</p>
+      <p><strong>ผู้ซื้อจ่ายรวม = 50,000 + 25,000 + 1,100 = 76,100 บาท</strong></p>
+    </div>
+
+    <p><strong>สำหรับผู้ขาย:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p><strong>อากรแสตมป์ของผู้ขาย:</strong> 5,000,000 × 0.5% = 25,000 บาท</p>
+      <p><strong>ผู้ขายจ่าย = 25,000 บาท</strong></p>
+    </div>
+
+    <h2>ปัจจัยที่ส่งผลต่อภาษีโอน</h2>
+
+    <table class="w-full border-collapse border border-gray-300 my-4">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 p-3">ปัจจัย</th>
+          <th class="border border-gray-300 p-3">ผลกระทบ</th>
+          <th class="border border-gray-300 p-3">ตัวอย่าง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>ราคาทรัพย์สิน</strong></td>
+          <td class="border border-gray-300 p-3">สูง = ภาษีสูง</td>
+          <td class="border border-gray-300 p-3">1M บาท vs 5M บาท = ภาษีต่างกัน 4 เท่า</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>ประเภททรัพย์สิน</strong></td>
+          <td class="border border-gray-300 p-3">บ้าน(0.5%) vs ที่ดินเปล่า (1.0%)</td>
+          <td class="border border-gray-300 p-3">บ้านประหยัดกว่าที่ดินเปล่า</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>บ้านแรก</strong></td>
+          <td class="border border-gray-300 p-3">ลดกำลัง 0.01% แทน 0.5%</td>
+          <td class="border border-gray-300 p-3">ประหยัดได้นับเต้ว 2.5M บาท = ประหยัด 12,000 บาท</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>บันทึกสำคัญ</h2>
+
+    <ul>
+      <li><strong>ต่อสัญญา:</strong> ต้องจ่ายอากรแสตมป์ 0.5% เพิ่มเติมตอนลงนามสัญญา</li>
+      <li><strong>บ้านแรก:</strong> ควรสำรวจเอกสารให้ชัดเจน เพื่อให้ได้สิทธิลด 0.01%</li>
+      <li><strong>ปีนี้ vs ปีหน้า:</strong> การโอนที่ดินแต่ละปีอาจมีอัตราต่างกัน</li>
+      <li><strong>ปรึกษาธนาคาร:</strong> ถ้ามีปัญหา โปรดปรึกษาธนาคารหรือทนายความ</li>
+    </ul>
+
+    <h2>การใช้เครื่องคิดเลขภาษีโอนของ Kamnuanlek</h2>
+
+    <p>การคำนวณภาษีโอนอาจซับซ้อน Kamnuanlek มีเครื่องคิดเลขที่จะช่วยคำนวณอย่างรวดเร็ว:</p>
+
+    <ul>
+      <li>✓ รองรับประเภททรัพย์สินต่าง ๆ</li>
+      <li>✓ คำนวณภาษีโอน อากรแสตมป์ และค่าธรรมเนียมสำนักงาน</li>
+      <li>✓ รองรับการลดกำลังสำหรับบ้านแรก</li>
+      <li>✓ ให้ผลลัพธ์ที่ชัดเจน</li>
+    </ul>
+
+    <p>เยี่ยมชม: <a href={calculatorPath}>เครื่องคิดเลขภาษีโอนที่ดิน</a> เพื่อคำนวณภาษีของคุณเอง</p>
+
+    <h2>สรุป</h2>
+
+    <p>การคำนวณภาษีโอนที่ดินเป็นขั้นตอนสำคัญในการซื้อขายที่ดิน ด้วยการเข้าใจสูตรและการใช้เครื่องคิดเลข Kamnuanlek คุณสามารถวางแผนการเงินได้ดีขึ้น</p>
+
+  </article>
+
+  <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+    <h2 class="mt-0">ต้องการคำนวณภาษีโอนของคุณ?</h2>
+    <p>ใช้เครื่องคิดเลข Kamnuanlek สำหรับการคำนวณที่รวดเร็วและแม่นยำ</p>
+    <a href={calculatorPath} class="btn btn-primary">ไปยังเครื่องคิดเลขภาษีโอน</a>
+  </div>
+</BaseLayout>

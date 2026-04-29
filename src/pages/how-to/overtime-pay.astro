@@ -1,0 +1,231 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณค่าโอที (ค่างานนอกเวลา) ตามกฎหมายแรงงานไทย';
+const pageDescription = 'เรียนรู้วิธีคำนวณค่าโอที ค่าทำงานนอกเวลา ตามพระราชกฤษฎีกา พร้อมตัวอย่างจำนวนจริงของประเทศไทย';
+const canonical = `${siteUrl}/how-to/overtime-pay/`;
+const calculatorPath = '/คำนวณ-ค่าโอที-ตามกฎหมายแรงงาน/';
+const authorDate = '2026-04-29';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Know Your Hourly Rate',
+      text: 'Divide your monthly salary by the standard working hours (160 hours for a standard 8-hour day, 20-day month)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Count Overtime Hours',
+      text: 'Record the number of hours worked beyond the standard 8 hours per day or 40 hours per week',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Apply Thai Labor Law Rates',
+      text: 'First 2 hours: 1.5x hourly rate. Additional hours: 3x hourly rate (or 2x for night shifts)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Calculate Total OT Pay',
+      text: 'Multiply hours by respective rates and sum for total overtime compensation',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณค่าโอที (ค่างานนอกเวลา) — คำแนะนำแบบละเอียด</h1>
+
+    <p>ค่าโอที (Overtime Pay) เป็นสิทธิของคนงานที่ต้องทำงานนอกเวลา ตามพระราชกฤษฎีกากำหนดอัตราค่าโอที โดยจ่ายเป็นจำนวนเงินเพิ่มเติมนอกเหนือจากเงินเดือนปกติ</p>
+
+    <h2>เหตุใดการคำนวณค่าโอทีจึงสำคัญ?</h2>
+
+    <p>การรู้ว่าคุณควรได้ค่าโอทีเท่าไหร่จึง:</p>
+    <ul>
+      <li><strong>ปกป้องสิทธิของคุณ:</strong> ตรวจสอบว่าบริษัทจ่ายค่าโอทีให้คุณถูกต้องตามกฎหมาย</li>
+      <li><strong>วางแผนการเงิน:</strong> รู้ว่าจะได้รับเงินเพิ่มเติมเท่าไหร่จากการทำงานนอกเวลา</li>
+      <li><strong>เปรียบเทียบมาตรฐาน:</strong> หากบริษัทจ่ายน้อยกว่า คุณสามารถเรียกร้องได้</li>
+      <li><strong>เข้าใจสิทธิ:</strong> รู้ว่าเงินโอทีมีการคำนวณอย่างไรตามกฎหมายแรงงานไทย</li>
+    </ul>
+
+    <h2>กฎหมายแรงงานไทยเกี่ยวกับค่าโอที</h2>
+
+    <p>ตามพระราชกฤษฎีกา พ.ศ. 2541 เรื่องการคุ้มครองแรงงาน:</p>
+
+    <ul>
+      <li><strong>เวลางานปกติ:</strong> 8 ชั่วโมงต่อวัน หรือ 40 ชั่วโมงต่อสัปดาห์</li>
+      <li><strong>ค่าโอที 2 ชั่วโมงแรก:</strong> ไม่น้อยกว่า 1.5 เท่าของอัตราค่าจ้างปกติ</li>
+      <li><strong>ค่าโอทีเกิน 2 ชั่วโมง:</strong> ไม่น้อยกว่า 3 เท่าของอัตราค่าจ้างปกติ</li>
+      <li><strong>การทำงานกลางคืน (10 ค่ำ - 6 เช้า):</strong> ได้ค่าโอทีอย่างน้อย 2 เท่า (ระหว่าง 22:00 - 06:00)</li>
+    </ul>
+
+    <h2>สูตรการคำนวณค่าโอติ</h2>
+
+    <p><strong>ขั้นตอนที่ 1: คำนวณอัตราค่าจ้างรายชั่วโมง</strong></p>
+
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>Hourly Rate = Monthly Salary ÷ 160 hours</strong></p>
+      <p>(160 ชั่วโมง = 8 ชั่วโมง/วัน × 20 วันทำงาน/เดือน)</p>
+    </div>
+
+    <p><strong>ขั้นตอนที่ 2: คำนวณค่าโอที</strong></p>
+
+    <div class="bg-gray-100 p-4 rounded-md my-4">
+      <p><strong>Overtime Pay = (First 2 hours × 1.5 × Hourly Rate) + (Additional hours × 3 × Hourly Rate)</strong></p>
+    </div>
+
+    <h2>ตัวอย่างการคำนวณจากชีวิตจริง</h2>
+
+    <h3>สถานการณ์ 1: ทำงานโอทีที่ร้านอาหาร</h3>
+
+    <p>สมมติว่าคุณทำงาน:</p>
+
+    <ul>
+      <li><strong>เงินเดือนรายเดือน:</strong> 15,000 บาท</li>
+      <li><strong>ชั่วโมงงานปกติ:</strong> 160 ชั่วโมง</li>
+      <li><strong>อัตราค่าจ้างรายชั่วโมง:</strong> 15,000 ÷ 160 = 93.75 บาท/ชั่วโมง</li>
+      <li><strong>โอทีวันที่ 1:</strong> ทำงาน 11 ชั่วโมง (ปกติ 8 ชั่วโมง + โอที 3 ชั่วโมง)</li>
+    </ul>
+
+    <p><strong>การคำนวณ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p>ค่าโอที 2 ชั่วโมงแรก = 2 × 1.5 × 93.75 = <strong>281.25 บาท</strong></p>
+      <p>ค่าโอทีเกิน 2 ชั่วโมง (1 ชั่วโมง) = 1 × 3 × 93.75 = <strong>281.25 บาท</strong></p>
+      <p><strong>ค่าโอทีรวมวันนี้ = 281.25 + 281.25 = 562.50 บาท</strong></p>
+    </div>
+
+    <h3>สถานการณ์ 2: ทำงานโอทีในโรงงาน</h3>
+
+    <ul>
+      <li><strong>เงินเดือนรายเดือน:</strong> 20,000 บาท</li>
+      <li><strong>อัตราค่าจ้างรายชั่วโมง:</strong> 20,000 ÷ 160 = 125 บาท/ชั่วโมง</li>
+      <li><strong>โอทีทั้งสัปดาห์:</strong> 15 ชั่วโมง</li>
+    </ul>
+
+    <p><strong>การคำนวณ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p>ค่าโอที 2 ชั่วโมงแรก = 2 × 1.5 × 125 = <strong>375 บาท</strong></p>
+      <p>ค่าโอทีเกิน 2 ชั่วโมง (13 ชั่วโมง) = 13 × 3 × 125 = <strong>4,875 บาท</strong></p>
+      <p><strong>ค่าโอทีรวมสัปดาห์ = 375 + 4,875 = 5,250 บาท</strong></p>
+    </div>
+
+    <h3>สถานการณ์ 3: ทำงานกลางคืนที่โรงแรม</h3>
+
+    <ul>
+      <li><strong>เงินเดือนรายเดือน:</strong> 18,000 บาท</li>
+      <li><strong>อัตราค่าจ้างรายชั่วโมง:</strong> 18,000 ÷ 160 = 112.50 บาท/ชั่วโมง</li>
+      <li><strong>เวลาทำงาน:</strong> 22:00 - 08:00 (10 ชั่วโมง โดย 8 ชั่วโมงปกติ + 2 ชั่วโมงโอที)</li>
+      <li><strong>สถานที่:</strong> ชั้นคืน (มีสิทธิ์ได้ค่าโอที 2 เท่า)</li>
+    </ul>
+
+    <p><strong>การคำนวณ:</strong></p>
+
+    <div class="bg-blue-50 p-4 rounded-md my-4">
+      <p>ค่าโอที 2 ชั่วโมง (กลางคืน) = 2 × 2 × 112.50 = <strong>450 บาท</strong></p>
+      <p>(ทำงาน 8 ชั่วโมงแรกสำหรับเวลางานปกติ ไม่ได้ค่าโอที)</p>
+    </div>
+
+    <h2>ปัจจัยที่ส่งผลต่อค่าโอที</h2>
+
+    <table class="w-full border-collapse border border-gray-300 my-4">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 p-3">ปัจจัย</th>
+          <th class="border border-gray-300 p-3">ผลกระทบ</th>
+          <th class="border border-gray-300 p-3">ตัวอย่าง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>เงินเดือน</strong></td>
+          <td class="border border-gray-300 p-3">เงินเดือนสูง = ค่าโอทีสูง</td>
+          <td class="border border-gray-300 p-3">15,000฿ vs 25,000฿ = ค่าโอทีต่างกันเกือบสองเท่า</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>ชั่วโมงโอที</strong></td>
+          <td class="border border-gray-300 p-3">โอทีมากขึ้น = ค่าโอทีมากขึ้น</td>
+          <td class="border border-gray-300 p-3">2 ชั่วโมง vs 10 ชั่วโมง = ค่าโอทีต่างกันมาก</td>
+        </tr>
+        <tr>
+          <td class="border border-gray-300 p-3"><strong>เวลาทำงาน</strong></td>
+          <td class="border border-gray-300 p-3">กลางคืน (2 เท่า) หรือวันธรรมดา (1.5-3 เท่า)</td>
+          <td class="border border-gray-300 p-3">วันธรรมดา vs กลางคืน = ค่าโอทีต่างกัน</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>บันทึกสำคัญเกี่ยวกับค่าโอที</h2>
+
+    <ul>
+      <li><strong>ค่าโอทีเป็นสิทธิของคนงาน:</strong> บริษัทต้องจ่าย ไม่สามารถปฏิเสธได้</li>
+      <li><strong>ต้องประมวล:</strong> ค่าโอทีรวมกับเงินเดือนแล้วจ่ายทั้งหมด</li>
+      <li><strong>ต้องเท่านั้นที่กำหนด:</strong> บริษัทอาจจ่ายมากกว่า แต่ต้องไม่น้อยกว่ากฎหมาย</li>
+      <li><strong>ตรวจสอบสลิปเงินเดือน:</strong> ตรวจสอบว่าค่าโอทีถูกหักออกหรือรวมไว้อย่างถูกต้อง</li>
+      <li><strong>วันหยุด:</strong> วันหยุดทำงานไม่ต้องจ่ายค่าโอทีเว้นแต่ทำงานจริง</li>
+    </ul>
+
+    <h2>สิ่งที่ควรระวัง</h2>
+
+    <ul>
+      <li>บริษัทอาจหักค่าใช้จ่ายอื่น ๆ ออกจากค่าโอที อย่าลืมตรวจสอบ</li>
+      <li>ตรวจสอบว่าได้ค่าโอทีเป็นเงินสด หรือวันหยุดเพิ่มแทน</li>
+      <li>หากมีข้อขัดแย้ง ติดต่อกรมการจ้างงาน หรือสหภาพแรงงาน</li>
+    </ul>
+
+    <h2>การใช้เครื่องคิดเลขค่าโอทีของ Kamnuanlek</h2>
+
+    <p>แม้ว่าคุณจะเข้าใจสูตรแล้ว แต่การใช้เครื่องคิดเลขออนไลน์จะช่วยคำนวณได้รวดเร็วและแม่นยำ Kamnuanlek มีเครื่องคิดเลขค่าโอทีที่:</p>
+
+    <ul>
+      <li>✓ คำนวณค่าโอทีตามกฎหมายแรงงานไทย</li>
+      <li>✓ รองรับโอทีหลายชั่วโมง</li>
+      <li>✓ คำนึงถึงการทำงานกลางคืน</li>
+      <li>✓ ให้ผลลัพธ์ที่ชัดเจนและ่เร็ว</li>
+    </ul>
+
+    <p>เยี่ยมชม: <a href={calculatorPath}>เครื่องคิดเลขค่าโอที</a> เพื่อคำนวณค่าโอทีของคุณเอง</p>
+
+    <h2>สรุป</h2>
+
+    <p>การคำนวณค่าโอทีเป็นสิ่งสำคัญในการปกป้องสิทธิของคุณ ด้วยการเข้าใจสูตรและการใช้เครื่องคิดเลข Kamnuanlek คุณสามารถตรวจสอบว่าได้ค่าโอทีที่ถูกต้องตามกฎหมายไทย</p>
+
+    <p>หากมีข้อสงสัย โปรดติดต่อกรมการจ้างงาน หรือลองใช้เครื่องคิดเลขของเราเพื่อคำนวณค่าโอทีของคุณ</p>
+
+  </article>
+
+  <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+    <h2 class="mt-0">ต้องการคำนวณค่าโอทีของคุณ?</h2>
+    <p>ใช้เครื่องคิดเลข Kamnuanlek สำหรับการคำนวณที่รวดเร็วและแม่นยำตามกฎหมายไทย</p>
+    <a href={calculatorPath} class="btn btn-primary">ไปยังเครื่องคิดเลขค่าโอที</a>
+  </div>
+</BaseLayout>
