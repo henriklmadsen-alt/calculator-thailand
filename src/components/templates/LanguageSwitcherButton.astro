@@ -26,8 +26,19 @@
 
     function setLanguage(lang) {
       localStorage.setItem(LANG_KEY, lang);
-      // Simple reload for now; future: implement client-side translation
-      window.location.reload();
+      // Navigate to the correct language version of current page
+      const currentPath = window.location.pathname;
+      let newPath;
+
+      if (lang === 'en') {
+        // Switch to English: prepend /en if not already there
+        newPath = currentPath.startsWith('/en/') ? currentPath : `/en${currentPath}`;
+      } else {
+        // Switch to Thai: remove /en prefix if present
+        newPath = currentPath.replace(/^\/en/, '') || '/';
+      }
+
+      window.location.pathname = newPath;
     }
 
     function updateButton() {
