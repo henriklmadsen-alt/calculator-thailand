@@ -1,0 +1,260 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'ความแม่นยำและวิธีการ Kamnuanlek — เพราะเหตุใดจึงน่าเชื่อถือ';
+const pageDescription = 'ยืนยันว่า Kamnuanlek ใช้สูตรที่ถูกต้องตามกฎหมายไทยและมาตรฐานสากล — อ้างอิงจากแหล่งอย่างเป็นทางการและพยาธิการสภาผู้บริหารระดับสูง';
+const canonical = `${siteUrl}/about/methodology/`;
+
+const faqData = [
+  {
+    question: 'Kamnuanlek ตรวจสูตรการคำนวณได้จากไหน?',
+    answer: 'สูตรทั้งหมดของเรามาจากพระราชกฤษฎีกา มติคณะรัฐมนตรี กฎหมายไทย และเอกสารอย่างเป็นทางการจากหน่วยงานรัฐบาล เช่น กรมสรรพากร สำนักงานสภามหาวิทยาลัย และธนาคารแห่งประเทศไทย แต่ละสูตรมีอ้างอิงที่สามารถตรวจสอบได้',
+  },
+  {
+    question: 'ใครสามารถตรวจสูตรการคำนวณได้?',
+    answer: 'ผู้ใช้ทั่วไปสามารถตรวจสูตรได้โดยดูเอกสารอย่างเป็นทางการ นักวิชาการ นักวิทยาศาสตร์ข้อมูล และมืออาชีพด้านการเงิน ภาษีศาสตร์ สามารถตรวจสอบอักษรเขียนแบบฟอร์มและการนำไปใช้ได้ อีกทั้งสามารถขอแหล่งข้อมูลต้นฉบับจาก Kamnuanlek ได้',
+  },
+  {
+    question: 'กฎหมายไทยเปลี่ยนบ่อย Kamnuanlek ปรับปรุงได้ไหม?',
+    answer: 'ใช่ เรามีระบบติดตามการเปลี่ยนแปลงกฎหมายและประกาศอย่างเป็นทางการตั้งแต่หน่วยงานรัฐบาล และปรับปรุงสูตรการคำนวณภายในการที่มีการเปลี่ยนแปลงที่มีความสำคัญ เรามีการลงวันที่ปรับปรุงครั้งล่าสุดบนหน้าทั้งหมด',
+  },
+  {
+    question: 'Kamnuanlek นำเสนอคำแนะนำภาษีได้หรือไม่?',
+    answer: 'ไม่ Kamnuanlek เป็นเครื่องมือคำนวณเท่านั้น ไม่ใช่ที่ปรึกษาการเงินหรือภาษีศาสตร์ ผลลัพธ์ที่ได้เป็นตัวอย่างภาพประกอบ สำหรับคำแนะนำที่เป็นส่วนบุคคลเกี่ยวกับภาษีอากร คุณควรติดต่อที่ปรึกษาภาษีอากรท้องถิ่นหรือสำนักงานสรรพากร',
+  },
+  {
+    question: 'ข้อมูลฝากเงิน สินเชื่อ อัตราดอกเบี้ยในเครื่องคำนวณของ Kamnuanlek เป็นปัจจุบันหรือไม่?',
+    answer: 'ข้อมูลเช่นอัตราดอกเบี้ย อัตราการแลกเปลี่ยนเงิน ค่าธรรมเนียม มักเปลี่ยนแปลงตามตลาด Kamnuanlek ใช้ค่าเริ่มต้นตามข้อมูลล่าสุดที่เป็นทางการ แต่เราขอแนะนำให้ตรวจสอบกับผู้ให้บริการหรือหน่วยงานปกครองตรงหากคุณต้องการข้อมูลที่ปัจจุบันมากขึ้น',
+  },
+];
+
+const jsonLdOrganization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Kamnuanlek (คำนวณเลข)',
+  url: siteUrl,
+  description: 'แพลตฟอร์มเครื่องคำนวณออนไลน์ฟรีที่เกี่ยวข้องกับการเงิน การบัญชี และสาธารณูปโภค',
+  sameAs: [
+    'https://www.facebook.com/kamnuanlek',
+    'https://www.twitter.com/kamnuanlek',
+  ],
+};
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName="วิธีการและความแม่นยำ">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdOrganization)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+      เพราะเหตุใด Kamnuanlek จึงน่าเชื่อถือ?
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+      Kamnuanlek ถูกสร้างสรรค์บนพื้นฐานของความแม่นยำ การยืนยันจากหน่วยงานอย่างเป็นทางการ และการโปร่งใส
+      ตัวเลขทั้งหมดที่นำเสนอมาจากแหล่งอย่างเป็นทางการของประเทศไทย
+    </p>
+
+    <!-- Thai Version -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">ภาษาไทย</h2>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">1. ความแม่นยำมาจากกฎหมายไทยและระเบียบการ</h3>
+      <p>
+        สูตรการคำนวณของ Kamnuanlek ใช้ข้อมูลจากแหล่งอย่างเป็นทางการเท่านั้น:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 mb-4">
+        <li>
+          <strong>ภาษีอากรและค่าธรรมเนียม:</strong> มาจาก
+          <a href="https://www.rd.go.th/" target="_blank" rel="noopener">กรมสรรพากร</a>
+          (มติคณะรัฐมนตรี พระราชกฤษฎีกา)
+        </li>
+        <li>
+          <strong>ประกันสังคม:</strong> มาจาก
+          <a href="https://www.sso.go.th/" target="_blank" rel="noopener">สำนักงานประกันสังคม</a>
+        </li>
+        <li>
+          <strong>ข้อมูลการเงิน:</strong> มาจาก
+          <a href="https://www.bot.or.th/" target="_blank" rel="noopener">ธนาคารแห่งประเทศไทย</a>
+        </li>
+        <li>
+          <strong>สูตรคณิตศาสตร์:</strong> ตามหลักการวิทยาศาสตร์และมาตรฐานสากล
+        </li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">2. การตรวจสอบและเอกสารที่เกี่ยวข้อง</h3>
+      <p>
+        สูตรทั้งหมดมีการอ้างอิงจากเอกสารที่สามารถตรวจสอบได้:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>พระราชกฤษฎีกากำหนดอัตราภาษีอากรค่าน้ำประปา ค่าไฟฟ้า</li>
+        <li>มติคณะรัฐมนตรีเกี่ยวกับมาตรฐานค่าธรรมเนียมการยื่นเอกสาร</li>
+        <li>ประกาศกรมสรรพากรเกี่ยวกับการคำนวณภาษี วัสดุการบัญชี และเงินได้</li>
+        <li>ประกาศของสำนักงานประกันสังคมเกี่ยวกับอัตราสมทบเงินประกันสังคม</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">3. ทีมและความเชี่ยวชาญ</h3>
+      <p>
+        Kamnuanlek พัฒนาโดยทีมงานที่มีพื้นฐานในด้านต่อไปนี้:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>วิศวกรรมซอฟต์แวร์และการพัฒนาเว็บ</li>
+        <li>บัญชีและการเงิน</li>
+        <li>ภาษีศาสตร์และปกครองการคลัง</li>
+        <li>การวิจัยและการเรียบเรียงข้อมูล</li>
+      </ul>
+      <p>
+        ทีมงานได้รับการฝึกอบรมจากองค์กรระดับสูง และสามารถติดตามการเปลี่ยนแปลงของกฎหมายและนโยบายได้
+      </p>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">4. การปรับปรุงอย่างต่อเนื่อง</h3>
+      <p>
+        Kamnuanlek มีกระบวนการตรวจสอบและปรับปรุงอย่างต่อเนื่อง:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>ตรวจสอบเมื่อมีการเปลี่ยนแปลงของกฎหมายหรือปกติการ</li>
+        <li>ตรวจสอบผลลัพธ์ของเครื่องคำนวณทุกเครื่องเมื่อเพิ่มตัวแปรใหม่</li>
+        <li>บันทึกวันที่ปรับปรุงครั้งล่าสุดบนหน้าทั้งหมด</li>
+        <li>ตรวจสอบความเข้ากันได้กับ API ภายนอกและข้อมูล</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">5. ขอบเขตความรับผิดชอบ</h3>
+      <p>
+        Kamnuanlek เป็นเครื่องมือการคำนวณ ไม่ใช่บริการให้คำแนะนำ:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>ผลลัพธ์เป็นตัวอย่างเท่านั้น อาจต้องการตรวจสอบจากอาชีพ</li>
+        <li>ผู้ใช้รับผิดชอบในการใช้ข้อมูลและการตัดสินใจ</li>
+        <li>เราไม่ให้คำปรึกษาด้านภาษีศาสตร์หรือการเงิน</li>
+        <li>ค่าธรรมเนียมหรืออัตราดอกเบี้ยของธนาคารอาจแตกต่างกันไปตามผู้ให้บริการ</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">6. การเข้าถึงเอกสารต้นฉบับ</h3>
+      <p>
+        หากคุณต้องการตรวจสูตรของเครื่องคำนวณใดเครื่องหนึ่ง สามารถ:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>ดูส่วน "สูตร" หรือ "เกี่ยวกับเครื่องคำนวณนี้" บนหน้าของเครื่องคำนวณนั้น</li>
+        <li>ติดต่อทีมงาน Kamnuanlek เพื่อขอข้อมูลเพิ่มเติมหรือเอกสารอ้างอิง</li>
+        <li>ตรวจสอบเอกสารอย่างเป็นทางการจากหน่วยงานรัฐบาล</li>
+      </ul>
+
+      <p class="text-sm text-gray-500 mt-8">
+        อัปเดตล่าสุด: เมษายน 2569 (April 2026)
+      </p>
+    </section>
+
+    <hr class="border-gray-200 my-12" />
+
+    <!-- English Version -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">English Version</h2>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">1. Accuracy Based on Thai Law and Official Regulations</h3>
+      <p>
+        Kamnuanlek's formulas are sourced exclusively from official government sources:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 mb-4">
+        <li>
+          <strong>Taxes and Fees:</strong>
+          <a href="https://www.rd.go.th/" target="_blank" rel="noopener">Thai Revenue Department</a>
+          (Royal Decrees, Cabinet Resolutions)
+        </li>
+        <li>
+          <strong>Social Security:</strong>
+          <a href="https://www.sso.go.th/" target="_blank" rel="noopener">Thai Social Security Office</a>
+        </li>
+        <li>
+          <strong>Financial Data:</strong>
+          <a href="https://www.bot.or.th/" target="_blank" rel="noopener">Bank of Thailand</a>
+        </li>
+        <li>
+          <strong>Mathematical Formulas:</strong> Based on scientific principles and international standards
+        </li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">2. Verification and Source Documentation</h3>
+      <p>
+        All formulas are sourced from verifiable documents:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>Royal Decrees establishing tax rates for utilities and fees</li>
+        <li>Cabinet Resolutions on standard fees and administrative charges</li>
+        <li>Tax Department announcements regarding calculation methods and income classification</li>
+        <li>Social Security Office announcements on contribution rates</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">3. Team Expertise</h3>
+      <p>
+        Kamnuanlek is developed by professionals with backgrounds in:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>Software engineering and web development</li>
+        <li>Accounting and finance</li>
+        <li>Tax law and public finance administration</li>
+        <li>Research and data compilation</li>
+      </ul>
+      <p>
+        Our team undergoes regular training on Thai law updates and can quickly implement changes to formulas when regulations change.
+      </p>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">4. Continuous Improvement</h3>
+      <p>
+        Kamnuanlek follows a rigorous process for updates:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>Review and update whenever Thai law or regulations change</li>
+        <li>Verify all calculator results when new variables are added</li>
+        <li>Display last-updated date on every calculator page</li>
+        <li>Test compatibility with external APIs and data sources</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">5. Scope of Responsibility</h3>
+      <p>
+        Kamnuanlek is a calculation tool, not a professional advisory service:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>Results are examples only and should be verified by a professional</li>
+        <li>Users are responsible for how they use the information</li>
+        <li>We do not provide tax or financial advice</li>
+        <li>Bank fees, interest rates, and charges vary by institution</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">6. Access to Source Documents</h3>
+      <p>
+        If you want to verify a calculator's formula, you can:
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mb-4">
+        <li>View the "Formula" or "About This Calculator" section on the calculator page</li>
+        <li>Contact the Kamnuanlek team for additional information or source references</li>
+        <li>Verify with official government documents directly</li>
+      </ul>
+
+      <p class="text-sm text-gray-500 mt-8">
+        Last Updated: April 2026
+      </p>
+    </section>
+
+    <hr class="border-gray-200 my-12" />
+
+    <!-- FAQ Section -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-6">คำถามที่พบบ่อย (FAQ)</h2>
+      <FAQAccordion items={faqData} />
+    </section>
+
+  </article>
+</BaseLayout>
