@@ -31,14 +31,12 @@ const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').t
 const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').trim().toLowerCase();
 const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
 const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
-// Generate bidirectional hreflang links for language variants
+// Generate hreflang links for language variants (English pages not yet available)
 const basePath = Astro.url.pathname.replace(/^\/en\//, '/').replace(/^\/en-/, '/');
 const thaiUrl = siteUrl + basePath;
-const englishUrl = siteUrl + '/en' + basePath;
 
 const localeAlternates = [
   { hreflang: 'th-TH', href: thaiUrl },
-  { hreflang: 'en', href: englishUrl },
   { hreflang: 'x-default', href: thaiUrl },
   ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
 ];
