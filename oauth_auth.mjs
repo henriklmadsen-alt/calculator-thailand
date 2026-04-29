@@ -2,9 +2,9 @@ import crypto from 'crypto';
 import { URLSearchParams } from 'url';
 
 const config = {
-  client_id: '875518086731-lbe38ct2fveq7t9e4h2ehvn2mme3mrj2.apps.googleusercontent.com',
-  client_secret: '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',
-  redirect_uri: 'http://localhost:3000/oauth-callback',
+  client_id: process.env.GOOGLE_OAUTH_CLIENT_ID || (() => { throw new Error('GOOGLE_OAUTH_CLIENT_ID environment variable is required'); })(),
+  client_secret: process.env.GOOGLE_OAUTH_CLIENT_SECRET || (() => { throw new Error('GOOGLE_OAUTH_CLIENT_SECRET environment variable is required'); })(),
+  redirect_uri: process.env.GOOGLE_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth-callback',
   auth_uri: 'https://accounts.google.com/o/oauth2/auth',
   token_uri: 'https://oauth2.googleapis.com/token'
 };
