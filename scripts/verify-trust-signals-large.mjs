@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// Get all HTML files
 const distDir = 'dist';
 const getAllHtmlFiles = (dir, fileList = []) => {
   const files = fs.readdirSync(dir);
@@ -18,13 +17,9 @@ const getAllHtmlFiles = (dir, fileList = []) => {
 };
 
 const allFiles = getAllHtmlFiles(distDir);
-console.log(`Total HTML files: ${allFiles.length}`);
-
-// Random sample of 100 files
-const sampleSize = Math.min(100, allFiles.length);
+const sampleSize = Math.min(300, allFiles.length);
 const sampled = allFiles.sort(() => Math.random() - 0.5).slice(0, sampleSize);
 
-// Trust signals to check
 const signals = {
   og_title: /<meta property="og:title"/,
   og_description: /<meta property="og:description"/,
@@ -52,11 +47,13 @@ sampled.forEach(file => {
   }
 });
 
-console.log(`\n=== TRUST SIGNALS (${sampleSize} sample) ===`);
+console.log(`=== TRUST SIGNALS (${sampleSize} sample) ===`);
+let total = 0;
 for (const signal in results) {
   const percentage = Math.round((results[signal] / sampleSize) * 100);
   console.log(`${signal}: ${percentage}% (${results[signal]}/${sampleSize})`);
+  total += results[signal];
 }
 
-const avg = Math.round(Object.values(results).reduce((a, b) => a + b) / Object.keys(results).length / sampleSize * 100);
+const avg = Math.round((total / Object.keys(results).length / sampleSize) * 100);
 console.log(`\nAverage: ${avg}%`);
