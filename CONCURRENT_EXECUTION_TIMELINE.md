@@ -8,20 +8,33 @@
 
 ---
 
-## Execution Timeline (Concurrent Model)
+## Execution Timeline (Concurrent Model — MODIFIED OPTION A)
+
+### Modified Option A: Phase 6 (Revenue) Starts Day 1
+**Key Change**: CEO begins Phase 6 on 2026-04-30 (not 2026-05-05), enabling 10+ days earlier revenue
+**Rationale**: Phase 6 has zero dependencies on other phases; can run in parallel from day 1
+**Revenue Impact**: AdSense/affiliate partnerships negotiated while Phase 1 drives traffic, resulting in earlier revenue activation
 
 ### Week 1: Phase Kickoff (2026-04-30 to 2026-05-05)
 
 ```
 2026-04-30 00:00 UTC
-└─ PHASE 1 KICKS OFF: GET TRAFFIC
-   ├─ CMO: Keyword research (P1-CMO-1 to P1-CMO-6)
-   ├─ CMO: Content creation (P1-CMO-7 to P1-CMO-12)
-   ├─ CMO: Backlink acquisition (P1-CMO-13 to P1-CMO-16)
-   ├─ CTO: Technical prep (P1-CTO-1 to P1-CTO-3)
-   ├─ CTO: Real-time optimization (P1-CTO-4 to P1-CTO-7)
-   ├─ CTO: Indexing & authority (P1-CTO-8 to P1-CTO-10)
-   └─ QA: Continuous hourly verification
+├─ PHASE 1 KICKS OFF: GET TRAFFIC
+│  ├─ CMO: Keyword research (P1-CMO-1 to P1-CMO-6)
+│  ├─ CMO: Content creation (P1-CMO-7 to P1-CMO-12)
+│  ├─ CMO: Backlink acquisition (P1-CMO-13 to P1-CMO-16)
+│  ├─ CTO: Technical prep (P1-CTO-1 to P1-CTO-3)
+│  ├─ CTO: Real-time optimization (P1-CTO-4 to P1-CTO-7)
+│  ├─ CTO: Indexing & authority (P1-CTO-8 to P1-CTO-10)
+│  └─ QA: Continuous hourly verification
+│
+└─ PHASE 6 KICKS OFF (MODIFIED OPTION A): DIVERSIFY REVENUE
+   ├─ CEO: AdSense application (P6-CEO-1) — submit immediately
+   ├─ CEO: Affiliate negotiations (P6-CEO-2 to P6-CEO-4)
+   ├─ CEO: Sponsorship outreach (P6-CEO-5)
+   └─ CEO: Revenue infrastructure setup (P6-CEO-6 to P6-CEO-8)
+
+**WHY BOTH START DAY 1**: Phase 6 has zero dependencies on Phase 1. CEO can negotiate partnerships while CMO/CTO drive traffic. Result: Revenue ready to activate 2026-05-10 (10+ days earlier)
 
 2026-05-01 00:00 UTC
 ├─ PHASE 1 ONGOING (30 tasks continue)
