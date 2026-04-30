@@ -1,85 +1,76 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distDir = 'dist';
+const htmlFiles = [];
 
-// Get all HTML files
-function getAllHtmlFiles(dir) {
-  let files = [];
-  const items = fs.readdirSync(dir, { withFileTypes: true });
-  
-  for (const item of items) {
-    const fullPath = path.join(dir, item.name);
-    if (item.isDirectory()) {
-      if (!fullPath.includes('node_modules') && !fullPath.includes('.git') && !fullPath.includes('.claude')) {
-        files = files.concat(getAllHtmlFiles(fullPath));
-      }
-    } else if (item.name === 'index.html') {
-      files.push(fullPath);
+// Recursively find all HTML files
+function findHtmlFiles(dir) {
+  const files = fs.readdirSync(dir);
+  files.forEach(file => {
+    const fullPath = path.join(dir, file);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      findHtmlFiles(fullPath);
+    } else if (file.endsWith('.html')) {
+      htmlFiles.push(fullPath);
     }
-  }
-  return files;
+  });
 }
 
-const allFiles = getAllHtmlFiles(path.join(__dirname, 'dist'));
-console.log(`Found ${allFiles.length} HTML files. Sampling 100 random pages...`);
+findHtmlFiles(distDir);
 
-// Sample 100 random files
-const sample = allFiles.sort(() => Math.random() - 0.5).slice(0, Math.min(100, allFiles.length));
+// Shuffle and sample 100 files
+const shuffled = htmlFiles.sort(() => Math.random() - 0.5);
+const sample = shuffled.slice(0, 100);
+
+console.log(`Total HTML files: ${htmlFiles.length}`);
+console.log(`Sample size: ${sample.length}`);
+console.log(`\n=== Trust Signal Verification ===\n`);
 
 const signals = {
-  og: 0,
-  twitter: 0,
-  schema: 0,
-  ga4: 0,
-  viewport: 0,
-  google_verify: 0,
-  hreflang: 0,
-  sentry: 0
+  og: { count: 0, name: 'Open Graph (OG)' },
+  twitter: { count: 0, name: 'Twitter Card' },
+  schema: { count: 0, name: 'Schema.org JSON-LD' },
+  ga4: { count: 0, name: 'Google Analytics 4' },
+  mobile: { count: 0, name: 'Mobile Viewport' },
+  google_verify: { count: 0, name: 'Google Site Verification' },
+  hreflang: { count: 0, name: 'Hreflang' },
+  sentry: { count: 0, name: 'Sentry' }
 };
 
-for (const file of sample) {
+const thaiPages = [];
+
+sample.forEach(filePath => {
   try {
-    const content = fs.readFileSync(file, 'utf8');
+    const content = fs.readFileSync(filePath, 'utf-8');
     
-    if (content.includes('property="og:')) {
-      signals.og++;
-    }
-    if (content.includes('name="twitter:')) {
-      signals.twitter++;
-    }
-    if (content.includes('application/ld+json') || content.includes('"@context"')) {
-      signals.schema++;
-    }
-    if (content.includes('gtag') || content.includes('G-') || content.includes('UA-')) {
-      signals.ga4++;
-    }
-    if (content.includes('name="viewport"')) {
-      signals.viewport++;
-    }
-    if (content.includes('google-site-verification')) {
-      signals.google_verify++;
-    }
-    if (content.includes('rel="alternate"') && content.includes('hreflang=')) {
-      signals.hreflang++;
-    }
-    if (content.includes('sentry') || content.includes('Sentry')) {
-      signals.sentry++;
+    // Check trust signals
+    if (content.includes('og:title') || content.includes('og:description')) signals.og.count++;
+    if (content.includes('twitter:card')) signals.twitter.count++;
+    if (content.includes('application/ld+json')) signals.schema.count++;
+    if (content.includes('gtag') || content.includes('GA_MEASUREMENT_ID')) signals.ga4.count++;
+    if (content.includes('viewport')) signals.mobile.count++;
+    if (content.includes('google-site-verification')) signals.google_verify.count++;
+    if (content.includes('hreflang')) signals.hreflang.count++;
+    if (content.includes('sentry') || content.includes('Sentry')) signals.sentry.count++;
+    
+    // Track Thai pages
+    if (content.includes('lang="th"') || filePath.includes('คำนวณ')) {
+      thaiPages.push(filePath);
     }
   } catch (e) {
-    // Silently skip
+    console.error(`Error reading ${filePath}: ${e.message}`);
   }
-}
+});
 
-console.log('\n=== TRUST SIGNAL VERIFICATION ===');
-console.log(`Sample size: ${sample.length} pages`);
-console.log(`\nResults (pages with signal / total pages):`);
-console.log(`OG Tags:           ${signals.og}/${sample.length} (${Math.round(signals.og/sample.length*100)}%)`);
-console.log(`Twitter Card:      ${signals.twitter}/${sample.length} (${Math.round(signals.twitter/sample.length*100)}%)`);
-console.log(`Schema.org:        ${signals.schema}/${sample.length} (${Math.round(signals.schema/sample.length*100)}%)`);
-console.log(`GA4 Tracking:      ${signals.ga4}/${sample.length} (${Math.round(signals.ga4/sample.length*100)}%)`);
-console.log(`Mobile Viewport:   ${signals.viewport}/${sample.length} (${Math.round(signals.viewport/sample.length*100)}%)`);
-console.log(`Google Verify:     ${signals.google_verify}/${sample.length} (${Math.round(signals.google_verify/sample.length*100)}%)`);
-console.log(`hreflang Links:    ${signals.hreflang}/${sample.length} (${Math.round(signals.hreflang/sample.length*100)}%)`);
-console.log(`Sentry Tracking:   ${signals.sentry}/${sample.length} (${Math.round(signals.sentry/sample.length*100)}%)`);
+// Calculate percentages
+Object.keys(signals).forEach(key => {
+  const percent = (signals[key].count / sample.length * 100).toFixed(1);
+  const check = percent >= 95 ? '✓' : '⚠';
+  console.log(`${check} ${signals[key].name}: ${signals[key].count}/${sample.length} (${percent}%)`);
+});
+
+const avgSignal = (Object.values(signals).reduce((sum, s) => sum + s.count, 0) / (sample.length * Object.keys(signals).length) * 100).toFixed(1);
+console.log(`\nAverage Trust Signal Coverage: ${avgSignal}%`);
+console.log(`\nThai Pages in Sample: ${thaiPages.length}/${sample.length} (${(thaiPages.length/sample.length*100).toFixed(1)}%)`);

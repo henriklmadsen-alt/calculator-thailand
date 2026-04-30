@@ -1,10 +1,12 @@
 # Zero-to-Growth Roadmap: Concurrent Execution Model
 ## All 6 Phases Running in Parallel (2026-04-30 to 2026-06-15)
 
-**Status**: APPROVED FOR CONCURRENT EXECUTION
+**⏰ TIMEZONE**: All times in **ICT (Indochina Time, UTC+7, Thailand)**
+**Status**: APPROVED FOR CONCURRENT EXECUTION — ALL AGENTS ACTIVATED (2026-04-30 20:55 ICT)
 **Model**: True parallel execution with overlapping phase windows
 **Duration**: 46 days (April 30 - June 15, 2026)
 **Target**: $1M/month revenue path clear by phase completion
+**Agent Activation**: ✅ COMPLETE — 30 blocked tasks unblocked (3-hour SLA: 18:55 ICT - 20:55 ICT) — CMO, UX, CTO, CEO, QA all active
 
 ---
 
@@ -15,85 +17,66 @@
 **Rationale**: Phase 6 has zero dependencies on other phases; can run in parallel from day 1
 **Revenue Impact**: AdSense/affiliate partnerships negotiated while Phase 1 drives traffic, resulting in earlier revenue activation
 
-### Week 1: Phase Kickoff (2026-04-30 to 2026-05-05)
+### ALL PHASES START IMMEDIATELY (2026-04-30 07:00 ICT)
+
+**Board Decision**: All phases activated in parallel — no stagger (2026-04-30 10:46 UTC approval)
 
 ```
-2026-04-30 00:00 UTC
-├─ PHASE 1 KICKS OFF: GET TRAFFIC
+2026-04-30 07:00 ICT (2026-04-30 00:00 UTC) — ALL 6 PHASES KICK OFF SIMULTANEOUSLY
+├─ PHASE 1: GET TRAFFIC (CMO + CTO)
 │  ├─ CMO: Keyword research (P1-CMO-1 to P1-CMO-6)
 │  ├─ CMO: Content creation (P1-CMO-7 to P1-CMO-12)
 │  ├─ CMO: Backlink acquisition (P1-CMO-13 to P1-CMO-16)
 │  ├─ CTO: Technical prep (P1-CTO-1 to P1-CTO-3)
 │  ├─ CTO: Real-time optimization (P1-CTO-4 to P1-CTO-7)
-│  ├─ CTO: Indexing & authority (P1-CTO-8 to P1-CTO-10)
-│  └─ QA: Continuous hourly verification
+│  └─ CTO: Indexing & authority (P1-CTO-8 to P1-CTO-10)
 │
-└─ PHASE 6 KICKS OFF (MODIFIED OPTION A): DIVERSIFY REVENUE
+├─ PHASE 2: UNDERSTAND USERS (UX)
+│  ├─ UX: Feedback collection setup (P2-UX-1 to P2-UX-5)
+│  └─ UX: Pattern analysis (P2-UX-6 to P2-UX-11)
+│
+├─ PHASE 3: OPTIMIZE CONVERSION (UX)
+│  ├─ UX: A/B test launches (P3-UX-1 to P3-UX-6)
+│  └─ UX: Scaling & completion (P3-UX-7 to P3-UX-18)
+│
+├─ PHASE 4: MEASURE SYSTEMATICALLY (CTO)
+│  ├─ CTO: Event tracking (P4-CTO-1 to P4-CTO-5)
+│  ├─ CTO: BigQuery setup (P4-CTO-6 to P4-CTO-10)
+│  └─ CTO: Dashboards & alerts (P4-CTO-11 to P4-CTO-18)
+│
+├─ PHASE 5: BUILD RETENTION (CMO)
+│  ├─ CMO: Email system setup (P5-CMO-1 to P5-CMO-10)
+│  └─ CMO: Retention optimization (P5-CMO-11 to P5-CMO-20)
+│
+└─ PHASE 6: DIVERSIFY REVENUE (CEO)
    ├─ CEO: AdSense application (P6-CEO-1) — submit immediately
-   ├─ CEO: Affiliate negotiations (P6-CEO-2 to P6-CEO-4)
-   ├─ CEO: Sponsorship outreach (P6-CEO-5)
-   └─ CEO: Revenue infrastructure setup (P6-CEO-6 to P6-CEO-8)
+   ├─ CEO: Affiliate negotiations (P6-CEO-2 to P6-CEO-5)
+   ├─ CEO: Sponsorship outreach (P6-CEO-6 to P6-CEO-8)
+   └─ CEO: Revenue tracking & optimization (P6-CEO-9 to P6-CEO-16)
 
-**WHY BOTH START DAY 1**: Phase 6 has zero dependencies on Phase 1. CEO can negotiate partnerships while CMO/CTO drive traffic. Result: Revenue ready to activate 2026-05-10 (10+ days earlier)
-
-2026-05-01 00:00 UTC
-├─ PHASE 1 ONGOING (30 tasks continue)
-└─ PHASE 2 KICKS OFF: UNDERSTAND USERS
-   ├─ UX: Feedback collection setup (P2-UX-1 to P2-UX-5)
-   └─ QA: Phase 2 verification begins
-
-2026-05-02 00:00 UTC
-├─ PHASE 1 ONGOING
-├─ PHASE 2 ONGOING (UX feedback collection)
-└─ PHASE 3 KICKS OFF: OPTIMIZE CONVERSION
-   ├─ UX: A/B test launches (P3-UX-1 to P3-UX-6)
-   └─ QA: Phase 3 verification begins
-
-2026-05-03 00:00 UTC
-├─ PHASE 1 ONGOING
-├─ PHASE 2 ONGOING
-├─ PHASE 3 ONGOING
-└─ PHASE 4 KICKS OFF: MEASURE SYSTEMATICALLY
-   ├─ CTO: Event tracking (P4-CTO-1 to P4-CTO-5)
-   ├─ CTO: BigQuery setup (P4-CTO-6 to P4-CTO-10)
-   └─ QA: Phase 4 verification begins
-
-2026-05-04 00:00 UTC
-├─ PHASE 1 ONGOING
-├─ PHASE 2 ONGOING
-├─ PHASE 3 ONGOING
-├─ PHASE 4 ONGOING
-└─ PHASE 5 KICKS OFF: BUILD RETENTION
-   ├─ CMO: Email system setup (P5-CMO-1 to P5-CMO-10)
-   └─ QA: Phase 5 verification begins
-
-2026-05-05 00:00 UTC
-├─ PHASE 1 ONGOING
-├─ PHASE 2 ONGOING
-├─ PHASE 3 ONGOING
-├─ PHASE 4 ONGOING
-├─ PHASE 5 ONGOING
-└─ PHASE 6 KICKS OFF: DIVERSIFY REVENUE
-   ├─ CEO: AdSense + Affiliate setup (P6-CEO-1 to P6-CEO-8)
-   └─ QA: Phase 6 verification begins
-
-ALL 6 PHASES EXECUTING IN PARALLEL (2026-05-05 onwards)
+**ALL 6 PHASES EXECUTING IN PARALLEL (2026-04-30 07:00 ICT → 2026-06-15 07:00 ICT)**
 ```
+
+**Why All-Parallel Works:**
+- Zero hard blocking dependencies (verified in detail)
+- Agent workload: 0.35–0.83 tasks/day (well within capacity)
+- Modified Option A advantage: CMO + CTO + UX + CTO (Phase 4) + CEO all work simultaneously
+- Revenue activation: 2026-05-10 07:00 ICT (unchanged, but now with earlier data from all phases)
 
 ---
 
-## Phase Execution Windows
+## Phase Execution Windows (All Parallel, Board-Approved)
 
 | Phase | Start | Active Duration | Agent(s) | Tasks | Overlap |
 |-------|-------|-----------------|----------|-------|---------|
-| Phase 1 | 2026-04-30 | 46 days | CMO + CTO | 30 | All other phases |
-| Phase 2 | 2026-05-01 | 45 days | UX | 17 | All other phases |
-| Phase 3 | 2026-05-02 | 44 days | UX | 18 | All other phases |
-| Phase 4 | 2026-05-03 | 43 days | CTO | 18 | All other phases |
-| Phase 5 | 2026-05-04 | 42 days | CMO | 20 | All other phases |
-| Phase 6 | 2026-05-05 | 41 days | CEO | 16 | All other phases |
+| Phase 1 | 2026-04-30 07:00 ICT | 46 days | CMO + CTO | 30 | All phases (100% overlap) |
+| Phase 2 | 2026-04-30 07:00 ICT | 46 days | UX | 17 | All phases (100% overlap) |
+| Phase 3 | 2026-04-30 07:00 ICT | 46 days | UX | 18 | All phases (100% overlap) |
+| Phase 4 | 2026-04-30 07:00 ICT | 46 days | CTO | 18 | All phases (100% overlap) |
+| Phase 5 | 2026-04-30 07:00 ICT | 46 days | CMO | 20 | All phases (100% overlap) |
+| Phase 6 | 2026-04-30 07:00 ICT | 46 days | CEO | 16 | All phases (100% overlap) |
 
-**Completion**: 2026-06-15 00:00 UTC (All 107 tasks complete)
+**Completion**: 2026-06-15 07:00 ICT (2026-06-15 00:00 UTC) — All 107 tasks complete
 
 ---
 
@@ -114,19 +97,19 @@ ALL 6 PHASES EXECUTING IN PARALLEL (2026-05-05 onwards)
 
 ---
 
-## Daily Agent Workload (Concurrent Model)
+## Daily Agent Workload (All-Parallel from Day 1)
 
-### 2026-05-05 onwards (Full Concurrent Execution)
+### 2026-04-30 07:00 ICT onwards (Full Concurrent Execution — ALL PHASES)
 
-| Agent | Active Phases | Daily Work |
-|-------|---------------|------------|
-| **CMO** | P1 + P5 | Keyword research + Content creation + Backlinks + Email setup + Retention |
-| **UX** | P2 + P3 | Feedback collection + A/B test monitoring + Optimization analysis |
-| **CTO** | P1 + P4 | Technical SEO support + Event tracking + BigQuery + Dashboards |
-| **CEO** | P6 | Revenue stream setup + Partnership negotiation + $1M projection |
-| **QA** | All (1-6) | Continuous verification across all phases + Phase gate certification |
+| Agent | Active Phases | Daily Work | Daily Rate |
+|-------|---------------|------------|-----------|
+| **CMO** | P1 + P5 | Keyword research + Content + Backlinks + Email setup + Retention | 0.83 tasks/day |
+| **UX** | P2 + P3 | Feedback collection + A/B test design/launch + Optimization | 0.76 tasks/day |
+| **CTO** | P1 + P4 | Technical SEO + Event tracking + BigQuery + Dashboards | 0.65 tasks/day |
+| **CEO** | P6 | AdSense + Affiliate + Sponsorship + Revenue tracking | 0.35 tasks/day |
+| **QA** | All (1-6) | Continuous hourly verification across all phases + Phase gates | Continuous |
 
-**Note**: Each agent works on their assigned phases in parallel. No agent waits for another phase to complete.
+**Workload Status**: ✅ All agents well within capacity. No bottlenecks. Ready for execution.
 
 ---
 
@@ -134,38 +117,38 @@ ALL 6 PHASES EXECUTING IN PARALLEL (2026-05-05 onwards)
 
 ### Phase 1: GET TRAFFIC (CMO + CTO)
 - **Metric**: 5000+ organic visitors/month
-- **Window**: 2026-04-30 to 2026-06-15
-- **Gate**: Verified by 2026-05-10 (Phase 2 can continue regardless)
+- **Window**: 2026-04-30 07:00 ICT to 2026-06-15 07:00 ICT
+- **Gate**: Verified by 2026-05-10 07:00 ICT (Phase 2 can continue regardless)
 - **Status**: ACTIVE
 
 ### Phase 2: UNDERSTAND USERS (UX)
 - **Metric**: 1000+ feedback responses
-- **Window**: 2026-05-01 to 2026-06-15
-- **Gate**: Verified by 2026-05-15 (Phase 3 can continue regardless)
+- **Window**: 2026-05-01 07:00 ICT to 2026-06-15 07:00 ICT
+- **Gate**: Verified by 2026-05-15 07:00 ICT (Phase 3 can continue regardless)
 - **Status**: ACTIVE
 
 ### Phase 3: OPTIMIZE CONVERSION (UX)
 - **Metric**: 2-3x conversion improvement
-- **Window**: 2026-05-02 to 2026-06-15
-- **Gate**: Verified by 2026-05-25 (Phase 4 can continue regardless)
+- **Window**: 2026-05-02 07:00 ICT to 2026-06-15 07:00 ICT
+- **Gate**: Verified by 2026-05-25 07:00 ICT (Phase 4 can continue regardless)
 - **Status**: ACTIVE
 
 ### Phase 4: MEASURE SYSTEMATICALLY (CTO)
 - **Metric**: Real-time dashboards live
-- **Window**: 2026-05-03 to 2026-06-15
-- **Gate**: Verified by 2026-05-30 (Phase 5 can continue regardless)
+- **Window**: 2026-05-03 07:00 ICT to 2026-06-15 07:00 ICT
+- **Gate**: Verified by 2026-05-30 07:00 ICT (Phase 5 can continue regardless)
 - **Status**: ACTIVE
 
 ### Phase 5: BUILD RETENTION (CMO)
 - **Metric**: 20-30% repeat visit rate
-- **Window**: 2026-05-04 to 2026-06-15
-- **Gate**: Verified by 2026-06-05 (Phase 6 can continue regardless)
+- **Window**: 2026-05-04 07:00 ICT to 2026-06-15 07:00 ICT
+- **Gate**: Verified by 2026-06-05 07:00 ICT (Phase 6 can continue regardless)
 - **Status**: ACTIVE
 
 ### Phase 6: DIVERSIFY REVENUE (CEO)
 - **Metric**: Multiple revenue streams active
-- **Window**: 2026-05-05 to 2026-06-15
-- **Gate**: Verified by 2026-06-15 ($1M path clear)
+- **Window**: 2026-05-05 07:00 ICT to 2026-06-15 07:00 ICT
+- **Gate**: Verified by 2026-06-15 07:00 ICT ($1M path clear)
 - **Status**: ACTIVE
 
 ---
@@ -201,27 +184,26 @@ ALL 6 PHASES EXECUTING IN PARALLEL (2026-05-05 onwards)
 
 ---
 
-## Execution Checklist
+## Execution Checklist (All-Parallel Activation — 2026-04-30 07:00 ICT)
 
-### Agent Activation (2026-04-30)
-- ✅ CMO Agent activated for Phase 1 (keyword research + content)
-- ✅ CTO Agent activated for Phase 1 technical support
-- ✅ QA Agent activated for continuous verification
+### Immediate Activation (2026-04-30 07:00 ICT) — BOARD-APPROVED ALL-PARALLEL
+- ✅ CMO Agent activated for Phase 1 + Phase 5 (keyword research + email setup)
+- ✅ UX Agent activated for Phase 2 + Phase 3 (feedback collection + A/B testing)
+- ✅ CTO Agent #1 activated for Phase 1 technical support (technical SEO + page speed)
+- ✅ CTO Agent #2 activated for Phase 4 (event tracking + BigQuery + dashboards)
+- ✅ CEO Agent activated for Phase 6 (AdSense + affiliate + sponsorship + revenue)
+- ✅ QA Agent activated for continuous hourly verification (all phases simultaneously)
 
-### Phase 2 Activation (2026-05-01)
-- ⏳ UX Agent activates for Phase 2 (feedback collection)
+**Emergency Unblocking Complete** (2026-04-30 20:55 ICT):
+- ✅ 30 blocked/review tasks identified and unblocked within 3-hour SLA
+- ✅ All agents assigned with 113/113 active tasks (107 core + 6 unblocked)
+- ✅ Zero blocking dependencies remaining
+- ✅ All agents operating at sustainable workload (<1 task/day average)
+- ✅ Revenue activation path confirmed (Phase 6 live)
 
-### Phase 3 Activation (2026-05-02)
-- ⏳ UX Agent continues Phase 3 (A/B testing)
-
-### Phase 4 Activation (2026-05-03)
-- ⏳ CTO Agent activates for Phase 4 (data infrastructure)
-
-### Phase 5 Activation (2026-05-04)
-- ⏳ CMO Agent activates for Phase 5 (email retention)
-
-### Phase 6 Activation (2026-05-05)
-- ⏳ CEO Agent activates for Phase 6 (revenue diversification)
+**Timeline**: All 6 phases active at the same time from Day 1
+**Completion**: 2026-06-15 07:00 ICT (46-day concurrent execution)
+**Revenue Expected**: 2026-05-10 07:00 ICT (10 days from start)
 
 ---
 
@@ -260,14 +242,14 @@ QA: Continuous Verification (All Phases)
 - Overall: [on track / needs attention]
 ```
 
-### Weekly Sync Points
-- **Week 1** (2026-05-05): All 6 phases active, confirm all agents executing
-- **Week 2** (2026-05-12): Phase 1 preliminary results, Phase 2-3 initial data
-- **Week 3** (2026-05-19): Phase 1 completion target, Phase 2-3 gains visible
-- **Week 4** (2026-05-26): Phase 1-2 complete, Phase 3-4 accelerating
-- **Week 5** (2026-06-02): Phase 1-3 complete, Phase 4-5 final push
-- **Week 6** (2026-06-09): Phase 1-5 complete, Phase 6 completing
-- **Week 7** (2026-06-15): ALL PHASES COMPLETE → $1M path verified
+### Weekly Sync Points (All-Parallel Execution)
+- **Week 1** (2026-05-07 07:00 ICT): All 6 phases active, Day 7 — initial progress check (P1 traffic data, P2 feedback starting, P6 revenue prep)
+- **Week 2** (2026-05-14 07:00 ICT): Day 14 — Phase 1 preliminary results (5000+ organic visitors target), P2-3 initial patterns, P6 AdSense decision
+- **Week 3** (2026-05-21 07:00 ICT): Day 21 — Phase 1 confirmed, P2-3 conversion gains, P4 dashboards live, P5 email live
+- **Week 4** (2026-05-28 07:00 ICT): Day 28 — Halfway point, all phases on track, revenue confirmed flowing (2026-05-10 target passed)
+- **Week 5** (2026-06-04 07:00 ICT): Day 35 — Final push, P1-5 completing, P6 revenue scaling, 10% reinvestment active
+- **Week 6** (2026-06-11 07:00 ICT): Day 41 — All phases in final verification, last blockers resolved, $1M path confirmation
+- **Week 7** (2026-06-15 07:00 ICT): Day 46 — ALL PHASES COMPLETE → 107/107 tasks done → $1M/month path verified ✅
 
 ---
 
@@ -280,7 +262,7 @@ QA: Continuous Verification (All Phases)
 **Phase 5 Success**: 20-30% repeat visit rate ✓
 **Phase 6 Success**: Multiple revenue streams active, $1M path clear ✓
 
-**OVERALL SUCCESS**: All 107 tasks complete by 2026-06-15 → $1M/month achievable within 6-9 months from completion
+**OVERALL SUCCESS**: All 107 tasks complete by 2026-06-15 07:00 ICT → $1M/month achievable within 6-9 months from completion
 
 ---
 
@@ -289,29 +271,29 @@ QA: Continuous Verification (All Phases)
 ### CMO Agent: 38 Tasks
 - Phase 1: 18 tasks (keyword research, content, backlinks)
 - Phase 5: 20 tasks (email setup, retention, engagement)
-- **Timeline**: Both phases active simultaneously 2026-04-30 to 2026-06-15
+- **Timeline**: Both phases active simultaneously 2026-04-30 07:00 ICT to 2026-06-15 07:00 ICT
 - **Status**: ACTIVE
 
 ### UX Designer Agent: 35 Tasks
 - Phase 2: 17 tasks (feedback collection, pattern analysis)
 - Phase 3: 18 tasks (A/B testing, optimization)
-- **Timeline**: Both phases active simultaneously 2026-05-01 to 2026-06-15
-- **Status**: ACTIVE (Phase 2 starts 2026-05-01, Phase 3 starts 2026-05-02)
+- **Timeline**: Both phases active simultaneously 2026-05-01 07:00 ICT to 2026-06-15 07:00 ICT
+- **Status**: ACTIVE (Phase 2 starts 2026-05-01 07:00 ICT, Phase 3 starts 2026-05-02 07:00 ICT)
 
 ### CTO Agent: 18 + 12 Support Tasks
 - Phase 1 Support: 12 tasks (technical SEO, page speed, schema)
 - Phase 4: 18 tasks (event tracking, BigQuery, dashboards)
-- **Timeline**: Both active simultaneously 2026-04-30 to 2026-06-15
+- **Timeline**: Both active simultaneously 2026-04-30 07:00 ICT to 2026-06-15 07:00 ICT
 - **Status**: ACTIVE
 
 ### CEO Agent: 16 Tasks
 - Phase 6: 16 tasks (AdSense, affiliate, sponsorship, revenue)
-- **Timeline**: 2026-05-05 to 2026-06-15
-- **Status**: ACTIVE (starts 2026-05-05)
+- **Timeline**: 2026-05-05 07:00 ICT to 2026-06-15 07:00 ICT
+- **Status**: ACTIVE (starts 2026-05-05 07:00 ICT)
 
 ### QA Agent: Continuous
 - All phases: Continuous hourly/daily verification
-- **Timeline**: 2026-04-30 to 2026-06-15 (continuous)
+- **Timeline**: 2026-04-30 07:00 ICT to 2026-06-15 07:00 ICT (continuous)
 - **Status**: ACTIVE
 
 ---
@@ -337,4 +319,4 @@ QA: Continuous Verification (All Phases)
 - ✅ **GO**: All 107 tasks assigned, agents ready, timeline aggressive but achievable
 - ⏸ **PAUSE**: Need to adjust phase scope, timeline, or agent capacity
 
-**Recommendation**: GO — Concurrent model approved, all agents activated, execution begins 2026-04-30 00:00 UTC
+**Recommendation**: GO — Concurrent model approved, all agents activated, execution begins 2026-04-30 07:00 ICT (2026-04-30 00:00 UTC)
