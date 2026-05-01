@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณค่าไฟฟ้า PEA และ MEA — คำแนะนำฉบับสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณค่าไฟฟ้า PEA และ MEA 2569 อัตราจากหน่วยที่ใช้ ค่า Ft ค่าน้ำประปา และค่าปกครองทั่วไป';
+const canonical = `${siteUrl}/how-to/electricity-bill/`;
+const calculatorPath = '/คำนวณค่าไฟฟ้า/';
+const authorDate = '2026-05-01';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ตรวจสอบหน่วยไฟฟ้าที่ใช้',
+      text: 'ดูแสดงดัชนีอ่านมิเตอร์ปัจจุบันลบด้วยการอ่านก่อนหน้านี้ ผลที่ได้คือจำนวนหน่วย (kWh) ที่ใช้ในรอบบิล',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ทราบอัตราค่าไฟฟ้า',
+      text: 'อัตราค่าไฟฟ้าแตกต่างตามช่วงการใช้ไฟ ยิ่งใช้มากยิ่งแพง (ระบบกำหนดอัตราแบบขั้นบันได)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณค่าไฟจากการใช้',
+      text: 'คูณหน่วยที่ใช้ด้วยอัตราค่าไฟในแต่ละช่วง ตัวอย่าง: 150 kWh × 3.52 บาท = 528 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เพิ่มค่า Ft และค่าปกครองทั่วไป',
+      text: 'ค่า Ft (ค่าน้ำมันเชื้อเพลิง) ปรับตามราคาน้ำมันโลก ค่าปกครองทั่วไวตามพระราชกฤษฎีกา',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'รวมค่าทั้งหมด',
+      text: 'ค่าไฟ + ค่า Ft + ค่าปกครองทั่วไป = ค่าไฟฟ้ารวมในรอบบิล',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณค่าไฟฟ้า PEA และ MEA — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>ค่าไฟฟ้าเป็นหนึ่งในค่าใช้จ่ายประจำเดือนที่สำคัญของครัวเรือนไทย บทความนี้จะอธิบายวิธีคำนวณค่าไฟฟ้า PEA (การไฟฟ้าส่วนภูมิภาค) และ MEA (การไฟฟ้ากรุงเทพ) อย่างละเอียด พร้อมวิธีปกป้องตัวเองจากค่าไฟที่สูง</p>
+
+    <h2>ค่าไฟฟ้าประกอบด้วยอะไรบ้าง?</h2>
+
+    <ul>
+      <li><strong>ค่าไฟฟ้า:</strong> คำนวณจากหน่วย (kWh) ที่ใช้ × อัตราต่อหน่วย</li>
+      <li><strong>ค่า Ft:</strong> ค่าเชื้อเพลิง ปรับเดือนละครั้งตามราคาน้ำมันโลก</li>
+      <li><strong>ค่าปกครองทั่วไป:</strong> ค่าบำรุงพื้นฐาน ระหว่าง 18-100 บาท/เดือน</li>
+      <li><strong>ภาษีมูลค่าเพิ่ม (VAT):</strong> 7% ของค่าไฟรวม (เฉพาะบ้านพักอาศัย 0%)</li>
+    </ul>
+
+    <h2>ระบบอัตราค่าไฟแบบขั้นบันได (Tiered Rate)</h2>
+
+    <p>ไฟฟ้าไทยใช้ระบบอัตราแบบขั้นบันได คือยิ่งใช้ไฟมากยิ่งแพง:</p>
+
+    <ul>
+      <li>0-150 kWh: ราคาต่ำสุด (~3.52 บาท/kWh)</li>
+      <li>151-400 kWh: ราคาสูงขึ้น (~4.46 บาท/kWh)</li>
+      <li>401+ kWh: ราคาสูงสุด (~5.22 บาท/kWh)</li>
+    </ul>
+
+    <h2>ตัวอย่างการคำนวณ</h2>
+
+    <p>สมมติใช้ไฟ 250 kWh ในรอบบิล:</p>
+
+    <ul>
+      <li>หน่วยแรก 150 kWh: 150 × 3.52 = 528 บาท</li>
+      <li>หน่วยต่อไป 100 kWh: 100 × 4.46 = 446 บาท</li>
+      <li>ค่า Ft: ประมาณ 35 บาท (ปรับเปลี่ยน)</li>
+      <li>ค่าปกครองทั่วไป: 46 บาท</li>
+      <li><strong>รวมทั้งหมด: ประมาณ 1,055 บาท</strong></li>
+    </ul>
+
+    <h2>วิธีประหยัดค่าไฟ</h2>
+
+    <ul>
+      <li>ใช้เครื่องปรับอากาศอย่างประหยัด (ตั้ง 26-28 °C)</li>
+      <li>ปิดไฟเมื่อไม่ใช้</li>
+      <li>เปลี่ยนไปใช้หลอดประหยัดไฟ LED</li>
+      <li>ซักผ้าและทำความสะอาดในเวลา 9.00-17.00 น. (ไฟในเวลากลางวันมีราคาถูกกว่า)</li>
+      <li>ทำความเข้าใจการใช้ไฟและปรับปรุงลำดับความสำคัญ</li>
+    </ul>
+
+  </article>
+</BaseLayout>

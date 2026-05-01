@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณดอกเบี้ยบัตรเครดิต — คำแนะนำฉบับสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณดอกเบี้ยบัตรเครดิต อัตราสูงสุด กฎ ธปท. และวิธีหลีกเลี่ยงดอกเบี้ย';
+const canonical = `${siteUrl}/how-to/credit-card-interest/`;
+const authorDate = '2026-05-01';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ทราบยอดค้างชำระ',
+      text: 'ตรวจสอบยอดค้างชำระในใบแจ้งยอด (Statement Balance)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ทราบอัตราดอกเบี้ย',
+      text: 'อัตราดอกเบี้ยบัตรเครดิตสูงสุด 16% ต่อปี (ตามพระราชกฤษฎีกา) ตรวจสอบหลังบัตรหรือใบแจ้งยอด',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณดอกเบี้ยรายวัน',
+      text: 'ยอดค้างชำระ × (อัตราดอกเบี้ย ÷ 365) = ดอกเบี้ยต่อวัน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณดอกเบี้ยรอบบิล',
+      text: 'ดอกเบี้ยต่อวัน × จำนวนวันในรอบบิล = ดอกเบี้ยรอบบิล',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'วางแผนการชำระหนี้',
+      text: 'ชำระมากกว่าขั้นต่ำเพื่อลดดอกเบี้ย หรือชำระเต็มจำนวนเพื่อไม่เสียดอกเบี้ย',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณดอกเบี้ยบัตรเครดิต — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>บัตรเครดิตเป็นเครื่องมือทางการเงินสะดวก แต่ดอกเบี้ยจะสูงมาก หากชำระเพียงขั้นต่ำ บทความนี้จะอธิบายวิธีคำนวณดอกเบี้ยบัตรเครดิตและวิธีหลีกเลี่ยงดอกเบี้ยสูง</p>
+
+    <h2>อัตราดอกเบี้ยบัตรเครดิตในไทย</h2>
+
+    <p>ตามพระราชกฤษฎีกา ธนาคารแห่งประเทศไทย กำหนดให้:</p>
+
+    <ul>
+      <li>ดอกเบี้ยสูงสุด: 16% ต่อปี</li>
+      <li>ค่าปรับหากชำระช้า: ตามระเบียบของแต่ละธนาคาร (ปกติ 1-2% ของยอดค้าง)</li>
+      <li>ค่าธรรมเนียมสินเชื่อเงินสด: ไม่เกิน 3% + VAT 7%</li>
+      <li>ขั้นต่ำต้องจ่าย: ปกติ 8-10% ของยอดค้างชำระ</li>
+    </ul>
+
+    <h2>วิธีคำนวณดอกเบี้ย 2 ช่วง</h2>
+
+    <p>โดยปกติธนาคารคิดดอกเบี้ยบัตรเครดิต 2 ช่วง:</p>
+
+    <ol>
+      <li><strong>ช่วงก่อนครบกำหนด (Before Due Date):</strong> คิดจากยอดใช้จ่าย</li>
+      <li><strong>ช่วงหลังครบกำหนด (After Due Date):</strong> คิดจากยอดค้างชำระ</li>
+    </ol>
+
+    <h2>ตัวอย่างการคำนวณ</h2>
+
+    <p>สมมติยอดค้างชำระ 50,000 บาท อัตรา 16% ต่อปี:</p>
+
+    <ul>
+      <li>ดอกเบี้ยต่อวัน = 50,000 × (16% ÷ 365) = 50,000 × 0.0438 = 21.92 บาท</li>
+      <li>ถ้าชำระช้า 30 วัน: 21.92 × 30 = 657.60 บาท</li>
+      <li>รวมต้องจ่าย: 50,000 + 657.60 = 50,657.60 บาท</li>
+    </ul>
+
+    <h2>วิธีหลีกเลี่ยงดอกเบี้ยบัตรเครดิต</h2>
+
+    <ul>
+      <li><strong>ชำระเต็มจำนวน:</strong> ดีที่สุด ไม่มีดอกเบี้ย</li>
+      <li><strong>ชำระเกินขั้นต่ำ:</strong> ลดดอกเบี้ย แม้ว่ายังมีค้างอยู่</li>
+      <li><strong>ใช้บัตรแล้วชำระทันทีในช่วงโปรโมชั่นศูนย์%:</strong> (ถ้ามี) ไม่เสียดอกเบี้ยในช่วงนั้น</li>
+      <li><strong>หลีกเลี่ยงการใช้เงินสด:</strong> ค่าธรรมเนียมเพิ่มเติม</li>
+      <li><strong>วางแผนการใช้:</strong> ใช้อย่างมีสติ เพื่อว่าสามารถชำระได้ตามกำหนด</li>
+    </ul>
+
+    <h2>แนวคิดคำนวณหมายเลขยืนขั้นต่ำ</h2>
+
+    <p>ขั้นต่ำมักคำนวณจาก:</p>
+    <ul>
+      <li>เงินต้น (ส่วนของยอดค้างชำระ) × 1-2%</li>
+      <li>บวก ดอกเบี้ย 100%</li>
+      <li>บวก ค่าปรับ (หากมี)</li>
+      <li>ขั้นต่ำไม่ต่ำกว่า 100-200 บาท</li>
+    </ul>
+
+  </article>
+</BaseLayout>

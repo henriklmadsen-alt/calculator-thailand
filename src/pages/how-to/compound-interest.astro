@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณดอกเบี้ยทบต้น — คำแนะนำฉบับสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณดอกเบี้ยทบต้น (Compound Interest) วิธี Rule of 72 และการวางแผนการเงินระยะยาว';
+const canonical = `${siteUrl}/how-to/compound-interest/`;
+const authorDate = '2026-05-01';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เข้าใจแนวคิด',
+      text: 'ดอกเบี้ยทบต้นคือดอกเบี้ยคิดจากเงินต้น บวก ดอกเบี้ยสะสมจากปีก่อนๆ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'กำหนดตัวแปร',
+      text: 'P (เงินต้น), r (อัตราดอกเบี้ย % ต่อปี), n (ความถี่ทบต้น), t (ระยะเวลา ปี)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ใช้สูตร',
+      text: 'A = P(1 + r/n)^(nt) โดย A คือมูลค่ารวมที่ได้ในสิ้นสุด',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณดอกเบี้ย',
+      text: 'ดอกเบี้ยสุทธิ = A - P',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ใช้ Rule of 72 (ตัวลัด)',
+      text: 'เงินจะเป็น 2 เท่าในประมาณ 72 ÷ อัตราดอกเบี้ย ปี',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณดอกเบี้ยทบต้น — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>ดอกเบี้ยทบต้น (Compound Interest) เป็นแนวคิดการเงินที่มีความสำคัญต่อการวางแผนการเงิน การลงทุน และการประหยัดระยะยาว บทความนี้จะอธิบายวิธีคำนวณและการประยุกต์ใช้ในชีวิตจริง</p>
+
+    <h2>ดอกเบี้ยทบต้นคืออะไร?</h2>
+
+    <p>ดอกเบี้ยทบต้นหมายถึงดอกเบี้ยที่คิดจากเงินต้นบวกกับดอกเบี้ยสะสมจากช่วงเวลาก่อนหน้า ซึ่งแตกต่างจากดอกเบี้ยธรรมดา (Simple Interest) ที่คิดจากเงินต้นเท่านั้น</p>
+
+    <p><strong>ตัวอย่าง:</strong></p>
+    <ul>
+      <li>เงินต้น 100,000 บาท อัตรา 10% ต่อปี</li>
+      <li>ปีที่ 1: ดอกเบี้ย 10,000 บาท → รวม 110,000 บาท</li>
+      <li>ปีที่ 2: ดอกเบี้ย 11,000 บาท (คิดจาก 110,000) → รวม 121,000 บาท</li>
+      <li>ปีที่ 3: ดอกเบี้ย 12,100 บาท (คิดจาก 121,000) → รวม 133,100 บาท</li>
+    </ul>
+
+    <h2>สูตรดอกเบี้ยทบต้น</h2>
+
+    <p><strong>A = P(1 + r/n)^(nt)</strong></p>
+
+    <ul>
+      <li><strong>A:</strong> มูลค่าสิ้นสุด (Amount)</li>
+      <li><strong>P:</strong> เงินต้น (Principal)</li>
+      <li><strong>r:</strong> อัตราดอกเบี้ยรายปี (ทศนิยม เช่น 10% = 0.1)</li>
+      <li><strong>n:</strong> ความถี่ทบต้นต่อปี (1 = ปี, 4 = ไตรมาส, 12 = เดือน, 365 = วัน)</li>
+      <li><strong>t:</strong> ระยะเวลาเป็นปี</li>
+    </ul>
+
+    <h2>ตัวอย่างการคำนวณ</h2>
+
+    <p>ฝากเงิน 100,000 บาท อัตรา 5% ต่อปี ทบต้นรายปี เป็นเวลา 10 ปี:</p>
+
+    <ul>
+      <li>A = 100,000 × (1 + 0.05/1)^(1×10)</li>
+      <li>A = 100,000 × (1.05)^10</li>
+      <li>A = 100,000 × 1.6289</li>
+      <li><strong>A ≈ 162,890 บาท</strong></li>
+      <li><strong>ดอกเบี้ยสุทธิ ≈ 62,890 บาท</strong></li>
+    </ul>
+
+    <h2>Rule of 72 (กฎง่ายๆ)</h2>
+
+    <p><strong>จำนวนปี = 72 ÷ อัตราดอกเบี้ย(%)</strong></p>
+
+    <p>ใช้ประมาณว่าเงินจะเพิ่มเป็น 2 เท่าในกี่ปี เช่น:</p>
+
+    <ul>
+      <li>ดอกเบี้ย 5% ต่อปี → เงินเป็น 2 เท่าในประมาณ 72÷5 = 14.4 ปี</li>
+      <li>ดอกเบี้ย 10% ต่อปี → เงินเป็น 2 เท่าในประมาณ 72÷10 = 7.2 ปี</li>
+    </ul>
+
+    <h2>ความสำคัญของการเริ่มต้นเร็ว</h2>
+
+    <p>ดอกเบี้ยทบต้นแสดงให้เห็นว่า การเริ่มเก็บเงินตั้งแต่เร็ว ๆ มีความสำคัญอย่างไร เพราะยิ่งเวลายาวเท่าไหร่ เงินก็ยิ่งโตเท่านั้น</p>
+
+  </article>
+</BaseLayout>

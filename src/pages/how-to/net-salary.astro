@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณเงินเดือนสุทธิ — คำแนะนำฉบับสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณเงินเดือนจริงที่ได้รับ หักภาษี หักประกันสังคม และหักอื่นๆ';
+const canonical = `${siteUrl}/how-to/net-salary/`;
+const authorDate = '2026-05-01';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'เงินเดือนพื้นฐาน',
+      text: 'เริ่มต้นจากเงินเดือนหรือค่าจ้างตามสัญญาจ้าง',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เพิ่มเงินเพิ่มเติม',
+      text: 'เพิ่มค่าโอที โบนัส ค่าตอบแทนพิเศษ หากมี',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักประกันสังคม',
+      text: 'หักประกันสังคม 5% ของเงินเดือนสูงสุด 15,000 บาท',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักภาษีเงินได้',
+      text: 'หักภาษี ณ ที่จ่ายตามอัตราที่กำหนดโดยกรรมการสรรพสามิต',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักอื่นๆ',
+      text: 'หักกองทุนเงินบำนาญกลาง (สำหรับผู้ที่เข้าร่วม) หักอื่นๆ ตามสัญญาหรือค่าสินเชื่อ',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณเงินเดือนสุทธิ',
+      text: 'เงินเดือนรวม - ประกันสังคม - ภาษี - หักอื่นๆ = เงินเดือนสุทธิที่จะรับ',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณเงินเดือนสุทธิ — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>เงินเดือนสุทธิ (Net Salary) คือเงินที่คุณจะได้รับจริงลงบัญชีหรือรับเงินสดจากนายจ้าง โดยหลังจากหักภาษี หักประกันสังคม และหักรายการอื่นต่างๆ ออกแล้ว บทความนี้จะอธิบายวิธีคำนวณเงินเดือนสุทธิอย่างถูกต้อง</p>
+
+    <h2>องค์ประกอบของเงินเดือนสุทธิ</h2>
+
+    <ul>
+      <li><strong>เงินเดือนพื้นฐาน:</strong> เงินเดือนตามสัญญาจ้าง</li>
+      <li><strong>ค่าโอที (OT):</strong> ค่าแรงเพิ่มเติมสำหรับการทำงานนอกเวลา</li>
+      <li><strong>โบนัส:</strong> การตอบแทนเพิ่มเติมตามผลงาน</li>
+      <li><strong>ค่าตอบแทนพิเศษ:</strong> เงินพื้นที่ หากอยู่พื้นที่ห่างไกล เป็นต้น</li>
+      <li><strong>ลบ: ประกันสังคม</strong> 5% ของเงิน (หรือตามกฎหมาย)</li>
+      <li><strong>ลบ: ภาษีเงินได้</strong> ตามอัตราของกรรมการสรรพสามิต</li>
+      <li><strong>ลบ: อื่นๆ</strong> กองทุนเงินบำนาญกลาง เงินกู้ เป็นต้น</li>
+    </ul>
+
+    <h2>ตัวอย่างการคำนวณเงินเดือนสุทธิ</h2>
+
+    <p>สมมติ:</p>
+    <ul>
+      <li>เงินเดือนพื้นฐาน: 30,000 บาท</li>
+      <li>ค่าโอที: 2,000 บาท</li>
+      <li>โบนัส: 3,000 บาท</li>
+      <li><strong>รวมเงินเดือนทั้งหมด: 35,000 บาท</strong></li>
+    </ul>
+
+    <p>หักต่างๆ:</p>
+    <ul>
+      <li>ประกันสังคม 5%: 35,000 × 5% = 1,750 บาท</li>
+      <li>ภาษี ณ ที่จ่าย: ประมาณ 1,600 บาท (ขึ้นอยู่กับการขึ้นทะเบียน)</li>
+      <li>กองทุนเงินบำนาญกลาง (หากมี): ประมาณ 1,050 บาท (3%)</li>
+      <li><strong>รวมหักต่างๆ: 4,400 บาท</strong></li>
+    </ul>
+
+    <p><strong>เงินเดือนสุทธิ: 35,000 - 4,400 = 30,600 บาท</strong></p>
+
+    <h2>สิ่งที่ควรทราบ</h2>
+
+    <ul>
+      <li>อัตราการหักประกันสังคมคือ 5% เพดาน 15,000 บาทต่อเดือน</li>
+      <li>ภาษี ณ ที่จ่ายมีการเปลี่ยนแปลงตามพระราชกฤษฎีกา</li>
+      <li>เงินกู้และหักรายการอื่นขึ้นอยู่กับสัญญาจ้างแต่ละคน</li>
+      <li>ถ้าหักมากเกินไป สามารถขอคืนได้เมื่อยื่นภาษีประจำปี</li>
+    </ul>
+
+  </article>
+</BaseLayout>

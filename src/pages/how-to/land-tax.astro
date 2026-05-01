@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณภาษีที่ดิน — คำแนะนำฉบับสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณภาษีที่ดินจากราคาประเมิน อัตราภาษี และค่าปกครองทั่วไป';
+const canonical = `${siteUrl}/how-to/land-tax/`;
+const authorDate = '2026-05-01';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'ทราบราคาประเมินที่ดิน',
+      text: 'ตรวจสอบในเอกสารสิทธิ์ที่ดิน (น.ส.3) ราคาประเมินตามพระราชกฤษฎีกา อัปเดตทุก 5 ปี',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'รู้ประเภทที่ดิน',
+      text: 'ที่ดินอาศัย ที่ดินไร่นา ที่ดินสวน ที่ดินประเภทอื่นๆ มีอัตราภาษีต่างกัน',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ค้นหาอัตราภาษี',
+      text: 'ที่ดินอาศัยมีการหักเว้นจำนวนหนึ่ง (1 ล้านบาท หรือตามโครงการรถไฟฟ้า)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณเงินภาษี',
+      text: 'ราคาประเมิน (หลังหักเว้น) × อัตราภาษี = เงินภาษีที่ต้องจ่าย',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'เพิ่มค่าปกครองทั่วไป',
+      text: 'จ่ายค่าปกครองทั่วไป ตามพระราชกฤษฎีกา (ปกติ 2% ของเงินภาษี)',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณภาษีที่ดิน — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>ภาษีที่ดินเป็นภาษีประจำปีที่เจ้าของที่ดินต้องจ่ายให้เทศบาล อำเภอ หรือสภาตำบล ตามตำแหน่งของที่ดิน บทความนี้จะอธิบายวิธีคำนวณภาษีที่ดินอย่างถูกต้อง</p>
+
+    <h2>ข้อมูลที่ต้องรู้</h2>
+
+    <ul>
+      <li><strong>ราคาประเมิน:</strong> ระบุในเอกสารสิทธิ์ (น.ส.3) และจดทะเบียนที่กรมที่ดิน</li>
+      <li><strong>ประเภทที่ดิน:</strong> อาศัย ไร่นา สวน หรือประเภทอื่นๆ</li>
+      <li><strong>อัตราภาษี:</strong> แตกต่างตามประเภทและสถานที่ตั้งที่ดิน</li>
+      <li><strong>ปีงบประมาณ:</strong> ภาษีที่ดินจ่ายตามปีงบประมาณ (ตุลา-กันยายน)</li>
+    </ul>
+
+    <h2>อัตราภาษีที่ดิน</h2>
+
+    <p><strong>ที่ดินอาศัย:</strong> 0.02 - 0.1% ของราคาประเมิน</p>
+    <ul>
+      <li>หักเว้นประหวัดเพื่อประชาชน: 1 ล้านบาท</li>
+      <li>หักเว้นโครงการพัฒนาระบบขนส่งมวลชน: ตามระเบียบ</li>
+    </ul>
+
+    <p><strong>ที่ดินเพื่อการเกษตร:</strong> 0.02% ของราคาประเมิน</p>
+
+    <p><strong>ที่ดินอื่นๆ:</strong> 0.05 - 0.2% ของราคาประเมิน</p>
+
+    <h2>ตัวอย่างการคำนวณ</h2>
+
+    <p>สมมติที่ดินอาศัยมีราคาประเมิน 2,000,000 บาท ในเขตเทศบาล:</p>
+
+    <ul>
+      <li>ราคาประเมิน: 2,000,000 บาท</li>
+      <li>หักเว้นประหวัด: 1,000,000 บาท</li>
+      <li>ราคาประเมินสุทธิ: 1,000,000 บาท</li>
+      <li>อัตราภาษี: 0.02% (ตัวอย่าง)</li>
+      <li>เงินภาษี: 1,000,000 × 0.02% = 200 บาท</li>
+      <li>ค่าปกครองทั่วไป: 200 × 2% = 4 บาท</li>
+      <li><strong>รวมทั้งสิ้น: ประมาณ 204 บาท</strong></li>
+    </ul>
+
+    <h2>การชำระภาษี</h2>
+
+    <ul>
+      <li>ชำระที่สำนักงานเทศบาล หรือตำบล</li>
+      <li>มักมีระยะเวลาสำหรับชำระประหวัด (ปกติ 3 เดือน)</li>
+      <li>หากชำระช้า อาจมีค่าปรับ</li>
+      <li>สามารถชำระออนไลน์ได้ในบางเขตตามระบบของท้องถิ่น</li>
+    </ul>
+
+  </article>
+</BaseLayout>

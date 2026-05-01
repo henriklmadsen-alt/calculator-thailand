@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const pageTitle = 'วิธีคำนวณภาษีเงินได้บุคคลธรรมดา — คำแนะนำฉบับสมบูรณ์';
+const pageDescription = 'เรียนรู้วิธีคำนวณภาษีเงินได้ตามกฎหมายไทย ลดหย่อน การเสียภาษี และวิธีประมาณการภาษี 2569';
+const canonical = `${siteUrl}/how-to/income-tax/`;
+const authorDate = '2026-05-01';
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: pageTitle,
+  description: pageDescription,
+  image: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/og-image.jpg`,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: authorDate,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek',
+  },
+};
+
+const jsonLdHowTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: pageTitle,
+  description: pageDescription,
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณรายได้สุทธิ',
+      text: 'รายได้รวม - ค่าใช้จ่ายที่หักได้ = รายได้สุทธิ ค่าใช้จ่ายต้องเป็นค่าที่สำเร็จจริงตามกฎหมายจัดเก็บภาษี',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักลดหย่อนภาษี',
+      text: 'ลดหย่อนพื้นฐาน 150,000 บาท + ลดหย่อนพิเศษ (บำนาญ ประกัน กุศล เป็นต้น)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'คำนวณรายได้ที่ต้องเสียภาษี',
+      text: 'รายได้สุทธิ - ลดหย่อนทั้งหมด = รายได้ที่ต้องเสียภาษี (ถ้ามูลค่า < 0 คือไม่มีภาษี)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'ประยุกต์ใช้อัตราภาษี',
+      text: 'ใช้ตารางอัตราภาษี 15 ขั้น ตามรายได้ที่ต้องเสียภาษี (0-5% ที่ 5,000 บาทแรก เป็นต้น)',
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'หักภาษีที่จ่ายแล้ว',
+      text: 'ภาษีทั้งสิ้น - ภาษีหัก ณ ที่จ่าย = ภาษีต้องจ่ายเพิ่มเติม (หรือคืน)',
+    },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonical} pageName={pageTitle}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+
+  <article class="prose prose-gray max-w-none">
+
+    <h1>วิธีคำนวณภาษีเงินได้บุคคลธรรมดา — คำแนะนำฉบับสมบูรณ์</h1>
+
+    <p>ภาษีเงินได้บุคคลธรรมดา (Personal Income Tax) เป็นหนึ่งในการจ่ายภาษีสำคัญที่พลเมืองไทยต้องเสียประจำปีให้กับกรรมการสรรพสามิต บทความนี้จะอธิบายวิธีคำนวณภาษีเงินได้อย่างถูกต้อง เพื่อให้คุณสามารถวางแผนการเงินและเตรียมเงินสำหรับการยื่นภาษีได้อย่างเหมาะสม</p>
+
+    <h2>ขั้นตอนพื้นฐานการคำนวณภาษี</h2>
+
+    <ol>
+      <li><strong>รวมรายได้ทั้งหมด:</strong> เงินเดือน ค่าจ้าง โบนัส ดอกเบี้ย เงินปันผล</li>
+      <li><strong>หักค่าใช้จ่ายตามกฎหมาย:</strong> ค่าใช้จ่ายในการสร้างรายได้ที่กฎหมายอนุญาต</li>
+      <li><strong>หักลดหย่อนต่างๆ:</strong> ลดหย่อนพื้นฐาน ลดหย่อนพิเศษ</li>
+      <li><strong>คำนวณภาษี:</strong> ใช้ตารางอัตราภาษีแบบก้าวหน้า</li>
+      <li><strong>หักภาษีที่จ่ายแล้ว:</strong> ภาษีหัก ณ ที่จ่าย ภาษีที่จ่ายไปแล้ว</li>
+    </ol>
+
+    <h2>ลดหย่อนที่สำคัญ (2569)</h2>
+
+    <ul>
+      <li><strong>ลดหย่อนพื้นฐาน:</strong> 150,000 บาท (ทุกคน)</li>
+      <li><strong>ประกันสังคม:</strong> ตนเองจ่ายปีละ 750 บาท (โดยประมาณ)</li>
+      <li><strong>เบี้ยประกันชีวิต:</strong> สูงสุด 100,000 บาท</li>
+      <li><strong>เงินบำนาญส่วนบุคคล:</strong> สูงสุด 500,000 บาท</li>
+      <li><strong>กุศล:</strong> อาสาสมัครและบริจาค สูงสุด 10% ของรายได้</li>
+      <li><strong>การศึกษาบุตร:</strong> คนละ 2,400 บาทต่อปี (สูงสุด 2 คน)</li>
+    </ul>
+
+    <h2>ตัวอย่างการคำนวณ</h2>
+
+    <p>สมมติเงินเดือนต่อปี 500,000 บาท, ประกันชีวิต 50,000 บาท:</p>
+
+    <ul>
+      <li>รายได้รวม: 500,000 บาท</li>
+      <li>ลดหย่อน: 150,000 + 50,000 = 200,000 บาท</li>
+      <li>รายได้ที่ต้องเสียภาษี: 300,000 บาท</li>
+      <li>ภาษี (ตามอัตรา): ประมาณ 40,000 - 45,000 บาท</li>
+    </ul>
+
+    <h2>หากได้รับการหักภาษี ณ ที่จ่าย</h2>
+
+    <p>โดยปกติ นายจ้างจะหักภาษี ณ ที่จ่ายจากเงินเดือน หากหักมากเกินไป คุณอาจได้รับเงินคืน หากหักน้อยเกินไป คุณต้องจ่ายเพิ่มเติม</p>
+
+  </article>
+</BaseLayout>
