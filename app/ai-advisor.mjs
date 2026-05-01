@@ -175,8 +175,28 @@ export async function handleAiAdvisorMessage(req, res) {
   });
 
   let fullReply = '';
+  let streamAborted = false;
+
+  // Cleanup handler: if client closes connection, abort the stream and cleanup
+  const onClientClose = () => {
+    console.log('[ai-advisor] Client disconnected, aborting stream');
+    streamAborted = true;
+    if (stream?.abort) stream.abort();
+  };
+  res.on('close', onClientClose);
+
+  // Timeout: if stream takes >60s, end it to prevent hanging
+  const streamTimeout = setTimeout(() => {
+    if (!res.headersSent || !res.writableEnded) {
+      console.warn('[ai-advisor] Stream timeout (60s), closing connection');
+      if (stream?.abort) stream.abort();
+      streamAborted = true;
+    }
+  }, 60000);
+
+  let stream = null;
   try {
-    const stream = client.messages.stream({
+    stream = client.messages.stream({
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       system: [{ type: 'text', text: fullSystem, cache_control: { type: 'ephemeral' } }],
@@ -184,6 +204,9 @@ export async function handleAiAdvisorMessage(req, res) {
     });
 
     for await (const event of stream) {
+      // Stop processing if client disconnected
+      if (streamAborted) break;
+
       if (
         event.type === 'content_block_delta' &&
         event.delta?.type === 'text_delta'
@@ -194,20 +217,31 @@ export async function handleAiAdvisorMessage(req, res) {
       }
     }
   } catch (err) {
-    console.error('[ai-advisor] Claude API error:', err.message);
-    res.write(`data: ${JSON.stringify({ type: 'error', code: 'ai_error' })}\n\n`);
-    res.end();
+    // Only report error if client is still connected
+    if (!streamAborted && !res.writableEnded) {
+      console.error('[ai-advisor] Claude API error:', err.message);
+      res.write(`data: ${JSON.stringify({ type: 'error', code: 'ai_error' })}\n\n`);
+    }
+    clearTimeout(streamTimeout);
+    res.removeListener('close', onClientClose);
+    if (!res.writableEnded) res.end();
     return;
+  } finally {
+    clearTimeout(streamTimeout);
+    res.removeListener('close', onClientClose);
   }
 
   // Record question in the per-question log (source of truth for tier enforcement)
-  try {
-    await recordQuestion(dbUser.id);
-  } catch (err) {
-    console.error('[ai-advisor] DB error recording question:', err.message);
-    // Non-fatal — reply is already generated
+  if (!streamAborted && !res.writableEnded) {
+    try {
+      await recordQuestion(dbUser.id);
+    } catch (err) {
+      console.error('[ai-advisor] DB error recording question:', err.message);
+      // Non-fatal — reply is already generated
+    }
+
+    res.write(`data: ${JSON.stringify({ type: 'done', questionsUsed: questionsUsed + 1 })}\n\n`);
   }
 
-  res.write(`data: ${JSON.stringify({ type: 'done', questionsUsed: questionsUsed + 1 })}\n\n`);
-  res.end();
+  if (!res.writableEnded) res.end();
 }

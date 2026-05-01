@@ -14,7 +14,18 @@ import { createHmac, randomBytes, createSign } from 'node:crypto';
 import { getOrCreateUser } from './db.mjs';
 
 const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
-const JWT_SECRET = process.env.JWT_SECRET || '';
+
+// CRITICAL: Validate JWT_SECRET at startup
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  throw new Error(
+    'CRITICAL AUTH FAILURE: JWT_SECRET environment variable not set or too short.\n' +
+    'Required: JWT_SECRET (minimum 32 characters).\n' +
+    'This is a blocking requirement for all authentication to function.\n' +
+    'Ensure JWT_SECRET is set in your environment before starting the server.'
+  );
+}
+
 const SESSION_COOKIE = '__session';
 const STATE_COOKIE = '__oauth_state';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days

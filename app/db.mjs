@@ -38,11 +38,18 @@ function getPool() {
       ssl: connectionString.includes('railway') || connectionString.includes('sslmode=require')
         ? { rejectUnauthorized: false }
         : false,
-      max: 10,
+      max: 50,
+      min: 2,
       idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
+      query_timeout: 30000,
     });
     pool.on('error', (err) => {
-      console.error('[db] unexpected client error:', err.message);
+      console.error('[db] CRITICAL: connection pool error:', err.message);
+      console.error('[db] Pool may degrade or fail to recover. Check database connectivity.');
+    });
+    pool.on('connect', () => {
+      console.log('[db] New connection established, pool status:', { size: pool.totalCount, idle: pool.idleCount });
     });
   }
   return pool;
