@@ -3,6 +3,7 @@ ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 WORKDIR /app
 RUN apk add --no-cache git
+RUN npm cache clean --force
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
@@ -40,6 +41,7 @@ FROM node:20-alpine AS runtime
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 WORKDIR /app
+RUN npm cache clean --force
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/package-lock.json ./package-lock.json
 RUN npm ci --omit=dev
