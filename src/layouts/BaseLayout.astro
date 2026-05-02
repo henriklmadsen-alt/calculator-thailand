@@ -160,6 +160,22 @@ const genericHowToJsonLd = !noGenericHowTo ? JSON.stringify({
     },
   ],
 }) : null;
+
+const localBusinessJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  'name': 'Kamnuanlek',
+  'alternateName': 'Calculator Thailand',
+  'description': 'Free Thai calculators for tax, loans, salaries, utilities and 800+ more financial tools',
+  'url': siteUrl,
+  'address': {
+    '@type': 'PostalAddress',
+    'addressCountry': 'TH',
+    'addressLocality': 'Bangkok',
+  },
+  'serviceArea': 'TH',
+  'areaServed': { '@type': 'Country', name: 'Thailand' },
+});
 ---
 
 <!doctype html>
@@ -212,6 +228,7 @@ const genericHowToJsonLd = !noGenericHowTo ? JSON.stringify({
     />
     <title>{title}</title>
     <script type="application/ld+json" set:html={jsonLdOrganization} />
+    <script type="application/ld+json" set:html={localBusinessJsonLd} />
     <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
     {genericHowToJsonLd && <script type="application/ld+json" set:html={genericHowToJsonLd} />}
