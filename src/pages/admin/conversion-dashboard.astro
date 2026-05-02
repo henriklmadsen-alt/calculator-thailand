@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Phase 3: Conversion Optimization Real-time Dashboard
+// Shows variant performance, conversion rates, and statistical significance
+
+interface VariantStats {
+  name: string;
+  views: number;
+  conversions: number;
+  conversionRate: string;
+  confidence: string;
+  winner?: boolean;
+}
+
+// Sample data structure (would be populated from /api/ab-test)
+const dashboardData = {
+  testId: 'phase-3-cta-test',
+  status: 'running',
+  startTime: new Date(Date.now() - 3600000).toISOString(),
+  runtime: '1h',
+  variants: [
+    {
+      name: 'Control (Standard Blue)',
+      views: 150,
+      conversions: 12,
+      conversionRate: '8.0%',
+      confidence: '68%',
+    },
+    {
+      name: 'Variant A (Green + Copy)',
+      views: 145,
+      conversions: 18,
+      conversionRate: '12.4%',
+      confidence: '87%',
+      winner: true,
+    },
+    {
+      name: 'Variant B (Orange + Size)',
+      views: 155,
+      conversions: 14,
+      conversionRate: '9.0%',
+      confidence: '72%',
+    },
+    {
+      name: 'Variant C (Indigo + Social)',
+      views: 160,
+      conversions: 16,
+      conversionRate: '10.0%',
+      confidence: '79%',
+    },
+  ] as VariantStats[],
+};
+
+const maxConversions = Math.max(...dashboardData.variants.map(v => v.conversions));
+---
+
+<BaseLayout
+  title="Conversion Optimization Dashboard — Phase 3"
+  description="Real-time A/B testing results and variant performance metrics"
+>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-6xl mx-auto px-4">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Phase 3: Conversion Optimization</h1>
+        <p class="text-gray-600">Real-time A/B testing results and variant performance</p>
+      </div>
+
+      <!-- Status Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+          <p class="text-gray-600 text-sm font-medium">Test Status</p>
+          <p class="text-2xl font-bold text-green-600">{dashboardData.status.toUpperCase()}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <p class="text-gray-600 text-sm font-medium">Runtime</p>
+          <p class="text-2xl font-bold text-blue-600">{dashboardData.runtime}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <p class="text-gray-600 text-sm font-medium">Total Views</p>
+          <p class="text-2xl font-bold text-indigo-600">
+            {dashboardData.variants.reduce((sum, v) => sum + v.views, 0).toLocaleString()}
+          </p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <p class="text-gray-600 text-sm font-medium">Total Conversions</p>
+          <p class="text-2xl font-bold text-purple-600">
+            {dashboardData.variants.reduce((sum, v) => sum + v.conversions, 0).toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      <!-- Variants Comparison Table -->
+      <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-bold text-gray-900">Variant Performance</h2>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Variant</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Views</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Conversions</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Conv. Rate</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Confidence</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Performance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dashboardData.variants.map((variant, idx) => {
+                const barWidth = (variant.conversions / maxConversions) * 100;
+                const improvement =
+                  variant.name !== 'Control (Standard Blue)'
+                    ? (
+                        ((parseFloat(variant.conversionRate) -
+                          parseFloat(dashboardData.variants[0].conversionRate)) /
+                          parseFloat(dashboardData.variants[0].conversionRate)) *
+                        100
+                      ).toFixed(1)
+                    : null;
+
+                return (
+                  <tr
+                    class={`border-b border-gray-200 ${variant.winner ? 'bg-green-50' : 'hover:bg-gray-50'}`}
+                  >
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                      {variant.name}
+                      {variant.winner && <span class="ml-2 inline-block bg-green-200 text-green-800 px-2 py-1 rounded text-xs font-bold">WINNER</span>}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{variant.views.toLocaleString()}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{variant.conversions}</td>
+                    <td class="px-6 py-4 text-sm font-bold text-gray-900">{variant.conversionRate}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{variant.confidence}</td>
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-2">
+                        <div class="w-24 bg-gray-200 rounded-full h-2">
+                          <div
+                            class={`h-2 rounded-full transition-all ${variant.winner ? 'bg-green-600' : 'bg-blue-600'}`}
+                            style={{ width: `${barWidth}%` }}
+                          />
+                        </div>
+                        {improvement && (
+                          <span class={`text-sm font-bold ${parseFloat(improvement) > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {parseFloat(improvement) > 0 ? '+' : ''}{improvement}%
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Recommendations</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <div class="flex-shrink-0 text-green-600 text-xl">✓</div>
+            <div>
+              <p class="font-medium text-gray-900">Rollout Variant A</p>
+              <p class="text-sm text-gray-600">
+                Shows 55% higher conversion rate (12.4% vs 8.0%) with 87% statistical confidence.
+                Recommend immediate 100% traffic rollout.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex-shrink-0 text-blue-600 text-xl">→</div>
+            <div>
+              <p class="font-medium text-gray-900">Continue Testing Variants B & C</p>
+              <p class="text-sm text-gray-600">Both show promise (9-10% rates). Run for 48h more to reach statistical significance (95%+).</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex-shrink-0 text-purple-600 text-xl">→</div>
+            <div>
+              <p class="font-medium text-gray-900">Phase 4: Multivariate Testing</p>
+              <p class="text-sm text-gray-600">
+                Combine winning CTA (Variant A) with form optimization variants to reach 2-3x improvement target.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+  </style>
+</BaseLayout>

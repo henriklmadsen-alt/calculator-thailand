@@ -1,0 +1,45 @@
+---
+import { getRelatedCalculators } from '../data/related-calculators';
+
+interface Props {
+  currentCalculatorHref: string;
+  maxResults?: number;
+}
+
+const { currentCalculatorHref, maxResults = 3 } = Astro.props;
+const relatedCalcs = getRelatedCalculators(currentCalculatorHref, maxResults);
+
+if (relatedCalcs.length === 0) {
+  // No related calculators found, don't render
+}
+---
+
+{relatedCalcs.length > 0 && (
+  <div class="related-calculators-section mt-12 pt-8 border-t border-gray-200">
+    <h3 class="text-xl font-semibold mb-4 text-gray-900">
+      📎 Related Calculators
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {relatedCalcs.map((calc) => (
+        <a
+          href={calc.href}
+          class="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors group"
+        >
+          <h4 class="font-medium text-gray-900 group-hover:text-blue-600 mb-1">
+            {calc.title}
+          </h4>
+          <p class="text-sm text-gray-600">{calc.reason}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .related-calculators-section {
+    background-color: rgba(59, 130, 246, 0.03);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin: 3rem 0;
+  }
+</style>

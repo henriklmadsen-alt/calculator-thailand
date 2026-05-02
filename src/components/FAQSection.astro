@@ -1,0 +1,175 @@
+---
+// FAQ Section with Schema Markup
+// Parameterized for all calculator types
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
+export interface Props {
+  calculatorName: string;
+  calculatorType?: 'financial' | 'tax' | 'loan' | 'utility' | 'salary' | 'general';
+  customFAQs?: FAQ[];
+  pageUrl?: string;
+}
+
+const { calculatorName, calculatorType = 'general', customFAQs = [], pageUrl = '' } = Astro.props;
+
+// Default FAQ templates by calculator type
+const defaultFAQs: Record<string, FAQ[]> = {
+  financial: [
+    {
+      question: `How accurate is the ${calculatorName}?`,
+      answer: `The ${calculatorName} uses current formulas and rates to provide accurate calculations. Results are for estimation purposes and should be verified with official sources for important financial decisions.`,
+    },
+    {
+      question: `What information do I need to use the ${calculatorName}?`,
+      answer: `You'll need basic financial information relevant to your calculation, such as income, expenses, rates, or loan amounts. The calculator will guide you through each step.`,
+    },
+    {
+      question: `Can I save my calculations from the ${calculatorName}?`,
+      answer: `Yes, you can save and compare your calculations using the save feature. Upgrade to Pro for additional features and cloud storage.`,
+    },
+    {
+      question: `Is my data safe when using the ${calculatorName}?`,
+      answer: `All calculations are performed locally in your browser. No data is sent to our servers unless you explicitly choose to save or share your results.`,
+    },
+  ],
+  tax: [
+    {
+      question: `How do I use the ${calculatorName} for my tax return?`,
+      answer: `The ${calculatorName} helps estimate your tax liability. Enter your income, deductions, and relevant tax information. Results are for planning purposes - consult a tax professional for your actual return.`,
+    },
+    {
+      question: `What deductions can I claim using the ${calculatorName}?`,
+      answer: `Common deductions include mortgage interest, charitable donations, medical expenses, and business expenses. The calculator covers standard deductions and itemized deductions.`,
+    },
+    {
+      question: `Is the ${calculatorName} updated for the current tax year?`,
+      answer: `Yes, our calculators are updated regularly with the latest tax rates, brackets, and regulations. Check the update date at the bottom of the page.`,
+    },
+    {
+      question: `Can the ${calculatorName} help me plan quarterly taxes?`,
+      answer: `The ${calculatorName} can estimate your annual tax, which helps determine quarterly estimated tax payments. Divide the annual estimate by 4 for a rough quarterly amount.`,
+    },
+  ],
+  loan: [
+    {
+      question: `How does the ${calculatorName} calculate monthly payments?`,
+      answer: `The calculator uses the standard loan payment formula: Monthly Payment = (Principal × Rate) / (1 - (1 + Rate)^-Months). Interest accrues over time based on the loan term.`,
+    },
+    {
+      question: `What factors affect the ${calculatorName} results?`,
+      answer: `Your loan amount (principal), interest rate, and loan term (in years) are the main factors. Additional factors may include down payment, prepayment options, and fees.`,
+    },
+    {
+      question: `Can the ${calculatorName} help me compare loan offers?`,
+      answer: `Yes, you can use the calculator with different interest rates and terms to compare multiple loan offers and see which results in lower total interest.`,
+    },
+    {
+      question: `Does the ${calculatorName} include origination fees?`,
+      answer: `The basic calculator focuses on principal and interest. For a complete picture, add any origination fees or closing costs to your loan amount before calculating.`,
+    },
+  ],
+  salary: [
+    {
+      question: `How does the ${calculatorName} calculate net salary?`,
+      answer: `The ${calculatorName} subtracts taxes, insurance, and other deductions from your gross salary. Enter your gross salary, tax information, and any voluntary deductions for an accurate net amount.`,
+    },
+    {
+      question: `Why is my take-home pay less than expected according to the ${calculatorName}?`,
+      answer: `Take-home pay is reduced by income taxes, Social Security, Medicare, health insurance, retirement contributions, and other deductions. The calculator shows the breakdown of all deductions.`,
+    },
+    {
+      question: `Can the ${calculatorName} help me understand my paycheck?`,
+      answer: `Yes, it shows exactly how much of your salary goes to taxes, insurance, and deductions. This helps you understand your paycheck breakdown and budget accordingly.`,
+    },
+    {
+      question: `Is the ${calculatorName} accurate for freelancers or contractors?`,
+      answer: `The basic calculator is designed for employees with regular paychecks. Freelancers and contractors should add self-employment tax (15.3%) and account for quarterly estimated taxes.`,
+    },
+  ],
+  utility: [
+    {
+      question: `What is the ${calculatorName} used for?`,
+      answer: `The ${calculatorName} performs common calculations related to utilities, measurements, and conversions. It helps with accurate results for everyday needs.`,
+    },
+    {
+      question: `How accurate are the results from the ${calculatorName}?`,
+      answer: `The calculator uses standard formulas and conversion factors. Results are highly accurate for general purposes, though rounding may occur for very large or small numbers.`,
+    },
+    {
+      question: `Can I use the ${calculatorName} for professional work?`,
+      answer: `The calculator is suitable for estimates and planning. For professional or mission-critical applications, verify results with alternative sources or professional tools.`,
+    },
+    {
+      question: `Does the ${calculatorName} work offline?`,
+      answer: `Yes, the calculator works entirely in your browser without internet after the page loads. You can use it offline once the page is fully loaded.`,
+    },
+  ],
+};
+
+// Select FAQs based on calculator type
+const faqs = customFAQs.length > 0 ? customFAQs : (defaultFAQs[calculatorType] || defaultFAQs.general);
+
+// Generate FAQ schema
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
+---
+
+<section class="faq-section py-12 bg-gray-50 rounded-lg">
+  <div class="max-w-3xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h2>
+    <p class="text-gray-600 mb-8">Common questions about the {calculatorName}</p>
+
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+    <div class="space-y-4">
+      {faqs.map((faq, idx) => (
+        <details
+          class="group border border-gray-300 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+          key={idx}
+        >
+          <summary class="flex cursor-pointer items-center justify-between bg-white p-4 font-medium text-gray-900 hover:bg-gray-50">
+            <span>{faq.question}</span>
+            <span class="transition group-open:rotate-180">
+              <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+            </span>
+          </summary>
+          <div class="bg-gray-50 px-4 py-3 text-gray-700">
+            <p>{faq.answer}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- FAQ Schema Info -->
+    <div class="mt-8 pt-6 border-t border-gray-200">
+      <p class="text-xs text-gray-500 text-center">
+        These FAQs are structured with schema.org markup for better search engine visibility. Questions and answers are optimized for featured snippets and voice search.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-section details[open] > summary {
+    background-color: #f3f4f6;
+  }
+</style>

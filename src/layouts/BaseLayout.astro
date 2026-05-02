@@ -5,6 +5,8 @@ import RecentCalculations from '../components/templates/RecentCalculations.astro
 import CategoryNav from '../components/templates/CategoryNav.astro';
 import EmailCapture from '../components/templates/EmailCapture.astro';
 import LanguageSwitcherButton from '../components/templates/LanguageSwitcherButton.astro';
+import FeedbackWidget from '../components/FeedbackWidget.astro';
+import ABTestTracker from '../components/ABTestTracker.astro';
 
 interface Props {
   title: string;
@@ -219,9 +221,10 @@ const localBusinessJsonLd = JSON.stringify({
     <meta name="apple-mobile-web-app-title" content="คำนวณเลข" />
     <meta name="theme-color" content="#2563eb" />
 
-    <!-- Fonts -->
+    <!-- Fonts (optimized for Core Web Vitals - preload + swap) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -233,13 +236,13 @@ const localBusinessJsonLd = JSON.stringify({
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
     {genericHowToJsonLd && <script type="application/ld+json" set:html={genericHowToJsonLd} />}
 
-    <!-- Sentry Error Monitoring (Client-side) -->
-    <script type="module">
+    <!-- Sentry Error Monitoring (deferred for Core Web Vitals) -->
+    <script type="module" defer>
       import('/src/sentry-client.ts');
     </script>
 
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
+    <!-- Google Analytics 4 (deferred for Core Web Vitals) -->
+    <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -952,5 +955,9 @@ const localBusinessJsonLd = JSON.stringify({
     <SaveCompareDrawer />
     <!-- CAL-1070: Email capture opt-in (appears after save confirmation) -->
     <EmailCapture />
+    <!-- Phase 2: User Feedback Collection Widget -->
+    <FeedbackWidget />
+    <!-- Phase 2: A/B Testing Tracker -->
+    <ABTestTracker testId="phase-2-main" weights={{ control: 34, variant_a: 33, variant_b: 33 }} />
   </body>
 </html>

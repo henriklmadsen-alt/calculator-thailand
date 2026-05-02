@@ -1,0 +1,137 @@
+---
+// Phase 3: Form Conversion Variants
+// Testing form length, field requirements, and progressive disclosure
+export interface Props {
+  variant?: 'control' | 'variant_a' | 'variant_b';
+  fields?: string[];
+}
+
+const { variant = 'control', fields = [] } = Astro.props;
+
+const variants = {
+  control: {
+    description: 'Standard form with all fields',
+    requiredFields: ['email', 'calculator', 'usage'],
+    optionalFields: ['company', 'followup'],
+  },
+  variant_a: {
+    description: 'Minimal form - only required fields (speed optimization)',
+    requiredFields: ['email'],
+    optionalFields: ['calculator'],
+  },
+  variant_b: {
+    description: 'Progressive disclosure - reveal fields as needed',
+    requiredFields: ['email'],
+    optionalFields: [],
+  },
+};
+
+const config = variants[variant] || variants.control;
+---
+
+<div class={`form-variant form-${variant}`} data-variant={variant}>
+  <form class="ab-track-submit" data-form-type={variant}>
+    <div class="form-description">
+      <p class="text-sm text-gray-600 mb-4">{config.description}</p>
+    </div>
+
+    {config.requiredFields.includes('email') && (
+      <div class="form-group mb-4">
+        <label for="email" class="block font-medium mb-2">Email *</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="your@email.com"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+    )}
+
+    {config.requiredFields.includes('calculator') && (
+      <div class="form-group mb-4">
+        <label for="calculator" class="block font-medium mb-2">Calculator Type *</label>
+        <select
+          id="calculator"
+          name="calculator"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select a calculator...</option>
+          <option value="salary">Salary Calculator</option>
+          <option value="loan">Loan Calculator</option>
+          <option value="tax">Tax Calculator</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    )}
+
+    {config.requiredFields.includes('usage') && (
+      <div class="form-group mb-4">
+        <label for="usage" class="block font-medium mb-2">How often? *</label>
+        <select
+          id="usage"
+          name="usage"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select usage...</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+    )}
+
+    {config.optionalFields.includes('company') && (
+      <div class="form-group mb-4">
+        <label for="company" class="block font-medium mb-2">Company (optional)</label>
+        <input
+          type="text"
+          id="company"
+          name="company"
+          placeholder="Your company"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+    )}
+
+    {config.optionalFields.includes('followup') && (
+      <div class="form-group mb-4">
+        <label class="flex items-center">
+          <input type="checkbox" name="followup" class="mr-2" />
+          <span class="text-sm">Yes, contact me with tips</span>
+        </label>
+      </div>
+    )}
+
+    <button
+      type="submit"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+    >
+      {variant === 'variant_a' ? '✓ Submit (30 sec)' : variant === 'variant_b' ? '→ Next' : 'Submit'}
+    </button>
+  </form>
+</div>
+
+<style>
+  .form-variant {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  input,
+  select {
+    font-size: 1rem;
+  }
+
+  button {
+    cursor: pointer;
+  }
+</style>

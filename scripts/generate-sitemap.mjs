@@ -30,8 +30,8 @@ function getPriority(url) {
   // Articles → 0.8
   if (decoded.includes('/บทความ/')) return 0.8;
 
-  // Admin/API excluded from sitemap
-  if (decoded.includes('/admin/') || decoded.includes('/api/')) return null;
+  // Admin/API/calculator redirects excluded from sitemap
+  if (decoded.includes('/admin/') || decoded.includes('/api/') || decoded.includes('/calculator/')) return null;
 
   // Everything else → 0.5
   return 0.5;

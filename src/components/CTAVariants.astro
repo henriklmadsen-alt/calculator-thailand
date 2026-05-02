@@ -1,0 +1,67 @@
+---
+// Phase 3: Conversion Optimization CTA Variants
+// Different button styles, copy, and placement to test conversion impact
+export interface Props {
+  variant?: 'control' | 'variant_a' | 'variant_b' | 'variant_c';
+  testId?: string;
+  onClick?: string;
+}
+
+const { variant = 'control', testId = 'cta-test', onClick = 'window.trackConversion("cta-click")' } = Astro.props;
+
+// Variant definitions
+const variants = {
+  control: {
+    buttonText: 'Calculate Now',
+    buttonColor: 'bg-blue-600 hover:bg-blue-700',
+    containerClass: 'py-4',
+    description: 'Standard blue button',
+  },
+  variant_a: {
+    buttonText: '⚡ Calculate Free (No Sign-up)',
+    buttonColor: 'bg-green-600 hover:bg-green-700',
+    containerClass: 'py-6',
+    description: 'Green button with urgency + clear value prop',
+  },
+  variant_b: {
+    buttonText: 'Get Instant Result',
+    buttonColor: 'bg-orange-600 hover:bg-orange-700 scale-105',
+    containerClass: 'py-6',
+    description: 'Orange button, larger, contrasting color',
+  },
+  variant_c: {
+    buttonText: '✓ Calculate Now — Instant Results',
+    buttonColor: 'bg-indigo-600 hover:bg-indigo-700 shadow-lg',
+    containerClass: 'py-8',
+    description: 'Indigo with social proof + emphasis',
+  },
+};
+
+const config = variants[variant] || variants.control;
+---
+
+<div class={`cta-variant cta-${variant} ${config.containerClass}`} data-variant={variant} data-test={testId}>
+  <button
+    class={`px-8 py-3 text-white font-bold rounded-lg transition-all ${config.buttonColor} ab-track-click`}
+    onclick={onClick}
+  >
+    {config.buttonText}
+  </button>
+  <p class="text-sm text-gray-600 mt-2">{config.description}</p>
+</div>
+
+<style>
+  .cta-variant {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  button {
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+</style>

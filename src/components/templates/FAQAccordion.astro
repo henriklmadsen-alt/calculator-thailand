@@ -4,9 +4,69 @@ import type { AstroComponentFactory } from 'astro';
 interface Props {
   faqData?: Array<{ question: string; answer: string }>;
   title?: string;
+  calculatorName?: string;
+  calculatorType?: 'financial' | 'tax' | 'loan' | 'salary' | 'utility' | 'general';
 }
 
-const { faqData = [], title = 'คำถามที่พบบ่อย' } = Astro.props;
+const {
+  faqData: customFaqData,
+  title = 'คำถามที่พบบ่อย',
+  calculatorName = 'Calculator',
+  calculatorType = 'general'
+} = Astro.props;
+
+// Auto-generate FAQ if not provided
+const defaultFAQs: Record<string, Array<{ question: string; answer: string }>> = {
+  financial: [
+    {
+      question: `How accurate is the ${calculatorName}?`,
+      answer: `The ${calculatorName} uses current formulas and rates for estimation. Always verify results with official sources for important decisions.`,
+    },
+    {
+      question: `What information does the ${calculatorName} need?`,
+      answer: `You'll need basic financial information relevant to your calculation. The calculator guides you through each required field.`,
+    },
+    {
+      question: `Can I save my results from the ${calculatorName}?`,
+      answer: `Yes, use the save feature to store your calculations. Upgrade to Pro for more features and cloud storage.`,
+    },
+    {
+      question: `Is my data private when using the ${calculatorName}?`,
+      answer: `All calculations happen in your browser. No data is sent unless you save or share your results.`,
+    },
+  ],
+  tax: [
+    {
+      question: `How do I use the ${calculatorName}?`,
+      answer: `Enter your income, deductions, and tax information. Results are for planning - consult a tax professional for your actual return.`,
+    },
+    {
+      question: `Is the ${calculatorName} updated for this tax year?`,
+      answer: `Yes, we update regularly with latest rates and regulations. Check the update date below the calculator.`,
+    },
+  ],
+  salary: [
+    {
+      question: `How does the ${calculatorName} calculate take-home pay?`,
+      answer: `It subtracts all taxes, insurance, and deductions from gross salary. Enter your salary and tax details for accuracy.`,
+    },
+  ],
+  general: [
+    {
+      question: `What is the ${calculatorName}?`,
+      answer: `The ${calculatorName} helps you perform common financial and utility calculations accurately and quickly.`,
+    },
+    {
+      question: `Is the ${calculatorName} free to use?`,
+      answer: `Yes, basic calculations are free. Upgrade to Pro for additional features and ad-free experience.`,
+    },
+  ],
+};
+
+// Use custom data if provided, otherwise use auto-generated based on type
+const faqData = customFaqData && customFaqData.length > 0
+  ? customFaqData
+  : (defaultFAQs[calculatorType] || defaultFAQs.general);
 
 // Generate FAQPage schema
 const jsonLdFaq = faqData.length > 0

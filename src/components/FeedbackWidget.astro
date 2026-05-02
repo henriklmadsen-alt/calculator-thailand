@@ -1,0 +1,312 @@
+---
+// Phase 2: User Feedback Collection Widget
+// Lightweight, non-blocking feedback form
+export interface Props {
+  pageUrl?: string;
+  compact?: boolean;
+}
+
+const { pageUrl = typeof window !== 'undefined' ? window.location.href : '', compact = true } = Astro.props;
+---
+
+<div id="feedback-widget" class="feedback-widget" class:list={[compact && 'compact']}>
+  <div class="feedback-container">
+    <div class="feedback-header">
+      <span class="feedback-title">Help us improve</span>
+      <button id="feedback-toggle" class="feedback-toggle" aria-label="Toggle feedback form">×</button>
+    </div>
+
+    <form id="feedback-form" class="feedback-form">
+      <div class="feedback-rating">
+        <label>How helpful was this page?</label>
+        <div class="rating-stars">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <input
+              type="radio"
+              id={`star-${star}`}
+              name="rating"
+              value={star}
+              required
+              class="star-radio"
+            />
+          ))}
+        </div>
+      </div>
+
+      <div class="feedback-comment">
+        <label for="feedback-comment-text">What could we improve? (optional)</label>
+        <textarea
+          id="feedback-comment-text"
+          name="comment"
+          placeholder="Your feedback here..."
+          rows="3"
+          maxlength="500"
+          class="feedback-textarea"
+        />
+        <span class="char-count">0/500</span>
+      </div>
+
+      <div class="feedback-actions">
+        <button type="submit" class="btn-submit">Send Feedback</button>
+        <button type="button" id="feedback-cancel" class="btn-cancel">Cancel</button>
+      </div>
+
+      <div id="feedback-status" class="feedback-status" />
+    </form>
+  </div>
+</div>
+
+<style>
+  .feedback-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .feedback-widget.compact {
+    max-width: 320px;
+  }
+
+  .feedback-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  .feedback-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .feedback-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .feedback-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feedback-form {
+    padding: 16px;
+    display: none;
+  }
+
+  .feedback-form.active {
+    display: block;
+  }
+
+  .feedback-rating {
+    margin-bottom: 16px;
+  }
+
+  .feedback-rating label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  .rating-stars {
+    display: flex;
+    gap: 8px;
+  }
+
+  .star-radio {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    appearance: none;
+    background: #f0f0f0;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .star-radio:hover {
+    background: #e8e8e8;
+  }
+
+  .star-radio:checked {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+  }
+
+  .feedback-comment {
+    margin-bottom: 12px;
+  }
+
+  .feedback-comment label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
+  }
+
+  .feedback-textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  .char-count {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+  }
+
+  .feedback-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .btn-submit,
+  .btn-cancel {
+    padding: 8px 12px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .btn-submit {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .btn-submit:hover {
+    background: #45a049;
+  }
+
+  .btn-cancel {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .btn-cancel:hover {
+    background: #e0e0e0;
+  }
+
+  .feedback-status {
+    margin-top: 8px;
+    font-size: 12px;
+    padding: 6px;
+    border-radius: 4px;
+    text-align: center;
+    display: none;
+  }
+
+  .feedback-status.success {
+    background: #d4edda;
+    color: #155724;
+    display: block;
+  }
+
+  .feedback-status.error {
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
+  }
+</style>
+
+<script>
+  // Client-side feedback widget logic
+  const widget = document.getElementById('feedback-widget');
+  const form = document.getElementById('feedback-form');
+  const toggle = document.getElementById('feedback-toggle');
+  const cancelBtn = document.getElementById('feedback-cancel');
+  const statusDiv = document.getElementById('feedback-status');
+  const textarea = document.getElementById('feedback-comment-text');
+  const charCount = document.querySelector('.char-count');
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      form?.classList.toggle('active');
+    });
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      form?.classList.remove('active');
+    });
+  }
+
+  if (textarea && charCount) {
+    textarea.addEventListener('input', (e) => {
+      const length = (e.target as HTMLTextAreaElement).value.length;
+      charCount.textContent = `${length}/500`;
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const rating = formData.get('rating');
+      const comment = formData.get('comment') || '';
+
+      try {
+        const response = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rating: parseInt(rating as string),
+            comment,
+            pageUrl: window.location.href,
+            userAgent: navigator.userAgent,
+            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
+          }),
+        });
+
+        if (response.ok) {
+          statusDiv!.className = 'feedback-status success';
+          statusDiv!.textContent = '✓ Thank you for your feedback!';
+          form.reset();
+          setTimeout(() => {
+            form.classList.remove('active');
+            statusDiv!.className = 'feedback-status';
+          }, 2000);
+        } else {
+          statusDiv!.className = 'feedback-status error';
+          statusDiv!.textContent = '✗ Error sending feedback';
+        }
+      } catch (error) {
+        console.error('Feedback submission error:', error);
+        statusDiv!.className = 'feedback-status error';
+        statusDiv!.textContent = '✗ Error sending feedback';
+      }
+    });
+  }
+</script>

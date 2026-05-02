@@ -1,0 +1,89 @@
+---
+// Phase 2: A/B Testing Tracker
+// Lightweight variant assignment and tracking
+export interface Props {
+  testId: string;
+  weights?: {
+    control?: number;
+    variant_a?: number;
+    variant_b?: number;
+  };
+}
+
+const { testId, weights = { control: 33, variant_a: 33, variant_b: 34 } } = Astro.props;
+---
+
+<script define:vars={{ testId, weights }}>
+  (function () {
+    const sessionId = sessionStorage.getItem('sessionId') || crypto.randomUUID();
+    sessionStorage.setItem('sessionId', sessionId);
+
+    // Assign variant based on weights
+    function assignVariant() {
+      const stored = sessionStorage.getItem(`ab_test_${testId}`);
+      if (stored) return stored;
+
+      const rand = Math.random() * 100;
+      let cumulative = 0;
+
+      for (const [variant, weight] of Object.entries(weights)) {
+        cumulative += weight;
+        if (rand < cumulative) {
+          sessionStorage.setItem(`ab_test_${testId}`, variant);
+          return variant;
+        }
+      }
+
+      return 'control'; // Fallback
+    }
+
+    const variant = assignVariant();
+
+    // Track page view
+    async function trackEvent(event, data = {}) {
+      try {
+        await fetch('/api/ab-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            testId,
+            variant,
+            event,
+            pageUrl: window.location.href,
+            sessionId,
+            ...data,
+          }),
+        });
+      } catch (error) {
+        console.error('AB test tracking error:', error);
+      }
+    }
+
+    // Track initial page view
+    trackEvent('view');
+
+    // Track button clicks
+    document.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).classList.contains('ab-track-click')) {
+        const buttonText = (e.target as HTMLElement).textContent || 'unknown';
+        trackEvent('click', { value: buttonText });
+      }
+    });
+
+    // Track form submissions
+    document.addEventListener('submit', (e) => {
+      const form = e.target as HTMLFormElement;
+      if (form.classList.contains('ab-track-submit')) {
+        trackEvent('submit');
+      }
+    });
+
+    // Global conversion tracking
+    window.trackConversion = function (value) {
+      trackEvent('conversion', { value });
+    };
+
+    // Store variant in window for component access
+    window.abTestVariant = variant;
+  })();
+</script>
