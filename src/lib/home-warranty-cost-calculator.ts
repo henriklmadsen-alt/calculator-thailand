@@ -21,7 +21,7 @@ export interface HomeWarrantyResult {
   annualPremium: number;
   totalPremiumCost: number;
   serviceCalls: number;
-  estim atedAnnualServiceCost: number;
+  estimatedAnnualServiceCost: number;
   totalCostIncludingService: number;
 }
 
