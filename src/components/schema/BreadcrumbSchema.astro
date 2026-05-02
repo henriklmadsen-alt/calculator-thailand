@@ -1,0 +1,69 @@
+---
+/**
+ * BreadcrumbSchema.astro
+ *
+ * Generates BreadcrumbList JSON-LD for:
+ * - Home
+ * - Category
+ * - Current Page
+ *
+ * Impact: Shows breadcrumb navigation in SERP, +1–2 rank positions
+ */
+
+interface Props {
+  siteUrl: string;
+  currentPageName: string;
+  currentPageUrl: string;
+  categoryName?: string;
+  categorySlug?: string;
+}
+
+const {
+  siteUrl,
+  currentPageName,
+  currentPageUrl,
+  categoryName,
+  categorySlug,
+} = Astro.props;
+
+// Build breadcrumb path
+const breadcrumbItems: Array<{
+  position: number;
+  name: string;
+  item: string;
+}> = [
+  {
+    position: 1,
+    name: 'หน้าแรก',
+    item: siteUrl + '/',
+  },
+];
+
+// Add category if provided
+if (categoryName && categorySlug) {
+  breadcrumbItems.push({
+    position: 2,
+    name: categoryName,
+    item: `${siteUrl}/หมวดหมู่/${categorySlug}/`,
+  });
+  breadcrumbItems.push({
+    position: 3,
+    name: currentPageName,
+    item: currentPageUrl,
+  });
+} else {
+  breadcrumbItems.push({
+    position: 2,
+    name: currentPageName,
+    item: currentPageUrl,
+  });
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbItems,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

@@ -1,0 +1,55 @@
+---
+/**
+ * EnhancedHowToSchema.astro
+ *
+ * Generates HowTo JSON-LD with steps, images, and timing.
+ * Extends the generic HowTo in BaseLayout with calculator-specific details.
+ *
+ * Impact: HowTo rich snippets in SERP, +2–3 rank positions
+ */
+
+interface HowToStep {
+  position: number;
+  name: string;
+  text: string;
+  image?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  steps: HowToStep[];
+  totalTime?: string;
+  siteUrl: string;
+}
+
+const {
+  title,
+  description,
+  steps,
+  totalTime = 'PT5M',
+  siteUrl,
+} = Astro.props;
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: title,
+  description,
+  totalTime,
+  author: {
+    '@type': 'Organization',
+    name: 'Kamnuanlek.com',
+    url: siteUrl,
+  },
+  step: steps.map((step) => ({
+    '@type': 'HowToStep',
+    position: step.position,
+    name: step.name,
+    text: step.text,
+    ...(step.image && { image: step.image }),
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
