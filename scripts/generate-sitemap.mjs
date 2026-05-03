@@ -39,7 +39,14 @@ function getPriority(url) {
 
 function walkDir(dir, baseUrl = '') {
   const pages = [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch (error) {
+    console.warn(`Warning: Could not read directory ${dir}: ${error.message}`);
+    return pages;
+  }
 
   for (const entry of entries) {
     // Skip hidden directories, node_modules, and asset directories
@@ -64,7 +71,11 @@ function walkDir(dir, baseUrl = '') {
         }
       }
       // Recursively walk subdirectories
-      pages.push(...walkDir(fullPath, currentPath));
+      try {
+        pages.push(...walkDir(fullPath, currentPath));
+      } catch (error) {
+        console.warn(`Warning: Error walking subdirectory ${fullPath}: ${error.message}`);
+      }
     }
   }
 
