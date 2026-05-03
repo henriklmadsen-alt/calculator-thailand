@@ -1,0 +1,50 @@
+---
+/**
+ * CalculatorSchema.astro
+ *
+ * Generates Calculator JSON-LD schema for improved SERP appearance
+ * Supports: Tax calculations, loan payments, salary calculations, etc.
+ */
+
+interface Props {
+  siteUrl: string;
+  name: string;
+  description: string;
+  url: string;
+  calculatorType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculator' | 'Calculator';
+  currency?: string;
+}
+
+const {
+  siteUrl,
+  name,
+  description,
+  url,
+  calculatorType,
+  currency = 'THB',
+} = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': calculatorType,
+  name,
+  description,
+  url,
+  'applicationCategory': 'Utility',
+  'operatingSystem': 'Any',
+  'inLanguage': 'th-TH',
+  'author': {
+    '@type': 'Organization',
+    'name': 'Calculator Thailand',
+    'url': siteUrl,
+  },
+  'offers': {
+    '@type': 'Offer',
+    'price': '0',
+    'priceCurrency': currency,
+    'availability': 'https://schema.org/InStock',
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
