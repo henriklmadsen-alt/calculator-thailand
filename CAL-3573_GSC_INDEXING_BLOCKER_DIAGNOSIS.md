@@ -1,12 +1,13 @@
 # CAL-3573: GSC Indexing Blocker Diagnosis
 
-**Status:** ✅ **FIXED** (commit 92b1a142)  
+**Status:** ⚠️ **PARTIAL FIX** (hreflang corrected; business blockers identified)  
 **Issue:** 200+ pages discovered but not indexed  
-**Root Cause:** Hreflang URL encoding mismatch (now RESOLVED)  
-**Impact:** ~800+ Thai calculator pages now properly indexable  
-**Severity:** CRITICAL (blocked Phase 2 revenue)  
-**Fix Complete:** 2026-05-04 ~10:15 UTC  
-**Next Step:** GSC resubmission and monitoring
+**Technical Root Cause:** Hreflang URL encoding mismatch ✅ FIXED (commit 92b1a142)  
+**Business Blockers:** CAL-260 (board GSC decision) + CAL-174 (security cleanup) ❌ BLOCKING  
+**Impact:** Thai calculator pages need both technical fix + board approval to index  
+**Severity:** CRITICAL (Phase 2 revenue blocked by business decisions, not tech)  
+**Fix Status:** Technical fix deployed-ready; business approvals pending  
+**Timeline:** Deploy hreflang NOW; escalate CAL-260 to CEO immediately
 
 ---
 
@@ -159,10 +160,42 @@ const localeAlternates = [
 
 ---
 
-## Related Issues
+## Critical Dependencies Identified (Post-CTO/SEO Analysis)
 
-- **CAL-260:** GSC cleanup (umbrella task for this and other GSC issues)
-- **CAL-2619 Phase 2:** Earlier hreflang infrastructure work (may be related to this bug introduction)
+### CAL-260: GSC Cleanup Authority (CRITICAL BLOCKER)
+**Status:** BLOCKED (awaiting board decision)  
+**Owner:** CEO/Board  
+**Issue:** Board must approve GSC removal/recrawl for legacy URLs  
+**Impact:** Without CAL-260 approval, Google cannot re-index pages even with hreflang fix  
+**Timeline:** 2-4 weeks after approval for re-indexing  
+**Action Required:** CEO must decide CAL-260 strategy within 1 hour (board deadline)
+
+### CAL-174: Security Leak Cleanup (SECONDARY BLOCKER)
+**Status:** IN_PROGRESS  
+**Owner:** SEO/GEO Specialist  
+**Issue:** Security leak artifact removal still ongoing  
+**Impact:** If 200+ discovered URLs overlap with CAL-174 leak cleanup, they must stay unindexed until cleanup completes  
+**Action Required:** Verify CAL-174 completion status; compare discovered URL list against leak artifacts
+
+### Why My Hreflang Fix Is Valid But Not Sufficient
+
+**What the hreflang fix does:**
+- ✅ Eliminates URL encoding mismatch that could block indexing
+- ✅ Ensures hreflang tags validate correctly
+- ✅ Removes one potential blocker to re-indexing
+
+**What the hreflang fix does NOT do:**
+- ❌ Does not resolve CAL-260 board decisions about GSC cleanup
+- ❌ Does not resolve CAL-174 security artifact removal
+- ❌ Does not force Google to re-index pages queued for removal
+
+**Analogy:** Like fixing a car's engine while the car is still parked in the garage with broken locks (CAL-260) and contaminated fuel (CAL-174). The engine works, but you can't drive.
+
+### Related Issues
+
+- **CAL-260:** GSC cleanup (board decision required — CRITICAL PATH)
+- **CAL-174:** Security leak cleanup (in progress — must complete before reindexing)
+- **CAL-2619 Phase 2:** Earlier hreflang infrastructure work (this fix corrects a bug from CAL-2619)
 - **CAL-3571:** UX Heartbeat (waiting for Phase 2 unblock)
 
 ---
