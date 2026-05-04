@@ -34,12 +34,10 @@ const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').t
 const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
 const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
 // Generate hreflang links for language variants (English pages not yet available)
-const basePath = Astro.url.pathname.replace(/^\/en\//, '/').replace(/^\/en-/, '/');
-const thaiUrl = siteUrl + basePath;
-
+// Use pageUrl (canonical) for hreflang to ensure consistent URL format and prevent encoding mismatches
 const localeAlternates = [
-  { hreflang: 'th-TH', href: thaiUrl },
-  { hreflang: 'x-default', href: thaiUrl },
+  { hreflang: 'th-TH', href: pageUrl },
+  { hreflang: 'x-default', href: pageUrl },
   ...alternateLocales.filter((alt) => alt?.hreflang && alt?.href),
 ];
 
