@@ -1,80 +1,109 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Find all HTML files
-const getAllHtmlFiles = (dir) => {
-  let files = [];
-  const items = fs.readdirSync(dir, { withFileTypes: true });
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distDir = './dist';
+
+let stats = {
+  totalHtml: 0,
+  ogTitle: 0,
+  viewport: 0,
+  canonical: 0,
+  schemaCount: 0,
+  twitter: 0,
+  pwaManifest: 0,
+  themeColor: 0,
+  guardedAdSlots: 0,
+  formInputs: 0,
+  thaiPages: 0
+};
+
+function scanDir(dir) {
+  const files = fs.readdirSync(dir);
   
-  for (const item of items) {
-    const fullPath = path.join(dir, item.name);
-    if (item.isDirectory()) {
-      files = files.concat(getAllHtmlFiles(fullPath));
-    } else if (item.name === 'index.html') {
-      files.push(fullPath);
+  files.forEach(file => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    
+    if (stat.isDirectory()) {
+      scanDir(filePath);
+    } else if (file.endsWith('.html')) {
+      stats.totalHtml++;
+      const content = fs.readFileSync(filePath, 'utf8');
+      
+      // Check for Thai characters
+      if (/[ก-ฮ]/.test(content)) {
+        stats.thaiPages++;
+      }
+      
+      // Check for og:title
+      if (content.includes('og:title')) {
+        stats.ogTitle++;
+      }
+      
+      // Check for viewport
+      if (content.includes('viewport')) {
+        stats.viewport++;
+      }
+      
+      // Check for canonical
+      if (content.includes('rel="canonical"')) {
+        stats.canonical++;
+      }
+      
+      // Count schema.org instances
+      const schemaMatches = content.match(/schema\.org/g);
+      if (schemaMatches) {
+        stats.schemaCount += schemaMatches.length;
+      }
+      
+      // Check for twitter card
+      if (content.includes('twitter:')) {
+        stats.twitter++;
+      }
+      
+      // Check for PWA manifest
+      if (content.includes('manifest.webmanifest')) {
+        stats.pwaManifest++;
+      }
+      
+      // Check for theme-color
+      if (content.includes('theme-color')) {
+        stats.themeColor++;
+      }
+      
+      // Count GuardedAdSlots
+      const adMatches = content.match(/GuardedAdSlots/g);
+      if (adMatches) {
+        stats.guardedAdSlots += adMatches.length;
+      }
+      
+      // Count form inputs
+      const inputMatches = content.match(/<input/g);
+      if (inputMatches) {
+        stats.formInputs += inputMatches.length;
+      }
     }
-  }
-  return files;
-};
-
-// Sample random files
-const sampleFiles = (files, n) => {
-  const sample = [];
-  const indices = new Set();
-  while (indices.size < Math.min(n, files.length)) {
-    indices.add(Math.floor(Math.random() * files.length));
-  }
-  return Array.from(indices).map(i => files[i]);
-};
-
-// Check trust signals
-const checkTrustSignals = (html) => {
-  const signals = {
-    og: html.includes('property="og:') || html.includes("property='og:"),
-    twitter: html.includes('name="twitter:'),
-    schema: html.includes('application/ld+json'),
-    ga4: html.includes('gtag') || html.includes('google-analytics'),
-    mobile: html.includes('viewport'),
-    google: html.includes('google-site-verification') || html.includes('robots'),
-    hreflang: html.includes('hreflang'),
-    sentry: html.includes('sentry') || html.includes('@sentry/'),
-  };
-  return signals;
-};
-
-const allFiles = getAllHtmlFiles('./dist');
-const sample = sampleFiles(allFiles, 100);
-
-const results = {
-  og: 0, twitter: 0, schema: 0, ga4: 0, mobile: 0, google: 0, hreflang: 0, sentry: 0, total: 0
-};
-
-sample.forEach(file => {
-  const html = fs.readFileSync(file, 'utf-8');
-  const signals = checkTrustSignals(html);
-  Object.keys(signals).forEach(key => {
-    if (signals[key]) results[key]++;
   });
-  results.total++;
-});
+}
 
-// Calculate percentages
-const percentages = {};
-Object.keys(results).forEach(key => {
-  if (key !== 'total') {
-    percentages[key] = ((results[key] / results.total) * 100).toFixed(1);
-  }
-});
+scanDir(distDir);
 
-console.log('\n=== TRUST SIGNAL AUDIT (100-page sample) ===');
-console.log(`OG Tags: ${percentages.og}%`);
-console.log(`Twitter Cards: ${percentages.twitter}%`);
-console.log(`Schema Markup: ${percentages.schema}%`);
-console.log(`GA4 Analytics: ${percentages.ga4}%`);
-console.log(`Mobile Viewport: ${percentages.mobile}%`);
-console.log(`Google Verify: ${percentages.google}%`);
-console.log(`Hreflang: ${percentages.hreflang}%`);
-console.log(`Sentry Error: ${percentages.sentry}%`);
+console.log('=== PHASE 1 VERIFICATION ===\n');
+console.log(`Total HTML files: ${stats.totalHtml}`);
+console.log(`Thai pages: ${stats.thaiPages} (${((stats.thaiPages / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`\n=== TRUST SIGNALS ===`);
+console.log(`og:title: ${stats.ogTitle} / ${stats.totalHtml} (${((stats.ogTitle / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`viewport: ${stats.viewport} / ${stats.totalHtml} (${((stats.viewport / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`canonical: ${stats.canonical} / ${stats.totalHtml} (${((stats.canonical / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`schema.org instances: ${stats.schemaCount}`);
+console.log(`twitter:card: ${stats.twitter} / ${stats.totalHtml} (${((stats.twitter / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`PWA manifest: ${stats.pwaManifest} / ${stats.totalHtml} (${((stats.pwaManifest / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`theme-color: ${stats.themeColor} / ${stats.totalHtml} (${((stats.themeColor / stats.totalHtml) * 100).toFixed(1)}%)`);
+console.log(`\n=== MOBILE-FIRST ===`);
+console.log(`GuardedAdSlots: ${stats.guardedAdSlots}`);
+console.log(`Form inputs: ${stats.formInputs}`);
 
-const avg = (Object.values(percentages).reduce((a, b) => a + parseFloat(b), 0) / 8).toFixed(1);
-console.log(`\nAverage Trust Score: ${avg}%`);
+const avgTrust = ((stats.ogTitle + stats.viewport + stats.canonical + stats.twitter + stats.themeColor) / (5 * stats.totalHtml) * 100).toFixed(1);
+console.log(`\n=== AVERAGE TRUST SIGNAL ===\n${avgTrust}%`);
