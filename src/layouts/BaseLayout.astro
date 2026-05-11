@@ -7,6 +7,7 @@ import EmailCapture from '../components/templates/EmailCapture.astro';
 import LanguageSwitcherButton from '../components/templates/LanguageSwitcherButton.astro';
 import FeedbackWidget from '../components/FeedbackWidget.astro';
 import ABTestTracker from '../components/ABTestTracker.astro';
+import CalculatorSchema from '../components/schema/CalculatorSchema.astro';
 
 interface Props {
   title: string;
@@ -176,6 +177,27 @@ const localBusinessJsonLd = JSON.stringify({
   'serviceArea': 'TH',
   'areaServed': { '@type': 'Country', name: 'Thailand' },
 });
+
+const decodedPathname = (() => {
+  try {
+    return decodeURIComponent(Astro.url.pathname);
+  } catch {
+    return Astro.url.pathname;
+  }
+})();
+
+const isArticlePage = decodedPathname.startsWith('/บทความ/');
+const isHomePage = decodedPathname === '/';
+const isCalculatorPage = !isArticlePage && !isHomePage;
+
+const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculator' | 'Calculator' =
+  decodedPathname.includes('ภาษี')
+    ? 'TaxCalculator'
+    : decodedPathname.includes('ผ่อน') || decodedPathname.includes('สินเชื่อ') || decodedPathname.includes('กู้')
+      ? 'LoanCalculator'
+      : decodedPathname.includes('เงินเดือน') || decodedPathname.includes('ค่าแรง')
+        ? 'SalaryCalculator'
+        : 'Calculator';
 ---
 
 <!doctype html>
@@ -233,10 +255,36 @@ const localBusinessJsonLd = JSON.stringify({
     <script type="application/ld+json" set:html={jsonLdWebPage} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={breadcrumbJsonLd} />}
     {genericHowToJsonLd && <script type="application/ld+json" set:html={genericHowToJsonLd} />}
+    {isCalculatorPage && (
+      <CalculatorSchema
+        siteUrl={siteUrl}
+        name={title}
+        description={description}
+        url={pageUrl}
+        calculatorType={calculatorSchemaType}
+      />
+    )}
 
     <!-- Sentry Error Monitoring (deferred for Core Web Vitals) -->
     <script type="module" defer>
       import('/src/sentry-client.ts');
+    </script>
+
+    <script type="module">
+      import { setupKeyboardNavigation } from '/src/lib/accessibility.ts';
+      import { trackFormStart, trackResultView, trackCalculatorCompletion } from '/src/lib/calculator-tracking.ts';
+
+      window.__ctSharedTracking = {
+        trackFormStart,
+        trackResultView,
+        trackCalculatorCompletion,
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setupKeyboardNavigation(), { once: true });
+      } else {
+        setupKeyboardNavigation();
+      }
     </script>
 
     <!-- Google Analytics 4 (deferred for Core Web Vitals) -->
@@ -374,7 +422,11 @@ const localBusinessJsonLd = JSON.stringify({
       // Shared GA4 custom event helpers
       function trackCalculatorStart(calculatorType) {
         if (typeof window.gtag !== 'function') return;
+        const sharedTracking = window.__ctSharedTracking;
         window.__ctCalculatorType = calculatorType;
+        if (sharedTracking?.trackFormStart) {
+          sharedTracking.trackFormStart(calculatorType);
+        }
         window.gtag('event', 'calculator_start', withLanguageContext({
           calculator_type: calculatorType,
           ...getTrafficAttribution(),
@@ -382,7 +434,17 @@ const localBusinessJsonLd = JSON.stringify({
       }
       function trackCalculatorComplete(calculatorType, resultValue) {
         if (typeof window.gtag !== 'function') return;
+        const sharedTracking = window.__ctSharedTracking;
         window.__ctCalculatorType = calculatorType;
+        if (sharedTracking?.trackResultView) {
+          sharedTracking.trackResultView(
+            calculatorType,
+            typeof resultValue === 'number' && Number.isFinite(resultValue) ? String(resultValue) : undefined,
+          );
+        }
+        if (sharedTracking?.trackCalculatorCompletion) {
+          sharedTracking.trackCalculatorCompletion(calculatorType, 0);
+        }
         const payload = {
           calculator_type: calculatorType,
           ...getTrafficAttribution(),
@@ -403,7 +465,11 @@ const localBusinessJsonLd = JSON.stringify({
       }
       function trackResultViewed(calculatorType) {
         if (typeof window.gtag !== 'function') return;
+        const sharedTracking = window.__ctSharedTracking;
         window.__ctCalculatorType = calculatorType;
+        if (sharedTracking?.trackResultView) {
+          sharedTracking.trackResultView(calculatorType);
+        }
         window.gtag('event', 'result_viewed', withLanguageContext({ calculator_type: calculatorType }));
       }
       function trackLanguageAwareEvent(eventName, payload = {}) {
