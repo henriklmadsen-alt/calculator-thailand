@@ -19,6 +19,18 @@ function Parse-Percent([string]$text, [string]$pattern) {
   return 0
 }
 
+function Parse-RatioPercent([string]$text, [string]$label) {
+  $m = [regex]::Match($text, "${label}:\s+(\d+)\/(\d+)")
+  if ($m.Success) {
+    $num = [double]$m.Groups[1].Value
+    $den = [double]$m.Groups[2].Value
+    if ($den -gt 0) {
+      return [int][math]::Round(($num / $den) * 100)
+    }
+  }
+  return 0
+}
+
 Push-Location $RepoRoot
 try {
   Write-Log "# CEO Autopilot Report - $timestamp"
@@ -47,12 +59,12 @@ try {
   Write-Log '```'
   Write-Log ""
 
-  $og = Parse-Percent $checkSignals 'OG:\s+(\d+)/100'
-  $twitter = Parse-Percent $checkSignals 'Twitter:\s+(\d+)/100'
-  $schema = Parse-Percent $checkSignals 'Schema:\s+(\d+)/100'
-  $ga4 = Parse-Percent $checkSignals 'GA4:\s+(\d+)/100'
-  $viewport = Parse-Percent $checkSignals 'Viewport:\s+(\d+)/100'
-  $pwa = Parse-Percent $checkSignals 'PWA:\s+(\d+)/100'
+  $og = Parse-RatioPercent $checkSignals 'OG'
+  $twitter = Parse-RatioPercent $checkSignals 'Twitter'
+  $schema = Parse-RatioPercent $checkSignals 'Schema'
+  $ga4 = Parse-RatioPercent $checkSignals 'GA4'
+  $viewport = Parse-RatioPercent $checkSignals 'Viewport'
+  $pwa = Parse-RatioPercent $checkSignals 'PWA'
 
   Write-Log "## Live Production Checks"
   $robotsCode = curl.exe -L --silent -o NUL -w "%{http_code}" "$SiteUrl/robots.txt"

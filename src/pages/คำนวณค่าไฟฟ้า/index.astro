@@ -5,8 +5,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าไฟฟ้า PEA MEA 2569 ฟรี | Kamnuanlek';
-const pageDescription = 'คำนวณค่าไฟฟ้า PEA และ MEA 2569 ฟรี — ใส่หน่วยที่ใช้ รู้ค่าไฟแม่นยำพร้อมค่า Ft ล่าสุด ประหยัดค่าไฟได้อีกเท่าไร';
+const pageTitle = 'คำนวณค่าไฟฟ้า 2569 PEA/MEA + ค่า Ft ล่าสุด หน่วยละกี่บาท | Kamnuanlek';
+const pageDescription = 'คำนวณค่าไฟฟ้า 2569 สำหรับ PEA/MEA พร้อมค่า Ft ล่าสุด เช็กหน่วยละกี่บาท แยกค่าไฟฐาน ค่าบริการ และ VAT 7% แบบใช้งานจริง';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าไฟฟ้า/`;
 
@@ -33,9 +33,13 @@ const faqData = [
   },
   {
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณค่าไฟฟ้าที่ต้องหลีกเลี่ยง?',
-    answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ใช้ค่า Ft จากรอบเดือนที่ผ่านมา (2) ลุกสูงลืมรวม Ft เข้าไปในการคิด VAT (3) ไม่ใช้ตารางอัตราขั้นบันไดที่ถูกต้อง (4) นำค่าไฟเดือนก่อนมาเปรียบเทียบโดยไม่คิด Ft ที่ต่างกัน (5) ลืมว่าค่าไฟเกิน 150 หน่วยเปลี่ยนค่าบริการ และ (6) ไม่อ่านใบแจ้งค่าไฟสำหรับค่าบริการเพิ่มเติมอื่น',
+    answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ใช้ค่า Ft จากรอบเดือนที่ผ่านมา (2) มักลืมรวม Ft เข้าไปในการคิด VAT (3) ไม่ใช้ตารางอัตราขั้นบันไดที่ถูกต้อง (4) นำค่าไฟเดือนก่อนมาเปรียบเทียบโดยไม่คิด Ft ที่ต่างกัน (5) ลืมว่าค่าไฟเกิน 150 หน่วยเปลี่ยนค่าบริการ และ (6) ไม่อ่านใบแจ้งค่าไฟสำหรับค่าบริการเพิ่มเติมอื่น',
   },
-,
+  {
+    question: '1 kWh เท่ากับกี่บาทในปี 2569?',
+    answer:
+      'ไม่มีราคาตายตัวต่อหน่วยเดียว เพราะค่าไฟไทยคิดแบบขั้นบันไดและมีค่า Ft/ค่าบริการร่วมด้วย โดยช่วงบ้านอยู่อาศัยโดยทั่วไปค่าไฟต่อหน่วยจะสูงขึ้นเมื่อใช้ไฟมากขึ้น ควรกรอกจำนวนหน่วยจริงเพื่อคำนวณยอดรวมที่ใกล้บิลจริง',
+  },
   { question: 'ค่าไฟฟ้าในไทยใช้อัตราแบบไหน?', answer: 'ใช้อัตราก้าวหน้า (Progressive Rate) — ยิ่งใช้มากยิ่งแพงต่อหน่วย MEA/PEA มีอัตรา 3 ช่วง ตามประกาศคณะกรรมการกำกับกิจการพลังงาน (กกพ.) บวกค่า FT (Fuel Tariff) ที่เปลี่ยนทุก 4 เดือน' },
   { question: 'ค่า FT คืออะไรและส่งผลต่อค่าไฟอย่างไร?', answer: 'FT (Fuel Adjustment Charge) คือค่าปรับตามต้นทุนเชื้อเพลิง ปรับทุก 4 เดือน ถ้า FT เป็นบวกหมายถึงค่าไฟแพงขึ้น ถ้าเป็นลบถูกลง ส่งผลให้ค่าไฟรายเดือนเปลี่ยนแปลงได้ 5-15%' },
   { question: 'ประหยัดค่าไฟได้อย่างไรบ้าง?', answer: 'ปิดอุปกรณ์ที่ไม่ใช้งาน (standby กิน 5-10% ของค่าไฟ), ใช้หลอด LED แทนหลอดเก่า, ตั้งแอร์ที่ 25-26°C, ซักผ้าครั้งเดียวให้เต็มถัง, ตรวจสอบฉนวนและซีลประตูตู้เย็น' }
@@ -99,7 +103,9 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าไฟฟ้า">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -108,12 +114,37 @@ const jsonLdHowTo = {
       <p class="mt-1 text-xs font-medium text-sky-800">ผลลัพธ์นี้เป็นการประมาณการเพื่อวางแผนค่าใช้จ่าย • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
     </div>
 
-    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าไฟฟ้า ปี 2569 (MEA/PEA)</h1>
+    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">คำนวณค่าไฟฟ้า ปี 2569 (MEA/PEA + Ft ล่าสุด)</h1>
 
     <p class="mb-6 text-gray-600">
       กรอกจำนวนหน่วยไฟ ประเภทผู้ใช้ และประเภทมิเตอร์ เพื่อคำนวณค่าไฟฟ้าฐาน ค่า Ft ค่าบริการ และ VAT ในใบแจ้งค่าไฟ
       พร้อมดู breakdown รายขั้นบันได
     </p>
+
+    <section id="electricity-intent-cluster" class="mb-6 rounded-xl border border-emerald-100 bg-emerald-50 p-4 sm:p-5">
+      <h2 class="text-base font-bold text-emerald-900 sm:text-lg">คำถามที่คนค้นหาก่อนคำนวณค่าไฟฟ้า</h2>
+      <p class="mt-2 text-sm text-emerald-900">
+        สรุปคำค้นสำคัญแบบกระชับ ใช้ภาษาตรงไปตรงมา และอ้างอิงโครงสร้างอัตราจริงเพื่อช่วยตัดสินใจก่อนคำนวณ
+      </p>
+      <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-emerald-900">
+        <li>ค่าไฟฟ้า 2569 คิดอย่างไรจากหน่วยที่ใช้จริง</li>
+        <li>Ft ล่าสุดเท่าไร และกระทบยอดบิลแค่ไหน</li>
+        <li>บ้านใช้ไฟ 300 หน่วย ค่าไฟประมาณเท่าไร</li>
+        <li>PEA กับ MEA คิดค่าไฟต่างกันหรือไม่</li>
+      </ul>
+      <div class="mt-4 flex flex-col gap-2 text-sm">
+        <a
+          href="/บทความ/คำนวณค่าไฟฟ้า-2569-สูตรคิดค่าไฟ/"
+          class="font-medium text-emerald-800 underline decoration-emerald-400 underline-offset-2 hover:text-emerald-900"
+          >ดูวิธีแยกบิลค่าไฟฟ้า 2569: ค่าไฟฐาน + Ft + ค่าบริการ + VAT</a
+        >
+        <a
+          href="/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/"
+          class="font-medium text-emerald-800 underline decoration-emerald-400 underline-offset-2 hover:text-emerald-900"
+          >ตรวจสอบ VAT 7%: สูตรบวกภาษีและถอดภาษีจากยอดก่อนรวม</a
+        >
+      </div>
+    </section>
 
     <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
       <form id="electricity-form" class="space-y-5">
@@ -284,6 +315,11 @@ const jsonLdHowTo = {
       <div class="mt-3">
         <a href="/บทความ/คำนวณค่าไฟฟ้า-2569-สูตร-pea-mea/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">
           ไปที่บทความคำนวณค่าไฟฟ้า 2569
+        </a>
+      </div>
+      <div class="mt-2">
+        <a href="/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/" class="text-sm font-medium text-primary-700 underline underline-offset-2 hover:text-primary-800">
+          ดูสูตร VAT 7% เพื่อเช็กยอดก่อนจ่ายบิล
         </a>
       </div>
     </section>

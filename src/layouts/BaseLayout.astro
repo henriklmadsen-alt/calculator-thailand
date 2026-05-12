@@ -190,14 +190,24 @@ const isArticlePage = decodedPathname.startsWith('/บทความ/');
 const isHomePage = decodedPathname === '/';
 const isCalculatorPage = !isArticlePage && !isHomePage;
 
+const schemaTypeByCategoryId: Record<string, 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculator' | 'Calculator'> = {
+  tax: 'TaxCalculator',
+  loan: 'LoanCalculator',
+  salary: 'SalaryCalculator',
+};
+
+const categoryBasedSchemaType = categoryId ? schemaTypeByCategoryId[categoryId] : undefined;
+
 const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculator' | 'Calculator' =
-  decodedPathname.includes('ภาษี')
-    ? 'TaxCalculator'
-    : decodedPathname.includes('ผ่อน') || decodedPathname.includes('สินเชื่อ') || decodedPathname.includes('กู้')
-      ? 'LoanCalculator'
-      : decodedPathname.includes('เงินเดือน') || decodedPathname.includes('ค่าแรง')
-        ? 'SalaryCalculator'
-        : 'Calculator';
+  categoryBasedSchemaType
+    ? categoryBasedSchemaType
+    : decodedPathname.includes('ภาษี') || decodedPathname.includes('tax')
+      ? 'TaxCalculator'
+      : decodedPathname.includes('ผ่อน') || decodedPathname.includes('สินเชื่อ') || decodedPathname.includes('กู้') || decodedPathname.includes('loan')
+        ? 'LoanCalculator'
+        : decodedPathname.includes('เงินเดือน') || decodedPathname.includes('ค่าแรง') || decodedPathname.includes('salary')
+          ? 'SalaryCalculator'
+          : 'Calculator';
 ---
 
 <!doctype html>
@@ -1025,3 +1035,4 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     <ABTestTracker testId="phase-2-main" weights={{ control: 34, variant_a: 33, variant_b: 33 }} />
   </body>
 </html>
+

@@ -2,6 +2,15 @@ import fs from 'fs';
 import path from 'path';
 
 const distDir = 'dist';
+const redirectPathPattern = /[\\/](go|calculator)[\\/]/i;
+
+function shouldSkipPage(filePath, content) {
+  const normalized = filePath.replace(/\\/g, '/');
+  const fileName = normalized.split('/').pop() || '';
+  if (redirectPathPattern.test(normalized)) return true;
+  if (/^google[a-z0-9]+\.html$/i.test(fileName)) return true;
+  return /http-equiv=["']refresh["']/i.test(content);
+}
 const getAllHtmlFiles = (dir, fileList = []) => {
   const files = fs.readdirSync(dir);
   files.forEach(file => {
@@ -40,6 +49,7 @@ for (const signal in signals) {
 
 sampled.forEach(file => {
   const content = fs.readFileSync(file, 'utf8');
+  if (shouldSkipPage(file, content)) return;
   for (const signal in signals) {
     if (signals[signal].test(content)) {
       results[signal]++;
@@ -47,13 +57,20 @@ sampled.forEach(file => {
   }
 });
 
-console.log(`=== TRUST SIGNALS (${sampleSize} sample) ===`);
+const evaluatedCount = sampled.filter((file) => {
+  const content = fs.readFileSync(file, 'utf8');
+  return !shouldSkipPage(file, content);
+}).length;
+
+console.log(`=== TRUST SIGNALS (${evaluatedCount} evaluated from ${sampleSize} sample) ===`);
 let total = 0;
 for (const signal in results) {
-  const percentage = Math.round((results[signal] / sampleSize) * 100);
-  console.log(`${signal}: ${percentage}% (${results[signal]}/${sampleSize})`);
+  const percentage = evaluatedCount > 0 ? Math.round((results[signal] / evaluatedCount) * 100) : 0;
+  console.log(`${signal}: ${percentage}% (${results[signal]}/${evaluatedCount})`);
   total += results[signal];
 }
 
-const avg = Math.round((total / Object.keys(results).length / sampleSize) * 100);
+const avg = evaluatedCount > 0
+  ? Math.round((total / Object.keys(results).length / evaluatedCount) * 100)
+  : 0;
 console.log(`\nAverage: ${avg}%`);

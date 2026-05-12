@@ -6,8 +6,8 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณค่าโอที ล่วงเวลา 2569 ฟรี | Kamnuanlek';
-const pageDescription = 'คำนวณค่าล่วงเวลา (OT) ตามกฎหมายแรงงานไทย 2569 ฟรี — x1.5 x2 x3 ใส่เงินเดือน จำนวนชั่วโมง รู้ค่าโอทีที่ได้รับทันที';
+const pageTitle = 'คำนวณค่าโอที 2569 (1.5x 2x 3x) ตามกฎหมายแรงงาน | Kamnuanlek';
+const pageDescription = 'คำนวณค่าโอที 2569 ตามกฎหมายแรงงานไทย: OT วันธรรมดา 1.5x วันหยุด 2x และ OT วันหยุด 3x ใส่เงินเดือนและชั่วโมงเพื่อดูผลทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าโอที/`;
 
@@ -32,7 +32,6 @@ const faqData = [
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณค่าโอทีที่ต้องหลีกเลี่ยง?',
     answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) นับจำนวนวันทำงานผิด (2) ใช้ชั่วโมงทำงานต่อวันไม่ถูกต้อง (3) สับสนระหว่าง OT วันธรรมดา ทำงานวันหยุด และ OT วันหยุด (4) ลืมว่า OT ต้องเป็นชั่วโมง ไม่ใช่นาที (5) ไม่คิดค่าแรงต่อชั่วโมงถูกต้องจากเงินเดือน และ (6) ใช้เงินเดือนรวมค่าเบี้ยประกันเพื่อคำนวณค่าแรงแทนเงินเดือนจริง',
   },
-,
   { question: 'OT วันธรรมดากับวันหยุดคิดต่างกันอย่างไร?', answer: 'วันธรรมดา (ทำงานเกินเวลาปกติ): 1.5 เท่า/ชั่วโมง | วันหยุดประจำสัปดาห์ (8 ชั่วโมงแรก): 2 เท่า, เกิน 8 ชั่วโมง: 3 เท่า | วันหยุดนักขัตฤกษ์ (8 ชั่วโมงแรก): 2 เท่า, เกิน: 3 เท่า' },
   { question: 'นายจ้างสามารถบังคับให้ทำ OT ได้ไหม?', answer: 'ตามกฎหมาย นายจ้างไม่สามารถบังคับให้ทำ OT ได้ เว้นแต่ลูกจ้างยินยอม ยกเว้นกรณีฉุกเฉิน เช่น อัคคีภัย น้ำท่วม หรืองานที่ต้องทำต่อเนื่อง ซึ่งนายจ้างต้องจ่ายค่าตอบแทนตามกฎหมาย' },
   { question: 'OT สูงสุดได้กี่ชั่วโมงต่อสัปดาห์?', answer: 'กฎหมายกำหนดทำงานล่วงเวลาไม่เกิน 36 ชั่วโมง/สัปดาห์ (ยกเว้นงานที่ต้องต่อเนื่อง) รวมกับเวลาทำงานปกติแล้วต้องไม่เกิน 48 ชั่วโมง/วันในกรณีฉุกเฉิน' }
@@ -102,7 +101,9 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณค่าโอที">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -112,13 +113,30 @@ const jsonLdHowTo = {
     </div>
 
     <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
-      คำนวณค่าโอที ปี 2569
+      คำนวณค่าโอที 2569 (1.5x 2x 3x ตามกฎหมายแรงงาน)
     </h1>
 
     <p class="mb-6 text-gray-600">
       กรอกเงินเดือน วันทำงานต่อเดือน ชั่วโมงทำงานต่อวัน และชั่วโมงล่วงเวลาแต่ละประเภท ระบบจะคำนวณค่าแรงต่อชั่วโมง
       พร้อมสรุปยอด OT แยกตามตัวคูณอย่างชัดเจน
     </p>
+
+    <section id="overtime-intent-cluster" class="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+      <h2 class="text-base font-semibold text-blue-900">คำถามที่คนค้นหาก่อนคำนวณค่าโอที</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-blue-900">
+        <li>โอที 1.5 เท่า คิดยังไงจากเงินเดือน</li>
+        <li>โอทีวันหยุด 2 เท่า 3 เท่า ต่างกันเมื่อไร</li>
+        <li>เงินเดือนมี OT แล้วรับสุทธิเท่าไรหลังหักประกันสังคม</li>
+      </ul>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <a href="/บทความ/คำนวณค่าโอที-2569-กฎหมายแรงงาน/" class="inline-flex min-h-11 items-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800">
+          อ่านวิธีคำนวณ OT 2569 แบบละเอียด
+        </a>
+        <a href="/คำนวณเงินเดือนสุทธิ/" class="inline-flex min-h-11 items-center rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-semibold text-blue-800 hover:bg-blue-100">
+          คำนวณเงินเดือนสุทธิหลังรวม OT
+        </a>
+      </div>
+    </section>
 
     <div class="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm">
       <div class="font-semibold text-purple-900 mb-1">⏱️ อัตราค่าโอทีตามกฎหมายแรงงาน 2569</div>

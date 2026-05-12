@@ -6,8 +6,8 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณผ่อนรถ | เครื่องคิดเงินผ่อนรถ ดอกเบี้ยต่ำ 2569';
-const pageDescription = 'คำนวณเงินผ่อนรถ ดอกเบี้ย และสิ่งที่ต้องจ่าย — เครื่องคิดผ่อนรถฟรี พร้อมเทียบต่างสัญญา';
+const pageTitle = 'คำนวณผ่อนรถ 2569 | เทียบเงินดาวน์ ดอกเบี้ย และงวด 48/60/72/84 เดือน';
+const pageDescription = 'คำนวณผ่อนรถ 2569 เทียบเงินดาวน์ ดอกเบี้ย และค่างวด 48/60/72/84 เดือนในหน้าเดียว พร้อมเทียบรถใหม่กับรถมือสองแบบเข้าใจง่าย';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนรถ/`;
 
@@ -35,6 +35,18 @@ const faqData = [
   {
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณผ่อนรถที่ต้องหลีกเลี่ยงคืออะไร?',
     answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ลืมบวกค่าประกันภัชระบบ (ถ้าบังคับ) (2) ไม่ตรวจสอบอัตราดอกเบี้ยจริงจากไฟแนนซ์ (3) นำอัตรา effective rate มาคิด flat rate (4) ไม่คิดค่ารีจิสเตรชั่นและภาษีอื่น (5) ใช้ราคาสูงกว่าราคาตลาดจริง และ (6) ลืมจำนวนเดือนเบิก/ผ่อนให้ถูกต้อง',
+  },
+  {
+    question: 'วิธีคิดดอกเบี้ยรถแบบ flat rate คิดอย่างไร?',
+    answer: 'สูตรหลักคือ ดอกเบี้ยรวม = ยอดจัดไฟแนนซ์ × อัตราดอกเบี้ยต่อปี × จำนวนปีผ่อน แล้วนำ (ยอดจัด + ดอกเบี้ยรวม) ÷ จำนวนงวด จะได้ค่างวดต่อเดือนโดยประมาณ',
+  },
+  {
+    question: 'คำนวณผ่อนรถมือสองต้องดูอะไรเพิ่ม?',
+    answer: 'ผ่อนรถมือสองควรตรวจ 4 จุดเพิ่มคือ (1) อัตราดอกเบี้ยมักสูงกว่ารถใหม่ (2) ระยะเวลาผ่อนสั้นกว่า (3) วงเงินอนุมัติขึ้นกับอายุรถ และ (4) ค่าใช้จ่ายวันออกรถ เช่น โอน/ประกัน/ค่าดำเนินการ',
+  },
+  {
+    question: 'ตารางผ่อนรถใช้ดูอะไรบ้างก่อนตัดสินใจ?',
+    answer: 'ตารางผ่อนรถช่วยดูค่างวดต่อเดือน ดอกเบี้ยรวม และยอดจ่ายทั้งสัญญาแบบเทียบหลายกรณี เช่น เปลี่ยนเงินดาวน์ 10-30% หรือเปลี่ยนระยะเวลาผ่อน 48-84 งวด เพื่อเลือกแผนที่เหมาะกับรายได้',
   },
 ];
 
@@ -105,7 +117,9 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนรถ">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -115,7 +129,7 @@ const jsonLdHowTo = {
     </div>
 
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-      คำนวณผ่อนรถ — คำนวณค่างวดรถยนต์ เงินดาวน์ ดอกเบี้ย
+      คำนวณผ่อนรถ 2569: เทียบเงินดาวน์ ดอกเบี้ย และค่างวด 48/60/72/84 เดือน
     </h1>
 
     <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2">
@@ -125,6 +139,28 @@ const jsonLdHowTo = {
     <p class="text-gray-600 mb-6">
       คำนวณค่าผ่อนรถยนต์รายเดือน เงินดาวน์ ดอกเบี้ยรวม ด้วยอัตราดอกเบี้ยแบบคงที่ (flat rate) ที่ใช้กับสินเชื่อรถยนต์ในไทย
     </p>
+
+    <section class="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
+      <h2 class="mb-2 text-base font-semibold text-gray-900">คีย์ที่คนค้นหาบ่อยเกี่ยวกับผ่อนรถ</h2>
+      <ul class="space-y-1 text-sm text-gray-700">
+        <li>วิธีคิดดอกเบี้ยรถ (flat rate vs effective rate)</li>
+        <li>คำนวณผ่อนรถมือสองให้ใกล้เคียงไฟแนนซ์จริง</li>
+        <li>ดูตารางผ่อนรถเพื่อเทียบเงินดาวน์และจำนวนงวด</li>
+      </ul>
+      <div class="mt-3 space-y-1 text-sm">
+        <a href="/ตารางผ่อนชำระเงินกู้/" class="inline-block text-primary-700 underline underline-offset-2 hover:text-primary-800">
+          ไปที่เครื่องคำนวณตารางผ่อนชำระเงินกู้
+        </a>
+        <br />
+        <a href="/calculator/loan-payment/" class="inline-block text-primary-700 underline underline-offset-2 hover:text-primary-800">
+          ไปที่ Loan Installment Calculator
+        </a>
+        <br />
+        <a href="/บทความ/วิธีคำนวณผ่อนรถ-สูตรและเปรียบเทียบ/" class="inline-block text-primary-700 underline underline-offset-2 hover:text-primary-800">
+          อ่านบทความวิธีคำนวณผ่อนรถแบบละเอียด
+        </a>
+      </div>
+    </section>
 
     <!-- Calculator Form -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
@@ -754,4 +790,3 @@ const jsonLdHowTo = {
     resultObserver.observe(resultsDiv);
   </script>
 </BaseLayout>
-

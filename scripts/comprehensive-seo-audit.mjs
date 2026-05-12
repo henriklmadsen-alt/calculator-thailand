@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const distDir = 'dist';
+const redirectPathPattern = /[\\/](go|calculator)[\\/]/i;
 
 function getAllPages(dir, pages = []) {
   const entries = readdirSync(dir, { withFileTypes: true });
@@ -37,6 +38,14 @@ function checkSignals(html, pagePath) {
   return { ...signals, title, pagePath };
 }
 
+function shouldSkipPage(pagePath, html) {
+  const normalized = pagePath.replace(/\\/g, '/');
+  const fileName = normalized.split('/').pop() || '';
+  if (redirectPathPattern.test(normalized)) return true;
+  if (/^google[a-z0-9]+\.html$/i.test(fileName)) return true;
+  return /http-equiv=["']refresh["']/i.test(html);
+}
+
 const allPages = getAllPages(distDir);
 console.log(`\n📊 COMPREHENSIVE SEO/GEO AUDIT - ${allPages.length} pages\n`);
 
@@ -55,6 +64,10 @@ const problemPages = [];
 
 for (const pagePath of allPages) {
   const html = readFileSync(pagePath, 'utf8');
+  if (shouldSkipPage(pagePath, html)) {
+    redirectPages.push({ pagePath });
+    continue;
+  }
   const page = checkSignals(html, pagePath);
   
   results.total++;

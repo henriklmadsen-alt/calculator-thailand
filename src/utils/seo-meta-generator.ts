@@ -16,7 +16,8 @@
  * → "คำนวณค่าไฟฟ้า — คำนวณเลข 2569 | ค่าไฟ PEA MEA"
  */
 export function generateMetaTitle(calculatorName: string, mainKeyword: string): string {
-  const baseTitle = `${calculatorName} — คำนวณเลข 2569`;
+  const thaiYear = new Date().getFullYear() + 543;
+  const baseTitle = `${calculatorName} — คำนวณเลข ${thaiYear}`;
   const fullTitle = `${baseTitle} | ${mainKeyword}`;
 
   if (fullTitle.length > 60) {
@@ -44,7 +45,7 @@ export function generateMetaDescription(
   featureOrContext: string,
   mainKeyword: string
 ): string {
-  const year = new Date().getFullYear();
+  const year = new Date().getFullYear() + 543;
   const description = `${summary} ${featureOrContext} ${year} ฟรี | ${mainKeyword}`;
 
   if (description.length > 160) {

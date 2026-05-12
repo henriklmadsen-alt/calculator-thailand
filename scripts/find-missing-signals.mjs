@@ -2,6 +2,15 @@ import fs from 'fs';
 import path from 'path';
 
 const distDir = 'dist';
+const redirectPathPattern = /[\\/](go|calculator)[\\/]/i;
+
+function shouldSkipPage(filePath, content) {
+  const normalized = filePath.replace(/\\/g, '/');
+  const fileName = normalized.split('/').pop() || '';
+  if (redirectPathPattern.test(normalized)) return true;
+  if (/^google[a-z0-9]+\.html$/i.test(fileName)) return true;
+  return /http-equiv=["']refresh["']/i.test(content);
+}
 const getAllHtmlFiles = (dir, fileList = []) => {
   const files = fs.readdirSync(dir);
   files.forEach(file => {
@@ -29,6 +38,7 @@ const signals = {
 const missing = [];
 sampled.forEach(file => {
   const content = fs.readFileSync(file, 'utf8');
+  if (shouldSkipPage(file, content)) return;
   let missing_signals = [];
   for (const signal in signals) {
     if (!signals[signal].test(content)) {
