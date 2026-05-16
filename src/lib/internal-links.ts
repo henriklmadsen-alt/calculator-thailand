@@ -5,7 +5,7 @@
 // CAL-3720: Extended to support EnhancedLink structure with clusterKey, intentClass, linkRole, priority.
 // Priority calculators (first wave of redesign) use full EnhancedLink; others use simplified RelatedLink.
 
-import { EnhancedLink, IntentClass } from './seo-data-model';
+import type { EnhancedLink } from './seo-data-model';
 
 export interface RelatedLink {
   href: string;

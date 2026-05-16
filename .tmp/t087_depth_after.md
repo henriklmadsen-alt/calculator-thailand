@@ -1,7 +1,7 @@
 # T087 Internal Link Depth Audit
 
 Mode: after
-Generated: 2026-05-16T05:07:49.096Z
+Generated: 2026-05-16T05:59:13.408Z
 Max allowed depth: 3
 Priority routes audited: 24
 Unresolved priority routes: 0

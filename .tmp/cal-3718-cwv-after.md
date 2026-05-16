@@ -1,6 +1,6 @@
 # T084 CWV Audit
 
-Generated: 2026-05-16T05:59:12.468Z
+Generated: 2026-05-16T05:58:00.509Z
 Routes audited: 20
 Routes with unresolved signals: 20
 Blocking stylesheets (total): 60

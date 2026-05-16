@@ -1,6 +1,6 @@
 # T083 Indexability Audit
 
-Generated: 2026-05-16T05:07:53.445Z
+Generated: 2026-05-16T05:59:12.467Z
 Audited routes: 5
 Unresolved conflicts: 0
 
