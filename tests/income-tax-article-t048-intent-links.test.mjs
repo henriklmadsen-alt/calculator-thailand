@@ -1,0 +1,42 @@
+﻿import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+
+const filePath = 'src/pages/บทความ/ภาษีเงินได้-2569-คำนวณ-วิธีลดหย่อน/index.astro';
+assert.ok(fs.existsSync(filePath), 'income-tax core article page not found');
+const source = fs.readFileSync(filePath, 'utf8');
+
+const clusterId = 'income-tax-core-intent-cluster';
+const requiredLink1 = '/คำนวณภาษีเงินได้บุคคลธรรมดา/';
+const requiredLink2 = '/บทความ/ลดหย่อนภาษีเงินได้-วิธีเบิกและประหยัดสูงสุด/';
+
+test('T048: income-tax core intent cluster exists', () => {
+  assert.match(source, new RegExp(`<section id="${clusterId}"`, 'u'));
+});
+
+test('T048: cluster appears above first ArticleCalculatorCTA', () => {
+  const sectionIndex = source.indexOf(`<section id="${clusterId}"`);
+  const firstCtaIndex = source.indexOf('<ArticleCalculatorCTA');
+
+  assert.ok(sectionIndex !== -1, 'core intent cluster section not found');
+  assert.ok(firstCtaIndex !== -1, 'first ArticleCalculatorCTA not found');
+  assert.ok(sectionIndex < firstCtaIndex, 'core intent cluster must appear above first ArticleCalculatorCTA');
+});
+
+test('T048: cluster contains both required links', () => {
+  const sectionMatch = source.match(new RegExp(`<section id="${clusterId}"[\\s\\S]*?<\\/section>`, 'u'));
+  assert.ok(sectionMatch, 'core intent cluster section not found');
+
+  const section = sectionMatch[0];
+  assert.match(section, new RegExp(`href="${requiredLink1}"`, 'u'));
+  assert.match(section, new RegExp(`href="${requiredLink2}"`, 'u'));
+});
+
+test('T048: cluster id is unique', () => {
+  const matches = source.match(new RegExp(`id="${clusterId}"`, 'gu')) ?? [];
+  assert.equal(matches.length, 1, 'core intent cluster id must appear exactly once');
+});
+
+test('T048: faqData wiring remains intact', () => {
+  assert.match(source, /faqData=\{faqData\}/u);
+});

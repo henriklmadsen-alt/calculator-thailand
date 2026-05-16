@@ -1,6 +1,11 @@
 // Internal linking map — single source of truth for related-content sections.
 // Each calculator maps to 2–4 related calculators + its supporting article(s).
 // Used by RelatedCalculators.astro and RelatedArticles.astro components.
+//
+// CAL-3720: Extended to support EnhancedLink structure with clusterKey, intentClass, linkRole, priority.
+// Priority calculators (first wave of redesign) use full EnhancedLink; others use simplified RelatedLink.
+
+import { EnhancedLink, IntentClass } from './seo-data-model';
 
 export interface RelatedLink {
   href: string;
@@ -10,11 +15,14 @@ export interface RelatedLink {
   author?: string; // Article author name
 }
 
+// Type union: supports both old RelatedLink and new EnhancedLink
+export type LinkEntry = RelatedLink | EnhancedLink;
+
 export interface CalculatorLinks {
-  /** Related calculator pages */
-  calculators: RelatedLink[];
-  /** Related article pages */
-  articles: RelatedLink[];
+  /** Related calculator pages (RelatedLink or EnhancedLink) */
+  calculators: LinkEntry[];
+  /** Related article pages (RelatedLink or EnhancedLink) */
+  articles: LinkEntry[];
 }
 
 /**

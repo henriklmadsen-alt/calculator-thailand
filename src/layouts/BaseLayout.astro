@@ -251,14 +251,25 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     <meta name="apple-mobile-web-app-title" content="คำนวณเลข" />
     <meta name="theme-color" content="#2563eb" />
 
-    <!-- Fonts (optimized for Core Web Vitals - preload + swap) -->
+    <!-- Fonts (non-blocking load + noscript fallback) -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//www.googletagmanager.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
     <title>{title}</title>
     <script type="application/ld+json" set:html={jsonLdOrganization} />
     <script type="application/ld+json" set:html={localBusinessJsonLd} />
@@ -668,7 +679,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
       }
     </style>
   </head>
-  <body class="font-thai text-gray-900 flex flex-col">
+  <body class:list={['font-thai text-gray-900 flex flex-col', isCalculatorPage && 'ct-page-calculator']}>
     <LanguageSwitcherButton />
     <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
       <nav class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">

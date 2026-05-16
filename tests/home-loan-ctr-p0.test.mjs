@@ -1,14 +1,14 @@
-import { test } from 'node:test';
+﻿import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const filePath = 'src/pages/คำนวณผ่อนบ้าน/index.astro';
 const source = fs.readFileSync(filePath, 'utf8');
 
-test('home-loan page ships dual-intent snippet for monthly payment and refinance', () => {
-  assert.match(source, /ผ่อนบ้านรายเดือน\+เทียบรีไฟแนนซ์ 2569/u);
-  assert.match(source, /ค่างวดรายเดือน/u);
-  assert.match(source, /รีไฟแนนซ์/u);
+test('home-loan page ships dual-intent snippet for monthly payment and refinance-vs-paydown', () => {
+  assert.match(source, /const pageTitle = '.*2569.*ค่างวด.*รีไฟแนนซ์.*โปะบ้าน.*';/u);
+  assert.match(source, /const pageDescription = '.*ค่างวดรายเดือน.*รีไฟแนนซ์.*โปะบ้าน.*';/u);
+  assert.match(source, /รีไฟแนนซ์ vs โปะบ้าน/u);
 });
 
 test('home-loan page has above-fold intent cue section', () => {

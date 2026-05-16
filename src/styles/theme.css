@@ -177,6 +177,54 @@ html[data-theme='dark'] .bg-slate-50\/70 {
   }
 }
 
+/* T085: mobile readability guards on calculator pages only */
+@media (max-width: 767px) {
+  .ct-page-calculator .ct-layout-main {
+    padding-bottom: 5.5rem;
+  }
+
+  .ct-page-calculator input,
+  .ct-page-calculator select,
+  .ct-page-calculator textarea,
+  .ct-page-calculator button {
+    min-height: 44px;
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  .ct-page-calculator button[type='submit'],
+  .ct-page-calculator a[role='button'] {
+    min-height: 44px;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+
+  .ct-page-calculator button,
+  .ct-page-calculator [role='button'] {
+    touch-action: manipulation;
+  }
+
+  .ct-page-calculator [id$='results'],
+  .ct-page-calculator [id='results'] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Save Calculation Button — Win #2 CAL-962 */
 .save-calc-btn {
   display: inline-flex;
