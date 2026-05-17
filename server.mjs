@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, stat, readdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -82,6 +82,9 @@ webpush.setVapidDetails('mailto:hello@kamnuanlek.com', VAPID_PUBLIC_KEY, VAPID_P
 const pushSubscriptions = new Map(); // endpoint → subscription object
 const SUBS_FILE = join(__dirname, '..', 'tmp', 'push-subscriptions.json');
 const VISITOR_COUNTER_DIR = join(__dirname, '.events', 'visitor-counter');
+const VISITOR_COUNTER_LIFETIME_FILE = join(VISITOR_COUNTER_DIR, 'lifetime.json');
+const VISITOR_GROWTH_AUDIT_FILE = join(__dirname, '..', 'tmp', 'visitor-growth-audit.json');
+const VISITOR_GROWTH_DAILY_TARGET = 100;
 const VISITOR_BOT_UA_PATTERN =
   /(bot|spider|crawl|slurp|bingpreview|facebookexternalhit|headless|lighthouse|pingdom|uptimerobot)/i;
 const VISITOR_MAX_DAYS = 30;
@@ -151,6 +154,137 @@ async function loadVisitorState(dateKey) {
 async function saveVisitorState(state) {
   await mkdir(VISITOR_COUNTER_DIR, { recursive: true });
   await writeFile(getVisitorStatePath(state.date), JSON.stringify(state), 'utf-8');
+}
+
+function createEmptyLifetimeVisitorState() {
+  return {
+    since: new Date().toISOString(),
+    uniqueVisitors: 0,
+    totalVisits: 0,
+    visitors: {},
+  };
+}
+
+async function saveLifetimeVisitorState(state) {
+  await mkdir(VISITOR_COUNTER_DIR, { recursive: true });
+  await writeFile(VISITOR_COUNTER_LIFETIME_FILE, JSON.stringify(state), 'utf-8');
+}
+
+async function buildLifetimeVisitorStateFromDailyFiles() {
+  const lifetimeState = createEmptyLifetimeVisitorState();
+  const knownVisitorHashes = new Set();
+  let earliestDate = null;
+
+  try {
+    await mkdir(VISITOR_COUNTER_DIR, { recursive: true });
+    const files = await readdir(VISITOR_COUNTER_DIR);
+    const dailyFiles = files.filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name)).sort();
+
+    for (const fileName of dailyFiles) {
+      const dateKey = fileName.replace('.json', '');
+      const dayState = await loadVisitorState(dateKey);
+      lifetimeState.totalVisits += dayState.totalVisits;
+
+      if (!earliestDate || dateKey < earliestDate) earliestDate = dateKey;
+
+      for (const [visitorHash, firstSeenAt] of Object.entries(dayState.visitors || {})) {
+        if (knownVisitorHashes.has(visitorHash)) continue;
+        knownVisitorHashes.add(visitorHash);
+        lifetimeState.visitors[visitorHash] = firstSeenAt;
+      }
+    }
+
+    lifetimeState.uniqueVisitors = knownVisitorHashes.size;
+    if (earliestDate) lifetimeState.since = `${earliestDate}T00:00:00.000Z`;
+  } catch {
+    // Keep empty state if files are unreadable.
+  }
+
+  await saveLifetimeVisitorState(lifetimeState);
+  return lifetimeState;
+}
+
+async function loadLifetimeVisitorState() {
+  try {
+    const raw = await readFile(VISITOR_COUNTER_LIFETIME_FILE, 'utf-8');
+    const parsed = JSON.parse(raw);
+    if (
+      parsed &&
+      typeof parsed.uniqueVisitors === 'number' &&
+      typeof parsed.totalVisits === 'number' &&
+      parsed.visitors &&
+      typeof parsed.visitors === 'object'
+    ) {
+      return {
+        since: typeof parsed.since === 'string' ? parsed.since : new Date().toISOString(),
+        uniqueVisitors: parsed.uniqueVisitors,
+        totalVisits: parsed.totalVisits,
+        visitors: parsed.visitors,
+      };
+    }
+  } catch {
+    // Build from daily files below.
+  }
+
+  return buildLifetimeVisitorStateFromDailyFiles();
+}
+
+function getDateDaysAgo(days) {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() - days);
+  return date;
+}
+
+async function loadVisitorGrowthAuditState() {
+  try {
+    const raw = await readFile(VISITOR_GROWTH_AUDIT_FILE, 'utf-8');
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') {
+      return parsed;
+    }
+  } catch {
+    // No prior audit state.
+  }
+  return { lastAuditDate: null };
+}
+
+async function saveVisitorGrowthAuditState(state) {
+  await mkdir(join(__dirname, '..', 'tmp'), { recursive: true });
+  await writeFile(VISITOR_GROWTH_AUDIT_FILE, JSON.stringify(state), 'utf-8');
+}
+
+async function runDailyVisitorGrowthAudit() {
+  const nowBkk = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  if (nowBkk.getHours() < 7) return;
+
+  const todayDateKey = getBangkokDateKey();
+  const yesterdayDateKey = getBangkokDateKey(getDateDaysAgo(1));
+  const auditState = await loadVisitorGrowthAuditState();
+  if (auditState.lastAuditDate === todayDateKey) return;
+
+  const todayState = await loadVisitorState(todayDateKey);
+  const yesterdayState = await loadVisitorState(yesterdayDateKey);
+  const dailyGrowth = todayState.uniqueVisitors - yesterdayState.uniqueVisitors;
+  const meetsTarget = dailyGrowth >= VISITOR_GROWTH_DAILY_TARGET;
+
+  const nextAuditState = {
+    lastAuditDate: todayDateKey,
+    checkedAt: new Date().toISOString(),
+    dailyGrowth,
+    target: VISITOR_GROWTH_DAILY_TARGET,
+    meetsTarget,
+  };
+  await saveVisitorGrowthAuditState(nextAuditState);
+
+  if (!meetsTarget) {
+    console.warn(
+      `[visitor-growth-audit] Daily growth below target on ${todayDateKey}: ${dailyGrowth} < ${VISITOR_GROWTH_DAILY_TARGET}. Action required: improve SEO and AI search coverage.`
+    );
+  } else {
+    console.info(
+      `[visitor-growth-audit] Daily growth target met on ${todayDateKey}: ${dailyGrowth} >= ${VISITOR_GROWTH_DAILY_TARGET}.`
+    );
+  }
 }
 
 function hashVisitorFingerprint(visitorId, req) {
@@ -253,8 +387,18 @@ setInterval(async () => {
   }
 }, 60 * 60 * 1000);
 
+// Run visitor growth audit every hour.
+setInterval(() => {
+  runDailyVisitorGrowthAudit().catch((error) => {
+    console.error('[visitor-growth-audit] Failed:', error);
+  });
+}, 60 * 60 * 1000);
+
 // Load persisted subscriptions on startup
 loadSubscriptions();
+runDailyVisitorGrowthAudit().catch((error) => {
+  console.error('[visitor-growth-audit] Startup run failed:', error);
+});
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -601,14 +745,23 @@ async function serve(req, res) {
         const dateKey = getBangkokDateKey();
         const visitorHash = hashVisitorFingerprint(visitorId, req);
         const state = await loadVisitorState(dateKey);
+        const lifetimeState = await loadLifetimeVisitorState();
 
         state.totalVisits += 1;
         if (!state.visitors[visitorHash]) {
           state.visitors[visitorHash] = new Date().toISOString();
           state.uniqueVisitors += 1;
         }
+        lifetimeState.totalVisits += 1;
+        if (!lifetimeState.visitors[visitorHash]) {
+          lifetimeState.visitors[visitorHash] = new Date().toISOString();
+          lifetimeState.uniqueVisitors += 1;
+        }
 
-        await saveVisitorState(state);
+        await Promise.all([
+          saveVisitorState(state),
+          saveLifetimeVisitorState(lifetimeState),
+        ]);
 
         res.writeHead(201, headers);
         res.end(JSON.stringify({
@@ -616,6 +769,8 @@ async function serve(req, res) {
           date: dateKey,
           uniqueVisitors: state.uniqueVisitors,
           totalVisits: state.totalVisits,
+          lifetimeUniqueVisitors: lifetimeState.uniqueVisitors,
+          lifetimeTotalVisits: lifetimeState.totalVisits,
         }));
       } catch (error) {
         console.error('[visitor-counter] POST failed:', error);
@@ -631,8 +786,7 @@ async function serve(req, res) {
     const daily = [];
 
     for (let i = 0; i < days; i += 1) {
-      const date = new Date();
-      date.setUTCDate(date.getUTCDate() - i);
+      const date = getDateDaysAgo(i);
       const dateKey = getBangkokDateKey(date);
       const state = await loadVisitorState(dateKey);
       daily.push({
@@ -647,6 +801,10 @@ async function serve(req, res) {
       uniqueVisitors: 0,
       totalVisits: 0,
     };
+    const yesterday = daily[1] || { uniqueVisitors: 0, totalVisits: 0 };
+    const lifetime = await loadLifetimeVisitorState();
+    const growthVsYesterday = today.uniqueVisitors - yesterday.uniqueVisitors;
+    const meetsDailyGrowthTarget = growthVsYesterday >= VISITOR_GROWTH_DAILY_TARGET;
 
     res.writeHead(200, {
       'Content-Type': 'application/json',
@@ -658,6 +816,17 @@ async function serve(req, res) {
       timezone: 'Asia/Bangkok',
       generatedAt: new Date().toISOString(),
       today,
+      lifetime: {
+        since: lifetime.since,
+        uniqueVisitors: lifetime.uniqueVisitors,
+        totalVisits: lifetime.totalVisits,
+      },
+      growth: {
+        comparedDate: daily[1]?.date || null,
+        uniqueVisitorsDelta: growthVsYesterday,
+        target: VISITOR_GROWTH_DAILY_TARGET,
+        meetsTarget: meetsDailyGrowthTarget,
+      },
       daily,
     }));
     return;
