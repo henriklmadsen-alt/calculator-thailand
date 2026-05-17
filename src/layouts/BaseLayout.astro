@@ -498,6 +498,63 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         window.gtag('event', eventName, withLanguageContext(payload));
       }
 
+      function getOrCreateVisitorId() {
+        const key = 'ct.visitor_id.v1';
+        try {
+          const existing = window.localStorage.getItem(key);
+          if (existing) return existing;
+          const next = (window.crypto && typeof window.crypto.randomUUID === 'function')
+            ? window.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+          window.localStorage.setItem(key, next);
+          return next;
+        } catch {
+          return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        }
+      }
+
+      async function sendVisitorCounterPing() {
+        if (window.location.pathname.startsWith('/admin')) return;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
+
+        const perPageKey = `ct.visitor_ping.v1:${window.location.pathname}`;
+        try {
+          if (window.sessionStorage.getItem(perPageKey) === '1') return;
+          window.sessionStorage.setItem(perPageKey, '1');
+        } catch {}
+
+        const visitorId = getOrCreateVisitorId();
+        const pageType = getPageType();
+        const body = JSON.stringify({
+          visitorId,
+          pagePath: window.location.pathname,
+          pageType,
+        });
+
+        try {
+          await fetch('/api/visitor-counter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            keepalive: true,
+          });
+        } catch {}
+      }
+
+      async function renderTodayVisitorCount() {
+        const el = document.getElementById('ct-visitor-count-value');
+        if (!el) return;
+
+        try {
+          const response = await fetch('/api/visitor-counter?days=1', { cache: 'no-store' });
+          if (!response.ok) return;
+          const payload = await response.json();
+          const value = Number(payload?.today?.uniqueVisitors);
+          if (!Number.isFinite(value)) return;
+          el.textContent = value.toLocaleString('th-TH');
+        } catch {}
+      }
+
       window.trackCalculatorStart = trackCalculatorStart;
       window.trackCalculatorComplete = trackCalculatorComplete;
       window.trackCalculatorUsed = trackCalculatorUsed;
@@ -585,10 +642,14 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
+          sendVisitorCounterPing();
+          renderTodayVisitorCount();
           preserveAttributionParamsOnLinks();
           bindEntryClickTracking();
         });
       } else {
+        sendVisitorCounterPing();
+        renderTodayVisitorCount();
         preserveAttributionParamsOnLinks();
         bindEntryClickTracking();
       }
@@ -770,7 +831,10 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
             <a href="/ข้อกำหนดการใช้งาน/" class="hover:text-primary-600 transition-colors">ข้อกำหนด</a>
             <a href="/affiliate-disclosure/" class="hover:text-primary-600 transition-colors">Affiliate</a>
           </nav>
-          <p class="text-xs text-gray-400">© 2026 Kamnuanlek (คำนวณเลข) — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+          <div class="text-xs text-gray-400 text-center sm:text-right">
+            <p>© 2026 Kamnuanlek (คำนวณเลข) — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+            <p class="mt-1">ผู้เยี่ยมชมวันนี้: <span id="ct-visitor-count-value">—</span></p>
+          </div>
         </div>
       </div>
     </footer>

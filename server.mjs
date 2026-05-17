@@ -81,6 +81,10 @@ webpush.setVapidDetails('mailto:hello@kamnuanlek.com', VAPID_PUBLIC_KEY, VAPID_P
 // Subscribers who revisit re-register automatically via SW
 const pushSubscriptions = new Map(); // endpoint → subscription object
 const SUBS_FILE = join(__dirname, '..', 'tmp', 'push-subscriptions.json');
+const VISITOR_COUNTER_DIR = join(__dirname, '.events', 'visitor-counter');
+const VISITOR_BOT_UA_PATTERN =
+  /(bot|spider|crawl|slurp|bingpreview|facebookexternalhit|headless|lighthouse|pingdom|uptimerobot)/i;
+const VISITOR_MAX_DAYS = 30;
 
 async function loadSubscriptions() {
   try {
@@ -101,6 +105,65 @@ async function saveSubscriptions() {
   } catch {
     // Non-fatal — in-memory store still works for current session
   }
+}
+
+function getBangkokDateKey(date = new Date()) {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Bangkok',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  return formatter.format(date);
+}
+
+function getVisitorStatePath(dateKey) {
+  return join(VISITOR_COUNTER_DIR, `${dateKey}.json`);
+}
+
+async function loadVisitorState(dateKey) {
+  const statePath = getVisitorStatePath(dateKey);
+  try {
+    const raw = await readFile(statePath, 'utf-8');
+    const parsed = JSON.parse(raw);
+    if (
+      parsed &&
+      parsed.date === dateKey &&
+      typeof parsed.uniqueVisitors === 'number' &&
+      typeof parsed.totalVisits === 'number' &&
+      parsed.visitors &&
+      typeof parsed.visitors === 'object'
+    ) {
+      return parsed;
+    }
+  } catch {
+    // File missing or invalid; use empty state.
+  }
+
+  return {
+    date: dateKey,
+    uniqueVisitors: 0,
+    totalVisits: 0,
+    visitors: {},
+  };
+}
+
+async function saveVisitorState(state) {
+  await mkdir(VISITOR_COUNTER_DIR, { recursive: true });
+  await writeFile(getVisitorStatePath(state.date), JSON.stringify(state), 'utf-8');
+}
+
+function hashVisitorFingerprint(visitorId, req) {
+  const userAgent = req.headers['user-agent'] || '';
+  const acceptLanguage = req.headers['accept-language'] || '';
+  const payload = `${visitorId}|${userAgent}|${acceptLanguage}`;
+  return createHash('sha256').update(payload).digest('hex');
+}
+
+function parsePositiveInt(value, fallback) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(1, Math.floor(n));
 }
 
 async function sendPushToAll(payload) {
@@ -507,6 +570,96 @@ async function serve(req, res) {
   if (url === '/api/push/stats' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
     res.end(JSON.stringify({ subscribers: pushSubscriptions.size }));
+    return;
+  }
+
+  if (url === '/api/visitor-counter' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', async () => {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store',
+      };
+
+      try {
+        const userAgent = req.headers['user-agent'] || '';
+        if (VISITOR_BOT_UA_PATTERN.test(userAgent)) {
+          res.writeHead(202, headers);
+          res.end(JSON.stringify({ success: true, ignored: 'bot' }));
+          return;
+        }
+
+        const payload = JSON.parse(body || '{}');
+        const visitorId = String(payload?.visitorId || '').trim();
+        if (!visitorId || visitorId.length > 128) {
+          res.writeHead(400, headers);
+          res.end(JSON.stringify({ error: 'Invalid visitorId' }));
+          return;
+        }
+
+        const dateKey = getBangkokDateKey();
+        const visitorHash = hashVisitorFingerprint(visitorId, req);
+        const state = await loadVisitorState(dateKey);
+
+        state.totalVisits += 1;
+        if (!state.visitors[visitorHash]) {
+          state.visitors[visitorHash] = new Date().toISOString();
+          state.uniqueVisitors += 1;
+        }
+
+        await saveVisitorState(state);
+
+        res.writeHead(201, headers);
+        res.end(JSON.stringify({
+          success: true,
+          date: dateKey,
+          uniqueVisitors: state.uniqueVisitors,
+          totalVisits: state.totalVisits,
+        }));
+      } catch (error) {
+        console.error('[visitor-counter] POST failed:', error);
+        res.writeHead(500, headers);
+        res.end(JSON.stringify({ error: 'Internal server error' }));
+      }
+    });
+    return;
+  }
+
+  if (url === '/api/visitor-counter' && req.method === 'GET') {
+    const days = Math.min(parsePositiveInt(incomingUrl.searchParams.get('days'), 7), VISITOR_MAX_DAYS);
+    const daily = [];
+
+    for (let i = 0; i < days; i += 1) {
+      const date = new Date();
+      date.setUTCDate(date.getUTCDate() - i);
+      const dateKey = getBangkokDateKey(date);
+      const state = await loadVisitorState(dateKey);
+      daily.push({
+        date: dateKey,
+        uniqueVisitors: state.uniqueVisitors,
+        totalVisits: state.totalVisits,
+      });
+    }
+
+    const today = daily[0] || {
+      date: getBangkokDateKey(),
+      uniqueVisitors: 0,
+      totalVisits: 0,
+    };
+
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+      'X-Robots-Tag': noIndexTag,
+    });
+    res.end(JSON.stringify({
+      status: 'ok',
+      timezone: 'Asia/Bangkok',
+      generatedAt: new Date().toISOString(),
+      today,
+      daily,
+    }));
     return;
   }
 
