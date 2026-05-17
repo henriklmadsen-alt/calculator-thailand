@@ -295,12 +295,6 @@ const jsonLdFaq = faqData
         if (window.location.pathname.startsWith('/admin')) return;
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
 
-        const perPageKey = `ct.visitor_ping.v1:${window.location.pathname}`;
-        try {
-          if (window.sessionStorage.getItem(perPageKey) === '1') return;
-          window.sessionStorage.setItem(perPageKey, '1');
-        } catch {}
-
         const visitorId = getOrCreateVisitorId();
         const body = JSON.stringify({
           visitorId,
@@ -329,7 +323,7 @@ const jsonLdFaq = faqData
             return;
           }
           const payload = await response.json();
-          const value = Number(payload?.lifetime?.uniqueVisitors ?? payload?.today?.uniqueVisitors);
+          const value = Number(payload?.lifetime?.totalVisits ?? payload?.lifetime?.uniqueVisitors ?? payload?.today?.totalVisits ?? payload?.today?.uniqueVisitors);
           if (!Number.isFinite(value)) {
             el.textContent = '0';
             return;
@@ -375,15 +369,18 @@ const jsonLdFaq = faqData
 
       emitSessionStartOnce();
 
+      async function initVisitorCounter() {
+        await sendVisitorCounterPing();
+        await renderTodayVisitorCount();
+      }
+
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-          sendVisitorCounterPing();
-          renderTodayVisitorCount();
+          initVisitorCounter();
           bindEntryClickTracking();
         });
       } else {
-        sendVisitorCounterPing();
-        renderTodayVisitorCount();
+        initVisitorCounter();
         bindEntryClickTracking();
       }
     </script>

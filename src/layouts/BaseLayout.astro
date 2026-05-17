@@ -517,12 +517,6 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         if (window.location.pathname.startsWith('/admin')) return;
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
 
-        const perPageKey = `ct.visitor_ping.v1:${window.location.pathname}`;
-        try {
-          if (window.sessionStorage.getItem(perPageKey) === '1') return;
-          window.sessionStorage.setItem(perPageKey, '1');
-        } catch {}
-
         const visitorId = getOrCreateVisitorId();
         const pageType = getPageType();
         const body = JSON.stringify({
@@ -552,7 +546,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
             return;
           }
           const payload = await response.json();
-          const value = Number(payload?.lifetime?.uniqueVisitors ?? payload?.today?.uniqueVisitors);
+          const value = Number(payload?.lifetime?.totalVisits ?? payload?.lifetime?.uniqueVisitors ?? payload?.today?.totalVisits ?? payload?.today?.uniqueVisitors);
           if (!Number.isFinite(value)) {
             el.textContent = '0';
             return;
@@ -648,16 +642,19 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
 
       emitSessionStartOnce();
 
+      async function initVisitorCounter() {
+        await sendVisitorCounterPing();
+        await renderTodayVisitorCount();
+      }
+
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-          sendVisitorCounterPing();
-          renderTodayVisitorCount();
+          initVisitorCounter();
           preserveAttributionParamsOnLinks();
           bindEntryClickTracking();
         });
       } else {
-        sendVisitorCounterPing();
-        renderTodayVisitorCount();
+        initVisitorCounter();
         preserveAttributionParamsOnLinks();
         bindEntryClickTracking();
       }

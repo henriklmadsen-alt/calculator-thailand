@@ -245,7 +245,7 @@ async function loadVisitorGrowthAuditState() {
   } catch {
     // No prior audit state.
   }
-  return { lastAuditDate: null };
+  return { lastAuditedDay: null };
 }
 
 async function saveVisitorGrowthAuditState(state) {
@@ -257,19 +257,18 @@ async function runDailyVisitorGrowthAudit() {
   const nowBkk = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
   if (nowBkk.getHours() < 7) return;
 
-  const todayDateKey = getBangkokDateKey();
-  const yesterdayDateKey = getBangkokDateKey(getDateDaysAgo(1));
+  const auditedDayKey = getBangkokDateKey(getDateDaysAgo(1));
   const auditState = await loadVisitorGrowthAuditState();
-  if (auditState.lastAuditDate === todayDateKey) return;
+  if (auditState.lastAuditedDay === auditedDayKey) return;
 
-  const todayState = await loadVisitorState(todayDateKey);
-  const yesterdayState = await loadVisitorState(yesterdayDateKey);
-  const dailyGrowth = todayState.uniqueVisitors - yesterdayState.uniqueVisitors;
+  const auditedDayState = await loadVisitorState(auditedDayKey);
+  const dailyGrowth = auditedDayState.totalVisits;
   const meetsTarget = dailyGrowth >= VISITOR_GROWTH_DAILY_TARGET;
 
   const nextAuditState = {
-    lastAuditDate: todayDateKey,
+    lastAuditedDay: auditedDayKey,
     checkedAt: new Date().toISOString(),
+    metric: 'totalVisits',
     dailyGrowth,
     target: VISITOR_GROWTH_DAILY_TARGET,
     meetsTarget,
@@ -278,11 +277,11 @@ async function runDailyVisitorGrowthAudit() {
 
   if (!meetsTarget) {
     console.warn(
-      `[visitor-growth-audit] Daily growth below target on ${todayDateKey}: ${dailyGrowth} < ${VISITOR_GROWTH_DAILY_TARGET}. Action required: improve SEO and AI search coverage.`
+      `[visitor-growth-audit] Daily growth below target on ${auditedDayKey}: ${dailyGrowth} < ${VISITOR_GROWTH_DAILY_TARGET}. Action required: improve SEO and AI search coverage.`
     );
   } else {
     console.info(
-      `[visitor-growth-audit] Daily growth target met on ${todayDateKey}: ${dailyGrowth} >= ${VISITOR_GROWTH_DAILY_TARGET}.`
+      `[visitor-growth-audit] Daily growth target met on ${auditedDayKey}: ${dailyGrowth} >= ${VISITOR_GROWTH_DAILY_TARGET}.`
     );
   }
 }
@@ -801,10 +800,10 @@ async function serve(req, res) {
       uniqueVisitors: 0,
       totalVisits: 0,
     };
-    const yesterday = daily[1] || { uniqueVisitors: 0, totalVisits: 0 };
+    const yesterday = daily[1] || { date: null, uniqueVisitors: 0, totalVisits: 0 };
     const lifetime = await loadLifetimeVisitorState();
-    const growthVsYesterday = today.uniqueVisitors - yesterday.uniqueVisitors;
-    const meetsDailyGrowthTarget = growthVsYesterday >= VISITOR_GROWTH_DAILY_TARGET;
+    const todayProgress = today.totalVisits;
+    const meetsDailyGrowthTarget = todayProgress >= VISITOR_GROWTH_DAILY_TARGET;
 
     res.writeHead(200, {
       'Content-Type': 'application/json',
@@ -822,9 +821,11 @@ async function serve(req, res) {
         totalVisits: lifetime.totalVisits,
       },
       growth: {
-        comparedDate: daily[1]?.date || null,
-        uniqueVisitorsDelta: growthVsYesterday,
+        comparedDate: yesterday.date,
+        yesterdayTotalVisits: yesterday.totalVisits,
+        todayTotalVisitsSoFar: todayProgress,
         target: VISITOR_GROWTH_DAILY_TARGET,
+        remainingToTarget: Math.max(0, VISITOR_GROWTH_DAILY_TARGET - todayProgress),
         meetsTarget: meetsDailyGrowthTarget,
       },
       daily,
