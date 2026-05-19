@@ -15,14 +15,12 @@ import { getOrCreateUser } from './db.mjs';
 
 const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 
-// CRITICAL: Validate JWT_SECRET at startup
 const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET || JWT_SECRET.length < 32) {
-  throw new Error(
-    'CRITICAL AUTH FAILURE: JWT_SECRET environment variable not set or too short.\n' +
-    'Required: JWT_SECRET (minimum 32 characters).\n' +
-    'This is a blocking requirement for all authentication to function.\n' +
-    'Ensure JWT_SECRET is set in your environment before starting the server.'
+const JWT_SECRET_MIN_LENGTH = 32;
+const authSecretReady = Boolean(JWT_SECRET && JWT_SECRET.length >= JWT_SECRET_MIN_LENGTH);
+if (!authSecretReady) {
+  console.error(
+    '[auth] JWT_SECRET missing or too short. Auth endpoints are disabled until JWT_SECRET is configured (min 32 chars).'
   );
 }
 
@@ -37,6 +35,9 @@ function b64url(str) {
 }
 
 function signJwt(payload) {
+  if (!authSecretReady) {
+    throw new Error('JWT_SECRET is not configured');
+  }
   const header = b64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
   const body = b64url(JSON.stringify({ ...payload, iat: Math.floor(Date.now() / 1000) }));
   const sig = createHmac('sha256', JWT_SECRET).update(`${header}.${body}`).digest('base64url');
@@ -44,6 +45,7 @@ function signJwt(payload) {
 }
 
 function verifyJwt(token) {
+  if (!authSecretReady) return null;
   try {
     const [header, body, sig] = token.split('.');
     const expected = createHmac('sha256', JWT_SECRET).update(`${header}.${body}`).digest('base64url');
@@ -86,11 +88,18 @@ function setStateCookie(res, state) {
 // ── Current user from request ─────────────────────────────────────────────────
 
 export function getCurrentUser(req) {
-  if (!JWT_SECRET) return null;
+  if (!authSecretReady) return null;
   const cookies = parseCookies(req);
   const token = cookies[SESSION_COOKIE] ? decodeURIComponent(cookies[SESSION_COOKIE]) : null;
   if (!token) return null;
   return verifyJwt(token);
+}
+
+function requireAuthSecret(res) {
+  if (authSecretReady) return true;
+  res.writeHead(503, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+  res.end(JSON.stringify({ error: 'auth_not_configured', message: 'JWT_SECRET missing or too short' }));
+  return false;
 }
 
 // ── OAuth state (CSRF) ────────────────────────────────────────────────────────
@@ -102,6 +111,7 @@ function generateState() {
 // ── Google OAuth 2.0 ──────────────────────────────────────────────────────────
 
 export function handleGoogleLogin(req, res) {
+  if (!requireAuthSecret(res)) return;
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) {
     res.writeHead(503, { 'Content-Type': 'application/json' });
@@ -124,6 +134,7 @@ export function handleGoogleLogin(req, res) {
 }
 
 export async function handleGoogleCallback(req, res, query) {
+  if (!authSecretReady) return redirectWithError(res, 'auth_not_configured');
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const cookies = parseCookies(req);
@@ -172,6 +183,7 @@ export async function handleGoogleCallback(req, res, query) {
 // ── Facebook OAuth 2.0 ────────────────────────────────────────────────────────
 
 export function handleFacebookLogin(req, res) {
+  if (!requireAuthSecret(res)) return;
   const appId = process.env.FACEBOOK_APP_ID;
   if (!appId) {
     res.writeHead(503, { 'Content-Type': 'application/json' });
@@ -192,6 +204,7 @@ export function handleFacebookLogin(req, res) {
 }
 
 export async function handleFacebookCallback(req, res, query) {
+  if (!authSecretReady) return redirectWithError(res, 'auth_not_configured');
   const appId = process.env.FACEBOOK_APP_ID;
   const appSecret = process.env.FACEBOOK_APP_SECRET;
   const cookies = parseCookies(req);
@@ -262,6 +275,7 @@ function buildAppleClientSecret() {
 }
 
 export function handleAppleLogin(req, res) {
+  if (!requireAuthSecret(res)) return;
   const clientId = process.env.APPLE_CLIENT_ID;
   if (!clientId || !process.env.APPLE_TEAM_ID) {
     res.writeHead(503, { 'Content-Type': 'application/json' });
@@ -283,6 +297,7 @@ export function handleAppleLogin(req, res) {
 }
 
 export async function handleAppleCallback(req, res, body) {
+  if (!authSecretReady) return redirectWithError(res, 'auth_not_configured');
   const clientId = process.env.APPLE_CLIENT_ID;
   const cookies = parseCookies(req);
   const params = new URLSearchParams(body);
@@ -390,7 +405,7 @@ export function handleApiMe(req, res) {
  * Token is verified as a valid JWT with admin=true payload.
  */
 export function verifyAdminRequest(req) {
-  if (!JWT_SECRET) return false;
+  if (!authSecretReady) return false;
 
   const authHeader = req.headers.authorization || '';
   const match = authHeader.match(/^Bearer\s+(.+)$/i);
@@ -414,6 +429,7 @@ function redirectWithError(res, code) {
 // Only active when DEV_AUTH_ENABLED=true. Never set this in production.
 
 export async function handleDevLogin(req, res) {
+  if (!requireAuthSecret(res)) return;
   if (process.env.DEV_AUTH_ENABLED !== 'true') {
     res.writeHead(403, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'dev_auth_disabled' }));
