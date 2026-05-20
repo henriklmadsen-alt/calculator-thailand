@@ -85,9 +85,25 @@ const VISITOR_COUNTER_DIR = join(__dirname, '.events', 'visitor-counter');
 const VISITOR_COUNTER_LIFETIME_FILE = join(VISITOR_COUNTER_DIR, 'lifetime.json');
 const VISITOR_GROWTH_AUDIT_FILE = join(__dirname, '..', 'tmp', 'visitor-growth-audit.json');
 const VISITOR_GROWTH_DAILY_TARGET = 100;
+const VISITOR_COUNTER_BASELINE_TOTAL_VISITS = parseNonNegativeInt(
+  process.env.VISITOR_COUNTER_BASELINE_TOTAL_VISITS,
+  102
+);
+const VISITOR_COUNTER_BASELINE_UNIQUE_VISITORS = parseNonNegativeInt(
+  process.env.VISITOR_COUNTER_BASELINE_UNIQUE_VISITORS,
+  66
+);
+const VISITOR_COUNTER_BASELINE_SINCE =
+  process.env.VISITOR_COUNTER_BASELINE_SINCE || '2026-05-17T00:00:00.000Z';
 const VISITOR_BOT_UA_PATTERN =
   /(bot|spider|crawl|slurp|bingpreview|facebookexternalhit|headless|lighthouse|pingdom|uptimerobot)/i;
 const VISITOR_MAX_DAYS = 30;
+
+function parseNonNegativeInt(value, fallback) {
+  const parsed = Number.parseInt(String(value ?? ''), 10);
+  if (!Number.isFinite(parsed) || parsed < 0) return fallback;
+  return parsed;
+}
 
 async function loadSubscriptions() {
   try {
@@ -158,11 +174,38 @@ async function saveVisitorState(state) {
 
 function createEmptyLifetimeVisitorState() {
   return {
-    since: new Date().toISOString(),
-    uniqueVisitors: 0,
-    totalVisits: 0,
+    since: VISITOR_COUNTER_BASELINE_SINCE,
+    uniqueVisitors: VISITOR_COUNTER_BASELINE_UNIQUE_VISITORS,
+    totalVisits: VISITOR_COUNTER_BASELINE_TOTAL_VISITS,
     visitors: {},
   };
+}
+
+function applyLifetimeBaselineFloor(state) {
+  const normalized = {
+    since: typeof state?.since === 'string' ? state.since : VISITOR_COUNTER_BASELINE_SINCE,
+    uniqueVisitors: parseNonNegativeInt(state?.uniqueVisitors, 0),
+    totalVisits: parseNonNegativeInt(state?.totalVisits, 0),
+    visitors: state?.visitors && typeof state.visitors === 'object' ? state.visitors : {},
+  };
+
+  if (Number.isNaN(Date.parse(normalized.since))) {
+    normalized.since = VISITOR_COUNTER_BASELINE_SINCE;
+  }
+
+  if (normalized.totalVisits < VISITOR_COUNTER_BASELINE_TOTAL_VISITS) {
+    normalized.totalVisits = VISITOR_COUNTER_BASELINE_TOTAL_VISITS;
+  }
+
+  if (normalized.uniqueVisitors < VISITOR_COUNTER_BASELINE_UNIQUE_VISITORS) {
+    normalized.uniqueVisitors = VISITOR_COUNTER_BASELINE_UNIQUE_VISITORS;
+  }
+
+  if (normalized.uniqueVisitors > normalized.totalVisits) {
+    normalized.uniqueVisitors = normalized.totalVisits;
+  }
+
+  return normalized;
 }
 
 async function saveLifetimeVisitorState(state) {
@@ -200,8 +243,9 @@ async function buildLifetimeVisitorStateFromDailyFiles() {
     // Keep empty state if files are unreadable.
   }
 
-  await saveLifetimeVisitorState(lifetimeState);
-  return lifetimeState;
+  const normalized = applyLifetimeBaselineFloor(lifetimeState);
+  await saveLifetimeVisitorState(normalized);
+  return normalized;
 }
 
 async function loadLifetimeVisitorState() {
@@ -215,12 +259,15 @@ async function loadLifetimeVisitorState() {
       parsed.visitors &&
       typeof parsed.visitors === 'object'
     ) {
-      return {
-        since: typeof parsed.since === 'string' ? parsed.since : new Date().toISOString(),
-        uniqueVisitors: parsed.uniqueVisitors,
-        totalVisits: parsed.totalVisits,
-        visitors: parsed.visitors,
-      };
+      const normalized = applyLifetimeBaselineFloor(parsed);
+      if (
+        normalized.totalVisits !== parsed.totalVisits ||
+        normalized.uniqueVisitors !== parsed.uniqueVisitors ||
+        normalized.since !== parsed.since
+      ) {
+        await saveLifetimeVisitorState(normalized);
+      }
+      return normalized;
     }
   } catch {
     // Build from daily files below.
