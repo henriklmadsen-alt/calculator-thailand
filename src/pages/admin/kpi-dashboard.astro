@@ -601,20 +601,37 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       function renderAffiliate(data) {
         const rows = data.affiliate.pages.slice(0, 8);
+        const variantRows = (data.affiliate.variants || []).slice(0, 5);
         if (!rows.length) {
-          affiliateEl.innerHTML = data.dataSources.ga4
+          affiliateEl.innerHTML = variantRows.length
+            ? variantRows.map((row) => `
+              <div class="kpi-mini-item">
+                <h3>${escapeHtml(row.variant)}</h3>
+                <p>${formatNumber(row.redirects)} redirects</p>
+                <p>${escapeHtml(row.experiment)}</p>
+              </div>
+            `).join('')
+            : data.dataSources.ga4
             ? empty('No affiliate CTA events in this range yet.')
             : empty('No first-party affiliate redirects in this range yet. New redirects will appear after the current release is live.');
           return;
         }
 
-        affiliateEl.innerHTML = rows.map((row) => `
+        const pageHtml = rows.map((row) => `
           <div class="kpi-mini-item">
             <h3>${escapeHtml(row.label)}</h3>
             <p>${formatNumber(row.ctaViews)} views, ${formatNumber(row.clicks)} clicks, ${formatNumber(row.redirects)} redirects</p>
             <p>${data.dataSources.ga4 ? `Click rate ${formatPercent(row.clickRate)}` : `${formatNumber(row.serverRedirects || 0)} first-party redirects`}</p>
           </div>
         `).join('');
+        const variantHtml = variantRows.length ? variantRows.map((row) => `
+          <div class="kpi-mini-item">
+            <h3>Variant: ${escapeHtml(row.variant)}</h3>
+            <p>${formatNumber(row.redirects)} redirects</p>
+            <p>${escapeHtml(row.experiment)}</p>
+          </div>
+        `).join('') : '';
+        affiliateEl.innerHTML = `${pageHtml}${variantHtml}`;
       }
 
       function renderTables(data) {

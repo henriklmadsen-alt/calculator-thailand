@@ -541,6 +541,7 @@ export async function buildKpiDashboardPayload(days = 28) {
     },
     pages: [...affiliatePages.values()].sort((a, b) => (b.clicks + b.redirects) - (a.clicks + a.redirects)),
     partners: serverAffiliate.partners,
+    variants: serverAffiliate.variants || [],
   };
 
   const score = computeReadinessScore({

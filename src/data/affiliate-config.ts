@@ -38,8 +38,8 @@ export interface AffiliatePartner {
 
 const GENERIC_AFFILIATE_HOSTS = new Set(['accesstrade.in.th', 'app.involve.asia']);
 export const ROOJAI_AFFILIATE_URL = 'https://portal.roojaipartners.com/#/23424769e701bcaa';
-const ROOJAI_CTA_TEXT = 'ดูข้อเสนอจาก Roojai';
-const ROOJAI_SUBTEXT = 'ลิงก์พาร์ทเนอร์หลักของ Kamnuanlek สำหรับติดตามคอมมิชชัน';
+const ROOJAI_CTA_TEXT = 'ดูข้อเสนอหลังคำนวณ';
+const ROOJAI_SUBTEXT = 'ใช้ผลลัพธ์จากเครื่องคำนวณเป็นฐานก่อนดูข้อเสนอพาร์ทเนอร์';
 
 export function isAffiliatePartnerConfigured(partner: AffiliatePartner): boolean {
   if (!partner.targetUrl.trim()) return false;

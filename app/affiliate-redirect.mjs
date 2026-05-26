@@ -44,6 +44,11 @@ function cleanSubId(value) {
   return decoded.replace(/[\r\n\t]/g, ' ').slice(0, 180);
 }
 
+function cleanTrackingParam(value) {
+  const decoded = safeDecode(String(value || '').trim());
+  return decoded.replace(/[^a-zA-Z0-9_.:-]/g, '').slice(0, 80);
+}
+
 function isSafeAffiliateTarget(url) {
   try {
     const parsed = new URL(url);
@@ -59,7 +64,7 @@ function getAffiliateTargetUrl() {
   return ROOJAI_AFFILIATE_URL;
 }
 
-async function logAffiliateRedirect({ slug, subId, referer }) {
+async function logAffiliateRedirect({ slug, subId, experiment, variant, referer }) {
   const date = getBangkokDateKey();
   const event = {
     type: 'affiliate_redirect',
@@ -67,6 +72,8 @@ async function logAffiliateRedirect({ slug, subId, referer }) {
     date,
     slug,
     subId,
+    experiment,
+    variant,
     referer: String(referer || '').slice(0, 240),
   };
 
@@ -82,11 +89,15 @@ export async function handleAffiliateRedirect(req, res, url) {
   if (!KNOWN_PARTNER_SLUGS.has(slug)) return false;
 
   const subId = cleanSubId(url.searchParams.get('sub_id') || '');
+  const experiment = cleanTrackingParam(url.searchParams.get('experiment') || '');
+  const variant = cleanTrackingParam(url.searchParams.get('variant') || '');
   const targetUrl = getAffiliateTargetUrl();
 
   logAffiliateRedirect({
     slug,
     subId,
+    experiment,
+    variant,
     referer: req.headers.referer || req.headers.referrer || '',
   }).catch((error) => {
     console.error('[affiliate-redirect] failed to log event:', error);
@@ -113,6 +124,7 @@ export async function getAffiliateRedirectSummary(days = 28) {
   const totals = { redirects: 0 };
   const byPage = new Map();
   const bySlug = new Map();
+  const byVariant = new Map();
 
   let files = [];
   try {
@@ -142,6 +154,15 @@ export async function getAffiliateRedirectSummary(days = 28) {
         const partner = bySlug.get(slugKey) || { slug: slugKey, redirects: 0 };
         partner.redirects += 1;
         bySlug.set(slugKey, partner);
+
+        const variantKey = [event.experiment || 'no-experiment', event.variant || 'no-variant'].join(':');
+        const variant = byVariant.get(variantKey) || {
+          experiment: event.experiment || 'no-experiment',
+          variant: event.variant || 'no-variant',
+          redirects: 0,
+        };
+        variant.redirects += 1;
+        byVariant.set(variantKey, variant);
       } catch {
         // Ignore malformed log lines.
       }
@@ -152,5 +173,6 @@ export async function getAffiliateRedirectSummary(days = 28) {
     totals,
     pages: [...byPage.values()].sort((a, b) => b.redirects - a.redirects),
     partners: [...bySlug.values()].sort((a, b) => b.redirects - a.redirects),
+    variants: [...byVariant.values()].sort((a, b) => b.redirects - a.redirects),
   };
 }

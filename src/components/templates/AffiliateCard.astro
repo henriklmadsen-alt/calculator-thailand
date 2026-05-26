@@ -22,13 +22,13 @@ const {
 } = Astro.props;
 
 const headlineMap: Record<Category, string> = {
-  'car-loan':       'พร้อมสมัครสินเชื่อรถแล้วหรือยัง?',
-  'home-loan':      'พร้อมสมัครสินเชื่อบ้านแล้วหรือยัง?',
-  'personal-loan':  'พร้อมสมัครสินเชื่อส่วนบุคคลแล้วหรือยัง?',
-  'credit-card':    'สนใจบัตรเครดิตที่เหมาะกับไลฟ์สไตล์คุณ?',
-  'insurance':      'สนใจเปรียบเทียบแผนประกันที่เหมาะกับคุณ?',
-  'investment':     'พร้อมเริ่มลงทุนให้เงินทำงานแทนคุณ?',
-  'savings':        'ต้องการดอกเบี้ยสูงกว่าบัญชีออมทรัพย์ทั่วไป?',
+  'car-loan':       'คำนวณค่างวดแล้ว ดูข้อเสนอรถที่เหมาะกับงบคุณ',
+  'home-loan':      'รู้ค่างวดบ้านแล้ว ดูทางเลือกสมัครต่อ',
+  'personal-loan':  'เห็นภาระผ่อนแล้ว เช็กข้อเสนอที่พอดีกับรายรับ',
+  'credit-card':    'ตรวจต้นทุนบัตรแล้ว ดูข้อเสนอที่เหมาะกับพฤติกรรมใช้จริง',
+  'insurance':      'คำนวณแล้ว เปรียบเทียบแผนประกันที่เหมาะกับงบคุณ',
+  'investment':     'เห็นตัวเลขแล้ว ดูทางเลือกต่อที่เหมาะกับเป้าหมาย',
+  'savings':        'คำนวณดอกเบี้ยแล้ว ดูทางเลือกออมที่ให้ผลตอบแทนดีกว่า',
 };
 
 const headline = headlineMap[category];
@@ -48,6 +48,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
   data-affiliate-url={affiliateUrl}
   data-affiliate-cta={ctaText}
   data-affiliate-configured={String(isTrackedAffiliateConfigured)}
+  data-affiliate-experiment="affiliate-benefit-cta-v1"
   role="complementary"
   aria-label={`ข้อเสนอจาก ${partnerName}`}
 >
@@ -93,8 +94,8 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
 
     {/* Content */}
     <div class="affiliate-card__body">
-      <p class="affiliate-card__headline">{headline}</p>
-      {subtext && <p class="affiliate-card__subtext">{subtext}</p>}
+      <p class="affiliate-card__headline" data-affiliate-headline>{headline}</p>
+      {subtext && <p class="affiliate-card__subtext" data-affiliate-subtext>{subtext}</p>}
     </div>
 
     {/* CTA */}
@@ -105,6 +106,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
       class="affiliate-card__cta"
       data-affiliate-category={category}
       data-affiliate-partner={partnerName}
+      data-affiliate-cta-label
     >
       {ctaText}
     </a>
@@ -271,6 +273,144 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
       }
     }
 
+    const EXPERIMENT_NAME = 'affiliate-benefit-cta-v1';
+    const VARIANTS = ['control', 'benefit', 'confidence'];
+    const COPY_BY_CATEGORY = {
+      'car-loan': {
+        benefit: {
+          headline: 'เห็นค่างวดรถแล้ว เช็กข้อเสนอที่เหมาะกับงบคุณ',
+          subtext: 'ใช้ผลคำนวณนี้เป็นฐานก่อนดูข้อเสนอพาร์ทเนอร์ ลดโอกาสสมัครเกินกำลังผ่อน',
+          cta: 'เช็กข้อเสนอรถจาก Roojai',
+        },
+        confidence: {
+          headline: 'ก่อนสมัครสินเชื่อรถ ตรวจข้อเสนอหลังรู้ค่างวดจริง',
+          subtext: 'เปรียบเทียบจากยอดผ่อน เงินดาวน์ และดอกเบี้ยที่คุณเพิ่งคำนวณ',
+          cta: 'ดูข้อเสนอหลังคำนวณ',
+        },
+      },
+      'home-loan': {
+        benefit: {
+          headline: 'รู้ค่างวดบ้านแล้ว เช็กทางเลือกสมัครต่อ',
+          subtext: 'ใช้ยอดผ่อนและภาระหนี้ต่อรายได้เป็นฐานก่อนดูข้อเสนอพาร์ทเนอร์',
+          cta: 'เช็กข้อเสนอสินเชื่อบ้าน',
+        },
+        confidence: {
+          headline: 'ก่อนยื่นกู้บ้าน ตรวจภาระผ่อนกับข้อเสนอที่เป็นไปได้',
+          subtext: 'เหมาะหลังคำนวณค่างวด รีไฟแนนซ์ หรือแผนโปะบ้านเรียบร้อยแล้ว',
+          cta: 'ดูทางเลือกสมัครต่อ',
+        },
+      },
+      insurance: {
+        benefit: {
+          headline: 'คำนวณแล้ว เปรียบเทียบแผนประกันก่อนตัดสินใจ',
+          subtext: 'ใช้ผลลัพธ์นี้ช่วยเลือกความคุ้มครองและงบเบี้ยที่ไม่เกินแผนของคุณ',
+          cta: 'ดูแผนจาก Roojai',
+        },
+        confidence: {
+          headline: 'ลดความเสี่ยงก่อนสมัครด้วยข้อเสนอที่เทียบกับงบจริง',
+          subtext: 'เหมาะสำหรับคนที่ต้องการดูแผนหลังรู้ตัวเลขภาษี เงินเดือน หรือค่าใช้จ่ายแล้ว',
+          cta: 'เปรียบเทียบข้อเสนอ',
+        },
+      },
+      'personal-loan': {
+        benefit: {
+          headline: 'เห็นยอดผ่อนแล้ว เช็กวงเงินที่เหมาะกับกระแสเงินสด',
+          subtext: 'ตรวจข้อเสนอต่อเมื่อค่างวดไม่กดดันรายรับรายเดือน',
+          cta: 'เช็กข้อเสนอสินเชื่อ',
+        },
+        confidence: {
+          headline: 'ก่อนสมัครสินเชื่อส่วนบุคคล ดูข้อเสนอหลังคำนวณภาระจริง',
+          subtext: 'ช่วยลดการสมัครเกินวงเงินหรือเกินความสามารถในการผ่อน',
+          cta: 'ดูข้อเสนอหลังคำนวณ',
+        },
+      },
+      'credit-card': {
+        benefit: {
+          headline: 'ตรวจดอกเบี้ยแล้ว เลือกบัตรที่เหมาะกับพฤติกรรมใช้จริง',
+          subtext: 'เหมาะหลังคำนวณยอดผ่อน ดอกเบี้ย หรืออัตราใช้วงเงินบัตรเครดิต',
+          cta: 'ดูข้อเสนอบัตร',
+        },
+        confidence: {
+          headline: 'ลดต้นทุนบัตรเครดิตด้วยข้อเสนอที่เข้ากับการใช้งาน',
+          subtext: 'ใช้ตัวเลขจากเครื่องคำนวณก่อนเลือกสมัครผ่านพาร์ทเนอร์',
+          cta: 'เปรียบเทียบบัตร',
+        },
+      },
+      investment: {
+        benefit: {
+          headline: 'เห็นผลตอบแทนแล้ว เลือกทางเลือกที่เหมาะกับเป้าหมาย',
+          subtext: 'ใช้ผลคำนวณเป็นฐานก่อนดูข้อเสนอพาร์ทเนอร์',
+          cta: 'ดูข้อเสนอที่เกี่ยวข้อง',
+        },
+        confidence: {
+          headline: 'ตัดสินใจจากตัวเลขจริง ไม่ใช่แค่โฆษณา',
+          subtext: 'เปรียบเทียบหลังเห็นผลตอบแทน ความเสี่ยง หรือเงินสะสมที่ต้องใช้',
+          cta: 'ดูทางเลือกต่อ',
+        },
+      },
+      savings: {
+        benefit: {
+          headline: 'เห็นดอกเบี้ยแล้ว มองหาบัญชีที่ให้ผลตอบแทนดีกว่า',
+          subtext: 'ใช้ยอดเงินฝากและระยะเวลาจริงก่อนดูข้อเสนอพาร์ทเนอร์',
+          cta: 'ดูข้อเสนอเงินฝาก',
+        },
+        confidence: {
+          headline: 'ก่อนเปิดบัญชี เช็กผลตอบแทนเทียบกับตัวเลขจริง',
+          subtext: 'ช่วยเลือกบัญชีหรือผลิตภัณฑ์ที่เข้ากับเป้าหมายการออม',
+          cta: 'เปรียบเทียบข้อเสนอ',
+        },
+      },
+    };
+
+    function getStoredVariant(card) {
+      try {
+        const key = `ct.${EXPERIMENT_NAME}.${card.dataset.affiliateCategory}.${card.dataset.affiliatePartner}`;
+        const existing = window.localStorage.getItem(key);
+        if (VARIANTS.includes(existing)) return existing;
+        const assigned = VARIANTS[Math.floor(Math.random() * VARIANTS.length)] || 'control';
+        window.localStorage.setItem(key, assigned);
+        return assigned;
+      } catch {
+        return 'control';
+      }
+    }
+
+    function withExperimentParams(href, variant) {
+      try {
+        const url = new URL(href, window.location.origin);
+        url.searchParams.set('experiment', EXPERIMENT_NAME);
+        url.searchParams.set('variant', variant);
+        return url.origin === window.location.origin
+          ? `${url.pathname}${url.search}${url.hash}`
+          : url.toString();
+      } catch {
+        return href;
+      }
+    }
+
+    function applyVariant(card) {
+      const variant = getStoredVariant(card);
+      card.dataset.affiliateVariant = variant;
+      card.dataset.affiliateExperiment = EXPERIMENT_NAME;
+
+      const category = card.dataset.affiliateCategory || '';
+      const copy = COPY_BY_CATEGORY[category]?.[variant];
+      const headline = card.querySelector('[data-affiliate-headline]');
+      const subtext = card.querySelector('[data-affiliate-subtext]');
+      const link = card.querySelector('.affiliate-card__cta');
+
+      if (copy) {
+        if (headline) headline.textContent = copy.headline;
+        if (subtext) subtext.textContent = copy.subtext;
+        if (link) link.textContent = copy.cta;
+        card.dataset.affiliateCta = copy.cta;
+      }
+
+      if (link) {
+        link.href = withExperimentParams(link.getAttribute('href') || '', variant);
+      }
+    }
+
     function bindCard(card) {
       if (card.dataset.affiliateBound === '1') return;
       card.dataset.affiliateBound = '1';
@@ -286,6 +426,8 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
             affiliate_partner:  card.dataset.affiliatePartner  ?? '',
             affiliate_url:      card.dataset.affiliateUrl      ?? '',
             affiliate_cta:      card.dataset.affiliateCta      ?? '',
+            affiliate_experiment: card.dataset.affiliateExperiment ?? EXPERIMENT_NAME,
+            affiliate_variant: card.dataset.affiliateVariant ?? 'control',
             page_path:          window.location.pathname,
           });
           return;
@@ -296,6 +438,8 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
           affiliate_partner:  card.dataset.affiliatePartner  ?? '',
           affiliate_url:      card.dataset.affiliateUrl      ?? '',
           affiliate_cta:      card.dataset.affiliateCta      ?? '',
+          affiliate_experiment: card.dataset.affiliateExperiment ?? EXPERIMENT_NAME,
+          affiliate_variant: card.dataset.affiliateVariant ?? 'control',
           page_path:          window.location.pathname,
         });
       });
@@ -309,6 +453,8 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
         affiliate_partner:  card.dataset.affiliatePartner  ?? '',
         affiliate_url:      card.dataset.affiliateUrl      ?? '',
         affiliate_cta:      card.dataset.affiliateCta      ?? '',
+        affiliate_experiment: card.dataset.affiliateExperiment ?? EXPERIMENT_NAME,
+        affiliate_variant: card.dataset.affiliateVariant ?? 'control',
         page_path:          window.location.pathname,
       });
     }
@@ -339,6 +485,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
       document.querySelectorAll('[data-affiliate-category][data-affiliate-partner]').forEach((el) => {
         // Only bind to the wrapper (has data-affiliate-url), not the inner CTA link
         if (el.dataset.affiliateUrl) {
+          applyVariant(el);
           bindCard(el);
           watchCardView(el);
         }
