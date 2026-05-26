@@ -192,7 +192,7 @@ async function queryAffiliateGa4(client, propertyId, range) {
       dateRanges: [{ startDate: range.startDate, endDate: range.endDate }],
       dimensions: [{ name: 'eventName' }, { name: 'pagePath' }],
       metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }],
-      rowLimit: 500,
+      limit: 500,
       dimensionFilter: {
         filter: {
           fieldName: 'eventName',
