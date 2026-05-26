@@ -331,15 +331,16 @@ const currentPath = Astro.url.pathname;
   .ct-cat-tabs {
     display: flex;
     position: fixed;
-    bottom: max(10px, env(safe-area-inset-bottom, 0));
-    left: 12px;
-    right: 12px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
+    min-height: var(--ct-mobile-nav-height, 76px);
     background: var(--nav-tab-bg);
     border: 1px solid var(--nav-tab-border);
-    border-radius: 24px;
+    border-radius: 22px;
     box-shadow: var(--nav-shadow-top);
     z-index: 100;
-    padding: 5px;
+    padding: 6px;
     -webkit-backdrop-filter: blur(22px) saturate(1.22);
     backdrop-filter: blur(22px) saturate(1.22);
     transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
@@ -354,9 +355,9 @@ const currentPath = Astro.url.pathname;
     padding: 8px 4px 7px;
     text-decoration: none;
     color: var(--nav-tab-text);
-    min-height: 54px;
+    min-height: 58px;
     position: relative;
-    border-radius: 18px;
+    border-radius: 16px;
     transition: color 0.15s, background 0.15s;
     -webkit-tap-highlight-color: transparent;
   }
@@ -403,11 +404,15 @@ const currentPath = Astro.url.pathname;
   }
 
   .ct-tab-label {
-    font-size: 0.64rem;
+    max-width: 100%;
+    font-size: 0.62rem;
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.05;
+    text-align: center;
     white-space: nowrap;
     letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ct-tab-pip {
