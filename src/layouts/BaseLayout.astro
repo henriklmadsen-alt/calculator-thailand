@@ -956,9 +956,10 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     (function initPWA() {
       if (!('serviceWorker' in navigator)) return;
 
-      const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
+      const FALLBACK_VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
       const PUSH_ASKED_KEY = 'ct.push-asked.v1';
       const PUSH_SUBSCRIBED_KEY = 'ct.push-subscribed.v1';
+      let cachedVapidPublicKey = '';
 
       function urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -967,11 +968,38 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
       }
 
+      function uint8ArrayToUrlBase64(bytes) {
+        var binary = '';
+        bytes.forEach(function(byte) {
+          binary += String.fromCharCode(byte);
+        });
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      }
+
+      async function getVapidPublicKey() {
+        if (cachedVapidPublicKey) return cachedVapidPublicKey;
+        try {
+          const response = await fetch('/api/push/public-key', { headers: { Accept: 'application/json' } });
+          if (response.status === 503) return '';
+          if (response.ok) {
+            const payload = await response.json();
+            if (payload && payload.publicKey) {
+              cachedVapidPublicKey = String(payload.publicKey);
+              return cachedVapidPublicKey;
+            }
+          }
+        } catch {}
+        cachedVapidPublicKey = FALLBACK_VAPID_PUBLIC_KEY;
+        return cachedVapidPublicKey;
+      }
+
       async function subscribeToPush(reg) {
         try {
+          const vapidPublicKey = await getVapidPublicKey();
+          if (!vapidPublicKey) return;
           const sub = await reg.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
           });
           await fetch('/api/push/subscribe', {
             method: 'POST',
@@ -1038,8 +1066,17 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
       function registerPwaAfterPaint() {
         navigator.serviceWorker.register('/sw.js').then(function(reg) {
           // Check if already subscribed
-          reg.pushManager.getSubscription().then(function(sub) {
+          reg.pushManager.getSubscription().then(async function(sub) {
+            const vapidPublicKey = await getVapidPublicKey();
             if (sub) {
+              const existingKey = sub.options && sub.options.applicationServerKey
+                ? uint8ArrayToUrlBase64(new Uint8Array(sub.options.applicationServerKey))
+                : '';
+              if (existingKey && vapidPublicKey && existingKey !== vapidPublicKey) {
+                await sub.unsubscribe();
+                subscribeToPush(reg);
+                return;
+              }
               // Re-register existing subscription with server (handles server restarts)
               fetch('/api/push/subscribe', {
                 method: 'POST',

@@ -8,6 +8,12 @@ const OUTPUT_DIR = 'public';
 const OUTPUT_FILE = `${OUTPUT_DIR}/__release.json`;
 
 function getCurrentSha() {
+  if (process.env.SOURCE_GIT_COMMIT_SHA) {
+    return process.env.SOURCE_GIT_COMMIT_SHA;
+  }
+  if (process.env.SOURCE_COMMIT) {
+    return process.env.SOURCE_COMMIT;
+  }
   // Railway injects RAILWAY_GIT_COMMIT_SHA at build time — use it when git binary isn't available
   if (process.env.RAILWAY_GIT_COMMIT_SHA) {
     return process.env.RAILWAY_GIT_COMMIT_SHA;

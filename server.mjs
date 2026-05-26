@@ -53,11 +53,17 @@ const securityHeaders = Object.freeze({
 
 async function loadReleaseMetadata() {
   const releaseMetadataFile = join(distDir, '__release.json');
+  const envGitCommit =
+    process.env.SOURCE_GIT_COMMIT_SHA ||
+    process.env.SOURCE_COMMIT ||
+    process.env.RAILWAY_GIT_COMMIT_SHA ||
+    process.env.GITHUB_SHA ||
+    '';
   try {
     const raw = await readFile(releaseMetadataFile, 'utf-8');
     const data = JSON.parse(raw);
     return Object.freeze({
-      gitCommit: data.gitCommit || 'unknown',
+      gitCommit: data.gitCommit && data.gitCommit !== 'unknown' ? data.gitCommit : envGitCommit || 'unknown',
       deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || null,
       generatedAt: data.timestamp || new Date().toISOString(),
     });
@@ -65,10 +71,7 @@ async function loadReleaseMetadata() {
     console.warn(`[release-metadata] Failed to load ${releaseMetadataFile}, falling back to env vars:`, error.message);
     return Object.freeze({
       gitCommit:
-        process.env.RAILWAY_GIT_COMMIT_SHA ||
-        process.env.SOURCE_COMMIT ||
-        process.env.GITHUB_SHA ||
-        'unknown',
+        envGitCommit || 'unknown',
       deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || null,
       generatedAt: new Date().toISOString(),
     });
@@ -82,13 +85,16 @@ let releaseMetadata = Object.freeze({
 });
 
 // ── Web Push configuration ────────────────────────────────────
-const VAPID_PUBLIC_KEY = 'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
+const VAPID_PUBLIC_KEY =
+  process.env.VAPID_PUBLIC_KEY ||
+  process.env.PUBLIC_VAPID_PUBLIC_KEY ||
+  'BOWqVZd05Ge2s0KqqynLV_xGFxtwgq6pT7XhhgjCYCNge4xVni_OZ8HrkFxsNnd9m4Stjipf5K0dCyRZaHkn7cw';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
-const pushConfigured = Boolean(VAPID_PRIVATE_KEY);
+const pushConfigured = Boolean(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY);
 if (pushConfigured) {
   webpush.setVapidDetails('mailto:hello@kamnuanlek.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 } else {
-  console.warn('[push] VAPID_PRIVATE_KEY is not configured; push notifications are disabled.');
+  console.warn('[push] VAPID_PUBLIC_KEY or VAPID_PRIVATE_KEY is not configured; push notifications are disabled.');
 }
 
 // In-memory subscription store (survives server session, cleared on redeploy)
@@ -918,6 +924,17 @@ async function serve(req, res) {
   if (url === '/api/push/stats' && req.method === 'GET') {
     res.writeHead(200, { ...securityHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
     res.end(JSON.stringify({ subscribers: pushSubscriptions.size, configured: pushConfigured }));
+    return;
+  }
+
+  if (url === '/api/push/public-key' && req.method === 'GET') {
+    if (!pushConfigured) {
+      res.writeHead(503, { ...securityHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
+      res.end(JSON.stringify({ error: 'push_not_configured' }));
+      return;
+    }
+    res.writeHead(200, { ...securityHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': noIndexTag });
+    res.end(JSON.stringify({ publicKey: VAPID_PUBLIC_KEY }));
     return;
   }
 
