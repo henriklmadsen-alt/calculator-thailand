@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   output: 'static',
@@ -10,9 +9,7 @@ export default defineConfig({
       },
     },
   },
-  integrations: [
-    tailwind(),
-  ],
+  integrations: [],
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',

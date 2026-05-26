@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@config "../../tailwind.config.mjs";
+
 :root {
   --ct-bg-start: #f7fbff;
   --ct-bg-mid: #ffffff;
@@ -56,6 +59,18 @@ body {
   background-size: 42px 42px, 42px 42px, auto;
   color: var(--ct-text-default);
   min-height: 100vh;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+*,
+*::before,
+*::after {
+  min-width: 0;
 }
 
 /* Light-mode contrast hardening for small text and primary CTAs. */
@@ -914,6 +929,8 @@ html[data-theme='dark'] .error-message-thai {
 
 .ct-layout-main {
   padding-top: 1.25rem !important;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .ct-topbar {
@@ -2237,9 +2254,9 @@ html[data-theme='dark'] .ct-trust-panel__sources a {
   }
 
   .ct-page-calculator .ct-layout-main > article::before {
-    width: 18rem;
+    width: min(18rem, 78vw);
     height: 9rem;
-    right: -4rem;
+    right: 0;
   }
 
   .ct-page-calculator .ct-layout-main > article > h1 {

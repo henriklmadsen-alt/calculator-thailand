@@ -290,7 +290,12 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
 
     <!-- Sentry Error Monitoring (deferred for Core Web Vitals) -->
     <script>
-      import '../sentry-client';
+      const loadSentry = () => import('../sentry-client');
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(loadSentry, { timeout: 3000 });
+      } else {
+        window.setTimeout(loadSentry, 1600);
+      }
     </script>
 
     <script>
@@ -310,13 +315,37 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
       }
     </script>
 
-    <!-- Google Analytics 4 (deferred for Core Web Vitals) -->
-    <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD"></script>
+    <!-- Google Analytics 4 queues immediately, network load waits until after first paint. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-EY67HJ8NDD');
+
+      function runAfterLoadIdle(callback) {
+        const run = () => {
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(callback, { timeout: 2500 });
+          } else {
+            window.setTimeout(callback, 800);
+          }
+        };
+
+        if (document.readyState === 'complete') {
+          run();
+        } else {
+          window.addEventListener('load', run, { once: true });
+        }
+      }
+
+      runAfterLoadIdle(function loadGtagScript() {
+        if (document.querySelector('script[data-ct-gtag]')) return;
+        const script = document.createElement('script');
+        script.async = true;
+        script.dataset.ctGtag = '1';
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-EY67HJ8NDD';
+        document.head.appendChild(script);
+      });
 
       function decodePathname(pathname) {
         try {
@@ -719,19 +748,19 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         await renderTodayVisitorCount();
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-          initVisitorCounter();
-          preserveAttributionParamsOnLinks();
-          bindEntryClickTracking();
-          bindCalculatorBehaviorTracking();
-        });
-      } else {
-        initVisitorCounter();
+      function initInteractiveEnhancements() {
         preserveAttributionParamsOnLinks();
         bindEntryClickTracking();
         bindCalculatorBehaviorTracking();
       }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initInteractiveEnhancements);
+      } else {
+        initInteractiveEnhancements();
+      }
+
+      runAfterLoadIdle(initVisitorCounter);
     </script>
 
     {
@@ -1006,23 +1035,35 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         }, 30000);
       }
 
-      navigator.serviceWorker.register('/sw.js').then(function(reg) {
-        // Check if already subscribed
-        reg.pushManager.getSubscription().then(function(sub) {
-          if (sub) {
-            // Re-register existing subscription with server (handles server restarts)
-            fetch('/api/push/subscribe', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(sub),
-            }).catch(function() {});
-          } else if (Notification.permission === 'default') {
-            showPushPrompt(reg);
-          } else if (Notification.permission === 'granted') {
-            subscribeToPush(reg);
-          }
-        });
-      }).catch(function() {});
+      function registerPwaAfterPaint() {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          // Check if already subscribed
+          reg.pushManager.getSubscription().then(function(sub) {
+            if (sub) {
+              // Re-register existing subscription with server (handles server restarts)
+              fetch('/api/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sub),
+              }).catch(function() {});
+            } else if (Notification.permission === 'default') {
+              showPushPrompt(reg);
+            } else if (Notification.permission === 'granted') {
+              subscribeToPush(reg);
+            }
+          });
+        }).catch(function() {});
+      }
+
+      if (typeof window.runAfterLoadIdle === 'function') {
+        window.runAfterLoadIdle(registerPwaAfterPaint);
+      } else if (document.readyState === 'complete') {
+        setTimeout(registerPwaAfterPaint, 1200);
+      } else {
+        window.addEventListener('load', function() {
+          setTimeout(registerPwaAfterPaint, 1200);
+        }, { once: true });
+      }
     })();
     </script>
 

@@ -28,6 +28,15 @@ const SESSION_COOKIE = '__session';
 const STATE_COOKIE = '__oauth_state';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
+const PRODUCTION_HOSTS = new Set(['kamnuanlek.com', 'www.kamnuanlek.com']);
+const LOCAL_DEV_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '0.0.0.0']);
+const AUTH_SECURITY_HEADERS = Object.freeze({
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'SAMEORIGIN',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+});
+
 // ── JWT (HS256 using Node crypto) ─────────────────────────────────────────────
 
 function b64url(str) {
@@ -100,6 +109,32 @@ function requireAuthSecret(res) {
   res.writeHead(503, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
   res.end(JSON.stringify({ error: 'auth_not_configured', message: 'JWT_SECRET missing or too short' }));
   return false;
+}
+
+function getRequestHost(req) {
+  return String(req.headers.host || '').split(':', 1)[0].trim().toLowerCase();
+}
+
+function isLocalRequestHost(host) {
+  return LOCAL_DEV_HOSTS.has(host) || host.endsWith('.localhost');
+}
+
+function isProductionRequest(req) {
+  const host = getRequestHost(req);
+  const siteHost = (() => {
+    try {
+      return new URL(SITE_URL).hostname.toLowerCase();
+    } catch {
+      return '';
+    }
+  })();
+
+  return (
+    process.env.NODE_ENV === 'production' ||
+    process.env.RAILWAY_ENVIRONMENT === 'production' ||
+    PRODUCTION_HOSTS.has(host) ||
+    (!isLocalRequestHost(host) && PRODUCTION_HOSTS.has(siteHost))
+  );
 }
 
 // ── OAuth state (CSRF) ────────────────────────────────────────────────────────
@@ -429,12 +464,17 @@ function redirectWithError(res, code) {
 // Only active when DEV_AUTH_ENABLED=true. Never set this in production.
 
 export async function handleDevLogin(req, res) {
-  if (!requireAuthSecret(res)) return;
-  if (process.env.DEV_AUTH_ENABLED !== 'true') {
-    res.writeHead(403, { 'Content-Type': 'application/json' });
+  if (isProductionRequest(req) || process.env.DEV_AUTH_ENABLED !== 'true') {
+    res.writeHead(404, {
+      ...AUTH_SECURITY_HEADERS,
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+      'X-Robots-Tag': 'noindex, nofollow, noarchive',
+    });
     res.end(JSON.stringify({ error: 'dev_auth_disabled' }));
     return;
   }
+  if (!requireAuthSecret(res)) return;
 
   const qs = new URL(req.url, 'http://localhost').searchParams;
   const email = qs.get('email') || 'dev@kamnuanlek.com';

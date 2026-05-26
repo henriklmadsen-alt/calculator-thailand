@@ -183,7 +183,7 @@ const jsonLdHowTo = {
           <p id="car-price-error" class="mt-1 hidden text-sm text-red-600"></p>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label for="down-payment" class="block text-sm font-medium text-gray-700 mb-1">
               เงินดาวน์ (%)
@@ -225,6 +225,21 @@ const jsonLdHowTo = {
               <option value="7">7 ปี (84 งวด)</option>
             </select>
           </div>
+          <div>
+            <label for="monthly-income" class="block text-sm font-medium text-gray-700 mb-1">
+              รายได้ต่อเดือน (บาท)
+            </label>
+            <input
+              type="text"
+              id="monthly-income"
+              inputmode="numeric"
+              placeholder="เช่น 50,000"
+              value="50,000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base"
+            />
+            <p class="mt-1 text-xs text-gray-500">ใช้ประเมินภาระผ่อนรถเทียบรายได้</p>
+            <p id="monthly-income-error" class="mt-1 hidden text-sm text-red-600"></p>
+          </div>
         </div>
 
         <!-- Down payment amount display -->
@@ -248,7 +263,7 @@ const jsonLdHowTo = {
         <h2 class="text-lg font-semibold text-gray-900 mb-4">ผลการคำนวณ</h2>
 
         <!-- Summary Cards -->
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 mb-6">
           <div class="bg-primary-50 rounded-lg p-4 text-center">
             <div class="text-sm text-gray-600 mb-1">ค่างวดต่อเดือน</div>
             <div id="res-monthly" class="text-xl font-bold text-primary-700">-</div>
@@ -264,6 +279,10 @@ const jsonLdHowTo = {
           <div class="bg-gray-50 rounded-lg p-4 text-center">
             <div class="text-sm text-gray-600 mb-1">ค่าใช้จ่ายทั้งหมด</div>
             <div id="res-total-cost" class="text-xl font-bold text-gray-700">-</div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-sm text-gray-600 mb-1">ภาระต่อรายได้</div>
+            <div id="res-income-ratio" class="text-xl font-bold text-blue-700">-</div>
           </div>
         </div>
 
@@ -292,6 +311,10 @@ const jsonLdHowTo = {
           <div class="flex justify-between py-1 border-b border-gray-100">
             <span class="text-gray-600">ยอดผ่อนรวม (เงินต้น+ดอกเบี้ย)</span>
             <span id="res-total-paid" class="font-medium">-</span>
+          </div>
+          <div class="flex justify-between gap-4 py-1 border-b border-gray-100">
+            <span class="text-gray-600">ภาระค่างวดเทียบรายได้</span>
+            <span id="res-income-ratio-detail" class="font-medium text-right">-</span>
           </div>
         </div>
 
@@ -383,7 +406,7 @@ const jsonLdHowTo = {
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">เปรียบเทียบดอกเบี้ยสินเชื่อรถยนต์แต่ละธนาคาร 2569</h3>
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[480px] border-collapse border border-gray-200 text-sm">
+        <table class="w-full table-fixed border-collapse border border-gray-200 text-xs sm:text-sm">
           <thead class="bg-gray-50">
             <tr>
               <th class="border border-gray-200 px-3 py-2 text-left">ธนาคาร</th>
@@ -589,6 +612,7 @@ const jsonLdHowTo = {
     const carPriceInput = document.getElementById('car-price') as HTMLInputElement;
     const downPaymentInput = document.getElementById('down-payment') as HTMLInputElement;
     const interestRateInput = document.getElementById('interest-rate') as HTMLInputElement;
+    const monthlyIncomeInput = document.getElementById('monthly-income') as HTMLInputElement;
     let hasTrackedStart = false;
 
     function setFieldError(elementId: string, message: string) {
@@ -608,6 +632,7 @@ const jsonLdHowTo = {
     function clearValidation() {
       clearFieldError('car-price-error');
       clearFieldError('interest-rate-error');
+      clearFieldError('monthly-income-error');
       formError.classList.add('hidden');
     }
 
@@ -647,6 +672,10 @@ const jsonLdHowTo = {
       formError.classList.add('hidden');
       updateSubmitState();
     });
+    monthlyIncomeInput.addEventListener('input', () => {
+      clearFieldError('monthly-income-error');
+      formError.classList.add('hidden');
+    });
     updateSubmitState();
 
     form.addEventListener('input', () => {
@@ -663,10 +692,11 @@ const jsonLdHowTo = {
       const carPrice = parseNum(carPriceInput.value);
       const downPct = parseFloat(downPaymentInput.value) || 0;
       const annualRate = parseFloat(interestRateInput.value.replace(/,/g, '')) || 0;
+      const monthlyIncome = parseNum(monthlyIncomeInput.value);
       const termYears = parseInt((document.getElementById('term-years') as HTMLSelectElement).value) || 5;
       const termMonths = termYears * 12;
 
-      if (hasInvalidNumber(carPriceInput.value) || hasInvalidNumber(interestRateInput.value)) {
+      if (hasInvalidNumber(carPriceInput.value) || hasInvalidNumber(interestRateInput.value) || hasInvalidNumber(monthlyIncomeInput.value)) {
         formError.classList.remove('hidden');
         if (hasInvalidNumber(carPriceInput.value)) {
           setFieldError('car-price-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
@@ -676,6 +706,12 @@ const jsonLdHowTo = {
           setFieldError('interest-rate-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
           if (!hasInvalidNumber(carPriceInput.value)) {
             interestRateInput.focus();
+          }
+        }
+        if (hasInvalidNumber(monthlyIncomeInput.value)) {
+          setFieldError('monthly-income-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
+          if (!hasInvalidNumber(carPriceInput.value) && !hasInvalidNumber(interestRateInput.value)) {
+            monthlyIncomeInput.focus();
           }
         }
         updateSubmitState();
@@ -703,6 +739,10 @@ const jsonLdHowTo = {
       const totalPaid = financeAmount + totalInterest;
       const monthlyPayment = termMonths > 0 ? totalPaid / termMonths : 0;
       const totalCost = downPayment + totalPaid;
+      const incomeRatio = monthlyIncome > 0 ? (monthlyPayment / monthlyIncome) * 100 : 0;
+      const incomeRatioLabel = monthlyIncome > 0
+        ? incomeRatio.toFixed(2) + '% ของรายได้ต่อเดือน'
+        : '0.00% (ยังไม่ระบุรายได้)';
 
       // Update summary
       (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(monthlyPayment) + ' บาท';
@@ -715,6 +755,8 @@ const jsonLdHowTo = {
       (document.getElementById('res-rate') as HTMLElement).textContent = annualRate.toFixed(2) + '% ต่อปี';
       (document.getElementById('res-term') as HTMLElement).textContent = termMonths + ' งวด (' + termYears + ' ปี)';
       (document.getElementById('res-total-paid') as HTMLElement).textContent = fmt(totalPaid) + ' บาท';
+      (document.getElementById('res-income-ratio') as HTMLElement).textContent = incomeRatio.toFixed(2) + '%';
+      (document.getElementById('res-income-ratio-detail') as HTMLElement).textContent = incomeRatioLabel;
 
       // Amortization table
       const monthlyPrincipal = financeAmount / termMonths;

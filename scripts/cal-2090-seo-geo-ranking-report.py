@@ -35,25 +35,35 @@ JSON_PATH = REPORTS_DIR / 'cal-2090-seo-geo-ranking-latest.json'
 # Configuration
 GA4_PROPERTY_ID = "532846397"
 GSC_PROPERTY = "https://www.kamnuanlek.com"
-SERVICE_ACCOUNT_JSON = {
-    "type": "service_account",
-    "project_id": "kamnuanlek-seo-api",
-    "private_key_id": "d81dc81ddb5feea370578d3627bf21bbcbf06589",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCu3r/sScL7G7cT\n88R2Mh452sNVzcojR6ZXeoGO/m0VFoMiXCBDmYus3LK315YoGpAS09bQ2C60OHPT\n3qgnbkL8U/dfa9tBEAOTIUB8khP3F+7m6BvQaqYlGfY6sYUZr1tcGg9Bzhijmpi3\nCGsy3v2SLOOs+DYK4j+933u8heXyBiSxXp/hwiNyWlaV9FRnCJIXZfK2XB56fIek\nClwiXPxJWaBmUgyM62hVxmz38zMksvJajjRJZ9RakvJS4MlvMkytp5Q6iLCr2OIM\nk4YP+vtSK+VIYoCvr+tOXq9uD97kVUudZMcbhLYSsqAio2GNlgCxpa82EqVFQUkh\nhBEU3V4dAgMBAAECggEADH20z+K6SXLtXOt+Dm3+DWaRqsC3E6tmjREfIrZh1wPI\np4eqdlRdeczkpzqAa1TvvaiMIQGQNHy5KVqE6xbL33elT+zwYxwLD/4Wu884xd8G\ncvquzJsRoHd+SIBYYEFPvAB7M9l468F7RHfBezIags/aDjJHX0z8qJ9yGJan75Bf\n4KI3u+dZre8DLBZ/dE+ypvSq/Hu/BouaGwK3gSC6fbsGeijbAQBWXZfqDKqVoDKk\nWYQDdKFyd2DjG3FFK6NU8lC0T83kTPFp+NpswpVA1HFH4yIPq78Kl6ErhnVsW43o\niCfCt/9L5iE6DnbDagDYiHA0gjYsDwRIN+fAx+itsQKBgQDXRB8bxmJ0/jpX/79i\nEx2tLcfL+DG6U2XBRxnMHvMYWlCiifiAZ627ltbfLHoKchF6O0WywLWVRV9mFaC2\nL9P2h+NbC0XMlB33FBCpSgiY1oIETIRaenD+r85gilRfzE2z6co5RjAdbfGacyh4\nhVTtIYp5wGMoI8ORhJ8rlqGmJwKBgQDP9cYYOXbatwWctn06poCR3VUhphm4iMuj\nXg+0eoq47Q5y5TV25iI4j8ggidD3sYW7abVQItwAn6B9o3Rkyc3czU4ITfu4sylL\nrRjB9XMJXNn73csvJoPF1D2+P8VCOvor99W/pYjhjVwsIL5AtJukcfPbR3UbSd3b\n/I73csdoGwKBgDNcsKN66UEK67bVcb+f2gPZGYPkW1Ee1veP1Grss4oK+pRdoSpa\nEozgx7IGNbRKVTs56z5kVq8gF0wPOwJdVRDMiYXOob/XU3MBmZwa6wQ0ol8ONsIz\n1sQeBHrqZolZAO09ih+yTIapFe2JLo3bGlFeIGE+cyo/pkkRQL0wuq8fAoGAL6Ho\nvLW0zoXrSCjYaC2o90AN9sYX0BetJP8vc7Q5v/+0NobfhxtRLUlpmmJWtdU4f2PH\n/tHtOEtXtE9TIp7Cg1eXDvnltTl8NPQx3oM81SEqYLE9j9AvkIl7lu7+XJwrnxSG\nJf5hauA5A3aAfUug9rqPE2O7pAN4SKIBkRX+LI8CgYEAnzLKkT9NjO1XywPnPzmk\nQDTTXh4cqs5WEwrBrfwinOSxibZbErdmAWdKT75pnLW0DxD38rHZ2KZtxdl37jaX\nNAqeI7TRI8OeSbtlSnDy7rrTfXCKjqaKcSJ3xQeq1aUx8QN9XClcCgPCjWyB4QsF\nMmeYd3wc1MTGCSAevSylxQY=\n-----END PRIVATE KEY-----\n",
-    "client_email": "seo-reporting-bot@kamnuanlek-seo-api.iam.gserviceaccount.com",
-    "client_id": "107344605157703609641",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/seo-reporting-bot%40kamnuanlek-seo-api.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com",
-}
+SERVICE_ACCOUNT_ENV_NAMES = (
+    "GA4_SERVICE_ACCOUNT_JSON",
+    "GSC_SERVICE_ACCOUNT_JSON",
+    "GOOGLE_SERVICE_ACCOUNT_JSON",
+)
 
+
+def load_service_account_json():
+    """Load Google service-account credentials from environment only."""
+    for env_name in SERVICE_ACCOUNT_ENV_NAMES:
+        raw = os.environ.get(env_name, "").strip()
+        if not raw:
+            continue
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"{env_name} contains invalid JSON") from exc
+        if not data.get("client_email") or not data.get("private_key"):
+            raise RuntimeError(f"{env_name} must include client_email and private_key")
+        return data
+    raise RuntimeError(
+        "Google service-account credentials are not configured. "
+        "Set GA4_SERVICE_ACCOUNT_JSON or GSC_SERVICE_ACCOUNT_JSON in the environment."
+    )
 
 def get_ga4_client():
     """Create authenticated GA4 Analytics Data client."""
     credentials = Credentials.from_service_account_info(
-        SERVICE_ACCOUNT_JSON,
+        load_service_account_json(),
         scopes=["https://www.googleapis.com/auth/analytics.readonly"]
     )
     return BetaAnalyticsDataClient(credentials=credentials)
@@ -151,14 +161,14 @@ def generate_report_from_ga4(ga4_data_by_country, ga4_data_by_page):
     if ga4_data_by_country.rows:
         for row in ga4_data_by_country.rows[:50]:  # Top 50 countries
             country = row.dimension_values[0].value if row.dimension_values else "Unknown"
-            region = row.dimension_values[1].value if len(row.dimension_values) > 1 else "—"
+            region = row.dimension_values[1].value if len(row.dimension_values) > 1 else "-"
             sessions = row.metric_values[0].value if row.metric_values else "0"
             users = row.metric_values[1].value if len(row.metric_values) > 1 else "0"
             pageviews = row.metric_values[2].value if len(row.metric_values) > 2 else "0"
             bounce = row.metric_values[3].value if len(row.metric_values) > 3 else "0%"
-            lines.append(f"| {country} | {region} | {sessions} | {users} | {pageviews} | {bounce}% | — |")
+            lines.append(f"| {country} | {region} | {sessions} | {users} | {pageviews} | {bounce}% | - |")
     else:
-        lines.append("| No data available | — | — | — | — | — | — |")
+        lines.append("| No data available | - | - | - | - | - | - |")
 
     lines.append("")
     lines.append("## Top-Performing Pages (Organic Source)")
@@ -175,7 +185,7 @@ def generate_report_from_ga4(ga4_data_by_country, ga4_data_by_page):
             conv_rate = row.metric_values[2].value if len(row.metric_values) > 2 else "0%"
             lines.append(f"| {page} | {country} | {sessions} | {conversions} | {conv_rate}% |")
     else:
-        lines.append("| No data available | — | — | — | — |")
+        lines.append("| No data available | - | - | - | - |")
 
     lines.append("")
     lines.append("## Notes")
