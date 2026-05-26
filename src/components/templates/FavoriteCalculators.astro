@@ -9,15 +9,15 @@ interface Props {
 ---
 
 <!-- Favorites Section (hidden by default, shown via JS if favorites exist) -->
-<div id="favorites-section" class="hidden mb-10">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+<div id="favorites-section" class="hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+  <div class="mb-3 flex items-center justify-between gap-3">
+    <h2 class="flex items-center gap-2 text-sm font-bold text-gray-900">
       <span aria-hidden="true">⭐</span> เครื่องคำนวณที่ฉันใช้บ่อย
     </h2>
     <button
       id="favorites-clear"
       type="button"
-      class="text-xs text-gray-400 hover:text-red-500 transition-colors"
+      class="text-xs font-medium text-gray-400 transition-colors hover:text-red-500"
     >
       ล้างรายการ
     </button>
@@ -26,7 +26,7 @@ interface Props {
   <!-- Favorites Grid -->
   <div
     id="favorites-grid"
-    class="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+    class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1"
   >
     <!-- Favorite cards populated by JavaScript -->
   </div>
@@ -45,11 +45,11 @@ interface Props {
 
   .ct-favorite-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 0.75rem;
-    padding: 1rem;
-    background: white;
+    padding: 0.75rem;
+    background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
     cursor: pointer;
@@ -66,24 +66,36 @@ interface Props {
   }
 
   .ct-favorite-emoji {
-    font-size: 1.75rem;
-    display: block;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: white;
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
   }
 
   .ct-favorite-title {
     font-size: 0.875rem;
     font-weight: 500;
-    text-align: center;
+    text-align: left;
     color: #1f2937;
     line-height: 1.3;
     word-break: break-word;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .ct-favorite-remove {
     position: absolute;
-    top: 0.25rem;
-    right: 0.25rem;
-    display: none;
+    top: -0.375rem;
+    right: -0.375rem;
+    display: flex;
+    opacity: 0;
     width: 24px;
     height: 24px;
     padding: 0;
@@ -99,7 +111,7 @@ interface Props {
   }
 
   .ct-favorite-card:hover .ct-favorite-remove {
-    display: flex;
+    opacity: 1;
   }
 
   .ct-favorite-remove:hover {
@@ -107,6 +119,10 @@ interface Props {
   }
 
   .ct-favorite-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
     position: relative;
     flex: 1;
     width: 100%;

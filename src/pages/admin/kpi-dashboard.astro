@@ -1,167 +1,697 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-
-// Check auth - in production, validate session token
-const authToken = Astro.request.headers.get('Authorization');
-if (!authToken) {
-  return Astro.redirect('/admin/login');
-}
-
-// Fetch KPI data server-side
-let kpiData = null;
-let error = null;
-
-try {
-  const apiUrl = new URL('/api/kpi/dashboard', Astro.url.origin);
-  apiUrl.searchParams.set('days', '30');
-
-  const response = await fetch(apiUrl.toString(), {
-    headers: {
-      'Authorization': `Bearer ${process.env.KPI_API_TOKEN}`,
-    },
-  });
-
-  if (response.ok) {
-    kpiData = await response.json();
-  } else {
-    error = `API error: ${response.status}`;
-  }
-} catch (e) {
-  error = e instanceof Error ? e.message : 'Failed to fetch KPI data';
-}
 ---
 
-<BaseLayout title="KPI Dashboard">
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-6xl mx-auto">
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">KPI Dashboard</h1>
+<BaseLayout
+  title="KPI Dashboard | Kamnuanlek"
+  description="Private SEO, Search Console, and affiliate KPI dashboard for Kamnuanlek."
+  noindex={true}
+>
+  <main class="kpi-shell" data-kpi-dashboard>
+    <section class="kpi-topbar">
+      <div>
+        <p class="kpi-eyebrow">Private growth command center</p>
+        <h1>KPI Dashboard</h1>
+        <p class="kpi-subtitle">Search Console rank pushes, CTR repairs, and affiliate funnel decisions in one place.</p>
+      </div>
+      <div class="kpi-controls" aria-label="Dashboard controls">
+        <select id="kpi-days" aria-label="Date range">
+          <option value="7">7 days</option>
+          <option value="28" selected>28 days</option>
+          <option value="90">90 days</option>
+        </select>
+        <input id="kpi-token" type="password" autocomplete="off" placeholder="KPI token" aria-label="KPI API token" />
+        <button id="kpi-refresh" type="button">Refresh</button>
+      </div>
+    </section>
 
-      {error && (
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p class="text-red-700">Error: {error}</p>
-          {error.includes('not configured') && (
-            <p class="text-sm text-red-600 mt-2">
-              Please configure GSC_SERVICE_ACCOUNT_JSON and GA4_SERVICE_ACCOUNT_JSON environment variables
-            </p>
-          )}
+    <section id="kpi-status" class="kpi-status" role="status">
+      Enter the KPI token to load live Search Console and affiliate data.
+    </section>
+
+    <section id="kpi-summary" class="kpi-summary" aria-label="KPI summary"></section>
+
+    <section class="kpi-grid">
+      <article class="kpi-panel kpi-panel--wide">
+        <div class="kpi-panel-head">
+          <div>
+            <p class="kpi-panel-kicker">SEO execution</p>
+            <h2>Rank Push Queue</h2>
+          </div>
+          <span id="kpi-range" class="kpi-chip">No data</span>
         </div>
-      )}
+        <div id="kpi-actions" class="kpi-action-list"></div>
+      </article>
 
-      {kpiData && (
-        <>
-          <div class="text-sm text-gray-500 mb-6">
-            Last updated: {new Date(kpiData.timestamp).toLocaleString()} (Period: {kpiData.period})
+      <article class="kpi-panel">
+        <div class="kpi-panel-head">
+          <div>
+            <p class="kpi-panel-kicker">Momentum</p>
+            <h2>Growing Keywords</h2>
           </div>
+        </div>
+        <div id="kpi-growing" class="kpi-mini-list"></div>
+      </article>
 
-          {/* Main KPI Cards */}
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
-              <p class="text-gray-600 text-sm font-medium">Queries at #1</p>
-              <p class="text-3xl font-bold text-blue-600">{kpiData.queriesAt1}</p>
-              <p class="text-gray-500 text-xs mt-1">{kpiData.keywords.total} total keywords tracked</p>
-            </div>
+      <article class="kpi-panel">
+        <div class="kpi-panel-head">
+          <div>
+            <p class="kpi-panel-kicker">Revenue</p>
+            <h2>Affiliate Funnel</h2>
+          </div>
+        </div>
+        <div id="kpi-affiliate" class="kpi-mini-list"></div>
+      </article>
+    </section>
 
-            <div class="bg-white rounded-lg shadow p-6">
-              <p class="text-gray-600 text-sm font-medium">Queries at #1-5</p>
-              <p class="text-3xl font-bold text-green-600">{kpiData.queriesAt1To5}</p>
-              <p class="text-gray-500 text-xs mt-1">Quick win targets</p>
-            </div>
+    <section class="kpi-grid kpi-grid--tables">
+      <article class="kpi-panel">
+        <div class="kpi-panel-head">
+          <div>
+            <p class="kpi-panel-kicker">Search Console</p>
+            <h2>Position 4-20 Opportunities</h2>
+          </div>
+        </div>
+        <div class="kpi-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Query</th>
+                <th>Pos</th>
+                <th>Impr.</th>
+                <th>CTR</th>
+                <th>Page</th>
+              </tr>
+            </thead>
+            <tbody id="kpi-opportunities"></tbody>
+          </table>
+        </div>
+      </article>
 
-            <div class="bg-white rounded-lg shadow p-6">
-              <p class="text-gray-600 text-sm font-medium">Avg Position</p>
-              <p class="text-3xl font-bold text-purple-600">{kpiData.keywords.avgPosition}</p>
-              <p class="text-gray-500 text-xs mt-1">Across all keywords</p>
-            </div>
+      <article class="kpi-panel">
+        <div class="kpi-panel-head">
+          <div>
+            <p class="kpi-panel-kicker">SERP repair</p>
+            <h2>High Impression Low CTR Pages</h2>
+          </div>
+        </div>
+        <div class="kpi-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Page</th>
+                <th>Pos</th>
+                <th>Impr.</th>
+                <th>CTR gap</th>
+              </tr>
+            </thead>
+            <tbody id="kpi-ctr"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
 
-            <div class="bg-white rounded-lg shadow p-6">
-              <p class="text-gray-600 text-sm font-medium">Organic Sessions</p>
-              <p class="text-3xl font-bold text-orange-600">{kpiData.organic.sessions.toLocaleString()}</p>
-              <p class="text-gray-500 text-xs mt-1">Last {kpiData.period}</p>
+  <style>
+    .kpi-shell {
+      min-height: 100vh;
+      padding: clamp(1rem, 3vw, 2rem);
+      background:
+        radial-gradient(circle at top left, rgba(20, 184, 166, 0.14), transparent 32rem),
+        radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 28rem),
+        #f8fafc;
+      color: #111827;
+    }
+
+    .kpi-topbar,
+    .kpi-panel,
+    .kpi-status,
+    .kpi-summary-card {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .kpi-topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: end;
+      border-radius: 1.5rem;
+      padding: clamp(1rem, 3vw, 1.5rem);
+    }
+
+    .kpi-eyebrow,
+    .kpi-panel-kicker {
+      margin: 0 0 0.35rem;
+      color: #2563eb;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .kpi-topbar h1 {
+      margin: 0;
+      color: #0f172a;
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .kpi-subtitle {
+      max-width: 52rem;
+      margin: 0.75rem 0 0;
+      color: #475569;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .kpi-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      justify-content: flex-end;
+    }
+
+    .kpi-controls input,
+    .kpi-controls select,
+    .kpi-controls button {
+      min-height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      padding: 0 1rem;
+      font: inherit;
+    }
+
+    .kpi-controls input,
+    .kpi-controls select {
+      background: rgba(255, 255, 255, 0.92);
+      color: #0f172a;
+    }
+
+    .kpi-controls button {
+      border: 0;
+      background: #0f172a;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .kpi-status {
+      margin-top: 1rem;
+      border-radius: 1rem;
+      padding: 0.85rem 1rem;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .kpi-status.is-error {
+      border-color: rgba(220, 38, 38, 0.25);
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    .kpi-status.is-ok {
+      border-color: rgba(5, 150, 105, 0.22);
+      background: #ecfdf5;
+      color: #065f46;
+    }
+
+    .kpi-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .kpi-summary-card {
+      min-height: 9rem;
+      border-radius: 1.25rem;
+      padding: 1rem;
+    }
+
+    .kpi-summary-card span {
+      color: #64748b;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .kpi-summary-card strong {
+      display: block;
+      margin-top: 0.75rem;
+      color: #0f172a;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      line-height: 1;
+    }
+
+    .kpi-summary-card p {
+      margin: 0.65rem 0 0;
+      color: #64748b;
+      font-size: 0.875rem;
+      line-height: 1.45;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.8fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .kpi-grid--tables {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .kpi-panel {
+      min-width: 0;
+      border-radius: 1.25rem;
+      padding: 1rem;
+    }
+
+    .kpi-panel--wide {
+      grid-row: span 2;
+    }
+
+    .kpi-panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .kpi-panel h2 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.15rem;
+      letter-spacing: 0;
+    }
+
+    .kpi-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      border-radius: 999px;
+      padding: 0 0.75rem;
+      background: #e0f2fe;
+      color: #075985;
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .kpi-action-list,
+    .kpi-mini-list {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .kpi-action,
+    .kpi-mini-item {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 1rem;
+      background: rgba(248, 250, 252, 0.82);
+      padding: 0.85rem;
+    }
+
+    .kpi-action {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.8rem;
+      align-items: start;
+    }
+
+    .kpi-priority {
+      border-radius: 999px;
+      padding: 0.25rem 0.55rem;
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    .kpi-priority.is-medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .kpi-action h3,
+    .kpi-mini-item h3 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 0.96rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .kpi-action p,
+    .kpi-mini-item p {
+      margin: 0.35rem 0 0;
+      color: #64748b;
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+
+    .kpi-action a,
+    .kpi-mini-item a,
+    table a {
+      color: #2563eb;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .kpi-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 0.75rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    td {
+      color: #1f2937;
+      overflow-wrap: anywhere;
+    }
+
+    .kpi-empty {
+      padding: 1rem;
+      border-radius: 1rem;
+      background: rgba(248, 250, 252, 0.75);
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    html[data-theme='dark'] .kpi-shell {
+      background:
+        radial-gradient(circle at top left, rgba(20, 184, 166, 0.18), transparent 32rem),
+        radial-gradient(circle at top right, rgba(96, 165, 250, 0.18), transparent 28rem),
+        #020617;
+      color: #e5e7eb;
+    }
+
+    html[data-theme='dark'] .kpi-topbar,
+    html[data-theme='dark'] .kpi-panel,
+    html[data-theme='dark'] .kpi-status,
+    html[data-theme='dark'] .kpi-summary-card {
+      border-color: rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.78);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    html[data-theme='dark'] .kpi-topbar h1,
+    html[data-theme='dark'] .kpi-panel h2,
+    html[data-theme='dark'] .kpi-summary-card strong,
+    html[data-theme='dark'] .kpi-action h3,
+    html[data-theme='dark'] .kpi-mini-item h3 {
+      color: #f8fafc;
+    }
+
+    html[data-theme='dark'] .kpi-subtitle,
+    html[data-theme='dark'] .kpi-status,
+    html[data-theme='dark'] .kpi-summary-card p,
+    html[data-theme='dark'] .kpi-action p,
+    html[data-theme='dark'] .kpi-mini-item p,
+    html[data-theme='dark'] td {
+      color: #cbd5e1;
+    }
+
+    html[data-theme='dark'] .kpi-controls input,
+    html[data-theme='dark'] .kpi-controls select {
+      border-color: rgba(148, 163, 184, 0.22);
+      background: rgba(2, 6, 23, 0.75);
+      color: #f8fafc;
+    }
+
+    html[data-theme='dark'] .kpi-controls button {
+      background: #38bdf8;
+      color: #082f49;
+    }
+
+    html[data-theme='dark'] .kpi-action,
+    html[data-theme='dark'] .kpi-mini-item,
+    html[data-theme='dark'] .kpi-empty {
+      border-color: rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.48);
+    }
+
+    html[data-theme='dark'] th,
+    html[data-theme='dark'] td {
+      border-bottom-color: rgba(148, 163, 184, 0.16);
+    }
+
+    @media (max-width: 1080px) {
+      .kpi-topbar,
+      .kpi-grid,
+      .kpi-grid--tables {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-controls {
+        justify-content: flex-start;
+      }
+
+      .kpi-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .kpi-shell {
+        padding: 0.75rem;
+      }
+
+      .kpi-controls,
+      .kpi-controls input,
+      .kpi-controls select,
+      .kpi-controls button {
+        width: 100%;
+      }
+
+      .kpi-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-action {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    (() => {
+      const tokenInput = document.getElementById('kpi-token');
+      const daysSelect = document.getElementById('kpi-days');
+      const refreshButton = document.getElementById('kpi-refresh');
+      const statusEl = document.getElementById('kpi-status');
+      const summaryEl = document.getElementById('kpi-summary');
+      const rangeEl = document.getElementById('kpi-range');
+      const actionsEl = document.getElementById('kpi-actions');
+      const growingEl = document.getElementById('kpi-growing');
+      const affiliateEl = document.getElementById('kpi-affiliate');
+      const opportunitiesEl = document.getElementById('kpi-opportunities');
+      const ctrEl = document.getElementById('kpi-ctr');
+
+      const savedToken = localStorage.getItem('kamnuanlek_kpi_token') || '';
+      const savedDays = localStorage.getItem('kamnuanlek_kpi_days') || '28';
+      tokenInput.value = savedToken;
+      daysSelect.value = savedDays;
+
+      const escapeHtml = (value) => String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+
+      const formatNumber = (value) => new Intl.NumberFormat('en-US').format(Number(value || 0));
+      const formatPercent = (value) => `${Number(value || 0).toFixed(2)}%`;
+      const localDateTime = (value) => value ? new Date(value).toLocaleString('en-US', { hour12: false }) : 'No data';
+      const pageLink = (url, label) => {
+        if (!url) return escapeHtml(label || 'No mapped page');
+        const href = url.startsWith('http') ? url : `https://www.kamnuanlek.com${url}`;
+        return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label || url)}</a>`;
+      };
+
+      function setStatus(message, mode = '') {
+        statusEl.className = `kpi-status ${mode ? `is-${mode}` : ''}`;
+        statusEl.textContent = message;
+      }
+
+      function empty(message) {
+        return `<div class="kpi-empty">${escapeHtml(message)}</div>`;
+      }
+
+      function renderSummary(data) {
+        const affiliateDetail = data.dataSources.ga4
+          ? `${formatNumber(data.affiliate.totals.clicks)} clicks from ${formatNumber(data.affiliate.totals.ctaViews)} CTA views`
+          : `${formatNumber(data.affiliate.totals.serverRedirects || 0)} first-party redirects tracked`;
+        const cards = [
+          ['Growth score', data.score, `${data.search.queriesAt1To10} keywords in top 10`],
+          ['GSC clicks', formatNumber(data.search.clicks), `${formatNumber(data.search.impressions)} impressions`],
+          ['Search CTR', formatPercent(data.search.ctr), `Average position ${data.search.avgPosition}`],
+          ['Affiliate funnel', data.dataSources.ga4 ? formatPercent(data.affiliate.totals.clickRate) : formatNumber(data.affiliate.totals.serverRedirects || 0), affiliateDetail],
+        ];
+
+        summaryEl.innerHTML = cards.map(([label, value, detail]) => `
+          <article class="kpi-summary-card">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+            <p>${escapeHtml(detail)}</p>
+          </article>
+        `).join('');
+      }
+
+      function renderActions(data) {
+        if (!data.actions.length) {
+          actionsEl.innerHTML = empty('No action queue yet. Increase the date range or wait for more GSC data.');
+          return;
+        }
+
+        actionsEl.innerHTML = data.actions.map((item) => `
+          <div class="kpi-action">
+            <span class="kpi-priority ${item.priority === 'Medium' ? 'is-medium' : ''}">${escapeHtml(item.priority)}</span>
+            <div>
+              <h3>${escapeHtml(item.lane)}: ${escapeHtml(item.target)}</h3>
+              <p>${escapeHtml(item.metric)}</p>
+              <p>${escapeHtml(item.action)}</p>
+              <p>${pageLink(item.page, item.page ? 'Open page' : '')}</p>
             </div>
           </div>
+        `).join('');
+      }
 
-          {/* Organic Metrics */}
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
-              <h2 class="text-lg font-semibold text-gray-900 mb-4">Organic Traffic</h2>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center border-b pb-3">
-                  <span class="text-gray-600">Sessions</span>
-                  <span class="text-2xl font-bold text-gray-900">{kpiData.organic.sessions.toLocaleString()}</span>
-                </div>
-                <div class="flex justify-between items-center border-b pb-3">
-                  <span class="text-gray-600">Users</span>
-                  <span class="text-2xl font-bold text-gray-900">{kpiData.organic.users.toLocaleString()}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">AdSense Revenue</span>
-                  <span class="text-2xl font-bold text-gray-900">${kpiData.organic.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </div>
-              </div>
-            </div>
+      function renderGrowing(data) {
+        const rows = data.keywords.growing.slice(0, 8);
+        if (!rows.length) {
+          growingEl.innerHTML = empty('No growing keyword movement found for this period.');
+          return;
+        }
 
-            <div class="bg-white rounded-lg shadow p-6">
-              <h2 class="text-lg font-semibold text-gray-900 mb-4">Ranking Distribution</h2>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center border-b pb-3">
-                  <span class="text-gray-600">#1 Rankings</span>
-                  <span class="text-xl font-bold text-blue-600">{kpiData.queriesAt1}</span>
-                </div>
-                <div class="flex justify-between items-center border-b pb-3">
-                  <span class="text-gray-600">#1-5 Rankings</span>
-                  <span class="text-xl font-bold text-green-600">{kpiData.queriesAt1To5}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600">#1-10 Rankings</span>
-                  <span class="text-xl font-bold text-yellow-600">{kpiData.queriesAt1To10}</span>
-                </div>
-              </div>
-            </div>
+        growingEl.innerHTML = rows.map((row) => `
+          <div class="kpi-mini-item">
+            <h3>${escapeHtml(row.query)}</h3>
+            <p>+${formatNumber(row.impressionsDelta)} impressions, +${formatNumber(row.clicksDelta)} clicks, position change ${Number(row.positionDelta || 0).toFixed(1)}</p>
+            <p>${pageLink(row.page, row.pageLabel || 'Mapped page')}</p>
           </div>
+        `).join('');
+      }
 
-          {/* Top Keywords */}
-          <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Top 20 Keywords</h2>
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Keyword</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Position</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Impressions</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Clicks</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">CTR</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                  {kpiData.keywords.top100.slice(0, 20).map((keyword: any) => (
-                    <tr class="hover:bg-gray-50">
-                      <td class="px-6 py-3 text-sm text-gray-900 font-medium">{keyword.query}</td>
-                      <td class="px-6 py-3 text-sm">
-                        <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          keyword.position === 1 ? 'bg-blue-100 text-blue-800' :
-                          keyword.position <= 5 ? 'bg-green-100 text-green-800' :
-                          keyword.position <= 10 ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          #{Math.round(keyword.position)}
-                        </span>
-                      </td>
-                      <td class="px-6 py-3 text-sm text-gray-900">{keyword.impressions.toLocaleString()}</td>
-                      <td class="px-6 py-3 text-sm text-gray-900">{keyword.clicks.toLocaleString()}</td>
-                      <td class="px-6 py-3 text-sm text-gray-900">{keyword.ctr.toFixed(2)}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      function renderAffiliate(data) {
+        const rows = data.affiliate.pages.slice(0, 8);
+        if (!rows.length) {
+          affiliateEl.innerHTML = data.dataSources.ga4
+            ? empty('No affiliate CTA events in this range yet.')
+            : empty('No first-party affiliate redirects in this range yet. New redirects will appear after the current release is live.');
+          return;
+        }
 
-          <div class="text-xs text-gray-500 mt-6 text-center">
-            Dashboard auto-refreshes every 5 minutes. Full data export available via API.
+        affiliateEl.innerHTML = rows.map((row) => `
+          <div class="kpi-mini-item">
+            <h3>${escapeHtml(row.label)}</h3>
+            <p>${formatNumber(row.ctaViews)} views, ${formatNumber(row.clicks)} clicks, ${formatNumber(row.redirects)} redirects</p>
+            <p>${data.dataSources.ga4 ? `Click rate ${formatPercent(row.clickRate)}` : `${formatNumber(row.serverRedirects || 0)} first-party redirects`}</p>
           </div>
-        </>
-      )}
-    </div>
-  </div>
+        `).join('');
+      }
+
+      function renderTables(data) {
+        const opportunities = data.keywords.opportunities.slice(0, 20);
+        opportunitiesEl.innerHTML = opportunities.length ? opportunities.map((row) => `
+          <tr>
+            <td>${escapeHtml(row.query)}</td>
+            <td>${escapeHtml(row.position)}</td>
+            <td>${formatNumber(row.impressions)}</td>
+            <td>${formatPercent(row.ctr)}</td>
+            <td>${pageLink(row.page, row.pageLabel || 'Open')}</td>
+          </tr>
+        `).join('') : `<tr><td colspan="5">${empty('No position 4-20 opportunities found.')}</td></tr>`;
+
+        const repairs = data.pages.ctrRepairs.slice(0, 20);
+        ctrEl.innerHTML = repairs.length ? repairs.map((row) => `
+          <tr>
+            <td>${pageLink(row.page, row.label)}</td>
+            <td>${escapeHtml(row.position)}</td>
+            <td>${formatNumber(row.impressions)}</td>
+            <td>${formatPercent(row.ctrGap)}</td>
+          </tr>
+        `).join('') : `<tr><td colspan="4">${empty('No CTR repair targets found.')}</td></tr>`;
+      }
+
+      function renderWarnings(data) {
+        if (!data.warnings?.length) return '';
+        return ` Warnings: ${data.warnings.join(' ')}`;
+      }
+
+      async function loadDashboard() {
+        const token = tokenInput.value.trim();
+        const days = daysSelect.value;
+
+        if (!token) {
+          setStatus('Enter the KPI token to load live data.', '');
+          return;
+        }
+
+        localStorage.setItem('kamnuanlek_kpi_token', token);
+        localStorage.setItem('kamnuanlek_kpi_days', days);
+        refreshButton.disabled = true;
+        setStatus('Loading live Search Console and affiliate data...', '');
+
+        try {
+          const response = await fetch(`/api/kpi/dashboard?days=${encodeURIComponent(days)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || data.error || `Request failed with ${response.status}`);
+          }
+
+          renderSummary(data);
+          renderActions(data);
+          renderGrowing(data);
+          renderAffiliate(data);
+          renderTables(data);
+          rangeEl.textContent = `${data.range.startDate} to ${data.range.endDate}`;
+          setStatus(`Live data loaded at ${localDateTime(data.timestamp)}.${renderWarnings(data)}`, 'ok');
+        } catch (error) {
+          setStatus(error instanceof Error ? error.message : 'Failed to load KPI data.', 'error');
+        } finally {
+          refreshButton.disabled = false;
+        }
+      }
+
+      refreshButton.addEventListener('click', loadDashboard);
+      daysSelect.addEventListener('change', loadDashboard);
+      tokenInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') loadDashboard();
+      });
+
+      if (savedToken) {
+        loadDashboard();
+      }
+    })();
+  </script>
 </BaseLayout>

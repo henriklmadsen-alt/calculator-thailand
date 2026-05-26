@@ -2,6 +2,17 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request }) => {
   try {
+    const configuredToken = process.env.KPI_API_TOKEN?.trim();
+    if (!configuredToken) {
+      return new Response(
+        JSON.stringify({
+          error: 'KPI API token not configured',
+          message: 'Set KPI_API_TOKEN before using the admin dashboard',
+        }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Check authorization header
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -12,7 +23,7 @@ export const GET: APIRoute = async ({ request }) => {
     }
 
     const token = authHeader.slice(7);
-    if (token !== process.env.KPI_API_TOKEN) {
+    if (token !== configuredToken) {
       return new Response(JSON.stringify({ error: 'Invalid token' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
@@ -23,22 +34,36 @@ export const GET: APIRoute = async ({ request }) => {
     const url = new URL(request.url);
     const days = parseInt(url.searchParams.get('days') || '30', 10);
 
-    // Parse GSC/GA4 credentials from environment
-    const gscKeyJson = process.env.GSC_SERVICE_ACCOUNT_JSON
-      ? JSON.parse(process.env.GSC_SERVICE_ACCOUNT_JSON)
-      : null;
-    const ga4KeyJson = process.env.GA4_SERVICE_ACCOUNT_JSON
-      ? JSON.parse(process.env.GA4_SERVICE_ACCOUNT_JSON)
-      : null;
+    // Parse GSC/GA4 credentials from environment. GSC is required for SEO rankings;
+    // GA4 is optional so the dashboard still works while analytics auth is being connected.
+    const parseJsonEnv = (name: string) => {
+      const value = process.env[name];
+      if (!value) return null;
+      try {
+        return JSON.parse(value);
+      } catch {
+        throw new Error(`${name} contains invalid JSON`);
+      }
+    };
 
-    if (!gscKeyJson || !ga4KeyJson) {
+    const gscKeyJson = parseJsonEnv('GSC_SERVICE_ACCOUNT_JSON');
+    const ga4KeyJson = parseJsonEnv('GA4_SERVICE_ACCOUNT_JSON');
+
+    if (!gscKeyJson) {
       return new Response(
         JSON.stringify({
-          error: 'GSC/GA4 credentials not configured',
-          message: 'Please set GSC_SERVICE_ACCOUNT_JSON and GA4_SERVICE_ACCOUNT_JSON environment variables',
+          error: 'GSC credentials not configured',
+          message: 'Set GSC_SERVICE_ACCOUNT_JSON to enable ranking and CTR reporting',
         }),
         { status: 503, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    const warnings: string[] = [];
+    const ga4PropertyId = process.env.GA4_PROPERTY_ID?.trim() || '';
+    const hasGa4 = Boolean(ga4KeyJson && ga4PropertyId);
+    if (!hasGa4) {
+      warnings.push('GA4 service-account access is not configured; organic sessions, users, and revenue are shown as 0.');
     }
 
     // Dynamically import services (server-side only)
@@ -50,21 +75,33 @@ export const GET: APIRoute = async ({ request }) => {
       gscSiteUrl: process.env.GSC_SITE_URL || 'https://kamnuanlek.com/',
     });
 
-    const ga4Service = new GA4Service({
-      keyFileJson: ga4KeyJson,
-      propertyId: process.env.GA4_PROPERTY_ID || '',
-    });
+    const ga4Service = hasGa4
+      ? new GA4Service({
+          keyFileJson: ga4KeyJson,
+          propertyId: ga4PropertyId,
+        })
+      : null;
 
     // Fetch data in parallel
     const [keywords, organicMetrics, pageIndexing] = await Promise.all([
       gscService.getTopKeywords(days).catch(() => []),
-      ga4Service.getOrganicMetrics(days).catch(() => ({ sessions: 0, users: 0, revenue: 0 })),
+      ga4Service
+        ? ga4Service.getOrganicMetrics(days).catch(() => {
+            warnings.push('GA4 request failed; organic sessions, users, and revenue are shown as 0.');
+            return { sessions: 0, users: 0, revenue: 0 };
+          })
+        : Promise.resolve({ sessions: 0, users: 0, revenue: 0 }),
       gscService.getPageIndexing().catch(() => ({ indexed: 0, notIndexed: 0 })),
     ]);
 
     const kpiData = {
       timestamp: new Date().toISOString(),
       period: `${days} days`,
+      dataSources: {
+        gsc: true,
+        ga4: hasGa4,
+      },
+      warnings,
       keywords: {
         top100: keywords.slice(0, 100),
         total: keywords.length,

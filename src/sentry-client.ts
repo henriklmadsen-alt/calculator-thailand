@@ -5,14 +5,6 @@ if (typeof window !== 'undefined' && import.meta.env.PUBLIC_SENTRY_DSN) {
     dsn: import.meta.env.PUBLIC_SENTRY_DSN,
     environment: import.meta.env.MODE,
     tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
-    replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
-    integrations: [
-      new Sentry.Replay({
-        maskAllText: true,
-        blockAllMedia: true,
-      }),
-    ],
   });
 }
 

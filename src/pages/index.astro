@@ -2,10 +2,142 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FavoriteCalculators from '../components/templates/FavoriteCalculators.astro';
 import { categories, calculators, getCategoryCounts, getPopularCalculators } from '../lib/calculators';
+import { CALCULATOR_AFFILIATE_MAP } from '../data/affiliate-config';
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const HOME_MAX_CALCULATORS = 50;
 const counts = getCategoryCounts();
 const popular = getPopularCalculators();
+const sortedCategories = [...categories].sort((a, b) => a.sortOrder - b.sortOrder);
+const categoryById = new Map(categories.map((cat) => [cat.id, cat]));
+const categoryPriority = [
+  'tax',
+  'loan',
+  'salary',
+  'bills',
+  'realestate',
+  'vehicles',
+  'creditcard',
+  'insurance',
+  'savings',
+  'health',
+  'budget',
+  'business',
+];
+const prioritizedCategories = [
+  ...categoryPriority
+    .map((id) => categoryById.get(id))
+    .filter((cat): cat is (typeof categories)[number] => Boolean(cat)),
+  ...sortedCategories.filter((cat) => !categoryPriority.includes(cat.id)),
+];
+const primaryCategories = prioritizedCategories.slice(0, 10);
+const moreCategories = prioritizedCategories.slice(10);
+const affiliateHrefSet = new Set(Object.keys(CALCULATOR_AFFILIATE_MAP));
+const calculatorByHref = new Map(calculators.map((calc) => [calc.href, calc]));
+const highIntentHrefs = [
+  '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+  '/คำนวณเงินเดือนสุทธิ/',
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณผ่อนบ้าน/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณภาษีมูลค่าเพิ่ม/',
+  '/คำนวณอายุ/',
+  '/คำนวณค่าโอที/',
+  '/คำนวณประกันสังคม/',
+  '/คำนวณ-bmi/',
+  '/คำนวณดัชนีมวลกาย/',
+  '/คำนวณเปอร์เซ็นต์/',
+  '/คำนวณดอกเบี้ยเงินฝาก/',
+  '/คำนวณดอกเบี้ยเงินฝากประจำ/',
+  '/คำนวณผ่อนกู้/',
+  '/คำนวณสินเชื่อฉุกเฉิน/',
+  '/คำนวณผ่อนสินเชื่อส่วนบุคคล/',
+  '/คำนวณ-apr/',
+  '/คำนวณค่างวดสินเชื่อรถ/',
+  '/คำนวณดอกเบี้ยบัตรเครดิต/',
+  '/คำนวณค่างวดบัตรเครดิต/',
+  '/คำนวณอัตราการใช้วงเงินบัตรเครดิต/',
+  '/คำนวณเบี้ยประกันรถยนต์/',
+  '/คำนวณค่าประกันรถยนต์/',
+  '/คำนวณประกันชีวิต/',
+  '/คำนวณเบี้ยประกันสุขภาพ/',
+  '/คำนวณเบี้ยประกันสุขภาพผู้สูงอายุ/',
+  '/คำนวณประกันสุขภาพครอบครัว/',
+  '/คำนวณค่าโอนบ้าน/',
+  '/คำนวณภาษีที่ดินและสิ่งปลูกสร้าง/',
+  '/คำนวณค่าน้ำ/',
+  '/คำนวณค่าน้ำมัน/',
+  '/คำนวณค่าใช้จ่ายรายเดือน/',
+  '/คำนวณเงินเกษียณ/',
+  '/คำนวณเงินออม/',
+  '/คำนวณดอกเบี้ยทบต้น/',
+  '/คำนวณเกรดเฉลี่ย/',
+  '/คำนวณพื้นที่/',
+  '/คำนวณหน่วย/',
+];
+const highIntentCalculators = highIntentHrefs
+  .map((href) => calculatorByHref.get(href))
+  .filter((calc): calc is (typeof calculators)[number] => Boolean(calc));
+const affiliateCalculators = calculators.filter((calc) => affiliateHrefSet.has(calc.href));
+const homepageCalculatorMap = new Map<string, (typeof calculators)[number]>();
+for (const calc of [...highIntentCalculators, ...affiliateCalculators, ...popular, ...calculators]) {
+  homepageCalculatorMap.set(calc.href, calc);
+}
+const homepageCalculators = Array.from(homepageCalculatorMap.values()).slice(0, HOME_MAX_CALCULATORS);
+const featuredCalculators = homepageCalculators.slice(0, 12);
+
+const getCalculatorSearchText = (calc: (typeof calculators)[number]) => {
+  const categoryIds = [calc.categoryId, ...(calc.secondaryCategories || [])];
+  const categoryText = categoryIds.flatMap((id) => {
+    const cat = categoryById.get(id);
+    return cat ? [cat.id, cat.name, cat.nameEn, cat.slug, cat.description] : [id];
+  });
+
+  return [calc.title, calc.desc, ...categoryText].filter(Boolean).join(' ');
+};
+
+const calculatorSearchIndex = calculators.map((calc) => ({
+  title: calc.title,
+  desc: calc.desc,
+  category: calc.categoryId,
+  icon: calc.icon,
+  href: calc.href,
+  searchText: getCalculatorSearchText(calc),
+  tag: calc.tag,
+  tagColor: calc.tagColor,
+  affiliate: affiliateHrefSet.has(calc.href),
+}));
+
+const topActions = [
+  { title: 'ภาษีเงินได้', desc: 'เช็กภาษีและลดหย่อนปี 2569', href: '/คำนวณภาษีเงินได้บุคคลธรรมดา/', icon: '💰', tone: 'amber' },
+  { title: 'เงินเดือนสุทธิ', desc: 'เงินรับจริงหลังหักภาษีและประกันสังคม', href: '/คำนวณเงินเดือนสุทธิ/', icon: '💼', tone: 'green' },
+  { title: 'ค่าไฟฟ้า', desc: 'PEA/MEA ค่า Ft และ VAT', href: '/คำนวณค่าไฟฟ้า/', icon: '⚡', tone: 'yellow' },
+  { title: 'ผ่อนบ้าน', desc: 'ค่างวด รีไฟแนนซ์ จุดคุ้มทุน', href: '/คำนวณผ่อนบ้าน/', icon: '🏠', tone: 'rose' },
+  { title: 'ผ่อนรถ', desc: 'ค่างวด 48/60/72/84 เดือน', href: '/คำนวณผ่อนรถ/', icon: '🚗', tone: 'blue' },
+  { title: 'VAT 7%', desc: 'บวก VAT ถอด VAT จากราคารวม', href: '/คำนวณภาษีมูลค่าเพิ่ม/', icon: '🧾', tone: 'slate' },
+];
+
+const quickSearches = ['ภาษี', 'เงินเดือน', 'ค่าไฟ', 'ผ่อนบ้าน', 'ผ่อนรถ', 'ประกันรถ', 'บัตรเครดิต', 'VAT', 'อายุ', 'BMI'];
+
+const popularToday = [
+  { label: 'ค่าไฟบ้าน', href: '/คำนวณค่าไฟฟ้า/', metric: 'PEA/MEA', icon: '⚡' },
+  { label: 'คำนวณอายุ', href: '/คำนวณอายุ/', metric: 'พ.ศ./ค.ศ.', icon: '🎂' },
+  { label: 'เงินเดือนรับจริง', href: '/คำนวณเงินเดือนสุทธิ/', metric: 'ภาษี + ประกันสังคม', icon: '💼' },
+  { label: 'ค่างวดรถ', href: '/คำนวณผ่อนรถ/', metric: '48-84 งวด', icon: '🚗' },
+  { label: 'VAT 7%', href: '/คำนวณภาษีมูลค่าเพิ่ม/', metric: 'บวก/ถอดภาษี', icon: '🧾' },
+  { label: 'ค่าโอที', href: '/คำนวณค่าโอที/', metric: '1.5x 2x 3x', icon: '⏱️' },
+];
+
+const newestCalculators = [
+  { title: 'คำนวณ CAGR', icon: '📈', href: '/คำนวณ-cagr-อัตราเติบโตทบต้นรายปี/' },
+  { title: 'คำนวณ IRR', icon: '💹', href: '/คำนวณ-irr-อัตราผลตอบแทนภายใน/' },
+  { title: 'คำนวณ NPV', icon: '🏦', href: '/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/' },
+  { title: 'คำนวณจุดคุ้มทุน', icon: '🎯', href: '/คำนวณ-จุดคุ้มทุน-break-even/' },
+  { title: 'ดอกเบี้ยทบต้น', icon: '💰', href: '/คำนวณ-ดอกเบี้ยทบต้น/' },
+  { title: 'มูลค่าปัจจุบัน', icon: '⏮️', href: '/คำนวณ-มูลค่าปัจจุบัน-present-value/' },
+  { title: 'มูลค่าอนาคต', icon: '⏭️', href: '/คำนวณ-มูลค่าอนาคต-future-value/' },
+  { title: 'คำนวณ ROE', icon: '📊', href: '/คำนวณ-roe-ผลตอบแทนผู้ถือหุ้น/' },
+];
 
 const jsonLdWebsite = {
   '@context': 'https://schema.org',
@@ -28,7 +160,7 @@ const jsonLdItemList = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'เครื่องคำนวณออนไลน์สำหรับคนไทย',
-  itemListElement: calculators.map((calc, i) => ({
+  itemListElement: homepageCalculators.map((calc, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     name: calc.title,
@@ -76,143 +208,215 @@ const jsonLdFaq = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebsite)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/json" id="calculator-search-index" set:html={JSON.stringify(calculatorSearchIndex)} />
 
-  <!-- Hero Section -->
-  <div class="text-center mb-8 sm:mb-10">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-50 text-primary-700 rounded-full text-sm font-medium mb-5">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-      คำนวณแม่นยำ ใช้งานง่าย ฟรี 100%
-    </div>
-    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
-      เครื่องคำนวณออนไลน์
-      <span class="bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent"> สำหรับคนไทย</span>
-    </h1>
-    <p class="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-      คำนวณภาษี ดอกเบี้ย สินเชื่อ BMI และอื่นๆ ได้ทันที ไม่ต้องสมัครสมาชิก
-    </p>
-  </div>
+  <div class="ct-ai-home">
+  <section class="ct-ai-hero mb-10">
+    <div class="ct-ai-hero-grid grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
+      <div class="min-w-0">
+        <div class="ct-ai-kicker mb-4 inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
+          <span aria-hidden="true">🇹🇭</span>
+          อัปเดตปี 2569 · ฟรี · ไม่ต้องสมัคร
+        </div>
 
-  <!-- Search Bar -->
-  <div class="mb-8 sm:mb-10">
-    <div class="relative max-w-xl mx-auto">
-      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-      <input
-        id="calc-search"
-        type="search"
-        placeholder="ค้นหาเครื่องคำนวณ..."
-        autocomplete="off"
-        class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent placeholder-gray-400 transition"
-      />
+        <h1 class="ct-ai-title max-w-4xl text-3xl font-extrabold leading-tight tracking-normal text-gray-950 sm:text-5xl">
+          คำนวณเลขให้จบในที่เดียว
+        </h1>
+
+        <p class="ct-ai-subtitle mt-3 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
+          ค้นหาเครื่องคำนวณสำหรับภาษี เงินเดือน ค่าไฟ สินเชื่อ บ้าน รถ สุขภาพ และงานประจำวันของคนไทย
+        </p>
+
+        <div class="ct-ai-search-wrap mt-6 max-w-3xl">
+          <label for="calc-search" class="sr-only">ค้นหาเครื่องคำนวณ</label>
+          <div class="relative">
+            <svg class="ct-ai-search-icon pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              id="calc-search"
+              type="text"
+              inputmode="search"
+              enterkeyhint="search"
+              placeholder="ค้นหา เช่น ผ่อนรถ, เงินเดือนสุทธิ, VAT, ค่าไฟ"
+              autocomplete="off"
+              class="ct-ai-search-input h-16 w-full rounded-2xl border border-gray-200 bg-white pl-14 pr-14 text-base font-medium text-gray-900 shadow-sm outline-none transition focus:border-primary-400 focus:ring-4 focus:ring-primary-100"
+            />
+            <button
+              id="calc-search-clear"
+              type="button"
+              class="ct-ai-search-clear hidden absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+              aria-label="ล้างคำค้นหา"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2" aria-label="คำค้นหายอดนิยม">
+            {quickSearches.map((term) => (
+              <button
+                type="button"
+                class="ct-ai-chip quick-search rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700"
+                data-query={term}
+              >
+                {term}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <aside class="ct-ai-live-panel rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="text-sm font-bold text-gray-900">ยอดนิยมวันนี้</h2>
+          <span class="ct-ai-status-pill rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700">ไทย 2569</span>
+        </div>
+        <div class="mt-3 divide-y divide-gray-100">
+          {popularToday.map((item) => (
+            <a href={item.href} class="ct-ai-live-row flex items-center gap-3 py-3 text-sm transition hover:text-primary-700">
+              <span class="ct-ai-live-icon flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 text-lg" aria-hidden="true">{item.icon}</span>
+              <span class="min-w-0 flex-1">
+                <span class="block font-semibold text-gray-900">{item.label}</span>
+                <span class="block truncate text-xs text-gray-500">{item.metric}</span>
+              </span>
+              <span class="text-gray-300" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </aside>
     </div>
-  </div>
+  </section>
 
   <!-- Search Results (hidden by default) -->
-  <div id="search-results" class="hidden mb-10">
-    <h2 class="text-lg font-bold text-gray-900 mb-4">ผลการค้นหา</h2>
-    <div id="search-results-grid" class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
-    <p id="search-no-results" class="hidden text-center text-gray-500 py-8">ไม่พบเครื่องคำนวณที่ตรงกัน</p>
-  </div>
-
-  <!-- Recently Used (populated by JS) -->
-  <div id="recent-section" class="hidden mb-10">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-bold text-gray-900">ใช้ล่าสุด</h2>
-      <button id="recent-clear" type="button" class="text-xs text-gray-400 hover:text-red-500 transition-colors">ล้างประวัติ</button>
+  <div id="search-results" class="ct-ai-search-results hidden mb-10 rounded-2xl border border-primary-100 bg-primary-50/40 p-4 sm:p-5">
+    <div class="mb-4 flex items-center justify-between gap-3">
+      <h2 class="text-lg font-bold text-gray-900">ผลการค้นหา</h2>
+      <span id="search-result-count" class="text-sm font-medium text-gray-500"></span>
     </div>
-    <div id="recent-row" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin"></div>
+    <div id="search-results-grid" class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+    <p id="search-no-results" class="hidden rounded-xl bg-white px-4 py-8 text-center text-gray-500">ไม่พบเครื่องคำนวณที่ตรงกัน ลองค้นด้วยคำว่า ภาษี เงินเดือน สินเชื่อ หรือค่าไฟ</p>
   </div>
-
-  <!-- Favorite Calculators (populated by JS) -->
-  <FavoriteCalculators />
 
   <!-- Main content wrapper (hidden during search) -->
-  <div id="main-content">
-    <!-- Category Icon Grid -->
-    <div class="mb-10">
-      <h2 class="text-lg font-bold text-gray-900 mb-5 text-center">หมวดหมู่เครื่องคำนวณ</h2>
-      <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4 md:gap-4">
-        {categories.map((cat) => (
-          <a
-            href={`/หมวดหมู่/${cat.slug}/`}
-            class="flex flex-col items-center gap-2 group"
-          >
-            <div class={`w-14 h-14 sm:w-16 sm:h-16 rounded-full ${cat.color} flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform shadow-sm`}>
-              {cat.icon}
-            </div>
-            <div class="text-center">
-              <span class="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-primary-600 transition-colors leading-tight block">
-                {cat.name}
-              </span>
-              <span class="text-[10px] text-gray-400">{counts[cat.id]} รายการ</span>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <!-- New Calculators Section -->
-    <div class="mb-10">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-900">เครื่องคำนวณใหม่ล่าสุด</h2>
-        <a href="/เครื่องคำนวณใหม่/" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
-          ดูทั้งหมด →
-        </a>
-      </div>
-      <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {[
-          { title: 'คำนวณ CAGR', icon: '📈', href: '/คำนวณ-cagr-อัตราเติบโตทบต้นรายปี/' },
-          { title: 'คำนวณ IRR', icon: '💹', href: '/คำนวณ-irr-อัตราผลตอบแทนภายใน/' },
-          { title: 'คำนวณ NPV', icon: '🏦', href: '/คำนวณ-npv-มูลค่าปัจจุบันสุทธิ/' },
-          { title: 'คำนวณจุดคุ้มทุน', icon: '🎯', href: '/คำนวณ-จุดคุ้มทุน-break-even/' },
-          { title: 'ดอกเบี้ยทบต้น', icon: '💰', href: '/คำนวณ-ดอกเบี้ยทบต้น/' },
-          { title: 'มูลค่าปัจจุบัน', icon: '⏮️', href: '/คำนวณ-มูลค่าปัจจุบัน-present-value/' },
-          { title: 'มูลค่าอนาคต', icon: '⏭️', href: '/คำนวณ-มูลค่าอนาคต-future-value/' },
-          { title: 'คำนวณ ROE', icon: '📊', href: '/คำนวณ-roe-ผลตอบแทนผู้ถือหุ้น/' },
-          { title: 'รากที่สอง', icon: '√', href: '/คำนวณรากที่สอง/' },
-          { title: 'พีทาโกรัส', icon: '📏', href: '/คำนวณทฤษฎีพีทาโกรัส/' },
-        ].map((c) => (
-          <a
-            href={c.href}
-            class="group flex items-center gap-2.5 p-3 bg-white rounded-xl border border-gray-100 hover:border-primary-200 shadow-sm hover:shadow-md transition-all"
-          >
-            <span class="text-xl flex-shrink-0">{c.icon}</span>
-            <span class="text-xs font-semibold text-gray-800 group-hover:text-primary-600 transition-colors leading-tight">{c.title}</span>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <!-- Popular Section -->
-    <div class="mb-10">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-900">ยอดนิยม</h2>
-      </div>
-      <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {popular.map((calc) => (
-          <a
-            href={calc.href}
-            class="calc-card group block p-5 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200"
-          >
-            <div class="flex items-start gap-3">
-              <span class="text-3xl">{calc.icon}</span>
-              <div class="min-w-0">
-                <h3 class="text-sm font-bold text-gray-900 group-hover:text-primary-600 transition-colors truncate">
-                  {calc.title}
-                </h3>
-                <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{calc.desc}</p>
+  <div id="main-content" class="ct-ai-main">
+    <section class="ct-ai-actions-section mb-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div>
+        <div class="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">เริ่มจากเครื่องมือหลัก</h2>
+            <p class="mt-1 text-sm text-gray-500">งานที่คนไทยใช้บ่อยที่สุด รวมไว้ก่อนเพื่อเปิดได้ทันที</p>
+          </div>
+          <a href="#calculators" class="hidden text-sm font-semibold text-primary-700 hover:text-primary-800 sm:inline-flex">ดูทั้งหมด</a>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {topActions.map((item) => (
+            <a href={item.href} data-tone={item.tone} class="ct-ai-action-card group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md">
+              <div class="flex items-start gap-3">
+                <span class="ct-ai-action-icon flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 text-2xl" aria-hidden="true">{item.icon}</span>
+                <span class="min-w-0">
+                  <span class="block text-base font-bold text-gray-950 group-hover:text-primary-700">{item.title}</span>
+                  <span class="mt-1 block text-sm leading-5 text-gray-500">{item.desc}</span>
+                </span>
               </div>
-            </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Recently Used (populated by JS) -->
+        <div id="recent-section" class="ct-ai-side-panel hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <h2 class="text-sm font-bold text-gray-900">ใช้ล่าสุด</h2>
+            <button id="recent-clear" type="button" class="text-xs font-medium text-gray-400 transition-colors hover:text-red-500">ล้างประวัติ</button>
+          </div>
+          <div id="recent-row" class="flex gap-3 overflow-x-auto pb-1 scrollbar-thin lg:flex-col lg:overflow-visible lg:pb-0"></div>
+        </div>
+
+        <!-- Favorite Calculators (populated by JS) -->
+        <FavoriteCalculators />
+      </div>
+    </section>
+
+    <section id="categories" class="ct-ai-section mb-10">
+      <div class="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-gray-900">หมวดหมู่หลัก</h2>
+          <p class="mt-1 text-sm text-gray-500">เลือกตามเรื่องที่ต้องการคำนวณ</p>
+        </div>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {primaryCategories.map((cat) => (
+          <a href={`/หมวดหมู่/${cat.slug}/`} class="ct-ai-category-card group flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md">
+            <span class={`ct-ai-category-icon flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl ${cat.color} text-2xl`} aria-hidden="true">{cat.icon}</span>
+            <span class="min-w-0">
+              <span class="block font-bold text-gray-950 group-hover:text-primary-700">{cat.name}</span>
+              <span class="mt-0.5 block text-sm text-gray-500">{counts[cat.id]} รายการ</span>
+            </span>
           </a>
         ))}
       </div>
-    </div>
+      {moreCategories.length > 0 && (
+        <details class="ct-ai-more-categories mt-4 rounded-2xl border border-gray-100 bg-white p-4">
+          <summary class="cursor-pointer text-sm font-semibold text-primary-700">ดูหมวดหมู่เพิ่มเติม</summary>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {moreCategories.map((cat) => (
+              <a href={`/หมวดหมู่/${cat.slug}/`} class="ct-ai-category-card ct-ai-category-card--small group flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50/60 p-3 transition hover:border-primary-200 hover:bg-primary-50">
+                <span class={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${cat.color} text-xl`} aria-hidden="true">{cat.icon}</span>
+                <span class="min-w-0">
+                  <span class="block text-sm font-bold text-gray-900 group-hover:text-primary-700">{cat.name}</span>
+                  <span class="text-xs text-gray-500">{counts[cat.id]} รายการ</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </details>
+      )}
+    </section>
+
+    <section class="ct-ai-section mb-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div>
+        <div class="mb-4 flex items-center justify-between gap-4">
+          <h2 class="text-lg font-bold text-gray-900">ยอดนิยม</h2>
+          <span class="text-sm text-gray-400">{featuredCalculators.length} รายการแนะนำ</span>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {featuredCalculators.slice(0, 8).map((calc) => (
+            <a href={calc.href} class="ct-ai-tool-card calc-card group block rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md">
+              {affiliateHrefSet.has(calc.href) && (
+                <span class="ct-ai-affiliate-pill">สมัครได้</span>
+              )}
+              <div class="flex items-start gap-3">
+                <span class="text-3xl">{calc.icon}</span>
+                <div class="min-w-0">
+                  <h3 class="truncate text-sm font-bold text-gray-900 transition-colors group-hover:text-primary-600">{calc.title}</h3>
+                  <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-gray-500">{calc.desc}</p>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div class="mb-4 flex items-center justify-between gap-4">
+          <h2 class="text-lg font-bold text-gray-900">อัปเดตล่าสุด</h2>
+          <a href="/เครื่องคำนวณใหม่/" class="text-sm font-semibold text-primary-700 hover:text-primary-800">ดูทั้งหมด</a>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          {newestCalculators.map((c) => (
+            <a href={c.href} class="ct-ai-new-card group flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm transition hover:border-primary-200 hover:shadow-md">
+              <span class="text-xl" aria-hidden="true">{c.icon}</span>
+              <span class="text-sm font-semibold leading-tight text-gray-800 transition-colors group-hover:text-primary-700">{c.title}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <!-- Guides & Hub Pages -->
-    <div class="mb-10">
+    <div class="ct-ai-guide-block mb-10">
       <h2 class="text-lg font-bold text-gray-900 mb-5">คู่มือและข้อมูลที่มีประโยชน์</h2>
 
       <!-- Tax Guides row -->
@@ -285,22 +489,32 @@ const jsonLdFaq = {
     </div>
 
     <!-- All Calculators with Category Chips -->
-    <div id="calculators" class="mb-12">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-900">เครื่องคำนวณทั้งหมด</h2>
-        <span class="text-sm text-gray-400">{calculators.length} รายการ</span>
+    <div id="calculators" class="ct-ai-directory mb-12">
+      <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-gray-900">เครื่องมือแนะนำไม่เกิน 50 รายการ</h2>
+          <p class="mt-1 text-sm text-gray-500">คัดจากคำค้นหาหลัก กลุ่มการเงิน ภาษี สินเชื่อ ประกัน และเครื่องมือที่มีโอกาสต่อยอดรายได้</p>
+        </div>
+        <a href="#categories" class="text-sm font-semibold text-primary-700 hover:text-primary-800">
+          ดูหมวดหมู่ทั้งหมด · {homepageCalculators.length}/{calculators.length}
+        </a>
       </div>
 
       <!-- Calculator Grid -->
       <div id="calc-grid" class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {calculators.map((calc) => (
+        {homepageCalculators.map((calc) => (
           <a
             href={calc.href}
             data-category={calc.categoryId}
+            data-icon={calc.icon}
+            data-search={getCalculatorSearchText(calc)}
             data-title={calc.title}
             data-desc={calc.desc}
-            class="calc-card calc-item group relative block p-5 sm:p-6 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200"
+            class="ct-ai-directory-card calc-card calc-item group relative block rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md sm:p-6"
           >
+            {affiliateHrefSet.has(calc.href) && (
+              <span class="ct-ai-affiliate-pill">สมัครได้</span>
+            )}
             {calc.tag && (
               <span class={`absolute top-4 right-4 text-[10px] font-semibold px-2 py-0.5 rounded-full ${calc.tagColor}`}>
                 {calc.tag}
@@ -324,7 +538,7 @@ const jsonLdFaq = {
   </div>
 
   <!-- High-intent FAQ (SEO + GEO answerability) -->
-  <section class="mb-10 rounded-2xl border border-gray-100 bg-white p-5 sm:p-6">
+  <section class="ct-ai-faq mb-10 rounded-2xl border border-gray-100 bg-white p-5 sm:p-6">
     <h2 class="text-lg font-bold text-gray-900 mb-4">คำถามที่พบบ่อย</h2>
     <div class="space-y-3">
       {homepageFaqItems.map((item) => (
@@ -340,7 +554,7 @@ const jsonLdFaq = {
   </section>
 
   <!-- Trust Section -->
-  <div class="text-center py-8 border-t border-gray-100">
+  <div class="ct-ai-trust text-center py-8 border-t border-gray-100">
     <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-gray-400">
       <div class="flex items-center gap-2">
         <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -362,35 +576,72 @@ const jsonLdFaq = {
       </div>
     </div>
   </div>
+  </div>
 
-  <!-- Client-side: Search, Filter, Recently Used -->
+  <!-- Client-side: Search and recently used calculators -->
   <script is:inline>
   (function() {
     var items = document.querySelectorAll('.calc-item');
     var allCalcs = [];
-    items.forEach(function(el) {
-      allCalcs.push({
-        title: (el.getAttribute('data-title') || '').toLowerCase(),
-        desc: (el.getAttribute('data-desc') || '').toLowerCase(),
-        category: el.getAttribute('data-category') || '',
-        href: el.getAttribute('href') || '',
-        html: el.outerHTML,
-        el: el
+    var searchIndexEl = document.getElementById('calculator-search-index');
+
+    try {
+      var parsedIndex = JSON.parse(searchIndexEl ? searchIndexEl.textContent || '[]' : '[]');
+      if (Array.isArray(parsedIndex)) {
+        allCalcs = parsedIndex.map(normalizeCalc);
+      }
+    } catch(e) {
+      allCalcs = [];
+    }
+
+    if (allCalcs.length === 0) {
+      items.forEach(function(el) {
+        allCalcs.push(normalizeCalc({
+          title: el.getAttribute('data-title') || '',
+          desc: el.getAttribute('data-desc') || '',
+          category: el.getAttribute('data-category') || '',
+          icon: el.getAttribute('data-icon') || '',
+          searchText: el.getAttribute('data-search') || '',
+          href: el.getAttribute('href') || '',
+          html: el.outerHTML
+        }));
       });
-    });
+    }
 
     // ── Search ──
     var searchInput = document.getElementById('calc-search');
     var searchResults = document.getElementById('search-results');
     var searchGrid = document.getElementById('search-results-grid');
     var searchNoResults = document.getElementById('search-no-results');
+    var searchCount = document.getElementById('search-result-count');
+    var searchClear = document.getElementById('calc-search-clear');
     var mainContent = document.getElementById('main-content');
+    var quickSearchButtons = document.querySelectorAll('.quick-search');
     var debounceTimer = null;
+    var lastTrackedSearch = '';
 
     if (searchInput) {
       searchInput.addEventListener('input', function() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(handleSearch, 150);
+      });
+    }
+
+    quickSearchButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (!searchInput) return;
+        searchInput.value = btn.getAttribute('data-query') || '';
+        handleSearch();
+        searchInput.focus();
+      });
+    });
+
+    if (searchClear) {
+      searchClear.addEventListener('click', function() {
+        if (!searchInput) return;
+        searchInput.value = '';
+        handleSearch();
+        searchInput.focus();
       });
     }
 
@@ -406,18 +657,36 @@ const jsonLdFaq = {
     })();
 
     function handleSearch() {
+      if (!searchInput || !searchResults || !searchGrid || !searchNoResults || !mainContent) return;
+
       var query = (searchInput.value || '').trim().toLowerCase();
       if (!query) {
         searchResults.classList.add('hidden');
         mainContent.classList.remove('hidden');
+        searchGrid.innerHTML = '';
+        searchNoResults.classList.add('hidden');
+        if (searchCount) searchCount.textContent = '';
+        if (searchClear) searchClear.classList.add('hidden');
         return;
       }
       mainContent.classList.add('hidden');
       searchResults.classList.remove('hidden');
+      if (searchClear) searchClear.classList.remove('hidden');
 
       var matches = allCalcs.filter(function(c) {
-        return c.title.indexOf(query) !== -1 || c.desc.indexOf(query) !== -1;
+        return c.searchText.indexOf(query) !== -1;
       });
+
+      if (query.length >= 2 && query !== lastTrackedSearch && typeof window.trackLanguageAwareEvent === 'function') {
+        lastTrackedSearch = query;
+        window.trackLanguageAwareEvent('site_search', {
+          search_term: query,
+          result_count: String(matches.length),
+          page_path: window.location.pathname
+        });
+      }
+
+      if (searchCount) searchCount.textContent = matches.length + ' รายการ';
 
       if (matches.length === 0) {
         searchGrid.innerHTML = '';
@@ -428,32 +697,61 @@ const jsonLdFaq = {
       }
     }
 
-    // ── Category Filter Chips ──
-    var chips = document.querySelectorAll('.filter-chip');
-    chips.forEach(function(chip) {
-      chip.addEventListener('click', function() {
-        var filter = chip.getAttribute('data-filter');
-        chips.forEach(function(c) {
-          c.classList.remove('bg-primary-600', 'text-white');
-          c.classList.add('bg-gray-100', 'text-gray-600');
-        });
-        chip.classList.remove('bg-gray-100', 'text-gray-600');
-        chip.classList.add('bg-primary-600', 'text-white');
-
-        items.forEach(function(el) {
-          if (filter === 'all' || el.getAttribute('data-category') === filter) {
-            el.style.display = '';
-          } else {
-            el.style.display = 'none';
-          }
-        });
-      });
-    });
-
     // ── Recently Used ──
     var RECENT_KEY = 'ct.recent-calcs.v1';
     var recentSection = document.getElementById('recent-section');
     var recentRow = document.getElementById('recent-row');
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, function(ch) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[ch];
+      });
+    }
+
+    function normalizeCalc(raw) {
+      var calc = {
+        title: String(raw.title || ''),
+        titleRaw: String(raw.title || raw.titleRaw || ''),
+        desc: String(raw.desc || ''),
+        descRaw: String(raw.descRaw || raw.desc || ''),
+        category: String(raw.category || ''),
+        icon: String(raw.icon || ''),
+        searchText: String(raw.searchText || ''),
+        href: String(raw.href || ''),
+        tag: String(raw.tag || ''),
+        tagColor: String(raw.tagColor || ''),
+        affiliate: Boolean(raw.affiliate),
+        html: raw.html || ''
+      };
+      calc.searchText = (calc.searchText || [calc.title, calc.desc, calc.category].join(' ')).toLowerCase();
+      calc.title = calc.title.toLowerCase();
+      calc.desc = calc.descRaw.toLowerCase();
+      calc.html = calc.html || renderCalculatorCard(calc);
+      return calc;
+    }
+
+    function renderCalculatorCard(calc) {
+      var affiliate = calc.affiliate ? '<span class="ct-ai-affiliate-pill">สมัครได้</span>' : '';
+      var tag = calc.tag ? '<span class="ct-ai-result-tag ' + escapeHtml(calc.tagColor) + '">' + escapeHtml(calc.tag) + '</span>' : '';
+      return '<a href="' + escapeHtml(calc.href) + '" data-category="' + escapeHtml(calc.category) + '" data-icon="' + escapeHtml(calc.icon) + '" data-search="' + escapeHtml(calc.searchText) + '" data-title="' + escapeHtml(calc.titleRaw) + '" data-desc="' + escapeHtml(calc.descRaw) + '" class="ct-ai-directory-card calc-card calc-item group relative block rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md sm:p-6">' +
+        affiliate +
+        tag +
+        '<div class="text-3xl mb-3">' + escapeHtml(calc.icon) + '</div>' +
+        '<h3 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors mb-1.5">' + escapeHtml(calc.titleRaw) + '</h3>' +
+        '<p class="text-sm text-gray-500 leading-relaxed">' + escapeHtml(calc.descRaw) + '</p>' +
+        '<div class="mt-4 flex items-center text-primary-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">เปิดเครื่องคำนวณ' +
+          '<svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />' +
+          '</svg>' +
+        '</div>' +
+      '</a>';
+    }
 
     function getRecent() {
       try {
@@ -475,11 +773,9 @@ const jsonLdFaq = {
       if (cards.length === 0) return;
       recentSection.classList.remove('hidden');
       recentRow.innerHTML = cards.map(function(c) {
-        var iconEl = c.el.querySelector('.text-3xl');
-        var icon = iconEl ? iconEl.textContent : '';
-        return '<a href="' + c.href + '" class="flex-shrink-0 flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary-200 transition min-w-[200px]">' +
-          '<span class="text-2xl">' + icon + '</span>' +
-          '<span class="text-sm font-medium text-gray-700 truncate">' + c.el.getAttribute('data-title') + '</span>' +
+        return '<a href="' + escapeHtml(c.href) + '" class="flex min-w-[190px] flex-shrink-0 items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 transition hover:border-primary-200 hover:bg-primary-50 lg:min-w-0 lg:w-full">' +
+          '<span class="text-xl" aria-hidden="true">' + escapeHtml(c.icon) + '</span>' +
+          '<span class="min-w-0 truncate text-sm font-medium text-gray-700">' + escapeHtml(c.titleRaw) + '</span>' +
         '</a>';
       }).join('');
     }

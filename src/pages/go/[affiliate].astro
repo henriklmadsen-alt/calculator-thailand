@@ -6,7 +6,7 @@
  * Each page does an immediate client-side redirect with a GA4 click event before leaving.
  * All affiliate outbound links use rel="sponsored noopener" and this redirect for tracking.
  */
-import { AFFILIATE_PARTNERS } from '../../data/affiliate-config';
+import { AFFILIATE_PARTNERS, isAffiliatePartnerConfigured } from '../../data/affiliate-config';
 
 export function getStaticPaths() {
   return Object.values(AFFILIATE_PARTNERS).map((partner) => ({
@@ -16,7 +16,9 @@ export function getStaticPaths() {
 }
 
 const { partner } = Astro.props;
-const { partnerName, targetUrl, slug } = partner;
+const { partnerName, slug } = partner;
+const isConfigured = isAffiliatePartnerConfigured(partner);
+const targetUrl = isConfigured ? partner.targetUrl : '';
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 ---
@@ -27,7 +29,6 @@ const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com'
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
-    <meta http-equiv="refresh" content={`0; url=${targetUrl}`} />
     <title>กำลังพาคุณไปยัง {partnerName}…</title>
     <link rel="canonical" href={`${siteUrl}/go/${slug}/`} />
     <style>
@@ -64,30 +65,82 @@ const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com'
       a { color: #2563eb; }
       p { margin: 0.5rem 0; font-size: 0.9375rem; }
       .small { font-size: 0.8125rem; color: #6b7280; margin-top: 1rem; }
+      .status { font-weight: 700; color: #111827; }
+      .missing-code {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.35rem 0.5rem;
+        border-radius: 0.5rem;
+        background: #f3f4f6;
+        color: #4b5563;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.75rem;
+      }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        margin-top: 1rem;
+        padding: 0 1rem;
+        border-radius: 0.5rem;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
     <div class="card">
-      <div class="spinner"></div>
-      <p>กำลังพาคุณไปยัง <strong>{partnerName}</strong>…</p>
-      <p class="small">
-        หากไม่เปลี่ยนหน้าอัตโนมัติ
-        <a href={targetUrl} rel="sponsored noopener" target="_blank">คลิกที่นี่</a>
-      </p>
-      <p class="small">
-        เว็บไซต์นี้อาจได้รับค่าคอมมิชชันจากการซื้อผ่านลิงก์นี้ —
-        <a href="/affiliate-disclosure/">นโยบาย Affiliate</a>
-      </p>
+      {isConfigured ? (
+        <>
+          <div class="spinner"></div>
+          <p>กำลังพาคุณไปยัง <strong>{partnerName}</strong>...</p>
+          <p class="small">
+            หากไม่เปลี่ยนหน้าอัตโนมัติ
+            <a href={targetUrl} rel="sponsored noopener" target="_blank">คลิกที่นี่</a>
+          </p>
+          <p class="small">
+            เว็บไซต์นี้อาจได้รับค่าคอมมิชชันจากการซื้อผ่านลิงก์นี้ -
+            <a href="/affiliate-disclosure/">นโยบาย Affiliate</a>
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="status">ยังไม่ได้ตั้งค่าลิงก์พาร์ทเนอร์สำหรับ {partnerName}</p>
+          <p class="small">
+            ลิงก์นี้ถูกหยุดไว้เพื่อป้องกันการส่งผู้ใช้ไปยังหน้าทั่วไปที่ไม่บันทึกค่าคอมมิชชัน
+          </p>
+          {partner.envVar && <span class="missing-code">{partner.envVar}</span>}
+          <p>
+            <a class="button" href="/">กลับหน้าแรก</a>
+          </p>
+          <p class="small">
+            <a href="/affiliate-disclosure/">นโยบาย Affiliate</a>
+          </p>
+        </>
+      )}
     </div>
 
-    <script define:vars={{ targetUrl, slug, partnerName }}>
+    <script define:vars={{ targetUrl, slug, partnerName, isConfigured }}>
       // Fire GA4 affiliate_redirect event before leaving
       function fireAndGo() {
-        // Append sub_id from query param to targetUrl for per-page attribution
+        if (!isConfigured || !targetUrl) {
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'affiliate_redirect_unconfigured', {
+              affiliate_slug: slug,
+              affiliate_partner: partnerName,
+              page_path: window.location.pathname,
+            });
+          }
+          return;
+        }
+
+        // Keep the outbound URL exact; use GA4 payload for per-page attribution.
         const params = new URLSearchParams(window.location.search);
         const subId = params.get('sub_id');
-        const sep = targetUrl.includes('?') ? '&' : '?';
-        const destination = subId ? targetUrl + sep + 'sub_id=' + encodeURIComponent(subId) : targetUrl;
+        const destination = targetUrl;
 
         function redirect() {
           window.location.replace(destination);

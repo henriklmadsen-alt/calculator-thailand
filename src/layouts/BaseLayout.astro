@@ -24,9 +24,11 @@ interface Props {
   categorySlug?: string;
   /** Set true on pages that define their own custom HowTo JSON-LD to suppress the generic BaseLayout HowTo */
   noGenericHowTo?: boolean;
+  /** Keep private/admin pages out of search indexes. */
+  noindex?: boolean;
 }
 
-const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false } = Astro.props;
+const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false, noindex = false } = Astro.props;
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
@@ -216,7 +218,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? 'noindex, nofollow, noarchive' : 'index, follow'} />
     <link rel="canonical" href={pageUrl} />
     {localeAlternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
@@ -287,13 +289,13 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     )}
 
     <!-- Sentry Error Monitoring (deferred for Core Web Vitals) -->
-    <script type="module" defer>
-      import('/src/sentry-client.ts');
+    <script>
+      import '../sentry-client';
     </script>
 
-    <script type="module">
-      import { setupKeyboardNavigation } from '/src/lib/accessibility.ts';
-      import { trackFormStart, trackResultView, trackCalculatorCompletion } from '/src/lib/calculator-tracking.ts';
+    <script>
+      import { setupKeyboardNavigation } from '../lib/accessibility';
+      import { trackFormStart, trackResultView, trackCalculatorCompletion } from '../lib/calculator-tracking';
 
       window.__ctSharedTracking = {
         trackFormStart,
@@ -538,6 +540,10 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
       async function renderTodayVisitorCount() {
         const el = document.getElementById('ct-visitor-count-value');
         if (!el) return;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          el.textContent = '0';
+          return;
+        }
 
         try {
           const response = await fetch('/api/visitor-counter?days=1', { cache: 'no-store' });
@@ -640,6 +646,72 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         });
       }
 
+      function bindCalculatorBehaviorTracking() {
+        if (getPageType() !== 'calculator') return;
+
+        const calculatorType = getDefaultCalculatorType() || decodePathname(window.location.pathname).replace(/^\/|\/$/g, '') || 'calculator';
+        let startTracked = false;
+        let submitTracked = false;
+        let resultTracked = false;
+
+        const trackStartOnce = () => {
+          if (startTracked) return;
+          startTracked = true;
+          trackCalculatorStart(calculatorType);
+        };
+
+        const trackSubmitOnce = () => {
+          if (submitTracked) return;
+          submitTracked = true;
+          trackCalculatorUsed(calculatorType);
+          trackLanguageAwareEvent('calculator_submit', {
+            calculator_type: calculatorType,
+            page_path: window.location.pathname,
+          });
+        };
+
+        document.querySelectorAll('form').forEach((form) => {
+          if (form.getAttribute('data-calculator-auto-tracked') === '1') return;
+          form.setAttribute('data-calculator-auto-tracked', '1');
+          form.addEventListener('input', trackStartOnce, { once: true });
+          form.addEventListener('change', trackStartOnce, { once: true });
+          form.addEventListener('submit', () => {
+            trackStartOnce();
+            trackSubmitOnce();
+          });
+        });
+
+        const candidateResults = Array.from(document.querySelectorAll('[id*="result"], [class*="result"]'))
+          .filter((el) => el instanceof HTMLElement);
+
+        const isVisible = (el) => {
+          if (!(el instanceof HTMLElement)) return false;
+          if (el.classList.contains('hidden')) return false;
+          const rect = el.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        };
+
+        const trackResultOnce = () => {
+          if (resultTracked) return;
+          const visibleResult = candidateResults.find(isVisible);
+          if (!visibleResult) return;
+          resultTracked = true;
+          trackResultViewed(calculatorType);
+          trackLanguageAwareEvent('calculator_result_visible', {
+            calculator_type: calculatorType,
+            result_element: visibleResult.id || visibleResult.className || 'result',
+            page_path: window.location.pathname,
+          });
+        };
+
+        trackResultOnce();
+
+        const observer = new MutationObserver(trackResultOnce);
+        candidateResults.forEach((el) => {
+          observer.observe(el, { attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
+        });
+      }
+
       emitSessionStartOnce();
 
       async function initVisitorCounter() {
@@ -652,11 +724,13 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
           initVisitorCounter();
           preserveAttributionParamsOnLinks();
           bindEntryClickTracking();
+          bindCalculatorBehaviorTracking();
         });
       } else {
         initVisitorCounter();
         preserveAttributionParamsOnLinks();
         bindEntryClickTracking();
+        bindCalculatorBehaviorTracking();
       }
     </script>
 
@@ -745,33 +819,33 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
       }
     </style>
   </head>
-  <body class:list={['font-thai text-gray-900 flex flex-col', isCalculatorPage && 'ct-page-calculator']}>
-    <LanguageSwitcherButton />
-    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
-      <nav class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-2 group">
-          <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+  <body class:list={['ct-modern-shell font-thai text-gray-900 flex flex-col', isCalculatorPage && 'ct-page-calculator']}>
+    <header class="ct-topbar">
+      <nav class="ct-topbar-nav">
+        <a href="/" class="ct-brand-link group">
+          <div class="ct-brand-mark">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
           <div>
-            <span class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors">คำนวณเลข</span>
-            <span class="hidden sm:block text-xs text-gray-400 -mt-0.5">kamnuanlek.com</span>
+            <span class="ct-brand-title">คำนวณเลข</span>
+            <span class="ct-brand-subtitle">kamnuanlek.com</span>
           </div>
         </a>
-        <div class="flex items-center gap-3 text-sm">
-          <a href="/บทความ/" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">บทความ</a>
+        <div class="ct-topbar-actions">
+          <a href="/บทความ/" class="ct-nav-link">บทความ</a>
+          <LanguageSwitcherButton />
           <button
             type="button"
             aria-label="สลับโหมดสี"
             data-theme-toggle
-            class="min-h-11 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition-colors sm:min-h-0"
+            class="ct-theme-toggle"
           >
             <span aria-hidden="true" data-theme-icon>🌗</span>
             <span class="hidden sm:inline" data-theme-label>อัตโนมัติ</span>
           </button>
-          <span class="hidden sm:inline px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full font-medium">
+          <span class="ct-free-badge">
             ฟรี 100%
           </span>
         </div>
@@ -806,18 +880,18 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
       </main>
     </div><!-- /ct-layout-wrapper -->
 
-    <footer class="mt-auto border-t border-gray-100 bg-white/60">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-primary-700 rounded-md flex items-center justify-center">
+    <footer class="ct-footer">
+      <div class="ct-footer-inner">
+        <div class="ct-footer-layout">
+          <div class="ct-footer-brand">
+            <div class="ct-footer-mark">
               <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <span class="text-sm font-semibold text-gray-700">คำนวณเลข</span>
+            <span class="ct-footer-title">คำนวณเลข</span>
           </div>
-          <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
+          <nav class="ct-footer-nav">
             <a href="/" class="hover:text-primary-600 transition-colors">หน้าแรก</a>
             <a href="/บทความ/" class="hover:text-primary-600 transition-colors">บทความ</a>
             <a href="/คำนวณค่าไฟฟ้า/" class="hover:text-primary-600 transition-colors">ค่าไฟฟ้า</a>
@@ -828,7 +902,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
             <a href="/คำนวณดอกเบี้ยเงินฝาก/" class="hover:text-primary-600 transition-colors">ดอกเบี้ยเงินฝาก</a>
             <a href="/คำนวณ-bmi/" class="hover:text-primary-600 transition-colors">BMI</a>
             <a href="/คำนวณเงินเดือนสุทธิ/" class="hover:text-primary-600 transition-colors">เงินเดือนสุทธิ</a>
-            <span class="w-full sm:w-px sm:h-4 border-t sm:border-t-0 sm:border-l border-gray-200"></span>
+            <span class="ct-footer-separator"></span>
             <a href="/เกี่ยวกับ-kamnuanlek/" class="hover:text-primary-600 transition-colors">เกี่ยวกับเรา</a>
             <a href="/about/methodology/" class="hover:text-primary-600 transition-colors">ความแม่นยำและวิธีการ</a>
             <a href="/ติดต่อเรา/" class="hover:text-primary-600 transition-colors">ติดต่อเรา</a>
@@ -836,10 +910,10 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
             <a href="/ข้อกำหนดการใช้งาน/" class="hover:text-primary-600 transition-colors">ข้อกำหนด</a>
             <a href="/affiliate-disclosure/" class="hover:text-primary-600 transition-colors">Affiliate</a>
           </nav>
-          <div class="text-center sm:text-right">
-            <p class="text-xs text-gray-400">© 2026 Kamnuanlek (คำนวณเลข) — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+          <div class="ct-footer-meta">
+            <p class="ct-footer-copy">© 2026 Kamnuanlek (คำนวณเลข) — ข้อมูลเพื่อการศึกษาเท่านั้น</p>
             <p class="mt-2">
-              <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-800">
+              <span class="ct-visitor-pill">
                 ผู้เยี่ยมชมสะสม
                 <span id="ct-visitor-count-value" class="tabular-nums">0</span>
               </span>
@@ -1120,4 +1194,3 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     <ABTestTracker testId="phase-2-main" weights={{ control: 34, variant_a: 33, variant_b: 33 }} />
   </body>
 </html>
-

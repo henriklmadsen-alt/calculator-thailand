@@ -20,6 +20,8 @@ import {
 } from './app/conversations.mjs';
 import { handleStripeCheckout } from './app/stripe.mjs';
 import { handleStripeWebhook } from './app/stripe-webhook.mjs';
+import { handleKpiDashboardRequest } from './app/kpi-dashboard.mjs';
+import { handleAffiliateRedirect } from './app/affiliate-redirect.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -583,6 +585,10 @@ async function serve(req, res) {
     return;
   }
 
+  if (req.method === 'GET' && await handleAffiliateRedirect(req, res, incomingUrl)) {
+    return;
+  }
+
   if (url === '/__release' || url === '/__release/') {
     res.writeHead(200, {
       'Content-Type': 'application/json; charset=utf-8',
@@ -590,6 +596,11 @@ async function serve(req, res) {
       'X-Robots-Tag': noIndexTag,
     });
     res.end(JSON.stringify(releaseMetadata));
+    return;
+  }
+
+  if (url === '/api/kpi/dashboard' && req.method === 'GET') {
+    await handleKpiDashboardRequest(req, res, incomingUrl);
     return;
   }
 

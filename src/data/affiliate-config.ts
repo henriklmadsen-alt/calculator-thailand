@@ -24,8 +24,10 @@ export interface AffiliatePartner {
   slug: string;
   /** Display name shown in the CTA card */
   partnerName: string;
-  /** The actual destination URL (affiliate link). Replace placeholder before going live. */
+  /** The actual destination URL (affiliate link). Empty means the campaign is not configured yet. */
   targetUrl: string;
+  /** Optional environment variable that supplies a paid tracking URL. */
+  envVar?: string;
   /** AffiliateCard category — drives the icon and headline */
   category: AffiliateCategory;
   /** Primary CTA button text */
@@ -34,50 +36,76 @@ export interface AffiliatePartner {
   subtext?: string;
 }
 
+const GENERIC_AFFILIATE_HOSTS = new Set(['accesstrade.in.th', 'app.involve.asia']);
+export const ROOJAI_AFFILIATE_URL = 'https://portal.roojaipartners.com/#/23424769e701bcaa';
+const ROOJAI_CTA_TEXT = 'ดูข้อเสนอจาก Roojai';
+const ROOJAI_SUBTEXT = 'ลิงก์พาร์ทเนอร์หลักของ Kamnuanlek สำหรับติดตามคอมมิชชัน';
+
+export function isAffiliatePartnerConfigured(partner: AffiliatePartner): boolean {
+  if (!partner.targetUrl.trim()) return false;
+
+  try {
+    const url = new URL(partner.targetUrl);
+    const isGenericHomepage =
+      GENERIC_AFFILIATE_HOSTS.has(url.hostname) && (url.pathname === '' || url.pathname === '/') && !url.search && !url.hash;
+    return ['http:', 'https:'].includes(url.protocol) && !isGenericHomepage;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * All registered affiliate partners.
  * Keyed by slug for fast lookup.
  */
 export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
+  'roojai-partners': {
+    slug: 'roojai-partners',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    category: 'insurance',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
+  },
   'rabbit-care-loan': {
     slug: 'rabbit-care-loan',
-    partnerName: 'Rabbit Care',
-    targetUrl: 'https://www.rabbit.co.th/th/loan/personal-loan',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
     category: 'personal-loan',
-    ctaText: 'เปรียบเทียบสินเชื่อฟรี',
-    subtext: 'เปรียบเทียบข้อเสนอจากหลายธนาคารใน 3 นาที',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'rabbit-care-car': {
     slug: 'rabbit-care-car',
-    partnerName: 'Rabbit Care',
-    targetUrl: 'https://www.rabbit.co.th/th/loan/car-loan',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
     category: 'car-loan',
-    ctaText: 'เปรียบเทียบสินเชื่อรถฟรี',
-    subtext: 'ดูดอกเบี้ยและเงื่อนไขจากหลายบริษัทเช่าซื้อ',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'rabbit-care-home': {
     slug: 'rabbit-care-home',
-    partnerName: 'Rabbit Care',
-    targetUrl: 'https://www.rabbit.co.th/th/loan/home-loan',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
     category: 'home-loan',
-    ctaText: 'เปรียบเทียบสินเชื่อบ้านฟรี',
-    subtext: 'ดูดอกเบี้ยจากหลายธนาคาร ไม่มีค่าใช้จ่าย',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'rabbit-care-insurance': {
     slug: 'rabbit-care-insurance',
-    partnerName: 'Rabbit Care',
-    targetUrl: 'https://www.rabbit.co.th/th/life-insurance',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
     category: 'insurance',
-    ctaText: 'เปรียบเทียบแผนประกันฟรี',
-    subtext: 'ดูเบี้ยจากหลายบริษัทใน 2 นาที',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'kasikorn-savings': {
     slug: 'kasikorn-savings',
-    partnerName: 'KBank',
-    targetUrl: 'https://www.kasikornbank.com/th/personal/saving/pages/saving.aspx',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
     category: 'investment',
-    ctaText: 'ดูอัตราดอกเบี้ยประจำวันนี้',
-    subtext: 'เปรียบเทียบเงินฝากประจำและออมทรัพย์',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
 
   // ─── ACCESSTRADE Thailand campaigns ───────────────────────────────────────
@@ -87,59 +115,66 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   // URL format: https://[at-tracking-domain]/[campaign-id]?sub_id=[page-slug]
   'ttb-cash2go': {
     slug: 'ttb-cash2go',
-    partnerName: 'TTB Cash 2 Go',
-    targetUrl: import.meta.env.AFFILIATE_URL_TTB_CASH2GO || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_TTB_CASH2GO',
     category: 'personal-loan',
-    ctaText: 'สมัครสินเชื่อ TTB Cash 2 Go',
-    subtext: 'วงเงินสูง อนุมัติเร็ว ดอกเบี้ยคงที่',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'ktc-brother-berm': {
     slug: 'ktc-brother-berm',
-    partnerName: 'KTC Brother Berm',
-    targetUrl: import.meta.env.AFFILIATE_URL_KTC_BROTHER_BERM || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_KTC_BROTHER_BERM',
     category: 'car-loan',
-    ctaText: 'สมัครสินเชื่อรถ KTC Brother Berm',
-    subtext: 'สินเชื่อรถใหม่และรถมือสอง ดอกเบี้ยพิเศษ',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'ngern-tid-lor': {
     slug: 'ngern-tid-lor',
-    partnerName: 'เงินติดล้อ',
-    targetUrl: import.meta.env.AFFILIATE_URL_NGERN_TID_LOR || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_NGERN_TID_LOR',
     category: 'car-loan',
-    ctaText: 'สมัครสินเชื่อเงินติดล้อ',
-    subtext: 'ใช้รถเป็นหลักประกัน ไม่ต้องโอนเล่มทะเบียน',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'tipinsure': {
     slug: 'tipinsure',
-    partnerName: 'TIPINSURE',
-    targetUrl: import.meta.env.AFFILIATE_URL_TIPINSURE || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_TIPINSURE',
     category: 'insurance',
-    ctaText: 'เปรียบเทียบประกันรถผ่าน TIPINSURE',
-    subtext: 'เปรียบเทียบแผนประกันรถจากหลายบริษัท',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'uob-tmrw': {
     slug: 'uob-tmrw',
-    partnerName: 'UOB TMRW',
-    targetUrl: import.meta.env.AFFILIATE_URL_UOB_TMRW || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_UOB_TMRW',
     category: 'credit-card',
-    ctaText: 'สมัครบัตร UOB TMRW',
-    subtext: 'บัตรเครดิตดิจิทัล สิทธิพิเศษมากมาย',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'krungsri-signature': {
     slug: 'krungsri-signature',
-    partnerName: 'บัตร Krungsri',
-    targetUrl: import.meta.env.AFFILIATE_URL_KRUNGSRI_SIGNATURE || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_KRUNGSRI_SIGNATURE',
     category: 'credit-card',
-    ctaText: 'สมัครบัตรเครดิต Krungsri',
-    subtext: 'สิทธิประโยชน์ครบ เงินคืนทุกการใช้จ่าย',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
   'kept-krungsri': {
     slug: 'kept-krungsri',
-    partnerName: 'Kept by Krungsri',
-    targetUrl: import.meta.env.AFFILIATE_URL_KEPT_KRUNGSRI || 'https://accesstrade.in.th',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_KEPT_KRUNGSRI',
     category: 'savings',
-    ctaText: 'เปิดบัญชี Kept by Krungsri',
-    subtext: 'ดอกเบี้ยสูงกว่าออมทรัพย์ทั่วไป ถอนได้ทุกวัน',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
 
   // ─── Involve Asia campaigns ────────────────────────────────────────────────
@@ -148,11 +183,12 @@ export const AFFILIATE_PARTNERS: Record<string, AffiliatePartner> = {
   // Rabbit Care CPL link (CAL-897), set this in Railway dashboard or .env.local.
   'rabbit-care-health-cpl': {
     slug: 'rabbit-care-health-cpl',
-    partnerName: 'Rabbit Care',
-    targetUrl: import.meta.env.AFFILIATE_URL_RABBIT_CARE_HEALTH_CPL || 'https://app.involve.asia',
+    partnerName: 'Roojai Partners',
+    targetUrl: ROOJAI_AFFILIATE_URL,
+    envVar: 'AFFILIATE_URL_RABBIT_CARE_HEALTH_CPL',
     category: 'insurance',
-    ctaText: 'เปรียบเทียบประกันสุขภาพฟรี',
-    subtext: 'รับใบเสนอราคาจากหลายบริษัทภายใน 2 นาที',
+    ctaText: ROOJAI_CTA_TEXT,
+    subtext: ROOJAI_SUBTEXT,
   },
 };
 

@@ -72,25 +72,50 @@ function detectClsContributors(html) {
   return flags;
 }
 
+function getAttr(tag, attr) {
+  return tag.match(new RegExp(`\\b${attr}=["']([^"']+)["']`, 'iu'))?.[1] ?? '';
+}
+
+function isFirstPartyStylesheetHref(href) {
+  if (!href) return false;
+  if (href.startsWith('data:')) return false;
+  if (href.includes('/_astro/') || href.startsWith('/assets/') || href.startsWith('/')) return true;
+  if (!/^(https?:)?\/\//iu.test(href)) return true;
+
+  try {
+    const url = new URL(href, 'https://www.kamnuanlek.com');
+    return url.hostname === 'kamnuanlek.com' || url.hostname === 'www.kamnuanlek.com';
+  } catch {
+    return false;
+  }
+}
+
+function isNonBlockingScript(tag) {
+  return /\basync\b/iu.test(tag) || /\bdefer\b/iu.test(tag) || /\btype=["']module["']/iu.test(tag);
+}
+
 function detectBlockingAssets(html) {
   const runtimeHtml = html.replace(/<noscript\b[\s\S]*?<\/noscript>/giu, '');
   const stylesheets = Array.from(
     runtimeHtml.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]*>/giu),
     (m) => m[0],
   );
-  const blockingStylesheets = stylesheets.filter((tag) => !/\bmedia=["']print["']/iu.test(tag));
+  const renderStylesheets = stylesheets.filter((tag) => !/\bmedia=["']print["']/iu.test(tag));
+  const firstPartyStylesheets = renderStylesheets.filter((tag) => isFirstPartyStylesheetHref(getAttr(tag, 'href')));
+  const blockingStylesheets = renderStylesheets.filter((tag) => !isFirstPartyStylesheetHref(getAttr(tag, 'href')));
 
   const externalScripts = Array.from(
     runtimeHtml.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*>/giu),
     (m) => ({ tag: m[0], src: m[1] }),
   );
-  const blockingScripts = externalScripts.filter((s) => !/\basync\b/iu.test(s.tag) && !/\bdefer\b/iu.test(s.tag));
+  const blockingScripts = externalScripts.filter((s) => !isNonBlockingScript(s.tag));
 
   return {
+    firstPartyStylesheetCount: firstPartyStylesheets.length,
     blockingStylesheetCount: blockingStylesheets.length,
     blockingScriptCount: blockingScripts.length,
     samples: [
-      ...blockingStylesheets.slice(0, 2).map((x) => `css:${x.match(/href=["']([^"']+)["']/iu)?.[1] ?? 'unknown'}`),
+      ...blockingStylesheets.slice(0, 2).map((x) => `css:${getAttr(x, 'href') || 'unknown'}`),
       ...blockingScripts.slice(0, 2).map((x) => `js:${x.src}`),
     ],
   };
@@ -106,6 +131,7 @@ function auditRoute(url) {
       exists: false,
       lcpCandidate: 'missing-dist-html',
       clsFlags: ['dist_html_missing'],
+      firstPartyStylesheetCount: 0,
       blockingStylesheetCount: 0,
       blockingScriptCount: 0,
       blockingSamples: [],
@@ -123,6 +149,7 @@ function auditRoute(url) {
     exists: true,
     lcpCandidate,
     clsFlags,
+    firstPartyStylesheetCount: blocking.firstPartyStylesheetCount,
     blockingStylesheetCount: blocking.blockingStylesheetCount,
     blockingScriptCount: blocking.blockingScriptCount,
     blockingSamples: blocking.samples,
@@ -130,6 +157,7 @@ function auditRoute(url) {
 }
 
 function writeReport(results, outPath) {
+  const totalFirstPartyCss = results.reduce((sum, r) => sum + r.firstPartyStylesheetCount, 0);
   const totalBlockingCss = results.reduce((sum, r) => sum + r.blockingStylesheetCount, 0);
   const totalBlockingJs = results.reduce((sum, r) => sum + r.blockingScriptCount, 0);
   const totalClsFlags = results.reduce((sum, r) => sum + r.clsFlags.length, 0);
@@ -141,15 +169,16 @@ function writeReport(results, outPath) {
   lines.push(`Generated: ${new Date().toISOString()}`);
   lines.push(`Routes audited: ${results.length}`);
   lines.push(`Routes with unresolved signals: ${unresolvedRoutes}`);
+  lines.push(`Required first-party stylesheets (reported, not unresolved): ${totalFirstPartyCss}`);
   lines.push(`Blocking stylesheets (total): ${totalBlockingCss}`);
   lines.push(`Blocking scripts (total): ${totalBlockingJs}`);
   lines.push(`CLS flags (total): ${totalClsFlags}`);
   lines.push('');
-  lines.push('| Route | LCP candidate | CLS contributors | Blocking assets |');
-  lines.push('|---|---|---|---|');
+  lines.push('| Route | LCP candidate | CLS contributors | First-party CSS | Blocking assets |');
+  lines.push('|---|---|---|---:|---|');
   for (const row of results) {
     lines.push(
-      `| ${encodeURI(row.routePath)} | ${row.lcpCandidate} | ${row.clsFlags.join(', ') || 'none'} | css:${row.blockingStylesheetCount}, js:${row.blockingScriptCount}${row.blockingSamples.length ? ` (${row.blockingSamples.join('; ')})` : ''} |`,
+      `| ${encodeURI(row.routePath)} | ${row.lcpCandidate} | ${row.clsFlags.join(', ') || 'none'} | ${row.firstPartyStylesheetCount} | css:${row.blockingStylesheetCount}, js:${row.blockingScriptCount}${row.blockingSamples.length ? ` (${row.blockingSamples.join('; ')})` : ''} |`,
     );
   }
 
