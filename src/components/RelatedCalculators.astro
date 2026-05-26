@@ -3,13 +3,21 @@ import type { RelatedLink } from '../lib/internal-links';
 import { getCalculatorLinks } from '../lib/internal-links';
 
 interface Props {
-  /** Current calculator href — used to auto-look up related links. */
+  /** Current calculator href, used to auto-look up related links. */
   currentHref?: string;
   /** Override the auto-lookup with explicit links. */
   calculators?: RelatedLink[];
   /** Section heading override. */
   heading?: string;
 }
+
+type HubLink = { href: string; title: string; icon: string };
+type QuickAnswer = {
+  heading: string;
+  summary: string;
+  assumptions: string[];
+  sources: Array<{ label: string; href: string }>;
+};
 
 const {
   currentHref = Astro.url.pathname,
@@ -19,169 +27,171 @@ const {
 
 const links = explicitCalcs ?? getCalculatorLinks(currentHref).calculators;
 
-type HubLink = { href: string; title: string; icon: string };
-const hubLinks: HubLink[] = [];
+const decodedHref = (() => {
+  try {
+    return decodeURIComponent(currentHref).toLowerCase();
+  } catch {
+    return currentHref.toLowerCase();
+  }
+})();
 
-const href = currentHref.toLowerCase();
-type QuickAnswer = {
-  heading: string;
-  summary: string;
-  assumptions: string[];
-  sources: Array<{ label: string; href: string }>;
-};
+const includesAny = (needles: string[]) => needles.some((needle) => decodedHref.includes(needle));
 
 const quickAnswer: QuickAnswer = (() => {
-  if (href.includes('tax') || href.includes('à¸ à¸²à¸©à¸µ') || href.includes('à¸¥à¸”à¸«à¸¢à¹ˆà¸­à¸™')) {
+  if (includesAny(['tax', 'ภาษี', 'ลดหย่อน', 'vat'])) {
     return {
-      heading: 'à¸ªà¸£à¸¸à¸›à¸ªà¸±à¹‰à¸™',
-      summary: 'à¸œà¸¥à¸„à¸³à¸™à¸§à¸“à¸ à¸²à¸©à¸µà¸™à¸µà¹‰à¹€à¸›à¹‡à¸™à¸à¸²à¸£à¸›à¸£à¸°à¸¡à¸²à¸“à¸à¹ˆà¸­à¸™à¸¢à¸·à¹ˆà¸™à¸ˆà¸£à¸´à¸‡ à¸„à¸§à¸£à¸•à¸£à¸§à¸ˆà¸­à¸±à¸•à¸£à¸²à¸¥à¹ˆà¸²à¸ªà¸¸à¸”à¸ˆà¸²à¸à¸ªà¸£à¸£à¸žà¸²à¸à¸£',
+      heading: 'สรุปก่อนใช้ตัวเลขนี้',
+      summary: 'ผลคำนวณเป็นค่าประมาณเพื่อวางแผนภาษีหรือค่าใช้จ่าย ก่อนยื่นจริงควรตรวจสอบอัตราและเงื่อนไขล่าสุดจากหน่วยงานทางการ',
       assumptions: [
-        'à¹ƒà¸Šà¹‰à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸•à¸²à¸¡à¸­à¸±à¸•à¸£à¸²à¸›à¸±à¸ˆà¸ˆà¸¸à¸šà¸±à¸™à¸—à¸µà¹ˆà¹€à¸œà¸¢à¹à¸žà¸£à¹ˆà¸ªà¸²à¸˜à¸²à¸£à¸“à¸°',
-        'à¹„à¸¡à¹ˆà¸£à¸§à¸¡à¸à¸£à¸“à¸µà¸žà¸´à¹€à¸¨à¸©à¸—à¸¸à¸à¸£à¸¹à¸›à¹à¸šà¸š',
-        'à¸œà¸¥à¸¥à¸±à¸žà¸˜à¹Œà¸ªà¸¸à¸”à¸—à¹‰à¸²à¸¢à¸‚à¸¶à¹‰à¸™à¸à¸±à¸šà¸«à¸¥à¸±à¸à¸à¸²à¸™à¹à¸¥à¸°à¸à¸²à¸£à¸¢à¸·à¹ˆà¸™à¸ˆà¸£à¸´à¸‡',
+        'คำนวณจากข้อมูลที่คุณกรอกและอัตราที่ระบุในหน้าเครื่องมือ',
+        'กรณีพิเศษอาจต้องใช้หลักฐานหรือเงื่อนไขเพิ่มเติม',
+        'ตัวเลขสุดท้ายอาจเปลี่ยนตามเอกสารจริงและประกาศของหน่วยงานรัฐ',
       ],
       sources: [
-        { label: 'Revenue Department', href: 'https://www.rd.go.th/' },
+        { label: 'กรมสรรพากร', href: 'https://www.rd.go.th/' },
+        { label: 'วิธีคำนวณและแหล่งอ้างอิง', href: '/about/methodology/' },
       ],
     };
   }
 
-  if (href.includes('loan') || href.includes('à¸œà¹ˆà¸­à¸™') || href.includes('à¸ªà¸´à¸™à¹€à¸Šà¸·à¹ˆà¸­') || href.includes('à¸à¸¹à¹‰')) {
+  if (includesAny(['loan', 'ผ่อน', 'สินเชื่อ', 'กู้', 'บ้าน', 'รถ'])) {
     return {
-      heading: 'à¸ªà¸£à¸¸à¸›à¸ªà¸±à¹‰à¸™',
-      summary: 'à¸œà¸¥à¸œà¹ˆà¸­à¸™à¸•à¹ˆà¸­à¹€à¸”à¸·à¸­à¸™à¸„à¸§à¸£à¹ƒà¸Šà¹‰à¹€à¸žà¸·à¹ˆà¸­à¹€à¸›à¸£à¸µà¸¢à¸šà¹€à¸—à¸µà¸¢à¸šà¹à¸œà¸™ à¸à¹ˆà¸­à¸™à¸¢à¸·à¹ˆà¸™à¸à¸¹à¹‰à¸„à¸§à¸£à¸¢à¸·à¸™à¸¢à¸±à¸™à¸­à¸±à¸•à¸£à¸²à¸ˆà¸²à¸à¸˜à¸™à¸²à¸„à¸²à¸£',
+      heading: 'ใช้ผลลัพธ์เพื่อเทียบข้อเสนอ',
+      summary: 'ค่างวดและดอกเบี้ยเป็นตัวเลขสำหรับคัดกรองแผนเบื้องต้น ก่อนสมัครจริงควรเทียบอัตรา ค่าธรรมเนียม และเงื่อนไขจากผู้ให้บริการ',
       assumptions: [
-        'à¸„à¸´à¸”à¸•à¸²à¸¡à¸­à¸±à¸•à¸£à¸²à¸—à¸µà¹ˆà¸›à¹‰à¸­à¸™à¹€à¸‚à¹‰à¸² à¹„à¸¡à¹ˆà¸£à¸§à¸¡à¸„à¹ˆà¸²à¸˜à¸£à¸£à¸¡à¹€à¸™à¸µà¸¢à¸¡à¸—à¸¸à¸à¸£à¸²à¸¢à¸à¸²à¸£',
-        'à¸œà¸¥à¸¥à¸±à¸žà¸˜à¹Œà¸ˆà¸£à¸´à¸‡à¸­à¸²à¸ˆà¸•à¹ˆà¸²à¸‡à¸•à¸²à¸¡à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸˜à¸™à¸²à¸„à¸²à¸£',
-        'à¸„à¸§à¸£à¸•à¸£à¸§à¸ˆà¸§à¸‡à¹€à¸‡à¸´à¸™à¸£à¸§à¸¡à¸à¹ˆà¸­à¸™à¸•à¸±à¸”à¸ªà¸´à¸™à¹ƒà¸ˆ',
+        'คำนวณตามเงินต้น อัตรา และระยะเวลาที่คุณป้อน',
+        'ยังไม่รวมค่าธรรมเนียมบางประเภท ประกัน หรือเงื่อนไขโปรโมชันเฉพาะราย',
+        'ควรให้ค่างวดรวมไม่กดดันกระแสเงินสดรายเดือน',
       ],
       sources: [
-        { label: 'Bank of Thailand', href: 'https://www.bot.or.th/' },
+        { label: 'ธนาคารแห่งประเทศไทย', href: 'https://www.bot.or.th/' },
+        { label: 'วิธีคำนวณและแหล่งอ้างอิง', href: '/about/methodology/' },
       ],
     };
   }
 
-  if (href.includes('salary') || href.includes('à¹€à¸‡à¸´à¸™à¹€à¸”à¸·à¸­à¸™') || href.includes('à¸„à¹ˆà¸²à¹à¸£à¸‡') || href.includes('à¹‚à¸­à¸—à¸µ')) {
+  if (includesAny(['salary', 'เงินเดือน', 'ค่าแรง', 'โอที', 'ชดเชย'])) {
     return {
-      heading: 'à¸ªà¸£à¸¸à¸›à¸ªà¸±à¹‰à¸™',
-      summary: 'à¸œà¸¥à¹€à¸‡à¸´à¸™à¹€à¸”à¸·à¸­à¸™à¸ªà¸¸à¸—à¸˜à¸´à¹€à¸›à¹‡à¸™à¸à¸²à¸£à¸„à¸³à¸™à¸§à¸“à¸•à¸²à¸¡à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸—à¸µà¹ˆà¸„à¸¸à¸“à¸à¸£à¸­à¸ à¸„à¸§à¸£à¹€à¸—à¸µà¸¢à¸šà¸à¸±à¸šà¸ªà¸¥à¸´à¸›à¸ˆà¸£à¸´à¸‡à¸—à¸¸à¸à¹€à¸”à¸·à¸­à¸™',
+      heading: 'อ่านผลลัพธ์คู่กับสลิปจริง',
+      summary: 'ผลเงินเดือนและค่าแรงเป็นการคำนวณจากข้อมูลที่กรอก ใช้เพื่อวางแผนและตรวจสอบเบื้องต้นก่อนเทียบกับสลิปหรือเอกสารจากนายจ้าง',
       assumptions: [
-        'à¸„à¸´à¸”à¸•à¸²à¸¡à¸­à¸±à¸•à¸£à¸²à¸ à¸²à¸©à¸µà¹à¸¥à¸°à¸›à¸£à¸°à¸à¸±à¸™à¸ªà¸±à¸‡à¸„à¸¡à¸¡à¸²à¸•à¸£à¸à¸²à¸™',
-        'à¹„à¸¡à¹ˆà¸£à¸§à¸¡à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸žà¸´à¹€à¸¨à¸©à¸£à¸²à¸¢à¸­à¸‡à¸„à¹Œà¸à¸£',
-        'à¸„à¸§à¸£à¹ƒà¸Šà¹‰à¹€à¸žà¸·à¹ˆà¸­à¸§à¸²à¸‡à¹à¸œà¸™à¸›à¸£à¸°à¸¡à¸²à¸“à¸à¹ˆà¸­à¸™à¹€à¸—à¹ˆà¸²à¸™à¸±à¹‰à¸™',
+        'ใช้ฐานภาษี ประกันสังคม และเงื่อนไขมาตรฐานของเครื่องมือ',
+        'ไม่รวมสวัสดิการหรือข้อตกลงเฉพาะของแต่ละบริษัท',
+        'กรณีข้อพิพาทควรตรวจสอบเอกสารจ้างงานและกฎหมายแรงงานล่าสุด',
       ],
       sources: [
-        { label: 'Social Security Office', href: 'https://www.sso.go.th/' },
-        { label: 'Revenue Department', href: 'https://www.rd.go.th/' },
+        { label: 'สำนักงานประกันสังคม', href: 'https://www.sso.go.th/' },
+        { label: 'กรมสรรพากร', href: 'https://www.rd.go.th/' },
       ],
     };
   }
 
   return {
-    heading: 'à¸ªà¸£à¸¸à¸›à¸ªà¸±à¹‰à¸™',
-    summary: 'à¸œà¸¥à¸„à¸³à¸™à¸§à¸“à¸™à¸µà¹‰à¹ƒà¸Šà¹‰à¹€à¸žà¸·à¹ˆà¸­à¸§à¸²à¸‡à¹à¸œà¸™à¹€à¸šà¸·à¹‰à¸­à¸‡à¸•à¹‰à¸™ à¸„à¸§à¸£à¸¢à¸·à¸™à¸¢à¸±à¸™à¸à¹‰à¸­à¸¡à¸¹à¸¥à¸ˆà¸£à¸´à¸‡à¸ˆà¸²à¸à¹à¸«à¸¥à¹ˆà¸‡à¸—à¸²à¸‡à¸à¸²à¸£à¹€à¸¡à¸·à¹ˆà¸­à¸•à¸±à¸”à¸ªà¸´à¸™à¹ƒà¸ˆ',
+    heading: 'สรุปก่อนตัดสินใจ',
+    summary: 'ผลคำนวณนี้เหมาะสำหรับวางแผนเบื้องต้น ควรตรวจสอบตัวเลขจริงจากเอกสารหรือแหล่งทางการก่อนใช้ตัดสินใจสำคัญ',
     assumptions: [
-      'à¸£à¸°à¸šà¸šà¸„à¸´à¸”à¸•à¸²à¸¡à¸„à¹ˆà¸²à¸—à¸µà¹ˆà¸„à¸¸à¸“à¸›à¹‰à¸­à¸™',
-      'à¸à¸£à¸“à¸µà¸žà¸´à¹€à¸¨à¸©à¸­à¸²à¸ˆà¸•à¹‰à¸­à¸‡à¸„à¸³à¹à¸™à¸°à¸™à¸³à¹€à¸žà¸´à¹ˆà¸¡à¹€à¸•à¸´à¸¡',
+      'ระบบคำนวณจากข้อมูลที่คุณป้อนในหน้านี้',
+      'กรณีพิเศษอาจต้องใช้ข้อมูลเพิ่มเติม',
+      'แนะนำให้บันทึกหรือเทียบผลกับเครื่องมือที่เกี่ยวข้องด้านล่าง',
     ],
     sources: [
-      { label: 'Official Sources Index', href: '/about/methodology/' },
+      { label: 'วิธีคำนวณและแหล่งอ้างอิง', href: '/about/methodology/' },
     ],
   };
 })();
 
-if (href.includes('ภาษี') || href.includes('ลดหย่อน') || href.includes('tax')) {
-  hubLinks.push({ href: '/เปรียบเทียบเครื่องคำนวณภาษี/', title: 'เปรียบเทียบเครื่องคำนวณภาษีทุกประเภท', icon: '📊' });
-  hubLinks.push({ href: '/ตรวจสอบหักลดหย่อนภาษี/', title: 'เช็คลิสต์ลดหย่อนภาษีครบทุกรายการ', icon: '✅' });
-  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
-} else if (href.includes('ผ่อน') || href.includes('สินเชื่อ') || href.includes('กู้') || href.includes('loan')) {
-  hubLinks.push({ href: '/เปรียบเทียบสินเชื่อ/', title: 'เปรียบเทียบสินเชื่อทุกประเภท', icon: '🏦' });
-  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
-  hubLinks.push({ href: '/เครื่องคำนวณออมเงินและการลงทุน/', title: 'เครื่องคำนวณออมเงินและการลงทุน', icon: '💹' });
-} else if (href.includes('เงินเดือน') || href.includes('เงินค่า') || href.includes('ค่าแรง') || href.includes('โบนัส') || href.includes('ชดเชย')) {
-  hubLinks.push({ href: '/เครื่องคำนวณเงินเดือนและค่าแรง/', title: 'เครื่องคำนวณเงินเดือนและค่าแรงทุกประเภท', icon: '💼' });
-  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
-} else if (href.includes('bmi') || href.includes('สุขภาพ') || href.includes('แคลอรี') || href.includes('วันคลอด') || href.includes('น้ำหนัก')) {
-  hubLinks.push({ href: '/เครื่องคำนวณสุขภาพ/', title: 'เครื่องคำนวณสุขภาพทุกประเภท', icon: '🏥' });
-} else if (href.includes('บ้าน') || href.includes('อสังหา') || href.includes('ที่ดิน') || href.includes('คอนโด')) {
-  hubLinks.push({ href: '/เครื่องคำนวณอสังหาริมทรัพย์/', title: 'เครื่องคำนวณอสังหาริมทรัพย์ทุกประเภท', icon: '🏠' });
+const hubLinks: HubLink[] = [];
+
+if (includesAny(['ภาษี', 'ลดหย่อน', 'tax', 'vat'])) {
+  hubLinks.push(
+    { href: '/เปรียบเทียบเครื่องคำนวณภาษี/', title: 'เปรียบเทียบเครื่องคำนวณภาษี', icon: '📊' },
+    { href: '/ตรวจสอบหักลดหย่อนภาษี/', title: 'เช็กลิสต์ลดหย่อนภาษี', icon: '✅' },
+    { href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' },
+  );
+} else if (includesAny(['loan', 'ผ่อน', 'สินเชื่อ', 'กู้', 'รถ', 'บ้าน'])) {
+  hubLinks.push(
+    { href: '/เปรียบเทียบสินเชื่อ/', title: 'เปรียบเทียบสินเชื่อทุกประเภท', icon: '🏦' },
+    { href: '/เครื่องคำนวณรถยนต์/', title: 'เครื่องคำนวณรถยนต์', icon: '🚗' },
+    { href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' },
+  );
+} else if (includesAny(['เงินเดือน', 'เงินค่า', 'ค่าแรง', 'โบนัส', 'ชดเชย'])) {
+  hubLinks.push(
+    { href: '/เครื่องคำนวณเงินเดือนและค่าแรง/', title: 'เครื่องคำนวณเงินเดือนและค่าแรง', icon: '💼' },
+    { href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' },
+  );
+} else if (includesAny(['bmi', 'สุขภาพ', 'แคลอรี', 'วันคลอด', 'น้ำหนัก'])) {
+  hubLinks.push({ href: '/เครื่องคำนวณสุขภาพ/', title: 'เครื่องคำนวณสุขภาพทั้งหมด', icon: '🏥' });
+} else if (includesAny(['ไฟฟ้า', 'น้ำ', 'ค่าส่ง', 'internet', 'ค่าใช้จ่าย'])) {
   hubLinks.push({ href: '/เครื่องคำนวณค่าใช้จ่ายบ้าน/', title: 'เครื่องคำนวณค่าใช้จ่ายในบ้าน', icon: '🔧' });
-} else if (href.includes('รถ') || href.includes('vehicle') || href.includes('car')) {
-  hubLinks.push({ href: '/เครื่องคำนวณรถยนต์/', title: 'เครื่องคำนวณรถยนต์ทุกประเภท', icon: '🚗' });
-  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
-} else if (href.includes('ออม') || href.includes('ลงทุน') || href.includes('rmf') || href.includes('ssf') || href.includes('เกษียณ')) {
-  hubLinks.push({ href: '/เครื่องคำนวณออมเงินและการลงทุน/', title: 'เครื่องคำนวณออมเงินและการลงทุน', icon: '💹' });
-  hubLinks.push({ href: '/แผนการเกษียณ/', title: 'วางแผนเกษียณด้วย RMF และ SSF', icon: '🌴' });
-  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
-} else if (href.includes('ไฟฟ้า') || href.includes('น้ำ') || href.includes('ค่าส่ง') || href.includes('internet')) {
-  hubLinks.push({ href: '/เครื่องคำนวณค่าใช้จ่ายบ้าน/', title: 'เครื่องคำนวณค่าใช้จ่ายในบ้าน', icon: '🔧' });
-} else if (href.includes('คณิต') || href.includes('เปอร์เซ็น') || href.includes('ดอกเบี้ย') || href.includes('math')) {
-  hubLinks.push({ href: '/เครื่องคำนวณคณิตศาสตร์/', title: 'เครื่องคำนวณคณิตศาสตร์ทุกประเภท', icon: '🔢' });
-} else if (href.includes('ธุรกิจ') || href.includes('vat') || href.includes('กำไร') || href.includes('ต้นทุน')) {
-  hubLinks.push({ href: '/เครื่องคำนวณธุรกิจ/', title: 'เครื่องคำนวณธุรกิจทุกประเภท', icon: '🏢' });
+} else if (includesAny(['ออม', 'ลงทุน', 'rmf', 'ssf', 'เกษียณ'])) {
+  hubLinks.push(
+    { href: '/เครื่องคำนวณออมเงินและการลงทุน/', title: 'เครื่องคำนวณออมเงินและลงทุน', icon: '💹' },
+    { href: '/แผนการเกษียณ/', title: 'วางแผนเกษียณ', icon: '🌴' },
+  );
 } else {
-  hubLinks.push({ href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' });
-  hubLinks.push({ href: '/เครื่องคำนวณการเงินชั้นยอด/', title: 'เครื่องคำนวณยอดนิยม', icon: '⭐' });
+  hubLinks.push(
+    { href: '/ตัวช่วยคำนวณการเงิน/', title: 'ศูนย์รวมเครื่องคำนวณการเงิน', icon: '💰' },
+    { href: '/เครื่องคำนวณการเงินชั้นยอด/', title: 'เครื่องคำนวณยอดนิยม', icon: '⭐' },
+  );
 }
 ---
 
-{links.length > 0 && (
-  <section class="mb-8">
-    <div class="mb-4 rounded-lg border border-blue-100 bg-blue-50/70 p-4 ai-quick-answer">
-      <h3 class="text-sm font-semibold text-blue-900">{quickAnswer.heading}</h3>
-      <p class="mt-1 text-sm text-blue-900">{quickAnswer.summary}</p>
-      <ul class="mt-2 list-disc space-y-1 pl-5 text-xs text-blue-800">
-        {quickAnswer.assumptions.map((assumption) => <li>{assumption}</li>)}
-      </ul>
-      <div class="mt-3 flex flex-wrap gap-2">
-        {quickAnswer.sources.map((source) => (
+<section class="ct-related-calculators" aria-labelledby="related-calculators-heading">
+  <div class="ct-trust-panel ai-quick-answer">
+    <div class="ct-trust-panel__eyebrow">ตรวจสอบก่อนใช้ผลลัพธ์</div>
+    <h2 class="ct-trust-panel__title">{quickAnswer.heading}</h2>
+    <p class="ct-trust-panel__summary">{quickAnswer.summary}</p>
+    <ul class="ct-trust-panel__list">
+      {quickAnswer.assumptions.map((assumption) => <li>{assumption}</li>)}
+    </ul>
+    <div class="ct-trust-panel__sources" aria-label="แหล่งอ้างอิง">
+      {quickAnswer.sources.map((source) => (
+        <a
+          href={source.href}
+          target={source.href.startsWith('http') ? '_blank' : undefined}
+          rel={source.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        >
+          {source.label}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  {links.length > 0 && (
+    <div class="ct-related-block">
+      <div class="ct-section-heading-row">
+        <h2 id="related-calculators-heading">{heading}</h2>
+        <span>เลือกต่อจากผลลัพธ์นี้</span>
+      </div>
+      <div class="ct-related-grid">
+        {links.slice(0, 5).map((link) => (
           <a
-            href={source.href}
-            class="inline-flex min-h-11 items-center rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:border-blue-400"
-            target={source.href.startsWith('http') ? '_blank' : undefined}
-            rel={source.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            href={link.href}
+            data-preserve-utm
+            data-ct-event="related_calc_click"
+            class="ct-related-card"
           >
-            {source.label}
+            <span class="ct-related-card__title">{link.title}</span>
+            {link.desc && <span class="ct-related-card__desc">{link.desc}</span>}
           </a>
         ))}
       </div>
     </div>
+  )}
 
-    <h2 class="text-xl font-semibold text-gray-900 mb-4">{heading}</h2>
-    <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-      {links.slice(0, 5).map((link) => (
-        <a
-          href={link.href}
-          data-preserve-utm
-          data-ct-event="related_calc_click"
-          class="block p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all"
-        >
-          <span class="text-primary-600 font-medium block">{link.title}</span>
-          {link.desc && <span class="text-gray-400 text-sm block">{link.desc}</span>}
+  <div class="ct-hub-links" aria-label="คู่มือและเครื่องมือที่เกี่ยวข้อง">
+    <h2>คู่มือและเครื่องมือที่เกี่ยวข้อง</h2>
+    <div class="ct-hub-links__row">
+      {hubLinks.map((hub) => (
+        <a href={hub.href} class="ct-hub-link">
+          <span aria-hidden="true">{hub.icon}</span>
+          <span>{hub.title}</span>
         </a>
       ))}
-    </div>
-  </section>
-)}
-
-<section class="mb-8">
-  <h2 class="text-xl font-semibold text-gray-900 mb-3">คู่มือและเครื่องมือที่เกี่ยวข้อง</h2>
-  <div class="flex flex-wrap gap-2">
-    {hubLinks.map((hub) => (
-      <a
-        href={hub.href}
-        class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-50 text-primary-700 rounded-full text-sm font-medium hover:bg-primary-100 transition-colors border border-primary-200"
-      >
-        <span>{hub.icon}</span>
-        <span>{hub.title}</span>
+      <a href="/เลือกเครื่องคำนวณ/" class="ct-hub-link ct-hub-link--muted">
+        <span aria-hidden="true">⌕</span>
+        <span>ช่วยเลือกเครื่องคำนวณ</span>
       </a>
-    ))}
-    <a
-      href="/เลือกเครื่องคำนวณ/"
-      class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors border border-gray-200"
-    >
-      <span>🔍</span>
-      <span>ช่วยเลือกเครื่องคำนวณ</span>
-    </a>
+    </div>
   </div>
 </section>
