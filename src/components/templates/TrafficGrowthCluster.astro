@@ -1,0 +1,229 @@
+---
+interface TrafficGrowthItem {
+  title: string;
+  href: string;
+  desc: string;
+  badge?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: TrafficGrowthItem[];
+  variant?: 'blue' | 'mint' | 'amber';
+}
+
+const {
+  eyebrow = 'คำค้นที่ควรดันอันดับ',
+  title,
+  description,
+  items,
+  variant = 'blue',
+} = Astro.props;
+---
+
+<section class={`traffic-growth-cluster traffic-growth-cluster--${variant}`}>
+  <div class="traffic-growth-cluster__header">
+    <p class="traffic-growth-cluster__eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    {description && <p class="traffic-growth-cluster__description">{description}</p>}
+  </div>
+
+  <div class="traffic-growth-cluster__grid">
+    {items.map((item) => (
+      <a href={item.href} data-preserve-utm class="traffic-growth-cluster__item">
+        <span>
+          <span class="traffic-growth-cluster__title">{item.title}</span>
+          <span class="traffic-growth-cluster__desc">{item.desc}</span>
+        </span>
+        <span class="traffic-growth-cluster__meta">
+          {item.badge && <span class="traffic-growth-cluster__badge">{item.badge}</span>}
+          <span aria-hidden="true" class="traffic-growth-cluster__arrow">→</span>
+        </span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .traffic-growth-cluster {
+    margin-bottom: 2rem;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 16px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.88)),
+      var(--ct-surface, #fff);
+    padding: 1rem;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  .traffic-growth-cluster--mint {
+    border-color: rgba(20, 184, 166, 0.2);
+    background: linear-gradient(135deg, rgba(240, 253, 250, 0.96), rgba(255, 255, 255, 0.94));
+  }
+
+  .traffic-growth-cluster--amber {
+    border-color: rgba(245, 158, 11, 0.24);
+    background: linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.94));
+  }
+
+  .traffic-growth-cluster__header {
+    max-width: 48rem;
+  }
+
+  .traffic-growth-cluster__eyebrow {
+    margin: 0 0 0.35rem;
+    color: #2563eb;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .traffic-growth-cluster--mint .traffic-growth-cluster__eyebrow {
+    color: #0f766e;
+  }
+
+  .traffic-growth-cluster--amber .traffic-growth-cluster__eyebrow {
+    color: #b45309;
+  }
+
+  .traffic-growth-cluster h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1.2rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  .traffic-growth-cluster__description {
+    margin: 0.45rem 0 0;
+    color: #475569;
+    font-size: 0.93rem;
+    line-height: 1.65;
+  }
+
+  .traffic-growth-cluster__grid {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1rem;
+  }
+
+  .traffic-growth-cluster__item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: center;
+    min-height: 72px;
+    border: 1px solid rgba(203, 213, 225, 0.7);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.82);
+    padding: 0.85rem 0.95rem;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  }
+
+  .traffic-growth-cluster__item:hover {
+    border-color: rgba(37, 99, 235, 0.45);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .traffic-growth-cluster__title,
+  .traffic-growth-cluster__desc {
+    display: block;
+  }
+
+  .traffic-growth-cluster__title {
+    color: #0f172a;
+    font-size: 0.96rem;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .traffic-growth-cluster__desc {
+    margin-top: 0.2rem;
+    color: #64748b;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .traffic-growth-cluster__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .traffic-growth-cluster__badge {
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.28rem 0.55rem;
+  }
+
+  .traffic-growth-cluster--mint .traffic-growth-cluster__badge {
+    background: #ccfbf1;
+    color: #0f766e;
+  }
+
+  .traffic-growth-cluster--amber .traffic-growth-cluster__badge {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .traffic-growth-cluster__arrow {
+    color: #2563eb;
+    font-weight: 900;
+  }
+
+  @media (min-width: 760px) {
+    .traffic-growth-cluster {
+      padding: 1.25rem;
+    }
+
+    .traffic-growth-cluster__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .traffic-growth-cluster h2 {
+      font-size: 1.35rem;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .traffic-growth-cluster__item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .traffic-growth-cluster__meta {
+      justify-content: space-between;
+      white-space: normal;
+    }
+  }
+
+  :global(html[data-theme='dark']) .traffic-growth-cluster {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.82));
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  :global(html[data-theme='dark']) .traffic-growth-cluster h2,
+  :global(html[data-theme='dark']) .traffic-growth-cluster__title {
+    color: #f8fafc;
+  }
+
+  :global(html[data-theme='dark']) .traffic-growth-cluster__description,
+  :global(html[data-theme='dark']) .traffic-growth-cluster__desc {
+    color: #cbd5e1;
+  }
+
+  :global(html[data-theme='dark']) .traffic-growth-cluster__item {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: rgba(15, 23, 42, 0.62);
+  }
+</style>

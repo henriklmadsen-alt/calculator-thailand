@@ -12,8 +12,15 @@ function getPriority(url) {
   // AI Advisor → priority 0.9
   if (decoded.includes('ai-advisor')) return 0.9;
 
-  // Car loan / installment calculators → 1.0
-  if (decoded.includes('ผ่อนรถ') || decoded.includes('สินเชื่อรถ') || decoded.includes('เปรียบเทียบซื้อรถ')) {
+  // Money calculators and affiliate-friendly intent pages → 1.0
+  if (
+    decoded.includes('ผ่อนรถ') ||
+    decoded.includes('สินเชื่อรถ') ||
+    decoded.includes('เปรียบเทียบซื้อรถ') ||
+    decoded.includes('ผ่อนบ้าน') ||
+    decoded.includes('รีไฟแนนซ์บ้าน') ||
+    decoded.includes('สินเชื่อบ้าน')
+  ) {
     return 1.0;
   }
 
@@ -22,8 +29,14 @@ function getPriority(url) {
     return 1.0;
   }
 
-  // Tax calculators → 0.9
-  if (decoded.includes('ภาษี') || /vat/i.test(decoded) || decoded.includes('ประกันสังคม')) {
+  // Tax, household utility, and strong recurring query pages → 0.9
+  if (
+    decoded.includes('ภาษี') ||
+    /vat/i.test(decoded) ||
+    decoded.includes('ประกันสังคม') ||
+    decoded.includes('ค่าไฟฟ้า') ||
+    decoded.includes('คำนวณอายุ')
+  ) {
     return 0.9;
   }
 
@@ -113,6 +126,30 @@ function generateSitemapIndex(pages) {
   return xml;
 }
 
+function generateLlmsFull(pages) {
+  const sortedPages = [...pages].sort((a, b) => a.url.localeCompare(b.url));
+  const today = new Date().toISOString().split('T')[0];
+  const lines = [
+    '# Kamnuanlek.com Full URL Inventory',
+    '',
+    `Generated: ${today}`,
+    `Site: ${SITE_URL}/`,
+    `Total indexable URLs: ${sortedPages.length}`,
+    '',
+    'Use this file as an AI/search crawler inventory for Thai calculator pages, calculator explainers, and long-tail answer pages.',
+    '',
+    '## URLs',
+    '',
+  ];
+
+  for (const page of sortedPages) {
+    lines.push(`- ${page.url}`);
+  }
+
+  lines.push('');
+  return lines.join('\n');
+}
+
 try {
   // Start crawl from dist directory, but need to handle root index separately
   const pages = [];
@@ -160,6 +197,10 @@ try {
   // Create sitemap.xml as alias for sitemap-0.xml
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
   console.log('✓ Generated sitemap.xml (alias)');
+
+  const llmsFull = generateLlmsFull(pages);
+  fs.writeFileSync(path.join(distDir, 'llms-full.txt'), llmsFull);
+  console.log('✓ Generated llms-full.txt');
 
   console.log('Sitemap generation complete!');
 } catch (error) {
