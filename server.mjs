@@ -49,7 +49,43 @@ const securityHeaders = Object.freeze({
   'X-Frame-Options': 'SAMEORIGIN',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  'Strict-Transport-Security': 'max-age=31536000',
+  'Content-Security-Policy': [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "script-src 'self' 'unsafe-inline' https:",
+    "style-src 'self' 'unsafe-inline' https:",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data: https:",
+    "connect-src 'self' https: wss:",
+    "manifest-src 'self'",
+    "worker-src 'self' blob:",
+    "frame-src 'self' https:",
+    'upgrade-insecure-requests',
+  ].join('; '),
 });
+
+function headerBagHas(headers, headerName) {
+  if (!headers || typeof headers !== 'object' || Array.isArray(headers)) return false;
+  const normalizedName = headerName.toLowerCase();
+  return Object.keys(headers).some((key) => key.toLowerCase() === normalizedName);
+}
+
+function applyDefaultSecurityHeaders(res) {
+  const originalWriteHead = res.writeHead.bind(res);
+  res.writeHead = (statusCode, reasonPhrase, headers) => {
+    const explicitHeaders = typeof reasonPhrase === 'string' ? headers : reasonPhrase;
+    for (const [name, value] of Object.entries(securityHeaders)) {
+      if (!res.hasHeader(name) && !headerBagHas(explicitHeaders, name)) {
+        res.setHeader(name, value);
+      }
+    }
+    return originalWriteHead(statusCode, reasonPhrase, headers);
+  };
+}
 
 async function loadReleaseMetadata() {
   const releaseMetadataFile = join(distDir, '__release.json');
@@ -669,6 +705,8 @@ function getRequestHost(req) {
 }
 
 async function serve(req, res) {
+  applyDefaultSecurityHeaders(res);
+
   let incomingUrl;
   try {
     incomingUrl = new URL(req.url, `http://localhost:${port}`);
@@ -929,12 +967,12 @@ async function serve(req, res) {
 
   if (url === '/api/push/public-key' && req.method === 'GET') {
     if (!pushConfigured) {
-      res.writeHead(503, { ...securityHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
-      res.end(JSON.stringify({ error: 'push_not_configured' }));
+      res.writeHead(200, { ...securityHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Robots-Tag': noIndexTag });
+      res.end(JSON.stringify({ publicKey: null, configured: false }));
       return;
     }
     res.writeHead(200, { ...securityHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600', 'X-Robots-Tag': noIndexTag });
-    res.end(JSON.stringify({ publicKey: VAPID_PUBLIC_KEY }));
+    res.end(JSON.stringify({ publicKey: VAPID_PUBLIC_KEY, configured: true }));
     return;
   }
 
