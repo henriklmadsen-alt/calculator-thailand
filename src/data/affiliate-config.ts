@@ -37,7 +37,8 @@ export interface AffiliatePartner {
 }
 
 const GENERIC_AFFILIATE_HOSTS = new Set(['accesstrade.in.th', 'app.involve.asia']);
-export const ROOJAI_AFFILIATE_URL = 'https://portal.roojaipartners.com/#/23424769e701bcaa';
+const ROOJAI_LANDING_RID = 'LLC752cDb7BoO82Ug1sQqjBjKB71zESLVKZI%2BmVkhvw%3D';
+export const ROOJAI_AFFILIATE_URL = `https://portal.roojaipartners.com/product/#/?pageName=product&rid=${ROOJAI_LANDING_RID}&lang=th&productType=allProduct`;
 const ROOJAI_CTA_TEXT = 'ดูข้อเสนอหลังคำนวณ';
 const ROOJAI_SUBTEXT = 'ใช้ผลลัพธ์จากเครื่องคำนวณเป็นฐานก่อนดูข้อเสนอพาร์ทเนอร์';
 

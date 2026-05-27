@@ -3,7 +3,8 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const STRICT = process.argv.includes('--strict');
-const ROOJAI_AFFILIATE_URL = 'https://portal.roojaipartners.com/#/23424769e701bcaa';
+const ROOJAI_LANDING_RID = 'LLC752cDb7BoO82Ug1sQqjBjKB71zESLVKZI%2BmVkhvw%3D';
+const ROOJAI_AFFILIATE_URL = `https://portal.roojaipartners.com/product/#/?pageName=product&rid=${ROOJAI_LANDING_RID}&lang=th&productType=allProduct`;
 
 const REQUIRED_AFFILIATE_ENVS = [
   'AFFILIATE_URL_TTB_CASH2GO',

@@ -4,7 +4,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT_DIR = fileURLToPath(new URL('..', import.meta.url));
 const AFFILIATE_EVENTS_DIR = join(ROOT_DIR, '.events', 'affiliate-redirects');
-const ROOJAI_AFFILIATE_URL = 'https://portal.roojaipartners.com/#/23424769e701bcaa';
+const ROOJAI_LANDING_RID = 'LLC752cDb7BoO82Ug1sQqjBjKB71zESLVKZI%2BmVkhvw%3D';
+const ROOJAI_AFFILIATE_URL = `https://portal.roojaipartners.com/product/#/?pageName=product&rid=${ROOJAI_LANDING_RID}&lang=th&productType=allProduct`;
+const ROOJAI_SHORTLINK_URL = 'https://portal.roojaipartners.com/#/23424769e701bcaa';
 const KNOWN_PARTNER_SLUGS = new Set([
   'roojai-partners',
   'rabbit-care-loan',
@@ -60,6 +62,7 @@ function isSafeAffiliateTarget(url) {
 
 function getAffiliateTargetUrl() {
   const configured = String(process.env.AFFILIATE_URL_ROOJAI_PARTNERS || '').trim();
+  if (configured === ROOJAI_SHORTLINK_URL) return ROOJAI_AFFILIATE_URL;
   if (configured && isSafeAffiliateTarget(configured)) return configured;
   return ROOJAI_AFFILIATE_URL;
 }
