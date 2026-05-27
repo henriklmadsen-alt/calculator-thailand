@@ -747,6 +747,104 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         });
       }
 
+      function bindCalculatorWowDock() {
+        if (getPageType() !== 'calculator') return;
+        if (document.querySelector('.ct-result-dock')) return;
+
+        const candidateResults = Array.from(document.querySelectorAll('#results, #results-section, #single-result, #batch-result, [id$="result"], [id$="results"]'))
+          .filter((el) => el instanceof HTMLElement);
+
+        if (!candidateResults.length) return;
+
+        const dock = document.createElement('aside');
+        dock.className = 'ct-result-dock';
+        dock.setAttribute('aria-live', 'polite');
+        dock.innerHTML = `
+          <div class="ct-result-dock__content">
+            <span class="ct-result-dock__label">ผลลัพธ์ล่าสุด</span>
+            <strong class="ct-result-dock__value" data-result-dock-value>ดูผลลัพธ์</strong>
+          </div>
+          <div class="ct-result-dock__actions">
+            <button type="button" class="ct-result-dock__button" data-result-dock-detail>ดูรายละเอียด</button>
+            <a class="ct-result-dock__ai" data-result-dock-ai href="/ai-advisor/">ถาม AI</a>
+          </div>
+        `;
+        document.body.appendChild(dock);
+
+        const valueEl = dock.querySelector('[data-result-dock-value]');
+        const detailBtn = dock.querySelector('[data-result-dock-detail]');
+        const aiLink = dock.querySelector('[data-result-dock-ai]');
+
+        const isVisible = (el) => {
+          if (!(el instanceof HTMLElement)) return false;
+          if (el.classList.contains('hidden')) return false;
+          if (el.hidden) return false;
+          const style = window.getComputedStyle(el);
+          if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+          const rect = el.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        };
+
+        const cleanText = (text) => String(text || '').replace(/\s+/g, ' ').trim();
+
+        const pickValue = (container) => {
+          const preferred = container.querySelector('#res-total, #result-total, #res-monthly, #result-monthly, [id*="payment"], [id*="total"], [class*="total"]');
+          const preferredText = cleanText(preferred?.textContent);
+          if (preferredText && preferredText !== '-') return preferredText.slice(0, 80);
+
+          const strongCandidates = Array.from(container.querySelectorAll('strong, b, [class*="font-bold"], [class*="text-xl"], [class*="text-2xl"], [class*="text-3xl"]'))
+            .map((el) => cleanText(el.textContent))
+            .filter((text) => text && text !== '-' && /[0-9๐-๙]/.test(text));
+
+          return (strongCandidates[0] || '').slice(0, 80);
+        };
+
+        let activeResult = null;
+
+        const updateDock = () => {
+          const visibleResult = candidateResults.find(isVisible);
+          if (!visibleResult) {
+            dock.classList.remove('is-visible');
+            activeResult = null;
+            return;
+          }
+
+          const nextValue = pickValue(visibleResult);
+          if (!nextValue) {
+            dock.classList.remove('is-visible');
+            activeResult = null;
+            return;
+          }
+
+          activeResult = visibleResult;
+          if (valueEl) valueEl.textContent = nextValue;
+          if (aiLink) aiLink.setAttribute('href', `/ai-advisor/?from=${encodeURIComponent(window.location.pathname)}`);
+          dock.classList.add('is-visible');
+        };
+
+        detailBtn?.addEventListener('click', () => {
+          if (!activeResult) return;
+          activeResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        document.addEventListener('submit', () => {
+          window.setTimeout(updateDock, 80);
+        }, true);
+
+        const observer = new MutationObserver(updateDock);
+        candidateResults.forEach((el) => {
+          observer.observe(el, {
+            attributes: true,
+            attributeFilter: ['class', 'style', 'hidden'],
+            childList: true,
+            subtree: true,
+            characterData: true,
+          });
+        });
+
+        updateDock();
+      }
+
       emitSessionStartOnce();
 
       async function initVisitorCounter() {
@@ -758,6 +856,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         preserveAttributionParamsOnLinks();
         bindEntryClickTracking();
         bindCalculatorBehaviorTracking();
+        bindCalculatorWowDock();
       }
 
       if (document.readyState === 'loading') {
