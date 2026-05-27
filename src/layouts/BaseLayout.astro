@@ -33,10 +33,6 @@ const { title, description, canonical, ogImage, pageName, alternateLocales = [],
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
-const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
-const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').trim().toLowerCase();
-const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
-const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
 // Generate hreflang links for language variants (English pages not yet available)
 // Use pageUrl (canonical) for hreflang to ensure consistent URL format and prevent encoding mismatches
 const localeAlternates = [
@@ -1033,16 +1029,6 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
 
       runAfterLoadIdle(initVisitorCounter);
     </script>
-
-    {
-      shouldLoadAdsenseScript && (
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-          crossorigin="anonymous"
-        ></script>
-      )
-    }
 
     <script is:inline>
       (function initializeThemeBeforePaint() {

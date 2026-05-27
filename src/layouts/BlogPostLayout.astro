@@ -29,10 +29,6 @@ const {
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const pageUrl = canonical || siteUrl + Astro.url.pathname;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
-const adsenseClientId = String(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '').trim();
-const adsenseEnabledRaw = String(import.meta.env.PUBLIC_ADSENSE_ENABLED || '').trim().toLowerCase();
-const adsenseEnabled = ['1', 'true', 'yes', 'on'].includes(adsenseEnabledRaw);
-const shouldLoadAdsenseScript = Boolean(adsenseClientId && adsenseEnabled);
 const localeAlternates = [
   { hreflang: 'th-TH', href: pageUrl },
   { hreflang: 'x-default', href: pageUrl },
@@ -384,16 +380,6 @@ const jsonLdFaq = faqData
         bindEntryClickTracking();
       }
     </script>
-
-    {
-      shouldLoadAdsenseScript && (
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-          crossorigin="anonymous"
-        ></script>
-      )
-    }
 
     <script is:inline>
       (function initializeThemeBeforePaint() {

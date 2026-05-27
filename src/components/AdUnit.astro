@@ -253,18 +253,48 @@ const shouldRenderAd = Boolean(adsenseClientId && slotConfig.slotCode && slotCon
       observer.observe(unit);
     }
 
+    function loadAdsenseScript(clientId) {
+      if (!clientId) return Promise.reject(new Error('missing-adsense-client'));
+      if (window.__ctAdsenseScriptPromise) return window.__ctAdsenseScriptPromise;
+
+      const existing = document.querySelector('script[data-ct-adsense-script]');
+      if (existing) {
+        window.__ctAdsenseScriptPromise = Promise.resolve();
+        return window.__ctAdsenseScriptPromise;
+      }
+
+      window.__ctAdsenseScriptPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.dataset.ctAdsenseScript = '1';
+        script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(clientId)}`;
+        script.addEventListener('load', resolve, { once: true });
+        script.addEventListener('error', reject, { once: true });
+        document.head.appendChild(script);
+      });
+
+      return window.__ctAdsenseScriptPromise;
+    }
+
     function lazyPush(unit) {
       const adNode = unit.querySelector('.adsbygoogle');
       if (!adNode || adNode.dataset.pushed === '1') return;
 
       const pushAd = () => {
         if (adNode.dataset.pushed === '1') return;
-        try {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-          adNode.dataset.pushed = '1';
-        } catch {
-          // Script can race on first paint; retry on next viewport pass.
-        }
+        if (adNode.dataset.loading === '1') return;
+        adNode.dataset.loading = '1';
+
+        loadAdsenseScript(adNode.dataset.adClient || '')
+          .then(() => {
+            if (adNode.dataset.pushed === '1') return;
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+            adNode.dataset.pushed = '1';
+          })
+          .catch(() => {
+            delete adNode.dataset.loading;
+          });
       };
 
       if (typeof IntersectionObserver === 'undefined') {
