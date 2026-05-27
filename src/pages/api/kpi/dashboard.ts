@@ -72,7 +72,7 @@ export const GET: APIRoute = async ({ request }) => {
     // Initialize services
     const gscService = new GSCService({
       keyFileJson: gscKeyJson,
-      gscSiteUrl: process.env.GSC_SITE_URL || 'https://kamnuanlek.com/',
+      gscSiteUrl: process.env.GSC_SITE_URL || 'https://www.kamnuanlek.com/',
     });
 
     const ga4Service = hasGa4

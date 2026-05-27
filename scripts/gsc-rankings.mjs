@@ -18,7 +18,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const envPath = path.join(__dirname, '../.env.gsc');
+const envPaths = [
+  path.join(__dirname, '../.env'),
+  path.join(__dirname, '../.env.local'),
+  path.join(__dirname, '../.env.gsc'),
+];
 
 function loadOptionalEnvFile(filePath) {
   if (!fs.existsSync(filePath)) return;
@@ -47,7 +51,9 @@ function formatDate(date) {
   return date.toISOString().split('T')[0];
 }
 
-loadOptionalEnvFile(envPath);
+for (const envPath of envPaths) {
+  loadOptionalEnvFile(envPath);
+}
 
 const serviceAccount = JSON.parse(process.env.GSC_SERVICE_ACCOUNT_JSON || '{}');
 const siteUrl = process.env.GSC_SITE_URL || 'https://www.kamnuanlek.com/';

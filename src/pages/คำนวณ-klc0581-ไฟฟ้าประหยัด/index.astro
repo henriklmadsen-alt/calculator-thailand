@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 const pageTitle = 'คำนวณ EV vs รถเบนซิน | Kamnuanlek';
 const pageDescription = 'เปรียบเทียบต้นทุนซื้อ เชื้อเพลิง ซ่อมบำรุง ประกัน รถไฟฟ้า vs รถเบนซิน';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-klc0581-ev-vs-petrol/`;
+const affiliateUrl = '/go/roojai-partners/?sub_id=calculator-ev-vs-petrol';
 
 const faqData = [
   { question: 'ใช้เครื่องคำนวณนี้อย่างไร?', answer: 'กรอกข้อมูลที่ต้องการในช่องที่กำหนด แล้วกดปุ่มคำนวณ ผลลัพธ์จะแสดงทันทีพร้อมรายละเอียด' },
@@ -43,6 +45,14 @@ const jsonLdFaq = {
       <button type="button" id="btn" class="px-6 py-2 bg-cyan-600 text-white rounded-md">คำนวณ</button>
       <div id="res" class="hidden mt-6 space-y-2"><div class="grid grid-cols-2 gap-2"><div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุน EV 5 ปี</p><p id="ev_total" class="font-bold">-</p></div><div class="bg-blue-50 rounded p-3"><p class="text-sm text-gray-600">ต้นทุนเบนซิน 5 ปี</p><p id="petrol_total" class="font-bold">-</p></div><div class="bg-green-50 rounded p-3"><p class="text-sm text-gray-600">ประหยัด EV</p><p id="savings" class="font-bold">-</p></div></div></div>
     </div>
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl={affiliateUrl}
+      headline="เช็กต้นทุน EV แล้ว ดูงบค่าใช้จ่ายรถต่อ"
+      subtext="หลังเทียบ EV กับรถน้ำมันแล้ว ใช้ลิงก์พาร์ทเนอร์เพื่อดูข้อเสนอที่เกี่ยวข้องกับการวางงบรถ"
+      ctaText="ดูข้อเสนอจาก Roojai"
+      isVisible={true}
+    />
   </article>
   <script>
     document.getElementById('btn')!.addEventListener('click', () => {

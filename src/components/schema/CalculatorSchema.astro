@@ -2,8 +2,9 @@
 /**
  * CalculatorSchema.astro
  *
- * Generates Calculator JSON-LD schema for improved SERP appearance
- * Supports: Tax calculations, loan payments, salary calculations, etc.
+ * Generates valid WebApplication JSON-LD for calculator pages.
+ * Keeps calculator semantics in supported properties instead of using
+ * non-standard schema.org types such as TaxCalculator or LoanCalculator.
  */
 
 interface Props {
@@ -24,18 +25,50 @@ const {
   currency = 'THB',
 } = Astro.props;
 
+const applicationCategoryByType = {
+  TaxCalculator: 'FinanceApplication',
+  LoanCalculator: 'FinanceApplication',
+  SalaryCalculator: 'FinanceApplication',
+  Calculator: 'UtilitiesApplication',
+} as const;
+
+const topicByType = {
+  TaxCalculator: 'Thai tax calculator',
+  LoanCalculator: 'Loan and installment calculator',
+  SalaryCalculator: 'Salary and payroll calculator',
+  Calculator: 'Online calculator',
+} as const;
+
 const schema = {
   '@context': 'https://schema.org',
-  '@type': calculatorType,
+  '@type': 'WebApplication',
+  '@id': `${url}#calculator-app`,
   name,
   description,
   url,
-  'applicationCategory': 'Utility',
+  'applicationCategory': applicationCategoryByType[calculatorType],
   'operatingSystem': 'Any',
   'inLanguage': 'th-TH',
+  'isAccessibleForFree': true,
+  'mainEntityOfPage': url,
+  'about': {
+    '@type': 'Thing',
+    'name': topicByType[calculatorType],
+  },
+  'featureList': [
+    'Instant online calculation',
+    'Thai-language user interface',
+    'Mobile-friendly calculator inputs',
+    'No account required',
+  ],
   'author': {
     '@type': 'Organization',
-    'name': 'Calculator Thailand',
+    'name': 'Kamnuanlek',
+    'url': siteUrl,
+  },
+  'publisher': {
+    '@type': 'Organization',
+    'name': 'Kamnuanlek',
     'url': siteUrl,
   },
   'offers': {

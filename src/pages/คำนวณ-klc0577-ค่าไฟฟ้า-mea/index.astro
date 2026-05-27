@@ -2,11 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculateElectricityBill } from '../../lib/klc-0577-electricity-bill-mea';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
+import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 
 const pageTitle = 'คำนวณค่าไฟฟ้า MEA/PEA 2569 | Kamnuanlek';
 const pageDescription = 'คำนวณค่าไฟฟ้า MEA/PEA 2569 ฟรี — ขั้นบันได VAT 7% บิลประมาณ ตามการใช้';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-klc0577-ค่าไฟฟ้า-mea/`;
+const affiliateUrl = '/go/roojai-partners/?sub_id=calculator-klc0577-electricity-mea-pea';
 
 const faqData = [
   {
@@ -143,6 +145,16 @@ const jsonLdFaq = {
       </div>
     </div>
 
+    <AffiliateCard
+      category="insurance"
+      affiliateUrl={affiliateUrl}
+      partnerName="Roojai Partners"
+      headline="คำนวณค่าไฟ MEA/PEA แล้ว วางงบครัวเรือนต่อ"
+      subtext="หลังรู้ยอดค่าไฟโดยประมาณแล้ว ดูข้อเสนอพาร์ทเนอร์เพื่อช่วยจัดค่าใช้จ่ายสำคัญอื่นในเดือนเดียวกัน"
+      ctaText="ดูข้อเสนอจาก Roojai"
+      isVisible={false}
+    />
+
     <div class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4 sm:p-6">
       <h2 class="mb-4 text-lg font-semibold text-blue-900">ตัวอย่างการคำนวณ</h2>
       <div class="space-y-2 text-sm">
@@ -205,6 +217,7 @@ const jsonLdFaq = {
       document.getElementById('res_tiers').innerHTML = tiersHtml;
 
       resultsDiv.classList.remove('hidden');
+      document.getElementById('affiliate-card')?.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth' });
     });
   </script>

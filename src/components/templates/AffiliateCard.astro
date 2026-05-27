@@ -6,8 +6,9 @@ type Category = 'car-loan' | 'home-loan' | 'personal-loan' | 'credit-card' | 'in
 interface Props {
   category: Category;
   affiliateUrl: string;
-  partnerName: string;
+  partnerName?: string;
   ctaText: string;
+  headline?: string;
   subtext?: string;
   isVisible?: boolean;
 }
@@ -15,8 +16,9 @@ interface Props {
 const {
   category,
   affiliateUrl,
-  partnerName,
+  partnerName: customPartnerName,
   ctaText,
+  headline: customHeadline,
   subtext,
   isVisible = false,
 } = Astro.props;
@@ -31,9 +33,11 @@ const headlineMap: Record<Category, string> = {
   'savings':        'คำนวณดอกเบี้ยแล้ว ดูทางเลือกออมที่ให้ผลตอบแทนดีกว่า',
 };
 
-const headline = headlineMap[category];
+const headline = customHeadline ?? headlineMap[category];
+const hasCustomCopy = Boolean(customHeadline);
 const affiliateSlug = affiliateUrl.match(/^\/go\/([^/?#]+)/)?.[1] ?? '';
 const affiliatePartnerConfig = affiliateSlug ? AFFILIATE_PARTNERS[affiliateSlug] : undefined;
+const partnerName = customPartnerName ?? affiliatePartnerConfig?.partnerName ?? 'Affiliate partner';
 const isTrackedAffiliateConfigured = affiliatePartnerConfig
   ? isAffiliatePartnerConfigured(affiliatePartnerConfig)
   : Boolean(affiliateUrl);
@@ -49,6 +53,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
   data-affiliate-cta={ctaText}
   data-affiliate-configured={String(isTrackedAffiliateConfigured)}
   data-affiliate-experiment="affiliate-benefit-cta-v1"
+  data-affiliate-custom-copy={String(hasCustomCopy)}
   role="complementary"
   aria-label={`ข้อเสนอจาก ${partnerName}`}
 >
@@ -395,11 +400,12 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
 
       const category = card.dataset.affiliateCategory || '';
       const copy = COPY_BY_CATEGORY[category]?.[variant];
+      const hasCustomCopy = card.dataset.affiliateCustomCopy === 'true';
       const headline = card.querySelector('[data-affiliate-headline]');
       const subtext = card.querySelector('[data-affiliate-subtext]');
       const link = card.querySelector('.affiliate-card__cta');
 
-      if (copy) {
+      if (copy && !hasCustomCopy) {
         if (headline) headline.textContent = copy.headline;
         if (subtext) subtext.textContent = copy.subtext;
         if (link) link.textContent = copy.cta;

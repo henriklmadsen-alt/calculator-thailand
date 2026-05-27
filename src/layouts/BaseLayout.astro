@@ -8,6 +8,7 @@ import LanguageSwitcherButton from '../components/templates/LanguageSwitcherButt
 import FeedbackWidget from '../components/FeedbackWidget.astro';
 import ABTestTracker from '../components/ABTestTracker.astro';
 import CalculatorSchema from '../components/schema/CalculatorSchema.astro';
+import { calculators } from '../lib/calculators';
 
 interface Props {
   title: string;
@@ -188,9 +189,11 @@ const decodedPathname = (() => {
   }
 })();
 
+const normalizedDecodedPathname = decodedPathname.endsWith('/') ? decodedPathname : `${decodedPathname}/`;
+const calculatorRoutes = new Set(calculators.map((calculator) => calculator.href));
 const isArticlePage = decodedPathname.startsWith('/บทความ/');
-const isHomePage = decodedPathname === '/';
-const isCalculatorPage = !isArticlePage && !isHomePage;
+const isHomePage = normalizedDecodedPathname === '/';
+const isCalculatorPage = calculatorRoutes.has(normalizedDecodedPathname);
 
 const schemaTypeByCategoryId: Record<string, 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculator' | 'Calculator'> = {
   tax: 'TaxCalculator',
@@ -221,6 +224,9 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     <meta name="robots" content={noindex ? 'noindex, nofollow, noarchive' : 'index, follow'} />
     <link rel="canonical" href={pageUrl} />
     {localeAlternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <link rel="alternate" type="text/plain" title="Kamnuanlek llms.txt" href={`${siteUrl}/llms.txt`} />
+    <link rel="alternate" type="text/plain" title="Kamnuanlek full LLM inventory" href={`${siteUrl}/llms-full.txt`} />
+    <link rel="alternate" type="application/json" title="Kamnuanlek LLM context" href={`${siteUrl}/api/llm-context.json`} />
     <meta name="google-site-verification" content="ZGJ3F-iJz_S9hqfdsjSoj33ZaYLaOfiQ4xjeL3KSgGM" />
     <meta name="google-site-verification" content="zaca9jM01wCKV24fXyQM0o0hYouvbVh8yFjLtAhjc5g" />
 
