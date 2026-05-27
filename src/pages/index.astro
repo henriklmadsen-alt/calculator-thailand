@@ -98,18 +98,6 @@ const getCalculatorSearchText = (calc: (typeof calculators)[number]) => {
   return [calc.title, calc.desc, ...categoryText].filter(Boolean).join(' ');
 };
 
-const calculatorSearchIndex = calculators.map((calc) => ({
-  title: calc.title,
-  desc: calc.desc,
-  category: calc.categoryId,
-  icon: calc.icon,
-  href: calc.href,
-  searchText: getCalculatorSearchText(calc),
-  tag: calc.tag,
-  tagColor: calc.tagColor,
-  affiliate: affiliateHrefSet.has(calc.href),
-}));
-
 const topActions = [
   { title: 'ภาษีเงินได้', desc: 'เช็กภาษีและลดหย่อนปี 2569', href: '/คำนวณภาษีเงินได้บุคคลธรรมดา/', icon: '💰', tone: 'amber' },
   { title: 'เงินเดือนสุทธิ', desc: 'เงินรับจริงหลังหักภาษีและประกันสังคม', href: '/คำนวณเงินเดือนสุทธิ/', icon: '💼', tone: 'green' },
@@ -210,8 +198,6 @@ const jsonLdFaq = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebsite)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
-  <script type="application/json" id="calculator-search-index" set:html={JSON.stringify(calculatorSearchIndex)} />
-
   <div class="ct-ai-home">
   <section class="ct-ai-hero ct-wow-hero mb-10">
     <div class="ct-ai-hero-grid ct-wow-hero-grid grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,440px)] lg:items-center">
@@ -644,18 +630,12 @@ const jsonLdFaq = {
   (function() {
     var items = document.querySelectorAll('.calc-item');
     var allCalcs = [];
-    var searchIndexEl = document.getElementById('calculator-search-index');
+    var searchIndexLoaded = false;
+    var searchIndexPromise = null;
 
-    try {
-      var parsedIndex = JSON.parse(searchIndexEl ? searchIndexEl.textContent || '[]' : '[]');
-      if (Array.isArray(parsedIndex)) {
-        allCalcs = parsedIndex.map(normalizeCalc);
-      }
-    } catch(e) {
-      allCalcs = [];
-    }
+    loadVisibleCalculatorCards();
 
-    if (allCalcs.length === 0) {
+    function loadVisibleCalculatorCards() {
       items.forEach(function(el) {
         allCalcs.push(normalizeCalc({
           title: el.getAttribute('data-title') || '',
@@ -667,6 +647,32 @@ const jsonLdFaq = {
           html: el.outerHTML
         }));
       });
+    }
+
+    function ensureSearchIndex() {
+      if (searchIndexLoaded) return Promise.resolve(allCalcs);
+      if (searchIndexPromise) return searchIndexPromise;
+
+      searchIndexPromise = fetch('/api/calculator-search-index.json', {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' }
+      })
+        .then(function(response) {
+          if (!response.ok) throw new Error('search index unavailable');
+          return response.json();
+        })
+        .then(function(parsedIndex) {
+          if (Array.isArray(parsedIndex) && parsedIndex.length > 0) {
+            allCalcs = parsedIndex.map(normalizeCalc);
+            searchIndexLoaded = true;
+          }
+          return allCalcs;
+        })
+        .catch(function() {
+          return allCalcs;
+        });
+
+      return searchIndexPromise;
     }
 
     // ── Search ──
@@ -682,6 +688,7 @@ const jsonLdFaq = {
     var lastTrackedSearch = '';
 
     if (searchInput) {
+      searchInput.addEventListener('focus', ensureSearchIndex, { once: true });
       searchInput.addEventListener('input', function() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(handleSearch, 150);
@@ -713,6 +720,9 @@ const jsonLdFaq = {
       if (q && searchInput) {
         searchInput.value = q;
         handleSearch();
+        ensureSearchIndex().then(function() {
+          handleSearch();
+        });
         searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     })();
@@ -736,6 +746,17 @@ const jsonLdFaq = {
       searchResults.classList.remove('hidden');
       if (searchClear) searchClear.classList.remove('hidden');
 
+      renderSearchResults(query);
+      if (!searchIndexLoaded) {
+        ensureSearchIndex().then(function() {
+          if (!searchInput) return;
+          var latestQuery = (searchInput.value || '').trim().toLowerCase();
+          if (latestQuery) renderSearchResults(latestQuery);
+        });
+      }
+    }
+
+    function renderSearchResults(query) {
       var matches = allCalcs
         .map(function(c, index) {
           return {
@@ -755,7 +776,7 @@ const jsonLdFaq = {
           return entry.calc;
         });
 
-      if (query.length >= 2 && query !== lastTrackedSearch && typeof window.trackLanguageAwareEvent === 'function') {
+      if (searchIndexLoaded && query.length >= 2 && query !== lastTrackedSearch && typeof window.trackLanguageAwareEvent === 'function') {
         lastTrackedSearch = query;
         window.trackLanguageAwareEvent('site_search', {
           search_term: query,

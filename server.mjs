@@ -1218,10 +1218,15 @@ async function serve(req, res) {
     const etag = generateETag(body);
 
     // CAL-1048: Cache header configuration
-    // HTML pages: shorter browser cache, longer CDN cache
-    // Static assets: 1-week max-age, immutable
+    // HTML pages: short browser cache, longer CDN cache
+    // Hashed Astro assets: long immutable cache
+    // Static API JSON: moderate cache so generated indexes can refresh after deploy
     let cacheControl;
     if (ext === '.html') {
+      cacheControl = 'public, max-age=3600, s-maxage=86400';
+    } else if (url.startsWith('/_astro/')) {
+      cacheControl = 'public, max-age=31536000, immutable';
+    } else if (url.startsWith('/api/')) {
       cacheControl = 'public, max-age=3600, s-maxage=86400';
     } else {
       cacheControl = 'public, max-age=604800, immutable';
