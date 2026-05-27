@@ -285,20 +285,40 @@ const jsonLdFaq = {
       </div>
 
       <aside class="ct-wow-scene" aria-label="ตัวอย่างเครื่องคำนวณ Kamnuanlek">
-        <div class="ct-wow-device">
+        <div class="ct-wow-device" data-calculatoros-demo>
           <div class="ct-wow-device-bar">
             <span>Kamnuanlek</span>
             <strong>CalculatorOS</strong>
           </div>
           <div class="ct-wow-screen">
-            <div class="ct-wow-result-preview">
-              <span>คำนวณค่าไฟ</span>
-              <strong>1,277.41 บาท</strong>
-              <small>บ้านใช้ไฟ 300 หน่วย · PEA/MEA</small>
+            <div class="ct-wow-result-preview" role="status" aria-live="polite">
+              <div class="ct-wow-result-topline">
+                <span data-demo-title>คำนวณค่าไฟ</span>
+                <button type="button" class="ct-wow-clear" data-demo-clear aria-label="ล้างตัวเลข">AC</button>
+              </div>
+              <strong data-demo-output>1,277.41 บาท</strong>
+              <small data-demo-expression>บ้านใช้ไฟ 300 หน่วย · PEA/MEA</small>
             </div>
-            <div class="ct-wow-keypad" aria-hidden="true">
-              {['7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', '.', '=', '+'].map((key) => (
-                <span class:list={['ct-wow-key', key === '=' && 'ct-wow-key-primary']}>{key}</span>
+            <div class="ct-wow-keypad" aria-label="เครื่องคิดเลขตัวอย่าง">
+              {[
+                { label: '7', value: '7' },
+                { label: '8', value: '8' },
+                { label: '9', value: '9' },
+                { label: '÷', value: '/' },
+                { label: '4', value: '4' },
+                { label: '5', value: '5' },
+                { label: '6', value: '6' },
+                { label: '×', value: '*' },
+                { label: '1', value: '1' },
+                { label: '2', value: '2' },
+                { label: '3', value: '3' },
+                { label: '−', value: '-' },
+                { label: '0', value: '0' },
+                { label: '.', value: '.' },
+                { label: '=', value: '=' },
+                { label: '+', value: '+' },
+              ].map((key) => (
+                <button type="button" data-demo-key={key.value} class:list={['ct-wow-key', key.value === '=' && 'ct-wow-key-primary']}>{key.label}</button>
               ))}
             </div>
             <div class="ct-wow-live-list">
@@ -697,6 +717,8 @@ const jsonLdFaq = {
       }
     })();
 
+    bindCalculatorOsDemo();
+
     function handleSearch() {
       if (!searchInput || !searchResults || !searchGrid || !searchNoResults || !mainContent) return;
 
@@ -824,6 +846,163 @@ const jsonLdFaq = {
       });
 
       return score;
+    }
+
+    function bindCalculatorOsDemo() {
+      var demo = document.querySelector('[data-calculatoros-demo]');
+      if (!demo) return;
+
+      var output = demo.querySelector('[data-demo-output]');
+      var expression = demo.querySelector('[data-demo-expression]');
+      var title = demo.querySelector('[data-demo-title]');
+      var clearButton = demo.querySelector('[data-demo-clear]');
+      var keys = demo.querySelectorAll('[data-demo-key]');
+      var current = '0';
+      var stored = null;
+      var operator = null;
+      var waitingForOperand = true;
+      var expressionText = 'บ้านใช้ไฟ 300 หน่วย · PEA/MEA';
+      var justCalculated = false;
+
+      var operatorLabels = {
+        '+': '+',
+        '-': '−',
+        '*': '×',
+        '/': '÷'
+      };
+
+      function formatNumber(value) {
+        var number = Number(value);
+        if (!Number.isFinite(number)) return 'Error';
+        var rounded = Math.round(number * 100000000) / 100000000;
+        return new Intl.NumberFormat('th-TH', {
+          maximumFractionDigits: 8
+        }).format(rounded);
+      }
+
+      function render() {
+        if (output) output.textContent = formatNumber(current);
+        if (expression) expression.textContent = expressionText || 'แตะตัวเลขเพื่อคำนวณทันที';
+        if (title) title.textContent = 'เครื่องคิดเลข';
+      }
+
+      function clear() {
+        current = '0';
+        stored = null;
+        operator = null;
+        waitingForOperand = true;
+        justCalculated = false;
+        expressionText = 'แตะตัวเลขเพื่อคำนวณทันที';
+        render();
+      }
+
+      function inputDigit(digit) {
+        if (waitingForOperand || justCalculated) {
+          current = digit;
+          waitingForOperand = false;
+          justCalculated = false;
+        } else if (current === '0') {
+          current = digit;
+        } else if (current.length < 12) {
+          current += digit;
+        }
+        expressionText = operator && stored !== null
+          ? formatNumber(stored) + ' ' + operatorLabels[operator] + ' ' + current
+          : current;
+        render();
+      }
+
+      function inputDecimal() {
+        if (waitingForOperand || justCalculated) {
+          current = '0.';
+          waitingForOperand = false;
+          justCalculated = false;
+        } else if (current.indexOf('.') === -1) {
+          current += '.';
+        }
+        expressionText = operator && stored !== null
+          ? formatNumber(stored) + ' ' + operatorLabels[operator] + ' ' + current
+          : current;
+        render();
+      }
+
+      function calculate(first, second, op) {
+        if (op === '+') return first + second;
+        if (op === '-') return first - second;
+        if (op === '*') return first * second;
+        if (op === '/') return second === 0 ? NaN : first / second;
+        return second;
+      }
+
+      function handleOperator(nextOperator) {
+        var inputValue = Number(current);
+        if (!Number.isFinite(inputValue)) {
+          clear();
+          return;
+        }
+
+        if (operator && !waitingForOperand) {
+          var result = calculate(Number(stored), inputValue, operator);
+          expressionText = formatNumber(stored) + ' ' + operatorLabels[operator] + ' ' + formatNumber(inputValue);
+          current = String(result);
+          stored = result;
+        } else {
+          stored = inputValue;
+        }
+
+        operator = nextOperator;
+        waitingForOperand = true;
+        justCalculated = false;
+        expressionText = formatNumber(stored) + ' ' + operatorLabels[operator];
+        render();
+      }
+
+      function handleEquals() {
+        if (!operator || stored === null) {
+          expressionText = current;
+          justCalculated = true;
+          render();
+          return;
+        }
+
+        var inputValue = Number(current);
+        var result = calculate(Number(stored), inputValue, operator);
+        expressionText = formatNumber(stored) + ' ' + operatorLabels[operator] + ' ' + formatNumber(inputValue) + ' =';
+        current = String(result);
+        stored = null;
+        operator = null;
+        waitingForOperand = true;
+        justCalculated = true;
+        render();
+      }
+
+      function pressKey(value) {
+        if (/^\d$/.test(value)) {
+          inputDigit(value);
+          return;
+        }
+        if (value === '.') {
+          inputDecimal();
+          return;
+        }
+        if (value === '=') {
+          handleEquals();
+          return;
+        }
+        if (operatorLabels[value]) {
+          handleOperator(value);
+        }
+      }
+
+      keys.forEach(function(button) {
+        button.addEventListener('click', function() {
+          pressKey(button.getAttribute('data-demo-key') || '');
+        });
+      });
+
+      if (clearButton) {
+        clearButton.addEventListener('click', clear);
+      }
     }
 
     function renderCalculatorCard(calc) {
