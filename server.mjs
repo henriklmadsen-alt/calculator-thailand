@@ -3,6 +3,8 @@ import { readFile, writeFile, mkdir, stat, readdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { promisify } from 'node:util';
+import { brotliCompress, constants as zlibConstants, gzip } from 'node:zlib';
 import webpush from 'web-push';
 import {
   handleGoogleLogin, handleGoogleCallback,
@@ -638,6 +640,58 @@ const mimeTypes = {
   '.webmanifest': 'application/manifest+json',
 };
 
+const gzipAsync = promisify(gzip);
+const brotliCompressAsync = promisify(brotliCompress);
+const compressibleExtensions = new Set(['.html', '.css', '.js', '.json', '.svg', '.xml', '.txt', '.webmanifest']);
+const minCompressionBytes = 1024;
+const compressedStaticCache = new Map();
+const maxCompressedStaticCacheEntries = 128;
+
+function getPreferredContentEncoding(req) {
+  const acceptEncoding = String(req.headers['accept-encoding'] || '').toLowerCase();
+  if (acceptEncoding.includes('br')) return 'br';
+  if (acceptEncoding.includes('gzip')) return 'gzip';
+  return '';
+}
+
+function rememberCompressedStatic(cacheKey, value) {
+  if (compressedStaticCache.has(cacheKey)) compressedStaticCache.delete(cacheKey);
+  compressedStaticCache.set(cacheKey, value);
+  while (compressedStaticCache.size > maxCompressedStaticCacheEntries) {
+    const oldestKey = compressedStaticCache.keys().next().value;
+    compressedStaticCache.delete(oldestKey);
+  }
+}
+
+async function prepareStaticResponseBody(req, filePath, ext, data) {
+  if (!compressibleExtensions.has(ext) || data.length < minCompressionBytes) {
+    return { body: data, encoding: '' };
+  }
+
+  const encoding = getPreferredContentEncoding(req);
+  if (!encoding) return { body: data, encoding: '' };
+
+  const sourceHash = createHash('md5').update(data).digest('hex');
+  const cacheKey = `${filePath}:${sourceHash}:${encoding}`;
+  const cached = compressedStaticCache.get(cacheKey);
+  if (cached) {
+    compressedStaticCache.delete(cacheKey);
+    compressedStaticCache.set(cacheKey, cached);
+    return cached;
+  }
+
+  const body = encoding === 'br'
+    ? await brotliCompressAsync(data, {
+        params: {
+          [zlibConstants.BROTLI_PARAM_QUALITY]: 5,
+        },
+      })
+    : await gzipAsync(data, { level: 6 });
+  const prepared = { body, encoding };
+  rememberCompressedStatic(cacheKey, prepared);
+  return prepared;
+}
+
 // Generate ETag from file content (simple hash)
 function generateETag(data) {
   const hash = createHash('md5').update(data).digest('hex');
@@ -1160,7 +1214,8 @@ async function serve(req, res) {
     // Get file stats for Last-Modified and ETag
     const fileStats = await stat(filePath);
     const lastModified = fileStats.mtime.toUTCString();
-    const etag = generateETag(data);
+    const { body, encoding } = await prepareStaticResponseBody(req, filePath, ext, data);
+    const etag = generateETag(body);
 
     // CAL-1048: Cache header configuration
     // HTML pages: shorter browser cache, longer CDN cache
@@ -1178,11 +1233,14 @@ async function serve(req, res) {
       'Cache-Control': cacheControl,
       'ETag': etag,
       'Last-Modified': lastModified,
+      'Content-Length': String(body.length),
+      'Vary': 'Accept-Encoding',
       'X-Served-File': Buffer.from(url).toString('base64'),
     };
+    if (encoding) headers['Content-Encoding'] = encoding;
 
     res.writeHead(200, headers);
-    res.end(data);
+    res.end(body);
   } catch {
     try {
       const notFound = await readFile(join(distDir, '404.html'));
