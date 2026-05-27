@@ -791,76 +791,115 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         const candidateResults = getCalculatorResultCandidates();
         if (!candidateResults.length) return;
 
-        const panel = document.createElement('section');
-        panel.className = 'ct-calculatoros-result-panel';
-        panel.hidden = true;
-        panel.setAttribute('aria-live', 'polite');
-        panel.innerHTML = `
-          <div class="ct-calculatoros-result-panel__device">
-            <div class="ct-calculatoros-result-panel__bar">
-              <span>Kamnuanlek</span>
-              <strong>CalculatorOS</strong>
-            </div>
-            <div class="ct-calculatoros-result-panel__screen">
-              <span class="ct-calculatoros-result-panel__kicker">ผลลัพธ์ล่าสุด</span>
-              <strong class="ct-calculatoros-result-panel__value" data-calculatoros-panel-value>ดูผลลัพธ์</strong>
-              <small class="ct-calculatoros-result-panel__summary" data-calculatoros-panel-summary></small>
-              <div class="ct-calculatoros-result-panel__actions">
-                <button type="button" data-calculatoros-panel-detail>ดูรายละเอียด</button>
-                <a href="/ai-advisor/" data-calculatoros-panel-ai>ถาม AI</a>
-              </div>
-            </div>
-          </div>
-        `;
-
-        const anchor = candidateResults[0];
-        if (anchor.matches('#results, #results-section, #single-result, #batch-result') || anchor.children.length > 0) {
-          anchor.insertBefore(panel, anchor.firstChild);
-        } else {
-          anchor.parentNode?.insertBefore(panel, anchor);
-        }
-
-        const valueEl = panel.querySelector('[data-calculatoros-panel-value]');
-        const summaryEl = panel.querySelector('[data-calculatoros-panel-summary]');
-        const detailBtn = panel.querySelector('[data-calculatoros-panel-detail]');
-        const aiLink = panel.querySelector('[data-calculatoros-panel-ai]');
+        let panel = null;
+        let valueEl = null;
+        let summaryEl = null;
+        let detailBtn = null;
+        let aiLink = null;
         let activeResult = null;
+        let scheduledFrame = 0;
+
+        const ensurePanel = (anchor) => {
+          if (!panel) {
+            panel = document.createElement('section');
+            panel.className = 'ct-calculatoros-result-panel';
+            panel.hidden = true;
+            panel.setAttribute('aria-live', 'polite');
+            panel.innerHTML = `
+              <div class="ct-calculatoros-result-panel__device">
+                <div class="ct-calculatoros-result-panel__bar">
+                  <span>Kamnuanlek</span>
+                  <strong>CalculatorOS</strong>
+                </div>
+                <div class="ct-calculatoros-result-panel__screen">
+                  <span class="ct-calculatoros-result-panel__kicker">ผลลัพธ์ล่าสุด</span>
+                  <strong class="ct-calculatoros-result-panel__value" data-calculatoros-panel-value>ดูผลลัพธ์</strong>
+                  <small class="ct-calculatoros-result-panel__summary" data-calculatoros-panel-summary></small>
+                  <div class="ct-calculatoros-result-panel__actions">
+                    <button type="button" data-calculatoros-panel-detail>ดูรายละเอียด</button>
+                    <a href="/ai-advisor/" data-calculatoros-panel-ai>ถาม AI</a>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            valueEl = panel.querySelector('[data-calculatoros-panel-value]');
+            summaryEl = panel.querySelector('[data-calculatoros-panel-summary]');
+            detailBtn = panel.querySelector('[data-calculatoros-panel-detail]');
+            aiLink = panel.querySelector('[data-calculatoros-panel-ai]');
+            detailBtn?.addEventListener('click', () => {
+              if (!activeResult) return;
+              activeResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+          }
+
+          if (!panel.parentElement) {
+            if (anchor.matches('#results, #results-section, #single-result, #batch-result') || anchor.children.length > 0) {
+              anchor.insertBefore(panel, anchor.firstChild);
+            } else {
+              anchor.parentNode?.insertBefore(panel, anchor);
+            }
+          }
+
+          return panel;
+        };
+
+        const hidePanel = () => {
+          activeResult = null;
+          if (!panel) return;
+          if (!panel.hidden) panel.hidden = true;
+          if (panel.classList.contains('is-visible')) panel.classList.remove('is-visible');
+        };
 
         const updatePanel = () => {
           const visibleResult = candidateResults.find(isCalculatorResultVisible);
           if (!visibleResult) {
-            panel.hidden = true;
-            panel.classList.remove('is-visible');
-            activeResult = null;
+            hidePanel();
             return;
           }
 
           const nextValue = pickCalculatorResultValue(visibleResult);
           if (!nextValue) {
-            panel.hidden = true;
-            panel.classList.remove('is-visible');
-            activeResult = null;
+            hidePanel();
             return;
           }
 
+          const nextPanel = ensurePanel(visibleResult);
+          if (!nextPanel) return;
+
           activeResult = visibleResult;
-          if (valueEl) valueEl.textContent = nextValue;
-          if (summaryEl) summaryEl.textContent = getCalculatorPageTitle();
-          if (aiLink) aiLink.setAttribute('href', `/ai-advisor/?from=${encodeURIComponent(window.location.pathname)}`);
-          panel.hidden = false;
-          requestAnimationFrame(() => panel.classList.add('is-visible'));
+          if (valueEl && valueEl.textContent !== nextValue) valueEl.textContent = nextValue;
+
+          const nextSummary = getCalculatorPageTitle();
+          if (summaryEl && summaryEl.textContent !== nextSummary) summaryEl.textContent = nextSummary;
+
+          const nextAiHref = `/ai-advisor/?from=${encodeURIComponent(window.location.pathname)}`;
+          if (aiLink && aiLink.getAttribute('href') !== nextAiHref) aiLink.setAttribute('href', nextAiHref);
+
+          if (nextPanel.hidden) nextPanel.hidden = false;
+          if (!nextPanel.classList.contains('is-visible')) {
+            requestAnimationFrame(() => {
+              if (!nextPanel.hidden) nextPanel.classList.add('is-visible');
+            });
+          }
         };
 
-        detailBtn?.addEventListener('click', () => {
-          if (!activeResult) return;
-          activeResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
+        const schedulePanelUpdate = () => {
+          if (scheduledFrame) return;
+          scheduledFrame = requestAnimationFrame(() => {
+            scheduledFrame = 0;
+            updatePanel();
+          });
+        };
 
         document.addEventListener('submit', () => {
-          window.setTimeout(updatePanel, 80);
+          window.setTimeout(schedulePanelUpdate, 80);
         }, true);
 
-        const observer = new MutationObserver(updatePanel);
+        const observer = new MutationObserver((mutations) => {
+          if (panel && mutations.every((mutation) => panel.contains(mutation.target))) return;
+          schedulePanelUpdate();
+        });
         candidateResults.forEach((el) => {
           observer.observe(el, {
             attributes: true,
@@ -871,7 +910,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
           });
         });
 
-        updatePanel();
+        schedulePanelUpdate();
       }
 
       function bindCalculatorWowDock() {
