@@ -5,38 +5,34 @@ import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const REPORT_DIR = path.join(ROOT, 'reports', 'seo');
+const NPM_EXEC_PATH = process.env.npm_execpath || '';
+
+function npmStep(name, script, lane) {
+  if (NPM_EXEC_PATH) {
+    return {
+      name,
+      command: process.execPath,
+      args: [NPM_EXEC_PATH, 'run', script],
+      lane,
+      shell: false,
+    };
+  }
+
+  return {
+    name,
+    command: process.platform === 'win32' ? 'npm.cmd' : 'npm',
+    args: ['run', script],
+    lane,
+    shell: process.platform === 'win32',
+  };
+}
 
 const STEPS = [
-  {
-    name: 'GSC query gap planner',
-    command: 'npm',
-    args: ['run', 'report:gsc-gaps'],
-    lane: 'measure',
-  },
-  {
-    name: 'Content freshness queue',
-    command: 'npm',
-    args: ['run', 'audit:freshness'],
-    lane: 'audit',
-  },
-  {
-    name: 'SERP title competitor comparison',
-    command: 'npm',
-    args: ['run', 'report:serp-titles'],
-    lane: 'compare',
-  },
-  {
-    name: 'Manual promotion pack',
-    command: 'npm',
-    args: ['run', 'report:promotion-pack'],
-    lane: 'promote',
-  },
-  {
-    name: '50-item traffic recovery audit',
-    command: 'npm',
-    args: ['run', 'audit:traffic-recovery'],
-    lane: 'confirm',
-  },
+  npmStep('GSC query gap planner', 'report:gsc-gaps', 'measure'),
+  npmStep('Content freshness queue', 'audit:freshness', 'audit'),
+  npmStep('SERP title competitor comparison', 'report:serp-titles', 'compare'),
+  npmStep('Manual promotion pack', 'report:promotion-pack', 'promote'),
+  npmStep('50-item traffic recovery audit', 'audit:traffic-recovery', 'confirm'),
 ];
 
 function todayBangkok() {
@@ -53,6 +49,7 @@ function runStep(step) {
   const result = spawnSync(step.command, step.args, {
     cwd: ROOT,
     encoding: 'utf8',
+    shell: step.shell,
     windowsHide: true,
   });
   const endedAt = new Date().toISOString();
@@ -62,6 +59,7 @@ function runStep(step) {
     endedAt,
     status: result.status === 0 ? 'ok' : 'failed',
     exitCode: result.status,
+    error: result.error instanceof Error ? result.error.message : '',
     stdoutTail: String(result.stdout || '').split(/\r?\n/).filter(Boolean).slice(-12),
     stderrTail: String(result.stderr || '').split(/\r?\n/).filter(Boolean).slice(-12),
   };
@@ -87,7 +85,7 @@ function renderReport(results, generatedDate) {
   ));
   const failureRows = results
     .filter((row) => row.status !== 'ok')
-    .map((row) => `| ${row.name} | ${mdCell(row.stderrTail.join(' / ') || row.stdoutTail.join(' / '), 160)} |`);
+    .map((row) => `| ${row.name} | ${mdCell(row.error || row.stderrTail.join(' / ') || row.stdoutTail.join(' / '), 160)} |`);
 
   return `# Daily Growth Loop Run - ${generatedDate}
 

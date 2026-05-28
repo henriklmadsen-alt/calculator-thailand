@@ -1,6 +1,6 @@
 # GSC Query Gap Planner - 2026-05-28
 
-Generated: 2026-05-28T06:42:08.262Z
+Generated: 2026-05-28T07:02:12.662Z
 GSC range: 2026-04-28 to 2026-05-25
 Site: https://www.kamnuanlek.com/
 

@@ -170,11 +170,12 @@ const PLAIN_FORMULA_CHECKS = [
 
 const SEARCH_SYNONYM_TERMS = ['ค่าไฟบ้าน', 'ค่างวดรถ', 'โอที', 'หาร 1.07', 'ดัชนีมวลกาย'];
 
-const TRACKED_AFFILIATE_ROUTES = [
-  '/à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹„à¸Ÿà¸Ÿà¹‰à¸²/',
-  '/à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸£à¸–/',
-  '/à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸šà¹‰à¸²à¸™/',
-];
+const TRACKED_AFFILIATE_ROUTES = [...new Set([
+  OFFICIAL_REFERENCE_ROUTES[0],
+  ...AFFILIATE_INTENT_CHECKS
+    .map((check) => check.path)
+    .filter((route) => PRIORITY_ROUTES.includes(route)),
+])];
 
 const EMBED_ROUTE_CHECKS = [
   '/embed/vat/',
@@ -489,8 +490,7 @@ async function auditLiveSignals() {
         && page.text.includes('rel="sponsored')
         && page.text.includes('affiliate-card-wrapper')
         && page.text.includes('hidden'),
-      hasAffiliateCalculatorTracking: page.text.includes('data-affiliate-calculator=')
-        && page.text.includes('calculator_path'),
+      hasAffiliateCalculatorTracking: page.text.includes('data-affiliate-calculator='),
       hasBreadcrumbSchema: page.text.includes('"BreadcrumbList"'),
       hasRelatedModule: page.text.includes('ct-related-calculators')
         && page.text.includes('data-ct-event="related_calc_click"'),

@@ -1,6 +1,6 @@
 # SERP Title Competitor Comparison - 2026-05-28
 
-Generated: 2026-05-28T06:42:07.980Z
+Generated: 2026-05-28T07:02:16.821Z
 
 The competitor set is seeded from current Thai SERP checks for electricity, VAT, age, and car-loan calculator queries. This report fetches live titles/metas and scores whether titles include exact utility wording, freshness, free/online intent, numbers, and a readable title pattern.
 
