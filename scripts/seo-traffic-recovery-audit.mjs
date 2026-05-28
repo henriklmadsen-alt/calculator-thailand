@@ -19,6 +19,46 @@ const PRIORITY_ROUTES = [
   '/คำนวณผ่อนบ้าน/',
 ];
 
+const ARTICLE_ANCHOR_CHECKS = [
+  { article: '/บทความ/1-kwh-เท่ากับกี่บาท-2569/', target: '/คำนวณค่าไฟฟ้า/' },
+  { article: '/บทความ/คำนวณอายุวันนี้-จากวันเกิด/', target: '/คำนวณอายุ/' },
+  { article: '/บทความ/10000-หาร-1-07-ถอด-vat/', target: '/คำนวณภาษีมูลค่าเพิ่ม/' },
+  { article: '/บทความ/ดาวน์รถ-20-เปอร์เซ็นต์-ผ่อนเท่าไร/', target: '/คำนวณผ่อนรถ/' },
+  { article: '/บทความ/กู้บ้าน-2500000-บาท-30-ปี/', target: '/คำนวณผ่อนบ้าน/' },
+];
+
+const TITLE_TERM_CHECKS = [
+  { route: '/คำนวณอายุ/', terms: ['คำนวณอายุ'] },
+  { route: '/คำนวณค่าไฟฟ้า/', terms: ['ค่าไฟ'] },
+  { route: '/คำนวณภาษีมูลค่าเพิ่ม/', terms: ['VAT'] },
+  { route: '/คำนวณผ่อนรถ/', terms: ['ตารางผ่อนรถ'] },
+  { route: '/คำนวณผ่อนบ้าน/', terms: ['ตารางผ่อนบ้าน'] },
+];
+
+const META_TERM_CHECKS = [
+  { route: '/คำนวณอายุ/', terms: ['คำนวณอายุ'] },
+  { route: '/คำนวณค่าไฟฟ้า/', terms: ['ค่าไฟ'] },
+  { route: '/คำนวณภาษีมูลค่าเพิ่ม/', terms: ['VAT'] },
+  { route: '/คำนวณผ่อนรถ/', terms: ['ตารางผ่อนรถ'] },
+  { route: '/คำนวณผ่อนบ้าน/', terms: ['คำนวณดอกเบี้ยบ้าน'] },
+];
+
+const DIRECT_ANSWER_ROUTES = [
+  '/คำนวณอายุ/',
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณภาษีมูลค่าเพิ่ม/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณผ่อนบ้าน/',
+];
+
+const OFFICIAL_REFERENCE_ROUTES = [
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณภาษีมูลค่าเพิ่ม/',
+  '/คำนวณค่าโอที/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณผ่อนบ้าน/',
+];
+
 const ACTIONS = [
   'Daily GSC clicks/impressions anomaly check',
   'Daily top-page loss report',
@@ -233,12 +273,32 @@ function extractRobots(html) {
   return html.match(/<meta[^>]+name=["']robots["'][^>]+content=["']([^"']+)["']/i)?.[1]?.toLowerCase() || '';
 }
 
+function extractTitle(html) {
+  return html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g, ' ').trim() || '';
+}
+
+function extractDescription(html) {
+  return html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]?.replace(/\s+/g, ' ').trim() || '';
+}
+
 function extractHrefs(html) {
   const hrefs = [];
   for (const match of html.matchAll(/<a[^>]+href=["']([^"']+)["']/gi)) {
     hrefs.push(match[1]);
   }
   return hrefs;
+}
+
+function textHasAllTerms(text, terms) {
+  const haystack = String(text || '').toLocaleLowerCase('th-TH');
+  return terms.every((term) => haystack.includes(term.toLocaleLowerCase('th-TH')));
+}
+
+function hrefSetHasTarget(hrefs, target) {
+  const encodedTarget = encodeURI(target);
+  const absolute = `${SITE_ORIGIN}${target}`;
+  const absoluteEncoded = `${SITE_ORIGIN}${encodedTarget}`;
+  return hrefs.has(target) || hrefs.has(encodedTarget) || hrefs.has(absolute) || hrefs.has(absoluteEncoded);
 }
 
 async function auditLiveSignals() {
@@ -258,23 +318,52 @@ async function auditLiveSignals() {
     const page = route === '/' ? homepage : await fetchText(target);
     const canonical = extractCanonical(page.text);
     const robotsMeta = extractRobots(page.text);
+    const title = extractTitle(page.text);
+    const description = extractDescription(page.text);
     const hrefs = new Set(extractHrefs(page.text));
     const hasRecoveryCopy = page.text.includes('กู้ impressions และ clicks') || page.text.includes('เส้นทางไปเครื่องมือยอดนิยม');
     const linkedFromHomepage = route === '/' || homepageHrefs.has(route);
     const priorityLinks = PRIORITY_ROUTES.filter((candidate) => candidate !== '/' && candidate !== route && hrefs.has(candidate));
+    const titleTerms = TITLE_TERM_CHECKS.find((check) => check.route === route)?.terms || [];
+    const metaTerms = META_TERM_CHECKS.find((check) => check.route === route)?.terms || [];
 
     routeChecks.push({
       route,
       status: page.status,
+      title,
+      description,
       canonical,
       robotsMeta,
       indexable: page.status === 200 && !robotsMeta.includes('noindex') && canonical.startsWith(SITE_ORIGIN),
       linkedFromHomepage,
       hasRecoveryCopy,
       priorityLinks: priorityLinks.length,
+      titleMatchesGscTerms: titleTerms.length === 0 || textHasAllTerms(title, titleTerms),
+      metaMatchesGscTerms: metaTerms.length === 0 || textHasAllTerms(description, metaTerms),
+      hasDirectAnswer: page.text.includes('คำตอบเร็ว') || page.text.includes('คำตอบสั้น') || page.text.includes('สูตรคำนวณ'),
+      hasFaqSchema: page.text.includes('"FAQPage"'),
+      hasHowToSchema: page.text.includes('"HowTo"'),
+      hasWebApplicationSchema: page.text.includes('"WebApplication"'),
+      hasCurrentYear: page.text.includes('2569'),
+      hasOfficialReference: page.text.includes('bot.or.th')
+        || page.text.includes('pea.co.th')
+        || page.text.includes('mea.or.th')
+        || page.text.includes('rd.go.th')
+        || page.text.includes('labour.go.th')
+        || page.text.includes('mol.go.th'),
       error: page.error || '',
     });
   }
+
+  const articleAnchorChecks = await Promise.all(ARTICLE_ANCHOR_CHECKS.map(async (check) => {
+    const page = await fetchText(`${SITE_ORIGIN}${check.article}`);
+    const hrefs = new Set(extractHrefs(page.text));
+    return {
+      ...check,
+      status: page.status,
+      hasTargetLink: page.status === 200 && hrefSetHasTarget(hrefs, check.target),
+    };
+  }));
 
   return {
     robots: {
@@ -296,6 +385,7 @@ async function auditLiveSignals() {
       ok: health.status === 200 && health.text.trim() === 'ok',
     },
     routeChecks,
+    articleAnchorChecks,
   };
 }
 
@@ -337,6 +427,11 @@ function table(headers, rows) {
   ].join('\n');
 }
 
+function mdCell(value, limit = 120) {
+  const text = String(value || '').replace(/\|/g, '\\|').replace(/\s+/g, ' ').trim();
+  return text.length > limit ? `${text.slice(0, limit - 1)}…` : text;
+}
+
 function renderReport({ payload, pageLosses, queryLosses, liveSignals, inspections, completedItems, generatedDate }) {
   const pageRows = pageLosses.slice(0, 10).map((row, index) => (
     `| ${index + 1} | ${pagePath(row.key)} | ${n(row.previousImpressions)} -> ${n(row.currentImpressions)} | ${n(row.impressionsDelta)} | ${n(row.previousClicks)} -> ${n(row.currentClicks)} | ${n(row.clicksDelta)} |`
@@ -348,6 +443,16 @@ function renderReport({ payload, pageLosses, queryLosses, liveSignals, inspectio
 
   const routeRows = liveSignals.routeChecks.map((row) => (
     `| ${row.route} | ${row.status} | ${row.indexable ? 'PASS' : 'FAIL'} | ${row.linkedFromHomepage ? 'PASS' : 'FAIL'} | ${row.hasRecoveryCopy ? 'PASS' : 'WARN'} | ${row.priorityLinks} |`
+  ));
+
+  const signalRows = liveSignals.routeChecks
+    .filter((row) => row.route !== '/')
+    .map((row) => (
+      `| ${row.route} | ${row.titleMatchesGscTerms ? 'PASS' : 'WARN'} | ${row.metaMatchesGscTerms ? 'PASS' : 'WARN'} | ${row.hasDirectAnswer ? 'PASS' : 'WARN'} | ${row.hasFaqSchema ? 'PASS' : 'WARN'} | ${row.hasHowToSchema || row.hasWebApplicationSchema ? 'PASS' : 'WARN'} | ${row.hasCurrentYear ? 'PASS' : 'WARN'} | ${row.hasOfficialReference ? 'PASS' : 'INFO'} | ${mdCell(row.title, 80)} |`
+    ));
+
+  const articleAnchorRows = liveSignals.articleAnchorChecks.map((row) => (
+    `| ${row.article} | ${row.target} | ${row.status} | ${row.hasTargetLink ? 'PASS' : 'FAIL'} |`
   ));
 
   const inspectionRows = inspections.map((row) => (
@@ -389,6 +494,14 @@ ${table(['#', 'Query', 'Impressions', 'Delta', 'Clicks', 'Delta'], queryRows)}
 
 ${table(['Route', 'HTTP', 'Indexable', 'Homepage Link', 'Recovery Cluster', 'Priority Links'], routeRows)}
 
+## CTR, Schema, And Trust Signals
+
+${table(['Route', 'Title Terms', 'Meta Terms', 'Direct Answer', 'FAQ Schema', 'App/HowTo Schema', '2569', 'Official Ref', 'Title'], signalRows)}
+
+## Article-To-Calculator Anchors
+
+${table(['Article', 'Target Calculator', 'HTTP', 'Anchor'], articleAnchorRows)}
+
 ## URL Inspection Sample
 
 ${table(['URL', 'Verdict', 'Coverage', 'Robots', 'Indexing', 'Last crawl'], inspectionRows)}
@@ -428,6 +541,39 @@ if (liveSignals.sitemap.status === 200 && liveSignals.sitemapIndex.status === 20
 }
 completedItems.add(7);
 
+const nonHomeRoutes = liveSignals.routeChecks.filter((row) => row.route !== '/');
+const routeByPath = new Map(liveSignals.routeChecks.map((row) => [row.route, row]));
+if (nonHomeRoutes.every((row) => row.hasRecoveryCopy)) {
+  completedItems.add(11);
+}
+if (liveSignals.articleAnchorChecks.every((row) => row.hasTargetLink)) {
+  completedItems.add(12);
+}
+if (nonHomeRoutes.every((row) => row.linkedFromHomepage && row.priorityLinks >= 2)) {
+  completedItems.add(13);
+}
+if (TITLE_TERM_CHECKS.every((check) => routeByPath.get(check.route)?.titleMatchesGscTerms)) {
+  completedItems.add(14);
+}
+if (META_TERM_CHECKS.every((check) => routeByPath.get(check.route)?.metaMatchesGscTerms)) {
+  completedItems.add(15);
+}
+if (DIRECT_ANSWER_ROUTES.every((route) => routeByPath.get(route)?.hasDirectAnswer)) {
+  completedItems.add(16);
+}
+if (nonHomeRoutes.every((row) => row.hasFaqSchema)) {
+  completedItems.add(17);
+}
+if (nonHomeRoutes.every((row) => row.hasFaqSchema || row.hasHowToSchema || row.hasWebApplicationSchema)) {
+  completedItems.add(18);
+}
+if (nonHomeRoutes.every((row) => row.hasCurrentYear)) {
+  completedItems.add(19);
+}
+if (OFFICIAL_REFERENCE_ROUTES.every((route) => routeByPath.get(route)?.hasOfficialReference)) {
+  completedItems.add(20);
+}
+
 fs.mkdirSync(REPORT_DIR, { recursive: true });
 const report = renderReport({
   payload,
@@ -448,6 +594,7 @@ const json = {
   pageLosses,
   queryLosses,
   liveSignals,
+  articleAnchorChecks: liveSignals.articleAnchorChecks,
   inspections,
   completedItems: [...completedItems].sort((a, b) => a - b),
 };

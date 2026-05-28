@@ -34,16 +34,16 @@ Latest evidence files:
 | 8 | Verify robots/canonical/noindex after every deploy | Implemented in `scripts/seo-traffic-recovery-audit.mjs` |
 | 9 | Strengthen homepage links to money and high-impression pages | Implemented in homepage recovery cluster |
 | 10 | Keep priority calculators within one click from homepage | Implemented and audited in traffic recovery runner |
-| 11 | Build internal topic clusters around age, electricity, VAT, BMI, OT | Pending |
-| 12 | Add exact-match anchors from articles back to calculators | Pending |
-| 13 | Reduce crawl depth for high-value calculators | Pending |
-| 14 | Improve title tags from real GSC queries | Pending |
-| 15 | Improve meta descriptions for CTR | Pending |
-| 16 | Add above-fold direct answer blocks | Pending |
-| 17 | Add query-matched FAQ sections | Pending |
-| 18 | Add HowTo/WebApplication/FAQ schema where useful | Pending |
-| 19 | Add updated for 2569 where genuinely current | Pending |
-| 20 | Add official-source citations on regulated calculators | Pending |
+| 11 | Build internal topic clusters around age, electricity, VAT, BMI, OT | Implemented through recovery clusters and audited by `npm run audit:traffic-recovery` |
+| 12 | Add exact-match anchors from articles back to calculators | Implemented and audited for top article-to-calculator paths |
+| 13 | Reduce crawl depth for high-value calculators | Implemented by homepage links plus priority cross-links |
+| 14 | Improve title tags from real GSC queries | Implemented on top-loss pages and audited by title-term checks |
+| 15 | Improve meta descriptions for CTR | Implemented on top-loss pages and audited by meta-term checks |
+| 16 | Add above-fold direct answer blocks | Implemented on top-loss calculator pages |
+| 17 | Add query-matched FAQ sections | Implemented on priority calculators and audited by FAQ schema checks |
+| 18 | Add HowTo/WebApplication/FAQ schema where useful | Implemented and audited in the traffic recovery runner |
+| 19 | Add updated for 2569 where genuinely current | Implemented and audited on priority calculators |
+| 20 | Add official-source citations on regulated calculators | Implemented and audited for electricity, VAT, OT, car loan, and home loan pages |
 | 21 | Build more electricity long-tail pages | Pending |
 | 22 | Build more age/date long-tail pages | Pending |
 | 23 | Build more VAT exact-number pages | Pending |

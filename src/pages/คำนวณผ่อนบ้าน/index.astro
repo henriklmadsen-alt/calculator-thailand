@@ -6,12 +6,15 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
-import { homeLoanGrowthLinks } from '../../data/traffic-growth-opportunities';
+import { homeLoanGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
-const pageTitle = 'คำนวณผ่อนบ้าน 2569 | ค่างวด รีไฟแนนซ์ จุดคุ้มทุน';
-const pageDescription = 'คำนวณค่างวดบ้านปี 2569 เทียบรีไฟแนนซ์กับโปะบ้าน เห็นค่างวดใหม่ ดอกเบี้ยรวม จุดคุ้มทุน และภาระหนี้ต่อรายได้ในหน้าเดียว';
+const pageTitle = 'คำนวณผ่อนบ้าน 2569 | คำนวณดอกเบี้ยบ้าน + ตารางผ่อนบ้าน';
+const pageDescription = 'คำนวณผ่อนบ้านปี 2569 พร้อมตารางผ่อนบ้าน คำนวณดอกเบี้ยบ้าน รีไฟแนนซ์ โปะบ้าน จุดคุ้มทุน และภาระหนี้ต่อรายได้ในหน้าเดียว';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนบ้าน/`;
+const homeLoanRecoveryLinks = recoveryGrowthLinks
+  .filter((item) => item.href !== '/คำนวณผ่อนบ้าน/')
+  .slice(0, 5);
 
 const faqData = [
   {
@@ -36,7 +39,10 @@ const faqData = [
   },
   { question: 'กู้บ้านได้สูงสุดกี่เท่าของรายได้?', answer: 'ธนาคารส่วนใหญ่อนุมัติให้ผ่อนได้ไม่เกิน 40% ของรายได้สุทธิต่อเดือน เช่น รายได้ 50,000 บาท ผ่อนได้สูงสุด 20,000 บาท/เดือน วงเงินกู้สูงสุดขึ้นกับอัตราดอกเบี้ยและระยะเวลา' },
   { question: 'อัตราดอกเบี้ยสินเชื่อบ้านปัจจุบันอยู่ที่เท่าไร?', answer: 'MRR ของธนาคารพาณิชย์ส่วนใหญ่อยู่ที่ 6.25-7.00% ต่อปี สินเชื่อบ้านทั่วไปได้รับส่วนลด เช่น MRR-1% ถึง MRR-2% ตรวจสอบอัตราปัจจุบันได้จากเว็บไซต์ธนาคารหรือ bot.or.th' },
-  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' }
+  { question: 'ค่าใช้จ่ายแฝงในการกู้บ้านมีอะไรบ้าง?', answer: 'ค่าประเมินราคา 2,000-5,000 บาท ค่าจดจำนอง 1% ของวงเงินกู้ ค่าประกันอัคคีภัย ค่าประกันชีวิตคุ้มครองสินเชื่อ และค่าธรรมเนียมสัญญา รวมกันอาจสูงถึง 2-3% ของวงเงินกู้' },
+  { question: 'คำนวณผ่อนบ้านต้องใช้ข้อมูลอะไรบ้าง?', answer: 'ต้องใช้ราคาบ้าน เงินดาวน์ วงเงินกู้ อัตราดอกเบี้ย ระยะเวลากู้ รายได้ต่อเดือน และหนี้เดิม เพื่อดูทั้งค่างวด ตารางผ่อนบ้าน ดอกเบี้ยรวม และภาระหนี้ต่อรายได้' },
+  { question: 'ตารางผ่อนบ้านช่วยดูอะไร?', answer: 'ตารางผ่อนบ้านช่วยเห็นค่างวดรายเดือน ยอดเงินต้นที่ลดลง ดอกเบี้ยสะสม และจุดที่การโปะหรือรีไฟแนนซ์เริ่มคุ้มกว่าแผนเดิม' },
+  { question: 'คำนวณดอกเบี้ยบ้านต่างจากคำนวณค่างวดบ้านอย่างไร?', answer: 'ค่างวดบ้านคือเงินที่ต้องจ่ายต่อเดือน ส่วนดอกเบี้ยบ้านคือค่าต้นทุนสินเชื่อที่สะสมตลอดสัญญา ควรดูทั้งสองตัวพร้อมกันก่อนตัดสินใจ' }
 ];
 
 const jsonLdWebApp = {
@@ -110,7 +116,9 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณผ่อนบ้านและรีไฟแนนซ์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
@@ -126,6 +134,25 @@ const jsonLdHowTo = {
     <p class="text-gray-600 mb-6">
       คำนวณค่างวดรายเดือนแบบลดต้นลดดอก พร้อมเทียบรีไฟแนนซ์เพื่อดูค่างวดใหม่ ดอกเบี้ยรวม และจุดคุ้มทุนอย่างชัดเจนในปี 2569
     </p>
+
+    <section class="mb-6 rounded-xl border border-sky-100 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="home-loan-answer">
+      <p class="text-xs font-bold uppercase tracking-normal text-sky-700">คำตอบเร็ว</p>
+      <h2 id="home-loan-answer" class="mt-1 text-lg font-bold text-slate-950">คำนวณผ่อนบ้านดูอะไรบ้าง</h2>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">ค่างวดต่อเดือน</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">ยอดกู้ ดอกเบี้ย และจำนวนปีเป็นตัวกำหนดภาระจ่ายจริง</span>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">ตารางผ่อนบ้าน</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">ดูเงินต้นคงเหลือ ดอกเบี้ยสะสม และเดือนที่หนี้ลดชัดเจน</span>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">จุดคุ้มทุนรีไฟแนนซ์</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">เทียบดอกเบี้ยที่ประหยัดกับค่าธรรมเนียมก่อนย้ายธนาคาร</span>
+        </div>
+      </div>
+    </section>
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
       <form id="mortgage-form" class="space-y-6">
@@ -410,6 +437,14 @@ const jsonLdHowTo = {
       title="ช่วยคนค้นหาผ่อนบ้านต่อจากยอดกู้จริง"
       description="เชื่อมคำค้นยอดกู้ รีไฟแนนซ์ และค่าโอนบ้าน เพื่อให้ผู้ใช้เห็นต้นทุนครบก่อนติดต่อพาร์ทเนอร์"
       items={homeLoanGrowthLinks}
+      variant="blue"
+    />
+
+    <TrafficGrowthCluster
+      eyebrow="เส้นทางไปเครื่องมือยอดนิยม"
+      title="เครื่องมือที่ควรใช้ต่อหลังคำนวณผ่อนบ้าน"
+      description="ถ้ากำลังวางแผนซื้อบ้าน ให้ตรวจรายได้ ภาษี ค่าใช้จ่ายรถ และเงินสดรายเดือนต่อ เพื่อให้เส้นทางตัดสินใจครบขึ้น"
+      items={homeLoanRecoveryLinks}
       variant="blue"
     />
 

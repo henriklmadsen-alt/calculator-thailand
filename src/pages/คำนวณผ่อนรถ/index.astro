@@ -6,12 +6,15 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
-import { carLoanGrowthLinks } from '../../data/traffic-growth-opportunities';
+import { carLoanGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
-const pageTitle = 'คำนวณผ่อนรถ 2569 | ดาวน์ 20% ผ่อน 48/60/72/84 เดือน';
-const pageDescription = 'คำนวณค่างวดรถใหม่หรือรถมือสอง 2569 เทียบเงินดาวน์ 20% ดอกเบี้ย flat rate และงวด 48/60/72/84 เดือน ก่อนสมัครสินเชื่อ';
+const pageTitle = 'คำนวณผ่อนรถ 2569 | ตารางผ่อนรถ ดาวน์ 20% 48/60/72/84 เดือน';
+const pageDescription = 'คำนวณผ่อนรถปี 2569 พร้อมตารางผ่อนรถ เงินดาวน์ 20% ดอกเบี้ย flat rate งวด 48/60/72/84 เดือน และยอดจ่ายทั้งสัญญาก่อนสมัครสินเชื่อ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณผ่อนรถ/`;
+const carLoanRecoveryLinks = recoveryGrowthLinks
+  .filter((item) => item.href !== '/คำนวณผ่อนรถ/')
+  .slice(0, 5);
 
 const faqData = [
   {
@@ -49,6 +52,14 @@ const faqData = [
   {
     question: 'ตารางผ่อนรถใช้ดูอะไรบ้างก่อนตัดสินใจ?',
     answer: 'ตารางผ่อนรถช่วยดูค่างวดต่อเดือน ดอกเบี้ยรวม และยอดจ่ายทั้งสัญญาแบบเทียบหลายกรณี เช่น เปลี่ยนเงินดาวน์ 10-30% หรือเปลี่ยนระยะเวลาผ่อน 48-84 งวด เพื่อเลือกแผนที่เหมาะกับรายได้',
+  },
+  {
+    question: 'ดาวน์รถ 20% ผ่อนเท่าไรต้องรู้ข้อมูลอะไรบ้าง?',
+    answer: 'ต้องรู้ราคารถ เงินดาวน์ 20% อัตราดอกเบี้ยแบบ flat rate และจำนวนงวด เช่น 48/60/72/84 เดือน จากนั้นนำยอดจัดไฟแนนซ์และดอกเบี้ยรวมมาหารด้วยจำนวนงวด',
+  },
+  {
+    question: 'คำนวณผ่อนรถกับค่างวดจริงต่างกันตรงไหน?',
+    answer: 'เครื่องคำนวณช่วยประมาณค่างวดจากสูตรไฟแนนซ์ แต่ค่างวดจริงอาจต่างจากค่าธรรมเนียม ประกัน ภาษี โปรโมชัน ดอกเบี้ยเฉพาะบุคคล และเงื่อนไขของบริษัทไฟแนนซ์',
   },
 ];
 
@@ -141,6 +152,25 @@ const jsonLdHowTo = {
     <p class="text-gray-600 mb-6">
       คำนวณค่างวดรถยนต์รายเดือน เงินดาวน์ ดอกเบี้ยรวม และยอดจ่ายทั้งสัญญา ด้วยอัตราดอกเบี้ยแบบคงที่ (flat rate) ที่ใช้กับสินเชื่อรถยนต์ในไทย
     </p>
+
+    <section class="mb-6 rounded-xl border border-amber-100 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="car-loan-answer">
+      <p class="text-xs font-bold uppercase tracking-normal text-amber-700">คำตอบเร็ว</p>
+      <h2 id="car-loan-answer" class="mt-1 text-lg font-bold text-slate-950">ผ่อนรถคำนวณจากอะไร</h2>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">สูตรค่างวด</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">ค่างวด = (ยอดจัดไฟแนนซ์ + ดอกเบี้ยรวม) / จำนวนงวด</span>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">เงินดาวน์ 20%</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">ดาวน์มากขึ้นช่วยลดยอดจัด ดอกเบี้ยรวม และความเสี่ยงผ่อนตึง</span>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">ตารางผ่อนรถ</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">เทียบ 48/60/72/84 เดือน เพื่อดูค่างวดกับยอดจ่ายทั้งสัญญา</span>
+        </div>
+      </div>
+    </section>
 
     <!-- Calculator Form -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
@@ -350,6 +380,15 @@ const jsonLdHowTo = {
       items={carLoanGrowthLinks}
       variant="amber"
     />
+
+    <TrafficGrowthCluster
+      eyebrow="เส้นทางไปเครื่องมือยอดนิยม"
+      title="เครื่องมือที่ควรใช้ต่อหลังคำนวณผ่อนรถ"
+      description="หลังเห็นค่างวดรถแล้ว ควรตรวจภาระผ่อนบ้าน ภาษี รายได้สุทธิ และค่าใช้จ่ายประจำ เพื่อให้การสมัครสินเชื่อไม่กดดันงบรายเดือน"
+      items={carLoanRecoveryLinks}
+      variant="amber"
+    />
+
     <div id="vehicle-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
       <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณผ่อนบ้าน + รีไฟแนนซ์</p>
       <p class="mt-1 text-sm text-primary-700">เทียบภาระหนี้บ้านและรถให้เห็นภาพกระแสเงินสดรวม</p>
