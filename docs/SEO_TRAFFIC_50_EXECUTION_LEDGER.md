@@ -54,16 +54,16 @@ Latest evidence files:
 | 28 | Make affiliate CTAs relevant, not intrusive | Implemented via result-gated affiliate CTAs and sponsored-link checks |
 | 29 | Add calculator result-share snippets | Implemented on priority result pages via `ResultSharePrompt` / result hub |
 | 30 | Add next calculator flows after results | Implemented on electricity, OT, car loan, and home loan result flows |
-| 31 | Add HTML sitemap/category hub pages | Pending |
-| 32 | Prune or de-emphasize thin/niche pages | Pending |
-| 33 | Improve `llms.txt` and AI context files for GEO | Pending |
-| 34 | Add concise answer blocks for AI Overviews | Pending |
-| 35 | Keep formulas in plain HTML text, not hidden JS | Pending |
-| 36 | Improve mobile speed on top landing pages | Pending |
-| 37 | Keep homepage payload small | Pending |
-| 38 | Keep calculator JS lazy where possible | Pending |
-| 39 | Monitor Core Web Vitals weekly | Pending |
-| 40 | Add Thai search synonyms to internal search | Pending |
+| 31 | Add HTML sitemap/category hub pages | Implemented with `/แผนผังเว็บไซต์/`, footer discovery, and category hub audit checks |
+| 32 | Prune or de-emphasize thin/niche pages | Implemented by prioritizing affiliate/search calculators in category hubs and de-emphasizing KLC niche pages |
+| 33 | Improve `llms.txt` and AI context files for GEO | Implemented with GEO priority topics, HTML sitemap references, and removal of unverified traffic claims |
+| 34 | Add concise answer blocks for AI Overviews | Implemented with `data-ai-overview-answer` blocks on priority calculators |
+| 35 | Keep formulas in plain HTML text, not hidden JS | Implemented and audited for electricity, age, VAT, OT, BMI, car loan, and home loan pages |
+| 36 | Improve mobile speed on top landing pages | Implemented with deferred analytics/PWA behavior and CSS content visibility for below-fold sections |
+| 37 | Keep homepage payload small | Implemented with a 50-calculator homepage cap marker and audit check |
+| 38 | Keep calculator JS lazy where possible | Implemented by lazy-loading the search index on focus and preserving deferred PWA registration |
+| 39 | Monitor Core Web Vitals weekly | Implemented with `npm run audit:cwv-weekly` |
+| 40 | Add Thai search synonyms to internal search | Implemented with `src/lib/search-synonyms.ts` and expanded calculator search index terms |
 | 41 | Track affiliate click CTR by calculator | Pending |
 | 42 | Track zero-result searches | Pending |
 | 43 | Use GSC query gaps to choose new pages | Pending |

@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FavoriteCalculators from '../components/templates/FavoriteCalculators.astro';
 import TrafficGrowthCluster from '../components/templates/TrafficGrowthCluster.astro';
 import { categories, calculators, getCategoryCounts, getPopularCalculators } from '../lib/calculators';
+import { GLOBAL_SEARCH_SYNONYMS, getSearchSynonymsForCalculator } from '../lib/search-synonyms';
 import { CALCULATOR_AFFILIATE_MAP } from '../data/affiliate-config';
 import { homepageGrowthLinks, recoveryGrowthLinks } from '../data/traffic-growth-opportunities';
 
@@ -95,7 +96,8 @@ const getCalculatorSearchText = (calc: (typeof calculators)[number]) => {
     return cat ? [cat.id, cat.name, cat.nameEn, cat.slug, cat.description] : [id];
   });
 
-  return [calc.title, calc.desc, ...categoryText].filter(Boolean).join(' ');
+  const synonyms = getSearchSynonymsForCalculator(calc);
+  return [calc.title, calc.desc, ...categoryText, ...GLOBAL_SEARCH_SYNONYMS, ...synonyms].filter(Boolean).join(' ');
 };
 
 const topActions = [
@@ -107,7 +109,7 @@ const topActions = [
   { title: 'VAT 7%', desc: 'บวก VAT ถอด VAT จากราคารวม', href: '/คำนวณภาษีมูลค่าเพิ่ม/', icon: '🧾', tone: 'slate' },
 ];
 
-const quickSearches = ['ภาษี', 'เงินเดือน', 'ค่าไฟ', 'ผ่อนบ้าน', 'ผ่อนรถ', 'ประกันรถ', 'บัตรเครดิต', 'VAT', 'อายุ', 'BMI'];
+const quickSearches = ['ภาษี', 'เงินเดือน', 'ค่าไฟ', 'ค่างวดรถ', 'ผ่อนบ้าน', 'ประกันรถ', 'VAT', 'โอที', 'อายุ', 'BMI'];
 
 const popularToday = [
   { label: 'ค่าไฟบ้าน', href: '/คำนวณค่าไฟฟ้า/', metric: 'PEA/MEA', icon: '⚡' },
@@ -225,6 +227,7 @@ const jsonLdFaq = {
             <input
               id="calc-search"
               type="text"
+              data-lazy-search-index="focus"
               inputmode="search"
               enterkeyhint="search"
               placeholder="ค้นหา เช่น ผ่อนรถ, เงินเดือนสุทธิ, VAT, ค่าไฟ"
@@ -339,7 +342,7 @@ const jsonLdFaq = {
   </div>
 
   <!-- Main content wrapper (hidden during search) -->
-  <div id="main-content" class="ct-ai-main">
+  <div id="main-content" class="ct-ai-main" data-home-calculator-limit={HOME_MAX_CALCULATORS}>
     <TrafficGrowthCluster
       eyebrow="GSC recovery"
       title="กู้ impressions และ clicks จากหน้าที่ Google เคยให้สัญญาณ"

@@ -1,0 +1,90 @@
+import type { Calculator } from './calculators';
+
+type SynonymRule = {
+  hrefs?: string[];
+  categoryIds?: string[];
+  terms: string[];
+};
+
+export const GLOBAL_SEARCH_SYNONYMS = [
+  'เครื่องคิดเลข',
+  'เครื่องคำนวณ',
+  'คำนวณออนไลน์',
+  'สูตรคำนวณ',
+  'ตารางคำนวณ',
+  'calculator',
+  'free calculator',
+];
+
+const SEARCH_SYNONYM_RULES: SynonymRule[] = [
+  {
+    hrefs: ['/คำนวณค่าไฟฟ้า/'],
+    terms: ['ค่าไฟ', 'ค่าไฟบ้าน', 'บิลค่าไฟ', 'บิลไฟ', 'ค่า ft', 'ft ล่าสุด', 'pea', 'mea', 'การไฟฟ้า', '1 kwh', 'กิโลวัตต์', 'หน่วยไฟ'],
+  },
+  {
+    hrefs: ['/คำนวณภาษีเงินได้บุคคลธรรมดา/'],
+    terms: ['ภาษีเงินได้', 'ภาษีเงินเดือน', 'ภงด 90', 'ภงด 91', 'ยื่นภาษี', 'ลดหย่อนภาษี', 'tax', 'income tax'],
+  },
+  {
+    hrefs: ['/คำนวณภาษีมูลค่าเพิ่ม/'],
+    terms: ['vat', 'แวต', 'ภาษีมูลค่าเพิ่ม', 'ถอด vat', 'รวม vat', 'บวก vat', 'หาร 1.07', '10000 1.07', '7%'],
+  },
+  {
+    hrefs: ['/คำนวณผ่อนรถ/', '/คำนวณค่างวดสินเชื่อรถ/'],
+    terms: ['ผ่อนรถ', 'ค่างวดรถ', 'ไฟแนนซ์รถ', 'ดาวน์รถ', 'ดอกเบี้ยรถ', 'ตารางผ่อนรถ', 'รถมือสอง', 'ประกันรถ', 'car loan'],
+  },
+  {
+    hrefs: ['/คำนวณผ่อนบ้าน/', '/คำนวณวงเงินกู้บ้าน/'],
+    terms: ['ผ่อนบ้าน', 'ค่างวดบ้าน', 'สินเชื่อบ้าน', 'กู้บ้าน', 'รีไฟแนนซ์บ้าน', 'ดอกเบี้ยบ้าน', 'mortgage', 'home loan'],
+  },
+  {
+    hrefs: ['/คำนวณเงินเดือนสุทธิ/'],
+    terms: ['เงินเดือนรับจริง', 'เงินเดือนหลังหัก', 'เงินเดือนหักภาษี', 'หักประกันสังคม', 'รายได้สุทธิ', 'net salary', 'take home pay'],
+  },
+  {
+    hrefs: ['/คำนวณค่าโอที/'],
+    terms: ['โอที', 'ot', 'overtime', 'ล่วงเวลา', '1.5 เท่า', '2 เท่า', '3 เท่า', 'ค่าแรงต่อชั่วโมง', 'กฎหมายแรงงาน'],
+  },
+  {
+    hrefs: ['/คำนวณอายุ/'],
+    terms: ['อายุ', 'วันเกิด', 'เกิดปี', 'พ.ศ.', 'ค.ศ.', 'อายุกี่ปี', 'ปีเดือนวัน', 'age calculator'],
+  },
+  {
+    hrefs: ['/คำนวณ-bmi/', '/คำนวณดัชนีมวลกาย/'],
+    terms: ['bmi', 'ดัชนีมวลกาย', 'น้ำหนักส่วนสูง', 'อ้วนไหม', 'ผอมไหม', 'เกณฑ์ bmi', 'body mass index'],
+  },
+  {
+    hrefs: ['/คำนวณเปอร์เซ็นต์/'],
+    terms: ['เปอร์เซ็นต์', 'percentage', 'ส่วนลด', 'กำไร', 'กี่เปอร์เซ็นต์', 'เพิ่มลด percent'],
+  },
+  {
+    categoryIds: ['tax'],
+    terms: ['สรรพากร', 'ภาษีไทย', 'ลดหย่อน', 'ภาษี 2569', 'ยื่นภาษีออนไลน์'],
+  },
+  {
+    categoryIds: ['loan', 'realestate', 'vehicles'],
+    terms: ['ค่างวด', 'ดอกเบี้ย', 'ยอดจัด', 'เงินดาวน์', 'ตารางผ่อน', 'สินเชื่อ'],
+  },
+  {
+    categoryIds: ['insurance'],
+    terms: ['เบี้ยประกัน', 'ประกันรถ', 'ประกันสุขภาพ', 'ประกันชีวิต', 'ชั้น 1', 'ชั้น 2+', 'ชั้น 3+'],
+  },
+  {
+    categoryIds: ['bills', 'energy'],
+    terms: ['ค่าสาธารณูปโภค', 'ค่าใช้จ่ายบ้าน', 'ค่าไฟค่าน้ำ', 'มิเตอร์', 'หน่วย'],
+  },
+];
+
+export function getSearchSynonymsForCalculator(calc: Calculator): string[] {
+  const categoryIds = new Set([calc.categoryId, ...(calc.secondaryCategories || [])]);
+  const terms = new Set<string>();
+
+  for (const rule of SEARCH_SYNONYM_RULES) {
+    const hrefMatch = rule.hrefs?.includes(calc.href) ?? false;
+    const categoryMatch = rule.categoryIds?.some((id) => categoryIds.has(id)) ?? false;
+    if (!hrefMatch && !categoryMatch) continue;
+    for (const term of rule.terms) terms.add(term);
+  }
+
+  return Array.from(terms);
+}

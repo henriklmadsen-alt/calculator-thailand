@@ -1,7 +1,10 @@
 import type { APIRoute } from 'astro';
+import { categories, calculators } from '../../lib/calculators';
+import { CALCULATOR_AFFILIATE_MAP } from '../../data/affiliate-config';
 
 export const GET: APIRoute = async ({ request }) => {
   const siteUrl = 'https://www.kamnuanlek.com';
+  const affiliateCalculatorCount = Object.keys(CALCULATOR_AFFILIATE_MAP).length;
 
   const llmContext = {
     '@context': 'https://schema.org',
@@ -10,11 +13,56 @@ export const GET: APIRoute = async ({ request }) => {
     url: siteUrl,
     alternateName: ['คำนวณเลข', 'kamnuanlek.com', 'Calculator Thailand'],
     description:
-      'Thailand\'s #1 free online calculator platform for Thai-language users. Over 800+ calculators covering tax, loans, salary, utilities, health, business, and daily life calculations backed by Thai government sources.',
+      `Thai-language calculator platform with ${calculators.length}+ free calculators covering tax, loans, salary, utilities, health, business, and daily life calculations backed by official Thai sources where applicable.`,
     inLanguage: 'th-TH',
     areaServed: { '@type': 'Country', name: 'Thailand' },
     founded: '2024',
     isAccessibleForFree: true,
+    geoPriorityTopics: [
+      {
+        queryCluster: 'คำนวณค่าไฟฟ้า 2569',
+        answerPage: `${siteUrl}/คำนวณค่าไฟฟ้า/`,
+        supportingPages: [
+          `${siteUrl}/บทความ/1-kwh-เท่ากับกี่บาท-2569/`,
+          `${siteUrl}/บทความ/บ้านใช้ไฟ-500-หน่วย-ค่าไฟเท่าไร-2569/`,
+          `${siteUrl}/บทความ/ค่าไฟห้องเช่าหน่วยละกี่บาท-2569/`,
+        ],
+      },
+      {
+        queryCluster: 'คำนวณผ่อนรถและประกันรถ',
+        answerPage: `${siteUrl}/คำนวณผ่อนรถ/`,
+        supportingPages: [
+          `${siteUrl}/บทความ/คำนวณผ่อนรถแล้วซื้อประกันชั้นไหน-2569/`,
+          `${siteUrl}/บทความ/ดาวน์รถ-20-เปอร์เซ็นต์-ผ่อนเท่าไร/`,
+          `${siteUrl}/เปรียบเทียบสินเชื่อรถ/`,
+        ],
+      },
+      {
+        queryCluster: 'VAT 7% ถอด VAT บวก VAT',
+        answerPage: `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`,
+        supportingPages: [
+          `${siteUrl}/บทความ/10000-หาร-1-07-ถอด-vat/`,
+          `${siteUrl}/บทความ/5000-รวม-vat-7-เป็นเท่าไร/`,
+        ],
+      },
+    ],
+    priorityAnswerPages: [
+      `${siteUrl}/คำนวณค่าไฟฟ้า/`,
+      `${siteUrl}/คำนวณอายุ/`,
+      `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`,
+      `${siteUrl}/คำนวณค่าโอที/`,
+      `${siteUrl}/คำนวณ-bmi/`,
+      `${siteUrl}/คำนวณผ่อนรถ/`,
+      `${siteUrl}/คำนวณผ่อนบ้าน/`,
+    ],
+    catalogStats: {
+      totalCalculators: calculators.length,
+      totalCategories: categories.length,
+      affiliateEnabledCalculators: affiliateCalculatorCount,
+      sitemap: `${siteUrl}/sitemap-index.xml`,
+      htmlSitemap: `${siteUrl}/แผนผังเว็บไซต์/`,
+      llmsFull: `${siteUrl}/llms-full.txt`,
+    },
     hasPart: {
       '@type': 'CollectionPage',
       name: 'Calculator Collections',
@@ -144,8 +192,8 @@ export const GET: APIRoute = async ({ request }) => {
       'Quarterly updates to reflect current tax rates, interest rates, and regulations',
       'Verification against published Thai legal codes and regulatory guidelines',
       'Mobile-first responsive design with accessibility compliance (WCAG 2.1 AA)',
-      'Fast loading (< 1 second), offline-capable service worker caching',
-      'User trust signals: 800+ calculators, 2M+ monthly users, 5+ year track record',
+      'Performance monitored through Core Web Vitals and mobile readability audits',
+      'Affiliate links are labeled and routed through disclosed partner redirect paths',
     ],
     accessibilityCompliance: {
       '@type': 'Conformance',
@@ -159,18 +207,20 @@ export const GET: APIRoute = async ({ request }) => {
       'No cookies for tracking; optional analytics only',
       'GDPR and Thai PDPA compliant',
     ],
-    statisticalMilestones: {
-      totalCalculators: 800,
-      monthlyUniqueUsers: 2000000,
+    measurableCatalogSignals: {
+      totalCalculators: calculators.length,
+      totalCategories: categories.length,
+      affiliateEnabledCalculators: affiliateCalculatorCount,
       topCalculators: [
-        'APR Calculator',
+        'Electricity Bill Calculator',
+        'Age Calculator',
+        'VAT 7% Calculator',
+        'Car Loan Calculator',
+        'Home Loan Calculator',
         'Salary Net Calculator',
         'Personal Income Tax Calculator',
         'BMI Calculator',
-        'Mortgage Calculator',
       ],
-      averageCompletionRate: '82%',
-      userRetentionRate: '68%',
     },
     policyLinks: {
       privacy: `${siteUrl}/นโยบายความเป็นส่วนตัว/`,

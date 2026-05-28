@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { categories, calculators } from '../../lib/calculators';
+import { GLOBAL_SEARCH_SYNONYMS, getSearchSynonymsForCalculator } from '../../lib/search-synonyms';
 import { CALCULATOR_AFFILIATE_MAP } from '../../data/affiliate-config';
 
 export const prerender = true;
@@ -14,7 +15,8 @@ const getCalculatorSearchText = (calc: (typeof calculators)[number]) => {
     return cat ? [cat.id, cat.name, cat.nameEn, cat.slug, cat.description] : [id];
   });
 
-  return [calc.title, calc.desc, ...categoryText].filter(Boolean).join(' ');
+  const synonyms = getSearchSynonymsForCalculator(calc);
+  return [calc.title, calc.desc, ...categoryText, ...GLOBAL_SEARCH_SYNONYMS, ...synonyms].filter(Boolean).join(' ');
 };
 
 const calculatorSearchIndex = calculators.map((calc) => ({
@@ -24,6 +26,7 @@ const calculatorSearchIndex = calculators.map((calc) => ({
   icon: calc.icon,
   href: calc.href,
   searchText: getCalculatorSearchText(calc),
+  synonyms: getSearchSynonymsForCalculator(calc),
   tag: calc.tag,
   tagColor: calc.tagColor,
   affiliate: affiliateHrefSet.has(calc.href),

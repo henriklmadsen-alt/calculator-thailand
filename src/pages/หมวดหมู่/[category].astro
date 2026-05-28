@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { categories, getCalculatorsByCategory, getCategoryBySlug } from '../../lib/calculators';
+import { CALCULATOR_AFFILIATE_MAP } from '../../data/affiliate-config';
 
 export function getStaticPaths() {
   return categories.map((cat) => ({
@@ -10,7 +11,31 @@ export function getStaticPaths() {
 
 const { category: slug } = Astro.params;
 const cat = getCategoryBySlug(slug as string)!;
-const calcs = getCalculatorsByCategory(cat.id);
+const affiliateHrefSet = new Set(Object.keys(CALCULATOR_AFFILIATE_MAP));
+const priorityHrefSet = new Set([
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณอายุ/',
+  '/คำนวณภาษีมูลค่าเพิ่ม/',
+  '/คำนวณค่าโอที/',
+  '/คำนวณ-bmi/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณผ่อนบ้าน/',
+  '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
+  '/คำนวณเงินเดือนสุทธิ/',
+  '/คำนวณประกันสังคม/',
+]);
+const rawCalcs = getCalculatorsByCategory(cat.id);
+const isPriorityCalculator = (calc: (typeof rawCalcs)[number]) => Boolean(calc.popular) || affiliateHrefSet.has(calc.href) || priorityHrefSet.has(calc.href);
+const isLongTailCalculator = (calc: (typeof rawCalcs)[number]) => /^KLC-/i.test(calc.tag || '') && !isPriorityCalculator(calc);
+const calcs = [...rawCalcs].sort((a, b) => {
+  const priorityDiff = Number(isPriorityCalculator(b)) - Number(isPriorityCalculator(a));
+  if (priorityDiff !== 0) return priorityDiff;
+  const longTailDiff = Number(isLongTailCalculator(a)) - Number(isLongTailCalculator(b));
+  if (longTailDiff !== 0) return longTailDiff;
+  return a.title.localeCompare(b.title, 'th');
+});
+const priorityCalcs = calcs.filter(isPriorityCalculator).slice(0, 6);
+const longTailCount = calcs.filter(isLongTailCalculator).length;
 const otherCategories = categories.filter((c) => c.id !== cat.id);
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
@@ -104,6 +129,23 @@ const jsonLdBreadcrumb = {
       </div>
     </div>
     <p class="text-gray-600 leading-relaxed max-w-2xl">{cat.description}</p>
+    {priorityCalcs.length > 0 && (
+      <div class="mt-4 rounded-2xl border border-primary-100 bg-primary-50 p-4" data-category-priority-strip>
+        <p class="text-sm font-bold text-primary-900">เริ่มจากเครื่องมือที่คนค้นหามากที่สุดในหมวดนี้</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          {priorityCalcs.map((calc) => (
+            <a href={calc.href} class="rounded-full border border-primary-200 bg-white px-3 py-2 text-xs font-semibold text-primary-800 hover:border-primary-400">
+              {calc.title}
+            </a>
+          ))}
+        </div>
+        {longTailCount > 0 && (
+          <p class="mt-3 text-xs leading-5 text-primary-700">
+            เครื่องมือเฉพาะทาง {longTailCount.toLocaleString('th-TH')} รายการยังเข้าถึงได้ด้านล่าง แต่ไม่ถูกดันเด่นกว่าหน้า traffic และ affiliate intent
+          </p>
+        )}
+      </div>
+    )}
   </div>
 
   <!-- Calculator Grid -->
@@ -111,6 +153,7 @@ const jsonLdBreadcrumb = {
     {calcs.map((calc) => (
       <a
         href={calc.href}
+        data-seo-priority={isLongTailCalculator(calc) ? 'deemphasized' : (isPriorityCalculator(calc) ? 'priority' : 'standard')}
         class="ct-ai-directory-card calc-card group relative block p-5 sm:p-6 bg-white rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 hover:border-primary-200"
       >
         {calc.tag && (

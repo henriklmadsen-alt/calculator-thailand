@@ -139,6 +139,37 @@ const NEXT_ACTION_ROUTES = [
   '/คำนวณผ่อนบ้าน/',
 ];
 
+const HTML_SITEMAP_ROUTE = '/แผนผังเว็บไซต์/';
+
+const CATEGORY_HUB_ROUTES = [
+  '/หมวดหมู่/ภาษี/',
+  '/หมวดหมู่/สินเชื่อ/',
+  '/หมวดหมู่/เกษตร/',
+  '/หมวดหมู่/ธุรกิจ/',
+];
+
+const AI_OVERVIEW_ROUTES = [
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณอายุ/',
+  '/คำนวณภาษีมูลค่าเพิ่ม/',
+  '/คำนวณค่าโอที/',
+  '/คำนวณ-bmi/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณผ่อนบ้าน/',
+];
+
+const PLAIN_FORMULA_CHECKS = [
+  { route: '/คำนวณค่าไฟฟ้า/', terms: ['ค่าไฟรวม', 'ค่า Ft', 'VAT'] },
+  { route: '/คำนวณอายุ/', terms: ['ปี', 'เดือน', 'วัน'] },
+  { route: '/คำนวณภาษีมูลค่าเพิ่ม/', terms: ['1.07', 'VAT', 'ราคาก่อน VAT'] },
+  { route: '/คำนวณค่าโอที/', terms: ['1.5', '2', '3'] },
+  { route: '/คำนวณ-bmi/', terms: ['BMI =', 'น้ำหนัก', 'ส่วนสูง'] },
+  { route: '/คำนวณผ่อนรถ/', terms: ['ค่างวด', 'ยอดจัดไฟแนนซ์', 'ดอกเบี้ยรวม'] },
+  { route: '/คำนวณผ่อนบ้าน/', terms: ['PMT', 'ดอกเบี้ย', 'ค่างวด'] },
+];
+
+const SEARCH_SYNONYM_TERMS = ['ค่าไฟบ้าน', 'ค่างวดรถ', 'โอที', 'หาร 1.07', 'ดัชนีมวลกาย'];
+
 const ACTIONS = [
   'Daily GSC clicks/impressions anomaly check',
   'Daily top-page loss report',
@@ -381,6 +412,10 @@ function hrefSetHasTarget(hrefs, target) {
   return hrefs.has(target) || hrefs.has(encodedTarget) || hrefs.has(absolute) || hrefs.has(absoluteEncoded);
 }
 
+function routeByPathFromChecks(routeChecks, route) {
+  return routeChecks.find((row) => row.route === route);
+}
+
 async function auditLiveSignals() {
   const [robots, sitemapIndex, sitemap, health, homepage] = await Promise.all([
     fetchText(`${SITE_ORIGIN}/robots.txt`),
@@ -406,6 +441,7 @@ async function auditLiveSignals() {
     const priorityLinks = PRIORITY_ROUTES.filter((candidate) => candidate !== '/' && candidate !== route && hrefs.has(candidate));
     const titleTerms = TITLE_TERM_CHECKS.find((check) => check.route === route)?.terms || [];
     const metaTerms = META_TERM_CHECKS.find((check) => check.route === route)?.terms || [];
+    const formulaTerms = PLAIN_FORMULA_CHECKS.find((check) => check.route === route)?.terms || [];
 
     routeChecks.push({
       route,
@@ -433,6 +469,8 @@ async function auditLiveSignals() {
         || page.text.includes('mol.go.th'),
       hasResultShare: page.text.includes('data-result-share-prompt') || page.text.includes('ct-hub-share'),
       hasNextAction: page.text.includes('data-next-action-link'),
+      hasAiOverviewAnswer: page.text.includes('data-ai-overview-answer'),
+      hasPlainFormulaText: formulaTerms.length === 0 || textHasAllTerms(page.text, formulaTerms),
       hasRelevantAffiliate: page.text.includes('id="affiliate-card"')
         && page.text.includes('rel="sponsored')
         && page.text.includes('affiliate-card-wrapper')
@@ -489,6 +527,81 @@ async function auditLiveSignals() {
     };
   }));
 
+  const htmlSitemap = await fetchText(`${SITE_ORIGIN}${HTML_SITEMAP_ROUTE}`);
+  const htmlSitemapHrefs = new Set(extractHrefs(htmlSitemap.text));
+  const categoryHubChecks = await Promise.all(CATEGORY_HUB_ROUTES.map(async (route) => {
+    const page = await fetchText(`${SITE_ORIGIN}${route}`);
+    return {
+      route,
+      status: page.status,
+      hasPriorityStrip: page.text.includes('data-category-priority-strip'),
+      hasDeemphasizedLongTail: page.text.includes('data-seo-priority="deemphasized"'),
+    };
+  }));
+
+  const [llms, llmContext, searchIndex] = await Promise.all([
+    fetchText(`${SITE_ORIGIN}/llms.txt`),
+    fetchText(`${SITE_ORIGIN}/api/llm-context.json`),
+    fetchText(`${SITE_ORIGIN}/api/calculator-search-index.json`),
+  ]);
+
+  const searchSynonymChecks = SEARCH_SYNONYM_TERMS.map((term) => ({
+    term,
+    present: searchIndex.text.includes(term),
+  }));
+
+  const themePath = path.join(ROOT, 'src', 'styles', 'theme.css');
+  const packagePath = path.join(ROOT, 'package.json');
+  const themeCss = fs.existsSync(themePath) ? fs.readFileSync(themePath, 'utf8') : '';
+  const packageJson = fs.existsSync(packagePath) ? fs.readFileSync(packagePath, 'utf8') : '';
+  const homepageCalculatorCards = (homepage.text.match(/class="[^"]*\bcalc-item\b/gu) || []).length;
+
+  const discoveryAndPerformanceChecks = {
+    htmlSitemap: {
+      route: HTML_SITEMAP_ROUTE,
+      status: htmlSitemap.status,
+      hasDataMarker: htmlSitemap.text.includes('data-html-sitemap'),
+      linksPriorityRoutes: PRIORITY_ROUTES.filter((route) => route !== '/').every((route) => hrefSetHasTarget(htmlSitemapHrefs, route)),
+      linksLlms: htmlSitemap.text.includes('/llms.txt') && htmlSitemap.text.includes('/api/llm-context.json'),
+    },
+    categoryHubChecks,
+    llmContext: {
+      llmsStatus: llms.status,
+      jsonStatus: llmContext.status,
+      hasGeoTopics: llms.text.includes('GEO / AI Overview Citation Priorities') && llmContext.text.includes('geoPriorityTopics'),
+      hasHtmlSitemapReference: llms.text.includes('/แผนผังเว็บไซต์/') && llmContext.text.includes('htmlSitemap'),
+      avoidsUnverifiedTrafficClaims: !llmContext.text.includes('2M+ monthly users') && !llmContext.text.includes('monthlyUniqueUsers'),
+    },
+    aiOverviewChecks: AI_OVERVIEW_ROUTES.map((route) => ({
+      route,
+      hasAiOverviewAnswer: routeByPathFromChecks(routeChecks, route)?.hasAiOverviewAnswer || false,
+    })),
+    formulaChecks: PLAIN_FORMULA_CHECKS.map((check) => ({
+      route: check.route,
+      pass: routeByPathFromChecks(routeChecks, check.route)?.hasPlainFormulaText || false,
+      terms: check.terms,
+    })),
+    mobilePerformance: {
+      deferredGtag: homepage.text.includes('runAfterLoadIdle(function loadGtagScript'),
+      contentVisibility: themeCss.includes('content-visibility: auto'),
+    },
+    homepagePayload: {
+      visibleCalculatorCards: homepageCalculatorCards,
+      underLimit: homepageCalculatorCards <= 50,
+      hasLimitMarker: homepage.text.includes('data-home-calculator-limit="50"'),
+    },
+    lazyCalculatorJs: {
+      lazySearchMarker: homepage.text.includes('data-lazy-search-index="focus"'),
+      focusLoad: homepage.text.includes("addEventListener('focus', ensureSearchIndex"),
+      deferredPwa: homepage.text.includes('registerPwaAfterPaint'),
+    },
+    cwvMonitor: {
+      scriptExists: fs.existsSync(path.join(ROOT, 'scripts', 'weekly-cwv-monitor.mjs')),
+      packageScript: packageJson.includes('"audit:cwv-weekly"'),
+    },
+    searchSynonyms: searchSynonymChecks,
+  };
+
   return {
     robots: {
       status: robots.status,
@@ -513,6 +626,7 @@ async function auditLiveSignals() {
     contentExpansionChecks,
     comparisonPageChecks,
     affiliateIntentChecks,
+    discoveryAndPerformanceChecks,
   };
 }
 
@@ -602,6 +716,31 @@ function renderReport({ payload, pageLosses, queryLosses, liveSignals, inspectio
       `| ${row.route} | ${row.hasRelevantAffiliate ? 'PASS' : 'INFO'} | ${row.hasResultShare ? 'PASS' : 'WARN'} | ${row.hasNextAction ? 'PASS' : 'WARN'} |`
     ));
 
+  const discovery = liveSignals.discoveryAndPerformanceChecks || {};
+  const discoveryRows = discovery.htmlSitemap ? [
+    `| HTML sitemap | ${discovery.htmlSitemap.status} | ${discovery.htmlSitemap.hasDataMarker ? 'PASS' : 'FAIL'} | ${discovery.htmlSitemap.linksPriorityRoutes ? 'PASS' : 'FAIL'} | ${discovery.htmlSitemap.linksLlms ? 'PASS' : 'FAIL'} |`,
+    `| LLM context | ${discovery.llmContext?.jsonStatus || 'ERR'} | ${discovery.llmContext?.hasGeoTopics ? 'PASS' : 'FAIL'} | ${discovery.llmContext?.hasHtmlSitemapReference ? 'PASS' : 'FAIL'} | ${discovery.llmContext?.avoidsUnverifiedTrafficClaims ? 'PASS' : 'FAIL'} |`,
+  ] : [];
+
+  const categoryHubRows = (discovery.categoryHubChecks || []).map((row) => (
+    `| ${row.route} | ${row.status} | ${row.hasPriorityStrip ? 'PASS' : 'FAIL'} | ${row.hasDeemphasizedLongTail ? 'PASS' : 'INFO'} |`
+  ));
+
+  const aiAnswerRows = (discovery.aiOverviewChecks || []).map((row) => {
+    const formula = (discovery.formulaChecks || []).find((check) => check.route === row.route);
+    return `| ${row.route} | ${row.hasAiOverviewAnswer ? 'PASS' : 'FAIL'} | ${formula?.pass ? 'PASS' : 'FAIL'} | ${mdCell((formula?.terms || []).join(', '), 90)} |`;
+  });
+
+  const performanceRows = discovery.mobilePerformance ? [
+    `| Mobile performance | ${discovery.mobilePerformance.deferredGtag ? 'PASS' : 'FAIL'} | ${discovery.mobilePerformance.contentVisibility ? 'PASS' : 'FAIL'} | ${discovery.cwvMonitor?.scriptExists && discovery.cwvMonitor?.packageScript ? 'PASS' : 'FAIL'} |`,
+    `| Homepage payload | ${discovery.homepagePayload?.visibleCalculatorCards ?? 'n/a'} cards | ${discovery.homepagePayload?.underLimit ? 'PASS' : 'FAIL'} | ${discovery.homepagePayload?.hasLimitMarker ? 'PASS' : 'FAIL'} |`,
+    `| Lazy discovery JS | ${discovery.lazyCalculatorJs?.lazySearchMarker ? 'PASS' : 'FAIL'} | ${discovery.lazyCalculatorJs?.focusLoad ? 'PASS' : 'FAIL'} | ${discovery.lazyCalculatorJs?.deferredPwa ? 'PASS' : 'FAIL'} |`,
+  ] : [];
+
+  const searchSynonymRows = (discovery.searchSynonyms || []).map((row) => (
+    `| ${row.term} | ${row.present ? 'PASS' : 'FAIL'} |`
+  ));
+
   const inspectionRows = inspections.map((row) => (
     `| ${pagePath(row.url)} | ${row.verdict || 'ERR'} | ${row.coverageState || row.error || ''} | ${row.robotsTxtState || ''} | ${row.indexingState || ''} | ${row.lastCrawlTime || ''} |`
   ));
@@ -662,6 +801,18 @@ ${table(['Affiliate Intent Page', 'Affiliate Path', 'HTTP', 'Sponsored Link'], a
 ## Result Sharing And Next Actions
 
 ${table(['Route', 'Affiliate CTA', 'Share Prompt', 'Next Action'], conversionRows)}
+
+## Discovery, GEO, Performance And Search
+
+${table(['Check', 'HTTP / Metric', 'Marker / GEO', 'Priority / Limit', 'LLM / Safety'], discoveryRows)}
+
+${table(['Category Hub', 'HTTP', 'Priority Strip', 'Long-Tail Deemphasis'], categoryHubRows)}
+
+${table(['Route', 'AI Overview Block', 'Plain Formula Text', 'Terms'], aiAnswerRows)}
+
+${table(['Check', 'Metric 1', 'Metric 2', 'Metric 3'], performanceRows)}
+
+${table(['Search Synonym', 'Present In Index'], searchSynonymRows)}
 
 ## URL Inspection Sample
 
@@ -752,6 +903,56 @@ if (RESULT_SHARE_ROUTES.every((route) => routeByPath.get(route)?.hasResultShare)
 if (NEXT_ACTION_ROUTES.every((route) => routeByPath.get(route)?.hasNextAction)) {
   completedItems.add(30);
 }
+const discovery = liveSignals.discoveryAndPerformanceChecks;
+if (
+  discovery.htmlSitemap.status === 200
+  && discovery.htmlSitemap.hasDataMarker
+  && discovery.htmlSitemap.linksPriorityRoutes
+  && discovery.htmlSitemap.linksLlms
+  && discovery.categoryHubChecks.every((row) => row.status === 200)
+) {
+  completedItems.add(31);
+}
+if (
+  discovery.categoryHubChecks.every((row) => row.status === 200 && row.hasPriorityStrip)
+  && discovery.categoryHubChecks.some((row) => row.hasDeemphasizedLongTail)
+) {
+  completedItems.add(32);
+}
+if (
+  discovery.llmContext.llmsStatus === 200
+  && discovery.llmContext.jsonStatus === 200
+  && discovery.llmContext.hasGeoTopics
+  && discovery.llmContext.hasHtmlSitemapReference
+  && discovery.llmContext.avoidsUnverifiedTrafficClaims
+) {
+  completedItems.add(33);
+}
+if (discovery.aiOverviewChecks.every((row) => row.hasAiOverviewAnswer)) {
+  completedItems.add(34);
+}
+if (discovery.formulaChecks.every((row) => row.pass)) {
+  completedItems.add(35);
+}
+if (discovery.mobilePerformance.deferredGtag && discovery.mobilePerformance.contentVisibility) {
+  completedItems.add(36);
+}
+if (discovery.homepagePayload.underLimit && discovery.homepagePayload.hasLimitMarker) {
+  completedItems.add(37);
+}
+if (
+  discovery.lazyCalculatorJs.lazySearchMarker
+  && discovery.lazyCalculatorJs.focusLoad
+  && discovery.lazyCalculatorJs.deferredPwa
+) {
+  completedItems.add(38);
+}
+if (discovery.cwvMonitor.scriptExists && discovery.cwvMonitor.packageScript) {
+  completedItems.add(39);
+}
+if (discovery.searchSynonyms.every((row) => row.present)) {
+  completedItems.add(40);
+}
 
 fs.mkdirSync(REPORT_DIR, { recursive: true });
 const report = renderReport({
@@ -777,6 +978,7 @@ const json = {
   contentExpansionChecks: liveSignals.contentExpansionChecks,
   comparisonPageChecks: liveSignals.comparisonPageChecks,
   affiliateIntentChecks: liveSignals.affiliateIntentChecks,
+  discoveryAndPerformanceChecks: liveSignals.discoveryAndPerformanceChecks,
   inspections,
   completedItems: [...completedItems].sort((a, b) => a - b),
 };
