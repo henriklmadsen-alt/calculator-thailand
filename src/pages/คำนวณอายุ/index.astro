@@ -4,12 +4,13 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
-import { ageGrowthLinks } from '../../data/traffic-growth-opportunities';
+import { ageGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณอายุวันนี้ จากวันเกิด | ปี เดือน วัน + พ.ศ./ค.ศ. 2569';
 const pageDescription = 'คำนวณอายุจากวันเกิดฟรี รู้ทันทีว่าอายุกี่ปี กี่เดือน กี่วัน รองรับ พ.ศ./ค.ศ. พร้อมวันเกิดครั้งหน้า ราศี และ Generation';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณอายุ/`;
+const ageRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href !== '/คำนวณอายุ/').slice(0, 5);
 
 const currentBEYear = new Date().getFullYear() + 543;
 
@@ -223,6 +224,14 @@ const jsonLdHowTo = {
       description="หน้าอายุมี impressions ดีอยู่แล้ว จึงเพิ่มเส้นทางคำตอบแบบปี เดือน วัน และลิงก์ไปเครื่องมือที่เกี่ยวข้อง"
       items={ageGrowthLinks}
       variant="blue"
+    />
+
+    <TrafficGrowthCluster
+      eyebrow="เส้นทางไปเครื่องมือยอดนิยม"
+      title="เครื่องมือที่คนมักใช้ต่อหลังคำนวณอายุ"
+      description="ช่วยให้ผู้ใช้และ Google เดินต่อไปยังหน้าที่มี impressions หรือโอกาส clicks สูง"
+      items={ageRecoveryLinks}
+      variant="amber"
     />
 
     <!-- AdSense placeholder -->

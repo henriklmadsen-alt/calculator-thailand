@@ -4,12 +4,13 @@ import RelatedArticles from '../../components/templates/RelatedArticles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
-import { vatGrowthLinks } from '../../data/traffic-growth-opportunities';
+import { vatGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณ VAT 7% | 10000/1.07 ถอด VAT บวก VAT ฟรี 2569';
 const pageDescription = 'เครื่องคำนวณ VAT 7% บวกภาษี ถอดภาษีจากราคารวม เช่น 10000/1.07 พร้อมแยกยอดก่อนภาษี ภาษี และยอดสุทธิ ใช้ฟรี ไม่ต้องสมัคร';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`;
+const vatRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href !== '/คำนวณภาษีมูลค่าเพิ่ม/').slice(0, 5);
 
 const faqData = [
   {
@@ -303,6 +304,14 @@ const jsonLdHowTo = {
       description="กลุ่มคำค้นแบบ 10000/1.07 ต้องการคำตอบสั้นมาก จึงเพิ่มหน้า exact-answer และ internal link กลับมาที่เครื่องมือ"
       items={vatGrowthLinks}
       variant="mint"
+    />
+
+    <TrafficGrowthCluster
+      eyebrow="เส้นทางไปเครื่องมือยอดนิยม"
+      title="เครื่องมือที่ควรใช้ต่อหลังคำนวณ VAT"
+      description="เชื่อมหน้า VAT เข้ากับหน้าที่ Google เคยให้ impressions สูง เพื่อให้ทั้งคลัสเตอร์กลับมาถูก crawl บ่อยขึ้น"
+      items={vatRecoveryLinks}
+      variant="amber"
     />
 
     <section class="mb-8 rounded-xl border border-primary-200 bg-primary-50 p-4 sm:p-5">

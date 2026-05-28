@@ -5,7 +5,58 @@ export interface TrafficGrowthLink {
   badge?: string;
 }
 
+export const recoveryGrowthLinks: TrafficGrowthLink[] = [
+  {
+    title: 'คำนวณอายุวันนี้จากวันเกิด',
+    href: '/คำนวณอายุ/',
+    desc: 'หน้าที่เคยได้ impressions สูงสุด ต้องส่งลิงก์ตรงกลับไปที่เครื่องมือหลัก',
+    badge: 'GSC recovery',
+  },
+  {
+    title: 'คำนวณค่าไฟฟ้า 2569',
+    href: '/คำนวณค่าไฟฟ้า/',
+    desc: 'หน้าอันดับประมาณ 8-10 ที่ต้องกู้ impressions และ CTR เร็วที่สุด',
+    badge: 'Top 10',
+  },
+  {
+    title: 'คำนวณ VAT 7%',
+    href: '/คำนวณภาษีมูลค่าเพิ่ม/',
+    desc: 'จับคำค้น VAT 7, คิด VAT, วิธีคิด VAT 7% และ 10000/1.07',
+    badge: 'VAT',
+  },
+  {
+    title: 'คำนวณ BMI สูตร',
+    href: '/คำนวณ-bmi/',
+    desc: 'รองรับคำค้น BMI สูตร วิธีคำนวณ BMI และดัชนีมวลกายสำหรับคนไทย',
+    badge: 'Health',
+  },
+  {
+    title: 'คำนวณค่าโอที',
+    href: '/คำนวณค่าโอที/',
+    desc: 'หน้าใกล้หน้าแรกเดิม เหมาะกับการดันด้วยลิงก์ภายในและ FAQ',
+    badge: 'Near page 1',
+  },
+  {
+    title: 'คำนวณผ่อนรถ',
+    href: '/คำนวณผ่อนรถ/',
+    desc: 'หน้า affiliate-friendly ที่ต้องสะสม internal authority ต่อเนื่อง',
+    badge: 'Affiliate',
+  },
+];
+
 export const homepageGrowthLinks: TrafficGrowthLink[] = [
+  {
+    title: 'คำนวณอายุวันนี้',
+    href: '/คำนวณอายุ/',
+    desc: 'ส่ง authority ตรงกลับไปยังหน้าอายุที่เคยทำ impressions สูงสุดใน Search Console',
+    badge: 'Priority',
+  },
+  {
+    title: 'คำนวณค่าไฟฟ้า 2569',
+    href: '/คำนวณค่าไฟฟ้า/',
+    desc: 'หน้าไฟฟ้ายัง indexed และเคยติด top 10 จึงต้องได้ลิงก์ตรงจากหน้าแรก',
+    badge: 'Priority',
+  },
   {
     title: '1 kWh เท่ากับกี่บาท 2569',
     href: '/บทความ/1-kwh-เท่ากับกี่บาท-2569/',
@@ -19,9 +70,9 @@ export const homepageGrowthLinks: TrafficGrowthLink[] = [
     badge: 'ค่าไฟ',
   },
   {
-    title: 'คำนวณอายุวันนี้จากวันเกิด',
-    href: '/บทความ/คำนวณอายุวันนี้-จากวันเกิด/',
-    desc: 'เสริมหน้าอายุที่มี impressions สูงแต่ CTR ยังต่ำ ด้วยคำตอบแบบปี เดือน วัน',
+    title: 'คำนวณ VAT 7%',
+    href: '/คำนวณภาษีมูลค่าเพิ่ม/',
+    desc: 'ดันหน้า VAT ที่เริ่มมี impressions แต่ยังไม่มี clicks ให้มีเส้นทางตรงจากหน้าแรก',
     badge: 'CTR lift',
   },
   {

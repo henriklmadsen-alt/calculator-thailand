@@ -20,24 +20,40 @@ import { google } from 'googleapis';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(__dirname, '..');
 
-// Load GSC credentials from .env.gsc
-const envGscPath = path.join(projectRoot, '.env.gsc');
-if (!fs.existsSync(envGscPath)) {
-  console.error('❌ .env.gsc not found. Cannot submit sitemaps without GSC credentials.');
+function readEnvValue(key) {
+  if (process.env[key]) return process.env[key];
+
+  const candidates = ['.env.gsc', '.env.local', '.env'];
+  for (const fileName of candidates) {
+    const filePath = path.join(projectRoot, fileName);
+    if (!fs.existsSync(filePath)) continue;
+
+    const envContent = fs.readFileSync(filePath, 'utf-8');
+    const match = envContent.match(new RegExp(`^${key}=(.*)$`, 'm'));
+    if (!match) continue;
+
+    let value = match[1].trim();
+    const quote = value[0];
+    if ((quote === '"' || quote === "'") && value.endsWith(quote)) {
+      value = value.slice(1, -1);
+    }
+
+    return value;
+  }
+
+  return undefined;
+}
+
+const serviceAccountJsonRaw = readEnvValue('GSC_SERVICE_ACCOUNT_JSON');
+if (!serviceAccountJsonRaw) {
+  console.error('❌ GSC_SERVICE_ACCOUNT_JSON not found in .env.gsc, .env.local, .env, or process.env');
   process.exit(1);
 }
 
-const envContent = fs.readFileSync(envGscPath, 'utf-8');
-const gscJsonMatch = envContent.match(/GSC_SERVICE_ACCOUNT_JSON='(.+?)'/s);
-if (!gscJsonMatch) {
-  console.error('❌ GSC_SERVICE_ACCOUNT_JSON not found in .env.gsc');
-  process.exit(1);
-}
-
-const serviceAccountJson = JSON.parse(gscJsonMatch[1]);
+const serviceAccountJson = JSON.parse(serviceAccountJsonRaw);
 
 // GSC configuration
-const SITE_URL = 'https://www.kamnuanlek.com/';
+const SITE_URL = readEnvValue('GSC_SITE_URL') || 'https://www.kamnuanlek.com/';
 const DOMAIN_SITE_URL = 'sc-domain:kamnuanlek.com';
 const SITEMAP_INDEX_URL = 'https://www.kamnuanlek.com/sitemap-index.xml';
 
@@ -58,11 +74,9 @@ async function submitSitemap(searchconsole, siteUrl, sitemapUrl) {
     console.log(`📤 Submitting sitemap: ${sitemapUrl}`);
     console.log(`   to GSC site: ${siteUrl}`);
 
-    const response = await searchconsole.sitemap.submit({
-      siteUrl: siteUrl,
-      requestBody: {
-        feedpath: sitemapUrl,
-      },
+    const response = await searchconsole.sitemaps.submit({
+      siteUrl,
+      feedpath: sitemapUrl,
     });
 
     console.log(`✅ Sitemap submitted successfully`);

@@ -13,7 +13,7 @@
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 
-const INDEXNOW_KEY = 'b48f107cf34f6dcalcth';
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'b48f107cf34f6dca1c4ab87f7ecf5062';
 const INDEXNOW_API = 'https://api.indexnow.org/IndexNow';
 
 function parseArgs(argv) {
