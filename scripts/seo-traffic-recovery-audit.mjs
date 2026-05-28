@@ -554,7 +554,7 @@ async function auditLiveSignals() {
   const packagePath = path.join(ROOT, 'package.json');
   const themeCss = fs.existsSync(themePath) ? fs.readFileSync(themePath, 'utf8') : '';
   const packageJson = fs.existsSync(packagePath) ? fs.readFileSync(packagePath, 'utf8') : '';
-  const homepageCalculatorCards = (homepage.text.match(/class="[^"]*\bcalc-item\b/gu) || []).length;
+  const homepageCalculatorCards = (homepage.text.match(/data-home-calculator-card/gu) || []).length;
 
   const discoveryAndPerformanceChecks = {
     htmlSitemap: {
