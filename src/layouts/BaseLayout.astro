@@ -527,8 +527,37 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
         window.gtag('event', 'result_viewed', withLanguageContext({ calculator_type: calculatorType }));
       }
       function trackLanguageAwareEvent(eventName, payload = {}) {
-        if (typeof window.gtag !== 'function') return;
-        window.gtag('event', eventName, withLanguageContext(payload));
+        const enrichedPayload = withLanguageContext(payload);
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', eventName, enrichedPayload);
+        }
+        const firstPartyEvents = new Set([
+          'affiliate_cta_view',
+          'affiliate_click',
+          'affiliate_click_unconfigured',
+          'site_search',
+          'site_search_zero_results',
+          'related_calc_click',
+        ]);
+        if (!firstPartyEvents.has(eventName)) return;
+        try {
+          const body = JSON.stringify({
+            eventType: eventName,
+            sessionId: window.__ctSessionId || getOrCreateVisitorId(),
+            pageUrl: window.location.pathname,
+            properties: enrichedPayload,
+          });
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/events', new Blob([body], { type: 'application/json' }));
+          } else {
+            fetch('/api/events', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body,
+              keepalive: true,
+            }).catch(() => {});
+          }
+        } catch {}
       }
 
       function getOrCreateVisitorId() {
@@ -673,6 +702,20 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
             if (placement) payload.placement = placement;
 
             trackLanguageAwareEvent(eventName, payload);
+          });
+        });
+
+        document.querySelectorAll('[data-ct-event]').forEach((element) => {
+          if (element.getAttribute('data-ct-bound') === '1') return;
+          element.setAttribute('data-ct-bound', '1');
+          element.addEventListener('click', () => {
+            const eventName = element.getAttribute('data-ct-event');
+            if (!eventName) return;
+            trackLanguageAwareEvent(eventName, {
+              page_path: window.location.pathname,
+              target_url: element.getAttribute('href') || '',
+              link_text: (element.textContent || '').trim().slice(0, 120),
+            });
           });
         });
       }

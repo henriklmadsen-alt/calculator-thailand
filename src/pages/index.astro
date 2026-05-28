@@ -698,6 +698,7 @@ const jsonLdFaq = {
     var quickSearchButtons = document.querySelectorAll('.quick-search');
     var debounceTimer = null;
     var lastTrackedSearch = '';
+    var lastTrackedZeroSearch = '';
 
     if (searchInput) {
       searchInput.addEventListener('focus', ensureSearchIndex, { once: true });
@@ -800,6 +801,14 @@ const jsonLdFaq = {
       if (searchCount) searchCount.textContent = matches.length + ' รายการ';
 
       if (matches.length === 0) {
+        if (searchIndexLoaded && query.length >= 2 && query !== lastTrackedZeroSearch && typeof window.trackLanguageAwareEvent === 'function') {
+          lastTrackedZeroSearch = query;
+          window.trackLanguageAwareEvent('site_search_zero_results', {
+            search_term: query,
+            result_count: '0',
+            page_path: window.location.pathname
+          });
+        }
         searchGrid.innerHTML = '';
         searchNoResults.classList.remove('hidden');
       } else {

@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import { getAffiliateRedirectSummary } from './affiliate-redirect.mjs';
+import { getClientEventSummary } from './client-events.mjs';
 
 const DEFAULT_SITE_URL = 'https://www.kamnuanlek.com/';
 const GSC_DATA_LAG_DAYS = 3;
@@ -494,6 +495,7 @@ export async function buildKpiDashboardPayload(days = 28) {
     pages: [],
   };
   const serverAffiliate = await getAffiliateRedirectSummary(range.days);
+  const clientEvents = await getClientEventSummary(range.days);
 
   if (ga4KeyJson && ga4PropertyId) {
     try {
@@ -533,11 +535,43 @@ export async function buildKpiDashboardPayload(days = 28) {
     affiliatePages.set(key, existing);
   }
 
+  const useClientAffiliateFallback = !hasGa4 || affiliate.pages.length === 0;
+  if (useClientAffiliateFallback) {
+    for (const page of clientEvents.affiliateByCalculator) {
+      const key = page.calculatorPath;
+      const existing = affiliatePages.get(key) || {
+        page: key,
+        label: pageLabel(key),
+        ctaViews: 0,
+        clicks: 0,
+        redirects: 0,
+        unconfigured: 0,
+        users: 0,
+        clickRate: 0,
+        serverRedirects: 0,
+      };
+      existing.ctaViews += page.ctaViews;
+      existing.clicks += page.clicks;
+      existing.clickRate = existing.ctaViews > 0 ? round((existing.clicks / existing.ctaViews) * 100, 2) : 0;
+      affiliatePages.set(key, existing);
+    }
+  }
+
+  const mergedCtaViews = affiliate.totals.ctaViews + (useClientAffiliateFallback ? clientEvents.totals.affiliateCtaViews : 0);
+  const mergedClicks = affiliate.totals.clicks + (useClientAffiliateFallback ? clientEvents.totals.affiliateClicks : 0);
+
   affiliate = {
     totals: {
       ...affiliate.totals,
+      ctaViews: mergedCtaViews,
+      clicks: mergedClicks,
       redirects: affiliate.totals.redirects + serverAffiliate.totals.redirects,
       serverRedirects: serverAffiliate.totals.redirects,
+      clientTrackedClicks: clientEvents.totals.affiliateClicks,
+      clientTrackedViews: clientEvents.totals.affiliateCtaViews,
+      clickRate: mergedCtaViews > 0
+        ? round((mergedClicks / mergedCtaViews) * 100, 2)
+        : affiliate.totals.clickRate,
     },
     pages: [...affiliatePages.values()].sort((a, b) => (b.clicks + b.redirects) - (a.clicks + a.redirects)),
     partners: serverAffiliate.partners,
@@ -583,6 +617,13 @@ export async function buildKpiDashboardPayload(days = 28) {
       ctrRepairs,
     },
     affiliate,
+    discovery: {
+      clientEvents: {
+        totals: clientEvents.totals,
+        zeroSearchTerms: clientEvents.zeroSearchTerms.slice(0, 25),
+        affiliateByCalculator: clientEvents.affiliateByCalculator.slice(0, 25),
+      },
+    },
     actions: buildActionQueue({ opportunities, ctrRepairs, growing, affiliate }),
   };
 }

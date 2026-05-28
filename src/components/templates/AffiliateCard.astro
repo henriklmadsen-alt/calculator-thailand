@@ -41,6 +41,7 @@ const partnerName = customPartnerName ?? affiliatePartnerConfig?.partnerName ?? 
 const isTrackedAffiliateConfigured = affiliatePartnerConfig
   ? isAffiliatePartnerConfigured(affiliatePartnerConfig)
   : Boolean(affiliateUrl);
+const calculatorPath = Astro.url.pathname;
 ---
 
 {/* Wrapper — hidden by default; calculator scripts call classList.remove('hidden') to reveal */}
@@ -51,6 +52,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
   data-affiliate-partner={partnerName}
   data-affiliate-url={affiliateUrl}
   data-affiliate-cta={ctaText}
+  data-affiliate-calculator={calculatorPath}
   data-affiliate-configured={String(isTrackedAffiliateConfigured)}
   data-affiliate-experiment="affiliate-benefit-cta-v1"
   data-affiliate-custom-copy={String(hasCustomCopy)}
@@ -432,6 +434,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
             affiliate_partner:  card.dataset.affiliatePartner  ?? '',
             affiliate_url:      card.dataset.affiliateUrl      ?? '',
             affiliate_cta:      card.dataset.affiliateCta      ?? '',
+            calculator_path:     card.dataset.affiliateCalculator ?? window.location.pathname,
             affiliate_experiment: card.dataset.affiliateExperiment ?? EXPERIMENT_NAME,
             affiliate_variant: card.dataset.affiliateVariant ?? 'control',
             page_path:          window.location.pathname,
@@ -444,6 +447,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
           affiliate_partner:  card.dataset.affiliatePartner  ?? '',
           affiliate_url:      card.dataset.affiliateUrl      ?? '',
           affiliate_cta:      card.dataset.affiliateCta      ?? '',
+          calculator_path:     card.dataset.affiliateCalculator ?? window.location.pathname,
           affiliate_experiment: card.dataset.affiliateExperiment ?? EXPERIMENT_NAME,
           affiliate_variant: card.dataset.affiliateVariant ?? 'control',
           page_path:          window.location.pathname,
@@ -459,6 +463,7 @@ const isTrackedAffiliateConfigured = affiliatePartnerConfig
         affiliate_partner:  card.dataset.affiliatePartner  ?? '',
         affiliate_url:      card.dataset.affiliateUrl      ?? '',
         affiliate_cta:      card.dataset.affiliateCta      ?? '',
+        calculator_path:     card.dataset.affiliateCalculator ?? window.location.pathname,
         affiliate_experiment: card.dataset.affiliateExperiment ?? EXPERIMENT_NAME,
         affiliate_variant: card.dataset.affiliateVariant ?? 'control',
         page_path:          window.location.pathname,

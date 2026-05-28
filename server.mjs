@@ -24,6 +24,7 @@ import { handleStripeCheckout } from './app/stripe.mjs';
 import { handleStripeWebhook } from './app/stripe-webhook.mjs';
 import { handleKpiDashboardRequest } from './app/kpi-dashboard.mjs';
 import { handleAffiliateRedirect } from './app/affiliate-redirect.mjs';
+import { handleClientEventRequest } from './app/client-events.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const distDir = join(__dirname, 'dist');
@@ -70,17 +71,29 @@ const securityHeaders = Object.freeze({
   ].join('; '),
 });
 
+const embedSecurityHeaders = Object.freeze(Object.fromEntries(
+  Object.entries({
+    ...securityHeaders,
+    'Content-Security-Policy': securityHeaders['Content-Security-Policy'].replace("frame-ancestors 'self'", 'frame-ancestors *'),
+  }).filter(([name]) => name !== 'X-Frame-Options'),
+));
+
+function getSecurityHeadersForPath(pathname = '') {
+  const normalizedPath = String(pathname || '');
+  return normalizedPath === '/embed' || normalizedPath.startsWith('/embed/') ? embedSecurityHeaders : securityHeaders;
+}
+
 function headerBagHas(headers, headerName) {
   if (!headers || typeof headers !== 'object' || Array.isArray(headers)) return false;
   const normalizedName = headerName.toLowerCase();
   return Object.keys(headers).some((key) => key.toLowerCase() === normalizedName);
 }
 
-function applyDefaultSecurityHeaders(res) {
+function applyDefaultSecurityHeaders(res, headerSet = securityHeaders) {
   const originalWriteHead = res.writeHead.bind(res);
   res.writeHead = (statusCode, reasonPhrase, headers) => {
     const explicitHeaders = typeof reasonPhrase === 'string' ? headers : reasonPhrase;
-    for (const [name, value] of Object.entries(securityHeaders)) {
+    for (const [name, value] of Object.entries(headerSet)) {
       if (!res.hasHeader(name) && !headerBagHas(explicitHeaders, name)) {
         res.setHeader(name, value);
       }
@@ -759,8 +772,6 @@ function getRequestHost(req) {
 }
 
 async function serve(req, res) {
-  applyDefaultSecurityHeaders(res);
-
   let incomingUrl;
   try {
     incomingUrl = new URL(req.url, `http://localhost:${port}`);
@@ -771,6 +782,8 @@ async function serve(req, res) {
   // Railway / load-balancer health checks — always 200 before any redirect logic.
   // Use incomingUrl.pathname here (url is declared later to avoid TDZ error).
   const rawPath = incomingUrl.pathname;
+  const activeSecurityHeaders = getSecurityHeadersForPath(rawPath);
+  applyDefaultSecurityHeaders(res, activeSecurityHeaders);
   if (rawPath === '/__health' || rawPath === '/healthz' || rawPath === '/health') {
     res.writeHead(200, { ...securityHeaders, 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' });
     res.end('ok');
@@ -836,6 +849,11 @@ async function serve(req, res) {
 
   if (url === '/api/kpi/dashboard' && req.method === 'GET') {
     await handleKpiDashboardRequest(req, res, incomingUrl);
+    return;
+  }
+
+  if (url === '/api/events' && (req.method === 'POST' || req.method === 'OPTIONS')) {
+    await handleClientEventRequest(req, res);
     return;
   }
 
@@ -1232,8 +1250,9 @@ async function serve(req, res) {
       cacheControl = 'public, max-age=604800, immutable';
     }
 
+    const responseSecurityHeaders = getSecurityHeadersForPath(url);
     const headers = {
-      ...securityHeaders,
+      ...responseSecurityHeaders,
       'Content-Type': mimeTypes[ext] || 'application/octet-stream',
       'Cache-Control': cacheControl,
       'ETag': etag,

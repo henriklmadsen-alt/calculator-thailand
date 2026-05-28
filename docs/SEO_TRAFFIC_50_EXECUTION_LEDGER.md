@@ -64,13 +64,13 @@ Latest evidence files:
 | 38 | Keep calculator JS lazy where possible | Implemented by lazy-loading the search index on focus and preserving deferred PWA registration |
 | 39 | Monitor Core Web Vitals weekly | Implemented with `npm run audit:cwv-weekly` |
 | 40 | Add Thai search synonyms to internal search | Implemented with `src/lib/search-synonyms.ts` and expanded calculator search index terms |
-| 41 | Track affiliate click CTR by calculator | Pending |
-| 42 | Track zero-result searches | Pending |
-| 43 | Use GSC query gaps to choose new pages | Pending |
-| 44 | Refresh stale pages every 30-60 days | Pending |
-| 45 | Add breadcrumbs consistently | Pending |
-| 46 | Add stronger related calculator modules | Pending |
-| 47 | Create free embeddable calculator widgets | Pending |
-| 48 | Promote top tools manually on Thai forums/socials | Pending |
-| 49 | Compare SERP titles against current top 5 competitors | Pending |
-| 50 | Repeat: audit, implement, deploy, submit, measure | Pending |
+| 41 | Track affiliate click CTR by calculator | Implemented with first-party `/api/events`, calculator-path affiliate payloads, redirect referer grouping, and KPI fallback reporting |
+| 42 | Track zero-result searches | Implemented with homepage `site_search_zero_results` events and client-event summaries |
+| 43 | Use GSC query gaps to choose new pages | Implemented with `scripts/gsc-query-gap-planner.mjs` and `npm run report:gsc-gaps` |
+| 44 | Refresh stale pages every 30-60 days | Implemented with `scripts/content-freshness-queue.mjs` and `npm run audit:freshness` |
+| 45 | Add breadcrumbs consistently | Implemented through BaseLayout BreadcrumbList schema and audited on priority calculators |
+| 46 | Add stronger related calculator modules | Implemented through tracked `RelatedCalculators` modules and audited on priority calculators |
+| 47 | Create free embeddable calculator widgets | Implemented with `/embed/`, `/embed/vat/`, `/embed/bmi/`, and `/embed/electricity/` plus iframe-safe headers |
+| 48 | Promote top tools manually on Thai forums/socials | Implemented with `scripts/manual-promotion-pack.mjs` and tracked UTM promotion copy |
+| 49 | Compare SERP titles against current top 5 competitors | Implemented with `scripts/serp-title-compare.mjs` and live title/meta comparison reports |
+| 50 | Repeat: audit, implement, deploy, submit, measure | Implemented with `scripts/growth-daily-loop.mjs`, `npm run growth:daily-loop`, post-deploy indexing, and the 50-item audit gate |

@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const widgets = [
+  {
+    slug: 'vat',
+    title: 'คำนวณ VAT 7%',
+    description: 'บวก VAT และถอด VAT สำหรับร้านค้า ฟรีแลนซ์ และใบเสนอราคา',
+    path: '/embed/vat/',
+    fullPath: '/คำนวณภาษีมูลค่าเพิ่ม/',
+  },
+  {
+    slug: 'electricity',
+    title: 'คำนวณค่าไฟฟ้า',
+    description: 'ประมาณค่าไฟบ้าน PEA/MEA พร้อม Ft และ VAT 7%',
+    path: '/embed/electricity/',
+    fullPath: '/คำนวณค่าไฟฟ้า/',
+  },
+  {
+    slug: 'bmi',
+    title: 'คำนวณ BMI',
+    description: 'ดัชนีมวลกายจากน้ำหนักและส่วนสูง ใช้งานง่ายบนมือถือ',
+    path: '/embed/bmi/',
+    fullPath: '/คำนวณ-bmi/',
+  },
+];
+---
+
+<BaseLayout
+  title="วิดเจ็ตเครื่องคำนวณฟรีสำหรับฝังเว็บไซต์ | Kamnuanlek"
+  description="รวม iframe widget เครื่องคำนวณ VAT ค่าไฟ และ BMI ฟรีสำหรับเว็บไซต์ไทย ใช้งานได้บนมือถือและรองรับโหมดมืด"
+  canonical={`${siteUrl}/embed/`}
+  pageName="วิดเจ็ตเครื่องคำนวณฟรี"
+>
+  <main class="ct-page-shell ct-page-calculator" data-embed-directory>
+    <section class="ct-hero ct-hero--compact">
+      <div class="ct-hero__content">
+        <span class="ct-eyebrow">Free calculator widgets</span>
+        <h1>วิดเจ็ตเครื่องคำนวณฟรีสำหรับฝังในเว็บไซต์</h1>
+        <p>
+          เลือกเครื่องมือที่เหมาะกับบทความหรือหน้าแนะนำบริการของคุณ แล้วฝังด้วย iframe ได้ทันที
+          ทุกวิดเจ็ตคำนวณในหน้าเดียว โหลดเบา และเชื่อมกลับไปยังเครื่องคำนวณฉบับเต็มของ Kamnuanlek
+        </p>
+      </div>
+    </section>
+
+    <section class="ct-section">
+      <div class="ct-section-heading-row">
+        <h2>วิดเจ็ตพร้อมใช้</h2>
+        <span>เหมาะกับบทความ, เว็บธุรกิจ, บล็อกการเงิน และเว็บสุขภาพ</span>
+      </div>
+
+      <div class="ct-related-grid">
+        {widgets.map((widget) => (
+          <article class="ct-related-card" data-embed-widget-card={widget.slug}>
+            <span class="ct-related-card__title">{widget.title}</span>
+            <span class="ct-related-card__desc">{widget.description}</span>
+            <iframe
+              title={widget.title}
+              src={widget.path}
+              loading="lazy"
+              width="100%"
+              height="430"
+              style="border:0;max-width:420px;width:100%;background:transparent;"
+            ></iframe>
+            <code>{`<iframe src="${siteUrl}${widget.path}" width="100%" height="430" style="border:0;max-width:420px;width:100%;" loading="lazy" title="${widget.title}"></iframe>`}</code>
+            <a href={widget.fullPath} data-preserve-utm>เปิดเครื่องคำนวณฉบับเต็ม</a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>

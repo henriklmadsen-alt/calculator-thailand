@@ -51,6 +51,21 @@ function cleanTrackingParam(value) {
   return decoded.replace(/[^a-zA-Z0-9_.:-]/g, '').slice(0, 80);
 }
 
+function normalizeRefererPath(referer) {
+  try {
+    const parsed = new URL(String(referer || ''));
+    return safeDecode(parsed.pathname || '/').slice(0, 240);
+  } catch {
+    return '';
+  }
+}
+
+function pageLabel(pagePath) {
+  const normalized = String(pagePath || '').trim();
+  if (!normalized || normalized === '/') return '/';
+  return safeDecode(normalized).replace(/^\/|\/$/g, '') || '/';
+}
+
 function isSafeAffiliateTarget(url) {
   try {
     const parsed = new URL(url);
@@ -69,12 +84,14 @@ function getAffiliateTargetUrl() {
 
 async function logAffiliateRedirect({ slug, subId, experiment, variant, referer }) {
   const date = getBangkokDateKey();
+  const calculatorPath = normalizeRefererPath(referer);
   const event = {
     type: 'affiliate_redirect',
     timestamp: new Date().toISOString(),
     date,
     slug,
     subId,
+    calculatorPath,
     experiment,
     variant,
     referer: String(referer || '').slice(0, 240),
@@ -148,8 +165,8 @@ export async function getAffiliateRedirectSummary(days = 28) {
         if (event.type !== 'affiliate_redirect') continue;
         totals.redirects += 1;
 
-        const pageKey = event.subId || '(no sub_id)';
-        const page = byPage.get(pageKey) || { page: pageKey, label: pageKey, redirects: 0 };
+        const pageKey = event.calculatorPath || event.subId || '(no page)';
+        const page = byPage.get(pageKey) || { page: pageKey, label: pageLabel(pageKey), redirects: 0 };
         page.redirects += 1;
         byPage.set(pageKey, page);
 

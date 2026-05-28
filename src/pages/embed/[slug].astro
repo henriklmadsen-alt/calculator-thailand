@@ -1,0 +1,220 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { slug: 'vat' } },
+    { params: { slug: 'bmi' } },
+    { params: { slug: 'electricity' } },
+  ];
+}
+
+const { slug } = Astro.params;
+
+const embeds = {
+  vat: {
+    title: 'คำนวณ VAT 7%',
+    description: 'บวก VAT และถอด VAT จากยอดรวม',
+    fields: [
+      { id: 'amount', label: 'ยอดเงิน', type: 'number', value: '1000', step: '0.01' },
+      { id: 'rate', label: 'VAT (%)', type: 'number', value: '7', step: '0.01' },
+    ],
+    mode: 'vat',
+    cta: '/คำนวณภาษีมูลค่าเพิ่ม/',
+  },
+  bmi: {
+    title: 'คำนวณ BMI',
+    description: 'ดัชนีมวลกายจากน้ำหนักและส่วนสูง',
+    fields: [
+      { id: 'weight', label: 'น้ำหนัก (กก.)', type: 'number', value: '65', step: '0.1' },
+      { id: 'height', label: 'ส่วนสูง (ซม.)', type: 'number', value: '170', step: '0.1' },
+    ],
+    mode: 'bmi',
+    cta: '/คำนวณ-bmi/',
+  },
+  electricity: {
+    title: 'คำนวณค่าไฟฟ้า',
+    description: 'ประมาณค่าไฟบ้าน PEA/MEA พร้อม Ft และ VAT',
+    fields: [
+      { id: 'units', label: 'หน่วยไฟ (kWh)', type: 'number', value: '300', step: '1' },
+      { id: 'ft', label: 'ค่า Ft บาท/หน่วย', type: 'number', value: '0.1623', step: '0.0001' },
+    ],
+    mode: 'electricity',
+    cta: '/คำนวณค่าไฟฟ้า/',
+  },
+} as const;
+
+const embed = embeds[slug as keyof typeof embeds] || embeds.vat;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow" />
+    <title>{embed.title} | Kamnuanlek Embed</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: transparent;
+        color: #07111f;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: transparent; }
+      .kl-embed {
+        width: 100%;
+        max-width: 420px;
+        min-height: 320px;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 24px;
+        padding: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(247,251,255,.96));
+        box-shadow: 0 18px 48px rgba(15, 23, 42, .12);
+      }
+      .kl-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+      .kl-brand { font-size: 12px; font-weight: 800; color: #007aff; }
+      h1 { margin: 2px 0 4px; font-size: 22px; line-height: 1.1; letter-spacing: 0; }
+      .kl-desc { margin: 0; color: #64748b; font-size: 13px; line-height: 1.45; }
+      .kl-badge { flex: 0 0 auto; border-radius: 999px; background: #e0f2fe; color: #0369a1; padding: 6px 10px; font-size: 12px; font-weight: 800; }
+      .kl-grid { display: grid; gap: 10px; }
+      label { display: grid; gap: 6px; font-size: 12px; font-weight: 800; color: #334155; }
+      input {
+        width: 100%;
+        min-height: 46px;
+        border-radius: 14px;
+        border: 1px solid #dbe3ed;
+        padding: 10px 12px;
+        font: inherit;
+        font-size: 16px;
+        background: #fff;
+        color: #07111f;
+      }
+      .kl-result {
+        margin: 14px 0;
+        border-radius: 20px;
+        background: #07111f;
+        color: #fff;
+        padding: 16px;
+      }
+      .kl-result span { display: block; color: #b6c5d6; font-size: 12px; font-weight: 800; }
+      .kl-result strong { display: block; margin-top: 4px; font-size: 30px; line-height: 1; }
+      .kl-note { margin: 8px 0 0; color: #64748b; font-size: 12px; line-height: 1.45; }
+      .kl-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+      button, a {
+        min-height: 44px;
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 900;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      button { background: linear-gradient(135deg, #007aff, #00c7be); color: #fff; }
+      a { color: #007aff; background: #eff6ff; }
+      @media (prefers-color-scheme: dark) {
+        .kl-embed { background: linear-gradient(180deg, rgba(15,23,42,.96), rgba(2,6,23,.96)); color: #f8fafc; border-color: rgba(148,163,184,.22); }
+        input { background: #0f172a; color: #f8fafc; border-color: #334155; }
+        .kl-result { background: #e0f2fe; color: #082f49; }
+        .kl-result span { color: #0369a1; }
+        .kl-desc, .kl-note { color: #cbd5e1; }
+      }
+    </style>
+  </head>
+  <body data-embed-calculator={embed.mode}>
+    <main class="kl-embed" data-embed-calculator={embed.mode}>
+      <header class="kl-head">
+        <div>
+          <div class="kl-brand">Kamnuanlek</div>
+          <h1>{embed.title}</h1>
+          <p class="kl-desc">{embed.description}</p>
+        </div>
+        <span class="kl-badge">ฟรี</span>
+      </header>
+
+      <form id="embed-form" class="kl-grid">
+        {embed.fields.map((field) => (
+          <label for={field.id}>
+            {field.label}
+            <input id={field.id} name={field.id} type={field.type} value={field.value} step={field.step} min="0" inputmode="decimal" />
+          </label>
+        ))}
+      </form>
+
+      <section class="kl-result" aria-live="polite">
+        <span id="result-label">ผลลัพธ์</span>
+        <strong id="result-value">-</strong>
+      </section>
+
+      <p id="result-note" class="kl-note">ผลลัพธ์เป็นค่าประมาณ ใช้เพื่อวางแผนเบื้องต้น</p>
+
+      <div class="kl-actions">
+        <button id="calculate" type="button">คำนวณ</button>
+        <a href={`${siteUrl}${embed.cta}`} target="_blank" rel="noopener">เปิดแบบเต็ม</a>
+      </div>
+    </main>
+
+    <script define:vars={{ mode: embed.mode }}>
+      const fmt = new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 });
+      const money = new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 2 });
+      const $ = (id) => document.getElementById(id);
+      const n = (id) => {
+        const value = Number($(id)?.value || 0);
+        return Number.isFinite(value) ? Math.max(0, value) : 0;
+      };
+
+      function calcVat() {
+        const amount = n('amount');
+        const rate = n('rate') / 100;
+        const vat = amount * rate;
+        $('result-label').textContent = 'ยอดรวม VAT';
+        $('result-value').textContent = money.format(amount + vat);
+        $('result-note').textContent = `VAT ${fmt.format(vat)} บาท | ยอดก่อน VAT ${fmt.format(amount)} บาท`;
+      }
+
+      function calcBmi() {
+        const weight = n('weight');
+        const heightM = n('height') / 100;
+        const bmi = heightM > 0 ? weight / (heightM * heightM) : 0;
+        const band = bmi >= 30 ? 'อ้วน' : bmi >= 25 ? 'น้ำหนักเกิน' : bmi >= 18.5 ? 'ปกติ' : 'ต่ำกว่าเกณฑ์';
+        $('result-label').textContent = 'ค่า BMI';
+        $('result-value').textContent = fmt.format(bmi);
+        $('result-note').textContent = `แปลผลเบื้องต้น: ${band}`;
+      }
+
+      function calcElectricity() {
+        const units = n('units');
+        const ft = n('ft');
+        const tiers = units <= 150
+          ? [[15, 2.3488], [10, 2.9882], [10, 3.2405], [65, 3.6237], [50, 3.7171], [Infinity, 4.4217]]
+          : [[150, 3.2484], [250, 4.2218], [Infinity, 4.4217]];
+        let remaining = units;
+        let energy = 0;
+        for (const [limit, rate] of tiers) {
+          if (remaining <= 0) break;
+          const used = Math.min(remaining, limit);
+          energy += used * rate;
+          remaining -= used;
+        }
+        const service = units <= 150 ? 8.19 : 24.62;
+        const subtotal = energy + (units * ft) + service;
+        const total = subtotal * 1.07;
+        $('result-label').textContent = 'ค่าไฟโดยประมาณ';
+        $('result-value').textContent = money.format(total);
+        $('result-note').textContent = `รวมค่า Ft และ VAT 7% จาก ${fmt.format(units)} หน่วย`;
+      }
+
+      function calculate() {
+        if (mode === 'bmi') calcBmi();
+        else if (mode === 'electricity') calcElectricity();
+        else calcVat();
+      }
+
+      document.querySelectorAll('input').forEach((input) => input.addEventListener('input', calculate));
+      $('calculate')?.addEventListener('click', calculate);
+      calculate();
+    </script>
+  </body>
+</html>

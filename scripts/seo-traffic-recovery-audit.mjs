@@ -170,6 +170,18 @@ const PLAIN_FORMULA_CHECKS = [
 
 const SEARCH_SYNONYM_TERMS = ['ค่าไฟบ้าน', 'ค่างวดรถ', 'โอที', 'หาร 1.07', 'ดัชนีมวลกาย'];
 
+const TRACKED_AFFILIATE_ROUTES = [
+  '/à¸„à¸³à¸™à¸§à¸“à¸„à¹ˆà¸²à¹„à¸Ÿà¸Ÿà¹‰à¸²/',
+  '/à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸£à¸–/',
+  '/à¸„à¸³à¸™à¸§à¸“à¸œà¹ˆà¸­à¸™à¸šà¹‰à¸²à¸™/',
+];
+
+const EMBED_ROUTE_CHECKS = [
+  '/embed/vat/',
+  '/embed/bmi/',
+  '/embed/electricity/',
+];
+
 const ACTIONS = [
   'Daily GSC clicks/impressions anomaly check',
   'Daily top-page loss report',
@@ -361,6 +373,7 @@ async function fetchText(url, timeoutMs = 15000) {
       url,
       status: response.status,
       ok: response.ok,
+      headers: Object.fromEntries(response.headers.entries()),
       text: await response.text(),
     };
   } catch (error) {
@@ -368,6 +381,7 @@ async function fetchText(url, timeoutMs = 15000) {
       url,
       status: 0,
       ok: false,
+      headers: {},
       text: '',
       error: error instanceof Error ? error.message : String(error),
     };
@@ -475,6 +489,11 @@ async function auditLiveSignals() {
         && page.text.includes('rel="sponsored')
         && page.text.includes('affiliate-card-wrapper')
         && page.text.includes('hidden'),
+      hasAffiliateCalculatorTracking: page.text.includes('data-affiliate-calculator=')
+        && page.text.includes('calculator_path'),
+      hasBreadcrumbSchema: page.text.includes('"BreadcrumbList"'),
+      hasRelatedModule: page.text.includes('ct-related-calculators')
+        && page.text.includes('data-ct-event="related_calc_click"'),
       error: page.error || '',
     });
   }
@@ -602,6 +621,136 @@ async function auditLiveSignals() {
     searchSynonyms: searchSynonymChecks,
   };
 
+  const readLocalFile = (relativePath) => {
+    const filePath = path.join(ROOT, relativePath);
+    return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+  };
+  const fileExists = (relativePath) => fs.existsSync(path.join(ROOT, relativePath));
+  const reportExists = (fileName) => fs.existsSync(path.join(REPORT_DIR, fileName));
+  const reportText = (fileName) => {
+    const filePath = path.join(REPORT_DIR, fileName);
+    return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+  };
+
+  const affiliateCardSource = readLocalFile(path.join('src', 'components', 'templates', 'AffiliateCard.astro'));
+  const clientEventsSource = readLocalFile(path.join('app', 'client-events.mjs'));
+  const affiliateRedirectSource = readLocalFile(path.join('app', 'affiliate-redirect.mjs'));
+  const kpiDashboardSource = readLocalFile(path.join('app', 'kpi-dashboard.mjs'));
+  const serverSource = readLocalFile('server.mjs');
+  const baseLayoutSource = readLocalFile(path.join('src', 'layouts', 'BaseLayout.astro'));
+  const gscGapReport = reportText('gsc-query-gap-plan-latest.md');
+  const freshnessReport = reportText('content-freshness-queue-latest.md');
+  const promotionReport = reportText('manual-promotion-pack-latest.md');
+  const serpReport = reportText('serp-title-competitor-comparison-latest.md');
+  const dailyLoopReport = reportText('growth-daily-loop-latest.md');
+
+  const [embedDirectory, ...embedPages] = await Promise.all([
+    fetchText(`${SITE_ORIGIN}/embed/`),
+    ...EMBED_ROUTE_CHECKS.map((route) => fetchText(`${SITE_ORIGIN}${route}`)),
+  ]);
+  const embedWidgetChecks = embedPages.map((page, index) => {
+    const headers = Object.fromEntries(Object.entries(page.headers || {}).map(([key, value]) => [key.toLowerCase(), String(value)]));
+    const csp = headers['content-security-policy'] || '';
+    return {
+      route: EMBED_ROUTE_CHECKS[index],
+      status: page.status,
+      hasCalculatorMarker: page.text.includes('data-embed-calculator'),
+      hasInteractiveScript: page.text.includes('function calculate()') && page.text.includes('addEventListener'),
+      hasFullCalculatorLink: page.text.includes('target="_blank"') && page.text.includes('noopener'),
+      iframeSecurity: {
+        noXFrameOptions: !headers['x-frame-options'],
+        frameAncestorsOpen: csp.includes('frame-ancestors *'),
+      },
+    };
+  });
+
+  const growthLoopChecks = {
+    affiliateTracking: {
+      componentCalculatorPath: affiliateCardSource.includes('data-affiliate-calculator')
+        && affiliateCardSource.includes('calculator_path'),
+      clientEventLogger: clientEventsSource.includes('affiliate_click')
+        && clientEventsSource.includes('affiliateByCalculator'),
+      redirectCalculatorPath: affiliateRedirectSource.includes('calculatorPath')
+        && affiliateRedirectSource.includes('normalizeRefererPath'),
+      dashboardCtrByCalculator: kpiDashboardSource.includes('affiliateByCalculator')
+        && kpiDashboardSource.includes('clientTrackedClicks'),
+      serverApiRoute: serverSource.includes("url === '/api/events'")
+        && serverSource.includes('handleClientEventRequest'),
+      liveTrackedRoutes: TRACKED_AFFILIATE_ROUTES.map((route) => ({
+        route,
+        pass: routeByPathFromChecks(routeChecks, route)?.hasAffiliateCalculatorTracking || false,
+      })),
+    },
+    zeroResultSearchTracking: {
+      homepageEvent: homepage.text.includes('site_search_zero_results'),
+      clientSummary: clientEventsSource.includes('zeroSearchTerms'),
+      firstPartyBeacon: baseLayoutSource.includes('site_search_zero_results')
+        && baseLayoutSource.includes('/api/events'),
+    },
+    gscQueryGapPlanner: {
+      scriptExists: fileExists(path.join('scripts', 'gsc-query-gap-planner.mjs')),
+      packageScript: packageJson.includes('"report:gsc-gaps"'),
+      reportMdExists: reportExists('gsc-query-gap-plan-latest.md'),
+      reportJsonExists: reportExists('gsc-query-gap-plan-latest.json'),
+      hasContentQueue: gscGapReport.includes('Content Build Queue'),
+    },
+    freshnessQueue: {
+      scriptExists: fileExists(path.join('scripts', 'content-freshness-queue.mjs')),
+      packageScript: packageJson.includes('"audit:freshness"'),
+      reportMdExists: reportExists('content-freshness-queue-latest.md'),
+      reportJsonExists: reportExists('content-freshness-queue-latest.json'),
+      hasRefreshStandard: freshnessReport.includes('Refresh Standard'),
+    },
+    breadcrumbs: PRIORITY_ROUTES.filter((route) => route !== '/').map((route) => ({
+      route,
+      pass: routeByPathFromChecks(routeChecks, route)?.hasBreadcrumbSchema || false,
+    })),
+    relatedModules: PRIORITY_ROUTES.filter((route) => route !== '/').map((route) => ({
+      route,
+      pass: routeByPathFromChecks(routeChecks, route)?.hasRelatedModule || false,
+    })),
+    embeds: {
+      directory: {
+        route: '/embed/',
+        status: embedDirectory.status,
+        hasDataMarker: embedDirectory.text.includes('data-embed-directory'),
+        hasIframeSnippet: embedDirectory.text.includes('/embed/vat/')
+          && (embedDirectory.text.includes('<iframe') || embedDirectory.text.includes('&lt;iframe')),
+      },
+      widgets: embedWidgetChecks,
+      serverAllowsEmbedding: serverSource.includes('embedSecurityHeaders')
+        && serverSource.includes('frame-ancestors *')
+        && serverSource.includes("name !== 'X-Frame-Options'"),
+    },
+    promotionPack: {
+      scriptExists: fileExists(path.join('scripts', 'manual-promotion-pack.mjs')),
+      packageScript: packageJson.includes('"report:promotion-pack"'),
+      reportMdExists: reportExists('manual-promotion-pack-latest.md'),
+      reportJsonExists: reportExists('manual-promotion-pack-latest.json'),
+      hasThaiChannels: promotionReport.includes('Pantip') && promotionReport.includes('Facebook') && promotionReport.includes('LINE'),
+      hasUtmLinks: promotionReport.includes('utm_campaign=free_calculator_growth'),
+    },
+    serpTitleComparison: {
+      scriptExists: fileExists(path.join('scripts', 'serp-title-compare.mjs')),
+      packageScript: packageJson.includes('"report:serp-titles"'),
+      reportMdExists: reportExists('serp-title-competitor-comparison-latest.md'),
+      reportJsonExists: reportExists('serp-title-competitor-comparison-latest.json'),
+      hasCompetitorSources: serpReport.includes('Competitor Sources')
+        && serpReport.includes('LIFESARA')
+        && serpReport.includes('Addnine'),
+    },
+    dailyLoop: {
+      scriptExists: fileExists(path.join('scripts', 'growth-daily-loop.mjs')),
+      packageScript: packageJson.includes('"growth:daily-loop"'),
+      reportMdExists: reportExists('growth-daily-loop-latest.md'),
+      reportJsonExists: reportExists('growth-daily-loop-latest.json'),
+      includesAuditDeployMeasure: dailyLoopReport.includes('measure')
+        && dailyLoopReport.includes('audit')
+        && dailyLoopReport.includes('deploy')
+        && dailyLoopReport.includes('postdeploy:indexing'),
+    },
+  };
+
   return {
     robots: {
       status: robots.status,
@@ -627,6 +776,7 @@ async function auditLiveSignals() {
     comparisonPageChecks,
     affiliateIntentChecks,
     discoveryAndPerformanceChecks,
+    growthLoopChecks,
   };
 }
 
@@ -741,6 +891,38 @@ function renderReport({ payload, pageLosses, queryLosses, liveSignals, inspectio
     `| ${row.term} | ${row.present ? 'PASS' : 'FAIL'} |`
   ));
 
+  const growth = liveSignals.growthLoopChecks || {};
+  const affiliateTrackingRows = growth.affiliateTracking ? [
+    `| Affiliate tracking | ${growth.affiliateTracking.componentCalculatorPath ? 'PASS' : 'FAIL'} | ${growth.affiliateTracking.clientEventLogger ? 'PASS' : 'FAIL'} | ${growth.affiliateTracking.redirectCalculatorPath ? 'PASS' : 'FAIL'} | ${growth.affiliateTracking.dashboardCtrByCalculator ? 'PASS' : 'FAIL'} | ${growth.affiliateTracking.serverApiRoute ? 'PASS' : 'FAIL'} |`,
+    ...(growth.affiliateTracking.liveTrackedRoutes || []).map((row) => (
+      `| ${row.route} | ${row.pass ? 'PASS' : 'FAIL'} | live calculator_path | live page | live page | live page |`
+    )),
+  ] : [];
+
+  const growthArtifactRows = [
+    growth.zeroResultSearchTracking && `| Zero-result search tracking | ${growth.zeroResultSearchTracking.homepageEvent ? 'PASS' : 'FAIL'} | ${growth.zeroResultSearchTracking.clientSummary ? 'PASS' : 'FAIL'} | ${growth.zeroResultSearchTracking.firstPartyBeacon ? 'PASS' : 'FAIL'} |`,
+    growth.gscQueryGapPlanner && `| GSC query gap planner | ${growth.gscQueryGapPlanner.scriptExists ? 'PASS' : 'FAIL'} | ${growth.gscQueryGapPlanner.packageScript ? 'PASS' : 'FAIL'} | ${growth.gscQueryGapPlanner.reportMdExists && growth.gscQueryGapPlanner.reportJsonExists && growth.gscQueryGapPlanner.hasContentQueue ? 'PASS' : 'FAIL'} |`,
+    growth.freshnessQueue && `| Content freshness queue | ${growth.freshnessQueue.scriptExists ? 'PASS' : 'FAIL'} | ${growth.freshnessQueue.packageScript ? 'PASS' : 'FAIL'} | ${growth.freshnessQueue.reportMdExists && growth.freshnessQueue.reportJsonExists && growth.freshnessQueue.hasRefreshStandard ? 'PASS' : 'FAIL'} |`,
+    growth.promotionPack && `| Manual promotion pack | ${growth.promotionPack.scriptExists ? 'PASS' : 'FAIL'} | ${growth.promotionPack.packageScript ? 'PASS' : 'FAIL'} | ${growth.promotionPack.reportMdExists && growth.promotionPack.reportJsonExists && growth.promotionPack.hasThaiChannels && growth.promotionPack.hasUtmLinks ? 'PASS' : 'FAIL'} |`,
+    growth.serpTitleComparison && `| SERP title comparison | ${growth.serpTitleComparison.scriptExists ? 'PASS' : 'FAIL'} | ${growth.serpTitleComparison.packageScript ? 'PASS' : 'FAIL'} | ${growth.serpTitleComparison.reportMdExists && growth.serpTitleComparison.reportJsonExists && growth.serpTitleComparison.hasCompetitorSources ? 'PASS' : 'FAIL'} |`,
+    growth.dailyLoop && `| Daily growth loop | ${growth.dailyLoop.scriptExists ? 'PASS' : 'FAIL'} | ${growth.dailyLoop.packageScript ? 'PASS' : 'FAIL'} | ${growth.dailyLoop.reportMdExists && growth.dailyLoop.reportJsonExists && growth.dailyLoop.includesAuditDeployMeasure ? 'PASS' : 'FAIL'} |`,
+  ].filter(Boolean);
+
+  const breadcrumbRows = (growth.breadcrumbs || []).map((row) => (
+    `| ${row.route} | ${row.pass ? 'PASS' : 'FAIL'} |`
+  ));
+
+  const relatedRows = (growth.relatedModules || []).map((row) => (
+    `| ${row.route} | ${row.pass ? 'PASS' : 'FAIL'} |`
+  ));
+
+  const embedRows = growth.embeds ? [
+    `| ${growth.embeds.directory.route} | ${growth.embeds.directory.status} | ${growth.embeds.directory.hasDataMarker ? 'PASS' : 'FAIL'} | ${growth.embeds.directory.hasIframeSnippet ? 'PASS' : 'FAIL'} | ${growth.embeds.serverAllowsEmbedding ? 'PASS' : 'FAIL'} |`,
+    ...(growth.embeds.widgets || []).map((row) => (
+      `| ${row.route} | ${row.status} | ${row.hasCalculatorMarker ? 'PASS' : 'FAIL'} | ${row.hasInteractiveScript ? 'PASS' : 'FAIL'} | ${row.iframeSecurity?.noXFrameOptions && row.iframeSecurity?.frameAncestorsOpen ? 'PASS' : 'FAIL'} |`
+    )),
+  ] : [];
+
   const inspectionRows = inspections.map((row) => (
     `| ${pagePath(row.url)} | ${row.verdict || 'ERR'} | ${row.coverageState || row.error || ''} | ${row.robotsTxtState || ''} | ${row.indexingState || ''} | ${row.lastCrawlTime || ''} |`
   ));
@@ -813,6 +995,18 @@ ${table(['Route', 'AI Overview Block', 'Plain Formula Text', 'Terms'], aiAnswerR
 ${table(['Check', 'Metric 1', 'Metric 2', 'Metric 3'], performanceRows)}
 
 ${table(['Search Synonym', 'Present In Index'], searchSynonymRows)}
+
+## Measurement And Growth Loop
+
+${table(['Check', 'Component / Route', 'Client / Package', 'Redirect / Report', 'Dashboard', 'Server'], affiliateTrackingRows)}
+
+${table(['Artifact', 'Script', 'Package', 'Report / Behavior'], growthArtifactRows)}
+
+${table(['Route', 'BreadcrumbList Schema'], breadcrumbRows)}
+
+${table(['Route', 'Related Calculator Module'], relatedRows)}
+
+${table(['Embed Route', 'HTTP', 'Marker', 'Interactive / Snippet', 'Iframe Security'], embedRows)}
 
 ## URL Inspection Sample
 
@@ -953,6 +1147,93 @@ if (discovery.cwvMonitor.scriptExists && discovery.cwvMonitor.packageScript) {
 if (discovery.searchSynonyms.every((row) => row.present)) {
   completedItems.add(40);
 }
+const growth = liveSignals.growthLoopChecks;
+if (
+  growth.affiliateTracking.componentCalculatorPath
+  && growth.affiliateTracking.clientEventLogger
+  && growth.affiliateTracking.redirectCalculatorPath
+  && growth.affiliateTracking.dashboardCtrByCalculator
+  && growth.affiliateTracking.serverApiRoute
+  && growth.affiliateTracking.liveTrackedRoutes.every((row) => row.pass)
+) {
+  completedItems.add(41);
+}
+if (
+  growth.zeroResultSearchTracking.homepageEvent
+  && growth.zeroResultSearchTracking.clientSummary
+  && growth.zeroResultSearchTracking.firstPartyBeacon
+) {
+  completedItems.add(42);
+}
+if (
+  growth.gscQueryGapPlanner.scriptExists
+  && growth.gscQueryGapPlanner.packageScript
+  && growth.gscQueryGapPlanner.reportMdExists
+  && growth.gscQueryGapPlanner.reportJsonExists
+  && growth.gscQueryGapPlanner.hasContentQueue
+) {
+  completedItems.add(43);
+}
+if (
+  growth.freshnessQueue.scriptExists
+  && growth.freshnessQueue.packageScript
+  && growth.freshnessQueue.reportMdExists
+  && growth.freshnessQueue.reportJsonExists
+  && growth.freshnessQueue.hasRefreshStandard
+) {
+  completedItems.add(44);
+}
+if (growth.breadcrumbs.every((row) => row.pass)) {
+  completedItems.add(45);
+}
+if (growth.relatedModules.every((row) => row.pass)) {
+  completedItems.add(46);
+}
+if (
+  growth.embeds.directory.status === 200
+  && growth.embeds.directory.hasDataMarker
+  && growth.embeds.directory.hasIframeSnippet
+  && growth.embeds.serverAllowsEmbedding
+  && growth.embeds.widgets.every((row) => (
+    row.status === 200
+    && row.hasCalculatorMarker
+    && row.hasInteractiveScript
+    && row.hasFullCalculatorLink
+    && row.iframeSecurity.noXFrameOptions
+    && row.iframeSecurity.frameAncestorsOpen
+  ))
+) {
+  completedItems.add(47);
+}
+if (
+  growth.promotionPack.scriptExists
+  && growth.promotionPack.packageScript
+  && growth.promotionPack.reportMdExists
+  && growth.promotionPack.reportJsonExists
+  && growth.promotionPack.hasThaiChannels
+  && growth.promotionPack.hasUtmLinks
+) {
+  completedItems.add(48);
+}
+if (
+  growth.serpTitleComparison.scriptExists
+  && growth.serpTitleComparison.packageScript
+  && growth.serpTitleComparison.reportMdExists
+  && growth.serpTitleComparison.reportJsonExists
+  && growth.serpTitleComparison.hasCompetitorSources
+) {
+  completedItems.add(49);
+}
+if (
+  growth.dailyLoop.scriptExists
+  && growth.dailyLoop.packageScript
+  && growth.dailyLoop.reportMdExists
+  && growth.dailyLoop.reportJsonExists
+  && growth.dailyLoop.includesAuditDeployMeasure
+  && Array.from({ length: 49 }, (_, index) => index + 1).every((item) => completedItems.has(item))
+) {
+  completedItems.add(50);
+}
 
 fs.mkdirSync(REPORT_DIR, { recursive: true });
 const report = renderReport({
@@ -979,6 +1260,7 @@ const json = {
   comparisonPageChecks: liveSignals.comparisonPageChecks,
   affiliateIntentChecks: liveSignals.affiliateIntentChecks,
   discoveryAndPerformanceChecks: liveSignals.discoveryAndPerformanceChecks,
+  growthLoopChecks: liveSignals.growthLoopChecks,
   inspections,
   completedItems: [...completedItems].sort((a, b) => a - b),
 };
@@ -991,10 +1273,12 @@ fs.writeFileSync(latestMd, report, 'utf8');
 fs.writeFileSync(latestJson, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
 
 const failingRoutes = liveSignals.routeChecks.filter((row) => row.status !== 200 || !row.indexable || !row.linkedFromHomepage);
+const incompleteItems = ACTIONS.map((_, index) => index + 1).filter((item) => !completedItems.has(item));
 
 console.log(JSON.stringify({
-  status: failingRoutes.length === 0 ? 'ok' : 'fail',
+  status: failingRoutes.length === 0 && incompleteItems.length === 0 ? 'ok' : 'fail',
   completedItems: json.completedItems,
+  incompleteItems,
   gscRange: payload.range,
   search: payload.search,
   pageLosses: pageLosses.length,
@@ -1003,6 +1287,6 @@ console.log(JSON.stringify({
   reports: { datedMd, latestMd, latestJson },
 }, null, 2));
 
-if (failingRoutes.length > 0) {
+if (failingRoutes.length > 0 || incompleteItems.length > 0) {
   process.exitCode = 1;
 }
