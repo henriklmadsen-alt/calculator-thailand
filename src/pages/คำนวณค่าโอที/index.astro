@@ -6,6 +6,7 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
+import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astro';
 import { recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณค่าโอที 2569 (1.5x 2x 3x) ตามกฎหมายแรงงาน | Kamnuanlek';
@@ -313,6 +314,22 @@ const jsonLdHowTo = {
       </div>
     </div>
 
+    <ResultSharePrompt
+      id="ot-share-prompt"
+      calcId="overtime-pay"
+      title="แชร์ผลคำนวณค่าโอที"
+      text="ส่งลิงก์นี้ให้พนักงาน ฝ่ายบุคคล หรือคนในทีมกรอกเงินเดือนและชั่วโมง OT ของตัวเองได้ทันที"
+    />
+
+    <div id="ot-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+      <p class="text-sm font-semibold text-primary-800">ทำต่อหลังรู้ค่าโอที</p>
+      <p class="mt-1 text-sm text-primary-700">รวมค่า OT เข้าเงินเดือนสุทธิ แล้วตรวจภาษีหรือประกันสังคมต่อในหน้าเดียวกัน</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณเงินเดือนสุทธิ/" class="inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700">ทำต่อ: เงินเดือนสุทธิ</a>
+        <a data-next-action-link href="/คำนวณภาษีเงินได้บุคคลธรรมดา/" class="inline-flex min-h-11 items-center rounded-lg border border-primary-300 bg-white px-4 py-2 text-sm font-semibold text-primary-700 hover:border-primary-400">ทำต่อ: ภาษีเงินได้</a>
+      </div>
+    </div>
+
     <div class="mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
       <p class="text-sm font-semibold text-primary-800">อ่านวิธีคิดละเอียด + กฎหมายที่เกี่ยวข้อง</p>
       <p class="mt-1 text-sm text-primary-700">มีตัวอย่างคำนวณแยก 1.5 เท่า 2 เท่า 3 เท่า และแนวทางตรวจสลิปค่าจ้าง</p>
@@ -496,6 +513,8 @@ const jsonLdHowTo = {
     const form = document.getElementById('ot-form');
     const formError = document.getElementById('ot-form-error');
     const resultBox = document.getElementById('ot-results');
+    const sharePrompt = document.getElementById('ot-share-prompt');
+    const nextActionCard = document.getElementById('ot-next-action');
 
     const monthlySalaryInput = document.getElementById('monthly-salary');
     const workingDaysInput = document.getElementById('working-days');
@@ -579,12 +598,16 @@ const jsonLdHowTo = {
         setFieldError('weekday-ot-hours-error', 'อย่างน้อยต้องมีชั่วโมงล่วงเวลา/ชั่วโมงวันหยุดมากกว่า 0');
         formError.classList.remove('hidden');
         resultBox?.classList.add('hidden');
+        sharePrompt?.classList.add('hidden');
+        nextActionCard?.classList.add('hidden');
         return;
       }
 
       if (hasError) {
         formError.classList.remove('hidden');
         resultBox?.classList.add('hidden');
+        sharePrompt?.classList.add('hidden');
+        nextActionCard?.classList.add('hidden');
         return;
       }
 
@@ -624,11 +647,15 @@ const jsonLdHowTo = {
         setText('res-total-hours', formatHours(totalInputHours));
 
         resultBox?.classList.remove('hidden');
+        sharePrompt?.classList.remove('hidden');
+        nextActionCard?.classList.remove('hidden');
         document.getElementById('affiliate-card')?.classList.remove('hidden');
         resultBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (_error) {
         formError.classList.remove('hidden');
         resultBox?.classList.add('hidden');
+        sharePrompt?.classList.add('hidden');
+        nextActionCard?.classList.add('hidden');
       }
     });
   </script>

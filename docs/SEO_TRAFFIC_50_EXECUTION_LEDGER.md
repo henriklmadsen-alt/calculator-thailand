@@ -44,16 +44,16 @@ Latest evidence files:
 | 18 | Add HowTo/WebApplication/FAQ schema where useful | Implemented and audited in the traffic recovery runner |
 | 19 | Add updated for 2569 where genuinely current | Implemented and audited on priority calculators |
 | 20 | Add official-source citations on regulated calculators | Implemented and audited for electricity, VAT, OT, car loan, and home loan pages |
-| 21 | Build more electricity long-tail pages | Pending |
-| 22 | Build more age/date long-tail pages | Pending |
-| 23 | Build more VAT exact-number pages | Pending |
-| 24 | Build OT 1.5x/2x/3x query pages | Pending |
-| 25 | Build BMI formula and gender/age variation pages | Pending |
-| 26 | Build calculator comparison pages | Pending |
-| 27 | Build affiliate-intent pages for car/home/insurance calculators | Pending |
-| 28 | Make affiliate CTAs relevant, not intrusive | Pending |
-| 29 | Add calculator result-share snippets | Pending |
-| 30 | Add next calculator flows after results | Pending |
+| 21 | Build more electricity long-tail pages | Implemented with new 500-unit article and audited by content expansion checks |
+| 22 | Build more age/date long-tail pages | Implemented with 2535 age article and audited by content expansion checks |
+| 23 | Build more VAT exact-number pages | Implemented with 5,000 VAT article and audited by content expansion checks |
+| 24 | Build OT 1.5x/2x/3x query pages | Implemented with OT 1.5x article and audited by content expansion checks |
+| 25 | Build BMI formula and gender/age variation pages | Implemented with BMI 25 article and audited by content expansion checks |
+| 26 | Build calculator comparison pages | Implemented with online calculator comparison article and audited in traffic runner |
+| 27 | Build affiliate-intent pages for car/home/insurance calculators | Implemented with post-car-loan insurance intent article and audited in traffic runner |
+| 28 | Make affiliate CTAs relevant, not intrusive | Implemented via result-gated affiliate CTAs and sponsored-link checks |
+| 29 | Add calculator result-share snippets | Implemented on priority result pages via `ResultSharePrompt` / result hub |
+| 30 | Add next calculator flows after results | Implemented on electricity, OT, car loan, and home loan result flows |
 | 31 | Add HTML sitemap/category hub pages | Pending |
 | 32 | Prune or de-emphasize thin/niche pages | Pending |
 | 33 | Improve `llms.txt` and AI context files for GEO | Pending |

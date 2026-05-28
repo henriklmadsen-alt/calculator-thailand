@@ -6,6 +6,7 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
+import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astro';
 import { homeLoanGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณผ่อนบ้าน 2569 | คำนวณดอกเบี้ยบ้าน + ตารางผ่อนบ้าน';
@@ -467,6 +468,13 @@ const jsonLdHowTo = {
       <p class="mt-2 text-xs leading-5 text-sky-800">ลิงก์นี้เป็นลิงก์พาร์ทเนอร์ เว็บไซต์อาจได้รับค่าคอมมิชชั่นเมื่อมีการสมัครหรือซื้อผ่านลิงก์</p>
     </section>
 
+    <ResultSharePrompt
+      id="mortgage-share-prompt"
+      calcId="home-loan"
+      title="แชร์ผลคำนวณผ่อนบ้าน"
+      text="เก็บลิงก์ไว้คุยกับครอบครัว นายหน้า หรือธนาคาร โดยเริ่มจากตัวเลขค่างวดและจุดคุ้มทุนเดียวกัน"
+    />
+
     <div id="mortgage-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
       <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณผ่อนรถ</p>
       <p class="mt-1 text-sm text-primary-700">รวมภาระหนี้บ้านและรถให้เห็นค่างวดรวมต่อเดือนก่อนตัดสินใจ</p>
@@ -771,6 +779,7 @@ const jsonLdHowTo = {
     const formError = document.getElementById('mortgage-form-error') as HTMLElement;
     const submitBtn = document.getElementById('mortgage-submit-btn') as HTMLButtonElement;
     const nextActionCard = document.getElementById('mortgage-next-action') as HTMLElement;
+    const sharePrompt = document.getElementById('mortgage-share-prompt') as HTMLElement | null;
     const resultsDiv = document.getElementById('results') as HTMLDivElement;
     const modeRefinance = document.getElementById('mode-refinance') as HTMLElement;
     const modeNewHome = document.getElementById('mode-new-home') as HTMLElement;
@@ -804,6 +813,12 @@ const jsonLdHowTo = {
       formError.classList.add('hidden');
       clearFieldError('outstanding-balance-error');
       clearFieldError('home-price-error');
+    }
+
+    function hideResultActions() {
+      resultsDiv.classList.add('hidden');
+      nextActionCard.classList.add('hidden');
+      sharePrompt?.classList.add('hidden');
     }
 
     function updateSubmitState() {
@@ -891,6 +906,7 @@ const jsonLdHowTo = {
       if (mode === 'new-home') {
         if (hasInvalidNumber(homePriceInput.value)) {
           formError.classList.remove('hidden');
+          hideResultActions();
           setFieldError('home-price-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
           homePriceInput.focus();
           updateSubmitState();
@@ -905,6 +921,7 @@ const jsonLdHowTo = {
 
         if (homePrice <= 0 || years <= 0) {
           formError.classList.remove('hidden');
+          hideResultActions();
           setFieldError('home-price-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
           homePriceInput.focus();
           updateSubmitState();
@@ -937,6 +954,7 @@ const jsonLdHowTo = {
       } else {
         if (hasInvalidNumber(outstandingBalanceInput.value)) {
           formError.classList.remove('hidden');
+          hideResultActions();
           setFieldError('outstanding-balance-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
           outstandingBalanceInput.focus();
           updateSubmitState();
@@ -953,6 +971,7 @@ const jsonLdHowTo = {
 
         if (principal <= 0 || remainingYears <= 0 || newYears <= 0) {
           formError.classList.remove('hidden');
+          hideResultActions();
           setFieldError('outstanding-balance-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
           outstandingBalanceInput.focus();
           updateSubmitState();
@@ -1006,6 +1025,7 @@ const jsonLdHowTo = {
       }
 
       resultsDiv.classList.remove('hidden');
+      sharePrompt?.classList.remove('hidden');
       nextActionCard.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;

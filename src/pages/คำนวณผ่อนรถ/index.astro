@@ -6,6 +6,7 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
+import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astro';
 import { carLoanGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณผ่อนรถ 2569 | ตารางผ่อนรถ ดาวน์ 20% 48/60/72/84 เดือน';
@@ -389,6 +390,13 @@ const jsonLdHowTo = {
       variant="amber"
     />
 
+    <ResultSharePrompt
+      id="vehicle-share-prompt"
+      calcId="car-loan"
+      title="แชร์ผลคำนวณผ่อนรถ"
+      text="เก็บลิงก์ไว้เทียบเงินดาวน์ ดอกเบี้ย และงวดผ่อนกับคนในครอบครัวหรือพนักงานขายรถ"
+    />
+
     <div id="vehicle-next-action" class="hidden mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
       <p class="text-sm font-semibold text-primary-800">ทำต่อ: คำนวณผ่อนบ้าน + รีไฟแนนซ์</p>
       <p class="mt-1 text-sm text-primary-700">เทียบภาระหนี้บ้านและรถให้เห็นภาพกระแสเงินสดรวม</p>
@@ -675,6 +683,7 @@ const jsonLdHowTo = {
     const submitBtn = document.getElementById('vehicle-submit-btn') as HTMLButtonElement;
     const formError = document.getElementById('vehicle-form-error') as HTMLElement;
     const nextActionCard = document.getElementById('vehicle-next-action') as HTMLElement;
+    const sharePrompt = document.getElementById('vehicle-share-prompt') as HTMLElement | null;
     const resultsDiv = document.getElementById('results') as HTMLDivElement;
     const carPriceInput = document.getElementById('car-price') as HTMLInputElement;
     const downPaymentInput = document.getElementById('down-payment') as HTMLInputElement;
@@ -701,6 +710,12 @@ const jsonLdHowTo = {
       clearFieldError('interest-rate-error');
       clearFieldError('monthly-income-error');
       formError.classList.add('hidden');
+    }
+
+    function hideResultActions() {
+      resultsDiv.classList.add('hidden');
+      nextActionCard.classList.add('hidden');
+      sharePrompt?.classList.add('hidden');
     }
 
     function updateSubmitState() {
@@ -765,6 +780,7 @@ const jsonLdHowTo = {
 
       if (hasInvalidNumber(carPriceInput.value) || hasInvalidNumber(interestRateInput.value) || hasInvalidNumber(monthlyIncomeInput.value)) {
         formError.classList.remove('hidden');
+        hideResultActions();
         if (hasInvalidNumber(carPriceInput.value)) {
           setFieldError('car-price-error', 'รูปแบบข้อมูลไม่ถูกต้อง');
           carPriceInput.focus();
@@ -787,6 +803,7 @@ const jsonLdHowTo = {
 
       if (carPrice <= 0) {
         formError.classList.remove('hidden');
+        hideResultActions();
         setFieldError('car-price-error', 'กรุณากรอกจำนวนเงินมากกว่า 0');
         carPriceInput.focus();
         updateSubmitState();
@@ -856,6 +873,7 @@ const jsonLdHowTo = {
       }
 
       resultsDiv.classList.remove('hidden');
+      sharePrompt?.classList.remove('hidden');
       nextActionCard.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const affiliateCard = document.getElementById('affiliate-card') as HTMLElement | null;

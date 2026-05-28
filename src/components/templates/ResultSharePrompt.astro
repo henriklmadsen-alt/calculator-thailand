@@ -1,0 +1,168 @@
+---
+interface Props {
+  id: string;
+  calcId: string;
+  title: string;
+  text: string;
+  isVisible?: boolean;
+}
+
+const { id, calcId, title, text, isVisible = false } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={['result-share-prompt', { hidden: !isVisible }]}
+  data-result-share-prompt
+  data-calc-id={calcId}
+  data-share-title={title}
+  data-share-text={text}
+  aria-label="แชร์ผลการคำนวณ"
+>
+  <div>
+    <p class="result-share-prompt__eyebrow">เก็บผลลัพธ์ไว้ใช้ต่อ</p>
+    <h2 class="result-share-prompt__title">{title}</h2>
+    <p class="result-share-prompt__text">{text}</p>
+  </div>
+  <div class="result-share-prompt__actions">
+    <button type="button" data-result-share-action="native">แชร์ผลลัพธ์</button>
+    <button type="button" data-result-share-action="copy">คัดลอกลิงก์</button>
+  </div>
+</section>
+
+<style>
+  .result-share-prompt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--ct-accent-mint, #00c7be) 24%, var(--ct-border, #dbe3ed));
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--ct-surface, #ffffff) 92%, var(--ct-accent-mint, #00c7be));
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+  }
+
+  .result-share-prompt.hidden {
+    display: none;
+  }
+
+  .result-share-prompt__eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #047d75;
+  }
+
+  .result-share-prompt__title {
+    margin: 0.15rem 0 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .result-share-prompt__text {
+    margin: 0.25rem 0 0;
+    max-width: 48rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #475569;
+  }
+
+  .result-share-prompt__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .result-share-prompt__actions button {
+    min-height: 2.75rem;
+    border-radius: 0.8rem;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 750;
+    color: #0f172a;
+    cursor: pointer;
+  }
+
+  .result-share-prompt__actions button:first-child {
+    border-color: #00a89d;
+    background: #00c7be;
+    color: #ffffff;
+  }
+
+  .result-share-prompt__actions button:focus-visible {
+    outline: 3px solid rgba(0, 199, 190, 0.35);
+    outline-offset: 2px;
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    if (window.__kamnuanlekResultSharePromptBound) return;
+    window.__kamnuanlekResultSharePromptBound = true;
+
+    const buildShareUrl = (calcId) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('utm_source', 'share');
+      url.searchParams.set('utm_medium', 'calculator_result');
+      url.searchParams.set('utm_campaign', calcId || 'calculator');
+      return url.toString();
+    };
+
+    const copyText = async (text) => {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const field = document.createElement('textarea');
+      field.value = text;
+      field.setAttribute('readonly', '');
+      field.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand('copy');
+      field.remove();
+    };
+
+    const markCopied = (button) => {
+      const original = button.textContent;
+      button.textContent = 'คัดลอกแล้ว';
+      window.setTimeout(() => {
+        button.textContent = original;
+      }, 1800);
+    };
+
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-result-share-action]');
+      if (!button) return;
+      const prompt = button.closest('[data-result-share-prompt]');
+      if (!prompt) return;
+
+      const calcId = prompt.dataset.calcId || 'calculator';
+      const url = buildShareUrl(calcId);
+      const title = prompt.dataset.shareTitle || document.title;
+      const text = prompt.dataset.shareText || title;
+      const action = button.dataset.resultShareAction;
+
+      try {
+        if (action === 'native' && navigator.share) {
+          await navigator.share({ title, text, url });
+        } else {
+          await copyText(`${title}\n${url}`);
+          markCopied(button);
+        }
+        window.trackLanguageAwareEvent?.('calculation_shared', {
+          calculator_type: calcId,
+          share_method: action === 'native' && navigator.share ? 'native' : 'copy_url',
+        });
+      } catch (_) {
+        // Share cancellation should not create a visible error for users.
+      }
+    });
+  })();
+</script>

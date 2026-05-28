@@ -59,6 +59,86 @@ const OFFICIAL_REFERENCE_ROUTES = [
   '/คำนวณผ่อนบ้าน/',
 ];
 
+const CONTENT_EXPANSION_CHECKS = [
+  {
+    item: 21,
+    label: 'electricity long-tail',
+    target: '/คำนวณค่าไฟฟ้า/',
+    paths: [
+      '/บทความ/1-kwh-เท่ากับกี่บาท-2569/',
+      '/บทความ/บ้านใช้ไฟ-500-หน่วย-ค่าไฟเท่าไร-2569/',
+      '/บทความ/ค่าไฟห้องเช่าหน่วยละกี่บาท-2569/',
+    ],
+  },
+  {
+    item: 22,
+    label: 'age/date long-tail',
+    target: '/คำนวณอายุ/',
+    paths: [
+      '/บทความ/คำนวณอายุวันนี้-จากวันเกิด/',
+      '/บทความ/เกิดปี-2535-อายุเท่าไร-2569/',
+      '/บทความ/คำนวณอายุ-จากวันเกิด-2569-ปี-เดือน-วัน/',
+    ],
+  },
+  {
+    item: 23,
+    label: 'VAT exact-number long-tail',
+    target: '/คำนวณภาษีมูลค่าเพิ่ม/',
+    paths: [
+      '/บทความ/10000-หาร-1-07-ถอด-vat/',
+      '/บทความ/5000-รวม-vat-7-เป็นเท่าไร/',
+      '/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/',
+    ],
+  },
+  {
+    item: 24,
+    label: 'overtime multiplier long-tail',
+    target: '/คำนวณค่าโอที/',
+    paths: [
+      '/บทความ/โอที-1-5-เท่า-คิดยังไง-2569/',
+      '/บทความ/เงินเดือน-20000-โอที-10-ชั่วโมง/',
+      '/บทความ/คำนวณค่าโอที-2569-กฎหมายแรงงาน/',
+    ],
+  },
+  {
+    item: 25,
+    label: 'BMI formula long-tail',
+    target: '/คำนวณ-bmi/',
+    paths: [
+      '/บทความ/bmi-25-หมายความว่าอะไร/',
+      '/บทความ/bmi-27-หมายความว่าอะไร/',
+      '/บทความ/วิธีวัด-bmi-อย่างถูกต้อง/',
+    ],
+  },
+];
+
+const COMPARISON_PAGE_CHECKS = [
+  '/บทความ/เปรียบเทียบเครื่องคำนวณออนไลน์-เลือกอะไรดี/',
+  '/เปรียบเทียบเครื่องคำนวณภาษี/',
+  '/เปรียบเทียบสินเชื่อรถ/',
+];
+
+const AFFILIATE_INTENT_CHECKS = [
+  { path: '/บทความ/คำนวณผ่อนรถแล้วซื้อประกันชั้นไหน-2569/', affiliate: '/go/rabbit-care-car/' },
+  { path: '/คำนวณผ่อนรถ/', affiliate: '/go/rabbit-care-car/' },
+  { path: '/คำนวณผ่อนบ้าน/', affiliate: '/go/rabbit-care-home/' },
+];
+
+const RESULT_SHARE_ROUTES = [
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณค่าโอที/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณผ่อนบ้าน/',
+  '/คำนวณ-bmi/',
+];
+
+const NEXT_ACTION_ROUTES = [
+  '/คำนวณค่าไฟฟ้า/',
+  '/คำนวณค่าโอที/',
+  '/คำนวณผ่อนรถ/',
+  '/คำนวณผ่อนบ้าน/',
+];
+
 const ACTIONS = [
   'Daily GSC clicks/impressions anomaly check',
   'Daily top-page loss report',
@@ -351,6 +431,12 @@ async function auditLiveSignals() {
         || page.text.includes('rd.go.th')
         || page.text.includes('labour.go.th')
         || page.text.includes('mol.go.th'),
+      hasResultShare: page.text.includes('data-result-share-prompt') || page.text.includes('ct-hub-share'),
+      hasNextAction: page.text.includes('data-next-action-link'),
+      hasRelevantAffiliate: page.text.includes('id="affiliate-card"')
+        && page.text.includes('rel="sponsored')
+        && page.text.includes('affiliate-card-wrapper')
+        && page.text.includes('hidden'),
       error: page.error || '',
     });
   }
@@ -362,6 +448,44 @@ async function auditLiveSignals() {
       ...check,
       status: page.status,
       hasTargetLink: page.status === 200 && hrefSetHasTarget(hrefs, check.target),
+    };
+  }));
+
+  const contentExpansionChecks = await Promise.all(CONTENT_EXPANSION_CHECKS.map(async (group) => {
+    const pages = await Promise.all(group.paths.map(async (route) => {
+      const page = await fetchText(`${SITE_ORIGIN}${route}`);
+      const hrefs = new Set(extractHrefs(page.text));
+      return {
+        route,
+        status: page.status,
+        hasTargetLink: page.status === 200 && hrefSetHasTarget(hrefs, group.target),
+      };
+    }));
+    return {
+      item: group.item,
+      label: group.label,
+      target: group.target,
+      pages,
+      pass: pages.every((page) => page.status === 200 && page.hasTargetLink),
+    };
+  }));
+
+  const comparisonPageChecks = await Promise.all(COMPARISON_PAGE_CHECKS.map(async (route) => {
+    const page = await fetchText(`${SITE_ORIGIN}${route}`);
+    const hrefs = new Set(extractHrefs(page.text));
+    return {
+      route,
+      status: page.status,
+      linksPriorityCalculator: PRIORITY_ROUTES.some((candidate) => candidate !== '/' && hrefSetHasTarget(hrefs, candidate)),
+    };
+  }));
+
+  const affiliateIntentChecks = await Promise.all(AFFILIATE_INTENT_CHECKS.map(async (check) => {
+    const page = await fetchText(`${SITE_ORIGIN}${check.path}`);
+    return {
+      ...check,
+      status: page.status,
+      hasAffiliateLink: page.status === 200 && page.text.includes(check.affiliate) && page.text.includes('rel="sponsored'),
     };
   }));
 
@@ -386,6 +510,9 @@ async function auditLiveSignals() {
     },
     routeChecks,
     articleAnchorChecks,
+    contentExpansionChecks,
+    comparisonPageChecks,
+    affiliateIntentChecks,
   };
 }
 
@@ -455,6 +582,26 @@ function renderReport({ payload, pageLosses, queryLosses, liveSignals, inspectio
     `| ${row.article} | ${row.target} | ${row.status} | ${row.hasTargetLink ? 'PASS' : 'FAIL'} |`
   ));
 
+  const contentExpansionRows = liveSignals.contentExpansionChecks.flatMap((group) => (
+    group.pages.map((page) => (
+      `| ${group.item} | ${group.label} | ${page.route} | ${page.status} | ${page.hasTargetLink ? 'PASS' : 'FAIL'} |`
+    ))
+  ));
+
+  const comparisonRows = liveSignals.comparisonPageChecks.map((row) => (
+    `| ${row.route} | ${row.status} | ${row.linksPriorityCalculator ? 'PASS' : 'FAIL'} |`
+  ));
+
+  const affiliateRows = liveSignals.affiliateIntentChecks.map((row) => (
+    `| ${row.path} | ${row.affiliate} | ${row.status} | ${row.hasAffiliateLink ? 'PASS' : 'FAIL'} |`
+  ));
+
+  const conversionRows = liveSignals.routeChecks
+    .filter((row) => row.route !== '/')
+    .map((row) => (
+      `| ${row.route} | ${row.hasRelevantAffiliate ? 'PASS' : 'INFO'} | ${row.hasResultShare ? 'PASS' : 'WARN'} | ${row.hasNextAction ? 'PASS' : 'WARN'} |`
+    ));
+
   const inspectionRows = inspections.map((row) => (
     `| ${pagePath(row.url)} | ${row.verdict || 'ERR'} | ${row.coverageState || row.error || ''} | ${row.robotsTxtState || ''} | ${row.indexingState || ''} | ${row.lastCrawlTime || ''} |`
   ));
@@ -501,6 +648,20 @@ ${table(['Route', 'Title Terms', 'Meta Terms', 'Direct Answer', 'FAQ Schema', 'A
 ## Article-To-Calculator Anchors
 
 ${table(['Article', 'Target Calculator', 'HTTP', 'Anchor'], articleAnchorRows)}
+
+## Long-Tail Content Expansion
+
+${table(['Item', 'Cluster', 'Page', 'HTTP', 'Calculator Link'], contentExpansionRows)}
+
+## Comparison And Affiliate Intent Pages
+
+${table(['Comparison Page', 'HTTP', 'Priority Link'], comparisonRows)}
+
+${table(['Affiliate Intent Page', 'Affiliate Path', 'HTTP', 'Sponsored Link'], affiliateRows)}
+
+## Result Sharing And Next Actions
+
+${table(['Route', 'Affiliate CTA', 'Share Prompt', 'Next Action'], conversionRows)}
 
 ## URL Inspection Sample
 
@@ -573,6 +734,24 @@ if (nonHomeRoutes.every((row) => row.hasCurrentYear)) {
 if (OFFICIAL_REFERENCE_ROUTES.every((route) => routeByPath.get(route)?.hasOfficialReference)) {
   completedItems.add(20);
 }
+for (const group of liveSignals.contentExpansionChecks) {
+  if (group.pass) completedItems.add(group.item);
+}
+if (liveSignals.comparisonPageChecks.every((row) => row.status === 200 && row.linksPriorityCalculator)) {
+  completedItems.add(26);
+}
+if (liveSignals.affiliateIntentChecks.every((row) => row.status === 200 && row.hasAffiliateLink)) {
+  completedItems.add(27);
+}
+if (AFFILIATE_INTENT_CHECKS.every((check) => routeByPath.get(check.path)?.hasRelevantAffiliate || liveSignals.affiliateIntentChecks.find((row) => row.path === check.path)?.hasAffiliateLink)) {
+  completedItems.add(28);
+}
+if (RESULT_SHARE_ROUTES.every((route) => routeByPath.get(route)?.hasResultShare)) {
+  completedItems.add(29);
+}
+if (NEXT_ACTION_ROUTES.every((route) => routeByPath.get(route)?.hasNextAction)) {
+  completedItems.add(30);
+}
 
 fs.mkdirSync(REPORT_DIR, { recursive: true });
 const report = renderReport({
@@ -595,6 +774,9 @@ const json = {
   queryLosses,
   liveSignals,
   articleAnchorChecks: liveSignals.articleAnchorChecks,
+  contentExpansionChecks: liveSignals.contentExpansionChecks,
+  comparisonPageChecks: liveSignals.comparisonPageChecks,
+  affiliateIntentChecks: liveSignals.affiliateIntentChecks,
   inspections,
   completedItems: [...completedItems].sort((a, b) => a - b),
 };

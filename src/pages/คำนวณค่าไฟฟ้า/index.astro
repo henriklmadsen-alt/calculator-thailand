@@ -6,6 +6,7 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
+import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astro';
 import { electricityGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณค่าไฟฟ้า 2569 | 1 kWh เท่ากับกี่บาท PEA/MEA + Ft';
@@ -286,6 +287,22 @@ const jsonLdHowTo = {
       </div>
     </div>
 
+    <ResultSharePrompt
+      id="electricity-share-prompt"
+      calcId="electricity-bill"
+      title="แชร์ผลคำนวณค่าไฟฟ้า"
+      text="ส่งลิงก์หน้านี้ให้คนในบ้านหรือผู้เช่าใช้กรอกจำนวนหน่วยเดียวกัน พร้อม UTM สำหรับวัดการแชร์จากผลลัพธ์"
+    />
+
+    <div id="electricity-next-action" class="hidden mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+      <p class="text-sm font-semibold text-emerald-900">ทำต่อหลังรู้ค่าไฟ</p>
+      <p class="mt-1 text-sm text-emerald-800">ตรวจ VAT 7% หรือวางแผนงบสาธารณูปโภคต่อ เพื่อให้ค่าใช้จ่ายบ้านครบในเดือนเดียว</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a data-next-action-link href="/คำนวณภาษีมูลค่าเพิ่ม/" class="inline-flex min-h-11 items-center rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800">ทำต่อ: คำนวณ VAT 7%</a>
+        <a data-next-action-link href="/คำนวณงบค่าสาธารณูปโภค/" class="inline-flex min-h-11 items-center rounded-lg border border-emerald-300 bg-white px-4 py-2 text-sm font-semibold text-emerald-800 hover:bg-emerald-100">ทำต่อ: งบสาธารณูปโภค</a>
+      </div>
+    </div>
+
     <AffiliateCard
       category="insurance"
       affiliateUrl={electricityAffiliateUrl}
@@ -455,6 +472,8 @@ const jsonLdHowTo = {
     const submitBtn = document.getElementById('electricity-submit-btn');
     const formError = document.getElementById('electricity-form-error');
     const resultsDiv = document.getElementById('results');
+    const sharePrompt = document.getElementById('electricity-share-prompt');
+    const nextActionCard = document.getElementById('electricity-next-action');
     const breakdownBody = document.getElementById('tier-breakdown-body');
 
     const fields = {
@@ -549,6 +568,9 @@ const jsonLdHowTo = {
 
       if (!Object.values(validity).every(Boolean)) {
         formError.classList.remove('hidden');
+        resultsDiv.classList.add('hidden');
+        sharePrompt?.classList.add('hidden');
+        nextActionCard?.classList.add('hidden');
         updateSubmitState();
         return;
       }
@@ -597,6 +619,8 @@ const jsonLdHowTo = {
       setText('result-note', noteParts.join(' | '));
 
       resultsDiv.classList.remove('hidden');
+      sharePrompt?.classList.remove('hidden');
+      nextActionCard?.classList.remove('hidden');
       document.getElementById('affiliate-card')?.classList.remove('hidden');
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
