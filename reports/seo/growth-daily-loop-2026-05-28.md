@@ -1,6 +1,6 @@
 # Daily Growth Loop Run - 2026-05-28
 
-Generated: 2026-05-28T07:03:02.239Z
+Generated: 2026-05-28T10:12:21.028Z
 
 This is the operational loop for traffic recovery: measure, audit, compare, promote, confirm, then deploy and submit indexing when code/content changes are made.
 
@@ -8,11 +8,12 @@ This is the operational loop for traffic recovery: measure, audit, compare, prom
 
 | Lane | Step | Status | Exit | Started | Ended |
 | --- | --- | --- | --- | --- | --- |
-| measure | GSC query gap planner | ok | 0 | 2026-05-28T07:02:08.943Z | 2026-05-28T07:02:12.701Z |
-| audit | Content freshness queue | ok | 0 | 2026-05-28T07:02:12.701Z | 2026-05-28T07:02:13.764Z |
-| compare | SERP title competitor comparison | ok | 0 | 2026-05-28T07:02:13.764Z | 2026-05-28T07:02:16.852Z |
-| promote | Manual promotion pack | ok | 0 | 2026-05-28T07:02:16.852Z | 2026-05-28T07:02:17.190Z |
-| confirm | 50-item traffic recovery audit | ok | 0 | 2026-05-28T07:02:17.190Z | 2026-05-28T07:03:02.239Z |
+| measure | Indexation priority queue | ok | 0 | 2026-05-28T10:11:24.007Z | 2026-05-28T10:11:27.026Z |
+| measure | GSC query gap planner | ok | 0 | 2026-05-28T10:11:27.026Z | 2026-05-28T10:11:31.775Z |
+| audit | Content freshness queue | ok | 0 | 2026-05-28T10:11:31.775Z | 2026-05-28T10:11:32.961Z |
+| compare | SERP title competitor comparison | ok | 0 | 2026-05-28T10:11:32.961Z | 2026-05-28T10:11:35.942Z |
+| promote | Manual promotion pack | ok | 0 | 2026-05-28T10:11:35.942Z | 2026-05-28T10:11:36.276Z |
+| confirm | 50-item traffic recovery audit | ok | 0 | 2026-05-28T10:11:36.276Z | 2026-05-28T10:12:21.027Z |
 
 ## Failures
 
