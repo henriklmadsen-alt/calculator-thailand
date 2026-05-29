@@ -8,6 +8,7 @@ import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluste
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astro';
 import { electricityGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
+import { calculateElectricityBill as calculateExampleElectricityBill } from '../../lib/electricity-bill';
 
 const pageTitle = 'คำนวณค่าไฟฟ้า 2569 | 1 kWh เท่ากับกี่บาท PEA/MEA + Ft';
 const pageDescription = 'คำนวณค่าไฟฟ้า 2569 สำหรับ PEA/MEA ค่าไฟห้องเช่า และคำถาม 1 kWh เท่ากับกี่บาท ใส่ kWh ค่า Ft เพื่อดูค่าไฟฐาน VAT 7% และยอดรวมทันที';
@@ -19,6 +20,51 @@ const electricityRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href 
 const currentFtRate = '0.1623';
 const previousFtRate = '0.0972';
 const currentFtPeriod = 'พฤษภาคม-สิงหาคม 2569';
+
+const flagshipPresets = [
+  {
+    label: 'บ้านทั่วไป',
+    units: '300',
+    provider: 'pea',
+    customerType: 'residential',
+    note: 'ตัวอย่างที่คนค้นหาเยอะ',
+  },
+  {
+    label: 'คอนโดในเมือง',
+    units: '220',
+    provider: 'mea',
+    customerType: 'residential',
+    note: 'เหมาะกับกรุงเทพฯ/นนท์/สมุทรปราการ',
+  },
+  {
+    label: 'ห้องเช่า',
+    units: '120',
+    provider: 'pea',
+    customerType: 'residential',
+    note: 'เช็กหน่วยจากมิเตอร์ก่อนจ่าย',
+  },
+  {
+    label: 'ร้านเล็ก',
+    units: '650',
+    provider: 'pea',
+    customerType: 'small_business',
+    note: 'สำหรับกิจการขนาดเล็ก',
+  },
+];
+
+const exampleBills = [
+  { label: 'ห้องพักเล็ก', units: 120, provider: 'pea', customerType: 'residential' },
+  { label: 'บ้านทั่วไป', units: 300, provider: 'pea', customerType: 'residential' },
+  { label: 'ใช้แอร์หลายห้อง', units: 500, provider: 'mea', customerType: 'residential' },
+].map((example) => ({
+  ...example,
+  result: calculateExampleElectricityBill({
+    units: example.units,
+    provider: example.provider as 'pea' | 'mea',
+    customerType: example.customerType as 'residential',
+    ftRate: Number(currentFtRate),
+  }),
+}));
 
 const faqData = [
   {
@@ -127,23 +173,68 @@ const jsonLdHowTo = {
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
-  <article>
-    <div class="mb-4 rounded-xl border border-sky-100 bg-sky-50 p-4">
-      <p class="text-sm font-semibold text-sky-700">อัปเดตค่า Ft รอบ {currentFtPeriod}</p>
-      <p class="mt-1 text-sm text-slate-700">ค่า Ft เริ่มต้น {currentFtRate} บาท/หน่วย จากรอบประกาศล่าสุดที่ใช้กับเดือนพฤษภาคม-สิงหาคม 2569</p>
-      <p class="mt-1 text-xs font-medium text-sky-800">ใช้เพื่อประมาณค่าไฟและตรวจบิลเบื้องต้น โปรดเทียบกับใบแจ้งหนี้จริงจาก PEA/MEA</p>
+  <article class="electricity-flagship-page">
+    <div class="electricity-update-strip">
+      <p>ค่า Ft รอบ {currentFtPeriod}</p>
+      <strong>{currentFtRate} บาท/หน่วย</strong>
+      <span>ตรวจบิล PEA/MEA พร้อม VAT 7% และขั้นบันได</span>
     </div>
 
-    <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+    <h1 class="electricity-hero-title">
       คำนวณค่าไฟฟ้า 2569: 1 kWh เท่ากับกี่บาท PEA/MEA + Ft
     </h1>
 
-    <p class="mb-6 text-gray-600">
+    <p class="electricity-hero-copy">
       ใส่จำนวนหน่วยไฟฟ้า เลือก PEA หรือ MEA แล้วดูค่าไฟฐาน ค่า Ft ค่าบริการ VAT 7%
       และยอดรวมแบบแยกขั้นบันได เหมาะสำหรับเช็กบิลบ้าน ห้องเช่า คอนโด และกิจการขนาดเล็ก
     </p>
 
-    <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+    <div class="electricity-quick-grid" aria-label="ข้อมูลสำคัญก่อนคำนวณ">
+      <div>
+        <span>คำตอบเร็ว</span>
+        <strong>ประมาณ 3.95 บาท/หน่วยก่อน VAT</strong>
+        <p>แต่ยอดจริงต้องคิดขั้นบันได ค่า Ft และค่าบริการ</p>
+      </div>
+      <div>
+        <span>เหมาะกับ</span>
+        <strong>บ้าน คอนโด ห้องเช่า ร้านเล็ก</strong>
+        <p>เลือกประเภทผู้ใช้ไฟเพื่อให้ค่าบริการตรงขึ้น</p>
+      </div>
+      <div>
+        <span>อัปเดต</span>
+        <strong>Ft {currentFtPeriod}</strong>
+        <p>แก้ค่า Ft เองได้ถ้าบิลอยู่คนละรอบ</p>
+      </div>
+    </div>
+
+    <div class="electricity-calculator-panel">
+      <div class="electricity-panel-heading">
+        <div>
+          <p>เริ่มจากตัวอย่างยอดนิยม</p>
+          <h2>แตะครั้งเดียวแล้วคำนวณทันที</h2>
+        </div>
+        <span>ฟรี 100%</span>
+      </div>
+
+      <div class="electricity-presets" aria-label="ตัวอย่างค่าไฟที่ใช้บ่อย">
+        {
+          flagshipPresets.map((preset) => (
+            <button
+              type="button"
+              data-electricity-preset
+              data-units={preset.units}
+              data-provider={preset.provider}
+              data-customer-type={preset.customerType}
+              data-ft-rate={currentFtRate}
+            >
+              <strong>{preset.label}</strong>
+              <span>{preset.units} หน่วย</span>
+              <small>{preset.note}</small>
+            </button>
+          ))
+        }
+      </div>
+
       <form id="electricity-form" class="space-y-5">
         <p id="electricity-form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
           กรุณากรอกข้อมูลให้ครบและถูกต้องก่อนคำนวณ
@@ -157,6 +248,7 @@ const jsonLdHowTo = {
               id="units"
               inputmode="numeric"
               placeholder="เช่น 250"
+              value="300"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
             <p id="units-error" class="mt-1 hidden text-sm text-red-600"></p>
@@ -170,7 +262,7 @@ const jsonLdHowTo = {
             >
               <option value="">เลือกการไฟฟ้า</option>
               <option value="mea">MEA - การไฟฟ้านครหลวง</option>
-              <option value="pea">PEA - การไฟฟ้าส่วนภูมิภาค</option>
+              <option value="pea" selected>PEA - การไฟฟ้าส่วนภูมิภาค</option>
             </select>
             <p id="provider-error" class="mt-1 hidden text-sm text-red-600"></p>
           </div>
@@ -184,7 +276,7 @@ const jsonLdHowTo = {
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="">เลือกประเภทผู้ใช้ไฟ</option>
-              <option value="residential">บ้านอยู่อาศัย</option>
+              <option value="residential" selected>บ้านอยู่อาศัย</option>
               <option value="small_business">กิจการขนาดเล็ก</option>
             </select>
             <p id="customer-type-error" class="mt-1 hidden text-sm text-red-600"></p>
@@ -197,6 +289,7 @@ const jsonLdHowTo = {
               id="ft-rate"
               inputmode="decimal"
               placeholder={`ค่าเริ่มต้น ${currentFtRate}`}
+              value={currentFtRate}
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
             <p class="mt-1 text-xs text-gray-500">ปล่อยว่างเพื่อใช้ค่า Ft {currentFtRate} บาท/หน่วย สำหรับรอบ {currentFtPeriod}</p>
@@ -207,16 +300,22 @@ const jsonLdHowTo = {
         <button
           type="submit"
           id="electricity-submit-btn"
-          class="w-full rounded-md bg-primary-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+          class="electricity-submit-btn"
         >
           คำนวณค่าไฟฟ้า
         </button>
       </form>
     </div>
 
-    <div id="results" class="mb-8 hidden">
-      <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">ผลคำนวณค่าไฟฟ้าโดยประมาณ</h2>
+    <div id="results" class="electricity-results hidden">
+      <div class="electricity-results-panel">
+        <div class="electricity-results-heading">
+          <div>
+            <p>ผลคำนวณทันที</p>
+            <h2>ค่าไฟฟ้าโดยประมาณ</h2>
+          </div>
+          <span id="res-total" class="electricity-total-pill">-</span>
+        </div>
 
         <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <div class="rounded-lg bg-primary-50 p-4 text-center">
@@ -237,7 +336,7 @@ const jsonLdHowTo = {
           </div>
           <div class="rounded-lg bg-red-50 p-4 text-center">
             <div class="mb-1 text-sm text-gray-600">ยอดรวม</div>
-            <div id="res-total" class="text-lg font-bold text-red-600">-</div>
+            <div id="res-total-inline" class="text-lg font-bold text-red-600">-</div>
           </div>
         </div>
 
@@ -337,6 +436,25 @@ const jsonLdHowTo = {
       </div>
     </section>
 
+    <section class="electricity-example-strip" aria-label="ตัวอย่างค่าไฟตามจำนวนหน่วย">
+      <div class="electricity-example-copy">
+        <p>ตัวอย่างยอดบิล</p>
+        <h2>เห็นภาพก่อนกรอกเลขจริง</h2>
+        <span>คำนวณด้วย Ft {currentFtRate} บาท/หน่วย รอบ {currentFtPeriod} รวม VAT 7%</span>
+      </div>
+      <div class="electricity-example-list">
+        {
+          exampleBills.map((example) => (
+            <div>
+              <span>{example.label}</span>
+              <strong>{example.units.toLocaleString('th-TH')} หน่วย</strong>
+              <em>{example.result.totalBill.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</em>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
     <section id="electricity-intent-cluster" class="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
       <h2 class="text-base font-bold text-gray-900 sm:text-lg">เครื่องมือนี้ตอบคำค้นที่คนไทยใช้บ่อย</h2>
       <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
@@ -360,7 +478,7 @@ const jsonLdHowTo = {
     </section>
 
     <TrafficGrowthCluster
-      eyebrow="คำค้นค่าไฟที่ควรครองอันดับ"
+      eyebrow="คำถามค่าไฟยอดนิยม"
       title="คำตอบสั้นสำหรับ 1 kWh, ค่าไฟห้องเช่า และ PEA/MEA"
       description="คนที่ค้นคำเหล่านี้ต้องการคำตอบเร็ว ถ้าต้องการยอดจริงให้กลับมาใส่จำนวนหน่วยในเครื่องคำนวณนี้"
       items={electricityGrowthLinks}
@@ -370,7 +488,7 @@ const jsonLdHowTo = {
     <TrafficGrowthCluster
       eyebrow="เส้นทางไปเครื่องมือยอดนิยม"
       title="เครื่องมือที่ควรใช้ต่อหลังเช็กค่าไฟ"
-      description="เพิ่มลิงก์ภายในแบบ crawlable ไปยังหน้าที่เคยมี impressions สูงและหน้าที่มีโอกาสสร้าง clicks ใหม่"
+      description="ต่อยอดจากค่าไฟไปยังงบบ้าน ภาษี และค่าใช้จ่ายรายเดือนที่คนมักต้องเช็กในรอบเดียวกัน"
       items={electricityRecoveryLinks}
       variant="amber"
     />
@@ -396,7 +514,7 @@ const jsonLdHowTo = {
     <GuardedAdSlot templateType="calculator" slotId="C2" revealAfterSelector="#results" />
 
     <section class="mb-8 rounded-xl border border-primary-200 bg-primary-50 p-4 sm:p-5">
-      <h2 class="text-base font-semibold text-primary-900">ตัวอย่างคำตอบสำหรับ SEO ที่คนค้นหาบ่อย</h2>
+      <h2 class="text-base font-semibold text-primary-900">ตัวอย่างคำตอบที่คนค้นหาบ่อย</h2>
       <div class="mt-3 grid gap-3 md:grid-cols-2">
         <div class="rounded-lg bg-white p-4 text-sm text-gray-700">
           <h3 class="font-semibold text-gray-900">1 kWh เท่ากับกี่บาท?</h3>
@@ -446,6 +564,424 @@ const jsonLdHowTo = {
     </div>
   </article>
 
+  <style>
+    .electricity-flagship-page {
+      --electricity-ink: #07111f;
+      --electricity-muted: #526173;
+      --electricity-line: rgba(111, 133, 160, 0.2);
+      --electricity-surface: rgba(255, 255, 255, 0.88);
+      --electricity-mint: #13c6a3;
+      --electricity-blue: #08a8f5;
+      --electricity-lime: #b8f25f;
+      color: var(--electricity-ink);
+      margin-inline: auto;
+      max-width: 1120px;
+      padding: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .electricity-update-strip {
+      align-items: center;
+      animation: electricity-rise 0.55s ease both;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--electricity-line);
+      border-radius: 999px;
+      box-shadow: 0 18px 55px rgba(15, 47, 78, 0.08);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.75rem;
+      margin-bottom: 1.25rem;
+      padding: 0.65rem 0.9rem;
+      width: fit-content;
+    }
+
+    .electricity-update-strip p,
+    .electricity-update-strip span {
+      color: var(--electricity-muted);
+      font-size: 0.86rem;
+      margin: 0;
+    }
+
+    .electricity-update-strip strong {
+      color: #047857;
+      font-size: 0.92rem;
+    }
+
+    .electricity-hero-title {
+      font-size: clamp(2.2rem, 7vw, 5.25rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 0.96;
+      margin: 0;
+      max-width: 980px;
+    }
+
+    .electricity-hero-copy {
+      color: var(--electricity-muted);
+      font-size: clamp(1.02rem, 2vw, 1.22rem);
+      line-height: 1.8;
+      margin: 1.2rem 0 1.6rem;
+      max-width: 760px;
+    }
+
+    .electricity-quick-grid {
+      display: grid;
+      gap: 0.85rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 1rem;
+    }
+
+    .electricity-quick-grid > div,
+    .electricity-example-list > div {
+      background: var(--electricity-surface);
+      border: 1px solid var(--electricity-line);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(15, 47, 78, 0.08);
+      padding: 1rem;
+    }
+
+    .electricity-quick-grid span,
+    .electricity-example-copy p,
+    .electricity-panel-heading p,
+    .electricity-results-heading p {
+      color: #0784c5;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin: 0 0 0.3rem;
+      text-transform: uppercase;
+    }
+
+    .electricity-quick-grid strong {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .electricity-quick-grid p {
+      color: var(--electricity-muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      margin: 0.4rem 0 0;
+    }
+
+    .electricity-calculator-panel,
+    .electricity-results-panel,
+    .electricity-example-strip {
+      animation: electricity-rise 0.65s ease both;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(111, 133, 160, 0.22);
+      border-radius: 28px;
+      box-shadow: 0 26px 80px rgba(10, 32, 56, 0.13);
+      margin-bottom: 2rem;
+      padding: clamp(1rem, 2.5vw, 1.5rem);
+    }
+
+    .electricity-calculator-panel {
+      position: relative;
+    }
+
+    .electricity-calculator-panel::before {
+      background:
+        linear-gradient(90deg, var(--electricity-mint), var(--electricity-blue), var(--electricity-lime));
+      border-radius: 999px;
+      content: "";
+      height: 5px;
+      inset: 0.8rem 1rem auto;
+      opacity: 0.92;
+      position: absolute;
+    }
+
+    .electricity-panel-heading,
+    .electricity-results-heading,
+    .electricity-example-strip {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .electricity-panel-heading {
+      margin: 0.75rem 0 1rem;
+    }
+
+    .electricity-panel-heading h2,
+    .electricity-results-heading h2,
+    .electricity-example-copy h2 {
+      font-size: clamp(1.25rem, 2vw, 1.65rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .electricity-panel-heading > span {
+      background: #dfffe9;
+      border: 1px solid #a8efc0;
+      border-radius: 999px;
+      color: #04723f;
+      flex: 0 0 auto;
+      font-size: 0.86rem;
+      font-weight: 800;
+      padding: 0.45rem 0.75rem;
+    }
+
+    .electricity-presets {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 1.25rem;
+    }
+
+    .electricity-presets button {
+      background: #f7fbff;
+      border: 1px solid rgba(96, 120, 148, 0.22);
+      border-radius: 18px;
+      color: var(--electricity-ink);
+      cursor: pointer;
+      min-height: 118px;
+      padding: 0.95rem;
+      text-align: left;
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    .electricity-presets button:hover,
+    .electricity-presets button:focus-visible {
+      border-color: rgba(8, 168, 245, 0.55);
+      box-shadow: 0 16px 38px rgba(8, 168, 245, 0.16);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .electricity-presets strong,
+    .electricity-presets span,
+    .electricity-presets small {
+      display: block;
+    }
+
+    .electricity-presets strong {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .electricity-presets span {
+      color: #047857;
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin-bottom: 0.3rem;
+    }
+
+    .electricity-presets small {
+      color: var(--electricity-muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .electricity-calculator-panel label {
+      color: #172033;
+      font-weight: 750;
+    }
+
+    .electricity-calculator-panel input,
+    .electricity-calculator-panel select {
+      background: #fbfdff;
+      border-radius: 16px;
+      min-height: 52px;
+    }
+
+    .electricity-submit-btn {
+      align-items: center;
+      background: #06111f;
+      border-radius: 18px;
+      color: #fff;
+      display: inline-flex;
+      font-size: 1rem;
+      font-weight: 850;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0.9rem 1.45rem;
+      transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+      width: 100%;
+    }
+
+    .electricity-submit-btn:hover,
+    .electricity-submit-btn:focus-visible {
+      background: #0a7fd3;
+      box-shadow: 0 18px 42px rgba(10, 127, 211, 0.24);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .electricity-results {
+      margin-bottom: 2rem;
+    }
+
+    .electricity-results-heading {
+      margin-bottom: 1rem;
+    }
+
+    .electricity-total-pill {
+      background: #06111f;
+      border-radius: 20px;
+      color: #fff;
+      flex: 0 0 auto;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      font-weight: 900;
+      padding: 0.75rem 1rem;
+      white-space: nowrap;
+    }
+
+    .electricity-example-strip {
+      margin-bottom: 1.5rem;
+    }
+
+    .electricity-example-copy {
+      max-width: 330px;
+    }
+
+    .electricity-example-copy span {
+      color: var(--electricity-muted);
+      display: block;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      margin-top: 0.45rem;
+    }
+
+    .electricity-example-list {
+      display: grid;
+      flex: 1;
+      gap: 0.75rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .electricity-example-list > div {
+      box-shadow: none;
+    }
+
+    .electricity-example-list span,
+    .electricity-example-list strong,
+    .electricity-example-list em {
+      display: block;
+    }
+
+    .electricity-example-list span {
+      color: var(--electricity-muted);
+      font-size: 0.82rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .electricity-example-list strong {
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .electricity-example-list em {
+      color: #0c8f68;
+      font-size: 1.2rem;
+      font-style: normal;
+      font-weight: 900;
+      margin-top: 0.4rem;
+    }
+
+    :global(html[data-theme='dark']) .electricity-flagship-page {
+      --electricity-ink: #f7fbff;
+      --electricity-muted: #b8c7d8;
+      --electricity-line: rgba(197, 221, 244, 0.2);
+      --electricity-surface: rgba(11, 21, 35, 0.86);
+    }
+
+    :global(html[data-theme='dark']) .electricity-update-strip,
+    :global(html[data-theme='dark']) .electricity-calculator-panel,
+    :global(html[data-theme='dark']) .electricity-results-panel,
+    :global(html[data-theme='dark']) .electricity-example-strip {
+      background: rgba(8, 16, 29, 0.92);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+    }
+
+    :global(html[data-theme='dark']) .electricity-presets button,
+    :global(html[data-theme='dark']) .electricity-calculator-panel input,
+    :global(html[data-theme='dark']) .electricity-calculator-panel select,
+    :global(html[data-theme='dark']) .electricity-quick-grid > div,
+    :global(html[data-theme='dark']) .electricity-example-list > div {
+      background: rgba(14, 26, 42, 0.92);
+      color: #f7fbff;
+    }
+
+    :global(html[data-theme='dark']) .electricity-calculator-panel label,
+    :global(html[data-theme='dark']) .electricity-quick-grid strong {
+      color: #f7fbff;
+    }
+
+    @keyframes electricity-rise {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .electricity-quick-grid,
+      .electricity-presets,
+      .electricity-example-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .electricity-example-strip {
+        align-items: stretch;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .electricity-flagship-page {
+        padding-inline: 0.75rem;
+      }
+
+      .electricity-update-strip {
+        border-radius: 18px;
+        width: 100%;
+      }
+
+      .electricity-quick-grid,
+      .electricity-presets,
+      .electricity-example-list {
+        grid-template-columns: 1fr;
+      }
+
+      .electricity-panel-heading,
+      .electricity-results-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .electricity-total-pill {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .electricity-update-strip,
+      .electricity-calculator-panel,
+      .electricity-results-panel,
+      .electricity-example-strip,
+      .electricity-presets button,
+      .electricity-submit-btn {
+        animation: none;
+        transition: none;
+      }
+    }
+  </style>
+
   <script>
     import { calculateElectricityBill, DEFAULT_ELECTRICITY_FT_RATE } from '../../lib/electricity-bill';
 
@@ -475,6 +1011,7 @@ const jsonLdHowTo = {
     const sharePrompt = document.getElementById('electricity-share-prompt');
     const nextActionCard = document.getElementById('electricity-next-action');
     const breakdownBody = document.getElementById('tier-breakdown-body');
+    const presetButtons = document.querySelectorAll('[data-electricity-preset]');
 
     const fields = {
       units: document.getElementById('units'),
@@ -537,6 +1074,22 @@ const jsonLdHowTo = {
       });
     });
 
+    presetButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!(button instanceof HTMLElement)) return;
+        const { units, provider, customerType, ftRate } = button.dataset;
+        if (units) fields.units.value = units;
+        if (provider) fields.provider.value = provider;
+        if (customerType) fields.customerType.value = customerType;
+        if (ftRate) fields.ftRate.value = ftRate;
+        clearValidation();
+        updateSubmitState();
+        if (form instanceof HTMLFormElement) {
+          form.requestSubmit();
+        }
+      });
+    });
+
     function setText(id, value) {
       const element = document.getElementById(id);
       if (element) element.textContent = value;
@@ -591,6 +1144,7 @@ const jsonLdHowTo = {
       setText('res-service-charge', fmtMoney(result.serviceCharge));
       setText('res-vat', fmtMoney(result.vatAmount));
       setText('res-total', fmtMoney(result.totalBill));
+      setText('res-total-inline', fmtMoney(result.totalBill));
 
       setText('res-provider', result.provider === 'mea' ? 'MEA - การไฟฟ้านครหลวง' : 'PEA - การไฟฟ้าส่วนภูมิภาค');
       setText('res-customer-type', result.customerType === 'residential' ? 'บ้านอยู่อาศัย' : 'กิจการขนาดเล็ก');
