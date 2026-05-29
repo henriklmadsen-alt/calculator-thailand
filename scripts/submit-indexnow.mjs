@@ -14,7 +14,14 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'b48f107cf34f6dca1c4ab87f7ecf5062';
-const INDEXNOW_API = 'https://api.indexnow.org/IndexNow';
+const INDEXNOW_ENDPOINTS = (process.env.INDEXNOW_ENDPOINTS || [
+  'https://api.indexnow.org/IndexNow',
+  'https://www.bing.com/indexnow',
+  'https://yandex.com/indexnow',
+].join(','))
+  .split(',')
+  .map((endpoint) => endpoint.trim())
+  .filter(Boolean);
 
 function parseArgs(argv) {
   const args = new Map();
@@ -52,7 +59,7 @@ export function extractUrlsFromSitemap(xml) {
   return urls;
 }
 
-export async function submitToIndexNow(urls, host) {
+export async function submitToIndexNow(urls, host, endpoint = INDEXNOW_ENDPOINTS[0]) {
   const body = {
     host,
     key: INDEXNOW_KEY,
@@ -60,13 +67,35 @@ export async function submitToIndexNow(urls, host) {
     urlList: urls,
   };
 
-  const res = await fetch(INDEXNOW_API, {
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: JSON.stringify(body),
   });
 
-  return { status: res.status, statusText: res.statusText };
+  return {
+    endpoint,
+    status: res.status,
+    statusText: res.statusText,
+    ok: res.status >= 200 && res.status < 300,
+  };
+}
+
+export async function submitToIndexNowEndpoints(urls, host, endpoints = INDEXNOW_ENDPOINTS) {
+  const results = [];
+  for (const endpoint of endpoints) {
+    try {
+      results.push(await submitToIndexNow(urls, host, endpoint));
+    } catch (error) {
+      results.push({
+        endpoint,
+        status: 0,
+        statusText: error.message,
+        ok: false,
+      });
+    }
+  }
+  return results;
 }
 
 async function main() {
@@ -102,16 +131,22 @@ async function main() {
     return;
   }
 
-  console.log(`Submitting ${urls.length} URLs to IndexNow API...`);
+  console.log(`Submitting ${urls.length} URLs to IndexNow endpoints...`);
   try {
-    const result = await submitToIndexNow(urls, host);
-    // IndexNow returns 200 (OK) or 202 (Accepted)
-    if (result.status >= 200 && result.status < 300) {
-      console.log(`IndexNow submission successful: ${result.status} ${result.statusText}`);
-    } else {
-      console.error(`IndexNow submission returned: ${result.status} ${result.statusText}`);
+    const results = await submitToIndexNowEndpoints(urls, host);
+    const accepted = results.filter((result) => result.ok);
+
+    for (const result of results) {
+      const label = result.ok ? 'accepted' : 'failed';
+      console.log(`IndexNow ${label}: ${result.endpoint} -> ${result.status} ${result.statusText}`);
+    }
+
+    if (accepted.length === 0) {
+      console.error('IndexNow submission failed: no endpoint accepted the URL batch.');
       process.exit(1);
     }
+
+    console.log(`IndexNow submission complete: ${accepted.length}/${results.length} endpoints accepted ${urls.length} URLs.`);
   } catch (err) {
     console.error(`IndexNow submission failed: ${err.message}`);
     process.exit(1);
