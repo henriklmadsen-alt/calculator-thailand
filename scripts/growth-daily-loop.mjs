@@ -29,6 +29,7 @@ function npmStep(name, script, lane) {
 
 const STEPS = [
   npmStep('Indexation priority queue', 'report:indexation-queue', 'measure'),
+  npmStep('Index quality policy audit', 'audit:index-quality', 'audit'),
   npmStep('GSC query gap planner', 'report:gsc-gaps', 'measure'),
   npmStep('Content freshness queue', 'audit:freshness', 'audit'),
   npmStep('SERP title competitor comparison', 'report:serp-titles', 'compare'),

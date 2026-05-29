@@ -1,12 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getIndexPolicyForUrl } from '../src/data/index-quality-policy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '../dist');
 const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com';
 
 function getPriority(url) {
+  const policy = getIndexPolicyForUrl(url);
+  if (policy.index) return policy.priority ?? 0.5;
+  if (!policy.index) return null;
   const decoded = decodeURIComponent(url);
 
   // AI Advisor → priority 0.9

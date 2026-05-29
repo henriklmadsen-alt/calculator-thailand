@@ -9,6 +9,7 @@ import FeedbackWidget from '../components/FeedbackWidget.astro';
 import ABTestTracker from '../components/ABTestTracker.astro';
 import CalculatorSchema from '../components/schema/CalculatorSchema.astro';
 import { calculators } from '../lib/calculators';
+import { getIndexPolicyForPath } from '../data/index-quality-policy.mjs';
 
 interface Props {
   title: string;
@@ -29,9 +30,12 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false, noindex = false } = Astro.props;
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
-const pageUrl = canonical || siteUrl + Astro.url.pathname;
+const { title, description, canonical, ogImage, pageName, alternateLocales = [], categoryId, categoryName, categorySlug, noGenericHowTo = false, noindex = false } = Astro.props;
+const indexPolicy = getIndexPolicyForPath(Astro.url.pathname);
+const canonicalPath = indexPolicy.canonicalPath;
+const pageUrl = canonicalPath ? `${siteUrl}${canonicalPath}` : (canonical || siteUrl + Astro.url.pathname);
+const robotsContent = noindex ? 'noindex, nofollow, noarchive' : indexPolicy.robots;
 const imageUrl = ogImage || `${siteUrl}/og-image.svg`;
 // Generate hreflang links for language variants (English pages not yet available)
 // Use pageUrl (canonical) for hreflang to ensure consistent URL format and prevent encoding mismatches
@@ -217,7 +221,7 @@ const calculatorSchemaType: 'TaxCalculator' | 'LoanCalculator' | 'SalaryCalculat
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="robots" content={noindex ? 'noindex, nofollow, noarchive' : 'index, follow'} />
+    <meta name="robots" content={robotsContent} />
     <link rel="canonical" href={pageUrl} />
     {localeAlternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <link rel="alternate" type="text/plain" title="Kamnuanlek llms.txt" href={`${siteUrl}/llms.txt`} />
