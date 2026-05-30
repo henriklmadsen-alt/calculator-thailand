@@ -6,10 +6,13 @@ import GuardedAdSlot from '../../components/templates/GuardedAdSlot.astro';
 import AffiliateCard from '../../components/templates/AffiliateCard.astro';
 import FAQAccordion from '../../components/templates/FAQAccordion.astro';
 
-const pageTitle = 'คำนวณเบี้ยประกันรถยนต์ ปี 2569 ประมาณค่าเบี้ยชั้น 1-3 ตามรถและอายุ | Kamnuanlek';
-const pageDescription = 'ประมาณเบี้ยประกันรถยนต์ชั้น 1, 2+, 2, 3+ และชั้น 3 ตามประเภทรถ มูลค่ารถ อายุผู้ขับ และประวัติการเคลม';
+const pageTitle = 'คำนวณเบี้ยประกันรถยนต์ 2569 | ชั้น 1 2+ 3+ ตามมูลค่ารถ';
+const pageDescription = 'คำนวณเบี้ยประกันรถยนต์ชั้น 1, 2+, 2, 3+, 3 ตามมูลค่ารถ อายุรถ ผู้ขับ และประวัติเคลม พร้อมเทียบประกันรถชั้นไหนดี';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณเบี้ยประกันรถยนต์/`;
+const sourceVerifiedDate = '30 พฤษภาคม 2569';
+const oicMotorUrl = 'https://www.oic.or.th/th/consumer/insurance/non-life/motor';
+const oicServiceUrl = 'https://oiceservice.oic.or.th/';
 
 const faqData = [
   {
@@ -68,7 +71,9 @@ const jsonLdHowTo = {
 ---
 
 <BaseLayout noGenericHowTo={true} title={pageTitle} description={pageDescription} canonical={canonical} pageName="คำนวณเบี้ยประกันรถยนต์">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdHowTo)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
 
   <article>
     <div class="mb-4 rounded-xl border border-red-100 bg-red-50 p-4">
@@ -84,6 +89,26 @@ const jsonLdHowTo = {
     <p class="mb-6 text-gray-600">
       กรอกข้อมูลรถและผู้ขับเพื่อประมาณเบี้ยประกันรถยนต์แต่ละชั้น สำหรับเปรียบเทียบก่อนซื้อประกัน
     </p>
+
+    <section data-ai-overview-answer class="mb-6 rounded-xl border border-amber-100 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="premium-answer">
+      <p class="text-xs font-bold uppercase tracking-normal text-amber-700">คำตอบเร็ว</p>
+      <h2 id="premium-answer" class="mt-1 text-lg font-bold text-slate-950">เบี้ยประกันรถยนต์ขึ้นกับอะไร</h2>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">มูลค่ารถ/ทุนประกัน</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">รถมูลค่าสูง เบี้ยชั้น 1 และทุนประกันจะสูงขึ้นตามความเสี่ยงค่าซ่อม</span>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">ชั้นประกัน</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">ชั้น 1 คุ้มครองมากสุด ชั้น 2+/3+ ลดเบี้ยแต่เงื่อนไขแคบลง</span>
+        </div>
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <strong class="block text-sm text-slate-950">ผู้ขับและประวัติเคลม</strong>
+          <span class="mt-1 block text-sm leading-6 text-slate-600">อายุน้อยหรือเคลมบ่อยทำให้เบี้ยสูงขึ้น ส่วนไม่เคลมมีโอกาสได้ส่วนลด</span>
+        </div>
+      </div>
+      <p class="mt-3 text-xs text-slate-500">ตรวจแหล่งอ้างอิง คปภ. เมื่อ {sourceVerifiedDate}</p>
+    </section>
 
     <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
       <form id="car-form" class="space-y-5">
@@ -197,20 +222,11 @@ const jsonLdHowTo = {
       subtext="ใช้ผลลัพธ์จากเครื่องคำนวณเป็นฐานก่อนดูข้อเสนอพาร์ทเนอร์"
     />
 
-
     <section class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
       <h3 class="mb-3 text-base font-semibold text-gray-900">เครื่องมือเกี่ยวกับรถยนต์ที่น่าสนใจ</h3>
       <ul class="space-y-2 text-sm text-gray-700">
-        <li><a href="/คำนวณผ่อนรถ/" class="text-primary-600 hover:underline">คำนวณผ่อนรถ ค่างวดสินเชื่อรถยนต์</a> — วางแผนซื้อรถ คำนวณค่างวดก่อนตัดสินใจ</li>
-        <li><a href="/คำนวณค่าภาษีรถยนต์/" class="text-primary-600 hover:underline">คำนวณภาษีรถยนต์ประจำปี</a> — ภาษีรถประจำปีต้องจ่ายเท่าไหร่</li>
-        <li><a href="/คำนวณค่าต่อทะเบียนรถ/" class="text-primary-600 hover:underline">คำนวณค่าต่อทะเบียนรถ</a> — ค่าต่อทะเบียนรถและต่อประกัน</li>
-        <li><a href="/คำนวณ-deductible-ประกันรถ/" class="text-primary-600 hover:underline">คำนวณ Deductible ประกันรถ</a> — วางแผนค่าเสียหายส่วนแรก</li>
-      </ul>
-    </section>
-
-    <section class="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
-      <h3 class="mb-3 text-base font-semibold text-gray-900">เครื่องมือเกี่ยวกับรถยนต์ที่น่าสนใจ</h3>
-      <ul class="space-y-2 text-sm text-gray-700">
+        <li><a href="/บทความ/ประกันรถยนต์ชั้น-1-2-plus-3-plus-ต่างกันยังไง/" class="text-primary-600 hover:underline">ประกันชั้น 1, 2+, 3+ ต่างกันยังไง</a> — อ่านก่อนเลือกชั้นประกัน</li>
+        <li><a href="/บทความ/รถ-700000-ประกันชั้น-1-เท่าไร/" class="text-primary-600 hover:underline">รถ 700,000 ประกันชั้น 1 เท่าไร</a> — ดูตัวอย่างราคาก่อนขอใบเสนอราคา</li>
         <li><a href="/คำนวณผ่อนรถ/" class="text-primary-600 hover:underline">คำนวณผ่อนรถ ค่างวดสินเชื่อรถยนต์</a> — วางแผนซื้อรถ คำนวณค่างวดก่อนตัดสินใจ</li>
         <li><a href="/คำนวณค่าภาษีรถยนต์/" class="text-primary-600 hover:underline">คำนวณภาษีรถยนต์ประจำปี</a> — ภาษีรถประจำปีต้องจ่ายเท่าไหร่</li>
         <li><a href="/คำนวณค่าต่อทะเบียนรถ/" class="text-primary-600 hover:underline">คำนวณค่าต่อทะเบียนรถ</a> — ค่าต่อทะเบียนรถและต่อประกัน</li>
@@ -221,7 +237,7 @@ const jsonLdHowTo = {
     <RelatedCalculators currentHref="/คำนวณเบี้ยประกันรถยนต์/" />
 
     <div class="content-verified">
-      <p>ตรวจสอบและอัพเดตโดยทีมผู้เชี่ยวชาญ Kamnuanlek | อัพเดตล่าสุด: เมษายน 2569</p>
+      <p>ตรวจสอบและอัปเดตโดยทีม Kamnuanlek | อัปเดตล่าสุด: {sourceVerifiedDate}</p>
     </div>
 
     <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
@@ -229,7 +245,8 @@ const jsonLdHowTo = {
     <div class="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm">
       <p class="mb-2 font-semibold text-gray-700">แหล่งอ้างอิงทางการ</p>
       <ul class="space-y-1 text-gray-600">
-        <li><a href="https://www.oic.or.th/th/consumer/knowledge/car_insurance" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:underline">ข้อมูลประกันรถยนต์จากสำนักงาน คปภ.</a> — ประเภทความคุ้มครองและชั้นประกันรถยนต์</li>
+        <li><a href={oicMotorUrl} target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:underline">ข้อมูลประกันรถยนต์จากสำนักงาน คปภ.</a> — ประเภทความคุ้มครองและชั้นประกันรถยนต์</li>
+        <li><a href={oicServiceUrl} target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">OIC e-Service</a> — ตารางคำนวณเบื้องต้นสำหรับประกันภัยรถยนต์</li>
         <li><a href="https://www.oic.or.th/th/consumer/knowledge/vehicle_act" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">พรบ. รถยนต์ภาคบังคับ — ข้อมูลจาก คปภ.</a> — ข้อมูล พ.ร.บ. ประกันภัยรถยนต์ภาคบังคับ</li>
       </ul>
     </div>

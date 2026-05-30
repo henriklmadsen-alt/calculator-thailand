@@ -94,6 +94,18 @@ export const AFFILIATE_EXTENSION_CLUSTERS: KeywordConquestCluster[] = [
     nextAction: 'Use car loan articles to push calculator and Roojai-related insurance paths.',
   },
   {
+    id: 'car-insurance',
+    name: 'ประกันรถยนต์',
+    role: 'affiliate-extension',
+    calculatorHref: '/คำนวณค่าประกันรถยนต์/',
+    quickSearchLabel: 'ประกันรถ',
+    primaryThaiQueries: ['ประกันชั้น 1 2+ 3+ ต่างกันยังไง', 'รถเก่า 7 ปี ควรทำประกันชั้นไหน', 'รถ 700000 ประกันชั้น 1 เท่าไร'],
+    englishQueries: ['car insurance calculator thailand', 'thai car insurance comparison'],
+    longTailPatterns: ['ชั้น 1', '2+', '3+', 'รถเก่า', 'เบี้ยประกัน', 'ทุนประกัน', 'Roojai'],
+    gscSignal: 'affiliate-ready cluster adjacent to car loan intent; needs exact-answer support pages',
+    nextAction: 'Push class-comparison and exact-price articles into the insurance calculators and car-loan journey.',
+  },
+  {
     id: 'home-loan',
     name: 'สินเชื่อบ้าน',
     role: 'affiliate-extension',
@@ -108,6 +120,9 @@ export const AFFILIATE_EXTENSION_CLUSTERS: KeywordConquestCluster[] = [
 ];
 
 export const EXACT_NUMBER_QUERY_ROUTES = [
+  { query: 'ประกันชั้น 1 2+ 3+ ต่างกันยังไง', href: '/บทความ/ประกันรถยนต์ชั้น-1-2-plus-3-plus-ต่างกันยังไง/' },
+  { query: 'รถเก่า 7 ปี ควรทำประกันชั้นไหน', href: '/บทความ/รถเก่า-7-ปี-ควรทำประกันชั้นไหน/' },
+  { query: 'รถ 700000 ประกันชั้น 1 เท่าไร', href: '/บทความ/รถ-700000-ประกันชั้น-1-เท่าไร/' },
   { query: '1000 บวก VAT 7% เป็นเท่าไร', href: '/บทความ/1000-บวก-vat-7-เป็นเท่าไร/' },
   { query: '1070 หาร 1.07 ถอด VAT', href: '/บทความ/1070-หาร-1-07-ถอด-vat/' },
   { query: '10000/1.07', href: '/บทความ/10000-หาร-1-07-ถอด-vat/' },

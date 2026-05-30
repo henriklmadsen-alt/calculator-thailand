@@ -1921,11 +1921,11 @@ export const calculators: Calculator[] = [
   // ── Insurance ──
   {
     title: 'คำนวณค่าประกันรถยนต์',
-    desc: 'เปรียบเทียบเบี้ยประกันรถชั้น 1, 2+, 2, 3+, 3 ตามมูลค่ารถ กลุ่มรถ อายุรถ',
+    desc: 'เปรียบเทียบเบี้ยประกันรถยนต์ชั้น 1, 2+, 3+ ตามมูลค่ารถ อายุรถ ผู้ขับ และประวัติเคลม',
     href: '/คำนวณค่าประกันรถยนต์/',
     icon: '🚗',
-    categoryId: 'bills',
-    secondaryCategories: ['tax'],
+    categoryId: 'insurance',
+    secondaryCategories: ['vehicles'],
     tag: 'ใหม่',
     tagColor: 'bg-orange-50 text-orange-600',
   },
@@ -3238,7 +3238,7 @@ export const calculators: Calculator[] = [
   // ── Insurance ──
   {
     title: 'คำนวณเบี้ยประกันรถยนต์',
-    desc: 'ประมาณเบี้ยประกันรถยนต์ภาคสมัครใจ ชั้น 1 ถึงชั้น 3 ตามมูลค่ารถ อายุรถ และผู้ขับขี่',
+    desc: 'ประมาณเบี้ยประกันรถยนต์ภาคสมัครใจ ชั้น 1, 2+, 3+ ตามมูลค่ารถ อายุรถ ผู้ขับ และประวัติเคลม',
     href: '/คำนวณเบี้ยประกันรถยนต์/',
     icon: '🚗',
     categoryId: 'insurance',

@@ -36,6 +36,11 @@ export const GET: APIRoute = async ({ request }) => {
         supportingPages: [
           `${siteUrl}/บทความ/คำนวณผ่อนรถแล้วซื้อประกันชั้นไหน-2569/`,
           `${siteUrl}/บทความ/ดาวน์รถ-20-เปอร์เซ็นต์-ผ่อนเท่าไร/`,
+          `${siteUrl}/คำนวณค่าประกันรถยนต์/`,
+          `${siteUrl}/คำนวณเบี้ยประกันรถยนต์/`,
+          `${siteUrl}/บทความ/ประกันรถยนต์ชั้น-1-2-plus-3-plus-ต่างกันยังไง/`,
+          `${siteUrl}/บทความ/รถเก่า-7-ปี-ควรทำประกันชั้นไหน/`,
+          `${siteUrl}/บทความ/รถ-700000-ประกันชั้น-1-เท่าไร/`,
           `${siteUrl}/เปรียบเทียบสินเชื่อรถ/`,
         ],
       },
@@ -59,6 +64,7 @@ export const GET: APIRoute = async ({ request }) => {
       `${siteUrl}/คำนวณค่าโอที/`,
       `${siteUrl}/คำนวณ-bmi/`,
       `${siteUrl}/คำนวณผ่อนรถ/`,
+      `${siteUrl}/คำนวณค่าประกันรถยนต์/`,
       `${siteUrl}/คำนวณผ่อนบ้าน/`,
     ],
     catalogStats: {
@@ -170,6 +176,13 @@ export const GET: APIRoute = async ({ request }) => {
         url: 'https://www.dlt.go.th/',
         description: 'Official source for vehicle registration, tax rates, and insurance requirements',
         applicableCalculators: ['Vehicle Tax', 'Car Insurance', 'Motorcycle Insurance'],
+      },
+      {
+        '@type': 'Organization',
+        name: 'Office of Insurance Commission Thailand',
+        url: 'https://www.oic.or.th/',
+        description: 'Official source for insurance consumer information and motor insurance references',
+        applicableCalculators: ['Car Insurance', 'Motorcycle Insurance', 'Life Insurance', 'Health Insurance'],
       },
       {
         '@type': 'Organization',
