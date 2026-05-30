@@ -82,6 +82,18 @@ export const homepageGrowthLinks: TrafficGrowthLink[] = [
     badge: 'VAT 7%',
   },
   {
+    title: '1,000 บวก VAT 7%',
+    href: '/บทความ/1000-บวก-vat-7-เป็นเท่าไร/',
+    desc: 'ตอบ query เลขพื้นฐานที่มีโอกาสได้คลิกจากคนต้องการคำตอบทันที',
+    badge: 'VAT 7%',
+  },
+  {
+    title: '1,070 หาร 1.07 ถอด VAT',
+    href: '/บทความ/1070-หาร-1-07-ถอด-vat/',
+    desc: 'จับ intent ถอด VAT จากยอดรวมที่ออกมาเป็นตัวเลขพอดี',
+    badge: 'Exact answer',
+  },
+  {
     title: 'ดาวน์รถ 20% ผ่อนเท่าไร',
     href: '/บทความ/ดาวน์รถ-20-เปอร์เซ็นต์-ผ่อนเท่าไร/',
     desc: 'เชื่อม traffic ผ่อนรถเข้าหน้า affiliate-friendly หลังคำนวณค่างวด',
@@ -151,10 +163,28 @@ export const ageGrowthLinks: TrafficGrowthLink[] = [
 
 export const vatGrowthLinks: TrafficGrowthLink[] = [
   {
+    title: '1,000 บวก VAT 7% เป็นเท่าไร',
+    href: '/บทความ/1000-บวก-vat-7-เป็นเท่าไร/',
+    desc: 'คำตอบเร็ว: 1,000 x 1.07 = 1,070 บาท และ VAT คือ 70 บาท',
+    badge: 'Exact answer',
+  },
+  {
+    title: '1,070 หาร 1.07 ถอด VAT',
+    href: '/บทความ/1070-หาร-1-07-ถอด-vat/',
+    desc: 'คำตอบเร็ว: 1,070 / 1.07 = 1,000 บาทก่อน VAT และภาษี 70 บาท',
+    badge: 'Exact answer',
+  },
+  {
     title: '10000 หาร 1.07 เท่ากับเท่าไร',
     href: '/บทความ/10000-หาร-1-07-ถอด-vat/',
     desc: 'ถอด VAT จากราคารวม 10,000 บาท พร้อมยอดภาษี 654.21 บาท',
     badge: 'Exact answer',
+  },
+  {
+    title: 'ถอด VAT จากราคารวม สูตร 1.07',
+    href: '/บทความ/ถอด-vat-จากราคารวม-สูตร-1-07/',
+    desc: 'รวมสูตรถอด VAT และตารางตัวอย่าง 1,070 / 5,000 / 10,000 บาท',
+    badge: 'Formula',
   },
   {
     title: 'VAT 7% คิดยังไง',

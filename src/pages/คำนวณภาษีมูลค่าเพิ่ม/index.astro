@@ -7,10 +7,12 @@ import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluste
 import { vatGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
 const pageTitle = 'คำนวณ VAT 7% | 10000/1.07 ถอด VAT บวก VAT ฟรี 2569';
-const pageDescription = 'เครื่องคำนวณ VAT 7% บวกภาษี ถอดภาษีจากราคารวม เช่น 10000/1.07 พร้อมแยกยอดก่อนภาษี ภาษี และยอดสุทธิ ใช้ฟรี ไม่ต้องสมัคร';
+const pageDescription = 'เครื่องคำนวณ VAT 7% บวกภาษี ถอดภาษีจากราคารวม เช่น 10000/1.07, 1070/1.07 และ 1000 บวก VAT พร้อมแยกยอดก่อนภาษี ภาษี และยอดสุทธิ';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณภาษีมูลค่าเพิ่ม/`;
 const vatRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href !== '/คำนวณภาษีมูลค่าเพิ่ม/').slice(0, 5);
+const vatLastVerified = '30 พฤษภาคม 2569';
+const vatReducedRateEndDate = '30 กันยายน 2569';
 
 const faqData = [
   {
@@ -27,7 +29,7 @@ const faqData = [
   },
   {
     question: 'VAT 7% หรือ 10% กันแน่?',
-    answer: 'อัตราภาษีมูลค่าเพิ่มตามกฎหมายคือ 10% แต่มีพระราชกฤษฎีกาลดอัตราเหลือ 7% (รวมภาษีท้องถิ่น) ซึ่งได้รับการต่ออายุเรื่อยมาจนถึงปัจจุบัน',
+    answer: `อัตราภาษีมูลค่าเพิ่มตามกฎหมายคือ 10% แต่มีพระราชกฤษฎีกาลดอัตราเหลือ 7% (รวมภาษีท้องถิ่น) โดยข้อมูลที่ตรวจล่าสุดใช้ถึงวันที่ ${vatReducedRateEndDate}`,
   },
   { question: 'ธุรกิจขนาดไหนต้องจดทะเบียน VAT?', answer: 'ผู้ประกอบการที่มีรายได้จากการขายสินค้าหรือบริการเกิน 1,800,000 บาทต่อปี ต้องจดทะเบียนภาษีมูลค่าเพิ่มภายใน 30 วันนับแต่วันที่รายได้เกิน' },
   { question: 'VAT Input และ Output Tax คืออะไร?', answer: 'Output VAT: ภาษีที่เรียกเก็บจากลูกค้า | Input VAT: ภาษีที่จ่ายให้ซัพพลายเออร์ | ภาษีที่ต้องนำส่งกรมสรรพากร = Output VAT - Input VAT ถ้าติดลบได้รับคืนหรือนำไปเครดิตเดือนถัดไป' },
@@ -61,7 +63,7 @@ const jsonLdHowTo = {
   "@context": "https://schema.org",
   "@type": "HowTo",
   "name": "วิธีคำนวณภาษีมูลค่าเพิ่ม (VAT) ปี 2569",
-  "description": "ขั้นตอนการคำนวณภาษีมูลค่าเพิ่ม (Value Added Tax) ในอัตรา 7% สำหรับสินค้าและบริการ ตามพระราชกฤษฎีกาของกรมสรรพากร",
+  "description": `ขั้นตอนการคำนวณภาษีมูลค่าเพิ่ม (Value Added Tax) ในอัตรา 7% สำหรับสินค้าและบริการ ตามประกาศกรมสรรพากรที่ตรวจล่าสุดเมื่อ ${vatLastVerified}`,
   "step": [
     {"@type": "HowToStep", "name": "ตรวจสอบว่าสินค้าหรือบริการอยู่ภายใต้ VAT", "text": "สินค้าส่วนใหญ่ต้องเสียภาษี ยกเว้น อาหารสดใหม่, ยาแผนไทย, หนังสือพิมพ์, บริการทางการแพทย์ และการศึกษา"},
     {"@type": "HowToStep", "name": "บันทึกราคามูลค่าสินค้า (Net Price)", "text": "ราคาก่อน VAT = ราคาตั้งต้นของสินค้า/บริการ ตัวอย่าง: ราคาสินค้า 1,000 บาท (ยังไม่รวม VAT)"},
@@ -84,6 +86,7 @@ const jsonLdHowTo = {
 
     <p class="text-gray-600 mb-6">
       คำนวณ VAT 7% ออนไลน์ฟรี เลือกบวก VAT จากราคาก่อนภาษี หรือถอด VAT จากราคารวม พร้อมแยกยอดก่อนภาษี ภาษี และยอดสุทธิทันที
+      อัตรา 7% ตรวจอ้างอิงกรมสรรพากรล่าสุดเมื่อ {vatLastVerified}
     </p>
 
     <section data-ai-overview-answer class="mb-6 rounded-xl border border-emerald-100 bg-emerald-50 p-4 sm:p-5">
@@ -95,6 +98,23 @@ const jsonLdHowTo = {
       </p>
     </section>
 
+    <section class="mb-6 rounded-xl border border-amber-100 bg-amber-50 p-4 sm:p-5">
+      <p class="text-sm font-semibold text-amber-800">อัตรา VAT ล่าสุดปี 2569</p>
+      <h2 class="mt-1 text-lg font-bold text-amber-950">VAT ประเทศไทยยังใช้ 7% ถึง {vatReducedRateEndDate}</h2>
+      <p class="mt-2 text-sm text-amber-900">
+        กรมสรรพากรประกาศขยายเวลาการลดอัตราภาษีมูลค่าเพิ่มเหลือ 7% ออกไปถึง {vatReducedRateEndDate}
+        หน้านี้จึงตั้งค่าเริ่มต้นที่ 7% และระบุวันที่ตรวจสอบไว้ชัดเจนเพื่อช่วยเรื่องความน่าเชื่อถือใน Google และ AI Overview
+      </p>
+      <div class="mt-3 flex flex-wrap gap-2 text-sm">
+        <a href="https://www.rd.go.th/region/08/chiangrai/265/3664.html" target="_blank" rel="noopener noreferrer" class="rounded-lg bg-white px-3 py-2 font-semibold text-amber-900 shadow-sm">
+          กรมสรรพากร: VAT 7% ถึง 30 ก.ย. 2569
+        </a>
+        <a href="https://www.rd.go.th/59935.html" target="_blank" rel="noopener noreferrer" class="rounded-lg bg-white px-3 py-2 font-semibold text-amber-900 shadow-sm">
+          ทำไม VAT รวมเป็น 7%
+        </a>
+      </div>
+    </section>
+
     <div class="mb-6 rounded-lg border border-sky-100 bg-sky-50 p-4 text-sm text-slate-700">
       <p class="font-semibold text-sky-800">สูตรเร็วที่ใช้บ่อย</p>
       <ul class="mt-2 list-disc space-y-1 pl-5">
@@ -103,6 +123,24 @@ const jsonLdHowTo = {
         <li>จำนวน VAT: ราคารวม VAT - ราคาก่อนภาษี</li>
       </ul>
     </div>
+
+    <section class="mb-6 grid gap-3 sm:grid-cols-3">
+      <a href="/บทความ/1000-บวก-vat-7-เป็นเท่าไร/" data-preserve-utm class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:border-primary-300">
+        <span class="text-xs font-semibold uppercase text-primary-600">Exact answer</span>
+        <strong class="mt-1 block text-gray-950">1,000 บวก VAT 7%</strong>
+        <span class="mt-1 block text-sm text-gray-600">ยอดรวม 1,070 บาท</span>
+      </a>
+      <a href="/บทความ/1070-หาร-1-07-ถอด-vat/" data-preserve-utm class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:border-primary-300">
+        <span class="text-xs font-semibold uppercase text-primary-600">Exact answer</span>
+        <strong class="mt-1 block text-gray-950">1,070 ÷ 1.07</strong>
+        <span class="mt-1 block text-sm text-gray-600">ยอดก่อน VAT 1,000 บาท</span>
+      </a>
+      <a href="/บทความ/ถอด-vat-จากราคารวม-สูตร-1-07/" data-preserve-utm class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:border-primary-300">
+        <span class="text-xs font-semibold uppercase text-primary-600">Formula guide</span>
+        <strong class="mt-1 block text-gray-950">สูตรถอด VAT</strong>
+        <span class="mt-1 block text-sm text-gray-600">ใช้ 1.07 กับยอดรวมภาษี</span>
+      </a>
+    </section>
 
     <!-- Calculator -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-8">
@@ -275,7 +313,7 @@ const jsonLdHowTo = {
     <section class="prose prose-gray max-w-none mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-3">สูตรที่ใช้คำนวณ</h2>
       <p><strong>ภาษี VAT = ราคาสินค้า (ไม่รวม VAT) × 7%</strong></p>
-      <p>ผู้ประกอบการต้องเสียภาษี VAT 7% เมื่อขายสินค้าหรือให้บริการ อัตรา 7% คงที่ ณ ปี 2569</p>
+      <p>ผู้ประกอบการต้องเสียภาษี VAT 7% เมื่อขายสินค้าหรือให้บริการ อัตรา 7% ที่ใช้ในหน้านี้ตรวจอ้างอิงล่าสุดเมื่อ {vatLastVerified}</p>
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">ตัวอย่างการคำนวณ</h3>
       <p><strong>ตัวอย่างที่ 1: ราคาสินค้าก่อน VAT = 10,000 บาท</strong></p>
@@ -294,7 +332,12 @@ const jsonLdHowTo = {
 
       <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-2">สรุป</h3>
       <p>ผู้ประกอบการส่วนใหญ่ต้องรับผิดชอบเสียภาษี VAT ตามระเบียบของกรมสรรพากร บางประเภทสินค้าอาจได้รับการยกเว้น เช่น อาหารสด ยารักษาโรคบางชนิด</p>
-      <p class="text-sm text-gray-500 mt-2"><strong>อ้างอิง:</strong> <a href="https://www.rd.go.th" class="text-primary-600 hover:underline" target="_blank" rel="noopener">กรมสรรพากร: ภาษีมูลค่าเพิ่ม VAT</a> [อัปเดต 2569]</p>
+      <p class="text-sm text-gray-500 mt-2">
+        <strong>อ้างอิง:</strong>
+        <a href="https://www.rd.go.th/region/08/chiangrai/265/3664.html" class="text-primary-600 hover:underline" target="_blank" rel="noopener noreferrer">กรมสรรพากร: ขยาย VAT 7% ถึง 30 กันยายน 2569</a>
+        และ
+        <a href="https://www.rd.go.th/59935.html" class="text-primary-600 hover:underline" target="_blank" rel="noopener noreferrer">กรมสรรพากร: โครงสร้าง VAT รวมเป็น 7%</a>
+      </p>
     </section>
     <FAQAccordion faqData={faqData} title="คำถามที่พบบ่อย" />
 
@@ -326,6 +369,12 @@ const jsonLdHowTo = {
       >
         อ่านบทความ VAT 7%
       </a>
+      <div class="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+        <a href="/บทความ/1000-บวก-vat-7-เป็นเท่าไร/" data-preserve-utm class="rounded-lg bg-white px-3 py-2 font-semibold text-primary-800">1,000 บวก VAT 7% เป็นเท่าไร</a>
+        <a href="/บทความ/1070-หาร-1-07-ถอด-vat/" data-preserve-utm class="rounded-lg bg-white px-3 py-2 font-semibold text-primary-800">1,070 หาร 1.07 ถอด VAT</a>
+        <a href="/บทความ/ถอด-vat-จากราคารวม-สูตร-1-07/" data-preserve-utm class="rounded-lg bg-white px-3 py-2 font-semibold text-primary-800">ถอด VAT จากราคารวม สูตร 1.07</a>
+        <a href="/บทความ/5000-รวม-vat-7-เป็นเท่าไร/" data-preserve-utm class="rounded-lg bg-white px-3 py-2 font-semibold text-primary-800">5,000 รวม VAT 7% ถอดเท่าไร</a>
+      </div>
     </section>
 
     <!-- Related -->

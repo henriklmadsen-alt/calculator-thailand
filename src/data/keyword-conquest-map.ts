@@ -38,7 +38,7 @@ export const PRIMARY_TRAFFIC_CLUSTERS: KeywordConquestCluster[] = [
     quickSearchLabel: 'VAT 7%',
     primaryThaiQueries: ['ภาษี7%', 'วิธีคิด vat 7%', 'คิด vat', '10000/1.07'],
     englishQueries: ['thailand vat calculator', 'vat calculator thailand'],
-    longTailPatterns: ['วิธีคิด', 'ถอด VAT', 'รวม VAT', 'หาร 1.07'],
+    longTailPatterns: ['วิธีคิด', 'ถอด VAT', 'รวม VAT', 'หาร 1.07', '1000 บวก VAT', '1070 หาร 1.07'],
     gscSignal: '24-hour GSC test impressions but zero clicks',
     nextAction: 'Upgrade the VAT calculator and exact-number VAT articles next.',
   },
@@ -108,7 +108,10 @@ export const AFFILIATE_EXTENSION_CLUSTERS: KeywordConquestCluster[] = [
 ];
 
 export const EXACT_NUMBER_QUERY_ROUTES = [
+  { query: '1000 บวก VAT 7% เป็นเท่าไร', href: '/บทความ/1000-บวก-vat-7-เป็นเท่าไร/' },
+  { query: '1070 หาร 1.07 ถอด VAT', href: '/บทความ/1070-หาร-1-07-ถอด-vat/' },
   { query: '10000/1.07', href: '/บทความ/10000-หาร-1-07-ถอด-vat/' },
+  { query: 'ถอด VAT จากราคารวม สูตร 1.07', href: '/บทความ/ถอด-vat-จากราคารวม-สูตร-1-07/' },
   { query: 'บ้านใช้ไฟ 300 หน่วย ค่าไฟเท่าไร', href: '/บทความ/บ้านใช้ไฟ-300-หน่วย-ค่าไฟเท่าไร/' },
   { query: 'บ้านใช้ไฟ 500 หน่วย ค่าไฟเท่าไร', href: '/บทความ/บ้านใช้ไฟ-500-หน่วย-ค่าไฟเท่าไร-2569/' },
   { query: '1 kWh เท่ากับกี่บาท 2569', href: '/บทความ/1-kwh-เท่ากับกี่บาท-2569/' },
