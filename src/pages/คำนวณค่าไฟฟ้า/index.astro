@@ -10,8 +10,8 @@ import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astr
 import { electricityGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 import { calculateElectricityBill as calculateExampleElectricityBill } from '../../lib/electricity-bill';
 
-const pageTitle = 'คำนวณค่าไฟฟ้า 2569 | 1 kWh เท่ากับกี่บาท PEA/MEA + Ft';
-const pageDescription = 'คำนวณค่าไฟฟ้า 2569 สำหรับ PEA/MEA ค่าไฟห้องเช่า และคำถาม 1 kWh เท่ากับกี่บาท ใส่ kWh ค่า Ft เพื่อดูค่าไฟฐาน VAT 7% และยอดรวมทันที';
+const pageTitle = '1 kWh เท่ากับกี่บาท 2569 | คำนวณค่าไฟฟ้า PEA/MEA + Ft';
+const pageDescription = '1 kWh เท่ากับกี่บาท 2569 คำนวณค่าไฟฟ้า PEA/MEA ค่าไฟห้องเช่า ค่า Ft พฤษภาคม-สิงหาคม 2569 ใส่ kWh เพื่อดูค่าไฟฐาน VAT 7% และยอดรวมทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าไฟฟ้า/`;
 const electricityAffiliateUrl = '/go/roojai-partners/?sub_id=electricity-calculator';
@@ -20,6 +20,7 @@ const electricityRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href 
 const currentFtRate = '0.1623';
 const previousFtRate = '0.0972';
 const currentFtPeriod = 'พฤษภาคม-สิงหาคม 2569';
+const ftLastVerified = '30 พฤษภาคม 2569';
 
 const flagshipPresets = [
   {
@@ -181,7 +182,7 @@ const jsonLdHowTo = {
     </div>
 
     <h1 class="electricity-hero-title">
-      คำนวณค่าไฟฟ้า 2569: 1 kWh เท่ากับกี่บาท PEA/MEA + Ft
+      1 kWh เท่ากับกี่บาท 2569? คำนวณค่าไฟฟ้า PEA/MEA + Ft
     </h1>
 
     <p class="electricity-hero-copy">
@@ -189,10 +190,22 @@ const jsonLdHowTo = {
       และยอดรวมแบบแยกขั้นบันได เหมาะสำหรับเช็กบิลบ้าน ห้องเช่า คอนโด และกิจการขนาดเล็ก
     </p>
 
+    <section class="electricity-direct-answer" aria-label="คำตอบเร็ว 1 kWh เท่ากับกี่บาท">
+      <div>
+        <span>คำตอบตรง</span>
+        <h2>1 kWh หรือ 1 หน่วยไฟ ประเมินเร็วประมาณ 3.95 บาทก่อน VAT</h2>
+        <p>
+          รอบ {currentFtPeriod} ค่า Ft เริ่มต้น {currentFtRate} บาท/หน่วย แต่บิลจริงต้องคิดค่าไฟฐานแบบขั้นบันได
+          ค่าบริการ และ VAT 7% จึงควรกรอกจำนวนหน่วยจริงเพื่อดูยอดที่ใกล้บิลมากกว่า
+        </p>
+      </div>
+      <a href="/บทความ/1-kwh-เท่ากับกี่บาท-2569/">อ่านรายละเอียด 1 kWh</a>
+    </section>
+
     <div class="electricity-quick-grid" aria-label="ข้อมูลสำคัญก่อนคำนวณ">
       <div>
         <span>คำตอบเร็ว</span>
-        <strong>ประมาณ 3.95 บาท/หน่วยก่อน VAT</strong>
+        <strong>1 kWh = 1 หน่วยไฟ</strong>
         <p>แต่ยอดจริงต้องคิดขั้นบันได ค่า Ft และค่าบริการ</p>
       </div>
       <div>
@@ -548,6 +561,7 @@ const jsonLdHowTo = {
 
     <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
       <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งข้อมูลทางการ</h2>
+      <p class="mb-2 text-xs font-semibold text-gray-500">ตรวจค่า Ft ล่าสุดเมื่อ {ftLastVerified}</p>
       <ul class="list-disc space-y-1 pl-5">
         <li><a href="https://www.erc.or.th/th/automatic" target="_blank" rel="noopener noreferrer">กกพ.: อัตราค่าไฟฟ้าโดยอัตโนมัติ (Ft)</a></li>
         <li><a href="https://www.pea.co.th/our-services/tariff/ft" target="_blank" rel="noopener noreferrer">PEA: ค่า Ft และประกาศที่เกี่ยวข้อง</a></li>
@@ -628,6 +642,62 @@ const jsonLdHowTo = {
       gap: 0.85rem;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       margin-bottom: 1rem;
+    }
+
+    .electricity-direct-answer {
+      align-items: center;
+      background:
+        linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(239, 246, 255, 0.92)),
+        #fff;
+      border: 1px solid rgba(20, 184, 166, 0.22);
+      border-radius: 24px;
+      box-shadow: 0 22px 68px rgba(15, 47, 78, 0.1);
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      margin: 0 0 1rem;
+      padding: clamp(1rem, 2vw, 1.25rem);
+    }
+
+    .electricity-direct-answer span {
+      color: #047857;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+    }
+
+    .electricity-direct-answer h2 {
+      color: var(--electricity-ink);
+      font-size: clamp(1.18rem, 2vw, 1.55rem);
+      font-weight: 850;
+      line-height: 1.28;
+      margin: 0;
+    }
+
+    .electricity-direct-answer p {
+      color: var(--electricity-muted);
+      font-size: 0.94rem;
+      line-height: 1.7;
+      margin: 0.5rem 0 0;
+      max-width: 720px;
+    }
+
+    .electricity-direct-answer a {
+      background: #06111f;
+      border-radius: 16px;
+      color: #fff;
+      flex: 0 0 auto;
+      font-size: 0.92rem;
+      font-weight: 850;
+      padding: 0.85rem 1rem;
+      text-decoration: none;
+    }
+
+    .electricity-direct-answer a:hover {
+      background: #0a7fd3;
     }
 
     .electricity-quick-grid > div,
@@ -897,6 +967,7 @@ const jsonLdHowTo = {
     }
 
     :global(html[data-theme='dark']) .electricity-update-strip,
+    :global(html[data-theme='dark']) .electricity-direct-answer,
     :global(html[data-theme='dark']) .electricity-calculator-panel,
     :global(html[data-theme='dark']) .electricity-results-panel,
     :global(html[data-theme='dark']) .electricity-example-strip {
@@ -959,9 +1030,15 @@ const jsonLdHowTo = {
       }
 
       .electricity-panel-heading,
+      .electricity-direct-answer,
       .electricity-results-heading {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .electricity-direct-answer a {
+        text-align: center;
+        width: 100%;
       }
 
       .electricity-total-pill {
@@ -971,6 +1048,7 @@ const jsonLdHowTo = {
 
     @media (prefers-reduced-motion: reduce) {
       .electricity-update-strip,
+      .electricity-direct-answer,
       .electricity-calculator-panel,
       .electricity-results-panel,
       .electricity-example-strip,

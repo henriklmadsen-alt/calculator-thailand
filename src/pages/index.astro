@@ -6,6 +6,7 @@ import { categories, calculators, getCategoryCounts, getPopularCalculators } fro
 import { GLOBAL_SEARCH_SYNONYMS, getSearchSynonymsForCalculator } from '../lib/search-synonyms';
 import { CALCULATOR_AFFILIATE_MAP } from '../data/affiliate-config';
 import { homepageGrowthLinks, recoveryGrowthLinks } from '../data/traffic-growth-opportunities';
+import { AFFILIATE_EXTENSION_CLUSTERS, PRIMARY_TRAFFIC_CLUSTERS } from '../data/keyword-conquest-map';
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const HOME_MAX_CALCULATORS = 50;
@@ -37,7 +38,11 @@ const primaryCategories = prioritizedCategories.slice(0, 10);
 const moreCategories = prioritizedCategories.slice(10);
 const affiliateHrefSet = new Set(Object.keys(CALCULATOR_AFFILIATE_MAP));
 const calculatorByHref = new Map(calculators.map((calc) => [calc.href, calc]));
+const priorityKeywordHrefs = PRIMARY_TRAFFIC_CLUSTERS.map((cluster) => cluster.calculatorHref);
+const affiliateKeywordHrefs = AFFILIATE_EXTENSION_CLUSTERS.map((cluster) => cluster.calculatorHref);
 const highIntentHrefs = [
+  ...priorityKeywordHrefs,
+  ...affiliateKeywordHrefs,
   '/คำนวณภาษีเงินได้บุคคลธรรมดา/',
   '/คำนวณเงินเดือนสุทธิ/',
   '/คำนวณค่าไฟฟ้า/',
@@ -109,7 +114,13 @@ const topActions = [
   { title: 'VAT 7%', desc: 'บวก VAT ถอด VAT จากราคารวม', href: '/คำนวณภาษีมูลค่าเพิ่ม/', icon: '🧾', tone: 'slate' },
 ];
 
-const quickSearches = ['ภาษี', 'เงินเดือน', 'ค่าไฟ', 'ค่างวดรถ', 'ผ่อนบ้าน', 'ประกันรถ', 'VAT', 'โอที', 'อายุ', 'BMI'];
+const quickSearches = [
+  ...PRIMARY_TRAFFIC_CLUSTERS.map((cluster) => cluster.quickSearchLabel),
+  ...AFFILIATE_EXTENSION_CLUSTERS.map((cluster) => cluster.quickSearchLabel),
+  'ภาษี',
+  'เงินเดือน',
+  'ประกันรถ',
+].slice(0, 10);
 
 const popularToday = [
   { label: 'ค่าไฟบ้าน', href: '/คำนวณค่าไฟฟ้า/', metric: 'PEA/MEA', icon: '⚡' },
@@ -344,17 +355,17 @@ const jsonLdFaq = {
   <!-- Main content wrapper (hidden during search) -->
   <div id="main-content" class="ct-ai-main" data-home-calculator-limit={HOME_MAX_CALCULATORS}>
     <TrafficGrowthCluster
-      eyebrow="GSC recovery"
-      title="กู้ impressions และ clicks จากหน้าที่ Google เคยให้สัญญาณ"
-      description="ลิงก์ตรงไปยังเครื่องมือที่เคยมี impressions สูงหรือมีโอกาสสร้างรายได้ เพื่อให้ Google เห็น crawl path และ anchor text ชัดขึ้น"
+      eyebrow="เส้นทางสำคัญ"
+      title="เครื่องมือที่ควรเปิดจากหน้าแรกทันที"
+      description="ลิงก์ตรงไปยังเครื่องมือที่มีคนค้นหาและมีมูลค่ากับผู้ใช้มากที่สุด เพื่อให้เข้าถึงคำตอบได้เร็วขึ้น"
       items={recoveryGrowthLinks}
       variant="amber"
     />
 
     <TrafficGrowthCluster
-      eyebrow="จากข้อมูล Search Console"
+      eyebrow="คำค้นที่กำลังโต"
       title="คำค้นที่มีโอกาสดัน traffic ฟรีเร็วที่สุด"
-      description="รวมคำถามที่คนไทยค้นจริงกับหน้าที่ควรพาไปต่อ ทั้งคำตอบเร็ว เครื่องคำนวณ และหน้าที่มีโอกาสสร้าง affiliate revenue"
+      description="รวมคำถามที่คนไทยใช้จริงกับหน้าที่ควรพาไปต่อ ทั้งคำตอบเร็ว เครื่องคำนวณ และบทความอธิบายแบบละเอียด"
       items={homepageGrowthLinks}
     />
 
