@@ -1,10 +1,23 @@
 import type { APIRoute } from 'astro';
 import { categories, calculators } from '../../lib/calculators';
 import { CALCULATOR_AFFILIATE_MAP } from '../../data/affiliate-config';
+import { exactAnswerArticles } from '../../data/exact-answer-articles';
 
 export const GET: APIRoute = async ({ request }) => {
   const siteUrl = 'https://www.kamnuanlek.com';
   const affiliateCalculatorCount = Object.keys(CALCULATOR_AFFILIATE_MAP).length;
+  const salaryExactPages = exactAnswerArticles
+    .filter((article) => article.kind === 'salary')
+    .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
+  const overtimeExactPages = exactAnswerArticles
+    .filter((article) => article.kind === 'overtime')
+    .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
+  const bmiExactPages = exactAnswerArticles
+    .filter((article) => article.kind === 'bmi')
+    .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
+  const ageExactPages = exactAnswerArticles
+    .filter((article) => article.kind === 'age')
+    .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
 
   const llmContext = {
     '@context': 'https://schema.org',
@@ -56,6 +69,26 @@ export const GET: APIRoute = async ({ request }) => {
           `${siteUrl}/บทความ/ภาษีมูลค่าเพิ่ม-7-คิดยังไง-สูตรบวกภาษี-ถอดภาษี-ตั้งราคาขายให้ไม่ขาดทุน/`,
         ],
       },
+      {
+        queryCluster: 'เงินเดือนสุทธิ ภาษีเงินเดือน ประกันสังคม',
+        answerPage: `${siteUrl}/คำนวณเงินเดือนสุทธิ/`,
+        supportingPages: salaryExactPages,
+      },
+      {
+        queryCluster: 'โอที 1.5 2 3 เท่า',
+        answerPage: `${siteUrl}/คำนวณค่าโอที/`,
+        supportingPages: overtimeExactPages,
+      },
+      {
+        queryCluster: 'BMI 23 25 30 ดัชนีมวลกาย',
+        answerPage: `${siteUrl}/คำนวณ-bmi/`,
+        supportingPages: bmiExactPages,
+      },
+      {
+        queryCluster: 'คำนวณอายุจากปีเกิด',
+        answerPage: `${siteUrl}/คำนวณอายุ/`,
+        supportingPages: ageExactPages,
+      },
     ],
     priorityAnswerPages: [
       `${siteUrl}/คำนวณค่าไฟฟ้า/`,
@@ -66,6 +99,9 @@ export const GET: APIRoute = async ({ request }) => {
       `${siteUrl}/คำนวณผ่อนรถ/`,
       `${siteUrl}/คำนวณค่าประกันรถยนต์/`,
       `${siteUrl}/คำนวณผ่อนบ้าน/`,
+      `${siteUrl}/บทความ/เงินเดือน-30000-รับสุทธิเท่าไร/`,
+      `${siteUrl}/บทความ/เงินเดือน-50000-เสียภาษีเท่าไหร่/`,
+      `${siteUrl}/บทความ/bmi-30-หมายความว่าอะไร/`,
     ],
     catalogStats: {
       totalCalculators: calculators.length,
@@ -183,6 +219,27 @@ export const GET: APIRoute = async ({ request }) => {
         url: 'https://www.oic.or.th/',
         description: 'Official source for insurance consumer information and motor insurance references',
         applicableCalculators: ['Car Insurance', 'Motorcycle Insurance', 'Life Insurance', 'Health Insurance'],
+      },
+      {
+        '@type': 'Organization',
+        name: 'Social Security Office Thailand',
+        url: 'https://www.sso.go.th/',
+        description: 'Official source for employee social security contribution rules and benefits',
+        applicableCalculators: ['Net Salary', 'Social Security', 'Employee Cost'],
+      },
+      {
+        '@type': 'Organization',
+        name: 'Ministry of Labour Thailand',
+        url: 'https://www.mol.go.th/',
+        description: 'Official source for labour protection rules, overtime concepts, and wage policy',
+        applicableCalculators: ['Overtime Pay', 'Minimum Wage', 'Daily Wage'],
+      },
+      {
+        '@type': 'Organization',
+        name: 'Department of Disease Control, Ministry of Public Health',
+        url: 'https://ddc.moph.go.th/',
+        description: 'Public health source for BMI and health-risk guidance',
+        applicableCalculators: ['BMI', 'Health Calculators'],
       },
       {
         '@type': 'Organization',

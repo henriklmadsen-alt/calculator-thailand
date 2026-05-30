@@ -1,0 +1,143 @@
+---
+import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+import ArticleCalculatorCTA from '../../components/templates/ArticleCalculatorCTA.astro';
+import { exactAnswerArticles, type ExactAnswerArticle } from '../../data/exact-answer-articles';
+
+export function getStaticPaths() {
+  return exactAnswerArticles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+type Props = {
+  article: ExactAnswerArticle;
+};
+
+const { article } = Astro.props;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
+const canonical = `${siteUrl}/บทความ/${article.slug}/`;
+---
+
+<BlogPostLayout
+  title={article.title}
+  description={article.description}
+  publishDate={article.publishDate}
+  modifiedDate={article.modifiedDate}
+  canonical={canonical}
+  faqData={article.faqData}
+>
+  <h1 class="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">{article.cardTitle}</h1>
+
+  <section data-ai-overview-answer class="not-prose my-6 rounded-xl border border-sky-200 bg-sky-50 p-4">
+    <p class="text-sm font-semibold text-sky-800">{article.answerLabel}</p>
+    <p class="mt-1 text-lg font-bold leading-8 text-sky-950">{article.quickAnswer}</p>
+    <p class="mt-2 text-sm leading-7 text-sky-900">{article.context}</p>
+  </section>
+
+  <ArticleCalculatorCTA
+    title={article.calculatorName}
+    description={`กรอกตัวเลขจริงของคุณเพื่อคำนวณให้ตรงกว่าโจทย์ตัวอย่างนี้`}
+    href={article.calculatorHref}
+    buttonLabel={article.buttonLabel}
+  />
+
+  <h2>วิธีคำนวณแบบทีละขั้น</h2>
+  <ol>
+    {article.steps.map((step) => <li>{step}</li>)}
+  </ol>
+
+  <div class="not-prose my-6 overflow-x-auto">
+    <table class="w-full min-w-[520px] border-collapse border border-gray-200 text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          {article.table.headers.map((header) => (
+            <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-900">{header}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {article.table.rows.map((row, index) => (
+          <tr class={index % 2 === 1 ? 'bg-gray-50' : ''}>
+            {row.map((cell) => (
+              <td class="border border-gray-200 px-3 py-2 text-gray-700">{cell}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {article.kind === 'salary' && (
+    <>
+      <h2>ใช้ตัวเลขนี้อย่างไรให้ไม่พลาด</h2>
+      <p>
+        เงินเดือนสุทธิจริงอาจต่างจากตัวอย่างเพราะสลิปเงินเดือนแต่ละบริษัทมีรายการหักต่างกัน เช่น กองทุนสำรองเลี้ยงชีพ
+        ประกันกลุ่ม เงินกู้สวัสดิการ หักขาดลา หรือโบนัส/OT ที่รวมในเดือนนั้น หากต้องใช้วางแผนผ่อนบ้าน ผ่อนรถ หรือยื่นภาษี
+        ให้เปิดเครื่องคำนวณและกรอกค่าลดหย่อนจริงทุกครั้ง
+      </p>
+    </>
+  )}
+
+  {article.kind === 'overtime' && (
+    <>
+      <h2>ข้อควรเช็กก่อนนำไปเทียบสลิป</h2>
+      <p>
+        สูตร OT ต้องเริ่มจากค่าแรงต่อชั่วโมงที่บริษัทใช้จริง บางบริษัทใช้ฐาน 30 วัน บางบริษัทใช้วันทำงานจริง
+        และบางเดือนมีวันหยุดพิเศษ จึงควรดูข้อบังคับการทำงานหรือสอบถามฝ่ายบุคคลก่อนสรุปยอดขาดเกิน
+      </p>
+    </>
+  )}
+
+  {article.kind === 'bmi' && (
+    <>
+      <h2>BMI เป็นคำตอบเบื้องต้น ไม่ใช่คำวินิจฉัย</h2>
+      <p>
+        BMI ช่วยให้เห็นภาพน้ำหนักเทียบส่วนสูงอย่างรวดเร็ว แต่ไม่ควรใช้ตัดสินสุขภาพเพียงตัวเดียว
+        คนที่มีกล้ามเนื้อมาก ผู้สูงอายุ หญิงตั้งครรภ์ และผู้มีโรคประจำตัวควรใช้ข้อมูลอื่นประกอบเสมอ
+      </p>
+    </>
+  )}
+
+  {article.kind === 'age' && (
+    <>
+      <h2>ถ้าต้องใช้อายุในเอกสาร</h2>
+      <p>
+        ให้คำนวณจากวัน เดือน ปีเกิดจริง ไม่ใช่เฉพาะปีเกิด เพราะอายุเต็มจะเปลี่ยนในวันเกิดเท่านั้น
+        หน้าเครื่องคำนวณอายุจะแสดงทั้งปี เดือน วัน จำนวนวันรวม และวันเกิดครั้งถัดไป
+      </p>
+    </>
+  )}
+
+  {article.kind === 'percentage' && (
+    <>
+      <h2>สูตรจำสั้น ๆ</h2>
+      <p>
+        เปอร์เซ็นต์หมายถึงต่อหนึ่งร้อย ดังนั้น 20% คือ 20 จาก 100 หรือ 0.20 เมื่อนำไปคูณกับราคาเต็ม
+        จะได้มูลค่าของเปอร์เซ็นต์นั้นทันที
+      </p>
+    </>
+  )}
+
+  {article.sourceLinks.length > 0 && (
+    <>
+      <h2>แหล่งอ้างอิง</h2>
+      <p>ตรวจแหล่งอ้างอิงล่าสุดเมื่อ {article.sourceVerifiedDate}</p>
+      <ul>
+        {article.sourceLinks.map((source) => (
+          <li>
+            <a href={source.href} target="_blank" rel="noopener noreferrer">{source.label}</a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  <h2>ลิงก์ที่เกี่ยวข้อง</h2>
+  <ul>
+    <li><a href={article.calculatorHref}>{article.calculatorName}</a></li>
+    {article.relatedLinks.map((link) => (
+      <li><a href={link.href}>{link.label}</a></li>
+    ))}
+  </ul>
+</BlogPostLayout>

@@ -37,6 +37,12 @@ export const recoveryGrowthLinks: TrafficGrowthLink[] = [
     badge: 'Near page 1',
   },
   {
+    title: 'เงินเดือน 30,000 รับสุทธิเท่าไร',
+    href: '/บทความ/เงินเดือน-30000-รับสุทธิเท่าไร/',
+    desc: 'หน้า exact-answer สำหรับคำค้นเงินเดือนที่มี intent ชัดและต่อยอดไปเครื่องคำนวณเงินเดือนสุทธิ',
+    badge: 'Salary',
+  },
+  {
     title: 'คำนวณผ่อนรถ',
     href: '/คำนวณผ่อนรถ/',
     desc: 'หน้า affiliate-friendly ที่ต้องสะสม internal authority ต่อเนื่อง',
@@ -92,6 +98,18 @@ export const homepageGrowthLinks: TrafficGrowthLink[] = [
     href: '/บทความ/1070-หาร-1-07-ถอด-vat/',
     desc: 'จับ intent ถอด VAT จากยอดรวมที่ออกมาเป็นตัวเลขพอดี',
     badge: 'Exact answer',
+  },
+  {
+    title: 'เงินเดือน 50,000 เสียภาษีเท่าไหร่',
+    href: '/บทความ/เงินเดือน-50000-เสียภาษีเท่าไหร่/',
+    desc: 'คำตอบภาษีเงินเดือนระดับกลาง-สูงที่ดันกลับเข้าเครื่องคำนวณเงินเดือนสุทธิ',
+    badge: 'Salary',
+  },
+  {
+    title: 'BMI 30 หมายความว่าอะไร',
+    href: '/บทความ/bmi-30-หมายความว่าอะไร/',
+    desc: 'จับคำค้นสุขภาพแบบคำตอบเร็ว แล้วพาไปคำนวณ BMI จากข้อมูลจริง',
+    badge: 'Health',
   },
   {
     title: 'ดาวน์รถ 20% ผ่อนเท่าไร',

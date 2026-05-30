@@ -1,12 +1,24 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { exactAnswerArticles } from '../../data/exact-answer-articles';
 
 const pageTitle = 'บทความการเงิน | เคล็ดลับภาษี เงินออม และการลงทุน | Kamnuanlek';
 const pageDescription = 'รวมบทความการเงินไทย ภาษีรถยนต์ ค่าแรงขั้นต่ำ ค่าส่งพัสดุ ทองคำ ประกันรถ ผ่อนมือถือ พร้อมเคล็ดลับวางแผนภาษี คำนวณเงินเดือน และการลงทุน อัปเดตปี 2569';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/บทความ/`;
 
+const exactArticleCards = exactAnswerArticles.map((article) => ({
+  title: article.cardTitle,
+  slug: article.slug,
+  description: article.description,
+  date: article.modifiedDate,
+  calculator: article.calculatorHref,
+  calculatorName: article.calculatorName,
+  category: article.category,
+}));
+
 const articles = [
+  ...exactArticleCards,
   {
     title: 'ประกันชั้น 1 2+ 3+ ต่างกันยังไง',
     slug: 'ประกันรถยนต์ชั้น-1-2-plus-3-plus-ต่างกันยังไง',
