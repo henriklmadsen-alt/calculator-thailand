@@ -15,11 +15,21 @@ import ArticleTeaser from '../../components/ArticleTeaser.astro';
 import TrafficGrowthCluster from '../../components/templates/TrafficGrowthCluster.astro';
 import { recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 
-const pageTitle = 'คำนวณ BMI 2569 | BMI 23 25 30 หมายความว่าอะไร';
-const pageDescription = 'คำนวณ BMI ดัชนีมวลกายตามเกณฑ์เอเชีย พร้อมคำตอบ BMI 23, BMI 25, BMI 30 และน้ำหนักที่เหมาะสมสำหรับคนไทย';
+const pageTitle = 'คำนวณ BMI 2569 | สูตรคำนวณ BMI ผู้หญิง ผู้ชาย';
+const pageDescription = 'คำนวณ BMI ดัชนีมวลกายตามเกณฑ์เอเชีย พร้อมสูตรคำนวณ BMI ผู้หญิง ผู้ชาย เกณฑ์ BMI คนไทย และคำตอบ BMI 23, BMI 25, BMI 30';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณ-bmi/`;
 const bmiRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href !== '/คำนวณ-bmi/').slice(0, 5);
+const bmiExactAnswerLinks = [
+  { href: '/บทความ/สูตรคำนวณ-bmi/', title: 'สูตรคำนวณ BMI', desc: 'น้ำหนัก ÷ ส่วนสูงเมตรยกกำลังสอง' },
+  { href: '/บทความ/คำนวณ-bmi-ผู้หญิง/', title: 'คำนวณ BMI ผู้หญิง', desc: 'สูตรเดียวกัน พร้อมข้อควรระวัง' },
+  { href: '/บทความ/คำนวณดัชนีมวลกาย/', title: 'คำนวณดัชนีมวลกาย', desc: 'คำอธิบาย BMI แบบตรงคำค้น' },
+  { href: '/บทความ/วิธีคำนวณ-bmi/', title: 'วิธีคำนวณ BMI', desc: 'ขั้นตอนคำนวณทีละข้อ' },
+  { href: '/บทความ/เกณฑ์-bmi-คนไทย-2569/', title: 'เกณฑ์ BMI คนไทย 2569', desc: '18.5-22.9 ปกติ, 23+ น้ำหนักเกิน' },
+  { href: '/บทความ/bmi-23-หมายความว่าอะไร/', title: 'BMI 23 หมายความว่าอะไร', desc: 'จุดเริ่มน้ำหนักเกินตามเกณฑ์เอเชีย' },
+  { href: '/บทความ/bmi-30-หมายความว่าอะไร/', title: 'BMI 30 หมายความว่าอะไร', desc: 'น้ำหนักตัวโดยประมาณและข้อควรดู' },
+  { href: '/บทความ/สูง-160-bmi-25-หนักเท่าไร/', title: 'สูง 160 BMI 25 หนักเท่าไร', desc: 'กลับสูตร BMI เป็นน้ำหนัก' },
+];
 
 const faqData = [
   {
@@ -42,7 +52,6 @@ const faqData = [
     question: 'ข้อผิดพลาดทั่วไปในการคำนวณ BMI ที่ต้องหลีกเลี่ยง?',
     answer: 'ข้อผิดพลาดทั่วไป ได้แก่ (1) ใช้ความสูงเป็นเซนติเมตรแทนเมตร (2) ลืมแปลงฟุต/นิ้วเป็นเซนติเมตร (3) ชั่งน้ำหนักพร้อมเสื้อผ้าหนัก (4) ไม่คำนึงถึงต่างอายุ เพศ และประเทศ (5) อาศัย BMI เพียงอย่างเดียวโดยไม่ปรึกษาแพทย์ และ (6) ลืมว่า BMI ไม่แยกแยะมวลกล้ามเนื้อกับไขมัน',
   },
-,
   { question: 'BMI คนไทยควรอยู่ในช่วงเท่าไร?', answer: 'ตามเกณฑ์กรมอนามัยสำหรับชาวเอเชีย: ต่ำกว่า 18.5 (น้ำหนักน้อย), 18.5-22.9 (ปกติ), 23.0-24.9 (น้ำหนักเกิน), 25.0+ (อ้วน) เกณฑ์เอเชียต่ำกว่าเกณฑ์สากล เพราะชาวเอเชียมีความเสี่ยงสูงกว่าที่ BMI ต่ำกว่า' },
   { question: 'BMI มีข้อจำกัดอะไรบ้าง?', answer: 'BMI ไม่แยกระหว่างมวลกล้ามเนื้อและไขมัน นักกีฬาหรือคนที่ออกกำลังกายมากอาจมี BMI สูงแต่ไม่อ้วน ไม่คำนึงถึงการกระจายไขมัน (ไขมันพุงอันตรายกว่า) และอาจไม่แม่นยำสำหรับผู้สูงอายุหรือเด็ก' },
   { question: 'ลดน้ำหนักเพื่อให้ BMI อยู่ในเกณฑ์ปกติต้องทำอย่างไร?', answer: 'ลดพลังงานที่บริโภค 500-750 กิโลแคลอรี/วัน เทียบกับพลังงานที่ใช้ จะลดน้ำหนักได้ประมาณ 0.5-0.75 กก./สัปดาห์ ควบคู่กับการออกกำลังกาย 150 นาที/สัปดาห์ตามคำแนะนำกรมอนามัย' }
@@ -164,29 +173,40 @@ const jsonLdHowTo = {
   <article>
     <CalculatorHeader title="คำนวณ BMI (ดัชนีมวลกาย)" emoji="⚖️" />
 
-    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2">
-      <p class="text-xs font-semibold text-green-800">[อัปเดตตามเกณฑ์ WHO Asia-Pacific 2569] • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
+    <div class="mb-4 inline-block rounded-lg border border-green-200 bg-green-50 px-3 py-2 dark:border-emerald-400/30 dark:bg-emerald-950/70">
+      <p class="text-xs font-semibold text-green-800 dark:text-emerald-100">[อัปเดตตามเกณฑ์ WHO Asia-Pacific 2569] • อัปเดตเมื่อ: 21 เม.ย. 2569</p>
     </div>
 
     <p class="text-gray-600 mb-6">
       คำนวณค่า BMI ออนไลน์ฟรี ใช้เกณฑ์ WHO Asia-Pacific สำหรับคนเอเชีย พร้อมคำแนะนำสุขภาพ
     </p>
 
-    <section data-ai-overview-answer class="mb-6 rounded-xl border border-green-100 bg-green-50 p-4 sm:p-5" aria-labelledby="bmi-answer">
-      <p class="text-xs font-bold uppercase tracking-normal text-green-700">คำตอบเร็ว</p>
-      <h2 id="bmi-answer" class="mt-1 text-lg font-bold text-slate-950">BMI คำนวณจากอะไร</h2>
-      <p class="mt-2 text-sm leading-6 text-green-900">
+    <section data-ai-overview-answer class="mb-6 rounded-xl border border-green-100 bg-green-50 p-4 sm:p-5 dark:border-emerald-400/30 dark:bg-emerald-950/70" aria-labelledby="bmi-answer">
+      <p class="text-xs font-bold uppercase tracking-normal text-green-700 dark:text-emerald-200">คำตอบเร็ว</p>
+      <h2 id="bmi-answer" class="mt-1 text-lg font-bold text-slate-950 dark:text-white">สูตรคำนวณ BMI คือ น้ำหนัก ÷ ส่วนสูงเมตรยกกำลังสอง</h2>
+      <p class="mt-2 text-sm leading-6 text-green-900 dark:text-emerald-100">
         สูตร BMI = น้ำหนัก (กิโลกรัม) ÷ ส่วนสูง (เมตร)<sup>2</sup> เช่น หนัก 65 กก. สูง 1.70 ม.
         จะได้ BMI = 65 ÷ 1.70² = 22.49 ซึ่งอยู่ในช่วงปกติตามเกณฑ์เอเชีย
       </p>
     </section>
 
-    <section class="mb-6 rounded-xl border border-emerald-200 bg-white p-4 shadow-sm">
-      <h2 class="text-base font-semibold text-emerald-950">คำตอบ BMI ที่คนค้นหาบ่อย</h2>
-      <div class="mt-3 grid gap-2 sm:grid-cols-3">
-        <a href="/บทความ/bmi-23-หมายความว่าอะไร/" class="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-900 hover:border-emerald-300">BMI 23 หมายความว่าอะไร</a>
-        <a href="/บทความ/bmi-30-หมายความว่าอะไร/" class="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-900 hover:border-emerald-300">BMI 30 หมายความว่าอะไร</a>
-        <a href="/บทความ/สูง-160-bmi-25-หนักเท่าไร/" class="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-900 hover:border-emerald-300">สูง 160 BMI 25 หนักเท่าไร</a>
+    <section class="mb-6 rounded-xl border border-emerald-200 bg-white p-4 shadow-sm dark:border-emerald-400/20 dark:bg-slate-900/80">
+      <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-normal text-emerald-700 dark:text-emerald-200">คำตอบที่ Google เห็นสัญญาณแล้ว</p>
+          <h2 class="text-base font-semibold text-emerald-950 dark:text-white">สูตร BMI, ผู้หญิง, ดัชนีมวลกาย และเกณฑ์คนไทย</h2>
+        </div>
+        <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-200">Exact-answer cluster</span>
+      </div>
+      <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          bmiExactAnswerLinks.map((link) => (
+            <a href={link.href} class="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-950 hover:border-emerald-300 dark:border-emerald-400/30 dark:bg-emerald-950/70 dark:text-white dark:hover:border-emerald-300">
+              <span class="block">{link.title}</span>
+              <small class="mt-1 block text-xs font-medium leading-5 text-emerald-700 dark:text-emerald-200">{link.desc}</small>
+            </a>
+          ))
+        }
       </div>
     </section>
 

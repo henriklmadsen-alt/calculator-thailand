@@ -10,12 +10,19 @@ import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astr
 import { electricityGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 import { calculateElectricityBill as calculateExampleElectricityBill } from '../../lib/electricity-bill';
 
-const pageTitle = '1 kWh เท่ากับกี่บาท 2569 | คำนวณค่าไฟฟ้า PEA/MEA + Ft';
-const pageDescription = '1 kWh เท่ากับกี่บาท 2569 คำนวณค่าไฟฟ้า PEA/MEA ค่าไฟห้องเช่า ค่า Ft พฤษภาคม-สิงหาคม 2569 ใส่ kWh เพื่อดูค่าไฟฐาน VAT 7% และยอดรวมทันที';
+const pageTitle = '1 kWh เท่ากับกี่บาท 2569 | อัตราค่าไฟฟ้า PEA/MEA + Ft';
+const pageDescription = '1 kWh เท่ากับกี่บาท 2569 อัตราค่าไฟฟ้า PEA/MEA ค่าไฟห้องเช่า ค่า Ft พฤษภาคม-สิงหาคม 2569 ใส่ kWh เพื่อดูค่าไฟฐาน VAT 7% และยอดรวมทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าไฟฟ้า/`;
 const electricityAffiliateUrl = '/go/roojai-partners/?sub_id=electricity-calculator';
 const electricityRecoveryLinks = recoveryGrowthLinks.filter((link) => link.href !== '/คำนวณค่าไฟฟ้า/').slice(0, 5);
+const electricityRateAnswerLinks = [
+  { href: '/บทความ/อัตราค่าไฟฟ้า-pea-2569/', title: 'อัตราค่าไฟฟ้า PEA 2569', desc: 'ค่าไฟบ้านส่วนภูมิภาค + Ft' },
+  { href: '/บทความ/อัตราค่าไฟฟ้า-mea-2569/', title: 'อัตราค่าไฟฟ้า MEA 2569', desc: 'กรุงเทพฯ นนทบุรี สมุทรปราการ' },
+  { href: '/บทความ/อัตราค่าไฟฟ้า-mea-pea-2569/', title: 'อัตราค่าไฟฟ้า MEA PEA', desc: 'เลือกผู้ให้บริการให้ตรงบิล' },
+  { href: '/บทความ/อัตราค่าไฟฟ้า-pea-บ้านอยู่อาศัย-2569/', title: 'PEA บ้านอยู่อาศัย', desc: 'บิลบ้านแบบขั้นบันได' },
+  { href: '/บทความ/อัตราค่าไฟฟ้า-mea-บ้านอยู่อาศัย-2569/', title: 'MEA บ้านอยู่อาศัย', desc: 'บ้านและคอนโดในพื้นที่ MEA' },
+];
 
 const currentFtRate = '0.1623';
 const previousFtRate = '0.0972';
@@ -200,6 +207,23 @@ const jsonLdHowTo = {
         </p>
       </div>
       <a href="/บทความ/1-kwh-เท่ากับกี่บาท-2569/">อ่านรายละเอียด 1 kWh</a>
+    </section>
+
+    <section class="electricity-rate-links" aria-label="อัตราค่าไฟฟ้า PEA MEA 2569">
+      <div class="electricity-rate-links-heading">
+        <span>คำค้นใกล้หน้าแรก</span>
+        <h2>อัตราค่าไฟฟ้า PEA/MEA ที่คนค้นหาอยู่ตอนนี้</h2>
+      </div>
+      <div>
+        {
+          electricityRateAnswerLinks.map((link) => (
+            <a href={link.href}>
+              <strong>{link.title}</strong>
+              <small>{link.desc}</small>
+            </a>
+          ))
+        }
+      </div>
     </section>
 
     <div class="electricity-quick-grid" aria-label="ข้อมูลสำคัญก่อนคำนวณ">
@@ -700,6 +724,76 @@ const jsonLdHowTo = {
       background: #0a7fd3;
     }
 
+    .electricity-rate-links {
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid var(--electricity-line);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(15, 47, 78, 0.08);
+      margin: 0 0 1rem;
+      padding: 1rem;
+    }
+
+    .electricity-rate-links-heading {
+      margin-bottom: 0.85rem;
+    }
+
+    .electricity-rate-links-heading span {
+      color: #047857;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+    }
+
+    .electricity-rate-links-heading h2 {
+      color: var(--electricity-ink);
+      font-size: clamp(1rem, 1.6vw, 1.25rem);
+      font-weight: 850;
+      margin: 0;
+    }
+
+    .electricity-rate-links > div:last-child {
+      display: grid;
+      gap: 0.65rem;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .electricity-rate-links a {
+      background: linear-gradient(135deg, rgba(236, 253, 245, 0.95), rgba(239, 246, 255, 0.9));
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      border-radius: 16px;
+      color: var(--electricity-ink);
+      min-height: 86px;
+      padding: 0.85rem;
+      text-decoration: none;
+      transition: border-color 160ms ease, transform 160ms ease;
+    }
+
+    .electricity-rate-links a:hover {
+      border-color: rgba(8, 168, 245, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .electricity-rate-links strong,
+    .electricity-rate-links small {
+      display: block;
+    }
+
+    .electricity-rate-links strong {
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    .electricity-rate-links small {
+      color: var(--electricity-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-top: 0.3rem;
+    }
+
     .electricity-quick-grid > div,
     .electricity-example-list > div {
       background: var(--electricity-surface);
@@ -968,6 +1062,7 @@ const jsonLdHowTo = {
 
     :global(html[data-theme='dark']) .electricity-update-strip,
     :global(html[data-theme='dark']) .electricity-direct-answer,
+    :global(html[data-theme='dark']) .electricity-rate-links,
     :global(html[data-theme='dark']) .electricity-calculator-panel,
     :global(html[data-theme='dark']) .electricity-results-panel,
     :global(html[data-theme='dark']) .electricity-example-strip {
@@ -978,6 +1073,7 @@ const jsonLdHowTo = {
     :global(html[data-theme='dark']) .electricity-presets button,
     :global(html[data-theme='dark']) .electricity-calculator-panel input,
     :global(html[data-theme='dark']) .electricity-calculator-panel select,
+    :global(html[data-theme='dark']) .electricity-rate-links a,
     :global(html[data-theme='dark']) .electricity-quick-grid > div,
     :global(html[data-theme='dark']) .electricity-example-list > div {
       background: rgba(14, 26, 42, 0.92);
@@ -1003,6 +1099,7 @@ const jsonLdHowTo = {
     @media (max-width: 900px) {
       .electricity-quick-grid,
       .electricity-presets,
+      .electricity-rate-links > div:last-child,
       .electricity-example-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -1025,6 +1122,7 @@ const jsonLdHowTo = {
 
       .electricity-quick-grid,
       .electricity-presets,
+      .electricity-rate-links > div:last-child,
       .electricity-example-list {
         grid-template-columns: 1fr;
       }
@@ -1049,6 +1147,7 @@ const jsonLdHowTo = {
     @media (prefers-reduced-motion: reduce) {
       .electricity-update-strip,
       .electricity-direct-answer,
+      .electricity-rate-links,
       .electricity-calculator-panel,
       .electricity-results-panel,
       .electricity-example-strip,

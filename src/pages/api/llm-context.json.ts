@@ -13,7 +13,10 @@ export const GET: APIRoute = async ({ request }) => {
     .filter((article) => article.kind === 'overtime')
     .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
   const bmiExactPages = exactAnswerArticles
-    .filter((article) => article.kind === 'bmi')
+    .filter((article) => article.kind === 'bmi' || article.kind === 'bmi-formula')
+    .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
+  const electricityExactPages = exactAnswerArticles
+    .filter((article) => article.kind === 'electricity-rate')
     .map((article) => `${siteUrl}/บทความ/${article.slug}/`);
   const ageExactPages = exactAnswerArticles
     .filter((article) => article.kind === 'age')
@@ -41,6 +44,7 @@ export const GET: APIRoute = async ({ request }) => {
           `${siteUrl}/บทความ/บ้านใช้ไฟ-500-หน่วย-ค่าไฟเท่าไร-2569/`,
           `${siteUrl}/บทความ/ค่าไฟห้องเช่าหน่วยละกี่บาท-2569/`,
           `${siteUrl}/บทความ/คำนวณค่าไฟ-pea-2569/`,
+          ...electricityExactPages,
         ],
       },
       {
@@ -102,6 +106,8 @@ export const GET: APIRoute = async ({ request }) => {
       `${siteUrl}/บทความ/เงินเดือน-30000-รับสุทธิเท่าไร/`,
       `${siteUrl}/บทความ/เงินเดือน-50000-เสียภาษีเท่าไหร่/`,
       `${siteUrl}/บทความ/bmi-30-หมายความว่าอะไร/`,
+      `${siteUrl}/บทความ/สูตรคำนวณ-bmi/`,
+      `${siteUrl}/บทความ/อัตราค่าไฟฟ้า-pea-2569/`,
     ],
     catalogStats: {
       totalCalculators: calculators.length,
