@@ -10,8 +10,8 @@ import ResultSharePrompt from '../../components/templates/ResultSharePrompt.astr
 import { electricityGrowthLinks, recoveryGrowthLinks } from '../../data/traffic-growth-opportunities';
 import { calculateElectricityBill as calculateExampleElectricityBill } from '../../lib/electricity-bill';
 
-const pageTitle = '1 kWh เท่ากับกี่บาท 2569 | อัตราค่าไฟฟ้า PEA/MEA + Ft';
-const pageDescription = '1 kWh เท่ากับกี่บาท 2569 อัตราค่าไฟฟ้า PEA/MEA ค่าไฟห้องเช่า ค่า Ft พฤษภาคม-สิงหาคม 2569 ใส่ kWh เพื่อดูค่าไฟฐาน VAT 7% และยอดรวมทันที';
+const pageTitle = '1 kWh เท่ากับกี่บาท 2569 | คำนวณค่าไฟ PEA/MEA + Ft';
+const pageDescription = '1 kWh เท่ากับกี่บาท 2569 คำนวณค่าไฟ PEA/MEA ค่าไฟห้องเช่า ค่า Ft พฤษภาคม-สิงหาคม 2569 แยกค่าไฟฐาน Ft VAT เครื่องใช้ไฟฟ้า และยอดรวมทันที';
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || 'https://www.kamnuanlek.com').replace(/\/$/, '');
 const canonical = `${siteUrl}/คำนวณค่าไฟฟ้า/`;
 const electricityAffiliateUrl = '/go/roojai-partners/?sub_id=electricity-calculator';
@@ -27,7 +27,30 @@ const electricityRateAnswerLinks = [
 const currentFtRate = '0.1623';
 const previousFtRate = '0.0972';
 const currentFtPeriod = 'พฤษภาคม-สิงหาคม 2569';
-const ftLastVerified = '30 พฤษภาคม 2569';
+const ftLastVerified = '31 พฤษภาคม 2569';
+
+const electricityModeCards = [
+  {
+    label: 'PEA บ้านทั่วไป',
+    title: 'ต่างจังหวัดและพื้นที่ภูมิภาค',
+    desc: 'เลือก PEA ถ้าชื่อการไฟฟ้าบนบิลคือการไฟฟ้าส่วนภูมิภาค เหมาะกับบ้านและคอนโดนอกพื้นที่ MEA',
+  },
+  {
+    label: 'MEA บ้าน/คอนโด',
+    title: 'กรุงเทพฯ นนทบุรี สมุทรปราการ',
+    desc: 'เลือก MEA สำหรับบิลการไฟฟ้านครหลวง เพื่อให้บริบทพื้นที่ตรงกับคำค้น MEA 2569',
+  },
+  {
+    label: 'ห้องเช่า',
+    title: 'เช็กหน่วยมิเตอร์ก่อนจ่าย',
+    desc: 'ใช้จำนวนหน่วยจริงจากมิเตอร์ห้อง แล้วเทียบกับบิลรวม/สัญญาเช่าเพื่อดูว่าราคาต่อหน่วยสมเหตุสมผลหรือไม่',
+  },
+  {
+    label: 'ร้านเล็ก',
+    title: 'กิจการขนาดเล็ก',
+    desc: 'เหมาะกับร้านค้า สำนักงานย่อย และธุรกิจที่ต้องแยกค่าไฟฐาน ค่า Ft ค่าบริการ และ VAT ให้ชัด',
+  },
+];
 
 const flagshipPresets = [
   {
@@ -74,6 +97,53 @@ const exampleBills = [
   }),
 }));
 
+const applianceProfiles = [
+  {
+    label: 'แอร์ 12,000 BTU',
+    detail: '1,050W x 8 ชม. x 30 วัน',
+    watts: 1050,
+    hoursPerDay: 8,
+    daysPerMonth: 30,
+    href: '/คำนวณความสิ้นเปลืองไฟฟ้า/',
+  },
+  {
+    label: 'ตู้เย็น',
+    detail: '150W x 12 ชม. x 30 วัน',
+    watts: 150,
+    hoursPerDay: 12,
+    daysPerMonth: 30,
+    href: '/คำนวณความสิ้นเปลืองไฟฟ้า/',
+  },
+  {
+    label: 'เครื่องทำน้ำอุ่น',
+    detail: '3,500W x 0.5 ชม. x 30 วัน',
+    watts: 3500,
+    hoursPerDay: 0.5,
+    daysPerMonth: 30,
+    href: '/คำนวณความจุเครื่องทำน้ำอุ่น/',
+  },
+  {
+    label: 'ชาร์จรถไฟฟ้า',
+    detail: '45 kWh/สัปดาห์ x 4 สัปดาห์',
+    watts: 45000,
+    hoursPerDay: 1,
+    daysPerMonth: 4,
+    href: '/คำนวณต้นทุนชาร์จรถไฟฟ้า/',
+  },
+].map((profile) => {
+  const monthlyUnits = (profile.watts * profile.hoursPerDay * profile.daysPerMonth) / 1000;
+  return {
+    ...profile,
+    monthlyUnits,
+    result: calculateExampleElectricityBill({
+      units: monthlyUnits,
+      provider: 'pea',
+      customerType: 'residential',
+      ftRate: Number(currentFtRate),
+    }),
+  };
+});
+
 const faqData = [
   {
     question: '1 kWh เท่ากับกี่บาท 2569?',
@@ -109,6 +179,11 @@ const faqData = [
     question: 'ต้องใส่ VAT 7% ทุกครั้งหรือไม่?',
     answer:
       'เครื่องมือนี้แสดง VAT 7% เพื่อให้เห็นโครงสร้างบิลครบถ้วนตามข้อมูลที่กรอก แต่บิลจริงอาจมีรายละเอียดเฉพาะตามประเภทผู้ใช้ไฟและประกาศของการไฟฟ้า ให้ตรวจเทียบกับใบแจ้งหนี้จริงเสมอ',
+  },
+  {
+    question: 'เครื่องใช้ไฟฟ้าอะไรควรเช็กก่อนถ้าค่าไฟสูง?',
+    answer:
+      'ให้เริ่มจากแอร์ เครื่องทำน้ำอุ่น ตู้เย็น และการชาร์จรถไฟฟ้า เพราะเป็นกลุ่มที่ใช้ kWh สูง เครื่องมือนี้แสดงต้นทุนรายเครื่องคร่าว ๆ เพื่อให้รู้ว่าควรลดหรือแยกคำนวณตรงไหนก่อน',
   },
 ];
 
@@ -224,6 +299,18 @@ const jsonLdHowTo = {
           ))
         }
       </div>
+    </section>
+
+    <section class="electricity-mode-grid" aria-label="โหมดคำนวณค่าไฟฟ้า PEA MEA ห้องเช่า และร้านค้า">
+      {
+        electricityModeCards.map((mode) => (
+          <div class="electricity-mode-card">
+            <span>{mode.label}</span>
+            <strong>{mode.title}</strong>
+            <p>{mode.desc}</p>
+          </div>
+        ))
+      }
     </section>
 
     <div class="electricity-quick-grid" aria-label="ข้อมูลสำคัญก่อนคำนวณ">
@@ -377,6 +464,54 @@ const jsonLdHowTo = {
           </div>
         </div>
 
+        <section class="electricity-bill-visualizer" aria-label="ภาพรวมบิลค่าไฟฟ้า">
+          <div class="electricity-visualizer-summary">
+            <div>
+              <span>ราคาต่อหน่วยจริง</span>
+              <strong id="res-effective-rate">-</strong>
+              <p>รวมค่าไฟฐาน Ft ค่าบริการ และ VAT แล้ว</p>
+            </div>
+            <div>
+              <span>ประมาณต่อปี</span>
+              <strong id="res-yearly-total">-</strong>
+              <p>ถ้าใช้ไฟระดับนี้ทุกเดือน</p>
+            </div>
+            <div>
+              <span>สถานะการใช้ไฟ</span>
+              <strong id="res-usage-signal">-</strong>
+              <p id="res-usage-signal-note">-</p>
+            </div>
+          </div>
+          <div class="electricity-bar-stack" aria-label="สัดส่วนค่าไฟในบิล">
+            <div class="electricity-bar-row">
+              <span>ค่าไฟฐาน</span>
+              <div><i id="res-bar-energy"></i></div>
+              <strong id="res-bar-energy-text">-</strong>
+            </div>
+            <div class="electricity-bar-row">
+              <span>ค่า Ft</span>
+              <div><i id="res-bar-ft"></i></div>
+              <strong id="res-bar-ft-text">-</strong>
+            </div>
+            <div class="electricity-bar-row">
+              <span>ค่าบริการ</span>
+              <div><i id="res-bar-service"></i></div>
+              <strong id="res-bar-service-text">-</strong>
+            </div>
+            <div class="electricity-bar-row">
+              <span>VAT 7%</span>
+              <div><i id="res-bar-vat"></i></div>
+              <strong id="res-bar-vat-text">-</strong>
+            </div>
+          </div>
+          <div class="electricity-savings-panel">
+            <h3>ควรทำอะไรต่อเพื่อลดค่าไฟ</h3>
+            <ul id="electricity-savings-list">
+              <li>คำนวณก่อน แล้วระบบจะแนะนำจากจำนวนหน่วยที่ใช้จริง</li>
+            </ul>
+          </div>
+        </section>
+
         <div class="mb-6 space-y-2 text-sm">
           <div class="flex justify-between border-b border-gray-100 py-1">
             <span class="text-gray-600">การไฟฟ้า</span>
@@ -492,6 +627,26 @@ const jsonLdHowTo = {
       </div>
     </section>
 
+    <section class="electricity-appliance-lab" aria-label="ค่าไฟเครื่องใช้ไฟฟ้าที่กินไฟสูง">
+      <div class="electricity-appliance-heading">
+        <span>เครื่องใช้ไฟฟ้าที่ทำให้บิลพุ่ง</span>
+        <h2>ดูค่าไฟรายเครื่องก่อนค้นต่อ</h2>
+        <p>ตัวอย่างนี้ใช้ค่า Ft {currentFtRate} บาท/หน่วย รอบ {currentFtPeriod} และคำนวณแบบบ้านอยู่อาศัย PEA เพื่อให้เห็นขนาดผลกระทบต่อบิล</p>
+      </div>
+      <div class="electricity-appliance-grid">
+        {
+          applianceProfiles.map((item) => (
+            <a href={item.href}>
+              <span>{item.label}</span>
+              <strong>{item.monthlyUnits.toLocaleString('th-TH', { maximumFractionDigits: 1 })} หน่วย/เดือน</strong>
+              <em>{item.result.totalBill.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</em>
+              <small>{item.detail}</small>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
     <section id="electricity-intent-cluster" class="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
       <h2 class="text-base font-bold text-gray-900 sm:text-lg">เครื่องมือนี้ตอบคำค้นที่คนไทยใช้บ่อย</h2>
       <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
@@ -586,10 +741,28 @@ const jsonLdHowTo = {
     <section class="mb-8 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-sm sm:p-6">
       <h2 class="mb-2 text-base font-semibold text-gray-900">แหล่งข้อมูลทางการ</h2>
       <p class="mb-2 text-xs font-semibold text-gray-500">ตรวจค่า Ft ล่าสุดเมื่อ {ftLastVerified}</p>
+      <div class="mb-4 grid gap-3 md:grid-cols-3">
+        <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+          <span class="block text-xs font-semibold text-gray-500">ค่าไฟเฉลี่ยประกาศ</span>
+          <strong class="mt-1 block text-base text-gray-950">3.95 บาท/หน่วย</strong>
+          <p class="mt-1 text-xs text-gray-600">ก่อน VAT สำหรับภาพรวมงวด {currentFtPeriod}</p>
+        </div>
+        <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+          <span class="block text-xs font-semibold text-gray-500">ค่า Ft ที่ใช้ในเครื่องมือ</span>
+          <strong class="mt-1 block text-base text-gray-950">{currentFtRate} บาท/หน่วย</strong>
+          <p class="mt-1 text-xs text-gray-600">เท่ากับ 16.23 สตางค์ต่อหน่วย</p>
+        </div>
+        <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+          <span class="block text-xs font-semibold text-gray-500">โครงสร้างบิล</span>
+          <strong class="mt-1 block text-base text-gray-950">ฐาน + Ft + บริการ + VAT</strong>
+          <p class="mt-1 text-xs text-gray-600">ใช้สำหรับอธิบายบิล ไม่ใช่แทนใบแจ้งหนี้จริง</p>
+        </div>
+      </div>
       <ul class="list-disc space-y-1 pl-5">
         <li><a href="https://www.erc.or.th/th/automatic" target="_blank" rel="noopener noreferrer">กกพ.: อัตราค่าไฟฟ้าโดยอัตโนมัติ (Ft)</a></li>
         <li><a href="https://www.pea.co.th/our-services/tariff/ft" target="_blank" rel="noopener noreferrer">PEA: ค่า Ft และประกาศที่เกี่ยวข้อง</a></li>
         <li><a href="https://www.pea.co.th/our-services/tariff/ft-statistics" target="_blank" rel="noopener noreferrer">PEA: สถิติค่า Ft รายเดือน</a></li>
+        <li><a href="https://www.mea.or.th/our-services/tariff-calculation" target="_blank" rel="noopener noreferrer">MEA: อัตราค่าไฟฟ้าและการคำนวณค่าไฟ</a></li>
       </ul>
     </section>
 
@@ -792,6 +965,47 @@ const jsonLdHowTo = {
       font-weight: 700;
       line-height: 1.45;
       margin-top: 0.3rem;
+    }
+
+    .electricity-mode-grid {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 0 0 1rem;
+    }
+
+    .electricity-mode-card {
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid var(--electricity-line);
+      border-radius: 18px;
+      box-shadow: 0 16px 42px rgba(15, 47, 78, 0.07);
+      min-height: 150px;
+      padding: 1rem;
+    }
+
+    .electricity-mode-card span,
+    .electricity-appliance-heading span {
+      color: #047857;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+    }
+
+    .electricity-mode-card strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .electricity-mode-card p {
+      color: var(--electricity-muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      margin: 0.45rem 0 0;
     }
 
     .electricity-quick-grid > div,
@@ -1001,6 +1215,126 @@ const jsonLdHowTo = {
       white-space: nowrap;
     }
 
+    .electricity-bill-visualizer {
+      background:
+        linear-gradient(135deg, rgba(248, 250, 252, 0.98), rgba(236, 253, 245, 0.82));
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      border-radius: 22px;
+      margin-bottom: 1.25rem;
+      padding: 1rem;
+    }
+
+    .electricity-visualizer-summary {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 1rem;
+    }
+
+    .electricity-visualizer-summary > div {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(111, 133, 160, 0.16);
+      border-radius: 16px;
+      padding: 0.9rem;
+    }
+
+    .electricity-visualizer-summary span {
+      color: #0784c5;
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+    }
+
+    .electricity-visualizer-summary strong {
+      color: var(--electricity-ink);
+      display: block;
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .electricity-visualizer-summary p {
+      color: var(--electricity-muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      margin: 0.35rem 0 0;
+    }
+
+    .electricity-bar-stack {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .electricity-bar-row {
+      align-items: center;
+      display: grid;
+      gap: 0.7rem;
+      grid-template-columns: 84px minmax(0, 1fr) 110px;
+    }
+
+    .electricity-bar-row span,
+    .electricity-bar-row strong {
+      color: var(--electricity-ink);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .electricity-bar-row div {
+      background: rgba(148, 163, 184, 0.18);
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    .electricity-bar-row i {
+      background: linear-gradient(90deg, var(--electricity-mint), var(--electricity-blue));
+      border-radius: inherit;
+      display: block;
+      height: 100%;
+      min-width: 4%;
+      transition: width 260ms ease;
+      width: 4%;
+    }
+
+    .electricity-bar-row:nth-child(2) i {
+      background: linear-gradient(90deg, #38bdf8, #2563eb);
+    }
+
+    .electricity-bar-row:nth-child(3) i {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    }
+
+    .electricity-bar-row:nth-child(4) i {
+      background: linear-gradient(90deg, #a78bfa, #7c3aed);
+    }
+
+    .electricity-savings-panel {
+      border-top: 1px solid rgba(111, 133, 160, 0.16);
+      margin-top: 1rem;
+      padding-top: 1rem;
+    }
+
+    .electricity-savings-panel h3 {
+      color: var(--electricity-ink);
+      font-size: 1rem;
+      font-weight: 850;
+      margin: 0 0 0.55rem;
+    }
+
+    .electricity-savings-panel ul {
+      color: var(--electricity-muted);
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      list-style: disc;
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
     .electricity-example-strip {
       margin-bottom: 1.5rem;
     }
@@ -1053,6 +1387,96 @@ const jsonLdHowTo = {
       margin-top: 0.4rem;
     }
 
+    .electricity-appliance-lab {
+      animation: electricity-rise 0.7s ease both;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--electricity-line);
+      border-radius: 28px;
+      box-shadow: 0 24px 70px rgba(15, 47, 78, 0.1);
+      margin-bottom: 1.5rem;
+      padding: clamp(1rem, 2.4vw, 1.35rem);
+    }
+
+    .electricity-appliance-heading {
+      margin-bottom: 1rem;
+      max-width: 720px;
+    }
+
+    .electricity-appliance-heading h2 {
+      color: var(--electricity-ink);
+      font-size: clamp(1.3rem, 2.3vw, 1.8rem);
+      font-weight: 850;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .electricity-appliance-heading p {
+      color: var(--electricity-muted);
+      font-size: 0.94rem;
+      line-height: 1.7;
+      margin: 0.45rem 0 0;
+    }
+
+    .electricity-appliance-grid {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .electricity-appliance-grid a {
+      background:
+        linear-gradient(135deg, rgba(239, 246, 255, 0.92), rgba(236, 253, 245, 0.88));
+      border: 1px solid rgba(20, 184, 166, 0.18);
+      border-radius: 18px;
+      color: var(--electricity-ink);
+      min-height: 156px;
+      padding: 1rem;
+      text-decoration: none;
+      transition: border-color 160ms ease, transform 160ms ease;
+    }
+
+    .electricity-appliance-grid a:hover,
+    .electricity-appliance-grid a:focus-visible {
+      border-color: rgba(8, 168, 245, 0.5);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .electricity-appliance-grid span,
+    .electricity-appliance-grid strong,
+    .electricity-appliance-grid em,
+    .electricity-appliance-grid small {
+      display: block;
+    }
+
+    .electricity-appliance-grid span {
+      color: var(--electricity-muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+
+    .electricity-appliance-grid strong {
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+
+    .electricity-appliance-grid em {
+      color: #0c8f68;
+      font-size: 1.28rem;
+      font-style: normal;
+      font-weight: 950;
+      margin-top: 0.45rem;
+    }
+
+    .electricity-appliance-grid small {
+      color: var(--electricity-muted);
+      font-size: 0.76rem;
+      line-height: 1.45;
+      margin-top: 0.45rem;
+    }
+
     :global(html[data-theme='dark']) .electricity-flagship-page {
       --electricity-ink: #f7fbff;
       --electricity-muted: #b8c7d8;
@@ -1063,9 +1487,12 @@ const jsonLdHowTo = {
     :global(html[data-theme='dark']) .electricity-update-strip,
     :global(html[data-theme='dark']) .electricity-direct-answer,
     :global(html[data-theme='dark']) .electricity-rate-links,
+    :global(html[data-theme='dark']) .electricity-mode-card,
     :global(html[data-theme='dark']) .electricity-calculator-panel,
     :global(html[data-theme='dark']) .electricity-results-panel,
-    :global(html[data-theme='dark']) .electricity-example-strip {
+    :global(html[data-theme='dark']) .electricity-bill-visualizer,
+    :global(html[data-theme='dark']) .electricity-example-strip,
+    :global(html[data-theme='dark']) .electricity-appliance-lab {
       background: rgba(8, 16, 29, 0.92);
       box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
     }
@@ -1075,13 +1502,16 @@ const jsonLdHowTo = {
     :global(html[data-theme='dark']) .electricity-calculator-panel select,
     :global(html[data-theme='dark']) .electricity-rate-links a,
     :global(html[data-theme='dark']) .electricity-quick-grid > div,
-    :global(html[data-theme='dark']) .electricity-example-list > div {
+    :global(html[data-theme='dark']) .electricity-visualizer-summary > div,
+    :global(html[data-theme='dark']) .electricity-example-list > div,
+    :global(html[data-theme='dark']) .electricity-appliance-grid a {
       background: rgba(14, 26, 42, 0.92);
       color: #f7fbff;
     }
 
     :global(html[data-theme='dark']) .electricity-calculator-panel label,
-    :global(html[data-theme='dark']) .electricity-quick-grid strong {
+    :global(html[data-theme='dark']) .electricity-quick-grid strong,
+    :global(html[data-theme='dark']) .electricity-mode-card strong {
       color: #f7fbff;
     }
 
@@ -1100,7 +1530,10 @@ const jsonLdHowTo = {
       .electricity-quick-grid,
       .electricity-presets,
       .electricity-rate-links > div:last-child,
-      .electricity-example-list {
+      .electricity-mode-grid,
+      .electricity-example-list,
+      .electricity-appliance-grid,
+      .electricity-visualizer-summary {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -1123,7 +1556,10 @@ const jsonLdHowTo = {
       .electricity-quick-grid,
       .electricity-presets,
       .electricity-rate-links > div:last-child,
-      .electricity-example-list {
+      .electricity-mode-grid,
+      .electricity-example-list,
+      .electricity-appliance-grid,
+      .electricity-visualizer-summary {
         grid-template-columns: 1fr;
       }
 
@@ -1142,15 +1578,23 @@ const jsonLdHowTo = {
       .electricity-total-pill {
         width: 100%;
       }
+
+      .electricity-bar-row {
+        gap: 0.45rem;
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .electricity-update-strip,
       .electricity-direct-answer,
       .electricity-rate-links,
+      .electricity-mode-card,
       .electricity-calculator-panel,
       .electricity-results-panel,
+      .electricity-bill-visualizer,
       .electricity-example-strip,
+      .electricity-appliance-lab,
       .electricity-presets button,
       .electricity-submit-btn {
         animation: none;
@@ -1181,6 +1625,10 @@ const jsonLdHowTo = {
       return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(rate)} บาท/หน่วย`;
     }
 
+    function fmtBahtPerUnit(rate) {
+      return `${new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(rate)} บาท/หน่วย`;
+    }
+
     const form = document.getElementById('electricity-form');
     const submitBtn = document.getElementById('electricity-submit-btn');
     const formError = document.getElementById('electricity-form-error');
@@ -1188,6 +1636,7 @@ const jsonLdHowTo = {
     const sharePrompt = document.getElementById('electricity-share-prompt');
     const nextActionCard = document.getElementById('electricity-next-action');
     const breakdownBody = document.getElementById('tier-breakdown-body');
+    const savingsList = document.getElementById('electricity-savings-list');
     const presetButtons = document.querySelectorAll('[data-electricity-preset]');
 
     const fields = {
@@ -1272,6 +1721,84 @@ const jsonLdHowTo = {
       if (element) element.textContent = value;
     }
 
+    function setBillBar(barId, textId, amount, total) {
+      const bar = document.getElementById(barId);
+      const text = document.getElementById(textId);
+      const percentage = total > 0 ? Math.max(4, Math.min(100, (amount / total) * 100)) : 4;
+      if (bar) bar.style.width = `${percentage.toFixed(1)}%`;
+      if (text) text.textContent = fmtMoney(amount);
+    }
+
+    function getUsageAdvice(result) {
+      const units = result.units;
+      if (units <= 150) {
+        return {
+          label: 'ประหยัดอยู่',
+          note: 'ยังอยู่ในระดับต่ำ เหมาะกับการรักษาพฤติกรรมเดิม',
+          items: [
+            'ตรวจเลขมิเตอร์เดือนละครั้งเพื่อจับความผิดปกติเร็ว',
+            'ปิด standby ของทีวี คอมพิวเตอร์ และเครื่องชาร์จที่ไม่ใช้',
+            'ใช้ตัวเลขนี้เป็นฐานเทียบเดือนถัดไป ถ้าเกิน 20% ให้ตรวจเครื่องใช้ไฟฟ้า',
+          ],
+        };
+      }
+      if (units <= 300) {
+        return {
+          label: 'ระดับบ้านทั่วไป',
+          note: 'เริ่มมีผลจากแอร์ ตู้เย็น และเครื่องทำน้ำอุ่น',
+          items: [
+            'เช็กแอร์เป็นอันดับแรก ตั้ง 26-27°C และล้างแผ่นกรองสม่ำเสมอ',
+            'แยกคำนวณเครื่องใช้ที่เปิดทุกวัน เช่น ตู้เย็น พัดลม คอมพิวเตอร์',
+            'ถ้าเป็นห้องเช่า ให้เทียบราคาต่อหน่วยกับมิเตอร์จริงก่อนจ่าย',
+          ],
+        };
+      }
+      if (units <= 500) {
+        return {
+          label: 'ใช้ไฟสูง',
+          note: 'ควรแยกต้นทุนรายเครื่องและหาช่วงเวลาที่ใช้ไฟหนัก',
+          items: [
+            'คำนวณแอร์รายเครื่อง เพราะแอร์หลายชั่วโมงต่อวันอาจเป็นต้นทุนหลัก',
+            'ตรวจเครื่องทำน้ำอุ่น เตาไฟฟ้า และอุปกรณ์กำลังวัตต์สูง',
+            'ดูเครื่องคำนวณโซลาร์เซลล์หรือ LED ถ้าค่าไฟเกินระดับนี้ต่อเนื่อง',
+          ],
+        };
+      }
+      return {
+        label: 'ควรตรวจละเอียด',
+        note: 'ยอดนี้เหมาะกับบ้านใหญ่ ร้านค้า หรือมีอุปกรณ์กำลังสูง',
+        items: [
+          'แยกมิเตอร์หรือแยกพื้นที่ใช้งาน ถ้ามีร้าน/โฮมออฟฟิศรวมกับบ้าน',
+          'ตรวจแอร์เก่า ตู้เย็นเก่า ปั๊มน้ำ และอุปกรณ์ที่ทำงานตลอดคืน',
+          'เก็บบิลย้อนหลัง 3 เดือนแล้วเทียบหน่วย ไม่ใช่เทียบแค่ยอดเงินบาท',
+        ],
+      };
+    }
+
+    function updateBillVisualizer(result) {
+      const effectiveRate = result.units > 0 ? result.totalBill / result.units : 0;
+      setText('res-effective-rate', fmtBahtPerUnit(effectiveRate));
+      setText('res-yearly-total', fmtMoney(result.totalBill * 12));
+
+      const advice = getUsageAdvice(result);
+      setText('res-usage-signal', advice.label);
+      setText('res-usage-signal-note', advice.note);
+
+      setBillBar('res-bar-energy', 'res-bar-energy-text', result.energyCharge, result.totalBill);
+      setBillBar('res-bar-ft', 'res-bar-ft-text', result.ftCharge, result.totalBill);
+      setBillBar('res-bar-service', 'res-bar-service-text', result.serviceCharge, result.totalBill);
+      setBillBar('res-bar-vat', 'res-bar-vat-text', result.vatAmount, result.totalBill);
+
+      if (savingsList) {
+        savingsList.innerHTML = '';
+        advice.items.forEach((item) => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          savingsList.appendChild(li);
+        });
+      }
+    }
+
     updateSubmitState();
 
     form.addEventListener('submit', (event) => {
@@ -1329,6 +1856,7 @@ const jsonLdHowTo = {
       setText('res-units', fmtUnits(result.units));
       setText('res-ft-rate', fmtRate(result.appliedFtRate));
       setText('res-subtotal', fmtMoney(result.subtotalBeforeVat));
+      updateBillVisualizer(result);
 
       breakdownBody.innerHTML = '';
       result.tierBreakdown.forEach((tier) => {
