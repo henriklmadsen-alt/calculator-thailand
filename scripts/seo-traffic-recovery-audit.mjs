@@ -119,9 +119,9 @@ const COMPARISON_PAGE_CHECKS = [
 ];
 
 const AFFILIATE_INTENT_CHECKS = [
-  { path: '/บทความ/คำนวณผ่อนรถแล้วซื้อประกันชั้นไหน-2569/', affiliate: '/go/rabbit-care-car/' },
-  { path: '/คำนวณผ่อนรถ/', affiliate: '/go/rabbit-care-car/' },
-  { path: '/คำนวณผ่อนบ้าน/', affiliate: '/go/rabbit-care-home/' },
+  { path: '/บทความ/คำนวณผ่อนรถแล้วซื้อประกันชั้นไหน-2569/', affiliate: '/go/roojai-partners/' },
+  { path: '/คำนวณผ่อนรถ/', affiliate: '/go/roojai-partners/' },
+  { path: '/คำนวณผ่อนบ้าน/', affiliate: '/go/roojai-partners/' },
 ];
 
 const RESULT_SHARE_ROUTES = [
